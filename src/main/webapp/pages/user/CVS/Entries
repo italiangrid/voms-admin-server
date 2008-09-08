@@ -1,0 +1,17 @@
+/addCertificate.jsp/1.1.2.1/Mon Jul 23 07:22:47 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/certificateInfo.jsp/1.1.2.1/Mon Jul 23 07:22:47 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/createUser.jsp/1.1.2.1.2.2.14.3/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/deleteAllUsersConfirm.jsp/1.1.2.1.2.1/Mon Feb 26 12:59:43 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/deleteUserConfirm.jsp/1.1.2.1.2.1.14.1/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/editUser.jsp/1.1.2.1.2.1.14.1/Mon Jul 23 07:22:47 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/editUserAttributes.jsp/1.1.2.1.2.2/Wed Feb 28 11:44:05 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/editUserCertificates.jsp/1.1.2.2/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/editUserDetails.jsp/1.1.2.1.2.1.6.1.8.1/Tue Jul 17 16:49:40 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/editUserMembership.jsp/1.1.2.1.2.1/Mon Feb 26 12:59:42 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/manageCertificate.jsp/1.1.2.2/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/searchUsers.jsp/1.1.2.1.2.1.14.2/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/uploadCertificate.jsp/1.1.2.1/Mon Jul 23 07:22:47 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/userError.jsp/1.1.2.1.2.1/Mon Feb 26 12:59:43 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/userHome.jsp/1.1.2.1.2.2.14.1/Thu Jul 26 09:50:48 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/userLeftBar.jsp/1.1.2.1.2.1/Mon Feb 26 12:59:43 2007//Tglite-security-voms-admin-server_multiple_cert_support
+/userMenu.jsp/1.1.2.1.2.1/Mon Feb 26 12:59:43 2007//Tglite-security-voms-admin-server_multiple_cert_support

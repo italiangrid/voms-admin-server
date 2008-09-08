@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+    
+    	<property name="hibernate.bytecode.provider">cglib</property>
+    	<mapping resource="model/VOMSDBVersion.hbm.xml" />
+    	<mapping resource="model/VOMSSeqNumber.hbm.xml" />
+        <mapping resource="model/VOMSAdmin.hbm.xml" />
+        <mapping resource="model/VOMSCA.hbm.xml" />
+        <mapping resource="model/Certificate.hbm.xml" />
+        <mapping resource="model/VOMSUser.hbm.xml" />
+        <mapping resource="model/VOMSUserAttribute.hbm.xml" />
+        <mapping resource="model/VOMSGroup.hbm.xml" />
+        <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
+        <mapping resource="model/VOMSRole.hbm.xml" />
+        <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
+        <mapping resource="model/VOMSAttributeDescription.hbm.xml" />
+        <mapping resource="model/VOMSCapability.hbm.xml" />
+        <mapping resource="model/VOMSMapping.hbm.xml" />
+        <mapping resource="model/ACL.hbm.xml" />
+        <mapping resource="model/VOMembershipRequest.hbm.xml" />
+        
+<!--        <event type="post-delete">-->
+<!--        		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
+<!--        </event>-->
+<!--        -->
+<!--        <event type="post-update">-->
+<!--       		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
+<!--        </event>-->
+<!--        -->
+<!--        <event type="post-insert">-->
+<!--       		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
+<!--        </event>-->
+    </session-factory>
+</hibernate-configuration>

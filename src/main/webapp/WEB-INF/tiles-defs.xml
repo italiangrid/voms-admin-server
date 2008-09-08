@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<!--
+ Copyright (c) Members of the EGEE Collaboration. 2006.
+ See http://www.eu-egee.org/partners/ for details on the copyright
+ holders.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Authors:
+     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+-->
+<tiles-definitions>
+ 
+ 
+ 	<!--Layouts -->
+	
+	<definition name=".oneColLayout" path="/layouts/oneColLayout.jsp">
+		<put name="title" value="Voms-Admin 2.0" type="string"/>
+		<put name="header" value="/common/defaultHeader.jsp"/>
+		<put name="menu" value="/common/adminMenu.jsp"/>
+		<put name="messages" value="/common/messages.jsp"/>
+		<put name="centerPane" value="" type="string"/>
+		<put name="footer" value="/common/defaultFooter.jsp"/>		
+	</definition>
+	
+	<definition name=".oneColMenuLayout" path="/layouts/oneColMenuLayout.jsp">
+		<put name="title" value="Voms-Admin 2.0" type="string"/>
+		<put name="header" value="/common/defaultHeader.jsp"/>
+		<put name="menu" value="/common/adminMenu.jsp"/>
+		<put name="messages" value="/common/messages.jsp"/>
+		<put name="centerPane" value="" type="string"/>
+		<put name="footer" value="/common/defaultFooter.jsp"/>		
+	</definition>
+	
+	<definition name=".twoColLayout" path="/layouts/twoColLayout.jsp">
+		<put name="title" value="Voms-Admin 2.0" type="string"/>
+		<put name="header" value="/common/defaultHeader.jsp"/>
+		<put name="menu" value="/pages/user/userMenu.jsp"/>
+		<put name="messages" value="/common/messages.jsp"/>
+		<put name="leftBar" value="" type="string"/>
+		<put name="centerPane" value="" type="string"/>
+		<put name="footer" value="/common/defaultFooter.jsp"/>		
+	</definition>
+		
+	<definition name=".userGroupsLayout" extends=".twoColLayout">
+		<put name="menu" value="/common/adminMenu.jsp"/>
+		<put name="leftBar" value="/common/userGroupsLeftBar.jsp"/>
+	</definition>
+	
+	<definition name=".siblingsLayout" extends=".oneColMenuLayout">
+		<put name="menu" value="/common/userMenu.jsp"/>
+		<put name="leftBar" value="" type="string"/>
+	</definition>
+	
+	<definition name=".requestsLayout" extends=".twoColLayout">
+		<put name="menu" value="/common/adminMenu.jsp"/>
+		<put name="leftBar" value="/common/requestsLeftBar.jsp"/>
+	</definition>
+	
+	
+	<definition name=".registrationLayout" extends=".oneColLayout">
+		<put name="menu" value="/common/userMenu.jsp"/>
+	</definition>
+	
+	<definition name=".authenticatedUserLayout" extends=".oneColMenuLayout">
+		<put name="menu" value="/common/userMenu.jsp"/>
+	</definition>
+	
+	<definition name=".notImplementedLayout" extends=".oneColLayout">
+		<put name="menu" value="/common/adminMenu.jsp"/>
+		<put name="centerPane" value="Not implemented yet!" type="string"/>
+	</definition>
+	
+	<definition name=".help.page" extends=".notImplementedLayout">
+		<put name="body" value="/pages/help.jsp"/>
+	</definition>
+	
+    
+	<definition name=".admin.page" extends=".notImplementedLayout">
+		<put name="body" type="string" value="Welcome Admin!"/>
+	</definition>
+	
+	<definition name=".authorized.content" path="/common/authorized.jsp">
+		<put name="permission" value="r" type="string"/>
+		<put name="context" value="vo" type="string"/>
+		<put name="message" value="You are not allowed to access this area." type="string"/>
+		<put name="style" value="authorizationError" type="string"/>
+		<put name="content" value=""/>
+	</definition>
+	
+	<!-- REGISTRATION DEFINITIONS -->
+	<definition name=".register.user.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/registerUser.jsp"/>
+	</definition>
+	
+	<definition name=".registration.disabled.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/registrationDisabled.jsp"/>
+	</definition>
+	
+	<definition name=".registration.limbo.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/registrationLimbo.jsp"/>
+	</definition>
+	
+	<definition name=".confirm.user.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/confirmSubmission.jsp"/>
+	</definition>
+	
+	<definition name=".submission.confirmed.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/submissionConfirmed.jsp"/>
+	</definition>
+	
+	<definition name=".submission.cancelled.page" extends=".registrationLayout">
+		<put name="centerPane" value="/pages/registration/submissionCancelled.jsp"/>
+	</definition>
+	
+	<!-- REQUESTS DEFINITIONS -->
+	<definition name=".pending.requests.page" extends=".requestsLayout">
+		<put name="centerPane" value="/pages/requests/listPendingRequests.jsp"/>
+	</definition>
+	
+	<definition name=".processed.requests.page" extends=".requestsLayout">
+		<put name="centerPane" value="/pages/requests/listProcessedRequests.jsp"/>
+	</definition>
+
+	<definition name=".request.detail.page" extends=".requestsLayout">
+		<put name="centerPane" value="/pages/requests/requestDetail.jsp"/>
+	</definition>
+	
+	<!-- CA DEFINITIONS -->
+	<definition name=".manage.cas.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/ca/manageCAs.jsp"/>
+	</definition>
+	
+	<!-- USER DEFINITIONS -->
+	
+	<definition name=".edit.user.pane" path="/pages/user/editUser.jsp">
+	
+		<put name="userDetails" value="/pages/user/editUserDetails.jsp"/>
+		<put name="userCertificates" value="/pages/user/editUserCertificates.jsp"/>
+		<put name="userMembership" value="/pages/user/editUserMembership.jsp"/>
+		<put name="userAttributes" value="/pages/user/editUserAttributes.jsp"/>
+		
+	</definition>
+	
+	<definition name=".edit.user.page" extends=".userGroupsLayout">
+		<put name="centerPane" value=".edit.user.pane"/>
+	</definition>
+	
+	<definition name=".create.user.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/createUser.jsp"/>
+	</definition>
+	
+	<definition name=".user.error.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/userError.jsp"/>
+	</definition>
+	
+	<definition name=".delete.user.confirm.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/deleteUserConfirm.jsp"/>
+	</definition>
+	
+	<definition name=".delete.all.users.confirm.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/deleteAllUsersConfirm.jsp"/>
+	</definition>
+	
+	<definition name=".search.users.content" path="/common/vo-r.jsp">
+		<put name="content" value="/pages/user/searchUsers.jsp"/>
+	</definition>
+	
+	<definition name=".search.users.page" extends=".userGroupsLayout">
+		<put name="centerPane" value=".search.users.content"/>
+	</definition>
+	
+
+	<definition name=".user.home.page" extends=".authenticatedUserLayout">
+		<put name="centerPane" value="/pages/user/userHome.jsp"/>
+	</definition>
+
+	<!-- CERTIFICATE DEFINITIONS -->
+	<definition name=".upload.certificate" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/uploadCertificate.jsp"/>
+	</definition>
+	
+	<definition name=".certificate.info" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/certificate.info.jsp"/>
+	</definition>
+	
+	<definition name=".manage.certificate.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/manageCertificate.jsp"/>
+	</definition>
+	
+	<definition name=".add.certificate.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/user/addCertificate.jsp"/>
+	</definition>
+	
+	<!-- TAG DEFINITIONS -->
+	<definition name=".manage.tags.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/tags/manageTags.jsp"/>
+	</definition>
+	
+	<definition name=".create.tag.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/tags/createTag.jsp"/>
+	</definition>
+	
+	<!-- ADMIN DEFINITIONS -->
+	<definition name=".manage.admins.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/admins/manageAdmins.jsp"/>
+	</definition>
+	
+	<!-- GROUP DEFINITIONS -->
+
+	<definition name=".edit.group.pane" path="/pages/group/editGroup.jsp">
+		<put name="groupACL" value="/pages/group/groupACL.jsp"/>
+		<put name="groupMembership" value="/pages/group/groupMembership.jsp"/>
+		<put name="groupAttributes" value="/pages/group/groupAttributes.jsp"/>
+	</definition>
+	
+	<definition name=".edit.group.page" extends=".userGroupsLayout">
+		<put name="centerPane" value=".edit.group.pane"/>
+	</definition>	
+	
+	<definition name=".create.group.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/group/createGroup.jsp"/>
+	</definition>
+	
+	<definition name=".search.groups.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/group/searchGroups.jsp"/>
+	</definition>
+	
+	<!-- ROLE DEFINITIONS -->
+	
+	<definition name=".search.roles.content" path="/common/vo-r.jsp">
+		<put name="content" value="/pages/role/searchRoles.jsp"/>
+	</definition>
+	
+	<definition name=".search.roles.page" extends=".userGroupsLayout">
+		<put name="centerPane" value=".search.roles.content"/>
+	</definition>
+	
+	<definition name=".edit.role.pane" path="/pages/role/editRole.jsp">
+		<!--   <put name="roleACL" value="/pages/role/roleACL.jsp"/> -->
+		<put name="roleMembership" value="/pages/role/roleMembership.jsp"/>
+		<put name="roleAttributes" value="/pages/role/roleAttributes.jsp"/>
+	</definition>
+	
+	<definition name=".edit.role.page" extends=".userGroupsLayout">
+		<put name="centerPane" value=".edit.role.pane"/>
+	</definition>
+	
+	<definition name=".create.role.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/role/createRole.jsp"/>
+	</definition>	
+		
+	<!-- ACL DEFINITIONS -->
+	<definition name=".edit.acl.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/acl/editACL.jsp"/>
+	</definition>
+	
+	<definition name=".delete.acl.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/acl/deleteACL.jsp"/>
+	</definition>	
+	
+	<definition name=".add.acl.entry.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/acl/addACLEntry.jsp"/>
+	</definition>
+	
+	
+	<!-- ATTRIBUTES DEFINITIONS -->	
+	<definition name=".manage.attribute.descriptions" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/attributes/manageAttributeDescriptions.jsp"/>
+	</definition>
+	
+	<definition name=".list.attributes.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/attributes/listUserAttributes.jsp"/>
+	</definition>
+	
+	<definition name=".search.user.attributes.page" extends=".userGroupsLayout">
+		<put name="centerPane" value="/pages/attributes/searchUserAttributes.jsp"/>
+	</definition>
+	
+	<!-- SIBLINGS DEFINITIONS -->
+	<definition name=".siblings" extends=".siblingsLayout">
+		<put name="centerPane" value="/pages/siblings/listConfiguredVOs.jsp"/>
+	</definition>
+	
+	<!-- ERROR PAGES -->
+	<definition name=".general.error.page" extends=".twoColLayout">
+		<put name="body" value="/pages/generalError.jsp"/>
+	</definition>
+	
+	<!-- TEST PAGES -->
+	<definition name=".test.page" path="/pages/test.jsp"/>
+	
+	<definition name=".configuration.page" extends=".siblingsLayout">
+		<put name="centerPane" value="/pages/configuration/showConfiguration.jsp"/>
+	</definition>	
+
+</tiles-definitions>

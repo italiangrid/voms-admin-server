@@ -1,0 +1,5 @@
+Dear $recipient, your membership request for VO $voName
+has expired since you didn't confirm it in time.
+
+Your sincerely,
+Voms-Admin registration service for VO $voName

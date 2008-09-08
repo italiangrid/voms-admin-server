@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.VOMSGroup" table="groups">
+
+		<id name="id" column="gid" type="long">
+			<generator class="native" />
+		</id>
+
+		<property name="name" type="string" update="true" insert="true"
+			column="dn" not-null="true" unique="true" />
+			
+		<many-to-one name="parent" column="parent"
+			class="org.glite.security.voms.admin.model.VOMSGroup" not-null="false" />
+			
+		<property name="must" type="boolean" column="must" not-null="true"/>
+
+
+		<set name="attributes" cascade="all-delete-orphan" inverse="true">
+			<key column="g_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSGroupAttribute"/>
+		</set>
+		
+		<!--  was cascade="delete,delete-orphan" -->
+		<set name="mappings" sort="natural" inverse="true">
+			<key column="gid" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>
+		</set>
+		
+		<set name="acls" cascade="all-delete-orphan" inverse="true">
+			<key column="group_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.ACL"/>
+		</set>
+		
+	</class>
+
+</hibernate-mapping>

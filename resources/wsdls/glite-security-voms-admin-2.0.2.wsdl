@@ -1,0 +1,1851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://glite.org/wsdl/services/org.glite.security.voms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="VOMSException">
+    <sequence/>
+   </complexType>
+   <complexType name="User">
+    <sequence>
+     <element name="CA" nillable="true" type="soapenc:string"/>
+     <element name="CN" nillable="true" type="soapenc:string"/>
+     <element name="DN" nillable="true" type="soapenc:string"/>
+     <element name="certUri" nillable="true" type="soapenc:string"/>
+     <element name="mail" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ACLEntry">
+    <sequence>
+     <element name="adminCA" nillable="true" type="soapenc:string"/>
+     <element name="adminDN" nillable="true" type="soapenc:string"/>
+     <element name="allow" type="xsd:boolean"/>
+     <element name="operationName" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_User">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:User[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_soapenc_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_ACLEntry">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ACLEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="setDefaultACLResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listGroupsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPatchVersionNumberResponse">
+
+      <wsdl:part name="getPatchVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMajorVersionNumberResponse">
+
+      <wsdl:part name="getMajorVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="dismissRoleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listGroupsResponse">
+
+      <wsdl:part name="listGroupsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listRolesResponse1">
+
+      <wsdl:part name="listRolesReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addMemberResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listCapabilitiesRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getVONameRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getMinorVersionNumberResponse">
+
+      <wsdl:part name="getMinorVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserResponse">
+
+      <wsdl:part name="getUserReturn" type="tns1:User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getACLResponse">
+
+      <wsdl:part name="getACLReturn" type="impl:ArrayOf_tns1_ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="assignCapabilityResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupPathRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getMajorVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteCapabilityResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listMembersResponse">
+
+      <wsdl:part name="listMembersReturn" type="impl:ArrayOf_tns1_User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getVONameResponse">
+
+      <wsdl:part name="getVONameReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMinorVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="listUsersWithCapabilityResponse">
+
+      <wsdl:part name="listUsersWithCapabilityReturn" type="impl:ArrayOf_tns1_User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createCapabilityResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setUserRequest">
+
+      <wsdl:part name="in0" type="tns1:User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listCapabilitiesResponse1">
+
+      <wsdl:part name="listCapabilitiesReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listCapabilitiesResponse">
+
+      <wsdl:part name="listCapabilitiesReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserRequest">
+
+      <wsdl:part name="in0" type="tns1:User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="tns1:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeMemberRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="assignRoleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="dismissCapabilityRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDefaultACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createCapabilityRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addMemberRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listRolesResponse">
+
+      <wsdl:part name="listRolesReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDefaultACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="tns1:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listCapabilitiesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="listCAsResponse">
+
+      <wsdl:part name="listCAsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listCAsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="createRoleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setACLResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteCapabilityRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="dismissRoleResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listUsersWithRoleResponse">
+
+      <wsdl:part name="listUsersWithRoleReturn" type="impl:ArrayOf_tns1_User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listRolesRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="assignCapabilityRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPatchVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="dismissCapabilityResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ArrayOf_tns1_ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createGroupRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="VOMSException">
+
+      <wsdl:part name="fault" type="tns1:VOMSException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addDefaultACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listRolesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listSubGroupsResponse">
+
+      <wsdl:part name="listSubGroupsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="tns1:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeMemberResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setDefaultACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ArrayOf_tns1_ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDefaultACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addDefaultACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="tns1:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createGroupResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listUsersWithRoleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupPathResponse">
+
+      <wsdl:part name="getGroupPathReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listMembersRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listSubGroupsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="assignRoleResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getDefaultACLResponse">
+
+      <wsdl:part name="getDefaultACLReturn" type="impl:ArrayOf_tns1_ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listUsersWithCapabilityRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createRoleResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSAdmin">
+
+      <wsdl:operation name="createGroup" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:createGroupRequest" name="createGroupRequest"/>
+
+         <wsdl:output message="impl:createGroupResponse" name="createGroupResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUser" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getUserRequest" name="getUserRequest"/>
+
+         <wsdl:output message="impl:getUserResponse" name="getUserResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setUser" parameterOrder="in0">
+
+         <wsdl:input message="impl:setUserRequest" name="setUserRequest"/>
+
+         <wsdl:output message="impl:setUserResponse" name="setUserResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMajorVersionNumber">
+
+         <wsdl:input message="impl:getMajorVersionNumberRequest" name="getMajorVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getMajorVersionNumberResponse" name="getMajorVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVOName">
+
+         <wsdl:input message="impl:getVONameRequest" name="getVONameRequest"/>
+
+         <wsdl:output message="impl:getVONameResponse" name="getVONameResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser" parameterOrder="in0">
+
+         <wsdl:input message="impl:createUserRequest" name="createUserRequest"/>
+
+         <wsdl:output message="impl:createUserResponse" name="createUserResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:deleteUserRequest" name="deleteUserRequest"/>
+
+         <wsdl:output message="impl:deleteUserResponse" name="deleteUserResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroup" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteGroupRequest" name="deleteGroupRequest"/>
+
+         <wsdl:output message="impl:deleteGroupResponse" name="deleteGroupResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createRole" parameterOrder="in0">
+
+         <wsdl:input message="impl:createRoleRequest" name="createRoleRequest"/>
+
+         <wsdl:output message="impl:createRoleResponse" name="createRoleResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRole" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteRoleRequest" name="deleteRoleRequest"/>
+
+         <wsdl:output message="impl:deleteRoleResponse" name="deleteRoleResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createCapability" parameterOrder="in0">
+
+         <wsdl:input message="impl:createCapabilityRequest" name="createCapabilityRequest"/>
+
+         <wsdl:output message="impl:createCapabilityResponse" name="createCapabilityResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteCapability" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteCapabilityRequest" name="deleteCapabilityRequest"/>
+
+         <wsdl:output message="impl:deleteCapabilityResponse" name="deleteCapabilityResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addMember" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:addMemberRequest" name="addMemberRequest"/>
+
+         <wsdl:output message="impl:addMemberResponse" name="addMemberResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeMember" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:removeMemberRequest" name="removeMemberRequest"/>
+
+         <wsdl:output message="impl:removeMemberResponse" name="removeMemberResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="assignRole" parameterOrder="in0 in1 in2 in3">
+
+         <wsdl:input message="impl:assignRoleRequest" name="assignRoleRequest"/>
+
+         <wsdl:output message="impl:assignRoleResponse" name="assignRoleResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="dismissRole" parameterOrder="in0 in1 in2 in3">
+
+         <wsdl:input message="impl:dismissRoleRequest" name="dismissRoleRequest"/>
+
+         <wsdl:output message="impl:dismissRoleResponse" name="dismissRoleResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="assignCapability" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:assignCapabilityRequest" name="assignCapabilityRequest"/>
+
+         <wsdl:output message="impl:assignCapabilityResponse" name="assignCapabilityResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="dismissCapability" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:dismissCapabilityRequest" name="dismissCapabilityRequest"/>
+
+         <wsdl:output message="impl:dismissCapabilityResponse" name="dismissCapabilityResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listMembers" parameterOrder="in0">
+
+         <wsdl:input message="impl:listMembersRequest" name="listMembersRequest"/>
+
+         <wsdl:output message="impl:listMembersResponse" name="listMembersResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUsersWithRole" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:listUsersWithRoleRequest" name="listUsersWithRoleRequest"/>
+
+         <wsdl:output message="impl:listUsersWithRoleResponse" name="listUsersWithRoleResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUsersWithCapability" parameterOrder="in0">
+
+         <wsdl:input message="impl:listUsersWithCapabilityRequest" name="listUsersWithCapabilityRequest"/>
+
+         <wsdl:output message="impl:listUsersWithCapabilityResponse" name="listUsersWithCapabilityResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupPath" parameterOrder="in0">
+
+         <wsdl:input message="impl:getGroupPathRequest" name="getGroupPathRequest"/>
+
+         <wsdl:output message="impl:getGroupPathResponse" name="getGroupPathResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listSubGroups" parameterOrder="in0">
+
+         <wsdl:input message="impl:listSubGroupsRequest" name="listSubGroupsRequest"/>
+
+         <wsdl:output message="impl:listSubGroupsResponse" name="listSubGroupsResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listGroups" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:listGroupsRequest" name="listGroupsRequest"/>
+
+         <wsdl:output message="impl:listGroupsResponse" name="listGroupsResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoles">
+
+         <wsdl:input message="impl:listRolesRequest" name="listRolesRequest"/>
+
+         <wsdl:output message="impl:listRolesResponse" name="listRolesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoles" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:listRolesRequest1" name="listRolesRequest1"/>
+
+         <wsdl:output message="impl:listRolesResponse1" name="listRolesResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCapabilities">
+
+         <wsdl:input message="impl:listCapabilitiesRequest" name="listCapabilitiesRequest"/>
+
+         <wsdl:output message="impl:listCapabilitiesResponse" name="listCapabilitiesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCapabilities" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:listCapabilitiesRequest1" name="listCapabilitiesRequest1"/>
+
+         <wsdl:output message="impl:listCapabilitiesResponse1" name="listCapabilitiesResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCAs">
+
+         <wsdl:input message="impl:listCAsRequest" name="listCAsRequest"/>
+
+         <wsdl:output message="impl:listCAsResponse" name="listCAsResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getACL" parameterOrder="in0">
+
+         <wsdl:input message="impl:getACLRequest" name="getACLRequest"/>
+
+         <wsdl:output message="impl:getACLResponse" name="getACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setACL" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setACLRequest" name="setACLRequest"/>
+
+         <wsdl:output message="impl:setACLResponse" name="setACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:addACLEntryRequest" name="addACLEntryRequest"/>
+
+         <wsdl:output message="impl:addACLEntryResponse" name="addACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:removeACLEntryRequest" name="removeACLEntryRequest"/>
+
+         <wsdl:output message="impl:removeACLEntryResponse" name="removeACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDefaultACL" parameterOrder="in0">
+
+         <wsdl:input message="impl:getDefaultACLRequest" name="getDefaultACLRequest"/>
+
+         <wsdl:output message="impl:getDefaultACLResponse" name="getDefaultACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setDefaultACL" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setDefaultACLRequest" name="setDefaultACLRequest"/>
+
+         <wsdl:output message="impl:setDefaultACLResponse" name="setDefaultACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addDefaultACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:addDefaultACLEntryRequest" name="addDefaultACLEntryRequest"/>
+
+         <wsdl:output message="impl:addDefaultACLEntryResponse" name="addDefaultACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDefaultACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:removeDefaultACLEntryRequest" name="removeDefaultACLEntryRequest"/>
+
+         <wsdl:output message="impl:removeDefaultACLEntryResponse" name="removeDefaultACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMinorVersionNumber">
+
+         <wsdl:input message="impl:getMinorVersionNumberRequest" name="getMinorVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getMinorVersionNumberResponse" name="getMinorVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPatchVersionNumber">
+
+         <wsdl:input message="impl:getPatchVersionNumberRequest" name="getPatchVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getPatchVersionNumberResponse" name="getPatchVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSAdminSoapBinding" type="impl:VOMSAdmin">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="createGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMajorVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMajorVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMajorVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVOName">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getVONameRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getVONameResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createRole">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createRoleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createRoleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRole">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteRoleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteRoleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createCapability">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createCapabilityRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createCapabilityResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteCapability">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteCapabilityRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteCapabilityResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addMember">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addMemberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addMemberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeMember">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeMemberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeMemberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="assignRole">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="assignRoleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="assignRoleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="dismissRole">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="dismissRoleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="dismissRoleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="assignCapability">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="assignCapabilityRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="assignCapabilityResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="dismissCapability">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="dismissCapabilityRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="dismissCapabilityResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listMembers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listMembersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listMembersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUsersWithRole">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listUsersWithRoleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listUsersWithRoleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUsersWithCapability">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listUsersWithCapabilityRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listUsersWithCapabilityResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupPath">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGroupPathRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGroupPathResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listSubGroups">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listSubGroupsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listSubGroupsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listGroups">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listGroupsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listGroupsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoles">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listRolesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listRolesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoles">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listRolesRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listRolesResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCapabilities">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listCapabilitiesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listCapabilitiesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCapabilities">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listCapabilitiesRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listCapabilitiesResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listCAs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listCAsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listCAsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDefaultACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDefaultACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDefaultACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setDefaultACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setDefaultACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setDefaultACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addDefaultACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addDefaultACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addDefaultACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDefaultACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeDefaultACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeDefaultACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMinorVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMinorVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMinorVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPatchVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPatchVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPatchVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSAdminService">
+
+      <wsdl:port binding="impl:VOMSAdminSoapBinding" name="VOMSAdmin">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSAdmin"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

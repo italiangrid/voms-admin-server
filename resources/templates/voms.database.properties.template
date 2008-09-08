@@ -1,0 +1,29 @@
+##
+# VOMS DATABASE SETTINGS
+##
+
+
+hibernate.connection.driver_class= 		@DRIVER_CLASS@
+
+hibernate.connection.url= 				@JDBC_URL@
+
+hibernate.dialect=						@DIALECT@
+
+hibernate.connection.username= 			@USERNAME@
+
+hibernate.connection.password=			@PASSWORD@
+
+
+##
+# Hibernate connection pool settings
+##
+
+hibernate.c3p0.acquire_increment=1
+hibernate.c3p0.idle_test_period=100
+hibernate.c3p0.min_size=5
+hibernate.c3p0.max_size=100
+hibernate.c3p0.max_statements=0
+hibernate.c3p0.timeout=100
+
+
+## Add other options after this line

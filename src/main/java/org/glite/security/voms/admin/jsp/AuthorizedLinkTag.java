@@ -1,0 +1,104 @@
+/*******************************************************************************
+ *Copyright (c) Members of the EGEE Collaboration. 2006. 
+ *See http://www.eu-egee.org/partners/ for details on the copyright
+ *holders.  
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License"); 
+ *you may not use this file except in compliance with the License. 
+ *You may obtain a copy of the License at 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ *Unless required by applicable law or agreed to in writing, software 
+ *distributed under the License is distributed on an "AS IS" BASIS, 
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ *See the License for the specific language governing permissions and 
+ *limitations under the License.
+ *
+ * Authors:
+ *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+ *******************************************************************************/
+package org.glite.security.voms.admin.jsp;
+
+import javax.servlet.jsp.JspException;
+
+import org.apache.struts.taglib.TagUtils;
+import org.apache.struts.taglib.html.LinkTag;
+
+public class AuthorizedLinkTag extends LinkTag {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+	private String context;
+
+	private String permission;
+
+	private String disabledStyleClass;
+
+	public String getContext() {
+
+		return context;
+	}
+
+	public void setContext(String context) {
+
+		this.context = context;
+	}
+
+	public String getPermission() {
+
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+
+		this.permission = permission;
+	}
+
+	public String getDisabledStyleClass() {
+
+		return disabledStyleClass;
+	}
+
+	public void setDisabledStyleClass(String disabledStyleClass) {
+
+		this.disabledStyleClass = disabledStyleClass;
+	}
+
+	public int doStartTag() throws JspException {
+
+		if (org.glite.security.voms.admin.jsp.TagUtils.isAuthorized(
+					pageContext, context, permission))
+				super.doStartTag();
+			else
+				TagUtils.getInstance().write(pageContext,
+						"<div class=\"" + disabledStyleClass + "\">");
+		
+		return EVAL_BODY_BUFFERED;
+	}
+
+	public int doEndTag() throws JspException {
+
+		if (org.glite.security.voms.admin.jsp.TagUtils.isAuthorized(
+					pageContext, context, permission))
+				return super.doEndTag();
+		else {
+				
+				StringBuffer results = new StringBuffer();
+
+				if (text != null) {
+					results.append(text);
+				}
+
+				results.append("</div>");
+				TagUtils.getInstance().write(pageContext, results.toString());
+			}
+		
+		return (EVAL_PAGE);
+	}
+
+}

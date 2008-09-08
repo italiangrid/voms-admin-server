@@ -1,0 +1,986 @@
+#############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2006.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Authors:
+#     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+#############################################################################
+
+import exceptions,re,os.path,os,commands,glob,socket,string,shutil,time,popen2
+
+
+def exit_status(status):
+    if os.WIFEXITED(status):
+        return os.WEXITSTATUS(status)
+    else:
+        raise RuntimeError, "Error getting exit status from children process!"
+
+def setup_permissions(file,perms,tomcat_group):
+    
+    if os.getgid() == 0:
+        os.chown(file, 0, tomcat_group)
+    
+    os.chmod(file,perms)
+
+def configured_vos():
+    ## Get directories in GLITE_LOCATION_VAR/etc/voms-admin
+    conf_dir =  os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin")
+    
+    return [os.path.basename(v) for v in glob.glob(os.path.join(conf_dir,"*")) if os.path.isdir(v)]
+
+def is_oracle_vo(vo):
+    if not vo_config_dir_exists(vo):
+        raise VomsConfigureError, "VO %s is not configured on this host!" % vo
+    db_props = vo_database_properties(vo)
+    
+    return db_props['hibernate.dialect'] == VomsConstants.oracle_dialect
+
+def vo_config_dir(vo):
+    return os.path.join(VomsConstants.voms_admin_conf_dir,vo)
+
+def voms_config_dir(vo):
+    return os.path.join(VomsConstants.voms_conf_dir,vo)
+
+def voms_config_file(vo):
+    return os.path.join(VomsConstants.voms_conf_dir,vo,"voms.conf")
+
+def voms_pass_file(vo):
+    return os.path.join(VomsConstants.voms_conf_dir,vo,"voms.pass")
+
+def voms_config_dir_exists(vo):
+    return os.path.exists(voms_config_dir(vo))
+
+def vo_config_dir_exists(vo):
+    return os.path.exists(vo_config_dir(vo))
+
+def vo_dababase_properties_file(vo):
+    return os.path.join(vo_config_dir(vo),"voms.database.properties")
+
+def vo_database_properties(vo):
+    f = os.path.join(vo_config_dir(vo),"voms.database.properties")
+    return PropertyHelper(f)
+
+def vo_service_properties_file(vo):
+    return os.path.join(vo_config_dir(vo),"voms.service.properties")
+
+def vo_service_properties(vo):
+    f = os.path.join(vo_config_dir(vo),"voms.service.properties")
+    return PropertyHelper(f)
+
+def vo_context_file(vo):
+    return os.path.join(vo_config_dir(vo),"voms-admin-%s.xml"%vo)
+
+def vomses_file(vo):
+    return os.path.join(vo_config_dir(vo),"vomses")
+
+def set_default(dict,key,value):
+    if not dict.has_key(key):
+        dict[key]=value
+
+def backup_dir_contents(dir):
+    
+    backup_filez = glob.glob(os.path.join(dir,"*_backup_*"))
+    
+    ## Remove backup filez
+    for f in backup_filez:
+        os.remove(f)
+    
+    filez = glob.glob(os.path.join(dir,"*"))
+    backup_date = time.strftime("%d-%m-%Y_%H-%M-%S",time.gmtime())
+    
+    for f in filez:
+        os.rename(f, f+"_backup_"+backup_date)
+    
+class VomsConfigureError(exceptions.RuntimeError):   
+    pass
+
+class VomsInvocationError(exceptions.RuntimeError):
+    pass
+
+class ConfigureAction:
+    def __init__(self,name,required_options,user_options):
+        self.name = name
+        self.required_options=required_options
+        self.user_options=user_options
+        
+        ## Special effects options handling (implemented here since needed both for install and upgrade methods
+        ## and I don't want replicated code around)
+        self.set_ca_files()
+        self.set_webui_requests_enabled()
+    
+    
+    def name(self,name=None):
+        if name is None:
+            return self.name
+        self.name=name
+
+    def required_options(self,options=None):
+        
+        if options is None:
+            return self.required_options
+        self.required_options = options
+        
+    def check_options(self):
+        
+        missing_options = []
+        for i in self.required_options:
+            if not self.user_options.has_key(i):
+                missing_options.append(i)
+        
+        if len(missing_options) != 0:
+            raise VomsConfigureError, "Please set the following required options: " + string.join(missing_options,",")  
+            
+    def write_and_close(self, file, content):
+        
+        f = open(file,"w")
+        f.write(content)
+        f.close()
+        
+    def append_and_close(self,file, content):
+        f = open(file,"a")
+        f.write(content)
+        f.close()
+        
+    def set_ca_files(self):
+        ca_files = "/etc/grid-security/certificates/*.0"
+        
+        if os.environ.has_key('X509_CERT_DIR'):
+            ca_files = os.path.join(os.environ['X509_CERT_DIR'], '*.0')
+        
+        ## Ovveride X509_CERT_DIR here
+        if self.user_options.has_key('certdir'):
+            ca_files = os.path.join(self.user_options['certdir'],'*.0')
+        
+        self.user_options['ca-files'] = ca_files
+    
+    def set_webui_requests_enabled(self):
+        if self.user_options.has_key('disable-webui-requests'):
+            self.user_options['webui-enabled'] = 'false'
+        else:
+            self.user_options['webui-enabled'] = 'true'
+    
+
+class UpgradeVO(ConfigureAction):
+    def __init__(self,user_options):
+        ConfigureAction.__init__(self, "upgrade_vo", ["vo"],user_options)
+    
+    def upgrade_vo(self):
+        print "Upgrading vo ",self.user_options['vo']
+        
+        self.upgrade_configuration()
+        
+        if self.user_options.has_key('skip-database'):
+            print "Skipping database upgrade as requested by user (--skip-database option)."
+        else:
+            self.upgrade_database()
+        
+    def upgrade_configuration(self):
+        if not vo_config_dir(self.user_options['vo']):
+            raise VomsConfigureError, "Configuration directory not found for vo ", self.user_options['vo']
+        
+        db_props = vo_database_properties(self.user_options['vo'])
+        self.jdbc_url = db_props['jdbc.URL']
+        
+        if self.jdbc_url is None:
+            raise VomsConfigureError, "jdbc.URL not found for vo %s. Upgrade failed"
+        
+        if re.match("^jdbc:oracle",db_props['jdbc.URL']):
+            ## Oracle vo
+            self.driver_class = VomsConstants.oracle_driver_class
+            self.dialect = VomsConstants.oracle_dialect    
+        else:
+            ## Mysql vo
+            self.driver_class = VomsConstants.mysql_driver_class
+            self.dialect = VomsConstants.mysql_dialect
+        
+        
+        self.dbusername = db_props['voms.database.username']
+        self.dbpassword = db_props['voms.database.password']
+        
+        ## save old db_props
+        os.rename(vo_dababase_properties_file(self.user_options['vo']),
+                  vo_dababase_properties_file(self.user_options['vo'])+".old")
+        
+        self.write_database_properties()
+        
+        service_props = vo_service_properties(self.user_options['vo'])
+        
+        self.mail_from = service_props['mail.smtp.from']
+        self.mail_host = service_props['mail.smtp.host']
+        
+        ## save old service_props
+        os.rename(vo_service_properties_file(self.user_options['vo']),
+                  vo_service_properties_file(self.user_options['vo'])+".old")
+        
+        self.write_service_properties()
+        
+        ## salve old context
+        os.rename(vo_context_file(self.user_options['vo']),
+                  vo_context_file(self.user_options['vo'])+".old")
+        
+        self.write_context_file()
+        self.write_siblings_context()
+        
+        
+    def write_database_properties(self):
+        m = {'DRIVER_CLASS':self.driver_class,
+             'DIALECT':self.dialect,
+             'USERNAME':self.dbusername,
+             'PASSWORD':self.dbpassword,
+             'JDBC_URL': self.jdbc_url
+             }
+     
+        t = Template(open(VomsConstants.db_props_template,"r").read())
+        
+        db_props_file = open(vo_dababase_properties_file(self.user_options['vo']),"w")
+        db_props_file.write(t.sub(m))
+        db_props_file.close()
+
+    
+    def write_service_properties(self):
+                
+        m = {'NOTIFICATION.EMAIL_ADDRESS': self.mail_from,
+             'NOTIFICATION.SMTP_SERVER': self.mail_host,
+             'TRUSTED_ADMIN.SUBJECT': "",
+             'TRUSTED_ADMIN.CA': "",
+             'WEBUI.ENABLED': self.user_options['webui-enabled'],
+             'CA.FILES': self.user_options['ca-files']
+             }
+        
+        t = Template(open(VomsConstants.service_props_template,"r").read())
+        
+        service_props_file = open(vo_service_properties_file(self.user_options['vo']),"w")
+        service_props_file.write(t.sub(m))
+        service_props_file.close()
+        
+    def write_context_file(self):
+        set_default(os.environ, 'VOMS_LOCATION',os.environ['GLITE_LOCATION'])
+
+        m = {'VO_NAME': self.user_options['vo'],
+             'WAR_FILE': VomsConstants.voms_admin_war,
+             'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
+             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
+             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
+             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             }
+             
+        t = Template(open(VomsConstants.context_template,"r").read())
+        
+        context_file = open(vo_context_file(self.user_options['vo']),"w")
+        context_file.write(t.sub(m))
+        context_file.close()
+    
+    def write_siblings_context(self):
+        m = {'WAR_FILE': VomsConstants.voms_siblings_war,
+             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
+             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
+             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             }
+        
+        t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
+        ConfigureAction.write_and_close(self, 
+                                        VomsConstants.voms_siblings_context, 
+                                        t.sub(m))
+        
+        setup_permissions(VomsConstants.voms_siblings_context, 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+    
+    def upgrade_database(self):
+        upgrade_cmd = "%s  upgrade --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+        
+        status = os.system(upgrade_cmd)
+        
+        if status != 0:
+            raise VomsConfigureError, "Error upgrading voms database!"
+        
+        print "Database upgraded"
+        
+        
+class RemoveVOAction(ConfigureAction):
+    def __init__(self,user_options):
+        ConfigureAction.__init__(self, "remove_vo", ["vo"],user_options)
+        
+    
+    def remove_configuration(self):
+        
+        ## Removing voms-admin configuration
+        for i in glob.glob(vo_config_dir(self.user_options['vo'])+"/*"):
+            os.remove(i)
+        os.removedirs(vo_config_dir(self.user_options['vo']))
+        
+        ## Removing voms configuration
+        for i in glob.glob(voms_config_dir(self.user_options['vo'])+"/*"):
+            os.remove(i)
+            
+        os.removedirs(voms_config_dir(self.user_options['vo']))
+    
+    def remove_vo(self):
+        
+        if not vo_config_dir_exists(self.user_options['vo']):
+            raise VomsConfigureError, "Vo %s not configured on this host!" % self.user_options['vo']
+                   
+        if self.user_options.has_key('undeploy-database'):
+            self.undeploy_db()
+        
+        self.remove_configuration()         
+        
+    
+    def undeploy_db(self):
+        
+        deploy_cmd = "%s  undeploy --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+        
+        status = os.system(deploy_cmd)
+        
+        if status != 0:
+            raise VomsConfigureError, "Error undeploying voms database!"
+    
+class RemoveMySQLVO(RemoveVOAction):
+    def __init__(self,user_options):
+        
+        RemoveVOAction.__init__(self,user_options)
+        
+        set_default(self.user_options,"dbname","voms_"+self.user_options['vo'])
+        set_default(self.user_options,'dbhost','localhost')
+        set_default(self.user_options,'dbport','3306')
+        
+        self.name = "remove_mysql_vo"
+        
+    def check_options(self):
+        if self.user_options.has_key('dropdb'):
+            
+            self.required_options += ['dbauser']
+        
+        RemoveVOAction.check_options(self)
+    
+    def undeploy_db(self):
+        
+        # Dropping the database will drop the db content
+        if self.user_options.has_key('dropdb'):
+                        
+            print "Dropping mysql db..."
+            
+            if self.user_options.has_key('dbapwdfile'):
+                dbapwd = open(self.user_options['dbapwdfile']).read()
+                self.user_options['dbapwd'] = dbapwd
+            
+            ## Support for mysql admin empty password (VDT request).
+            if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
+                print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
+                mysql_cmd = "%s -u%s" % (self.user_options['mysql-command'],
+                                         self.user_options['dbauser'])
+            else:
+                mysql_cmd = "%s -u%s -p%s" % (self.user_options['mysql-command'],
+                                              self.user_options['dbauser'],
+                                              self.user_options['dbapwd'])
+                
+                
+            mysql_proc = popen2.Popen4(mysql_cmd)
+            
+            ## Drop database 
+            print >>mysql_proc.tochild, "drop database %s;" % self.user_options['dbname']
+            mysql_proc.tochild.close()
+            
+            status = exit_status(mysql_proc.wait())
+            
+            if status != 0:
+                err_msg = mysql_proc.fromchild.read()
+                raise VomsConfigureError, "Error dropping mysql database! "+err_msg
+        else:
+            RemoveVOAction.undeploy_db(self)
+            
+
+class RemoveOracleVO(RemoveVOAction):
+    def __init__(self,user_options):
+        RemoveVOAction.__init__(self,user_options)
+        self.name = "remove_oracle_vo"
+        
+
+class InstallVOAction(ConfigureAction):
+    def __init__(self,user_options):
+        ConfigureAction.__init__(self, "install_vo", 
+                                 ["vo",
+                                  "port", 
+                                  "dbtype", 
+                                  "dbusername", 
+                                  "dbpassword", 
+                                  "mail-from", 
+                                  "smtp-host"
+                                  ],  
+                                 user_options)
+        
+        
+    def install_vo(self):
+        set_default(self.user_options,"code",self.user_options['port'])
+                         
+        set_default(self.user_options,"uri","%s:%s" % (socket.gethostname(),self.user_options['port']))
+        
+        set_default(self.user_options,"timeout", "86400")
+                
+        if self.user_options['vo'] == 'siblings':
+            raise VomsConfigureError, "Cannot create a vo named siblings, that name is reserved!"
+        
+        self.create_configuration()
+        
+        if self.user_options.has_key("deploy-database"):
+            self.deploy_db()
+        
+        if self.user_options.has_key("admincert"):
+            self.add_default_admin()
+
+        
+    def create_configuration(self):    
+        vo_conf_dir = vo_config_dir(self.user_options['vo'])
+        voms_conf_dir = voms_config_dir(self.user_options['vo'])               
+        
+        
+        if os.path.exists(vo_conf_dir):
+            print "VO "+self.user_options['vo']+" is already configured on this host, will overwrite the configuration..."
+            backup_dir_contents(vo_conf_dir)
+            
+        else:                       
+            ## Set the deploy database option if the VO is 
+            ## installed for the first time on this host and this
+            ## is not meant as a replica
+            if not self.user_options.has_key("skip-database"):
+                self.user_options['deploy-database'] = True
+                if isinstance(self, InstallMySqlVO):
+                    self.user_options['createdb'] = True
+                self.check_options()
+            
+            os.makedirs(vo_conf_dir)
+        
+        if not os.path.exists(voms_conf_dir):
+            os.makedirs(voms_conf_dir)
+        else:
+            backup_dir_contents(voms_conf_dir)
+            
+        self.write_database_properties()
+        self.write_service_properties()
+        self.write_context()
+        
+        if not os.path.exists(VomsConstants.voms_siblings_context):
+            self.write_siblings_context()
+        
+        self.write_vomses()
+        self.write_voms_properties()
+        
+    
+    def write_database_properties(self):
+        m = {'DRIVER_CLASS':self.driver_class,
+             'DIALECT':self.dialect,
+             'USERNAME':self.user_options['dbusername'],
+             'PASSWORD':self.user_options['dbpassword'],
+             'JDBC_URL': self.build_url()
+             }
+     
+        t = Template(open(VomsConstants.db_props_template,"r").read())
+        
+        ConfigureAction.write_and_close(self, 
+                                        vo_dababase_properties_file(self.user_options['vo']), 
+                                        t.sub(m))
+        
+        setup_permissions(vo_dababase_properties_file(self.user_options['vo']),
+                          0640, 
+                          self.user_options['tomcat-group-id'])
+        
+    
+    def write_service_properties(self):
+        
+        
+        
+            
+        m = {'NOTIFICATION.EMAIL_ADDRESS': self.user_options['mail-from'],
+             'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
+             'TRUSTED_ADMIN.SUBJECT': self.user_options['ta.subject'],
+             'TRUSTED_ADMIN.CA': self.user_options['ta.ca'],
+             'WEBUI.ENABLED': self.user_options['webui-enabled'],
+             'CA.FILES': self.user_options['ca-files']
+             }
+        
+        t = Template(open(VomsConstants.service_props_template,"r").read())
+        
+        ConfigureAction.write_and_close(self, 
+                                        vo_service_properties_file(self.user_options['vo']), 
+                                        t.sub(m))
+        
+        setup_permissions(vo_service_properties_file(self.user_options['vo']), 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+    
+    
+    def write_siblings_context(self):
+        m = {'WAR_FILE': VomsConstants.voms_siblings_war,
+             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
+             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
+             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             }
+        
+        t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
+        ConfigureAction.write_and_close(self, 
+                                        VomsConstants.voms_siblings_context, 
+                                        t.sub(m))
+        
+        setup_permissions(VomsConstants.voms_siblings_context, 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+        
+    def write_context(self):
+        
+
+        m = {'VO_NAME': self.user_options['vo'],
+             'WAR_FILE': VomsConstants.voms_admin_war,
+             'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
+             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
+             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
+             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             }
+             
+        t = Template(open(VomsConstants.context_template,"r").read())
+        ConfigureAction.write_and_close(self,
+                                        vo_context_file(self.user_options['vo']), 
+                                        t.sub(m))
+        
+        setup_permissions(vo_context_file(self.user_options['vo']),
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+        
+    
+    def write_voms_properties(self):
+        m = { 
+             'CODE': self.user_options['code'],
+             'DBNAME': self.user_options['dbname'],
+             'LOGFILE': os.path.join(os.environ['GLITE_LOCATION_LOG'],"voms."+self.user_options['vo']),
+             'PASSFILE': os.path.join(os.environ['GLITE_LOCATION'],"etc","voms",self.user_options['vo'],"voms.pass"),
+             'SQLLOC': os.path.join(self.user_options['libdir'],self.user_options['sqlloc']),
+             'USERNAME': self.user_options['dbusername'],
+             'VONAME': self.user_options['vo'],
+             'PORT': self.user_options['port'],
+             'URI': self.user_options['uri'],
+             'TIMEOUT': self.user_options['timeout']}
+        
+        t = Template(open(VomsConstants.voms_template,"r").read())
+        
+        self.write_and_close(voms_config_file(self.user_options['vo']), 
+                             t.sub(m))
+        
+        self.write_and_close(voms_pass_file(self.user_options['vo']), 
+                             self.user_options['dbpassword']+"\n")
+        
+        ## VOMS short-fqans support
+        if self.user_options.has_key('shortfqans'):
+            self.append_and_close(voms_config_file(self.user_options['vo']), 
+                                  "\n--shortfqans")
+        
+        
+        os.chmod(voms_config_file(self.user_options['vo']),0640)
+        os.chmod(voms_pass_file(self.user_options['vo']), 0640)
+        
+    
+    def write_vomses(self):
+        
+        vomses_string  = '"%s" "%s" "%s" "%s" "%s"\n' % (
+                                                         self.user_options['vo'],
+                                                         self.user_options['hostname'],
+                                                         self.user_options['port'],
+                                                         self.user_options['ta.subject'],
+                                                         self.user_options['vo']
+                                                         )
+        
+        self.write_and_close(vomses_file(self.user_options['vo']), vomses_string)
+    
+    def deploy_db(self):
+        print "Deploying database for %s vo" % self.user_options['vo']
+        
+        deploy_cmd = "%s  deploy --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+    
+        status = os.system(deploy_cmd)
+        
+        if status != 0:
+            raise VomsConfigureError, "Error deploying voms database!"
+        
+    def add_default_admin(self):
+        print "Adding default admin for %s vo" % self.user_options['vo']
+        
+        add_cmd = "%s --vo %s --cert %s add-admin " % (VomsConstants.voms_db_deploy,
+                                                       self.user_options['vo'],
+                                                       self.user_options['admincert'])
+        status = os.system(add_cmd)
+        
+        if status != 0:
+            raise VomsConfigureError, "Error adding default admin!"
+        
+        
+        
+
+class InstallOracleVO(InstallVOAction):
+    
+    def __init__(self,user_options):
+        InstallVOAction.__init__(self,user_options)
+        
+        
+        self.name = "install_oracle_vo"
+        self.driver_class = VomsConstants.oracle_driver_class
+        self.dialect = VomsConstants.oracle_dialect
+        
+        set_default(self.user_options,'dbhost','localhost')
+        set_default(self.user_options,'dbport','1521')
+        set_default(self.user_options,"sqlloc","libvomsoracle.so")
+        
+        self.required_options += ['dbname']
+    
+    def build_url(self):
+       
+       if self.user_options.has_key('use-thin-driver'):
+           return "jdbc:oracle:thin:@//%s:%s/%s" % (self.user_options['dbhost'],
+                                                    self.user_options['dbport'],
+                                                    self.user_options['dbname'])
+       else:
+           return "jdbc:oracle:oci:@%s" % (self.user_options['dbname'])
+    
+
+class InstallMySqlVO(InstallVOAction):
+    def __init__(self,user_options):
+        InstallVOAction.__init__(self,user_options)
+        
+        self.name = "install_mysql_vo"
+        self.driver_class = VomsConstants.mysql_driver_class
+        self.dialect = VomsConstants.mysql_dialect
+        
+        set_default(self.user_options,"dbname","voms_"+self.user_options['vo'])
+        set_default(self.user_options,'dbhost','localhost')
+        set_default(self.user_options,'dbport','3306')
+        
+        set_default(self.user_options,"sqlloc","libvomsmysql.so")
+        
+        
+    def check_options(self):
+        if self.user_options.has_key('createdb'):
+            self.required_options += ['dbauser']
+        
+        InstallVOAction.check_options(self)
+        
+        
+    
+    def build_url(self):
+        return "jdbc:mysql://%s:%s/%s" % (self.user_options['dbhost'],
+                                          self.user_options['dbport'],
+                                          self.user_options['dbname'])
+    
+    def deploy_db(self):
+        
+        print "Deploying database for %s vo" % self.user_options['vo']
+        
+        if self.user_options.has_key('createdb'):
+            
+            print "Creating mysql db..."
+            
+            if self.user_options.has_key('dbapwdfile'):
+                dbapwd = open(self.user_options['dbapwdfile']).read()
+                self.user_options['dbapwd'] = dbapwd
+            
+            ## Support for mysql admin empty password (VDT request).
+            if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
+                print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
+                mysql_cmd = "%s -u%s" % (self.user_options['mysql-command'],
+                                         self.user_options['dbauser'])
+            else:
+                mysql_cmd = "%s -u%s -p%s" % (self.user_options['mysql-command'],
+                                              self.user_options['dbauser'],
+                                              self.user_options['dbapwd'])
+            
+            
+            if len(self.user_options['dbusername']) > 16:
+                raise VomsConfigureError, "MYSQL usernames can be up to 16 characters long! Choose a shorter username"
+            
+            mysql_proc = popen2.Popen4(mysql_cmd)
+            
+            ## Check if database already exists
+            print >>mysql_proc.tochild, "use %s;" % self.user_options['dbname']
+            mysql_proc.tochild.close()
+            
+            status = exit_status(mysql_proc.wait())
+            
+            if status == 0:
+                print "Schema for database '%s' already exists... will not create it" % self.user_options['dbname']
+            else:          
+                
+                ## We received an error from the mysql command line client
+                err_msg = mysql_proc.fromchild.read()
+                match = re.match("ERROR 1049", string.strip(err_msg))
+                if match:
+                    
+                    ## The database for this vo is not there, let's create it
+                                       
+                    mysql_proc = popen2.Popen4(mysql_cmd)
+                    print >>mysql_proc.tochild, "create database %s;" % self.user_options['dbname']
+                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                                                                                                                       self.user_options['dbusername'],
+                                                                                                                       socket.gethostname(),
+                                                                                                                       self.user_options['dbpassword'])
+            
+                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                                                                                                                       self.user_options['dbusername'],
+                                                                                                                        'localhost',
+                                                                                                                        self.user_options['dbpassword'])
+            
+                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                                                                                                                       self.user_options['dbusername'],
+                                                                                                                     'localhost.%',
+                                                                                                                     self.user_options['dbpassword'])
+                    print >>mysql_proc.tochild, "flush privileges;"
+                    
+                    mysql_proc.tochild.close()
+                    status = exit_status(mysql_proc.wait())
+                    
+                    if status != 0:
+                        raise VomsConfigureError, "Error creating mysql database! " + mysql_proc.fromchild.read()
+                
+                else:
+                    
+                    ## We received an unexpected error from mysql, just report it and fail
+                    raise VomsConfigureError, "Error checking mysql database existence!" + err_msg
+                    
+                                
+                
+            
+               
+        
+        InstallVOAction.deploy_db(self)
+
+    
+## The original, and reliable, python Template class
+## implementation is not yet supported in python 2.2.3                 
+class Template:   
+    
+    def __init__(self, template):
+        self.template = template
+        self.mappings = {}
+        
+    def sub(self, mappings):
+        
+        def match_helper(mo):
+            key = mo.group(0)[1:-1]
+            if mappings.has_key(key):
+                if mappings[key] is None:
+                    #print "Warning: No mapping found for key:", key
+                    #return ""
+                    raise ValueError, 'No mapping found for key:'+key
+                return mappings[key]
+            else:
+                #print "Warning: No mapping found for key:", key
+                #return ""
+                raise ValueError, "Unknown mapping found in template: %s" % key
+        
+        delimiter = '@'
+        pattern = r''+delimiter+'[_a-zA-Z][\._a-zA-Z0-9]*'+delimiter
+        
+        self.mappings = mappings
+        
+        if self.template is None:
+            raise ValueError, "Undefined template text!"
+        
+        if len(self.mappings) == 0:
+            raise ValueError, "Empty mappings!"
+        
+        return re.sub(pattern,match_helper,self.template)        
+        
+    
+                     
+class X509Helper:
+    def __init__(self,filename, openssl_cmd=None):    
+        self.filename= filename
+        self.openssl_cmd = openssl_cmd
+        self.parse()
+    
+    def parse(self):
+        
+        if self.openssl_cmd:
+            openssl = self.openssl_cmd
+        else:
+            openssl = 'openssl'
+        
+        base_cmd = openssl+' x509 -in %s -noout ' % self.filename
+        
+        status,subject = commands.getstatusoutput(base_cmd+'-subject')
+        if status:
+            raise VomsConfigureError, "Error invoking openssl: "+ subject
+        
+        status,issuer = commands.getstatusoutput(base_cmd+'-issuer')
+        if status:
+            raise VomsConfigureError, "Error invoking openssl: "+ issuer
+        
+        
+        status,email = commands.getstatusoutput(base_cmd+'-email')
+        if status:
+            raise VomsConfigureError, "Error invoking openssl: "+ email
+        
+        self.subject = re.sub(r'^subject= ','',subject.strip())
+        self.issuer = re.sub(r'^issuer= ','',issuer.strip())
+        self.subject = re.sub(r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=','/Email=',self.subject)
+        
+        # Handle emailAddress also in the CA DN (Bug #36490)
+        self.issuer = re.sub(r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=','/Email=',self.issuer)
+        
+        # Handle also UID
+        self.subject = re.sub(r'/(UserId|USERID|userId|userid|uid|Uid)=','/UID=',self.subject)
+        
+        self.email = email.strip()
+    
+    def __repr__(self):
+        return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
+        
+ 
+class VomsConstants:
+    
+    glite_loc = os.environ.get("GLITE_LOCATION","/opt/glite")
+    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
+    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG","/var/log/glite")
+    
+    version = "2.0.16"
+    
+    db_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.database.properties.template")
+    service_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.service.properties.template")
+    
+    context_template = os.path.join(glite_loc,"etc","voms-admin","templates","context.xml.template")
+    voms_template = os.path.join(glite_loc,"etc","voms-admin","templates", "voms.conf.template")
+    
+    voms_admin_conf_dir = os.path.join(glite_loc_var,"etc","voms-admin")
+    voms_conf_dir = os.path.join(glite_loc,"etc","voms")
+    
+    voms_siblings_context_template = os.path.join(glite_loc,"etc","voms-admin","templates", "siblings-context.xml.template")
+    voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
+    
+    voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
+    voms_siblings_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-siblings.war")
+    
+    voms_admin_libs = glob.glob(os.path.join(glite_loc,"share","voms-admin","tools","lib")+"/*.jar")
+    voms_admin_classes = os.path.join(glite_loc,"share","voms-admin","tools", "classes")
+    voms_admin_jar = os.path.join(glite_loc, "share","java","glite-security-voms-admin.jar")
+       
+    voms_db_deploy = os.path.join(glite_loc,"sbin","voms-db-deploy.py")
+    
+    schema_deployer_class = "org.glite.security.voms.admin.tools.SchemaDeployer"
+    
+    oracle_driver_class = "oracle.jdbc.driver.OracleDriver"
+    oracle_dialect = "org.hibernate.dialect.Oracle9Dialect"
+    
+    mysql_driver_class = "org.gjt.mm.mysql.Driver"
+    mysql_dialect = "org.hibernate.dialect.MySQLInnoDBDialect"
+    
+    long_options=["help",
+              "version",
+              "verbose",
+              "command=",
+              "vo=",
+              "admincert=",
+              "mail-from=",
+              "smtp-host=",
+              "port=",
+              "dbtype=",
+              "dbname=",
+              "dbusername=",
+              "dbpassword=",
+              "dbhost=",
+              "dbport=",
+              "deploy-database",
+              "undeploy-database",
+              "skip-database",
+              "oracle-tns-alias=",
+              "use-oci-driver",
+              "createdb",
+              "dropdb",
+              "dbauser=",
+              "dbapwd=",
+              "dbapwdfile=",
+              "mysql-command=",
+              "mysql-host=",
+              "mysql-port=",
+              "cert=",
+              "key=",
+              "certdir=",
+              "code=",
+              "sqlloc=",
+              "config-owner=",
+              "tomcat-group=",
+              "voms-group=",
+              "hostname=",
+              "openssl=",
+              "use-thin-driver",
+              "disable-webui-requests",
+              "uri=",
+              "timeout=",
+              "shortfqans"]
+
+    short_options = "hvV";
+
+    commands= ["install", 
+               "remove", 
+               "update",
+               "upgrade"]
+    
+    env_variables= ("GLITE_LOCATION",
+                    "GLITE_LOCATION_VAR",
+                    "GLITE_LOCATION_LOG")
+
+    
+    
+
+
+class PropertyHelper(dict):
+    empty_or_comment_lines = re.compile("^\\s*$|^#.*$")
+    property_matcher = re.compile("^\\s*([^=\\s]+)=?\\s*(\\S.*)$")
+
+    
+    def __init__(self,filename):
+        self._filename = filename
+        self._load_properties()
+    
+    def _load_properties(self):
+        f = open(self._filename,"r")
+        for l in f:
+            if re.match(PropertyHelper.empty_or_comment_lines, l) is None:
+                m = re.search(PropertyHelper.property_matcher,l) 
+                if m:
+                    PropertyHelper.__setitem__(self,m.groups()[0],m.groups()[1])
+        f.close()
+    
+    def save_properties(self):
+        def helper(l):
+            m = re.search(PropertyHelper.property_matcher,l) 
+            if m:
+                return re.sub("=.*$","=%s" % self[m.groups()[0]],l)
+            else:
+                return l
+        
+        f = open(self._filename,"rw+")
+        lines = map(helper,f.readlines())
+        f.seek(0)
+        f.writelines(lines)
+        f.truncate()
+        f.close()
+        
+
+
+            
+            
+        
+        
+        
+    
+        
+
+        

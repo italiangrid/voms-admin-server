@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.History" table="history">
+		<id name="pkID" type="long" column="h_id">
+			<generator class="native"/>
+		</id>
+		
+		<property name="operation" column="operation" type="short" not-null="true"/>
+		<property name="timestamp" column="tstamp" type="timestamp" not-null="true"/>
+		<many-to-one name="who" column="who" class="org.glite.security.voms.admin.model.VOMSAdmin" not-null="true"/>
+		
+		<joined-subclass name="org.glite.security.voms.admin.model.VOMSAdminHistory" table="admins_history">
+			<key column="admin_h_id"/>
+			<property name="id" column="adminid" type="long" not-null="true"/>
+			<property name="dn" type="string" column="dn" not-null="true"/>
+			<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.model.VOMSCA" not-null="true"/>
+		</joined-subclass>
+		
+	</class>
+
+</hibernate-mapping>

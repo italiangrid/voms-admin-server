@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.VOMSMapping" table="m">
+
+		<id name="id" column="mapping_id">
+			<generator class="native"/>
+		</id>
+		
+		<natural-id>
+			<many-to-one name="user" class="org.glite.security.voms.admin.model.VOMSUser"
+				column="userid" 
+				foreign-key="fk_m_usr"
+				not-null="true" 
+			/>		
+	
+			<many-to-one name="group" class="org.glite.security.voms.admin.model.VOMSGroup"
+				column="gid" 
+				foreign-key="fk_m_groups"
+				not-null="true" 
+			/>	
+
+			<many-to-one name="role" class="org.glite.security.voms.admin.model.VOMSRole" 
+				column="rid"
+				foreign-key="fk_m_roles" 
+				not-null="false"		
+			/>					
+				
+		</natural-id>		
+
+		<many-to-one name="capability" class="org.glite.security.voms.admin.model.VOMSCapability"
+			column="cid" 
+			foreign-key="fk_m_cap" not-null="false"/>
+		
+	</class>
+</hibernate-mapping>

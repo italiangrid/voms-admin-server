@@ -1,0 +1,36 @@
+.inputField, .selectBox, .searchField {
+	border: 1px solid ${border-color};
+}
+
+.submitButton {
+	font-size: x-small;
+	font-weight: bold;
+	background-color: white;
+}
+
+.searchSubmitButton {
+	font-weight: bold;
+	background-color: ${background};
+}
+
+.form tr{
+
+}
+
+.form td{
+	padding: .5ex;
+	
+}
+
+table .form{
+	border: 1px solid ${border-color};	
+}
+
+.labels{
+	color: ${header-color};
+	padding-right: 1ex;
+}
+
+.fields{
+	
+}

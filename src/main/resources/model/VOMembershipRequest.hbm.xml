@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.VOMembershipRequest" table="memb_req">
+
+		<id name="id" column="id" type="java.lang.Long">
+			<generator class="native" />
+		</id>
+
+		<property name="creationDate" column="creation_date" type="timestamp" not-null="true"/>
+		<property name="evaluationDate" column="evaluation_date" type="timestamp"/>
+		
+		<property name="status" column="status" not-null="true"/>
+		<property name="confirmId" column="confirm_id" not-null="true" type="string"/>
+		
+		<property name="dn" type="java.lang.String" update="true"
+			insert="true" column="dn" not-null="true" unique="false" />
+			
+		<property name="ca" type="java.lang.String" update="true"
+			insert="true" column="ca" not-null="true" unique="false" />
+			
+		<property name="cn" type="java.lang.String" column="cn"/>
+
+		<property name="emailAddress" 
+			type="java.lang.String" 
+			column="mail" 
+			not-null="true"/>
+	</class>
+
+</hibernate-mapping>

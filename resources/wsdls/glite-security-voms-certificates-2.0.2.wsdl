@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="X509Certificate">
+    <sequence>
+     <element name="bytes" nillable="true" type="soapenc:base64Binary"/>
+     <element name="id" type="xsd:long"/>
+     <element name="issuer" nillable="true" type="soapenc:string"/>
+     <element name="notAfter" nillable="true" type="soapenc:string"/>
+     <element name="subject" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfX509Certificate">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:X509Certificate[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="addCertificateRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="impl:X509Certificate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addCertificateResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="removeCertificateRequest">
+
+      <wsdl:part name="in0" type="impl:X509Certificate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addCertificateRequest">
+
+      <wsdl:part name="in0" type="xsd:long"/>
+
+      <wsdl:part name="in1" type="impl:X509Certificate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="suspendCertificateResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getCertificatesRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserIdFromDnRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addCertificateResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="suspendCertificateRequest">
+
+      <wsdl:part name="in0" type="impl:X509Certificate"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCertificatesResponse1">
+
+      <wsdl:part name="getCertificatesReturn" type="impl:ArrayOfX509Certificate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCertificatesResponse">
+
+      <wsdl:part name="getCertificatesReturn" type="impl:ArrayOfX509Certificate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeCertificateResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getCertificatesRequest">
+
+      <wsdl:part name="in0" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserIdFromDnResponse">
+
+      <wsdl:part name="getUserIdFromDnReturn" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSCertificates">
+
+      <wsdl:operation name="getCertificates" parameterOrder="in0">
+
+         <wsdl:input message="impl:getCertificatesRequest" name="getCertificatesRequest"/>
+
+         <wsdl:output message="impl:getCertificatesResponse" name="getCertificatesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCertificates" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getCertificatesRequest1" name="getCertificatesRequest1"/>
+
+         <wsdl:output message="impl:getCertificatesResponse1" name="getCertificatesResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserIdFromDn" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getUserIdFromDnRequest" name="getUserIdFromDnRequest"/>
+
+         <wsdl:output message="impl:getUserIdFromDnResponse" name="getUserIdFromDnResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addCertificate" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:addCertificateRequest" name="addCertificateRequest"/>
+
+         <wsdl:output message="impl:addCertificateResponse" name="addCertificateResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addCertificate" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:addCertificateRequest1" name="addCertificateRequest1"/>
+
+         <wsdl:output message="impl:addCertificateResponse1" name="addCertificateResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="suspendCertificate" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:suspendCertificateRequest" name="suspendCertificateRequest"/>
+
+         <wsdl:output message="impl:suspendCertificateResponse" name="suspendCertificateResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeCertificate" parameterOrder="in0">
+
+         <wsdl:input message="impl:removeCertificateRequest" name="removeCertificateRequest"/>
+
+         <wsdl:output message="impl:removeCertificateResponse" name="removeCertificateResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSCertificatesSoapBinding" type="impl:VOMSCertificates">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getCertificates">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCertificatesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCertificatesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCertificates">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCertificatesRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCertificatesResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserIdFromDn">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserIdFromDnRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserIdFromDnResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addCertificate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addCertificateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addCertificateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addCertificate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addCertificateRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addCertificateResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="suspendCertificate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="suspendCertificateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="suspendCertificateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeCertificate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeCertificateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeCertificateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSCertificatesService">
+
+      <wsdl:port binding="impl:VOMSCertificatesSoapBinding" name="VOMSCertificates">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSCertificates"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

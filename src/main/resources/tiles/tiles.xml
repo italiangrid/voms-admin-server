@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+
+    <definition name="base-template" template="/s2-layouts/voms-layout.jsp">
+        <put-attribute name="title" value="VOMS-Admin 2.5" type="string"/>
+        <put-attribute name="header" value="/s2-common/defaultHeader.jsp"/>
+        <put-attribute name="menu" value="/s2-common/adminMenu.jsp"/>
+        <put-attribute name="messages" value="/s2-common/messages.jsp"/>
+        <put-attribute name="leftBar" value="/s2-common/userGroupsLeftBar.jsp"/>
+        <put-attribute name="centerPane" value="" type="string"/>
+        <put-attribute name="footer" value="/s2-common/defaultFooter.jsp"/>
+    </definition>
+    
+    <definition name="siblings-template">
+    
+    </definition>
+    
+    <definition name="test.page" extends="base-template">
+        <put-attribute name="centerPane" value="/s2/test/test.jsp"/>
+    </definition>
+    
+</tiles-definitions>

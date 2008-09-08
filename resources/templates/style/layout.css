@@ -1,0 +1,214 @@
+body{
+	font-family: "Lucida Grande", verdana, lucida, helvetica, sans-serif;
+	font-size: 9pt;
+	background-color: ${background};
+	color: ${color};
+	max-width: 775px;
+	min-width: 775px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	padding:0;
+}
+
+
+#header, #body, #menu,#footer,#messages{
+	clear:both;
+	padding: 0;
+}
+
+#header{
+	color: ${header-color};
+}
+
+#headerTitle {
+	float:left;
+	font-size: 9pt;
+	color: white;
+/*	background-image: url("../img/VomsAdminHeaderBackgroundTile.png");
+	background-repeat: repeat-x; */
+	background-color: #1b5790;
+	text-align: left;
+	width: 775px;
+}
+
+#vaInfo {
+	font-size: smaller;
+	font-weight: bold;
+	float:left;
+	padding: .5em;
+	color: #d2dcf3
+
+}
+
+#adminDN{
+
+	font-weight: bold;
+	color: white;
+}
+
+#voInfo{
+	clear: both;
+	float: left;
+
+}
+
+#headerInfo {
+	clear: both;
+	float: left;
+	text-align:left;
+	font-size: smaller;
+	padding-left: .5em;
+	background-color: ${table-row-odd-background};
+}
+
+#voName {
+	color: white;
+	font-weight: bold;
+
+}
+
+.voName{
+	color: ${message-color};
+	font-weight: bold;	
+	font-size: larger;
+}
+
+#helpMenuItem {
+
+}
+
+#menu{
+	padding: 0;
+	float:left;
+	background-color: ${menu-background};
+	color: ${menu-color};
+	/*border-top: 1px solid ${border-color};  	
+	border-bottom: 1px solid ${border-color}; */
+/*	background-image: url("../img/menu_background.png"); */
+	width: 100%;
+}
+
+#messages{
+	padding:.1em .1em 0 0;
+	min-height: 2em;
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+#body{
+
+}
+
+
+
+
+#footer{
+	margin-top: 1em;
+	border-top: 1px solid ${border-color}; 
+	font-size: xx-small;
+	background-color: ${background};
+	color: ${header-color};
+}
+
+
+
+
+
+
+#leftBar {
+/*	position: relative; */
+	display: block;
+	float: left;
+	width: 12%;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	min-height:520px;
+}
+
+.leftBarHeader{
+	text-align: center;
+	font-weight: bold;
+	color: #325B0A; 
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	background-color: ${menu-background};
+	
+	/* old look n feel */
+	/*	color: ${header-color}; */
+	/*	border-bottom: 1px solid ${border-color}; */
+	/*	background-image: url('../img/header_background.png');
+	background-repeat: repeat-x;
+	background-position: bottom	left;
+	*/
+	
+}
+
+#userGroupsLeftBar{
+	font-size: 8pt;
+	border: 1px solid ${border-color};	
+	text-align: left;
+}
+
+
+#centerPane {
+	float: left;
+	display: block;
+	width: 84%;
+	margin-left: 2%;
+	padding-right: 0px;
+	text-align:left;
+}
+
+#oneColCenterPane{
+	min-height:520px;
+}
+
+#createUserPane {
+	float: left;
+	font-size: 8pt;
+}
+ 
+
+#searchResultsPane, #searchGroupsResultsPane, #searchRolesResultsPane{
+	clear: both;
+	padding-top: 1em;
+}
+
+#searchUsersPane, #searchGroupsPane, #searchRolesPane, #searchUserAttributesPane{
+	float: left;
+}
+
+#createGroupPane, #createRolePane, #createUserPane, #manageAttributeClassesPane{
+	float: right;
+	font-size: 8pt;
+	margin-bottom: 1ex;
+	max-width: 50%;
+}
+
+#listAttributeDescriptionsPane{
+	margin-top: 2em;	
+}
+
+.separator{
+	clear: both;	
+	height: 1ex;
+}
+
+#addACLEntryBox, #addDefaultACLEntryBox, #addCertificateBox{
+	float:right;	
+}
+
+#leftBar a:hover{
+	text-decoration: underline;
+}
+
+
+#leftBar a{
+	padding: .5em;
+}
+
+#leftBar .disabledLink{
+	padding: .5em;	
+}

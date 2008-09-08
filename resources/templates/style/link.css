@@ -1,0 +1,72 @@
+.vomsLink {
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+}
+
+.vomsLink:HOVER {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.navBarLink {
+	font-weight: bold;
+	text-decoration: none;
+	padding-left: .5ex;
+	padding-right: .5ex;
+}
+
+.navBarLink:HOVER {
+	text-decoration: underline;
+}
+
+.actionLink {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.actionLink:HOVER {
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+.imageLink{
+	border-width: 0px;
+	text-decoration: none;
+}
+
+.imageLink:HOVER {
+	border-width: 0px;
+	text-decoration: none;
+}
+
+.imageText{
+	text-decoration: none;	
+	font-size: smaller;	
+	vertical-align: middle;
+}
+
+.imagetText:HOVER{
+	text-decoration: underline;	
+	vertical-align: middle;
+}
+.disabledLink {
+	display: inline;
+	font-weight: bold;
+	text-decoration: underline;
+	display: block;
+	color: ${link-disabled-color};
+}
+
+a,A {
+	color: ${link-color};
+	text-decoration: none;
+}
+
+a:HOVER{
+	text-decoration: underline;
+}
+
+a img{
+	border: none;
+}

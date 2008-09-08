@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="org.glite.security.voms.admin.model.Tag" table="tags">
+	
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+	
+		<property name="name" type="string" update="true" insert="true"
+			not-null="true" unique="true" />
+		
+		<property name="description" type="string" />
+		
+		<set 
+			name="admins" 
+			table="admins_tags" 
+			inverse="true"
+			cascade="save-update"
+			>
+			<key column="tag_id"/>
+			<many-to-many class="org.glite.security.voms.admin.model.VOMSAdmin" column="admin_id"/>
+		</set>
+	</class>
+
+</hibernate-mapping>

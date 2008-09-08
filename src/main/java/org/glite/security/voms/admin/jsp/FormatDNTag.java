@@ -1,0 +1,118 @@
+/*******************************************************************************
+ *Copyright (c) Members of the EGEE Collaboration. 2006. 
+ *See http://www.eu-egee.org/partners/ for details on the copyright
+ *holders.  
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License"); 
+ *you may not use this file except in compliance with the License. 
+ *You may obtain a copy of the License at 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ *Unless required by applicable law or agreed to in writing, software 
+ *distributed under the License is distributed on an "AS IS" BASIS, 
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ *See the License for the specific language governing permissions and 
+ *limitations under the License.
+ *
+ * Authors:
+ *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+ *******************************************************************************/
+package org.glite.security.voms.admin.jsp;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
+
+public class FormatDNTag extends TagSupport {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    String fields;
+
+    String dn;
+
+    /** FIXME: Should allow for more characters inside the fields, should standard compliant **/
+    String regexTemplate = "=((?:\\w\\s?\\.?@?-?\\(?\\)?)*)";
+
+    private void write( String s ) throws JspTagException {
+
+        JspWriter out = pageContext.getOut();
+        try {
+            out.print( s );
+        } catch ( IOException e ) {
+
+            throw new JspTagException( "Error writing to jsp writer!" );
+        }
+
+    }
+
+    public String getFields() {
+
+        return fields;
+    }
+
+    public void setFields( String fields ) {
+
+        this.fields = fields;
+    }
+
+    public String formatDN() {
+
+        // Expected: this is not a VOMS FQAN
+        StringBuffer repr = new StringBuffer();
+
+        String[] fieldsArray = fields.split( "," );
+
+        for ( int i = 0; i < fieldsArray.length; i++ ) {
+            String regex = fieldsArray[i].trim() + regexTemplate;
+            Pattern p = Pattern.compile( regex );
+            Matcher m = p.matcher( dn );
+
+            if ( m.find() ) {
+                if ( i > 0 && ( repr.length() > 0 ) )
+                    repr.append( "," );
+
+                String match = m.group().trim();
+                repr.append( match.substring( match.indexOf( '=' ) + 1 ) );
+
+            }
+
+        }
+
+        if ( repr.length() == 0 )
+            return dn;
+
+        return repr.toString();
+
+    }
+
+    public int doStartTag() throws JspException {
+
+        if ( fields == null )
+            write( dn );
+        else
+            write( formatDN() );
+
+        return SKIP_BODY;
+    }
+
+    public String getDn() {
+
+        return dn;
+    }
+
+    public void setDn( String dn ) {
+
+        this.dn = dn;
+    }
+
+}

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) Members of the EGEE Collaboration. 2006.
+ See http://www.eu-egee.org/partners/ for details on the copyright
+ holders.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Authors:
+     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+-->
+<deployment
+		xmlns="http://xml.apache.org/axis/wsdd/"
+		xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+		<globalConfiguration>
+				<parameter
+						name="sendXsiTypes"
+						value="true" />
+				<parameter
+						name="sendMultiRefs"
+						value="true" />
+				<parameter
+						name="sendXMLDeclaration"
+						value="true" />
+
+				<requestFlow>
+						<handler
+								type="java:org.glite.security.voms.admin.service.SecurityContextHandler" />
+				</requestFlow>
+
+		</globalConfiguration>
+
+		<handler
+				name="LocalResponder"
+				type="java:org.apache.axis.transport.local.LocalResponder" />
+		<handler
+				name="URLMapper"
+				type="java:org.apache.axis.handlers.http.URLMapper" />
+		<handler
+				name="RPCDispatcher"
+				type="java:org.apache.axis.providers.java.RPCProvider" />
+		<handler
+				name="Authenticate"
+				type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" />
+		<handler
+				name="MsgDispatcher"
+				type="java:org.apache.axis.providers.java.MsgProvider" />
+
+
+
+		<!-- Services from VOMSAdminService WSDL service -->
+		<service 
+				name="VOMSCompatibility"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" />
+				
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSCompatibilityService" />
+				
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSCompatibility" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VomsCompatibilityService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSCompatibility" />
+
+				<parameter
+						name="allowedMethods"
+						value="*" />
+		</service>
+		
+		<service
+				name="VOMSAdmin"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.admin" />
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSAdminService" />
+
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.admin" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSAdmin" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VomsAdminService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSAdmin" />
+
+				<parameter
+						name="allowedMethods"
+						value="setUser getMajorVersionNumber setACL dismissRole createRole deleteGroup deleteUser listMembers listUsersWithRole getGroupPath listSubGroups addDefaultACLEntry addACLEntry removeDefaultACLEntry deleteCapability getPatchVersionNumber getACL listCAs assignRole addMember createCapability getVOName listCapabilities removeACLEntry listUsersWithCapability getUser deleteRole listRoles removeMember setDefaultACL dismissCapability assignCapability getDefaultACL createGroup getMinorVersionNumber listGroups createUser" />
+
+
+				<beanMapping
+						qname="ns:ACLEntry"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.ACLEntry" />
+
+				<beanMapping
+						qname="ns:VOMSException"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.VOMSException" />
+
+				<beanMapping
+						qname="ns:User"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.User" />
+
+				<!-- Comment it out to enable logging of generated soap responses
+						<responseFlow>
+						<handler type="java:service.SoapMonitorHandler"/>
+						</responseFlow> 
+				-->
+		</service>
+		
+		<service
+				name="VOMSAttributes"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" />
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSAttributesService" />
+
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSAttributes" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VomsAttributesService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSAttributes" />
+
+				<parameter
+						name="allowedMethods"
+						value="*" />
+
+				<beanMapping
+						qname="ns:VOMSException"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.VOMSException" />
+
+				<beanMapping
+						qname="ns:User"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.User" />
+						
+				<beanMapping
+						qname="ns:AttributeClass"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes"
+						languageSpecificType="java:org.glite.security.voms.service.attributes.AttributeClass" />
+
+				<beanMapping
+						qname="ns:AttributeValue"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes"
+						languageSpecificType="java:org.glite.security.voms.service.attributes.AttributeValue" />
+						
+				<!-- Comment it out to enable logging of generated soap responses
+						<responseFlow>
+						<handler type="java:service.SoapMonitorHandler"/>
+						</responseFlow> 
+				-->
+		</service>
+		
+		<service
+				name="VOMSRegistration"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" />
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSRegistrationService" />
+
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.registration" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSRegistration" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VOMSRegistrationService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSRegistration" />
+
+				<parameter
+						name="allowedMethods"
+						value="*" />
+
+				<beanMapping
+						qname="ns:VOMSException"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.VOMSException" />
+
+				
+				<beanMapping
+						qname="ns:RegistrationRequest"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.registration"
+						languageSpecificType="java:org.glite.security.voms.service.registration.RegistrationRequest"/>
+						
+				<!-- Comment it out to enable logging of generated soap responses
+						<responseFlow>
+						<handler type="java:service.SoapMonitorHandler"/>
+						</responseFlow> 
+				-->
+		</service>
+
+		<service
+				name="VOMSACL"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" />
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSACLService" />
+
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.acl" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSACL" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VOMSACLService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSACL" />
+
+				<parameter
+						name="allowedMethods"
+						value="*" />
+
+				<beanMapping
+						qname="ns:VOMSException"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.VOMSException" />
+
+				
+				<beanMapping
+						qname="ns:ACLEntry"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.acl"
+						languageSpecificType="java:org.glite.security.voms.service.acl.ACLEntry"/>
+						
+				<!-- Comment it out to enable logging of generated soap responses
+						<responseFlow>
+						<handler type="java:service.SoapMonitorHandler"/>
+						</responseFlow> 
+				-->
+		</service>
+		
+		<service
+				name="VOMSCertificates"
+				provider="java:RPC">
+				<parameter
+						name="wsdlTargetNamespace"
+						value="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" />
+				<parameter
+						name="wsdlServiceElement"
+						value="VOMSCertificatesService" />
+
+				<parameter
+						name="schemaUnqualified"
+						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" />
+
+				<parameter
+						name="wsdlServicePort"
+						value="VOMSCertificates" />
+				<parameter
+						name="className"
+						value="org.glite.security.voms.admin.service.VOMSCertificatesService" />
+				<parameter
+						name="wsdlPortType"
+						value="VOMSCertificates" />
+
+				<parameter
+						name="allowedMethods"
+						value="*" />
+
+				<beanMapping
+						qname="ns:VOMSException"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
+						languageSpecificType="java:org.glite.security.voms.VOMSException" />
+
+				
+				<beanMapping
+						qname="ns:X509Certificate"
+						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates"
+						languageSpecificType="java:org.glite.security.voms.service.certificates.X509Certificate"/>
+						
+				<!-- Comment it out to enable logging of generated soap responses
+						<responseFlow>
+						<handler type="java:service.SoapMonitorHandler"/>
+						</responseFlow> 
+				-->
+		</service>
+		
+		<transport name="http">
+				<requestFlow>
+						<handler type="URLMapper" />
+				</requestFlow>
+		</transport>
+
+		<transport name="local">
+				<responseFlow>
+						<handler
+								type="java:org.apache.axis.transport.local.LocalResponder" />
+				</responseFlow>
+		</transport>
+</deployment>

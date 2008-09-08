@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.VOMSRole" table="roles">
+		<id name="id" column="rid" type="long">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" type="string" update="true" insert="true"
+			column="role" not-null="true" unique="true" />
+
+		<set name="mappings" sort="natural" inverse="true">
+			<key column="rid" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>
+		</set>
+
+		<set name="attributes" inverse="true" cascade="all-delete-orphan">
+			<key column="r_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSRoleAttribute"/>
+		</set>
+				
+		<set name="acls" inverse="true" cascade="all-delete-orphan">
+			<key column="role_id" on-delete="cascade"/>			
+			<one-to-many class="org.glite.security.voms.admin.model.ACL"/>
+		</set>
+
+	</class>
+</hibernate-mapping>

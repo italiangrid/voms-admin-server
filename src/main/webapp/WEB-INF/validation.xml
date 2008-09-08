@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<!--
+ Copyright (c) Members of the EGEE Collaboration. 2006.
+ See http://www.eu-egee.org/partners/ for details on the copyright
+ holders.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Authors:
+     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
+-->
+<form-validation>
+
+<!--
+     This is a minimal Validator form file with a couple of examples.
+-->
+
+    <global>
+
+        <!-- An example global constant
+        <constant>
+            <constant-name>postalCode</constant-name>
+            <constant-value>^\d{5}\d*$</constant-value>
+        </constant>
+        end example-->
+        <constant>
+        	<constant-name>formMask</constant-name>
+        	<constant-value><![CDATA[^[^<>&=;]*$]]></constant-value>
+        </constant>
+        
+        <constant>
+        	<constant-name>dnMask</constant-name>
+        	<constant-value><![CDATA[^[^<>&;]*$]]></constant-value>
+        </constant>
+    </global>
+
+    <formset>
+    
+    	<form name="/UI">
+    		<field property="panelId" depends="required,mask">
+			<arg key="label.panelId"/>
+    		<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/UserAttributes">
+    		<field property="attributeName" depends="required,mask">
+    			
+				<arg key="label.attribute.name"/>
+				
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="attributeValue" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+				<arg key="label.attribute.value"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/GroupAttributes">
+    		<field property="attributeName" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+				<arg key="label.attribute.name"/>
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>  
+    		
+    		<field property="attributeValue" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+				<arg key="label.attribute.value"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>  		
+    	</form>
+    	
+    	<form name="/RoleAttributes">
+    		<field property="attributeName" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+				<arg key="label.attribute.name"/>
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    			<field property="attributeValue" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+				<arg key="label.attribute.value"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>  			
+    	</form>
+    	
+    	<!-- Search forms checks -->
+    	<form name="/SearchUser">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SearchGroups">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SearchRoles">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SearchMembers">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SearchRoleMembers">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SearchUserAttributes">
+    		<field property="text" depends="mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.search_string"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	
+    	<!--  edit user checks  -->
+    	<form name="/EditUser">
+    		<field property="cn" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.cn"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="emailAddress" depends="required,email">
+    			<arg key="label.emailAddress"/>
+    		</field>
+    	</form>
+    	<!-- create user checks -->
+    	<!-- 
+    	<form name="/CreateUser">
+
+    		<field property="dn" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.dn"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="cn" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.cn"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${dnMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="emailAddress" depends="required,email">
+    			<arg key="label.emailAddress"/>
+    		</field>  		    	
+
+    	</form>
+    	-->
+    	<form name="/CreateGroup">
+    		<field property="name" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.group"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+
+    	</form>
+    	
+    	<form name="/CreateRole">
+    		<field property="name" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.role"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<!-- create attribute description form -->
+    	<form name="/CreateAttributeDescription">
+    		<field property="attributeName" depends="required,mask">
+				<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.attribute.name"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="attributeDescription" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.attribute.description"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    	</form>
+    	
+    	<form name="/SubmitVOMembershipRequest">
+    	
+    		<field property="aupAccepted" depends="required">
+    			<msg name="required" key="errors.aup_accepted"/>
+    		</field>
+    		
+    		<field property="emailAddress" depends="required,email">
+    			<arg key="label.emailAddress"/>
+    		</field>
+    		
+    		<field property="institute" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.institute"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="phoneNumber" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.phone_number"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    		
+    		<field property="comments" depends="mask">
+    			<msg name="mask" key="errors.invalid_input"/>
+    			<arg key="label.comments"/>
+    			<var>
+					<var-name>mask</var-name>
+					<var-value>${formMask}</var-value>
+				</var>
+    		</field>
+    		
+    	</form>
+    	
+    	<form name="/AddACLEntry">
+    		<field property="entryKind" depends="required">
+    			<msg name="required" key="errors.invalid_acl_entry_type"/>
+    		</field>
+    	</form>
+    </formset>     
+
+</form-validation>

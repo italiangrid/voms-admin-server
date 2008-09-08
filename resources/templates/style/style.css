@@ -1,0 +1,310 @@
+@IMPORT url("layout.css");
+@IMPORT url("tables.css");
+@IMPORT url("menu.css");
+@IMPORT url("link.css");
+@IMPORT url("form.css");
+@IMPORT url("registration.css");
+
+.userDN {
+	text-align: left;
+	font-size: small;
+}
+
+.userCA {
+	font-size: x-small;
+	color: ${header-color};
+}
+
+.userEmail{
+	font-size: smaller;
+	font-weight: bold;
+}
+
+
+.resultsHeader {
+	font-size: xx-small;
+	display: block;
+	float: right;
+	margin-bottom: .5ex;
+}
+
+.resultsFooter {
+	font-size: xx-small;
+	display: block;
+	float: right;
+	margin-top: .5ex;
+}
+
+.resultsCount {
+	display: table-cell;
+	padding-left: 1ex;
+	padding-right: 1ex;
+}
+
+.resultsNavBarButton {
+	display: inline;
+	
+}
+
+.roleCell {
+	margin-top: .1em;
+}
+
+.role {
+	display: block;
+	float: left;
+	clear: both;
+	font-weight: bold;
+}
+
+.group {
+	text-align: left;
+	font-weight: bold;
+}
+
+.action {
+	display: block;
+	float: right;
+	font-size: x-small;
+}
+
+.roleAssign {
+	font-size: x-small;
+	float: right;
+	clear: both;
+	text-align: right;
+	margin-top: .5em;
+}
+
+.roleAssign .submitButton {
+	font-size: x-small;
+}
+
+.roleAssign .selectBox {
+	font-size: x-small;
+}
+
+.subscribeGroups {
+	display: block;
+	font-size: x-small;
+	text-align: right;
+	margin-top: .5em;
+}
+
+.subscribeGroups .submitButton {
+	font-size: x-small;
+}
+
+.subscribeGroups .selectBox {
+	font-size: x-small;
+}
+
+/** HEADERS **/
+.header {
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: ${header-color};
+}
+
+.header1{
+	
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: ${header-color};
+	border-bottom: 1px solid ${border-color}; 
+	margin-bottom: 1em;
+	
+}
+.header2 {
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: ${header-color};
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.header3{
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: ${header-color};
+	margin-bottom: 1em;
+}
+
+.label {
+	color: ${label-color};
+	font-weight: bold;
+	text-align: right;
+}
+
+.labels {
+	color: ${label-color};
+	text-align: right;
+
+}
+.deleteUserForm {
+	text-align: right;
+}
+
+.deleteUserForm .submitButton {
+	font-size: x-small;
+}
+
+.detailsBlock .submitButton {
+	font-size: x-small;
+}
+
+
+.attributeName {
+	text-align: left;
+	font-weight: bold;
+}
+
+.attributeValue {
+	font-weight: bold;
+}
+
+.errorMessages {
+	margin: 0;
+	padding: 0;
+	padding-left: 1em;
+	padding-right: 1em;
+	font-weight: bold;
+	text-align: center;
+}
+
+.errorMessage{
+	font-weight: bold;
+	padding: .1em;
+	padding-left: 1ex;
+	padding-right: 1ex;
+
+}
+
+.errorMessage .message{
+	display: none;
+}
+
+
+.errorMessage .detailedMessage {
+	background-color: ${error-background};
+	color: ${error-color};
+	display: inline;
+	padding: .1em;
+	padding-left: 1ex;
+	padding-right: 1ex;
+
+}
+
+.messages {
+
+	color: ${message-color};
+	background-color: ${message-background}; 
+
+	display: inline;
+	text-align: center;
+	padding-left: 1ex;
+	padding-right: 1ex;	
+}
+
+
+.panel{
+	font-size: 8pt;
+	background-color: ${panel-background};	
+	color: ${panel-color};
+
+}
+
+.panelHeader{
+
+	background-color: ${panel-header-background};
+	color: ${panel-header-color};
+
+	
+	float: left;
+	font-weight: bold;
+	
+	/*
+	old look n feel.
+	border: 1px solid ${border-color};
+	background-image: url('../img/header_background.png');
+	background-repeat: repeat-x;
+	background-position: bottom	left;
+	*/
+}
+
+.panelContent{
+	padding-left: 1ex;
+	padding-right: 1ex; 
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	border-left: 1px solid ${panel-border-color};
+	border-right: 1px solid ${panel-border-color};
+	border-bottom: 1px solid ${panel-border-color};
+}
+
+.panelTitle{
+	float: left;
+	padding-left: 1ex;
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+}
+
+.panelButton{
+	float: right;
+	padding-right: 1ex;
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	
+}
+
+.panel .inputField,.selectBox,.caSelectBox,.submitButton{
+
+	font-size: 8pt;
+}
+
+.admin .userDN{
+	font-size: smaller;
+	font-weight: bold;
+}
+
+.admin .userCA{
+	font-size: x-small;
+}
+
+.voMembershipInfo, .genericAttributesInfo{
+	padding-left: 2em;
+
+}
+
+.highlight{
+	color: ${message-color};
+	font-weight: bold;
+}
+
+.expiredCA{
+	color: ${error-color};
+	font-weight: bold;
+	text-align: center;
+}
+
+.caCN{
+	font-family: monospace;
+	font-variant: small-caps;
+}
+
+.configurationInfo{
+
+	background-color: ${table-row-odd-background};
+}

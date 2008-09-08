@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>server-${server-version}-${age}</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <fileSets>
+        <fileSet>
+            <directory>resources/scripts</directory>
+            <excludes>
+                <exclude>*.pyc</exclude>
+            </excludes>
+            <outputDirectory>/sbin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>resources/templates</directory>
+            <excludes>
+                <exclude>**/log4j.properties</exclude>
+                <exclude>style/**</exclude>
+                <exclude>style</exclude>
+                <exclude>siblings/**</exclude>
+                <exclude>siblings</exclude>
+            </excludes>
+            <outputDirectory>/etc/voms-admin/templates</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>resources/doc</directory>
+            <outputDirectory>/share/doc/glite-security-voms-admin-server</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>resources/wsdls</directory>
+            <outputDirectory>/share/interface</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>/share/voms-admin/tools/lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+
+    <files>
+        <file>
+            <source>resources/scripts/voms-admin-configure.py</source>
+            <outputDirectory>/sbin</outputDirectory>
+            <destName>voms-admin-configure</destName>
+            <fileMode>0755</fileMode>
+        </file>
+
+        <file>
+            <source>resources/scripts/init-voms-admin.py</source>
+            <outputDirectory>/etc/init.d</outputDirectory>
+            <destName>voms-admin</destName>
+            <fileMode>0755</fileMode>
+        </file>
+
+        <file>
+            <source>resources/templates/log4j.properties</source>
+            <outputDirectory>/share/voms-admin/tools/classes</outputDirectory>
+        </file>
+
+        <file>
+            <source>target/glite-security-voms-admin.jar</source>
+            <outputDirectory>/share/java</outputDirectory>
+        </file>
+
+        <file>
+            <source>target/glite-security-voms-admin.war</source>
+            <outputDirectory>/share/webapps</outputDirectory>
+        </file>
+
+        <file>
+            <source>target/glite-security-voms-siblings.war</source>
+            <outputDirectory>/share/webapps</outputDirectory>
+        </file>
+    </files>
+</assembly>

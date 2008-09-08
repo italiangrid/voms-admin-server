@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.VOMSUser" table="usr">
+
+		<id name="id" column="userid" type="java.lang.Long">
+			<generator class="native" />
+		</id>
+
+		<property name="dn" type="java.lang.String" update="true"
+			insert="true" column="dn" unique="false" />
+
+		<many-to-one
+			name="ca"
+			column="ca"
+			class="org.glite.security.voms.admin.model.VOMSCA" foreign-key="fk_usr_ca"/>
+			
+		<!-- Compatibility: old fields -->
+		<property name="cn" type="java.lang.String" column="cn"/>
+		<property name="certURI" type="java.lang.String" column="cauri"/>
+
+		
+		<!-- New ( >= 2.5 ) Membership information  -->
+		<property name="name" type="java.lang.String" column="name" not-null="true"/>
+		<property name="surname" type="java.lang.String" column="surname" not-null="true"/>
+		<property name="institution" type="java.lang.String" column="institution" not-null="true"/>
+		<property name="address" type="text" column="address" not-null="true"/>
+		
+		<property name="phoneNumber" type="java.lang.String" column="phone_number" not-null="true"/>
+		<property name="emailAddress" type="java.lang.String" column="email_address" not-null="true"/>
+		
+		
+		<!-- Membership creation time and validity end time -->
+		<property name="creationTime" type="timestamp" column="creation_time"/>
+		<property name="endTime" type="timestamp" column="end_time"/>
+		
+		<set name="mappings" sort="natural"  cascade="all-delete-orphan" inverse="true">
+			<key column="userid" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>			
+		</set>
+		
+		<set name="attributes" cascade="all-delete-orphan" inverse="true">
+			<key column="u_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.VOMSUserAttribute"/>
+		</set>
+	
+		<!-- Multiple certificates support -->
+		<set name="certificates" cascade="all-delete-orphan" inverse="true">
+			<key column="usr_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.model.Certificate"/>
+		</set>
+	</class>
+
+</hibernate-mapping>

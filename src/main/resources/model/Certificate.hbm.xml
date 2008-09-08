@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.Certificate" table="certificate">	
+		
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+		
+		<many-to-one name="user" 
+			class="org.glite.security.voms.admin.model.VOMSUser"
+			column="usr_id"
+			foreign-key="fk_cert_usr"
+			not-null="true"
+		/>
+		
+		<property 
+			name="subjectString" 
+
+			type="string" 
+			column="subject_string"
+			not-null="true"
+			unique="true"/>
+		
+		<property 
+			name="subjectDER"
+
+			type="org.glite.security.voms.admin.database.X500PrincipalType"
+			column="subject_der"
+			/>
+		
+		<property 
+			name="suspended"
+
+			type="boolean"
+			not-null="true"/>
+			
+		<property 
+			name="suspensionReason"
+			column="suspended_reason"
+			type="string"
+			not-null="false"/>
+					
+		<property 
+			name="notAfter"
+			column="not_after"
+			type="timestamp"
+			/>
+			
+		<property 
+			name="creationTime"
+			column="creation_time"
+			type="timestamp"
+			not-null="true"/>
+		
+		<many-to-one 
+			name="ca"
+			column="ca_id"
+			class="org.glite.security.voms.admin.model.VOMSCA"
+			foreign-key="fk_certificate_ca"
+			not-null="true"/>
+
+	</class>
+
+</hibernate-mapping>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://glite.org/wsdl/services/org.glite.security.voms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="RegistrationRequest">
+    <sequence>
+     <element name="aupAccepted" type="xsd:boolean"/>
+     <element name="comments" nillable="true" type="soapenc:string"/>
+     <element name="emailAddress" nillable="true" type="soapenc:string"/>
+     <element name="institute" nillable="true" type="soapenc:string"/>
+     <element name="phoneNumber" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="VOMSException">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="submitRegistrationRequestRequest">
+
+      <wsdl:part name="in0" type="impl:RegistrationRequest"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitRegistrationRequestForUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="VOMSException">
+
+      <wsdl:part name="fault" type="tns2:VOMSException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitRegistrationRequestForUserRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="impl:RegistrationRequest"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitRegistrationRequestResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSRegistration">
+
+      <wsdl:operation name="submitRegistrationRequest" parameterOrder="in0">
+
+         <wsdl:input message="impl:submitRegistrationRequestRequest" name="submitRegistrationRequestRequest"/>
+
+         <wsdl:output message="impl:submitRegistrationRequestResponse" name="submitRegistrationRequestResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitRegistrationRequestForUser" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:submitRegistrationRequestForUserRequest" name="submitRegistrationRequestForUserRequest"/>
+
+         <wsdl:output message="impl:submitRegistrationRequestForUserResponse" name="submitRegistrationRequestForUserResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSRegistrationSoapBinding" type="impl:VOMSRegistration">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="submitRegistrationRequest">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitRegistrationRequestRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitRegistrationRequestResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitRegistrationRequestForUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitRegistrationRequestForUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitRegistrationRequestForUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSRegistrationService">
+
+      <wsdl:port binding="impl:VOMSRegistrationSoapBinding" name="VOMSRegistration">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSRegistration"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

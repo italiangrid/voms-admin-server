@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+    <hibernate-mapping>
+    	
+    		<class name="org.glite.security.voms.admin.model.VOMSCA" table="ca">
+    			<id name="id" type="short">
+    				<generator class="native"/>
+    			</id>
+    			
+    			<property name="subjectString" 
+    				column="subject_string" 
+    				unique="true" 
+    				not-null="true" 
+    				type="string"/>
+
+    			<property 
+					name="subjectDER"
+					type="org.glite.security.voms.admin.database.X500PrincipalType"
+					column="subject_der"
+				/>
+				
+    			<property 
+    				name="description" 
+    				column="description" 
+    				type="string"/>
+    			
+    			<property 
+					name="notAfter"
+					column="not_after"
+					type="timestamp"
+				/>
+			
+				<property 
+					name="creationTime"
+					column="creation_time"
+					type="timestamp"
+					not-null="true"/>
+    			
+    		</class>
+    
+    </hibernate-mapping>

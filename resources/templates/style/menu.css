@@ -1,0 +1,37 @@
+.menuItem {
+	font-weight: bold;
+	display: inline;
+	float: left;
+	text-align: center;
+	padding: .5em;
+}
+
+#helpMenuItem {
+	display: inline;
+	float: right;
+	font-weight: bold;
+	text-align: center;
+}
+
+.menuItem a{
+	
+	color: #325B0A;
+	
+}
+
+.menuItem a:HOVER{
+	
+	color: black;
+	text-decoration: underline;
+}
+
+/*
+.menuItem:HOVER a{
+	text-decoration: underline;
+}
+
+
+.menuItem A:LINK, A:ACTIVE, A:VISITED {
+	text-decoration: none;
+}
+*/
