@@ -18,7 +18,8 @@
  Authors:
      Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
 --%>
-<%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
+
+<%@ include file="taglibs.jsp" %>
 
 <div id="userGroupsLeftBar">
 

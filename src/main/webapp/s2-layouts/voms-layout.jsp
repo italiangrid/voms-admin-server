@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <%@include file="/s2-common/meta.jsp" %>
-<title><tiles:insertAttribute name="title"/></title>
+<title><tiles2:insertAttribute name="title"/></title>
 <link rel="stylesheet" type="text/css" href="${stylePath}"/>
 
 <script type="text/javascript" src="${prototypePath}">
@@ -22,26 +22,26 @@
 </head>
 <body>
 
-	<voms:currentAdmin var="currentAdmin"/>
+	<%-- <voms:currentAdmin var="currentAdmin"/> --%>
 	<div id="header">
-		<tiles:insertAttribute name="header"/>
+		<tiles2:insertAttribute name="header"/>
 	</div> <!-- header -->
 
 	<div id="menu">
-		<tiles:insertAttribute name="menu"/>
+		<tiles2:insertAttribute name="menu"/>
 	</div> <!-- menu -->
 	
 	<div id="messages">
-		<tiles:insertAttribute name="messages"/>
+		<tiles2:insertAttribute name="messages"/>
 	</div>
 	
 	<div id="body">
 		<div id="leftBar">
-			<tiles:insertAttribute name="leftBar"/>
+			<tiles2:insertAttribute name="leftBar"/>
 		</div> <!-- leftBar -->
 
 		<div id="centerPane">
-			<tiles:insertAttribute name="centerPane"/>
+			<tiles2:insertAttribute name="centerPane"/>
 		</div> <!-- centerPane -->
 	</div> <!-- body -->
 
@@ -50,7 +50,7 @@
 	</div>
 	
 	<div id="footer">
-		<tiles:insertAttribute name="footer"/>
+		<tiles2:insertAttribute name="footer"/>
 	</div> <!-- footer -->
 </body>
 </html>

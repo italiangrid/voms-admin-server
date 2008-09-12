@@ -7,4 +7,27 @@
         <constant name="struts.devMode" value="true" />
         <constant name="struts.configuration.xml.reload" value="true"/>
         <constant name="struts.ui.theme" value="css_xhtml"/>
+        
+        
+        
+        <package name="base" extends="struts-default" namespace="base">
+            <interceptors>
+                <interceptor 
+                    name="authnInterceptor" 
+                    class="it.cnaf.infn.voms.interceptors.AuthenticatedAccessInterceptor"/>
+                    
+                 <interceptor 
+                    name="hibernateInterceptor" 
+                    class="it.cnaf.infn.voms.interceptors.HibernateInterceptor"/>
+                    
+                <interceptor-stack name="authenticatedStack">
+                    <interceptor-ref name="authnInterceptor"/>
+                    <interceptor-ref name="defaultStack"/>
+                    <interceptor-ref name="hibernateInterceptor"/>
+                </interceptor-stack>
+                
+            </interceptors>
+            
+            <default-interceptor-ref name="authenticatedStack"/>
+        </package>
     </struts>

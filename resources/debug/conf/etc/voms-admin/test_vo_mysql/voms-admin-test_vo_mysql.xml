@@ -1,5 +1,5 @@
 <Context path="/voms/test_vo_mysql" 
-		docBase="/home/andrea/workspace/voms-admin-2_5-maven/target/glite-security-voms-admin"
+		docBase="/home/andrea/workspace/voms-admin-25/target/glite-security-voms-admin"
         debug="0" 
         reloadable="true">
         

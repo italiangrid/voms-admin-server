@@ -18,8 +18,7 @@
  Authors:
      Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
 --%>
-<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
-<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ include file="taglibs.jsp" %>
 
 <div class="menuItem"><html:link forward="manageUsers">VO management</html:link></div>
 <div class="menuItem"><html:link forward="configuration">Configuration</html:link></div>

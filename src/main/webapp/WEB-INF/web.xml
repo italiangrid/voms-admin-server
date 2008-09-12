@@ -46,7 +46,7 @@
 		<filter-name>security-context-filter</filter-name>
 		<filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
 	</filter>
-
+    
 	<filter>
 		<filter-name>hibernate-session-filter</filter-name>
 		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
@@ -69,8 +69,8 @@
 		<filter-name>security-context-filter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
-
-	<filter-mapping>
+    
+    <filter-mapping>
 		<filter-name>hibernate-session-filter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
@@ -158,7 +158,7 @@
         <param-name>
             org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
         </param-name>
-        <param-value>/tiles/tiles.xml</param-value>
+        <param-value>/WEB-INF/tiles.xml</param-value>
     </context-param>
 
 </web-app>

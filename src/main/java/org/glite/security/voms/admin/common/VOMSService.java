@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
+import org.glite.security.voms.admin.database.HibernateFactory;
 
 
 
@@ -96,6 +97,9 @@ public final class VOMSService {
     public static void stop() {
 
         getTimer().cancel();
+        
+        // Close hibernate session factory
+        HibernateFactory.getFactory().close();
         log.info( "VOMS admin stopped ." );
     }
 
