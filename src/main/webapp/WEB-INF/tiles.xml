@@ -23,4 +23,8 @@
         <put-attribute name="centerPane" value="/s2/test/test.jsp"/>
     </definition>
     
+    <definition name="list-users.page" extends="base-template">
+        <put-attribute name="centerPane" value="/s2/user/list-users.jsp"/>
+    </definition>
+    
 </tiles-definitions>

@@ -10,6 +10,8 @@ public class UserDAO extends BaseGenericDAO<VOMSUser, Long> implements UserDAOIF
 
     
     private UserDAO() {
+        super();
+        getSession();
 
     }
     
