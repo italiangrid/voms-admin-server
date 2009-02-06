@@ -60,7 +60,7 @@ public class FindUserOperation extends BaseVoReadOperation{
 
         else if ( emailAddress == null )
 
-            return VOMSUserDAO.instance().findByDNandCA( dn, caDN );
+            return VOMSUserDAO.instance().findByName( dn, caDN );
 
         else
             return VOMSUserDAO.instance().findByEmail( emailAddress );

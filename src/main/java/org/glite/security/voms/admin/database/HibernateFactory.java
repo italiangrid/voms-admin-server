@@ -163,7 +163,11 @@ public class HibernateFactory {
             threadTransaction.set( null );
         } catch ( HibernateException ex ) {
             rollbackTransaction();
-            log.error( "Error committing transaction!", ex );
+            log.error( "Error committing hibernate transaction:"+ ex.getMessage() );
+            
+            if (log.isDebugEnabled())
+                log.error( "Error committing hibernate transaction!",ex );
+            
             throw new VOMSDatabaseException( ex.getMessage(), ex );
         }
     }
@@ -177,8 +181,11 @@ public class HibernateFactory {
             if ( tx != null && !tx.wasCommitted() && !tx.wasRolledBack() )
                 tx.rollback();
         } catch ( HibernateException ex ) {
+            log.error( "Error rolling back hibernate transaction:"+ ex.getMessage() );
+            
+            if (log.isDebugEnabled())
+                log.error( "Error committing hibernate transaction!",ex );
 
-            log.error( "Error rolling back transaction!", ex );
             throw new VOMSDatabaseException( ex.getMessage(), ex );
 
         } finally {

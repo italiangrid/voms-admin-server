@@ -58,7 +58,7 @@ public class DeleteUserAttributeOperation extends BaseAttributeRWOperation{
 
         VOMSUser vomsUser = (VOMSUser) FindUserOperation.instance( u.getDN(), u.getCA() ).execute();
         
-        if (u == null)
+        if (vomsUser == null)
             throw new NoSuchUserException("User '"+u.getDN()+","+u.getCA()+"' not found in this vo.");
         
         return new DeleteUserAttributeOperation( vomsUser, aName ) ;

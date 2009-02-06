@@ -87,15 +87,10 @@ public class VomsAdminService implements VOMSAdmin {
                 return u.asUser();
 
         } catch ( RuntimeException e ) {
-
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            
+            ServiceExceptionHelper.handleServiceException( log, e );
+            
             throw e;
-
         }
 
     }
@@ -139,12 +134,8 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
+            
             throw e;
         }
 
@@ -169,12 +160,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -194,13 +180,8 @@ public class VomsAdminService implements VOMSAdmin {
             HibernateFactory.commitTransaction();
 
         } catch ( RuntimeException e ) {
-
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -219,12 +200,7 @@ public class VomsAdminService implements VOMSAdmin {
             HibernateFactory.commitTransaction();
 
         } catch ( RuntimeException e ) {
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -247,12 +223,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -276,12 +247,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -302,12 +268,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -327,12 +288,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -364,12 +320,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -393,12 +344,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -425,12 +371,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -457,12 +398,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -512,12 +448,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -544,12 +475,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -585,12 +511,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -620,12 +541,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -648,12 +564,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -677,12 +588,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -702,12 +608,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }
@@ -745,12 +646,7 @@ public class VomsAdminService implements VOMSAdmin {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
 
         }

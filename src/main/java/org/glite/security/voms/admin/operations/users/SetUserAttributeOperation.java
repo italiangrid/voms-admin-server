@@ -20,6 +20,8 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.operations.users;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.NoSuchUserException;
@@ -30,6 +32,10 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetUserAttributeOperation extends BaseVomsOperation {
+    
+    private static final Log log = LogFactory
+            .getLog( SetUserAttributeOperation.class );
+    
 
     VOMSUser user;
 
@@ -50,6 +56,7 @@ public class SetUserAttributeOperation extends BaseVomsOperation {
 
     public Object doExecute() {
 
+        log.debug("SetUserAttributeOperation::doExecute");
         return VOMSUserDAO.instance().setAttribute( user, attributeName,
                 attributeValue );
 

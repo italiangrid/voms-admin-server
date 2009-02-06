@@ -81,9 +81,7 @@ public class DatabaseSetupTask extends TimerTask {
         List cas = VOMSCADAO.instance().getAll();
 
         if ( admins.isEmpty() || cas.isEmpty() ) {
-
-            // The org.glite.security.voms.admin.database needs to be populated at first
-
+           
             // Add internal CAs
             VOMSCADAO caDAO = VOMSCADAO.instance();
 
@@ -92,13 +90,9 @@ public class DatabaseSetupTask extends TimerTask {
             caDAO
                     .createCA( Constants.GROUP_CA,
                             "A virtual CA for VOMS groups." );
-            
             caDAO.createCA( Constants.ROLE_CA, "A virtual CA for VOMS roles." );
-            
             caDAO.createCA( Constants.AUTHZMANAGER_ATTRIBUTE_CA,
                     "A virtual CA for authz manager attributes" );
-            
-            caDAO.createCA( Constants.TAG_CA, "A virtual CA for VOMS Admin tags" );
 
             // Create vo root group
             VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
@@ -171,16 +165,20 @@ public class DatabaseSetupTask extends TimerTask {
                                 + "\" not found in org.glite.security.voms.admin.database. Skipping creation of the trusted admin..." );
                 return;
             }
-
             
             VOMSAdmin trustedAdmin = VOMSAdminDAO.instance().getByName(
-                    trustedAdminDn, ca.getSubjectString() );
+                    trustedAdminDn, ca.getDn() );
             
             if ( trustedAdmin == null ) {
 
                 String emailAddress = DNUtil.getEmailAddressFromDN( trustedAdminDn );
+                
+                // Get default email address from voms service configuration
+                if (emailAddress == null)
+                    emailAddress = VOMSConfiguration.instance().getString( "voms.notification.email-address" );
+                    
                 trustedAdmin = VOMSAdminDAO.instance().create(
-                        trustedAdminDn, ca.getSubjectString(), emailAddress );
+                        trustedAdminDn, ca.getDn(), emailAddress );
 
             }
 
@@ -189,9 +187,21 @@ public class DatabaseSetupTask extends TimerTask {
             log.info( "Trusted admin created." );
             
             
-            // Import ACL *after* trusted admin has been created!
+            if (VOMSConfiguration.instance().getBoolean(VOMSConfiguration.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS, false)){
+            
+                // Grant read-only access to authenticated clients
+                VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
+                        .getAnyAuthenticatedUserAdmin();
+                VOMSPermission readOnlyPerms = VOMSPermission
+                        .getEmptyPermissions().setContainerReadPermission()
+                        .setMembershipReadPermission();
+                voGroupACL.setPermissions( anyUserAdmin, readOnlyPerms );
+                
+            }
+            
+            // Import ACL *after* trusted and anyuser admins have been created!
             voAdminRole.importACL( voGroup );
-           
+            
             HibernateFactory.commitTransaction();
 
             

@@ -36,14 +36,7 @@ public class CreateUserOperation extends BaseVomsOperation {
     
     private CreateUserOperation(UserForm form){
     	
-    		usr = new VOMSUser();
-            usr.setName( form.getName() );
-            usr.setSurname( form.getSurname() );
-            usr.setInstitution( form.getInstitution() );
-            usr.setAddress( form.getAddress() );
-            usr.setPhoneNumber( form.getPhoneNumber());
-            usr.setEmailAddress( form.getEmailAddress() );
-            
+    		this(new VOMSUser().populate(form),form.getCa());
     }
     
     private CreateUserOperation(String username, String caName, String cn,String certUri,String email){
@@ -56,10 +49,16 @@ public class CreateUserOperation extends BaseVomsOperation {
         caDN = caName;
         
     }
+    private CreateUserOperation(VOMSUser usr, String caDn){
+    		
+    		this.usr = usr;
+    		this.caDN = caDn;
+    		
+    }
     
-    protected Object doExecute() {
+	protected Object doExecute() {
 		
-		return VOMSUserDAO.instance().create(usr);
+		return VOMSUserDAO.instance().create(usr,caDN);
 	}
 
 	public static CreateUserOperation instance(UserForm form){

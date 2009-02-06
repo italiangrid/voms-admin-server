@@ -20,6 +20,9 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.actions.requests;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,6 +41,9 @@ import org.glite.security.voms.admin.request.VOMSNotificationException;
 
 
 public class SubmitRequestAction extends BaseAction {
+    
+    private static final long HOURS = 60*60;
+    
 
     private String buildConfirmURL(HttpServletRequest request, VOMembershipRequest membReq){
         
@@ -49,24 +55,44 @@ public class SubmitRequestAction extends BaseAction {
         return getBaseContext( request )+"/CancelVOMembershipRequest.do?requestId="+membReq.getId()+"&confirmId="+membReq.getConfirmId(); 
    }
     
+    
+    private Date getRequestExpirationDate(Date creationDate){
+        
+        int requestLifetime = VOMSConfiguration.instance().getInt( "voms.request.vo_membership.lifetime" );
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime( creationDate );
+        
+        calendar.add( Calendar.SECOND, requestLifetime );
+        
+        return calendar.getTime();
+        
+    }
     public ActionForward execute( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
     
         SubmitRequestActionForm sForm = (SubmitRequestActionForm)form;
         
         String emailAddress = sForm.getEmailAddress();
         
+        
         VOMembershipRequest req = RequestDAO.instance().findFromAdmin();
         
         if (!VOMSConfiguration.instance().getBoolean( VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true))
             return mapping.findForward( "registrationDisabled" );
+      
         
         if (req == null)
-            req = RequestDAO.instance().createFromAdmin( emailAddress );
         
-        else
+            req = RequestDAO.instance().createFromAdmin( emailAddress );
+       
+        else{
+            request.setAttribute( "requestExpirationDate", getRequestExpirationDate( req.getCreationDate() ) );
             return findSuccess( mapping );
+        }
             
         
+        // Set request expiration date for the presentation layer 
+        request.setAttribute( "requestExpirationDate", getRequestExpirationDate( req.getCreationDate() ) );
         
         // Notify user
         String confirmURL = buildConfirmURL( request, req );

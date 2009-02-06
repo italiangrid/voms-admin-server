@@ -6,22 +6,36 @@
     <session-factory>
     
     	<property name="hibernate.bytecode.provider">cglib</property>
-    	<mapping resource="model/VOMSDBVersion.hbm.xml" />
-    	<mapping resource="model/VOMSSeqNumber.hbm.xml" />
-        <mapping resource="model/VOMSAdmin.hbm.xml" />
-        <mapping resource="model/VOMSCA.hbm.xml" />
-        <mapping resource="model/Certificate.hbm.xml" />
-        <mapping resource="model/VOMSUser.hbm.xml" />
-        <mapping resource="model/VOMSUserAttribute.hbm.xml" />
-        <mapping resource="model/VOMSGroup.hbm.xml" />
-        <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
-        <mapping resource="model/VOMSRole.hbm.xml" />
-        <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
-        <mapping resource="model/VOMSAttributeDescription.hbm.xml" />
-        <mapping resource="model/VOMSCapability.hbm.xml" />
-        <mapping resource="model/VOMSMapping.hbm.xml" />
-        <mapping resource="model/ACL.hbm.xml" />
-        <mapping resource="model/VOMembershipRequest.hbm.xml" />
+        <!-- 
+        <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+        -->
+        
+        <!-- Cache Configurations -->
+    
+        <property name="hibernate.cache.provider_class">
+          net.sf.ehcache.hibernate.SingletonEhCacheProvider
+        </property>
+    
+        <property name="hibernate.cache.use_minimal_puts">false</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.use_structured_entries">true</property>
+        
+        <mapping resource="org/glite/security/voms/admin/model/VOMSDBVersion.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSSeqNumber.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSAdmin.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSCA.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSUser.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSUserAttribute.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSGroup.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSGroupAttribute.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSRole.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSRoleAttribute.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/History.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSAttributeDescription.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSCapability.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMSMapping.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/ACL.hbm.xml" />
+        <mapping resource="org/glite/security/voms/admin/model/VOMembershipRequest.hbm.xml" />
         
 <!--        <event type="post-delete">-->
 <!--        		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->

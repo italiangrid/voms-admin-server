@@ -27,6 +27,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -40,6 +41,8 @@ import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.model.VOMSCA;
+import org.hibernate.JDBCException;
 
 
 
@@ -108,6 +111,7 @@ public final class UpdateCATask extends TimerTask {
 
     }
 
+    
     public synchronized static void updateCAs() {
 
         String caFiles = VOMSConfiguration.instance().getString(
@@ -120,11 +124,14 @@ public final class UpdateCATask extends TimerTask {
 
             try {
 
+                VOMSCADAO dao = VOMSCADAO.instance();
                 FileCertReader certReader = new FileCertReader();
 
                 Vector cas = certReader.readAnchors( caFiles );
 
                 Iterator caIter = cas.iterator();
+                
+                List <VOMSCA> knownCAs = dao.getValid(); 
 
                 while ( caIter.hasNext() ) {
 
@@ -133,10 +140,19 @@ public final class UpdateCATask extends TimerTask {
 
                     String caDN = DNUtil.getBCasX500( caCert
                             .getSubjectX500Principal() );
+                    
                     log.debug( "Checking CA: " + caDN );
-
-                    VOMSCADAO caDAO = VOMSCADAO.instance();
-                    caDAO.saveOrUpdateTrustedCA( caCert);
+                    
+                    boolean foundCA = false;
+                    
+                    for (VOMSCA knownCA: knownCAs)                        
+                        if (knownCA.getDn().equals( caDN )){
+                            foundCA = true;
+                            log.debug( caDN + " is already in the trusted CA database." );
+                        }
+                        
+                    if (!foundCA)
+                        dao.createCA( caDN, null );
 
                 }
 
@@ -144,25 +160,25 @@ public final class UpdateCATask extends TimerTask {
 
                 log
                         .error(
-                                "Certificate parsing error while updating trusted CA!",
+                                "Certificate parsing error while updating trusted CA database!",
                                 e );
                 throw new VOMSException(
-                        "Certificate parsing error while updating trusted CA!",
+                        "Certificate parsing error while updating trusted CA database!",
                         e );
 
             } catch ( IOException e ) {
                 log
                         .error(
-                                "File access error while updating trusted CA!",
+                                "File access error while updating trusted CA database!",
                                 e );
                 throw new VOMSException(
-                        "File access error while updating trusted CA!",
+                        "File access error while updating trusted CA database!",
                         e );
 
             } catch ( VOMSDatabaseException e ) {
 
-                log.error( "Error updating trusted CA!", e );
-                throw new VOMSException( "Error updating trusted CA!",
+                log.error( "Error updating trusted CA database!", e );
+                throw new VOMSException( "Error updating trusted CA database!",
                         e );
 
             }

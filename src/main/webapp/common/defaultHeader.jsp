@@ -31,7 +31,9 @@
 		<table cellpadding="0" cellspacing="0" width="100%">
 			<tr>
 				<td valign="bottom" width="25%">
-					<html:img page="/img/va-logo.png" style="float:left;"/>
+					<html:link forward="manageUsers">
+						<html:img page="/img/va-logo.png" style="float:left;"/>
+					</html:link>
 				</td>
 				<td align="left" valign="bottom" style="padding-left: .5em;">
 					for VO:<span id="voName" style="padding-left:.5em">${voName}</span>

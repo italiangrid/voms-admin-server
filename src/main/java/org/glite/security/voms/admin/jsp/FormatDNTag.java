@@ -29,6 +29,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.glite.security.voms.admin.common.VOMSConfiguration;
+
 public class FormatDNTag extends TagSupport {
 
     /**
@@ -40,8 +42,8 @@ public class FormatDNTag extends TagSupport {
 
     String dn;
 
-    /** FIXME: Should allow for more characters inside the fields, should standard compliant **/
-    String regexTemplate = "=((?:\\w\\s?\\.?@?-?\\(?\\)?)*)";
+    /** FIXME: Should allow for more characters inside the fields, to be standard compliant **/
+    private static final String regexTemplate = "=((?:(?:\\/(?!DN|DC|STREET|O|OU|CN|C|L|Email|emailAddress|UID|uid))?\\w?:?;?'?\"?`?\\s?\\.?@?-?\\(?\\)?,?)*)";
 
     private void write( String s ) throws JspTagException {
 
@@ -67,21 +69,26 @@ public class FormatDNTag extends TagSupport {
 
     public String formatDN() {
 
-        // Expected: this is not a VOMS FQAN
         StringBuffer repr = new StringBuffer();
 
-        String[] fieldsArray = fields.split( "," );
+        if (fields == null || "".equals(fields.trim()))
+        	return dn;
+        
+        String[] fieldsArray = fields.trim().split( "," );
+        
 
         for ( int i = 0; i < fieldsArray.length; i++ ) {
             String regex = fieldsArray[i].trim() + regexTemplate;
             Pattern p = Pattern.compile( regex );
             Matcher m = p.matcher( dn );
 
-            if ( m.find() ) {
-                if ( i > 0 && ( repr.length() > 0 ) )
+            while ( m.find() ) {
+                if ( i > 0 || ( repr.length() > 0 ) )
                     repr.append( "," );
+                repr.append(fieldsArray[i].trim()+"=");
 
                 String match = m.group().trim();
+                
                 repr.append( match.substring( match.indexOf( '=' ) + 1 ) );
 
             }
@@ -97,7 +104,7 @@ public class FormatDNTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 
-        if ( fields == null )
+        if ( fields == null || VOMSConfiguration.instance().getBoolean( "voms.webapp.always-show-full-dns", false ))
             write( dn );
         else
             write( formatDN() );
@@ -114,5 +121,4 @@ public class FormatDNTag extends TagSupport {
 
         this.dn = dn;
     }
-
 }

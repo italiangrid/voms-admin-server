@@ -36,7 +36,8 @@ import org.glite.security.voms.admin.actions.BaseAction;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.RequestDAO;
-import org.glite.security.voms.admin.database.IllegalOperationException;
+import org.glite.security.voms.admin.database.AlreadyConfirmedRequestException;
+import org.glite.security.voms.admin.database.ConfirmationRequestException;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.notification.HandleRequestNotification;
@@ -69,13 +70,12 @@ public class ConfirmRequestAction extends BaseAction {
                 + "} {expected: " + req.getConfirmId() + "}" );
 
         if ( !req.getStatus().equals( VOMembershipRequest.SUBMITTED ) )
-            throw new IllegalOperationException(
-                    "Cannot confirm an already confirmed request!" );
+            throw new AlreadyConfirmedRequestException( "Cannot confirm an already confirmed request!" );
 
         if ( rForm.getConfirmId().equals( req.getConfirmId() ) )
             req.setStatus( VOMembershipRequest.CONFIRMED );
         else
-            throw new IllegalOperationException(
+            throw new ConfirmationRequestException(
                     "Wrong confirmation id for request #:" + id );
 
         RequestDAO.instance().save( req );

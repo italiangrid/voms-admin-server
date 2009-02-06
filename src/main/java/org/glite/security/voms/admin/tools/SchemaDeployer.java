@@ -72,6 +72,9 @@ import org.hibernate.type.ShortType;
 
 public class SchemaDeployer {
 
+    public static final String ORACLE_PRODUCT_NAME = "Oracle";
+    public static final String MYSQL_PRODUCT_NAME = "MySQL";
+    
     private static final Log log = LogFactory.getLog( SchemaDeployer.class );
 
     protected CommandLineParser parser = new PosixParser();
@@ -125,6 +128,37 @@ public class SchemaDeployer {
         System.exit( 0 );
     }
 
+    private boolean isOracleBackend(){
+        
+        Session s = HibernateFactory.getSession();
+        Transaction t = s.beginTransaction();
+        
+        DatabaseMetaData dbMetadata = null;
+        String dbProductName = null;
+        
+        try {
+            
+            dbMetadata = s.connection().getMetaData();
+            dbProductName = dbMetadata.getDatabaseProductName();
+                    
+        } catch ( HibernateException e ) {
+            
+            log.error("Hibernate error accessing database metadata from Hibernate connection!", e);
+            System.exit( -1 );
+            
+        } catch ( SQLException e ) {
+            
+            log.error("SQL error while accessing database metadata from Hibernate connection!", e);
+            System.exit( -1 );
+            
+        }
+        
+        log.debug( "Detected database: "+dbProductName );
+        return dbProductName.trim().equals( ORACLE_PRODUCT_NAME );
+     
+    }
+    
+    
     private void printExceptions( List l ) {
 
         Iterator i = l.iterator();
@@ -265,10 +299,18 @@ public class SchemaDeployer {
 
             }
 
+            if (isOracleBackend())
+                fixHibernateSequence();
+            
+            removeDuplicatedACLEntries();
+            
             migrateDbContents();
             migrateMappings();
             migrateACLs();
             dropOldTables();
+            
+            if (isOracleBackend())
+                dropOldSequences();
             
             HibernateFactory.commitTransaction();
             log.info( "Database upgraded succesfully!" );
@@ -624,12 +666,24 @@ public class SchemaDeployer {
     
     private int dropSequence(String sequenceName){
         
+        log.debug( "Dropping sequence "+sequenceName );
         Session s = HibernateFactory.getSession();
         String command = "drop sequence "+sequenceName;
-        return s.createSQLQuery( command ).executeUpdate();
+        
+        try{
+            return s.createSQLQuery( command ).executeUpdate();
+        
+        }catch(HibernateException e){
+            if (e.getCause().getMessage().contains( "sequence does not exist" )){
+                log.warn( "Error dropping sequence: "+sequenceName+"... such sequence doesn't exist." );
+                log.warn( "This error may be ignored at this stage of the database upgrade...");
+            }
+            return 0;
+        }
     }
     
     private void dropOldSequences(){
+        log.info( "Dropping old sequences..." );
         
         String[] oldSequences = new String[]{
           "voms_seq_ca",
@@ -638,12 +692,11 @@ public class SchemaDeployer {
           "voms_seq_acl",
           "voms_seq_role",
           "voms_seq_group",
-          "voms_seq_user",
-          "voms_seq_attributes"
+          "voms_seq_user"     
         };
         
         for ( int i = 0; i < oldSequences.length; i++ ) 
-            dropSequence( oldSequences[i] );
+            dropSequence( oldSequences[i]);
                                              
     }
     
@@ -679,6 +732,28 @@ public class SchemaDeployer {
         
         
     }
+    
+    
+    // See bug https://savannah.cern.ch/bugs/?36291
+    private void fixHibernateSequence() {
+        log.info( "Migrating sequences since on oracle backend..." );
+        Session s = HibernateFactory.getSession();
+
+        Long maxSeqValue = (Long) s
+                .createSQLQuery(
+                        "select max(last_number) as max from user_sequences where sequence_name like 'VOMS_%'" )
+                .addScalar( "max", new LongType() ).uniqueResult();
+        
+        // Recreate hibernate sequence
+        String dropHibSeqStatement = "drop sequence HIBERNATE_SEQUENCE";
+        String createHibSeqStatement = "create sequence HIBERNATE_SEQUENCE MINVALUE 1 MAXVALUE 999999999999999999999999999 " +
+            "INCREMENT BY 1 START WITH "+maxSeqValue+" CACHE 20 NOORDER NOCYCLE";
+        
+        s.createSQLQuery( dropHibSeqStatement ).executeUpdate();
+        s.createSQLQuery( createHibSeqStatement ).executeUpdate();
+        log.info("Sequences migration complete.");
+    }
+    
     private void migrateDbContents(){
         
         log.info( "Migrating db contents..." );
@@ -749,6 +824,14 @@ public class SchemaDeployer {
             
             s.save( u );
         }
+        
+    }
+    
+    private void removeDuplicatedACLEntries(){
+        log.info("Removing eventual buggy duplicated ACL entries... ");
+        
+        Session s = HibernateFactory.getSession();
+        s.createSQLQuery( "delete from admins_old where dn not like '/O=VOMS/%' and adminid not in (select adminid from acl_old)" ).executeUpdate();
         
     }
     private void migrateACLs() {

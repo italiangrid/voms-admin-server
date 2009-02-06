@@ -170,7 +170,8 @@ class ConfigureAction:
         if self.user_options.has_key('disable-webui-requests'):
             self.user_options['webui-enabled'] = 'false'
         else:
-            self.user_options['webui-enabled'] = 'true'
+            self.user_options['webui-enabled'] = 'true'        
+        
     
 
 class UpgradeVO(ConfigureAction):
@@ -257,7 +258,8 @@ class UpgradeVO(ConfigureAction):
              'TRUSTED_ADMIN.SUBJECT': "",
              'TRUSTED_ADMIN.CA': "",
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
-             'CA.FILES': self.user_options['ca-files']
+             'CA.FILES': self.user_options['ca-files'],
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients'))
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -323,10 +325,14 @@ class RemoveVOAction(ConfigureAction):
         os.removedirs(vo_config_dir(self.user_options['vo']))
         
         ## Removing voms configuration
-        for i in glob.glob(voms_config_dir(self.user_options['vo'])+"/*"):
-            os.remove(i)
-            
-        os.removedirs(voms_config_dir(self.user_options['vo']))
+        if not self.user_options.has_key('skip-voms-core'):
+            if voms_config_dir_exists(self.user_options['vo']):
+                for i in glob.glob(voms_config_dir(self.user_options['vo'])+"/*"):
+                    os.remove(i)
+                            
+                os.removedirs(voms_config_dir(self.user_options['vo']))
+        else:
+            print "Skipping removal of voms core configuration..."
     
     def remove_vo(self):
         
@@ -463,11 +469,12 @@ class InstallVOAction(ConfigureAction):
             
             os.makedirs(vo_conf_dir)
         
-        if not os.path.exists(voms_conf_dir):
-            os.makedirs(voms_conf_dir)
-        else:
-            backup_dir_contents(voms_conf_dir)
-            
+        if not self.user_options.has_key("skip-voms-core"):
+            if not os.path.exists(voms_conf_dir):
+                os.makedirs(voms_conf_dir)
+            else:
+                backup_dir_contents(voms_conf_dir)
+        
         self.write_database_properties()
         self.write_service_properties()
         self.write_context()
@@ -476,7 +483,11 @@ class InstallVOAction(ConfigureAction):
             self.write_siblings_context()
         
         self.write_vomses()
-        self.write_voms_properties()
+        
+        if not self.user_options.has_key("skip-voms-core"):
+            self.write_voms_properties()
+        else:
+            print "Skipping voms core configuration creation"
         
     
     def write_database_properties(self):
@@ -499,16 +510,14 @@ class InstallVOAction(ConfigureAction):
         
     
     def write_service_properties(self):
-        
-        
-        
-            
+                            
         m = {'NOTIFICATION.EMAIL_ADDRESS': self.user_options['mail-from'],
              'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
              'TRUSTED_ADMIN.SUBJECT': self.user_options['ta.subject'],
              'TRUSTED_ADMIN.CA': self.user_options['ta.ca'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
-             'CA.FILES': self.user_options['ca-files']
+             'CA.FILES': self.user_options['ca-files'],
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients'))
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -839,6 +848,11 @@ class X509Helper:
         self.subject = re.sub(r'/(UserId|USERID|userId|userid|uid|Uid)=','/UID=',self.subject)
         
         self.email = email.strip()
+        
+        # Check that only first email address is taken from the certificate, the openssl -email command
+        # returns one address per line
+        emails = email.splitlines(False)
+        self.email = emails[0]
     
     def __repr__(self):
         return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
@@ -923,7 +937,9 @@ class VomsConstants:
               "disable-webui-requests",
               "uri=",
               "timeout=",
-              "shortfqans"]
+              "shortfqans",
+              "read-access-for-authenticated-clients",
+              "skip-voms-core"]
 
     short_options = "hvV";
 

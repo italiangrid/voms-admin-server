@@ -222,7 +222,7 @@ public class VOMSAttributeDAO {
     public int countUserAttributesMatches(String searchString){
     	
     	String queryString = "select count(*) from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a " +
-    			"where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or " +
+    			"where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.dn like :searchString) or " +
     			"(a.value like :searchString)";
     	
     	
@@ -244,7 +244,7 @@ public class VOMSAttributeDAO {
     	SearchResults results = SearchResults.instance();
     	String sString = "%" + searchString + "%";
     	String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a " +
-    			"where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or " +
+    			"where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.dn like :searchString) or " +
     			"(a.value like :searchString) order by a.attributeDescription.name,u.dn";
     	
     	Query q = HibernateFactory.getSession().createQuery(queryString);
@@ -280,6 +280,10 @@ public class VOMSAttributeDAO {
         Iterator i = q.iterate();
         while (i.hasNext()){
             String value = (String) i.next();
+            
+            // NULL attribute value can be assigned to multiple users, two NULLs aren't equal as attribute values 
+            if (value == null)
+                return false;
             
             if (value.equals( attrValue ))
                 return true;

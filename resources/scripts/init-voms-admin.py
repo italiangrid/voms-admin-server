@@ -232,7 +232,7 @@ def reload_vo(vo):
         print out
     else:
         remove_context_file(vo)
-        remove_webapp_dir()
+        remove_webapp_dir(vo)
         time.sleep(10)
         start_vo(vo)
       

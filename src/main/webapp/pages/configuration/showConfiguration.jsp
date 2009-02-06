@@ -49,6 +49,13 @@ VOMSES string for this vo:
 <div class="header2">
 Example Mkgridmap configuration for this vo:
 </div>
+
 <div class="configurationInfo">
 	${mkgridmapConf}
 </div>
+<div class="separator">
+&nbsp;
+</div>
+
+
+<voms:pageCustomization pageName="showConfiguration.html" styleClass="customized-content"/>

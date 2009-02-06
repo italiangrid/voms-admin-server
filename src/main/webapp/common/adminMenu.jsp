@@ -18,21 +18,15 @@
  Authors:
      Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
 --%>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
-<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
-<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
-
+<div class="menuItem"><html:link forward="register">Register!</html:link></div>
 <div class="menuItem"><html:link forward="manageUsers">VO management</html:link></div>
 
 <div class="menuItem"><html:link forward="manageRequests">Subscriptions</html:link></div>
 <div class="menuItem"><html:link forward="configuration">Configuration</html:link></div>
 
-<div class="menuItem"><html:link forward="manageTags">Tags</html:link></div>
 <!--
 <div class="menuItem"><html:link forward="manageNotification">Messaging</html:link></div>
 

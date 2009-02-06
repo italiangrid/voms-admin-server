@@ -8,3 +8,5 @@
 --sqlloc=@SQLLOC@
 --username=@USERNAME@
 --vo=@VONAME@
+--uri=@URI@
+--timeout=@TIMEOUT@

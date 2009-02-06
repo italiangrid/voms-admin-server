@@ -23,24 +23,33 @@
 <%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
-	
+
 <div class="deleteUserForm">
-	<c:url value="/DeleteUser.do" var="deleteUserUrl">
-		<c:param name="id" value="${vomsUser.id}"/>
+	<c:url
+		value="/DeleteUser.do"
+		var="deleteUserUrl">
+	
+		<c:param
+			name="id"
+			value="${vomsUser.id}" />
 	</c:url>
+	
+	<c:url value="javascript:ask_confirm('Delete user: \n ${fn:escapeXml(vomsUser.escapedDn)} \n?', '${deleteUserUrl}', 'User ${fn:escapeXml(vomsUser.escapedDn)} not deleted.')"
+						var="deleteUserJSUrl"/>
+		
 	<voms:link
 		context="vo"
 		permission="rw"
-		href="javascript:ask_confirm('Delete user? \n${vomsUser}\n', '${deleteUserUrl}', 'User ${vomsUser.dn} not deleted.')"
+		href="${deleteUserJSUrl}"
 		styleClass="actionLink"
 		disabledStyleClass="disabledLink">
-		Delete this user
+		delete this user
 	</voms:link>
 </div>
 
 <div class="detailsBlock">
 
-	<html:form action="/EditUser" method="post">
+	<html:form action="/EditUser" method="post" onsubmit="return validateUserForm(this)">
 	<table class="form">
 		<colgroup>
 				<col class="labels"/>
@@ -49,12 +58,12 @@
 		<tr>
 			<td>
 				<div class="label">
-					Name:
+					DN:
 				</div>
 			</td>
 			<td>
 				<div class="userDNCA">
-					${vomsUser.name} ${vomsUser.surname}
+					<div class="userDN">${vomsUser.dn}</div>
 				</div>
 			</td>	
 		</tr>
@@ -62,42 +71,33 @@
 		<tr>
 			<td>
 				<div class="label">
-					Institution:
+					CA:
 				</div>
 			</td>
 			<td>
-				<html:text property="institution" size="50" styleClass="inputField"
-					value="${vomsUser.institution}"/>
-			</td>
+				<div class="userDNCA">
+					<div class="userCA">${vomsUser.ca.dn}</div>
+				</div>
+			</td>	
 		</tr>
-		
+
+		<%-- 
 		<tr>
 			<td>
 				<div class="label">
-					Address:
+					User's common name:
 				</div>
 			</td>
 			<td>
-				<html:textarea property="address" rows="4" cols="50" styleClass="inputField"
-					value="${vomsUser.address}"/>
+				<html:text property="cn" size="50" styleClass="inputField"
+					value="${vomsUser.cn}"/>
 			</td>
 		</tr>
-		
+		--%>
 		<tr>
 			<td>
 				<div class="label">
-					Phone number:
-				</div>
-			</td>
-			<td>
-				<html:text property="phoneNumber" size="50" styleClass="inputField"
-					value="${vomsUser.phoneNumber}"/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div class="label">
-				Email address:
+				Email:
 				</div>
 			</td>
 			<td>
@@ -121,3 +121,4 @@
 	<div class="separator">&nbsp;</div>
 </div>
 
+<html:javascript formName="/EditUser"/>

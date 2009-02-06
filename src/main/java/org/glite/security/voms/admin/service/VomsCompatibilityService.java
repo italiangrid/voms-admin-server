@@ -67,15 +67,9 @@ public class VomsCompatibilityService implements VOMSCompatibility {
 			return ServiceUtils.toStringArray(members);
 
 		} catch (RuntimeException e) {
-
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
-
-			throw e;
-
+		    
+		    ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;
 		}
 
 	}
@@ -96,14 +90,8 @@ public class VomsCompatibilityService implements VOMSCompatibility {
 
 		} catch (RuntimeException e) {
 
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
-
-			throw e;
-
+		    ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;
 		}
 
 	}

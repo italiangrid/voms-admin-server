@@ -25,6 +25,8 @@
 
 package org.glite.security.voms.admin.api;
 
+import org.glite.security.voms.admin.api.acl.VOMSACL;
+
 /**
  * Represents access control list entries within the VOMS database.
  *
@@ -46,6 +48,9 @@ package org.glite.security.voms.admin.api;
  * operation <code>ALL</code>, which is a shorthand for all operations.
  *
  * @author <a href="mailto:Akos.Frohner@cern.ch">Akos Frohner</a>
+ * @deprecated Starting from VOMS Admin 2, this interface for ACL management is
+ * deprecated an no longer understood. Use the ACL management interface defined
+ * in {@link VOMSACL}.
  */
 public class ACLEntry {
 

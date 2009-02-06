@@ -70,13 +70,9 @@ public class VOMSACLService implements VOMSACL {
             
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
+            
         }
         
     }

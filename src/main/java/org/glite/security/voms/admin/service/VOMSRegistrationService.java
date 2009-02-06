@@ -40,104 +40,141 @@ import org.glite.security.voms.admin.request.VOMSNotificationException;
 import org.glite.security.voms.service.registration.RegistrationRequest;
 import org.glite.security.voms.service.registration.VOMSRegistration;
 
-
 public class VOMSRegistrationService implements VOMSRegistration {
 
     private static final Log log = LogFactory
             .getLog( VOMSRegistrationService.class );
-    
-    private String buildConfirmURL(HttpServletRequest request, VOMembershipRequest membReq){
-        
-        return ServiceUtils.getBaseContext(request )+"/ConfirmVOMembershipRequest.do?requestId="+membReq.getId()+"&confirmId="+membReq.getConfirmId(); 
-   }
-   
-   private String buildCancelURL(HttpServletRequest request, VOMembershipRequest membReq){
-       
-       return ServiceUtils.getBaseContext( request )+"/CancelVOMembershipRequest.do?requestId="+membReq.getId()+"&confirmId="+membReq.getConfirmId(); 
-  }
-    
+
+    private String buildConfirmURL( HttpServletRequest request,
+            VOMembershipRequest membReq ) {
+
+        return ServiceUtils.getBaseContext( request )
+                + "/ConfirmVOMembershipRequest.do?requestId=" + membReq.getId()
+                + "&confirmId=" + membReq.getConfirmId();
+    }
+
+    private String buildCancelURL( HttpServletRequest request,
+            VOMembershipRequest membReq ) {
+
+        return ServiceUtils.getBaseContext( request )
+                + "/CancelVOMembershipRequest.do?requestId=" + membReq.getId()
+                + "&confirmId=" + membReq.getConfirmId();
+    }
+
     public void submitRegistrationRequest( RegistrationRequest request )
             throws RemoteException , VOMSException {
 
-        HttpServletRequest httpServletRequest = 
-            (HttpServletRequest) MessageContext.getCurrentContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
-        
-        if (request == null)
-            throw new NullArgumentException("Cannot submit a null request!");
-        
-        CurrentAdmin admin = CurrentAdmin.instance();
-        
-        VOMembershipRequest req = RequestDAO.instance().findPendingForUser( admin.getRealSubject(), admin.getRealIssuer() );
-        
-        if (req != null)
-            throw new AlreadyExistsException("A registration pending for user '"+admin.getRealSubject()+"' has already been received. " +
-                    "Follow the instructions that were communicated to complete registration.");
-        
-        req = RequestDAO.instance().createFromAdmin( request.getEmailAddress() );
-        
-        // Notify user
-        String confirmURL = buildConfirmURL( httpServletRequest, req );
-        String cancelURL = buildCancelURL( httpServletRequest, req );
-        
-        ConfirmRequestNotification n = new ConfirmRequestNotification(request.getEmailAddress(),
-                confirmURL,
-                cancelURL);
-        
-        try{
-            
-            n.send();
-            
-        }catch (VOMSNotificationException e) {
-        
-            log.error( "Error sending notification for request!", e  );
-            log.error( "Request will be discarded." );
-            RequestDAO.instance().delete( req );
+        try {
+
+            HttpServletRequest httpServletRequest = (HttpServletRequest) MessageContext
+                    .getCurrentContext().getProperty(
+                            HTTPConstants.MC_HTTP_SERVLETREQUEST );
+
+            if ( request == null )
+                throw new NullArgumentException(
+                        "Cannot submit a null request!" );
+
+            CurrentAdmin admin = CurrentAdmin.instance();
+
+            VOMembershipRequest req = RequestDAO.instance().findPendingForUser(
+                    admin.getRealSubject(), admin.getRealIssuer() );
+
+            if ( req != null )
+                throw new AlreadyExistsException(
+                        "A registration pending for user '"
+                                + admin.getRealSubject()
+                                + "' has already been received. "
+                                + "Follow the instructions that were communicated to complete registration." );
+
+            req = RequestDAO.instance().createFromAdmin(
+                    request.getEmailAddress() );
+
+            // Notify user
+            String confirmURL = buildConfirmURL( httpServletRequest, req );
+            String cancelURL = buildCancelURL( httpServletRequest, req );
+
+            ConfirmRequestNotification n = new ConfirmRequestNotification(
+                    request.getEmailAddress(), confirmURL, cancelURL );
+
+            try {
+
+                n.send();
+
+            } catch ( VOMSNotificationException e ) {
+
+                log.error( "Error sending notification for request!", e );
+                log.error( "Request will be discarded." );
+                RequestDAO.instance().delete( req );
+            }
+
+        } catch ( RuntimeException e ) {
+
+            ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;
         }
-        
+
     }
 
-    public void submitRegistrationRequestForUser( String userSubject, String caSubject, RegistrationRequest request) throws RemoteException , VOMSException {
+    public void submitRegistrationRequestForUser( String userSubject,
+            String caSubject, RegistrationRequest request )
+            throws RemoteException , VOMSException {
 
-        HttpServletRequest httpServletRequest = 
-            (HttpServletRequest) MessageContext.getCurrentContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
-        
-        if (request == null)
-            throw new NullArgumentException("Cannot submit a null request!");
-        
-        if (userSubject == null)
-            throw new NullArgumentException("Cannot submit a request for a null user!");
-        
-        if (caSubject == null)
-            throw new NullArgumentException("Cannot submit a request for a null CA!");
-        
-        String normalizedSubject = DNUtil.normalizeDN( userSubject );
-        String normalizedCASubject = DNUtil.normalizeDN( caSubject );
-        
-        VOMembershipRequest req = RequestDAO.instance().findPendingForUser( normalizedSubject, normalizedCASubject );
-        
-        if (req != null)
-            throw new AlreadyExistsException("A registration pending for user '"+normalizedSubject+"' has already been received. " +
-                    "Follow the instructions that were communicated to complete registration.");
-        
-        req = RequestDAO.instance().createFromDNCA( normalizedSubject, normalizedCASubject, request.getEmailAddress() );
-        
-        // Notify user
-        String confirmURL = buildConfirmURL( httpServletRequest, req );
-        String cancelURL = buildCancelURL( httpServletRequest, req );
-        
-        ConfirmRequestNotification n = new ConfirmRequestNotification(request.getEmailAddress(),
-                confirmURL,
-                cancelURL);
-        
-        try{
-            
-            n.send();
-            
-        }catch (VOMSNotificationException e) {
-        
-            log.error( "Error sending notification for request!", e  );
-            log.error( "Request will be discarded." );
-            RequestDAO.instance().delete( req );
+        try {
+
+            HttpServletRequest httpServletRequest = (HttpServletRequest) MessageContext
+                    .getCurrentContext().getProperty(
+                            HTTPConstants.MC_HTTP_SERVLETREQUEST );
+
+            if ( request == null )
+                throw new NullArgumentException(
+                        "Cannot submit a null request!" );
+
+            if ( userSubject == null )
+                throw new NullArgumentException(
+                        "Cannot submit a request for a null user!" );
+
+            if ( caSubject == null )
+                throw new NullArgumentException(
+                        "Cannot submit a request for a null CA!" );
+
+            String normalizedSubject = DNUtil.normalizeDN( userSubject );
+            String normalizedCASubject = DNUtil.normalizeDN( caSubject );
+
+            VOMembershipRequest req = RequestDAO.instance().findPendingForUser(
+                    normalizedSubject, normalizedCASubject );
+
+            if ( req != null )
+                throw new AlreadyExistsException(
+                        "A registration pending for user '"
+                                + normalizedSubject
+                                + "' has already been received. "
+                                + "Follow the instructions that were communicated to complete registration." );
+
+            req = RequestDAO.instance().createFromDNCA( normalizedSubject,
+                    normalizedCASubject, request.getEmailAddress() );
+
+            // Notify user
+            String confirmURL = buildConfirmURL( httpServletRequest, req );
+            String cancelURL = buildCancelURL( httpServletRequest, req );
+
+            ConfirmRequestNotification n = new ConfirmRequestNotification(
+                    request.getEmailAddress(), confirmURL, cancelURL );
+
+            try {
+
+                n.send();
+
+            } catch ( VOMSNotificationException e ) {
+
+                log.error( "Error sending notification for request!", e );
+                log.error( "Request will be discarded." );
+                RequestDAO.instance().delete( req );
+            }
+
+        } catch ( RuntimeException e ) {
+
+            ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;
         }
     }
 

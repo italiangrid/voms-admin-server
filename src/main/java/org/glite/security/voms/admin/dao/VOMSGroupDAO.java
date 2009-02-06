@@ -215,7 +215,7 @@ public class VOMSGroupDAO {
         String sString = "%" + searchString + "%";
 
         String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
-            "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
+            "and (m.user.dn like :searchString or m.user.ca.dn like :searchString) order by m.user.dn asc";
         
         Query q = HibernateFactory.getSession().createQuery( queryString )
         .setString( "searchString", sString );
@@ -392,8 +392,10 @@ public class VOMSGroupDAO {
 
         log.debug( "Deleting group " + g + "\"." );
 
+        VOMSRoleDAO.instance().removeRoleAttributesForGroup( g );
+        
         g.getMappings().clear();
-
+        
         g.getAcls().clear();
 
         HibernateFactory.getSession().delete( g );

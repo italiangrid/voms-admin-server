@@ -31,3 +31,10 @@ Welcome to voms-admin registration for the <span class="voName"> ${voName}</span
 <p>
 Registration is currently disabled for this VO.
 </p>
+
+<p>
+Click on the VOMS Admin logo above to browse the VO.
+</p>
+
+<voms:pageCustomization pageName="registrationDisabled.html" styleClass="customized-content"/>
+

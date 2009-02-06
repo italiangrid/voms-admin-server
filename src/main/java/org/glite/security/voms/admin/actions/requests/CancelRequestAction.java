@@ -31,6 +31,8 @@ import org.glite.security.voms.admin.actions.BaseAction;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.RequestDAO;
+import org.glite.security.voms.admin.database.AlreadyConfirmedRequestException;
+import org.glite.security.voms.admin.database.ConfirmationRequestException;
 import org.glite.security.voms.admin.database.IllegalOperationException;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
 
@@ -52,12 +54,12 @@ public class CancelRequestAction extends BaseAction {
             throw new NotFoundException("Request with id:"+id+" not found in database!");
         
         if (!req.getStatus().equals(VOMembershipRequest.SUBMITTED))
-            throw new IllegalOperationException("Cannot cancel an already confirmed request!");
+            throw new AlreadyConfirmedRequestException("Cannot cancel an already confirmed request!");
         
         if (rForm.getConfirmId().equals( req.getConfirmId() ))
             RequestDAO.instance().delete( req );
         else
-            throw new IllegalOperationException("Wrong confirmation id for request #:"+id);
+            throw new ConfirmationRequestException("Wrong confirmation id for request #:"+id);
         
         return findSuccess( mapping );
     }

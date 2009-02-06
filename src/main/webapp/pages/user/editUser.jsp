@@ -40,18 +40,6 @@
 				<tiles:insert attribute="userDetails"/>
 		</voms:panel><!-- details -->
 		
-		<voms:panel id="certificateDetails"
-			title="Certificates"
-			panelClass="panel"
-			headerClass="panelHeader"
-			buttonClass="panelButton"
-			titleClass="panelTitle"
-			contentClass="panelContent">
-			
-				<tiles:insert attribute="userCertificates"/>
-
-		</voms:panel><!-- certificates -->
-		
 		<voms:panel id="membershipDetails"
 			title="Membership details"
 			panelClass="panel"

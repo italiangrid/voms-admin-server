@@ -21,6 +21,7 @@
 
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.actionforms.UserForm;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
@@ -29,6 +30,7 @@ import org.glite.security.voms.admin.operations.BaseVoRWOperation;
 public class UpdateUserOperation extends BaseVoRWOperation{
 
     VOMSUser user;
+    UserForm form;
 
     private UpdateUserOperation( VOMSUser u ) {
 
@@ -36,7 +38,21 @@ public class UpdateUserOperation extends BaseVoRWOperation{
 
     }
 
+    private UpdateUserOperation( VOMSUser u, UserForm uf ) {
+
+        user = u;
+        form = uf;
+
+    }
+    
     public Object doExecute() {
+        
+        if (form != null){
+            
+            user.setCn(form.getCn());
+            user.setEmailAddress(form.getEmailAddress());
+            
+        }
 
         VOMSUserDAO.instance().update( user );
         return null;
@@ -45,6 +61,11 @@ public class UpdateUserOperation extends BaseVoRWOperation{
     public static UpdateUserOperation instance( VOMSUser usr ) {
 
         return new UpdateUserOperation( usr ) ;
+    }
+    
+    public static UpdateUserOperation instance(VOMSUser usr, UserForm form){
+        
+        return new UpdateUserOperation(usr, form);
     }
 
 }

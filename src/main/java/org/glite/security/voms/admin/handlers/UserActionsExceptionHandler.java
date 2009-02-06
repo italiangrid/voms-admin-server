@@ -46,10 +46,6 @@ import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
-import org.hibernate.HibernateException;
-import org.hibernate.JDBCException;
-
-
 
 public class UserActionsExceptionHandler extends ExceptionHandler {
 
@@ -70,7 +66,9 @@ public class UserActionsExceptionHandler extends ExceptionHandler {
 
         }
 
-        log.info( "Exception caught performing user action: " + ex.getMessage() );
+        log
+                .info( "Exception caught performing user action: "
+                        + ex.getMessage() );
         log.debug( "Detailed information: ", ex );
 
         ActionMessage msg = null;
@@ -80,8 +78,8 @@ public class UserActionsExceptionHandler extends ExceptionHandler {
             msg = new ActionMessage( "error.authorization_failed", ex
                     .getMessage() );
 
-        } else if ( ex instanceof NullArgumentException){
-            
+        } else if ( ex instanceof NullArgumentException ) {
+
             msg = new ActionMessage( "error.null_argument", ex.getMessage() );
 
         } else if ( ex instanceof EmailAddressAlreadyBoundException ) {
@@ -134,17 +132,14 @@ public class UserActionsExceptionHandler extends ExceptionHandler {
 
             msg = new ActionMessage( "error.database", ex.getMessage() );
 
-        } else if ( ex instanceof HibernateException){
-        	
-        	HibernateFactory.rollbackTransaction();
-        	msg = new ActionMessage( "error.database", ex.getMessage() );
-        }
-        else {
+            
+        } else {
             msg = new ActionMessage( "error.unknown", ex.getMessage() );
 
         }
 
-        storeException( request, msg.getKey(), msg, forward, "org.glite.security.voms.admin.request" );
+        storeException( request, msg.getKey(), msg, forward,
+                "request" );
 
         return forward;
 

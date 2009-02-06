@@ -21,7 +21,6 @@
 
 package org.glite.security.voms.admin.dao;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,17 +30,13 @@ import org.glite.security.voms.admin.common.Constants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.NoSuchAdminException;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
-import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.Query;
 
@@ -68,22 +63,10 @@ public class VOMSAdminDAO {
         List result = HibernateFactory.getSession().createQuery( query ).list();
         return result;
     }
-    
-    public List<VOMSAdmin> getNonInternalAdmins(){
-        
-        String caDN = "/O=VOMS/O=System%";
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString not like :caDN";
-        
-        Query q = HibernateFactory.getSession().createQuery( query );
-        q.setString( "caDN", caDN );
-        
-        return q.list();
-        
-    }
 
     public VOMSAdmin getAnyAuthenticatedUserAdmin() {
 
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.dn = :caDN";
         Query q = HibernateFactory.getSession().createQuery( query );
 
         q.setString( "dn", Constants.ANYUSER_ADMIN );
@@ -115,8 +98,12 @@ public class VOMSAdminDAO {
 
         if ( caDN == null )
             throw new NullArgumentException( "caDN must be non-null!" );
+        
+        // Normalize dn & ca 
+        dn = DNUtil.normalizeDN(dn);
+        caDN = DNUtil.normalizeDN(caDN);
 
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.dn = :caDN";
         Query q = HibernateFactory.getSession().createQuery( query );
 
         q.setString( "dn", dn );
@@ -126,45 +113,6 @@ public class VOMSAdminDAO {
         
     }
      
-    public VOMSAdmin getFromUser(VOMSUser u){
-        
-        assert u != null: "Cannot look for an admin starting from a null user!";
-        
-        VOMSAdmin result = null;
-        
-        for(Certificate c: u.getCertificates()){
-        
-            // Return the first certificate found...
-            result = getByName( c.getSubjectString(), c.getCa().getSubjectString() );
-            
-            if (result != null)
-                break;
-        }
-        
-        return result;
-    }
-    
-    public VOMSAdmin createFromUser(VOMSUser u){
-        
-        assert u != null: "Cannot create an admin starting from a null user!";
-        
-        VOMSAdmin admin = getFromUser( u );
-        
-        if (admin != null)
-            return admin;
-        
-        admin = new VOMSAdmin();
-        Certificate c = u.getDefaultCertificate();
-        
-        admin.setDn( c.getSubjectString() );
-        admin.setCa( c.getCa());
-        admin.setEmailAddress( u.getEmailAddress() );
-             
-        HibernateFactory.getSession().save( admin );
-        
-        return admin;
-    }
-    
     public List getRoleAdmins(VOMSRole r){
         String searchString = "%Role="+r.getName();
         String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
@@ -185,17 +133,6 @@ public class VOMSAdminDAO {
         }
         
     }
-    
-    
-    public List<VOMSAdmin> getTagAdmins(){
-        
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString = :caSubject";
-        
-        return HibernateFactory.getSession().createQuery( query ).setString( "caSubject", Constants.TAG_CA).list();
-        
-    }
-    
-    
     
     public VOMSAdmin getByFQAN(String fqan){
         
@@ -237,30 +174,6 @@ public class VOMSAdminDAO {
             
         
     }
-    
-    public VOMSAdmin getFromTag(String tagName){
-        
-        assert tagName != null: "Cannot get a VOMS Admin from a null tagName";
-        
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString = :caSubject and dn = :tagName";
-        
-        Query q = HibernateFactory.getSession().createQuery( query ).setString( "caSubject", Constants.TAG_CA).setString( "tagName", tagName); 
-        return (VOMSAdmin) q.uniqueResult();
-        
-    }
-    
-    public VOMSAdmin createFromTag(String tagName){
-        
-        assert tagName != null: "Cannot create a VOMS Admin from a null tag name!";
-        
-        VOMSAdmin tagAdmin = getFromTag( tagName );
-        
-        if (tagAdmin != null)
-            throw new AlreadyExistsException("Admin for tag '"+tagName+"' already exists!");
-        
-        return create(tagName,Constants.TAG_CA);
-        
-    }
 
     public VOMSAdmin create(String dn, String caDN){
         
@@ -275,6 +188,9 @@ public class VOMSAdminDAO {
         if ( caDN == null )
             throw new NullArgumentException( "caDN must be non-null!" );
 
+        // Fix for https://savannah.cern.ch/bugs/?31068
+        caDN = DNUtil.normalizeDN( caDN );
+        
         VOMSAdmin admin = new VOMSAdmin();
         VOMSCA ca = VOMSCADAO.instance().getByName( caDN );
 
@@ -282,7 +198,7 @@ public class VOMSAdminDAO {
             throw new IllegalArgumentException( "Unkown CA " + caDN
                     + " passed as argument!" );
 
-        dn = DNUtil.normalizeEmailAddressInDN( dn );
+        dn = DNUtil.normalizeDN( dn );
         admin.setDn( dn );
         admin.setCa( ca );
         admin.setEmailAddress( emailAddress );
@@ -296,7 +212,7 @@ public class VOMSAdminDAO {
         if ( admin == null )
             throw new NullArgumentException( "admin must not be null!" );
 
-        admin.setDn( DNUtil.normalizeEmailAddressInDN( admin.getDn() ) );
+        admin.setDn( DNUtil.normalizeDN( admin.getDn() ) );
         HibernateFactory.getSession().save( admin );
         return admin;
 
@@ -311,30 +227,6 @@ public class VOMSAdminDAO {
 
     }
 
-    public List<VOMSAdmin> getFromCA(VOMSCA ca){
-        
-        assert ca != null: "ca must be non-null!";
-        
-        String query = "from VOMSAdmin where ca = :ca";
-        return HibernateFactory.getSession().createQuery( query ).setEntity( "ca", ca ).list();
-        
-    }
-    public void deleteFromCA(VOMSCA ca){
-        
-        assert ca != null: "ca must be non-null!";
-                
-        log.debug( "Deleting all admins from CA '"+ca+"'" );
-        ACLDAO aclDAO = ACLDAO.instance();
-        
-        for (VOMSAdmin a: getFromCA( ca )){
-            
-            if (aclDAO.hasActivePermissions( a ))
-                aclDAO.deletePermissionsForAdmin( a );
-            
-            HibernateFactory.getSession().delete( a );
-        }
-        
-    }
     public void delete( String dn, String caDN ) {
 
         if ( dn == null )
@@ -381,60 +273,5 @@ public class VOMSAdminDAO {
     public void update( VOMSAdmin a ) {
 
         HibernateFactory.getSession().update( a );
-    }
-    
-    public void assignTag(VOMSAdmin a, VOMSAdmin tag){
-        
-        assert a != null: "Cannot assign a tag to a null admin!";
-        assert tag != null: "Cannot assign an admin to a null tag!";
-        
-        if (a.isInternalAdmin())
-            throw new IllegalArgumentException("Cannot assign a tag to an internal admin (tag, role or group admin)!");
-        
-        if (!tag.isTagAdmin())
-            throw new IllegalArgumentException("tag is not a tag admin!");
-        
-        a.getTags().add( tag );
-        HibernateFactory.getSession().update( a );
-        
-    }
-    
-    public void removeTag(VOMSAdmin a, VOMSAdmin tag){
-        assert a != null: "Cannot remove a tag from a null admin!";
-        assert tag != null: "Cannot remove a null tag from an admin !";
-        
-        if (a.isInternalAdmin())
-            throw new IllegalArgumentException("Cannot assign a tag to an internal admin (tag, role or group admin)!");
-        
-        if (!tag.isTagAdmin())
-            throw new IllegalArgumentException("tag is not a tag admin!");
-        
-        a.getTags().remove( tag );
-        HibernateFactory.getSession().update( a );        
-    }
-    
-    public List<VOMSAdmin> getUnassignedTagsForAdmin(long adminId){
-        
-        VOMSAdmin a = getById( adminId );
-        if (a == null)
-            throw new NoSuchAdminException("Admin with id '"+adminId+"' not found!");
-        
-        return getUnassignedTagsForAdmin( a );
-    }
-    public List<VOMSAdmin> getUnassignedTagsForAdmin(VOMSAdmin a){
-        assert a != null: "Cannot get unassigned tags for a null admin!";
-        
-        if (a.isTagAdmin())
-            throw new IllegalArgumentException("Cannot get unassigned tags for a tag admin!");
-        
-        List<VOMSAdmin> unassignedTags = new ArrayList<VOMSAdmin>();
-        List<VOMSAdmin> allTags = getTagAdmins();
-        
-        for (VOMSAdmin tagAdmin: allTags){
-            if (!a.getTags().contains( tagAdmin ))
-                unassignedTags.add( tagAdmin );
-        }
-        
-        return unassignedTags;
     }
 }

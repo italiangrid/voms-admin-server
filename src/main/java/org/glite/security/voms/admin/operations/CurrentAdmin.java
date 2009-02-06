@@ -94,10 +94,10 @@ public class CurrentAdmin {
 
         if (!isAuthorizedAdmin()){
             
-            return VOMSUserDAO.instance().getByDNandCA( getRealSubject(), getRealIssuer() );
+            return VOMSUserDAO.instance().getByName( getRealSubject(), getRealIssuer() );
         }
         
-        return VOMSUserDAO.instance().getByDNandCA( admin.getDn(), admin.getCa() );
+        return VOMSUserDAO.instance().getByName( admin.getDn(), admin.getCa() );
     }
 
     public void createVoUser(){
@@ -236,7 +236,12 @@ public class CurrentAdmin {
         SecurityContext theContext = SecurityContext.getCurrentContext();
         String name = DNUtil.getBCasX500( theContext.getClientCert().getSubjectX500Principal());
         
-        return DNUtil.getEmailAddressFromDN( DNUtil.normalizeEmailAddressInDN( name ) );
+        String candidateEmail = DNUtil.getEmailAddressFromDN( DNUtil.normalizeEmailAddressInDN( name ) );
+        
+        if (candidateEmail == null)
+            candidateEmail  = DNUtil.getEmailAddressFromExtensions( theContext.getClientCert() );
+        
+        return candidateEmail;
         
     }
     

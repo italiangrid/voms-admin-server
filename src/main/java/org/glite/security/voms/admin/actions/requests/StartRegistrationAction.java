@@ -26,9 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.glite.security.voms.admin.actions.BaseAction;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.RequestDAO;
+import org.glite.security.voms.admin.database.UserAlreadyExistsException;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 
@@ -37,6 +40,8 @@ public class StartRegistrationAction extends BaseAction {
     
     public ActionForward execute( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
     
+        ActionMessages msgs = new ActionMessages();
+        
         CurrentAdmin admin = CurrentAdmin.instance();
         request.setAttribute( "currentAdmin", admin );
         
@@ -50,6 +55,9 @@ public class StartRegistrationAction extends BaseAction {
             
             if (!VOMSConfiguration.instance().getBoolean( VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true))
                 return mapping.findForward( "registrationDisabled" );
+            
+            if (admin.isVoUser())
+                throw new UserAlreadyExistsException(admin.getDn());
             
             return findSuccess( mapping );
         

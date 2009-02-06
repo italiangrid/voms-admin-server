@@ -27,7 +27,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <div id="searchUsersPane">
-	<html:form action="/SearchUser" method="post">
+	<html:form action="/SearchUser" method="post" onsubmit="return validateSearchForm(this)">
 		<html:hidden property="firstResults" value="0" />
 		<html:text property="text" styleClass="searchField" size="20" value="${searchResults.searchString }"/>	
 		<voms:submit context="vo" permission="CONTAINER_READ|MEMBERSHIP_READ" styleClass="submitButton" value="Search users"/>
@@ -64,24 +64,27 @@
 						styleClass="actionLink"
 						disabledStyleClass="disabledLink"
 						>
-						<!-- <voms:formatDN dn="${vomsUser.dn}" fields="CN"/> -->
-						${vomsUser.name} ${vomsUser.surname}
+						<voms:formatDN dn="${vomsUser.dn}" fields="CN"/>
 					</voms:link>
 					</div>
-					<!-- 
 					<div class="userCA">
-						<voms:formatDN dn="${vomsUser.ca.subjectString}" fields="CN,O"/>
+						<voms:formatDN dn="${vomsUser.ca.dn}" fields="CN,O"/>
 					</div>
-					-->
 				</td>
 				<td width="5%" style="text-align:right">
 					<c:url value="/DeleteUser.do" var="deleteUserUrl">
 						<c:param name="id" value="${vomsUser.id}"/>
 					</c:url>
+					
+								
+					<c:url value="javascript:ask_confirm('Delete user: \n ${fn:escapeXml(vomsUser.escapedDn)} \n?', '${deleteUserUrl}', 'User ${fn:escapeXml(vomsUser.escapedDn)} not deleted.')"
+						var="deleteUserJSUrl"/>
+					
+					
 					<voms:link
 						context="vo"
 						permission="rw"
-						href="javascript:ask_confirm('Delete user? \n${vomsUser}\n', '${deleteUserUrl}', 'User ${vomsUser.dn} not deleted.')"
+						href="${deleteUserJSUrl}"
 						styleClass="actionLink"
 						disabledStyleClass="disabledLink"
 						>
@@ -121,3 +124,4 @@
 </c:otherwise>
 </c:choose>
 </div> <!-- serchResultsPane -->
+<html:javascript formName="/SearchUser"/>

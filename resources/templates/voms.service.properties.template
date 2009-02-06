@@ -1,8 +1,8 @@
-voms.localhost.defaults.to.local.admin = true
-voms.readonly = false
+## Should the registration service be enabled?
+voms.request.webui.enabled = @WEBUI.ENABLED@
 
 ## voms ca updater configuration
-voms.cafiles = /etc/grid-security/certificates/*.0
+voms.cafiles = @CA.FILES@
 
 # voms ca updater period in seconds
 voms.cafiles.period = 1800
@@ -14,6 +14,10 @@ voms.auditing = false
 voms.notification.email-address = @NOTIFICATION.EMAIL_ADDRESS@
 voms.notification.smtp-server = @NOTIFICATION.SMTP_SERVER@
 
+## should the vo be configured to be read accessible for authenticated clients?
+## (mkgridmap clients need this!)
+voms.read-access-for-authenticated-clients = @READ_ACCESS@  
+ 
 ## voms trusted admin settings
 voms.trusted.admin.subject =  @TRUSTED_ADMIN.SUBJECT@
 voms.trusted.admin.ca = @TRUSTED_ADMIN.CA@
@@ -28,7 +32,7 @@ voms.pagination.attributes.max.results.per.page = 10
 
 ## Time in seconds that unconfirmed requests are kept
 ## inside the voms database.
-voms.request.vo_membership.lifetime = 120
+voms.request.vo_membership.lifetime = 86400
 
 ## Should voms-admin send a warning email to the user when
 ## his/her uncorfimed request is removed from the database?
@@ -39,7 +43,7 @@ voms.request.vo_membership.warn_when_expired = true
 ## to the "Email=" format used by default?
 voms.mkgridmap.translate_dn_email_format = false
 
-## Should the registration service be enabled?
-voms.request.webui.enabled = true
+## Should the webui always show full DNs (instead of just the first CN)?
+# voms.webapp.always-show-full-dns = true
 
 #### Add other options after this line

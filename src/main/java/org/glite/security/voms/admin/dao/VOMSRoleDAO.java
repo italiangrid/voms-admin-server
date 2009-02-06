@@ -309,8 +309,7 @@ public class VOMSRoleDAO {
         if ( findByName( r.getName() ) == null )
             throw new NoSuchRoleException( "Role \"" + r
                     + "\" is not defined in database!" );
-
-        
+       
         r.getMappings().clear();
         
         Iterator aclIter = r.getAcls().iterator();
@@ -337,6 +336,13 @@ public class VOMSRoleDAO {
 
     }
 
+    public void removeRoleAttributesForGroup(VOMSGroup g){
+        
+        String deleteString = "delete from VOMSRoleAttribute where group = :group";
+        
+        HibernateFactory.getSession().createQuery( deleteString ).setEntity( "group", g ).executeUpdate();
+        
+    }
     public VOMSRoleAttribute setAttribute( VOMSRole r, VOMSGroup g, 
             String attrName, String attrValue){
         

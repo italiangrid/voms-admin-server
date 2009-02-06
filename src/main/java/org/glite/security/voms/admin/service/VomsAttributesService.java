@@ -80,12 +80,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -108,12 +103,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -133,12 +123,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -155,12 +140,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -180,12 +160,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -204,12 +179,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -228,12 +198,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -255,14 +220,8 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
-            throw e;
-        }
+            ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;        }
     }
 
     public void deleteRoleAttribute( String groupName, String roleName,
@@ -283,12 +242,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -307,12 +261,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -331,12 +280,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -356,12 +300,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -382,12 +321,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -415,12 +349,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -458,12 +387,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
 
@@ -491,13 +415,9 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
-            throw e;
+            ServiceExceptionHelper.handleServiceException( log, e );
+            throw e;        
+        
         }
 
     }
@@ -508,21 +428,11 @@ public class VomsAttributesService implements VOMSAttributes {
         log.info( "saveAttributeClass("
                 + StringUtils.join( new Object[] { in0 }, ',' ) + ");" );
 
-        try {
+       
+        
+        throw new UnimplementedFeatureException( "saveAttributeClass(...)" );
 
-            throw new UnimplementedFeatureException( "saveAttributeClass(...)" );
-
-        } catch ( RuntimeException e ) {
-
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
-            throw e;
-        }
-
+            
     }
 
     public void setGroupAttribute( String groupName,
@@ -541,12 +451,7 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
         }
     }
@@ -570,13 +475,10 @@ public class VomsAttributesService implements VOMSAttributes {
 
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
+            
+        
         }
     }
 
@@ -589,19 +491,16 @@ public class VomsAttributesService implements VOMSAttributes {
 
         try {
 
+            
             Validator.validateInputString( attributeValue.getValue(), "Invalid characters in attribute value!");
             SetUserAttributeOperation.instance( user, attributeValue )
                     .execute();
-
+            
         } catch ( RuntimeException e ) {
 
-            log.error( e );
-
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
-
+            ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
+            
         }
 
     }

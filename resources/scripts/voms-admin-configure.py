@@ -117,6 +117,7 @@ def setup_identity():
 
     options['ta.subject']=certificate.subject
     options['ta.ca']=certificate.issuer
+    
 
 def check_env_var():
         
@@ -291,7 +292,19 @@ def usage():
      --key FILENAME        Override $X509_USER_KEY.
      --certdir DIR         Override $X509_CERT_DIR.
      
-     --disable-webui-requests         Disables user registration via the voms-admin web interface.
+     --disable-webui-requests         
+                           
+                           Disables user registration via the voms-admin web 
+                           interface.
+     
+     --read-access-for-authenticated-clients    
+     
+                           Setup ACLs so that authenticated clients can browse the VO.
+                           This is needed to support mkgridmap clients.
+     
+     --skip-voms-core
+                           Skips voms core configuration creation (i.e., only voms-admin
+                           is configured).
     """
     
     print usage_str

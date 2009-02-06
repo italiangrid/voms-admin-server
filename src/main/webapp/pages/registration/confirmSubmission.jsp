@@ -18,20 +18,36 @@
  Authors:
      Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
 --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
-<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
-<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib
+	uri="http://java.sun.com/jsp/jstl/core"
+	prefix="c"%>
 
-<div class="header1">
-Confirmation required.
-</div>
+<%@ taglib
+	uri="http://java.sun.com/jsp/jstl/fmt"
+	prefix="fmt"%>
+	
+<%@ taglib
+	uri="http://java.sun.com/jsp/jstl/functions"
+	prefix="fn"%>
+<%@ taglib
+	uri="http://org.glite.security.voms.tags"
+	prefix="voms"%>
+<%@ taglib
+	uri="http://struts.apache.org/tags-tiles"
+	prefix="tiles"%>
+<%@ taglib
+	uri="http://struts.apache.org/tags-html"
+	prefix="html"%>
 
-<p>
-An email has been sent to you with instructions on how to proceed with the 
-registration for the ${voName } VO. 
-</p>
-<p>
-Please follow the instructions withing 24 hours or your request will be ignored by voms-admin.
+<div class="header1">Confirmation required.</div>
+
+<fmt:setLocale value="en_US"/>
+
+<p>An email has been sent to you with instructions on how to proceed
+with the registration for the ${voName } VO.</p>
+<p>Please follow the instructions before the following date:
+<ul>
+	<li> <span style="font-weight: bold"><fmt:formatDate type="both" value="${requestExpirationDate}" dateStyle="full"/></span></li>
+</ul>
+or your request will be discarded by voms-admin.
 </p>

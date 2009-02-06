@@ -28,7 +28,7 @@
 
 
 <div id="searchUserAttributesPane">
-	<html:form action="/SearchUserAttributes" method="post">
+	<html:form action="/SearchUserAttributes" method="post" onsubmit="return validateSearchForm(this)">
 		<html:hidden property="firstResults" value="0" />
 		<html:text property="text" styleClass="searchField" size="20" value="${searchResults.searchString }"/>	
 		<voms:submit context="vo" permission="ATTRIBUTES_READ" styleClass="submitButton" value="Search user attributes"/>
@@ -55,7 +55,7 @@
 				<tr class="tableHeaderRow">
 					<td>Attribute name</td>
 					<td>Attribute value</td>
-					<td>User</td>
+					<td>User DN &amp; CA</td>
 				</tr>
 				<c:forEach var="userAttribute" items="${searchResults.results}" varStatus="status">
 					<tr class="${ (status.index) %2 eq 0 ? 'tableRowEven': 'tableRowOdd'}">
@@ -84,9 +84,12 @@
 									styleClass="actionLink"
 									disabledStyleClass="disabledLink"
 								>
-									${userAttribute[1].fullName}
+									<voms:formatDN dn="${userAttribute[1].dn}" fields="CN"/>
 								</voms:link>
 							</div>
+							<div class="userCA">
+								<voms:formatDN dn="${userAttribute[1].ca.dn}" fields="CN,O"/>
+							<div>
 						</td>
 					</tr>
 				</c:forEach>
@@ -120,3 +123,5 @@
 		</c:otherwise>
 	</c:choose>
 </div> <!-- searchResultsPane -->
+
+<html:javascript formName="/SearchUserAttributes"/>

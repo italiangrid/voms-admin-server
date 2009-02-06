@@ -55,11 +55,13 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
         
         requestLifetime = conf.getLong( "voms.request.vo_membership.lifetime", 300 );
         warnUsers = conf.getBoolean("voms.request.vo_membership.warn_when_expired",false);
-        
+        boolean registrationEnabled = conf.getBoolean("voms.request.webui.enabled", true);
         
         if (timer != null){
             
-            if (requestLifetime > 0){
+            if (!registrationEnabled)
+                log.info( "Request purger not started since the registration service is disabled." );
+            else if (requestLifetime > 0){
                 log.info( "Scheduling expired request reaper thread with period:" +period +" seconds.");
                 timer.schedule( this, period * 1000, period * 1000 );
             }
