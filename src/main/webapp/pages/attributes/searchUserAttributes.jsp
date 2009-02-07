@@ -55,7 +55,7 @@
 				<tr class="tableHeaderRow">
 					<td>Attribute name</td>
 					<td>Attribute value</td>
-					<td>User DN &amp; CA</td>
+					<td>User</td>
 				</tr>
 				<c:forEach var="userAttribute" items="${searchResults.results}" varStatus="status">
 					<tr class="${ (status.index) %2 eq 0 ? 'tableRowEven': 'tableRowOdd'}">
@@ -84,12 +84,9 @@
 									styleClass="actionLink"
 									disabledStyleClass="disabledLink"
 								>
-									<voms:formatDN dn="${userAttribute[1].dn}" fields="CN"/>
+									${userAttribute[1].fullName}
 								</voms:link>
 							</div>
-							<div class="userCA">
-								<voms:formatDN dn="${userAttribute[1].ca.dn}" fields="CN,O"/>
-							<div>
 						</td>
 					</tr>
 				</c:forEach>
@@ -123,5 +120,3 @@
 		</c:otherwise>
 	</c:choose>
 </div> <!-- searchResultsPane -->
-
-<html:javascript formName="/SearchUserAttributes"/>

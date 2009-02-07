@@ -23,6 +23,7 @@
 <%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
+
 <c:choose>
 
 <c:when test="${! empty vomsUser}">
@@ -33,7 +34,7 @@
 				Delete user ?
 				<div class="userDNCA">
 					<div class="userDN">${vomsUser.dn}</div>
-					<div class="userCA">${vomsUser.ca.dn}</div>
+					<div class="userCA">${vomsUser.ca.subjectString}</div>
 				</div>
 			</div>
 			<html:hidden property="id" value="${vomsUser.id}"/>

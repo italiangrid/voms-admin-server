@@ -40,27 +40,22 @@ import org.glite.security.voms.admin.request.VOMSNotificationException;
 import org.glite.security.voms.service.registration.RegistrationRequest;
 import org.glite.security.voms.service.registration.VOMSRegistration;
 
+
 public class VOMSRegistrationService implements VOMSRegistration {
 
     private static final Log log = LogFactory
             .getLog( VOMSRegistrationService.class );
-
-    private String buildConfirmURL( HttpServletRequest request,
-            VOMembershipRequest membReq ) {
-
-        return ServiceUtils.getBaseContext( request )
-                + "/ConfirmVOMembershipRequest.do?requestId=" + membReq.getId()
-                + "&confirmId=" + membReq.getConfirmId();
-    }
-
-    private String buildCancelURL( HttpServletRequest request,
-            VOMembershipRequest membReq ) {
-
-        return ServiceUtils.getBaseContext( request )
-                + "/CancelVOMembershipRequest.do?requestId=" + membReq.getId()
-                + "&confirmId=" + membReq.getConfirmId();
-    }
-
+    
+    private String buildConfirmURL(HttpServletRequest request, VOMembershipRequest membReq){
+        
+        return ServiceUtils.getBaseContext(request )+"/ConfirmVOMembershipRequest.do?requestId="+membReq.getId()+"&confirmId="+membReq.getConfirmId(); 
+   }
+   
+   private String buildCancelURL(HttpServletRequest request, VOMembershipRequest membReq){
+       
+       return ServiceUtils.getBaseContext( request )+"/CancelVOMembershipRequest.do?requestId="+membReq.getId()+"&confirmId="+membReq.getConfirmId(); 
+  }
+    
     public void submitRegistrationRequest( RegistrationRequest request )
             throws RemoteException , VOMSException {
 

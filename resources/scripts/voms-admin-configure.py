@@ -117,7 +117,6 @@ def setup_identity():
 
     options['ta.subject']=certificate.subject
     options['ta.ca']=certificate.issuer
-    
 
 def check_env_var():
         

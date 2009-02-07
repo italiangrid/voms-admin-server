@@ -696,7 +696,7 @@ public class SchemaDeployer {
         };
         
         for ( int i = 0; i < oldSequences.length; i++ ) 
-            dropSequence( oldSequences[i]);
+            dropSequence( oldSequences[i] );
                                              
     }
     

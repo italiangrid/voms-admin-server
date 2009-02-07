@@ -20,30 +20,40 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.service;
 
+
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.model.ACL;
+import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSBaseAttribute;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
+import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
+import org.glite.security.voms.service.certificates.X509Certificate;
 
 
 
@@ -127,7 +137,7 @@ public class ServiceUtils {
         Iterator i = c.iterator();
         
         while (i.hasNext())
-            res[index++] = ((VOMSCA)i.next()).getDn();
+            res[index++] = ((VOMSCA)i.next()).getSubjectString();
         
         return res;
         
@@ -198,6 +208,32 @@ public class ServiceUtils {
         return map;
 
     }
+    
+    public static X509Certificate toX509Certificate(Certificate c){
+        
+        X509Certificate cert = new X509Certificate();
+        
+        cert.setId( c.getId() );
+        cert.setSubject( c.getSubjectString() );
+        cert.setIssuer( c.getCa().getSubjectString() );
+        if (c.getNotAfter() != null)
+            cert.setNotAfter( c.getNotAfter().toString() );
+        
+        return cert;
+        
+    }
+    
+    public static X509Certificate[] toX509CertificateArray(Set<Certificate> certificateSet){
+     
+        X509Certificate[] certs = new X509Certificate[certificateSet.size()];
+        
+        int counter = 0;
+        
+        for (Certificate c: certificateSet)
+            certs[counter++] = toX509Certificate( c );
+        
+        return certs;   
+    }
     /**
      * This method allows to have interoperability at the gridmapfile 
      * level with implementations that support the emailAddress format
@@ -228,5 +264,31 @@ public class ServiceUtils {
         VOMSConfiguration.instance().getVOName();
 
         return result;
+    }
+    
+    public static java.security.cert.X509Certificate certificateFromBytes(byte[] certBytes){
+        
+        CertificateFactory cf;
+        try {
+            
+            cf = CertificateFactory.getInstance( "X.509" );
+        
+        } catch ( CertificateException e ) {
+             
+            throw new VOMSException("Error instantiating X.509 Certificate factory!",e);
+        }
+        
+        java.security.cert.X509Certificate x509Cert = null;
+        
+        try {
+            
+            x509Cert = (java.security.cert.X509Certificate) cf.generateCertificate( new ByteArrayInputStream(certBytes) );
+        
+        } catch ( CertificateException e ) {
+        
+            throw new VOMSException("Error parsing X.509 certificate passed as argument!",e);
+        }
+        
+        return x509Cert;
     }
 }

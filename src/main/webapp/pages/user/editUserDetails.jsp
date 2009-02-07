@@ -43,7 +43,7 @@
 		href="${deleteUserJSUrl}"
 		styleClass="actionLink"
 		disabledStyleClass="disabledLink">
-		delete this user
+		Delete this user
 	</voms:link>
 </div>
 
@@ -58,12 +58,12 @@
 		<tr>
 			<td>
 				<div class="label">
-					DN:
+					Name:
 				</div>
 			</td>
 			<td>
 				<div class="userDNCA">
-					<div class="userDN">${vomsUser.dn}</div>
+					${vomsUser.name} ${vomsUser.surname}
 				</div>
 			</td>	
 		</tr>
@@ -71,33 +71,42 @@
 		<tr>
 			<td>
 				<div class="label">
-					CA:
+					Institution:
 				</div>
 			</td>
 			<td>
-				<div class="userDNCA">
-					<div class="userCA">${vomsUser.ca.dn}</div>
-				</div>
-			</td>	
+				<html:text property="institution" size="50" styleClass="inputField"
+					value="${vomsUser.institution}"/>
+			</td>
 		</tr>
-
-		<%-- 
+		
 		<tr>
 			<td>
 				<div class="label">
-					User's common name:
+					Address:
 				</div>
 			</td>
 			<td>
-				<html:text property="cn" size="50" styleClass="inputField"
-					value="${vomsUser.cn}"/>
+				<html:textarea property="address" rows="4" cols="50" styleClass="inputField"
+					value="${vomsUser.address}"/>
 			</td>
 		</tr>
-		--%>
+		
 		<tr>
 			<td>
 				<div class="label">
-				Email:
+					Phone number:
+				</div>
+			</td>
+			<td>
+				<html:text property="phoneNumber" size="50" styleClass="inputField"
+					value="${vomsUser.phoneNumber}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="label">
+				Email address:
 				</div>
 			</td>
 			<td>

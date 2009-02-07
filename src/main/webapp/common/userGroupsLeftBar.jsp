@@ -66,5 +66,15 @@
 	Attributes
 </voms:link>
 
+
+<voms:link 
+	action="/SearchCAs"
+	context="vo"
+	permission="r" 
+	disabledStyleClass="disabledLink"
+	styleClass="vomsLink"
+	>
+	CAs
+</voms:link>
 </div>
 

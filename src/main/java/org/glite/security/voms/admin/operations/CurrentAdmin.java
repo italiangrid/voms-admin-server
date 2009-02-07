@@ -94,10 +94,10 @@ public class CurrentAdmin {
 
         if (!isAuthorizedAdmin()){
             
-            return VOMSUserDAO.instance().getByName( getRealSubject(), getRealIssuer() );
+            return VOMSUserDAO.instance().getByDNandCA( getRealSubject(), getRealIssuer() );
         }
         
-        return VOMSUserDAO.instance().getByName( admin.getDn(), admin.getCa() );
+        return VOMSUserDAO.instance().getByDNandCA( admin.getDn(), admin.getCa() );
     }
 
     public void createVoUser(){

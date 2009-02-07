@@ -27,6 +27,7 @@
 <div class="menuItem"><html:link forward="manageRequests">Subscriptions</html:link></div>
 <div class="menuItem"><html:link forward="configuration">Configuration</html:link></div>
 
+<div class="menuItem"><html:link forward="manageTags">Tags</html:link></div>
 <!--
 <div class="menuItem"><html:link forward="manageNotification">Messaging</html:link></div>
 

@@ -64,12 +64,15 @@
 						styleClass="actionLink"
 						disabledStyleClass="disabledLink"
 						>
-						<voms:formatDN dn="${vomsUser.dn}" fields="CN"/>
+						<!-- <voms:formatDN dn="${vomsUser.dn}" fields="CN"/> -->
+						${vomsUser.name} ${vomsUser.surname}
 					</voms:link>
 					</div>
+					<!-- 
 					<div class="userCA">
-						<voms:formatDN dn="${vomsUser.ca.dn}" fields="CN,O"/>
+						<voms:formatDN dn="${vomsUser.ca.subjectString}" fields="CN,O"/>
 					</div>
+					-->
 				</td>
 				<td width="5%" style="text-align:right">
 					<c:url value="/DeleteUser.do" var="deleteUserUrl">
@@ -124,4 +127,3 @@
 </c:otherwise>
 </c:choose>
 </div> <!-- serchResultsPane -->
-<html:javascript formName="/SearchUser"/>

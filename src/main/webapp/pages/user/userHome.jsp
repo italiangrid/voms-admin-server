@@ -27,8 +27,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <div class="header1">
-	Welcome to ${voName}, <voms:formatDN dn="${vomsUser.dn}" fields="CN"/>.
+	Welcome to ${voName}, ${vomsUser.fullName}.
 </div>
+
 
 <div class="header2">
 	Your VO membership information:

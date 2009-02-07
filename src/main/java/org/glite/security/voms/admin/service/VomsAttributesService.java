@@ -500,7 +500,6 @@ public class VomsAttributesService implements VOMSAttributes {
 
             ServiceExceptionHelper.handleServiceException( log, e );
             throw e;
-            
         }
 
     }

@@ -93,6 +93,8 @@ public class DatabaseSetupTask extends TimerTask {
             caDAO.createCA( Constants.ROLE_CA, "A virtual CA for VOMS roles." );
             caDAO.createCA( Constants.AUTHZMANAGER_ATTRIBUTE_CA,
                     "A virtual CA for authz manager attributes" );
+            
+            caDAO.createCA( Constants.TAG_CA, "A virtual CA for VOMS Admin tags" );
 
             // Create vo root group
             VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
@@ -167,7 +169,7 @@ public class DatabaseSetupTask extends TimerTask {
             }
             
             VOMSAdmin trustedAdmin = VOMSAdminDAO.instance().getByName(
-                    trustedAdminDn, ca.getDn() );
+                    trustedAdminDn, ca.getSubjectString() );
             
             if ( trustedAdmin == null ) {
 
@@ -178,7 +180,7 @@ public class DatabaseSetupTask extends TimerTask {
                     emailAddress = VOMSConfiguration.instance().getString( "voms.notification.email-address" );
                     
                 trustedAdmin = VOMSAdminDAO.instance().create(
-                        trustedAdminDn, ca.getDn(), emailAddress );
+                        trustedAdminDn, ca.getSubjectString(), emailAddress );
 
             }
 

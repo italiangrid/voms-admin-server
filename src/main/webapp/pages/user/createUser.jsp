@@ -31,40 +31,98 @@
 				<col class="labels"/>
 				<col class="fields"/>
 		</colgroup>
+	
 		<tr>
 			<td>
-				<div class="label">DN:</div>			
-			</td>
-			<td>
-				<html:text property="dn" size="50" styleClass="inputField"/>		
+				<div class="header3">Personal information</div>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<div class="label">CA:</div>			
+				<div class="label">First name:</div>			
 			</td>
 			<td>
-				<html:select property="ca" styleClass="caSelectBox" >
-					<html:options collection="caList" property="dn"/>
-				</html:select>
+				<html:text property="name" size="50" styleClass="inputField"/>		
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<div class="label">CN:</div>
+				<div class="label">Family name:</div>			
 			</td>
 			<td>
-				<html:text property="cn" size="50" styleClass="inputField"/>
+				<html:text property="surname" size="50" styleClass="inputField"/>		
 			</td>
-		</tr>	
+		</tr>
 		<tr>
 			<td>
 				<div class="label">Email:</div>
 			</td>
 			
 			<td>
-				<html:text property="emailAddress" size="50"styleClass="inputField"/>
+				<html:text property="emailAddress" size="50" styleClass="inputField"/>
 			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="label">Address:</div>			
+			</td>
+			<td>
+				<html:textarea property="address" rows="4" cols="50" styleClass="inputField"/>		
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				<div class="label">Phone number:</div>			
+			</td>
+			<td>
+				<html:text property="phoneNumber" size="50" styleClass="inputField"/>		
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="label">Institution:</div>			
+			</td>
+			<td>
+				<html:text property="institution" size="50" styleClass="inputField"/>		
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				<div class="header3">Certificate management</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<td><html:radio property="certificateType" value="noCert">No certificate.</html:radio></td>
+		</tr>
+		
+		<tr>
+			<td><html:radio property="certificateType" value="dnCa">Specify a DN, CA couple:</html:radio></td>
+			<td>
+				<table>
+					<tr>
+						<td>DN:</td>
+						<td>
+							<html:text property="dn" styleClass="inputField" size="25"/>
+						</td>
+					</tr>
+					<tr>
+						<td>CA:</td>
+						<td>
+							<html:select property="ca" styleClass="selectBox" style="font-size: smaller">
+								<html:options collection="caList"  property="dn" labelProperty="dn"/>
+							</html:select>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		
+		<tr>
+			<td><html:radio property="certificateType" value="cert">Parse certificate from file:</html:radio></td>
+			<td><html:file property="certificateFile"/></td>
 		</tr>
 		<tr>
 			<td/>
@@ -78,5 +136,6 @@
 
 	
 <html:javascript formName="/CreateUser"/>	
+	
 	
 

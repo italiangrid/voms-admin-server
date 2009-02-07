@@ -91,6 +91,7 @@ public class VomsAdminService implements VOMSAdmin {
             ServiceExceptionHelper.handleServiceException( log, e );
             
             throw e;
+
         }
 
     }

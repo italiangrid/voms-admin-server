@@ -21,7 +21,9 @@
 
 package org.glite.security.voms.admin.dao;
 
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +40,7 @@ import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
+import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
@@ -61,7 +64,7 @@ public class VOMSUserDAO {
 
 	public List getAll() {
 
-		Query q = HibernateFactory.getSession().createQuery("select u from VOMSUser u order by u.dn asc");
+		Query q = HibernateFactory.getSession().createQuery("select u from VOMSUser u order by u.surname asc");
 
 		List result = q.list();
 
@@ -112,7 +115,7 @@ public class VOMSUserDAO {
 	public SearchResults getAll(int firstResults, int maxResults) {
 
 		SearchResults res = SearchResults.instance();
-		Query q = HibernateFactory.getSession().createQuery("from VOMSUser as u order by u.dn asc");
+		Query q = HibernateFactory.getSession().createQuery("from VOMSUser as u order by u.surname asc");
 
 		q.setFirstResult(firstResults);
 		q.setMaxResults(maxResults);
@@ -130,8 +133,8 @@ public class VOMSUserDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String countString = "select count(distinct u) from VOMSUser u where u.dn like :searchString "
-				+ "or u.ca.dn like :searchString or u.emailAddress like :searchString";
+		String countString = "select count(distinct u) from VOMSUser u where u.surname like :searchString "
+				+ "or u.name like :searchString or u.emailAddress like :searchString";
 
 		Query q = HibernateFactory.getSession().createQuery(countString);
 		q.setString("searchString", sString);
@@ -158,15 +161,15 @@ public class VOMSUserDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String queryString = "select distinct u from VOMSUser u where lower(u.dn) like lower(:searchString) "
-				+ "or lower(u.ca.dn) like lower(:searchString) or u.emailAddress like :searchString order by u.dn asc";
+		String queryString = "select distinct u from VOMSUser u where lower(u.surname) like lower(:searchString) "
+				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString order by u.surname asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 
 		q.setString("searchString", sString);
 		q.setFirstResult(firstResults);
 		q.setMaxResults(maxResults);
-		
+
 		res.setCount(countMatches(searchString));
 		res.setFirstResult(firstResults);
 		res.setResultsPerPage(maxResults);
@@ -187,39 +190,67 @@ public class VOMSUserDAO {
 		return count.intValue();
 	}
 
-    public VOMSUser getByName(String userDN, VOMSCA ca){
+    public VOMSUser getByDNandCA(String userDN, VOMSCA ca){
         if (userDN == null)
             throw new NullArgumentException("Cannot find a user by name given a null userDN!");
         
         if (ca == null)
             throw new NullArgumentException("Cannot find a user by name and ca given a null ca!");
             
-        return getByName( userDN, ca.getDn() );
+        return getByDNandCA( userDN, ca.getSubjectString() );
         
     }
-	public VOMSUser getByName(String userDN, String caDN) {
+	public VOMSUser getByDNandCA(String userDN, String caDN) {
 
+        String queryString = "from Certificate where subjectString = :userDN and ca.subjectString = :caDN";
         
-		String queryString = "from org.glite.security.voms.admin.model.VOMSUser where dn = :userDN and ca.dn = :caDN";
-
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+        Query q = HibernateFactory.getSession().createQuery(queryString);
 
 		q.setString("userDN", userDN);
 		q.setString("caDN", caDN);
-
-		return (VOMSUser) q.uniqueResult();
+        
+        Certificate c = (Certificate) q.uniqueResult();
+        
+        if (c == null)
+            return null;
+        
+		return c.getUser();
 
 	}
     
 	public List getAllNames() {
 
-		String query = "select dn, ca.dn from org.glite.security.voms.admin.model.VOMSUser";
+        
+        // FIXME: implement with multiple certificate support
+		String query = "select dn, ca.subjectString from org.glite.security.voms.admin.model.VOMSUser";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 
 	}
 
-	public VOMSUser findByName(String dn, String caDN) {
+    
+    public VOMSUser findByCertificate(String subject, String issuer){
+        
+        if ( subject == null )
+            throw new NullArgumentException( "subject cannot be null!" );
+        
+        if ( issuer == null )
+            throw new NullArgumentException( "issuer cannot be null!" );
+        
+        String query = "select u from org.glite.security.voms.admin.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
+        
+        Query q = HibernateFactory.getSession().createQuery( query );
+        
+        q.setString( "subjectString", subject);
+        q.setString( "issuerSubjectString", issuer);
+        
+        VOMSUser u = (VOMSUser) q.uniqueResult(); 
+        
+        return u;
+    }
+    
+    
+	public VOMSUser findByDNandCA(String dn, String caDN) {
 
 		if (dn == null)
 			throw new NullArgumentException("dn must be non-null!");
@@ -227,16 +258,9 @@ public class VOMSUserDAO {
 		if (caDN == null)
 			throw new NullArgumentException("ca must be non-null!");
 
-		String query = "from org.glite.security.voms.admin.model.VOMSUser as u  where u.dn = :dn and u.ca.dn = :caDN";
-
-		Query q = HibernateFactory.getSession().createQuery(query);
-		q.setString("dn", dn);
-		q.setString("caDN", caDN);
-
-		VOMSUser result = (VOMSUser) q.uniqueResult();
-
-		return result;
-
+        
+        return findByCertificate( dn, caDN );
+        
 	}
 
 	public VOMSUser findById(Long userId) {
@@ -261,63 +285,52 @@ public class VOMSUserDAO {
 
 	}
 
-	public VOMSUser create(VOMSUser usr, String caDN) {
+//	public VOMSUser create(VOMSUser usr, String caDN) {
+//
+//		if (usr.getDn() == null || "".equals( usr.getDn() ))
+//			throw new NullArgumentException("dn must be non-null!");
+//
+//		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+//
+//		if (ca == null)
+//			throw new NullArgumentException("CA " + caDN
+//					+ " does not exist in org.glite.security.voms.admin.database!");
+//
+//        usr.setDn( DNUtil.normalizeEmailAddressInDN( usr.getDn() ) );
+//		usr.setCa(ca);
+//
+//		return create(usr);
+//
+//	}
 
-		if (usr.getDn() == null || "".equals( usr.getDn() ))
-			throw new NullArgumentException("dn must be non-null!");
-
-        // Normalize caDN
-        caDN = DNUtil.normalizeDN( caDN );
+    private void checkNullFields(VOMSUser usr){
         
-		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
-
-		if (ca == null)
-			throw new NullArgumentException("CA " + caDN
-					+ " does not exist in database!");
-
-        usr.setDn( DNUtil.normalizeDN( usr.getDn() ) );
-		usr.setCa(ca);
-
-		return create(usr);
-
-	}
-
+        if (usr.getName() == null)
+            throw new NullArgumentException("Please specify a name for the user!");
+        
+        if (usr.getSurname() == null)
+            throw new NullArgumentException("Please specify a surname for the user!");
+        
+        if (usr.getInstitution() == null)
+            throw new NullArgumentException("Please specify an instituion for the user!");
+        
+        if (usr.getAddress() == null)
+            throw new NullArgumentException("Please specify an address for the user!");
+        
+        if (usr.getPhoneNumber()==null)
+            throw new NullArgumentException("Please specify a phone number for the user!");
+        
+        if (usr.getEmailAddress() == null )
+            throw new NullArgumentException("Please specify an email address for the user!");
+        
+    }
 	public VOMSUser create(VOMSUser usr) {
 
-		if (usr.getDn() == null)
-			throw new NullArgumentException("dn must be non-null!");
-
-		if (usr.getCa() == null)
-			throw new NullArgumentException("no ca specified for user!");
-
-        usr.setDn( DNUtil.normalizeDN( usr.getDn() ) );
+        checkNullFields( usr );
+        
         // Check if CA exists in db
-        
-		VOMSCA storedCA = VOMSCADAO.instance().getByName(usr.getCa().getDn());
 
-		if (storedCA == null)
-			throw new NoSuchCAException("ca " + usr.getCa().getDn()
-					+ " does not exist in database!");
-
-		if (findByName(usr.getDn(), storedCA.getDn()) != null)
-			throw new UserAlreadyExistsException("User " + usr
-					+ " already exists in database!");
-
-        /* Email uniqueness checked out since otherwise vomrs cannot create
-         * multiple users with different certificates.
-         * 
-		if (findByEmail(usr.getEmailAddress()) != null)
-			throw new EmailAddressAlreadyBoundException("A user with the "
-					+ usr.getEmailAddress()
-					+ " email address is already in org.glite.security.voms.admin.database!");
-
-        */
-		
-        
-        // Add user to VO root group
-        
-        HibernateFactory.getSession().save(usr);
-        
+		// Add user to VO root group
 		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
 		addToGroup(usr, voGroup);
 
@@ -342,11 +355,11 @@ public class VOMSUserDAO {
 		if (emailAddress == null)
 			throw new NullArgumentException("emailAddress must be non-null!");
 
-		VOMSUser u = findByName(dn, caDN);
+		VOMSUser u = findByDNandCA(dn, caDN);
 
 		if (u != null)
 			throw new UserAlreadyExistsException("User " + u
-					+ " already in database!");
+					+ " already in org.glite.security.voms.admin.database!");
 		/* 
          * Email uniqueness checked out since otherwise vomrs cannot create
          * multiple users with different certificates.
@@ -407,9 +420,9 @@ public class VOMSUserDAO {
 
 		log.debug("Deleting user \"" + u + "\".");
 		// Remove user
-		if (getByName(u.getDn(), u.getCa().getDn()) == null)
-			throw new NoSuchUserException("User \"" + u
-					+ "\" is not defined in database!");
+//		if (getByDNandCA(u.getDn(), u.getCa().getDn()) == null)
+//			throw new NoSuchUserException("User \"" + u
+//					+ "\" is not defined in org.glite.security.voms.admin.database!");
 
 		removeFromGroup(u, VOMSGroupDAO.instance().getVOGroup());
 
@@ -455,9 +468,9 @@ public class VOMSUserDAO {
 
 		log.debug("Removing user \"" + u + "\" from group \"" + g + "\".");
 
-		if (getByName(u.getDn(), u.getCa().getDn()) == null)
-			throw new NoSuchUserException("User \"" + u
-					+ "\" is not defined in database.");
+//		if (getByDNandCA(u.getDn(), u.getCa().getDn()) == null)
+//			throw new NoSuchUserException("User \"" + u
+//					+ "\" is not defined in org.glite.security.voms.admin.database.");
 
 		if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
 			throw new NoSuchGroupException("Group \"" + g
@@ -508,11 +521,10 @@ public class VOMSUserDAO {
                 val.setValue( attrValue );
 			
 			return val;
-		
 		}
 		
-				
-		throw new AttributeValueAlreadyAssignedException("Value '"+attrValue+"' for attribute '"+attrName+"' has been already assigned to another user in this vo! Choose a different value.");
+		
+		throw new AttributeValueAlreadyAssignedException("Value '"+attrValue+"' for attribute '"+attrName+"' have been already assigned to another user in this vo! Choose a different value.");
 		
 	}
 			
@@ -570,6 +582,104 @@ public class VOMSUserDAO {
 
 	}
 
+	
+    public void deleteCertificate(VOMSUser u, String subject, String issuer){
+        
+        assert u != null: "User must be non-null!";
+        assert subject != null: "Subject must be non-null!";
+        assert issuer !=null: "Issuer must be non-null!";
+        
+        Certificate cert = CertificateDAO.instance().findByDNCA(subject,issuer);
+        deleteCertificate( u, cert );    
+    }
+    
+    
+    public void deleteCertificate(Certificate cert){
+        
+        assert cert != null: "Certificate must be non-null!";
+        
+        VOMSUser u = cert.getUser();
+        u.getCertificates().remove( cert );
+        HibernateFactory.getSession().saveOrUpdate(u);
+        
+    }
+	public void deleteCertificate(VOMSUser u, Certificate cert){
+		
+		assert u != null: "User must be non-null!";
+		assert cert != null: "Certificate must be non-null!";
+		
+		u.getCertificates().remove(cert);
+		HibernateFactory.getSession().saveOrUpdate(u);
+		
+	}
+	public void addCertificate(VOMSUser u, X509Certificate x509Cert){
+		
+		assert u != null: "User must be non-null!";
+		assert x509Cert != null: "Certificate must be non-null!";
+		
+		// Assume the certificate have been already validated
+		// at this stage.
+		
+		String caDN = DNUtil.getBCasX500(x509Cert.getIssuerX500Principal());
+		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+		
+		if (ca == null)
+			throw new NoSuchCAException("CA '"+caDN+"' not recognized!");
+		
+		Certificate cert = CertificateDAO.instance().find(x509Cert); 
+		
+		if (cert != null)
+			throw new AlreadyExistsException("Certificate already bound!");
+		
+		cert = new Certificate();
+		
+		String subjectString = DNUtil.getBCasX500(x509Cert.getSubjectX500Principal());
+		cert.setSubjectString(subjectString);
+		cert.setSubjectDER(x509Cert.getSubjectX500Principal());
+		cert.setCreationTime(new Date());
+		cert.setNotAfter(x509Cert.getNotAfter());
+		cert.setSuspended(false);
+		cert.setCa(ca);
+		
+		cert.setUser(u);
+		u.addCertificate(cert);
+		
+		// FIXME: Find a way to extract email address from certificate in a meaningful
+		// way.
+		HibernateFactory.getSession().saveOrUpdate(cert);
+		HibernateFactory.getSession().saveOrUpdate(u);
+		
+		
+	}
+	public void addCertificate(VOMSUser u, String dn, String caDn){
+		assert u != null: "User must be non-null!";
+		assert dn != null: "DN must be non-null!";
+		assert caDn != null: "CA must be non-null!";
+		
+		
+		VOMSCA ca = VOMSCADAO.instance().getByName(caDn);
+		if (ca == null)
+			throw new NoSuchCAException("CA '"+caDn+"' not found in database.");
+		
+		
+		Certificate cert = CertificateDAO.instance().findByDNCA(dn, caDn);
+		
+		if (cert != null)
+			throw new AlreadyExistsException("Certificate already bound!");
+		
+		cert = new Certificate();
+		
+		cert.setSubjectString(dn);
+		cert.setCa(ca);
+		cert.setCreationTime(new Date());
+		
+		cert.setUser(u);
+		u.addCertificate(cert);
+		
+		HibernateFactory.getSession().saveOrUpdate(cert);
+		HibernateFactory.getSession().saveOrUpdate(u);
+		
+	}
 	public void deleteAll() {
 
 		Iterator users = getAll().iterator();

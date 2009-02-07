@@ -18,8 +18,9 @@
  Authors:
      Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
 --%>
+
 <%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
-Voms-Admin version 2.0.16
+Voms-Admin version <voms:version/>
 <!-- 
 You're logged in as <span id='adminDN' title="${currentAdmin.realSubject}"><voms:formatDN dn="${currentAdmin.realSubject}" fields="CN"/></span>.
 -->
