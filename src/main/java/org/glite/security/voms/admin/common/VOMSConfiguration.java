@@ -94,6 +94,8 @@ public final class VOMSConfiguration {
     
     public static final String REGISTRATION_SERVICE_ENABLED = "voms.request.webui.enabled";
     
+    public static final String READ_ACCESS_FOR_AUTHENTICATED_CLIENTS = "voms.read-access-for-authenticated-clients";
+    
     /**
      * VERSION Properties
      */
@@ -856,6 +858,33 @@ public final class VOMSConfiguration {
         
         return getString( "GLITE_LOCATION" )+"/etc/voms-admin/templates/email";
     }
+    
+    private String getCustomizedContentPath() {
+
+		String pathName = config.getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName() + "/customized-content/";
+		return pathName;
+	}
+    
+    public boolean pageHasCustomization(String pageName) {
+
+		String basePath = getCustomizedContentPath() + "/" + pageName;
+		File f = new File(basePath);
+
+		return (f.exists() && f.canRead());
+
+	}
+
+	public String getCustomizationPageAbsolutePath(String pageName) {
+		String basePath = getCustomizedContentPath() + "/" + pageName;
+		File f = new File(basePath);
+
+		if (f.exists() && f.canRead())
+			return f.getAbsolutePath();
+
+		return null;
+
+	}
     
     public ServletContext getServletContext(){
         return context;

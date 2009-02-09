@@ -6,15 +6,17 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
     version="2.0">
 
-	<tlibversion>1.2</tlibversion>
-	<jspversion>1.1</jspversion>
-	<shortname>voms</shortname>
+	<tlib-version>1.2</tlib-version>
+	<!--   <jsp-version>1.1</jsp-version> -->
+	
+	
+	<short-name>voms</short-name>
 	<uri>http://org.glite.security.voms.tags</uri>
  	<tag>
         <name>pageCustomization</name>
-        <tagclass>org.glite.security.voms.admin.jsp.PageCustomizationTag</tagclass>
-        <info>Display customized content if defined for the current jsp page.</info>
+        <tag-class>org.glite.security.voms.admin.jsp.PageCustomizationTag</tag-class>
         
+        <body-content>empty</body-content>
         <attribute>
             <name>pageName</name>
             <required>true</required>

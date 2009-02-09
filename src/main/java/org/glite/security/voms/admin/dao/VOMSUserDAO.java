@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
 import org.glite.security.voms.admin.database.AttributeAlreadyExistsException;
 import org.glite.security.voms.admin.database.AttributeValueAlreadyAssignedException;

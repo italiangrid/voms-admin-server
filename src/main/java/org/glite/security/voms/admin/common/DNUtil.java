@@ -22,6 +22,10 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.common;
 
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,6 +103,42 @@ public class DNUtil {
         
         return null;
     }
+    
+    public static String getEmailAddressFromExtensions(X509Certificate cert) {
+
+		try {
+
+			Collection<List<?>> altNames = cert.getSubjectAlternativeNames();
+
+			if (altNames == null)
+				return null;
+
+			// Iterate over alternative names
+			for (List<?> entry : altNames) {
+
+				// First item in the list is an integer specify the altName
+				// 'kind'
+				int entryType = (Integer) entry.get(0);
+
+				// 1 is the code for rfc822 name, we consider only the first
+				// address
+				// in the list.
+
+				if (entryType == 1)
+					return (String) entry.get(1);
+				else
+					continue;
+
+			}
+
+		} catch (CertificateParsingException e) {
+			throw new VOMSException(
+					"Error accessing subject alternative names: "
+							+ e.getMessage(), e);
+		}
+
+		return null;
+	}
 }
 
 // Please do not change this line.
