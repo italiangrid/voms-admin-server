@@ -1,7 +1,7 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.sun.tools.javac.resources.version;
+
 
 
 public class AUP implements Serializable{
