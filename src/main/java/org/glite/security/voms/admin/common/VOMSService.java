@@ -25,7 +25,6 @@ import java.util.Timer;
 
 import javax.servlet.ServletContext;
 
-import org.apache.axis.utils.NetworkUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
@@ -58,19 +57,7 @@ public final class VOMSService {
         log.info( "Configuration setup ok." );
 
         UpdateCATask.instance( getTimer() );
-
-//        try {
-//
-//            UpdateCATask.updateCAs();
-//
-//        } catch ( VOMSException e ) {
-//
-//            log.error( "Error updating trusted CA org.glite.security.voms.admin.database!", e );
-//            throw new VOMSFatalException( e );
-//
-//        }
-
-                    
+                  
         try {
             
                 Properties p = new Properties();

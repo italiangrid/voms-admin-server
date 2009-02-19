@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.AUPVersion" table="aup_version">	
+		
+		<id name="id" type="long">
+			<generator class="native"/>
+		</id>
+	
+        <natural-id>
+            <many-to-one 
+              name="aup"
+              class="org.glite.security.voms.admin.model.AUP"
+              column="aup_id"
+              foreign-key="fk_aup_version_aup"
+              not-null="true"/>
+              
+            <property name="version" 
+              type="string"
+              not-null="true"
+              unique="false"/>
+        
+        </natural-id>
+		
+        <property 
+          name="url"
+          type="string"
+          not-null="true"/>     
+            
+        <property 
+          name="creationTime"
+          type="timestamp"
+          not-null="true"
+        />
+		
+	</class>
+
+</hibernate-mapping>

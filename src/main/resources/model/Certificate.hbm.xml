@@ -25,14 +25,7 @@
 			column="subject_string"
 			not-null="true"
 			unique="true"/>
-		
-		<property 
-			name="subjectDER"
-
-			type="org.glite.security.voms.admin.database.X500PrincipalType"
-			column="subject_der"
-			/>
-		
+				
 		<property 
 			name="suspended"
 

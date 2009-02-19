@@ -27,8 +27,6 @@ public class Certificate implements Serializable {
 
     protected String subjectString;
 
-    protected X500Principal subjectDER;
-
     protected VOMSCA ca;
 
     protected String email;
@@ -117,16 +115,6 @@ public class Certificate implements Serializable {
     public void setSuspended( boolean suspended ) {
 
         this.suspended = suspended;
-    }
-
-    public X500Principal getSubjectDER() {
-
-        return subjectDER;
-    }
-
-    public void setSubjectDER( X500Principal subjectDER ) {
-
-        this.subjectDER = subjectDER;
     }
 
     public boolean equals( Object other ) {

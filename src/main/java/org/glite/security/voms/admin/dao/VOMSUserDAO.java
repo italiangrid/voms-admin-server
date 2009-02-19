@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.DNUtil;
+import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
@@ -41,6 +42,10 @@ import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
+import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
+import org.glite.security.voms.admin.model.AUPVersion;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSCA;
@@ -279,11 +284,9 @@ public class VOMSUserDAO {
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("emailAddress", emailAddress);
-
-		VOMSUser result = (VOMSUser) q.uniqueResult();
-
-		return result;
-
+		
+		return (VOMSUser) q.uniqueResult();
+		
 	}
 
 //	public VOMSUser create(VOMSUser usr, String caDN) {
@@ -325,12 +328,17 @@ public class VOMSUserDAO {
             throw new NullArgumentException("Please specify an email address for the user!");
         
     }
-	public VOMSUser create(VOMSUser usr) {
+	
+    public VOMSUser create(VOMSUser usr) {
 
         checkNullFields( usr );
+               
+        HibernateFactory.getSession().save(usr);
         
-        // Check if CA exists in db
-
+        // How should we check for uniqueness?
+        // using emailAddress seems the most appropriate thing
+        // findByEmail( usr.getEmailAddress() );
+        
 		// Add user to VO root group
 		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
 		addToGroup(usr, voGroup);
@@ -636,7 +644,6 @@ public class VOMSUserDAO {
 		
 		String subjectString = DNUtil.getBCasX500(x509Cert.getSubjectX500Principal());
 		cert.setSubjectString(subjectString);
-		cert.setSubjectDER(x509Cert.getSubjectX500Principal());
 		cert.setCreationTime(new Date());
 		cert.setNotAfter(x509Cert.getNotAfter());
 		cert.setSuspended(false);
@@ -680,6 +687,49 @@ public class VOMSUserDAO {
 		HibernateFactory.getSession().saveOrUpdate(cert);
 		HibernateFactory.getSession().saveOrUpdate(u);
 		
+	}
+	
+	public void acceptAUP(VOMSUser user, AUP aup ){
+	    if ( user == null )
+            throw new NullArgumentException( "user cannot be null!" );
+	    
+	    if ( aup == null )
+            throw new NullArgumentException( "aup cannot be null!" );
+	    
+	    AUPVersion aupVersion = aup.getCurrentVersion();
+	    
+	    if (aupVersion == null)
+	        throw new NotFoundException("No registered version found for AUP '"+aup.getName()+"'.");
+	    
+	    if (!user.hasSignedAUP( aupVersion )){
+	        
+	        AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
+	        aupRecord.setLastAcceptanceDate( new Date() );
+	        
+	        user.getAupAcceptanceRecords().add( aupRecord );
+	        HibernateFactory.getSession().update( user );
+	    }else
+	        throw new AlreadyExistsException("User has already accepted this aup!");
+	    
+	}
+	
+	public void acceptAUPVersion(VOMSUser user, AUPVersion aupVersion){
+	    
+	    if ( user == null )
+            throw new NullArgumentException( "user cannot be null!" );
+	    
+	    if ( aupVersion == null )
+            throw new NullArgumentException( "aupVersion cannot be null!" );
+	    
+	    if (!user.hasSignedAUP( aupVersion )){
+            AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
+            aupRecord.setLastAcceptanceDate( new Date() );
+            
+            user.getAupAcceptanceRecords().add( aupRecord );
+            HibernateFactory.getSession().update( user );
+        }else
+            throw new AlreadyExistsException("User has already accepted this aup!");
+        
 	}
 	public void deleteAll() {
 

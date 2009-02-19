@@ -55,7 +55,7 @@ public class ACL implements Serializable{
     VOMSRole role = null;
 
     // FIXME: Make permissions a sorted collection!
-    Map permissions = new HashMap();
+    Map<VOMSAdmin,VOMSPermission> permissions = new HashMap<VOMSAdmin,VOMSPermission>();
 
     public ACL() {
 
@@ -84,12 +84,12 @@ public class ACL implements Serializable{
         this.group = group;
     }
 
-    public Map getPermissions() {
+    public Map<VOMSAdmin, VOMSPermission> getPermissions() {
 
         return permissions;
     }
 
-    public void setPermissions( Map permissions ) {
+    public void setPermissions( Map<VOMSAdmin,VOMSPermission> permissions ) {
 
         this.permissions = permissions;
     }
@@ -181,46 +181,37 @@ public class ACL implements Serializable{
 
     public VOMSPermission getPermissions( VOMSAdmin a ) {
 
-        return (VOMSPermission) getPermissions().get( a );
+        return getPermissions().get( a );
 
     }
     
-    public Map getRolePermissions(){
+    public Map<VOMSAdmin,VOMSPermission> getRolePermissions(){
         
-        Map result = new HashMap();
+        Map<VOMSAdmin,VOMSPermission> result = new HashMap<VOMSAdmin,VOMSPermission>();
                 
-        Iterator entries = permissions.entrySet().iterator();
-                
-        while(entries.hasNext()){
-            
-            Map.Entry entry = (Map.Entry)entries.next();
-            
-            VOMSAdmin admin = (VOMSAdmin)entry.getKey();
+        for (Map.Entry <VOMSAdmin, VOMSPermission> entry: getPermissions().entrySet()){
+                       
+            VOMSAdmin admin = entry.getKey();
             
             if (admin.getCa().getSubjectString().equals( Constants.ROLE_CA))
-                result.put( admin, entry.getValue() );
-                
+                result.put( admin, entry.getValue() );                
         }
         
         return result;
     }
     
-    public Map getGroupPermissions(){
+    public Map<VOMSAdmin,VOMSPermission> getGroupPermissions(){
         
-        Map result = new HashMap();
+        Map<VOMSAdmin,VOMSPermission> result = new HashMap<VOMSAdmin,VOMSPermission>();
         
-        Iterator entries = permissions.entrySet().iterator();
-                
-        while(entries.hasNext()){
+        for (Map.Entry <VOMSAdmin, VOMSPermission> entry: getPermissions().entrySet()){
             
-            Map.Entry entry = (Map.Entry)entries.next();
-            
-            VOMSAdmin admin = (VOMSAdmin)entry.getKey();
+            VOMSAdmin admin = entry.getKey();   
             
             if (admin.getCa().getSubjectString().equals( Constants.GROUP_CA))
                 result.put( admin, entry.getValue() );
                 
-        }
+        }   
         
         return result;
     }

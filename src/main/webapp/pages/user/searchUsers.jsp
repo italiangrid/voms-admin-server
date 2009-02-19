@@ -80,7 +80,7 @@
 					</c:url>
 					
 								
-					<c:url value="javascript:ask_confirm('Delete user: \n ${fn:escapeXml(vomsUser.escapedDn)} \n?', '${deleteUserUrl}', 'User ${fn:escapeXml(vomsUser.escapedDn)} not deleted.')"
+					<c:url value="javascript:ask_confirm('Delete user: \n ${fn:escapeXml(vomsUser.fullName)} \n?', '${deleteUserUrl}', 'User ${fn:escapeXml(vomsUser.fullName)} not deleted.')"
 						var="deleteUserJSUrl"/>
 					
 					

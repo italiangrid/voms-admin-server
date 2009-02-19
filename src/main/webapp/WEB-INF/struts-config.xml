@@ -410,7 +410,7 @@
 		<action path="/CreateUser"
 			type="org.glite.security.voms.admin.actions.user.CreateUserAction"
 			name="UserForm"
-			validate="true"
+			validate="false"
 			input="/PreCreateUser.do"
 			>
 			

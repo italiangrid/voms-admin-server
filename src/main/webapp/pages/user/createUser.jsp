@@ -25,7 +25,8 @@
 <div class="header1">Create a new VO user</div>
 
 <voms:authorized permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE" context="vo">
-	<html:form action="/CreateUser" method="post" onsubmit="return validateUserForm(this)">
+    
+	<html:form action="/CreateUser" method="post" enctype="multipart/form-data">
 		<table cellpadding="0" cellspacing="0" class="form">
 		<colgroup>
 				<col class="labels"/>
@@ -134,8 +135,8 @@
 	</html:form>
 </voms:authorized>	
 
-	
+<%-- 	
 <html:javascript formName="/CreateUser"/>	
-	
+--%>
 	
 

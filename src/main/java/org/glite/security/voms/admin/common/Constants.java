@@ -108,12 +108,6 @@ final public class Constants {
 
     /** Security context property name for remote address. */
     static public final String SECURITY_CONTEXT_REMOTE_ADDRESS = "org.glite.security.voms.remote_address";
-
-    /**
-     * The fully qualified container name of the virtual container that holds
-     * the global ACL.
-     */
-    static public final String GLOBAL_ACL_NAME = "Global-ACL";
     
     public static final String SUCCESS = "success";
 
@@ -138,7 +132,22 @@ final public class Constants {
     public static final String UNASSIGNED_ROLES_KEY = "unassignedRoles";
     
     public static final String STATUS_MAP_KEY = "uiStatusMap";
-
+    
+    
+    // TAG administrators constants below
+    
+    public static final String TAG_VO_MANAGER = "VO-Manager";
+    
+    public static final String TAG_GROUP_MANAGER = "Group-Manager";
+    
+    public static final String TAG_ROLE_MANAGER = "Role-Manager";
+    
+    public static final String TAG_ATTRIBUTES_MANAGER = "Attributes-Manager";
+    
+    public static final String TAG_INSTITUTE_REPRESENTATIVE  = "Institute-Representative";
+    
+    public static final String TAG_VO_USER = "VO-User";
+    
 }
 
 // Please do not change this line.

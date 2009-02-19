@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.model.AUP" table="aup">	
+		
+		<id name="id" type="long">
+			<generator class="native"/>
+		</id>
+	
+		<property name="name" 
+          type="string"
+          not-null="true"
+          unique="true"
+          />
+          
+        <property 
+          name="description"
+          type="string"
+          not-null="false"
+          unique="false"
+          
+          />
+		
+        <set name="versions" sort="natural" cascade="all-delete-orphan" inverse="true">
+          <key column="aup_id" on-delete="cascade"/>
+          <one-to-many class="org.glite.security.voms.admin.model.AUPVersion"/>
+        </set>
+		
+	</class>
+
+</hibernate-mapping>

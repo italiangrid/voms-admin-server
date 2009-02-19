@@ -29,9 +29,9 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>VOMS-ADMIN 2.0</display-name>
+	<display-name>VOMS-ADMIN 2.5</display-name>
     
-    <!-- Struts 2 filter -->
+    <!-- 
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
@@ -40,8 +40,7 @@
             <param-value>it.cnaf.infn.voms.actions</param-value>
         </init-param>
     </filter>
-    
-    	
+    -->
 	<filter>
 		<filter-name>security-context-filter</filter-name>
 		<filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
@@ -57,13 +56,13 @@
 		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
 	</filter>
 	
-    <!-- Struts 2 filter mapping -->
+    
+    <!--  
     <filter-mapping>
         <filter-name>struts2</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/s2/*.do</url-pattern>
     </filter-mapping>
-    <!--  -->
-    
+    -->
     
 	<filter-mapping>
 		<filter-name>security-context-filter</filter-name>
@@ -90,14 +89,14 @@
     </listener>
     -->
     
+    <!-- 
     <listener>
         <listener-class>
             org.apache.struts2.tiles.StrutsTilesListener
         </listener-class>
     </listener>
-    
-
-    <!-- End of Struts 2 listeners -->
+     -->
+     <!-- End of Struts 2 listeners -->
     
 	<listener>
 		<display-name>VOMSContextListener</display-name>

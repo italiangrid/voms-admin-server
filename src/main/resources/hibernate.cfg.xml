@@ -33,6 +33,9 @@
         <mapping resource="model/VOMSMapping.hbm.xml" />
         <mapping resource="model/ACL.hbm.xml" />
         <mapping resource="model/VOMembershipRequest.hbm.xml" />
+        <mapping resource="model/AUP.hbm.xml"/>
+        <mapping resource="model/AUPVersion.hbm.xml"/>
+        <mapping resource="model/AUPAcceptanceRecord.hbm.xml"/>
         
 <!--        <event type="post-delete">-->
 <!--        		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->

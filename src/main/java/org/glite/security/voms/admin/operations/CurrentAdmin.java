@@ -23,6 +23,7 @@ package org.glite.security.voms.admin.operations;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,7 @@ import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.ACL;
+import org.glite.security.voms.admin.model.Tag;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSUser;
@@ -126,7 +128,7 @@ public class CurrentAdmin {
         
         VOMSPermission personalPermissions = acl.getPermissions( admin );
 
-        log.debug( "Permissions for admin: " + personalPermissions );
+        log.debug( "Personal permissions for admin: " + personalPermissions );
         
         VOMSPermission anyAuthenticatedUserPermissions = acl.getAnyAuthenticatedUserPermissions();
         
@@ -196,6 +198,9 @@ public class CurrentAdmin {
                 }
             }
         }
+        
+        Set <VOMSAdmin> tagAdmins = admin.getTags();
+        if (tagAdmins ==  null)
 
         log.debug("Admin permissions: "+adminPerms);
         

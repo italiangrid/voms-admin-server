@@ -79,7 +79,8 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     String surname;
     String institution;
     String address;
-    String phoneNumber;   
+    String phoneNumber;
+    
     String emailAddress;
     
     
@@ -89,9 +90,10 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         
     
     
-    Set attributes = new HashSet();
-    Set mappings = new TreeSet();
+    Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
+    Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
     Set<Certificate> certificates = new HashSet<Certificate>();
+    Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
 
     public String getDn() {
 
@@ -794,4 +796,47 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         
         
     }
+
+    public String getEscapedDn(){
+        
+        Certificate cert = getDefaultCertificate();
+        
+        if (cert == null)
+            return null;
+        
+        return cert.getSubjectString().replaceAll( "'", "\\\\'" );
+        
+    }
+    
+    /**
+     * @return the aupAcceptanceRecords
+     */
+    public Set <AUPAcceptanceRecord> getAupAcceptanceRecords() {
+    
+        return aupAcceptanceRecords;
+    }
+
+    
+    /**
+     * @param aupAcceptanceRecords the aupAcceptanceRecords to set
+     */
+    public void setAupAcceptanceRecords(
+            Set <AUPAcceptanceRecord> aupAcceptanceRecords ) {
+    
+        this.aupAcceptanceRecords = aupAcceptanceRecords;
+    }
+ 
+    
+    public boolean hasSignedAUP(AUPVersion aupVersion){
+        
+        for (AUPAcceptanceRecord r: aupAcceptanceRecords){
+            
+            if (r.getAupVersion().equals( aupVersion ))
+                return true;
+            
+        }
+        
+        return false;
+    }
+    
 }
