@@ -216,40 +216,41 @@ public class ACL implements Serializable{
         return result;
     }
     
-    public Set getAdminsWithPermissions(VOMSPermission requiredPermission){
+    public Set<VOMSAdmin> getAdminsWithPermissions(VOMSPermission requiredPermission){
         
-        Set results = new HashSet();
+        Set<VOMSAdmin> results = new HashSet<VOMSAdmin>();
         
-        Iterator entries = permissions.entrySet().iterator();
-        
-        while (entries.hasNext()){
+        for (Map.Entry <VOMSAdmin, VOMSPermission> entry: getPermissions().entrySet()){
             
-            Map.Entry entry = (Map.Entry) entries.next();
+            VOMSAdmin a = entry.getKey();   
+            VOMSPermission p = entry.getValue();
             
-            VOMSPermission p = (VOMSPermission) entry.getValue();
-            VOMSAdmin a = (VOMSAdmin)entry.getKey();
+            // We return here only group admins and role admins!
+            // FIXME: maybe tag admins should be here as well
             if (p.satisfies( requiredPermission ) && ((a.isGroupAdmin() || a.isRoleAdmin())))
                 results.add( entry.getKey() );
+            
+                
         }
-        
+                
         return results;
         
     }
     public VOMSPermission getAnyAuthenticatedUserPermissions(){
         
         VOMSAdmin anyAuthenticatedUserAdmin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
-        return (VOMSPermission) permissions.get( anyAuthenticatedUserAdmin );
+        return permissions.get( anyAuthenticatedUserAdmin );
     }
     
-    public Map getExternalPermissions(){
+    public Map<VOMSAdmin,VOMSPermission> getExternalPermissions(){
         
-        Map result = new HashMap();
+        Map<VOMSAdmin,VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
         
-        Iterator admins = permissions.keySet().iterator();
+        Iterator<VOMSAdmin> admins = permissions.keySet().iterator();
         
         while (admins.hasNext()){
             
-            VOMSAdmin admin  = (VOMSAdmin) admins.next();
+            VOMSAdmin admin  = admins.next();
             
             if ((admin.getDn().equals( Constants.ANYUSER_ADMIN )) ||          
             (!admin.getDn().startsWith(Constants.INTERNAL_DN_PREFIX)))
@@ -259,6 +260,8 @@ public class ACL implements Serializable{
         
         return result;
     }
+    
+    
     public VOMSContext getContext(){
         
         return VOMSContext.instance(getGroup(),getRole());

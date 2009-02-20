@@ -3,6 +3,8 @@ package org.glite.security.voms.admin.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.glite.security.voms.admin.operations.VOMSPermission;
+
 
 public class Tag implements Serializable {
 
@@ -11,35 +13,18 @@ public class Tag implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     
-    
     private Long id;
     
     private String name;
     
-    private String description;
+    private VOMSPermission permissions;
     
-    private Set <VOMSAdmin> admins;
-    
-    private Boolean implicit;
+    private VOMSPermission permissionsOnPath;
     
     public Tag() {
 
         
     }
-
-    
-    public String getDescription() {
-    
-        return description;
-    }
-
-
-    
-    public void setDescription( String description ) {
-    
-        this.description = description;
-    }
-
 
     
     public Long getId() {
@@ -60,8 +45,6 @@ public class Tag implements Serializable {
     
         return name;
     }
-
-
     
     public void setName( String name ) {
     
@@ -69,40 +52,24 @@ public class Tag implements Serializable {
     }
 
 
-    
-    public Set <VOMSAdmin> getAdmins() {
-    
-        return admins;
-    }
+	public VOMSPermission getPermissions() {
+		return permissions;
+	}
 
 
-    
-    public void setAdmins( Set <VOMSAdmin> admins ) {
-    
-        this.admins = admins;
-    }
+	public void setPermissions(VOMSPermission permissions) {
+		this.permissions = permissions;
+	}
 
 
-    
-    public Boolean getImplicit() {
-    
-        return implicit;
-    }
+	public VOMSPermission getPermissionsOnPath() {
+		return permissionsOnPath;
+	}
 
 
-    
-    public void setImplicit( Boolean implicit ) {
-    
-        this.implicit = implicit;
-    }
-
-
-    public boolean isImplicit(){
-        
-        return getImplicit();
-    }
+	public void setPermissionsOnPath(VOMSPermission permissionsOnPath) {
+		this.permissionsOnPath = permissionsOnPath;
+	}
     
     
-    
-
 }

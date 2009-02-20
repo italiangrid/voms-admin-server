@@ -149,20 +149,17 @@ public class CurrentAdmin {
             return adminPerms.satifies( p );
 
         // AdminUser != null       
-        Map groupPermissions = acl.getGroupPermissions();
-        Map rolePermissions = acl.getRolePermissions();
+        Map<VOMSAdmin,VOMSPermission> groupPermissions = acl.getGroupPermissions();
+        Map<VOMSAdmin,VOMSPermission> rolePermissions = acl.getRolePermissions();
 
         log.debug("Group permissions empty? "+groupPermissions.isEmpty());
         log.debug("Role permissions empty? "+rolePermissions.isEmpty());
         
         if ( !groupPermissions.isEmpty() ) {
 
-            Iterator entries = groupPermissions.entrySet().iterator();
+            for (Map.Entry<VOMSAdmin, VOMSPermission> entry: groupPermissions.entrySet()){
 
-            while ( entries.hasNext() ) {
-
-                Map.Entry entry = (Map.Entry) entries.next();
-                String groupName = ( (VOMSAdmin) entry.getKey() ).getDn();
+                String groupName = entry.getKey().getDn();
 
                 if ( adminUser.isMember( groupName ) ) {
                     adminPerms
@@ -178,18 +175,15 @@ public class CurrentAdmin {
         }
 
         if ( !rolePermissions.isEmpty() ) {
-
-            Iterator entries = rolePermissions.entrySet().iterator();
-
-            while ( entries.hasNext() ) {
-                Map.Entry entry = (Map.Entry) entries.next();
-                String roleName = ( (VOMSAdmin) entry.getKey() ).getDn();
+        	
+        	for (Map.Entry<VOMSAdmin, VOMSPermission> entry: groupPermissions.entrySet()){
+        		String roleName = entry.getKey().getDn();
 
                 log.debug("Checking if current admin has role: "+roleName);
                 if ( adminUser.hasRole( roleName ) ){
                  
                     adminPerms
-                            .addPermission( (VOMSPermission) entry.getValue() );
+                            .addPermission( entry.getValue() );
                     log
                     .debug( "Adding role permission "
                             + entry.getValue()
@@ -199,8 +193,15 @@ public class CurrentAdmin {
             }
         }
         
-        Set <VOMSAdmin> tagAdmins = admin.getTags();
-        if (tagAdmins ==  null)
+      
+//        for (VOMSAdmin tag: admin.getTags()){
+//        	
+//        	VOMSPermission tagPerms = acl.getPermissions(tag);
+//        	if (tagPerms != null){
+//        		log.debug("Adding tag '"+tag.getDn()+"' permissions '"+tagPerms+"' to admin's permission set.");
+//        		adminPerms.addPermission(tagPerms);
+//        	}
+//        }
 
         log.debug("Admin permissions: "+adminPerms);
         
