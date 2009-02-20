@@ -1,6 +1,10 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.glite.security.voms.admin.common.NullArgumentException;
 
 public class TagMapping implements Serializable {
 
@@ -12,7 +16,6 @@ public class TagMapping implements Serializable {
 	Long id;
 	
 	Tag tag;
-	
 	VOMSGroup group;
 	VOMSRole role;
 	VOMSAdmin admin;
@@ -48,11 +51,20 @@ public class TagMapping implements Serializable {
 		return false;
 	}
 	
-	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
-	}
+
+        int result = 14;
+
+        result = 29 * result + getTag().hashCode();
+
+        result = 29 * result + getGroup().hashCode();
+
+        if ( getRole() != null )
+            result = 29 * result + getRole().hashCode();
+
+        return result;
+    }
+	
 
 	public VOMSGroup getGroup() {
 		return group;
@@ -78,14 +90,6 @@ public class TagMapping implements Serializable {
 		this.id = id;
 	}
 
-	public VOMSAdmin getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(VOMSAdmin admin) {
-		this.admin = admin;
-	}
-
 	public Tag getTag() {
 		return tag;
 	}
@@ -94,6 +98,42 @@ public class TagMapping implements Serializable {
 		this.tag = tag;
 	}
 	
+	public boolean isGroupMapping(){
+	    
+	    if ( tag == null )
+            throw new NullArgumentException( "tag cannot be null!" );
+	    
+	    if ( group == null )
+            throw new NullArgumentException( "group cannot be null!" );
+	    
+	    return (role == null);
+	}
+	
+	public boolean isRoleMapping(){
+	    
+        return !isGroupMapping();
+	    
+	}
+
+    
+    /**
+     * @return the admin
+     */
+    public VOMSAdmin getAdmin() {
+    
+        return admin;
+    }
+
+    
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin( VOMSAdmin admin ) {
+    
+        this.admin = admin;
+    }
+
+    
 	
 
 }

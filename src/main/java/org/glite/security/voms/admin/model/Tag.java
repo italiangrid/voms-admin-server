@@ -1,6 +1,7 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -21,6 +22,8 @@ public class Tag implements Serializable {
     
     private VOMSPermission permissionsOnPath;
     
+    private Set <TagMapping> mappings = new HashSet <TagMapping>();
+    
     public Tag() {
 
         
@@ -31,7 +34,6 @@ public class Tag implements Serializable {
     
         return id;
     }
-
 
     
     public void setId( Long id ) {
@@ -70,6 +72,27 @@ public class Tag implements Serializable {
 	public void setPermissionsOnPath(VOMSPermission permissionsOnPath) {
 		this.permissionsOnPath = permissionsOnPath;
 	}
+
+
     
+    /**
+     * @return the mappings
+     */
+    public Set <TagMapping> getMappings() {
+    
+        return mappings;
+    }
+
+
+    
+    /**
+     * @param mappings the mappings to set
+     */
+    public void setMappings( Set <TagMapping> mappings ) {
+    
+        this.mappings = mappings;
+    }
+    
+	
     
 }

@@ -15,12 +15,13 @@
 		<property name="emailAddress" type="string" column="email_address"/>
 		
 		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.model.VOMSCA" not-null="true"/>
-		
+		<!-- 
 		<set name="tags" table="admins_tags" cascade="save-update">
 			<key column="admin_id"/>
 			<many-to-many 
 				class="org.glite.security.voms.admin.model.VOMSAdmin" 
 				column="tag_id"/>
 		</set>
+        -->
 	</class>
 </hibernate-mapping>

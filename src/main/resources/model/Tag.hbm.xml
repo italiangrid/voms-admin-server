@@ -15,17 +15,23 @@
 		<property name="name" type="string" update="true" insert="true"
 			not-null="true" unique="true" />
 		
-		<property name="description" type="string" />
+		<property name="permissions" 
+            type="org.glite.security.voms.admin.database.PermissionType" 
+            update="true" 
+            insert="true"
+            not-null="true"/>
 		
-		<set 
-			name="admins" 
-			table="admins_tags" 
-			inverse="true"
-			cascade="save-update"
-			>
-			<key column="tag_id"/>
-			<many-to-many class="org.glite.security.voms.admin.model.VOMSAdmin" column="admin_id"/>
-		</set>
+      <property name="permissionsOnPath" 
+            type="org.glite.security.voms.admin.database.PermissionType" 
+            update="true" 
+            insert="true"/>
+	
+      <set name="mappings" cascade="all-delete-orphan" inverse="true">
+        <key column="tag_id" on-delete="cascade"/>
+        <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>      
+      </set>
+      
+      	
 	</class>
 
 </hibernate-mapping>
