@@ -60,6 +60,10 @@ public class VOMSRole implements Serializable, Auditable, Comparable {
     Set mappings = new TreeSet();
 
     Set acls = new HashSet();
+    
+    Set <TagMapping> tagMappings = new HashSet <TagMapping>();
+    
+    
 
     /**
      * @return Returns the id.
@@ -290,4 +294,24 @@ public class VOMSRole implements Serializable, Auditable, Comparable {
         
     }
 
+    
+    /**
+     * @return the tagMappings
+     */
+    public Set <TagMapping> getTagMappings() {
+    
+        return tagMappings;
+    }
+
+    
+    /**
+     * @param tagMappings the tagMappings to set
+     */
+    public void setTagMappings( Set <TagMapping> tagMappings ) {
+    
+        this.tagMappings = tagMappings;
+    }
+
+    
+    
 }

@@ -118,8 +118,7 @@ public class DatabaseSetupTask extends TimerTask {
             adminDAO
                     .create( Constants.ANYUSER_ADMIN, Constants.VIRTUAL_CA );
             
-            VOMSAdmin voManagerTag = adminDAO.createFromTag( Constants.TAG_VO_MANAGER );
-            VOMSAdmin voUserTag = adminDAO.createFromTag( Constants.TAG_VO_USER ); 
+             
             
 
             VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
@@ -130,9 +129,6 @@ public class DatabaseSetupTask extends TimerTask {
 
             voGroupACL.setPermissions( localAdmin, allPermissions );
             voGroupACL.setPermissions( internalAdmin, allPermissions );
-            
-            voGroupACL.setPermissions( voManagerTag, allPermissions );
-            voGroupACL.setPermissions( voUserTag, readVoPermissions );
             
             // Create VO-Admin role and admin
             

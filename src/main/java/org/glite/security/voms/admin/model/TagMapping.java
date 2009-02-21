@@ -1,8 +1,6 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 
@@ -23,6 +21,14 @@ public class TagMapping implements Serializable {
 	
 	public TagMapping() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public TagMapping(Tag tt, VOMSGroup gg, VOMSRole rr, VOMSAdmin aa){
+	    
+	    tag = tt;
+	    group = gg;
+	    role = rr;
+	    admin = aa;
 	}
 	
 	@Override

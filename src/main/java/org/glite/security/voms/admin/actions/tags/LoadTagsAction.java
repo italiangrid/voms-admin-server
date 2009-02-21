@@ -17,8 +17,7 @@ public class LoadTagsAction extends BaseAction {
 
     public ActionForward execute( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
     
-        List<VOMSAdmin> tagAdmins = VOMSAdminDAO.instance().getTagAdmins();
-        request.setAttribute( "tags", tagAdmins);
+    
         
         return findSuccess( mapping );
     }

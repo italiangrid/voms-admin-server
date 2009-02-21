@@ -96,8 +96,7 @@ public class ACLActions extends BaseDispatchAction {
 
         List roles = (List) ListRolesOperation.instance().execute();
         
-        // FIXME: implement me with an operation!!!
-        List tags = (List) VOMSAdminDAO.instance().getTagAdmins();
+        
 
         request.setAttribute( "acl", acl );
 
@@ -110,7 +109,7 @@ public class ACLActions extends BaseDispatchAction {
         request.setAttribute( "cas", cas );
         request.setAttribute( "groups", groups );
         request.setAttribute( "roles", roles );
-        request.setAttribute( "tags", tags);
+        
 
         aForm.reset(mapping,request);
         return findSuccess( mapping );

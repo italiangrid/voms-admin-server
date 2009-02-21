@@ -42,9 +42,9 @@ public class UnassignedTagsTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {      
         // FIXME: DO this with an operation
-        List<VOMSAdmin> unassignedTags = VOMSAdminDAO.instance().getUnassignedTagsForAdmin( new Long(adminId) );
-        pageContext.setAttribute( var, unassignedTags);
-  
+//        List<VOMSAdmin> unassignedTags = VOMSAdminDAO.instance().getUnassignedTagsForAdmin( new Long(adminId) );
+//        pageContext.setAttribute( var, unassignedTags);
+//  
         return SKIP_BODY;
     }
 

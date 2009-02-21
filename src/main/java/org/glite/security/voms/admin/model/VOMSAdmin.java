@@ -22,14 +22,17 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
+import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
 
 
@@ -50,7 +53,8 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
 
     String emailAddress;
     
-    Set <VOMSAdmin> tags;
+    Set<TagMapping> tagMappings = new HashSet <TagMapping>();
+    
     
     public VOMSAdmin() {
 
@@ -208,23 +212,86 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
         return result;
     }
 
-    public boolean isTagAdmin(){
-     
-        return getCa().getSubjectString().equals( Constants.TAG_CA );
+    
+    /**
+     * @return the mappings
+     */
+    public Set <TagMapping> getTagMappings() {
+    
+        return tagMappings;
+    }
+
+    
+    /**
+     * @param mappings the mappings to set
+     */
+    public void setTagMappings( Set <TagMapping> mappings ) {
+    
+        this.tagMappings = mappings;
+    }
+    
+    
+    public Set<Tag> getTagsInGroup(VOMSGroup g){
+        
+        Set<Tag> result = new HashSet <Tag>();
+        
+        for (TagMapping m: tagMappings){
+            
+            if (m.getAdmin().equals( this ) && m.getGroup().equals( g ))
+                result.add( m.getTag() );
+        }
+        
+        return result;
+    }
+    
+    public Set<Tag> getTagsInRole(VOMSGroup g, VOMSRole r){
+        
+        Set<Tag> result = new HashSet <Tag>();
+        
+        for (TagMapping m: tagMappings){
+            
+            if (!m.isGroupMapping())
+                continue;
+            
+            if (m.getAdmin().equals( this ) && m.getGroup().equals( g ) && m.getRole().equals( r ))
+                result.add( m.getTag() );
+        }
+        
+        return result;
+    }
+    
+    
+    public void assignTagInGroup(VOMSGroup group, Tag tag){
+        
+        if ( group == null )
+            throw new NullArgumentException( "group cannot be null!" );
+        
+        if ( tag == null )
+            throw new NullArgumentException( "tag cannot be null!" );
+        
+        TagMapping m = new TagMapping(tag,group,null,this);
+        
+        if (!getTagMappings().add( m ))
+            throw new AlreadyExistsException("Admin '"+this+"' already has tag '"+tag+"' in group '"+group+"'");
         
     }
-
     
-    public Set <VOMSAdmin> getTags() {
-    
-        return tags;
+    public void assignTagInRole(VOMSGroup group, VOMSRole role, Tag tag){
+        
+        if ( group == null )
+            throw new NullArgumentException( "group cannot be null!" );
+        
+        if ( tag == null )
+            throw new NullArgumentException( "tag cannot be null!" );
+        
+        if ( role == null )
+            throw new NullArgumentException( "role cannot be null!" );
+        
+        TagMapping m = new TagMapping(tag,group, role, this);
+        
+        if (!getTagMappings().add( m ))
+            throw new AlreadyExistsException("Admin '"+this+"' already has tag '"+tag+"' in group '"+group+"'");
+        
     }
-
-    
-    public void setTags( Set <VOMSAdmin> tags ) {
-    
-        this.tags = tags;
-    }
-    
     
 }

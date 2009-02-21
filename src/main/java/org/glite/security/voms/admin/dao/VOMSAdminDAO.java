@@ -190,17 +190,6 @@ public class VOMSAdminDAO {
         
     }
     
-    
-    public List<VOMSAdmin> getTagAdmins(){
-        
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString = :caSubject";
-        
-        return HibernateFactory.getSession().createQuery( query ).setString( "caSubject", Constants.TAG_CA).list();
-        
-    }
-    
-    
-    
     public VOMSAdmin getByFQAN(String fqan){
         
         if (fqan == null)
@@ -242,29 +231,8 @@ public class VOMSAdminDAO {
         
     }
     
-    public VOMSAdmin getFromTag(String tagName){
-        
-        assert tagName != null: "Cannot get a VOMS Admin from a null tagName";
-        
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString = :caSubject and dn = :tagName";
-        
-        Query q = HibernateFactory.getSession().createQuery( query ).setString( "caSubject", Constants.TAG_CA).setString( "tagName", tagName); 
-        return (VOMSAdmin) q.uniqueResult();
-        
-    }
     
-    public VOMSAdmin createFromTag(String tagName){
-        
-        assert tagName != null: "Cannot create a VOMS Admin from a null tag name!";
-        
-        VOMSAdmin tagAdmin = getFromTag( tagName );
-        
-        if (tagAdmin != null)
-            throw new AlreadyExistsException("Admin for tag '"+tagName+"' already exists!");
-        
-        return create(tagName,Constants.TAG_CA);
-        
-    }
+    
 
     public VOMSAdmin create(String dn, String caDN){
         
@@ -364,21 +332,6 @@ public class VOMSAdminDAO {
         q.executeUpdate();
     }
 
-    public VOMSAdmin createAuthorizedAdmin(String dn, String caDN){
-        
-        VOMSAdmin admin = create( dn,caDN );
-        VOMSGroup g = VOMSGroupDAO.instance().getVOGroup();
-        
-        if (g == null)
-            throw new VOMSDatabaseException("Vo group still undefined in org.glite.security.voms.admin.database!");
-        
-        g.getACL().setPermissions( admin, VOMSPermission.getAllPermissions() );
-        
-        HibernateFactory.getSession().save( admin );
-        HibernateFactory.getSession().save( g );
-        
-        return admin;    
-    }
     
     public void saveOrUpdate( VOMSAdmin a ) {
 
@@ -390,58 +343,5 @@ public class VOMSAdminDAO {
         HibernateFactory.getSession().update( a );
     }
     
-    public void assignTag(VOMSAdmin a, VOMSAdmin tag){
-        
-        assert a != null: "Cannot assign a tag to a null admin!";
-        assert tag != null: "Cannot assign an admin to a null tag!";
-        
-        if (a.isInternalAdmin())
-            throw new IllegalArgumentException("Cannot assign a tag to an internal admin (tag, role or group admin)!");
-        
-        if (!tag.isTagAdmin())
-            throw new IllegalArgumentException("tag is not a tag admin!");
-        
-        a.getTags().add( tag );
-        HibernateFactory.getSession().update( a );
-        
-    }
     
-    public void removeTag(VOMSAdmin a, VOMSAdmin tag){
-        assert a != null: "Cannot remove a tag from a null admin!";
-        assert tag != null: "Cannot remove a null tag from an admin !";
-        
-        if (a.isInternalAdmin())
-            throw new IllegalArgumentException("Cannot assign a tag to an internal admin (tag, role or group admin)!");
-        
-        if (!tag.isTagAdmin())
-            throw new IllegalArgumentException("tag is not a tag admin!");
-        
-        a.getTags().remove( tag );
-        HibernateFactory.getSession().update( a );        
-    }
-    
-    public List<VOMSAdmin> getUnassignedTagsForAdmin(long adminId){
-        
-        VOMSAdmin a = getById( adminId );
-        if (a == null)
-            throw new NoSuchAdminException("Admin with id '"+adminId+"' not found!");
-        
-        return getUnassignedTagsForAdmin( a );
-    }
-    public List<VOMSAdmin> getUnassignedTagsForAdmin(VOMSAdmin a){
-        assert a != null: "Cannot get unassigned tags for a null admin!";
-        
-        if (a.isTagAdmin())
-            throw new IllegalArgumentException("Cannot get unassigned tags for a tag admin!");
-        
-        List<VOMSAdmin> unassignedTags = new ArrayList<VOMSAdmin>();
-        List<VOMSAdmin> allTags = getTagAdmins();
-        
-        for (VOMSAdmin tagAdmin: allTags){
-            if (!a.getTags().contains( tagAdmin ))
-                unassignedTags.add( tagAdmin );
-        }
-        
-        return unassignedTags;
-    }
 }

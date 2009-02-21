@@ -36,6 +36,10 @@
 			<one-to-many class="org.glite.security.voms.admin.model.ACL"/>
 		</set>
 		
+        <set name="tagMappings" inverse="true">
+          <key column="gid" on-delete="cascade"/>
+          <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>
+        </set>
 	</class>
 
 </hibernate-mapping>

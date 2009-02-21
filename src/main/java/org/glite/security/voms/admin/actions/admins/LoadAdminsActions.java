@@ -24,9 +24,6 @@ public class LoadAdminsActions extends BaseAction {
         
         request.setAttribute( "admins", admins );
         
-        List<VOMSAdmin> tags = VOMSAdminDAO.instance().getTagAdmins();
-        
-        request.setAttribute( "tags", tags);
         
         return findSuccess( mapping );
     }

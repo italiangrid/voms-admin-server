@@ -79,15 +79,7 @@ public class HibernateFactory {
         return sessionFactory;
     }
 
-    public static void setAdmin( VOMSAdmin admin ) {
-
-        if ( auditingEnabled ) {
-            AuditInterceptor i = (AuditInterceptor) threadInterceptor.get();
-
-            if ( i != null )
-                i.setAdmin( admin );
-        }
-    }
+    
 
     public static Session getSession() {
 
@@ -96,17 +88,7 @@ public class HibernateFactory {
 
             if ( s == null ) {
 
-                if ( auditingEnabled ) {
-
-                    AuditInterceptor interceptor = new AuditInterceptor();
-                    s = sessionFactory.openSession( interceptor );
-                    interceptor.setSession( s );
-                    threadInterceptor.set( interceptor );
-
-                } else
-
-                    s = sessionFactory.openSession();
-
+                s = sessionFactory.openSession();
                 threadSession.set( s );
 
             }

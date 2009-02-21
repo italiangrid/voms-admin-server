@@ -18,27 +18,14 @@ public class AdminTagsActions extends BaseDispatchAction {
     public ActionForward assignTag( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
         
         
-        AdminTagForm aForm = (AdminTagForm)form;
-        
-        VOMSAdmin admin = VOMSAdminDAO.instance().getById( aForm.getAdminId() );
-        VOMSAdmin tag = VOMSAdminDAO.instance().getById( aForm.getTagId() );
-        
-        //FIXME: Do this with an operation
-        VOMSAdminDAO.instance().assignTag( admin, tag );
-        
+                
         return findSuccess( mapping );
     }
 
     
     public ActionForward removeTag( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
         
-        AdminTagForm aForm = (AdminTagForm)form;
         
-        VOMSAdmin admin = VOMSAdminDAO.instance().getById( aForm.getAdminId() );
-        VOMSAdmin tag = VOMSAdminDAO.instance().getById( aForm.getTagId() );
-        
-        //FIXME: Do this with an operation
-        VOMSAdminDAO.instance().removeTag( admin, tag );
         
         return findSuccess( mapping );
     }

@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.dao.AUPDAO;
 import org.glite.security.voms.admin.dao.AUPVersionDAO;
 import org.glite.security.voms.admin.dao.DAOFactory;
+import org.glite.security.voms.admin.dao.TagDAO;
 import org.glite.security.voms.admin.model.AUPVersion;
+import org.glite.security.voms.admin.model.Tag;
 
 /**
  * Returns Hibernate-specific instances of DAOs.
@@ -44,13 +46,21 @@ public class HibernateDAOFactory extends DAOFactory {
         return (AUPVersionDAO)instantiateDAO( AUPVersionDAOHibernate.class );
     }
     
+    @Override
+    public TagDAO getTagDAO() {
+
+        return (TagDAO)instantiateDAO( TagDAOHibernate.class );
+        
+    };
+    
     // Inline concrete DAO implementations with no business-related data access methods.
     // If we use public static nested classes, we can centralize all of them in one source file.
     public static class AUPVersionDAOHibernate 
         extends GenericHibernateDAO <AUPVersion, Long>
-        implements AUPVersionDAO{};
-        
-        
+        implements AUPVersionDAO{}
+
+    
+    
     
 
 }
