@@ -14,11 +14,16 @@ import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.dao.AUPDAO;
 import org.glite.security.voms.admin.dao.DAOFactory;
+import org.glite.security.voms.admin.dao.TagDAO;
+import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.AUPVersion;
+import org.glite.security.voms.admin.model.Tag;
+import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.cfg.Configuration;
 
 
@@ -94,6 +99,25 @@ public class TestAUP {
         
         
     }
+    
+    
+    public void testTagDAO(){
+        
+        DAOFactory daoFac = DAOFactory.instance( DAOFactory.HIBERNATE );
+        
+        TagDAO tDao = daoFac.getTagDAO();
+        
+        Tag t = tDao.createTag( "TEST", 
+                VOMSPermission.getAllPermissions(), 
+                null, false );
+        
+        VOMSAdmin a = VOMSAdminDAO.instance().create( myDn, myCA, myEmail );
+        
+        VOMSAdminDAO.instance().assignTagInAllGroups( a, t );
+        HibernateFactory.commitTransaction();
+        
+        
+    }
     public TestAUP() {
 
         PropertyConfigurator.configure( Object.class.getResource( "/test/log4j.properties" ) );        
@@ -102,17 +126,9 @@ public class TestAUP {
         setupDb();
         
         // Do stuff here
-        DAOFactory daoFactory = DAOFactory.instance( DAOFactory.HIBERNATE );
-        VOMSUserDAO userDAO = VOMSUserDAO.instance();
-       
-        AUP aup = daoFactory.getAUPDAO().findByName( "test" );
         
-        VOMSUser u = userDAO.findByEmail( myEmail );
-        
-        if (u != null){
-            log.debug( "user aups: "+u.getAupAcceptanceRecords() );
-            userDAO.acceptAUP( u, aup );
-        }
+        testTagDAO();
+     
         
         HibernateFactory.commitTransaction();
         

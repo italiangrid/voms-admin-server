@@ -16,7 +16,7 @@
 		
 		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.model.VOMSCA" not-null="true"/>
     
-        <set name="tagMappings" inverse="true">
+        <set name="tagMappings" inverse="true" cascade="all-delete-orphan">
           <key column="admin_id" on-delete="cascade"/>
           <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>
         </set>

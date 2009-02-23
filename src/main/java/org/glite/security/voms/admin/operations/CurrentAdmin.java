@@ -193,16 +193,14 @@ public class CurrentAdmin {
             }
         }
         
+        
+        for (Tag t: admin.getTagsInContext( c )){
+            
+            log.debug( "Adding permissions '"+ t.getPermissions()+"' from tag '"+t.getName()+"' to admin's permission set.");
+            adminPerms.addPermission( t.getPermissions() );
+            
+        }
       
-//        for (VOMSAdmin tag: admin.getTags()){
-//        	
-//        	VOMSPermission tagPerms = acl.getPermissions(tag);
-//        	if (tagPerms != null){
-//        		log.debug("Adding tag '"+tag.getDn()+"' permissions '"+tagPerms+"' to admin's permission set.");
-//        		adminPerms.addPermission(tagPerms);
-//        	}
-//        }
-
         log.debug("Admin permissions: "+adminPerms);
         
         return adminPerms.satifies( p );

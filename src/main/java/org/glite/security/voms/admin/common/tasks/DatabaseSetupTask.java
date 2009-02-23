@@ -94,10 +94,6 @@ public class DatabaseSetupTask extends TimerTask {
             caDAO.createCA( Constants.AUTHZMANAGER_ATTRIBUTE_CA,
                     "A virtual CA for authz manager attributes" );
             
-            caDAO.createCA( Constants.TAG_CA, "A virtual CA for VOMS Admin tags" );
-            
-            
-
             // Create vo root group
             VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
 
@@ -118,9 +114,7 @@ public class DatabaseSetupTask extends TimerTask {
             adminDAO
                     .create( Constants.ANYUSER_ADMIN, Constants.VIRTUAL_CA );
             
-             
             
-
             VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
             VOMSPermission readVoPermissions = VOMSPermission.getContainerReadPermission().setMembershipReadPermission();
 

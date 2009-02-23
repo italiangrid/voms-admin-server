@@ -21,7 +21,6 @@
 
 package org.glite.security.voms.admin.operations;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

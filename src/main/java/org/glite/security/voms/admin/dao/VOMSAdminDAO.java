@@ -37,6 +37,7 @@ import org.glite.security.voms.admin.database.NoSuchAdminException;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.Certificate;
+import org.glite.security.voms.admin.model.Tag;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
@@ -343,5 +344,17 @@ public class VOMSAdminDAO {
         HibernateFactory.getSession().update( a );
     }
     
+    public void assignTagInAllGroups(VOMSAdmin a, Tag t){
+        
+        List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
+        
+        for (VOMSGroup g: groups){
+            
+            if (!a.getTagsInGroup( g ).contains( t ))
+                a.assignTagInGroup( g, t );
+        }
+        
+        update( a );
+    }
     
 }

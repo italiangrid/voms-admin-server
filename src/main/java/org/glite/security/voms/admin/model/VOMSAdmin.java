@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
+import org.glite.security.voms.admin.operations.VOMSContext;
 
 
 public class VOMSAdmin implements Serializable, Auditable, Cloneable {
@@ -230,6 +231,15 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
         this.tagMappings = mappings;
     }
     
+    
+    public Set<Tag> getTagsInContext(VOMSContext c){
+        
+        if (c.isGroupContext())
+            return getTagsInGroup( c.getGroup() );
+        else
+            return getTagsInRole( c.getGroup(), c.getRole() );
+            
+    }
     
     public Set<Tag> getTagsInGroup(VOMSGroup g){
         

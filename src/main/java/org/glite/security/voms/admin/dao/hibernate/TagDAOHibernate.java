@@ -38,8 +38,6 @@ public class TagDAOHibernate extends GenericHibernateDAO <Tag,Long>
         if ( perm == null )
             throw new NullArgumentException( "perm cannot be null!" );
         
-        if ( permOnPath == null )
-            throw new NullArgumentException( "permOnPa cannot be null!" );
         
         Tag t = findByName( name );
         
