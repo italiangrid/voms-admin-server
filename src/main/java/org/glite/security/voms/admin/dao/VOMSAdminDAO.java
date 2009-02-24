@@ -21,7 +21,6 @@
 
 package org.glite.security.voms.admin.dao;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,9 +30,7 @@ import org.glite.security.voms.admin.common.Constants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.NoSuchAdminException;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.Certificate;
@@ -43,7 +40,6 @@ import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.Query;
 
 
@@ -343,6 +339,15 @@ public class VOMSAdminDAO {
 
         HibernateFactory.getSession().update( a );
     }
+    
+    
+    public void assignTagInGroup(VOMSAdmin a, Tag t, VOMSGroup g){
+    	 	
+    	
+    	
+    	
+    }
+    
     
     public void assignTagInAllGroups(VOMSAdmin a, Tag t){
         

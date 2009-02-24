@@ -21,9 +21,7 @@
 
 package org.glite.security.voms.admin.operations;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -198,6 +196,8 @@ public class CurrentAdmin {
             
             log.debug( "Adding permissions '"+ t.getPermissions()+"' from tag '"+t.getName()+"' to admin's permission set.");
             adminPerms.addPermission( t.getPermissions() );
+            
+            
             
         }
       
