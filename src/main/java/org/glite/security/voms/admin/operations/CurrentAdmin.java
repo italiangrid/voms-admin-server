@@ -195,9 +195,7 @@ public class CurrentAdmin {
         for (Tag t: admin.getTagsInContext( c )){
             
             log.debug( "Adding permissions '"+ t.getPermissions()+"' from tag '"+t.getName()+"' to admin's permission set.");
-            adminPerms.addPermission( t.getPermissions() );
-            
-            
+            adminPerms.addPermission( t.getPermissions() );            
             
         }
       

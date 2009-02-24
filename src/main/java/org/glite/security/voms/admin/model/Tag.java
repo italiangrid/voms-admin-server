@@ -22,6 +22,8 @@ public class Tag implements Serializable {
     
     private VOMSPermission permissionsOnPath;
     
+    private VOMSPermission voPermissions;
+    
     private Set <TagMapping> mappings = new HashSet <TagMapping>();
     
     private Boolean implicit;
