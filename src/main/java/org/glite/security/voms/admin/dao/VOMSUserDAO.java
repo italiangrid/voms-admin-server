@@ -387,10 +387,12 @@ public class VOMSUserDAO {
 		u = new VOMSUser();
 
         dn = DNUtil.normalizeDN( dn );
-		u.setDn(dn);
-		u.setCa(ca);
-		u.setCn(cn);
-		u.setCertURI(certURI);
+        
+//		u.setDn(dn);
+//		u.setCa(ca);
+//		u.setCn(cn);
+//		u.setCertURI(certURI);
+        
 		u.setEmailAddress(emailAddress);
 
 		log.debug("Creating user \"" + u + "\".");

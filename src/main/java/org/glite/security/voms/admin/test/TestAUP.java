@@ -1,30 +1,28 @@
 package org.glite.security.voms.admin.test;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Properties;
+import java.util.Calendar;
 import java.util.Timer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.dao.AUPDAO;
 import org.glite.security.voms.admin.dao.DAOFactory;
 import org.glite.security.voms.admin.dao.TagDAO;
+import org.glite.security.voms.admin.dao.TaskDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.AUPVersion;
 import org.glite.security.voms.admin.model.Tag;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.task.SignAUPTask;
+import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.hibernate.cfg.Configuration;
 
 
 public class TestAUP {
@@ -39,23 +37,6 @@ public class TestAUP {
     private static final String myEmail = "andrea.ceccanti@cnaf.infn.it";
     
     
-    private Configuration loadHibernateConfiguration() {
-
-        Properties dbProperties = new Properties();
-
-        try {
-            
-            dbProperties.load( Object.class.getResourceAsStream( "/test/mysql.hibernate.properties" ) );
-            log.debug( "db props: "+dbProperties );
-        
-        } catch ( IOException e ) {
-            
-            log.error("Error loading db properties!", e);
-            throw new VOMSException("Error loading db properties!", e);
-        }
-        
-        return new Configuration().addProperties( dbProperties ).configure();
-    }
     
     private void setupVOMSConfiguration(){
         log.debug("Setting up voms configuration...");
@@ -83,7 +64,23 @@ public class TestAUP {
         
         VOMSUser u = userDAO.findByEmail( myEmail );
         
-        userDAO.addCertificate( u, myDn, myCA );
+        if (u == null){
+            
+            u = new VOMSUser();
+            
+            u.setName( "Andrea" );
+            u.setSurname( "Ceccanti" );
+            u.setAddress( "" );
+            u.setInstitution( "" );
+            u.setPhoneNumber( "" );
+            u.setEmailAddress( myEmail );
+            
+            userDAO.create( u );
+            userDAO.addCertificate( u, myDn, myCA );
+        }
+        
+        HibernateFactory.commitTransaction();
+        
         
         
     }
@@ -118,6 +115,71 @@ public class TestAUP {
         
         
     }
+    
+    
+    public void testSignAUPTask(){
+        
+        DAOFactory daoFac = DAOFactory.instance( DAOFactory.HIBERNATE );
+        
+        AUPDAO aupDAO = daoFac.getAUPDAO();
+        VOMSUserDAO userDAO = VOMSUserDAO.instance();
+        TaskDAO taskDAO = daoFac.getTaskDAO();
+        
+        AUP aup = aupDAO.findByName( "test" );
+        VOMSUser u = userDAO.findByCertificate( myDn, myCA );
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add( Calendar.HOUR, 24 );
+        
+        Task t = taskDAO.createSignAUPTask( aup, cal.getTime() );
+        taskDAO.makePersistent( t );
+        
+        u.getTasks().add( t );
+        
+        HibernateFactory.commitTransaction();
+        
+    }
+    
+    private void testGetAUPToBeSigned() {
+        
+        DAOFactory daoFac = DAOFactory.instance( DAOFactory.HIBERNATE );
+        VOMSUserDAO userDAO = VOMSUserDAO.instance();
+        TaskDAO taskDAO = daoFac.getTaskDAO();
+                
+        VOMSUser u = userDAO.findByCertificate( myDn, myCA );
+        
+        Long taskId = 1L;
+        
+        if (!u.getTasks().isEmpty()){
+            
+            log.info( "User '"+u+"' tasks: "+u.getTasks() );
+            for (Task t: u.getTasks()){
+                
+                taskId = t.getId();
+                if (t instanceof SignAUPTask){
+                    
+                    SignAUPTask tt = (SignAUPTask)t;
+                    AUP aup = tt.getAup();
+                    
+                    userDAO.acceptAUP( u, aup );
+                    taskDAO.setSignAUPTaskCompleted( tt, u );
+                    u.getTasks().remove( t );
+                    
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    public void testRemoveAllTasks(){
+        
+        TaskDAO taskDAO =  DAOFactory.instance( ).getTaskDAO();
+        taskDAO.removeAllTasks();
+        
+    }
+    
     public TestAUP() {
 
         PropertyConfigurator.configure( Object.class.getResource( "/test/log4j.properties" ) );        
@@ -126,16 +188,21 @@ public class TestAUP {
         setupDb();
         
         // Do stuff here
-        
-        testTagDAO();
-     
+        createAndreaUser();
+        createAUP();
+        testSignAUPTask();
+        testGetAUPToBeSigned();
         
         HibernateFactory.commitTransaction();
         
+        testRemoveAllTasks();
         
-        // Shut down threads
-        t.cancel();
+        HibernateFactory.commitTransaction();
+        
+                        
+        TestAUP.t.cancel();
     }
+    
     
     public static void main( String[] args ) {
         try{

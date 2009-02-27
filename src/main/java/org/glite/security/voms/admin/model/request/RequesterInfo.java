@@ -3,7 +3,16 @@ package org.glite.security.voms.admin.model.request;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Table;
 
+@Entity
+@Table( name="requester_info" )
 public class RequesterInfo implements Serializable{
     
     /**
@@ -11,6 +20,8 @@ public class RequesterInfo implements Serializable{
      */
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue
     Long id;
     
     String certificateSubject;
@@ -18,7 +29,17 @@ public class RequesterInfo implements Serializable{
     
     String emailAddress;
     
+    @org.hibernate.annotations.CollectionOfElements
+    @JoinTable(name="requester_personal_info", 
+            joinColumns=@JoinColumn(name="requester_id")
+    )
+    @org.hibernate.annotations.MapKey(
+            columns=@Column(name="pi_key")
+    )
+    @Column(name="pi_value")            
     Map <String, String> personalInformation;
+    
+    Boolean voMember;
     
     /**
      * @return the id
@@ -104,5 +125,31 @@ public class RequesterInfo implements Serializable{
         this.emailAddress = emailAddress;
     }
 
+    
+    
+    public boolean isVoMember(){
+        
+        return voMember;
+    }
+    
+    /**
+     * @return the voMember
+     */
+    public Boolean getVoMember() {
+    
+        return voMember;
+    }
+
+    
+    /**
+     * @param voMember the voMember to set
+     */
+    public void setVoMember( Boolean voMember ) {
+    
+        this.voMember = voMember;
+    }
+
+    
+    
     
 }

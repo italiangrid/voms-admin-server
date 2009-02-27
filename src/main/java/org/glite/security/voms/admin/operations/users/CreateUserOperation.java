@@ -49,9 +49,9 @@ public class CreateUserOperation extends BaseVomsOperation {
     private CreateUserOperation(String username, String caName, String cn,String certUri,String email){
         usr = new VOMSUser();
         
-        usr.setDn(username);
-        usr.setCn(cn);
-        usr.setCertURI(certUri);
+//        usr.setDn(username);
+//        usr.setCn(cn);
+//        usr.setCertURI(certUri);
         usr.setEmailAddress(email);
         caDN = caName;
         

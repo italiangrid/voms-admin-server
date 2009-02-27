@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
+import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
 
@@ -56,6 +57,7 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
     
     Set<TagMapping> tagMappings = new HashSet <TagMapping>();
     
+    Set<Task> tasks = new HashSet<Task>();
     
     public VOMSAdmin() {
 
@@ -303,5 +305,24 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
             throw new AlreadyExistsException("Admin '"+this+"' already has tag '"+tag+"' in group '"+group+"'");
         
     }
+
+    
+    /**
+     * @return the tasks
+     */
+    public Set <Task> getTasks() {
+    
+        return tasks;
+    }
+
+    
+    /**
+     * @param tasks the tasks to set
+     */
+    public void setTasks( Set <Task> tasks ) {
+    
+        this.tasks = tasks;
+    }
+    
     
 }

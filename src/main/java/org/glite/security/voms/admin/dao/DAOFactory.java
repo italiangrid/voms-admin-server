@@ -41,11 +41,21 @@ public abstract class DAOFactory {
         }
     }
 
+    public static DAOFactory instance(){
+        
+        return instance( HIBERNATE );
+    }
+    
     // Add your DAO interfaces here
     public abstract AUPDAO getAUPDAO();
     
     public abstract AUPVersionDAO getAUPVersionDAO();
     
     public abstract TagDAO getTagDAO();
+    
+    public abstract TaskDAO getTaskDAO();
+    
+    public abstract TaskTypeDAO getTaskTypeDAO();
 
+    public abstract TaskLogRecordDAO getTaskLogRecordDAO();
 }

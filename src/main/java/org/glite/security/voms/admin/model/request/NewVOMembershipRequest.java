@@ -1,7 +1,11 @@
 package org.glite.security.voms.admin.model.request;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class VOMembershipRequest extends Request {
+@Entity
+@Table(name="vo_membership_req")
+public class NewVOMembershipRequest extends Request {
 
     /**
      * 
@@ -11,7 +15,7 @@ public class VOMembershipRequest extends Request {
     
     String confirmId;
     
-    public VOMembershipRequest() {
+    public NewVOMembershipRequest() {
 
         // TODO Auto-generated constructor stub
     }

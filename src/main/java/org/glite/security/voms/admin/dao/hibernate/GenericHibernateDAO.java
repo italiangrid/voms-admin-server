@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.GenericDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.hibernate.Criteria;
@@ -11,6 +12,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Restrictions;
 
 
 /**
@@ -80,6 +82,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable>
         return crit.list();
     }
 
+    
     public T makePersistent(T entity) {
         getSession().saveOrUpdate(entity);
         return entity;
@@ -97,6 +100,9 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable>
         getSession().clear();
     }
 
+    
+    
+    
     /**
      * Use this inside subclasses as a convenience method.
      */

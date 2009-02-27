@@ -29,6 +29,8 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.Constants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.dao.DAOFactory;
+import org.glite.security.voms.admin.dao.TaskTypeDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
@@ -41,6 +43,7 @@ import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSSeqNumber;
+import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
 
@@ -203,6 +206,16 @@ public class DatabaseSetupTask extends TimerTask {
             
             // Import ACL *after* trusted and anyuser admins have been created!
             voAdminRole.importACL( voGroup );
+            
+            
+            // Create task types
+            TaskTypeDAO ttDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskTypeDAO();
+            TaskType tt = new TaskType();
+            tt.setName( "SignAUPTask" );
+            tt.setDescription( "This task is assigned to users that need to sign, or resign an AUP." );
+            
+            ttDAO.makePersistent( tt );
+            
             
             HibernateFactory.commitTransaction();
 

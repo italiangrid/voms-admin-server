@@ -49,7 +49,7 @@ public class UpdateUserOperation extends BaseVoRWOperation{
         
         if (form != null){
             
-            user.setCn(form.getCn());
+            // user.setCn(form.getCn());
             user.setEmailAddress(form.getEmailAddress());
             
         }

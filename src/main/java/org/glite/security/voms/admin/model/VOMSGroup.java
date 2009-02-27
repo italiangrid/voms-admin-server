@@ -252,7 +252,7 @@ public class VOMSGroup implements Serializable, Auditable, Comparable {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-
+            
         return getName().hashCode();
     }
 

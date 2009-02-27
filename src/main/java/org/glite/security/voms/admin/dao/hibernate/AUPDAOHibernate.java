@@ -1,7 +1,6 @@
 package org.glite.security.voms.admin.dao.hibernate;
 
 import java.util.Date;
-import java.util.List;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.AUPDAO;
@@ -10,10 +9,9 @@ import org.glite.security.voms.admin.database.NoSuchAUPException;
 import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.AUPVersion;
-import org.hibernate.criterion.Restrictions;
 
 
-public class AUPDAOHibernate extends GenericHibernateDAO <AUP, Long> implements AUPDAO {
+public class AUPDAOHibernate extends NamedEntityHibernateDAO <AUP, Long> implements AUPDAO {
 
     public AUP createAUP( String name, String description, String version,
             String url ) {
@@ -49,46 +47,6 @@ public class AUPDAOHibernate extends GenericHibernateDAO <AUP, Long> implements 
         makePersistent( aup );
         
         return aup;
-        
-    }
-
-    public void deleteAUPById( Long id ) {
-
-        if ( id == null )
-            throw new NullArgumentException( "id cannot be null!" );
-        
-        AUP aup = findById( id, true );
-        if (aup == null)
-            throw new NoSuchAUPException("No AUP found for id '"+id+"'.");
-        
-        makeTransient( aup );
-    }
-
-    public void deleteAUPByName( String name ) {
-
-        if ( name == null )
-            throw new NullArgumentException( "name cannot be null!" );
-        
-        AUP aup = findByName( name );
-        
-        if (aup == null)
-            throw new NoSuchAUPException("No AUP found for name '"+name+"'.");
-        
-        makeTransient( aup );
-        
-    }
-
-    public AUP findByName( String name ) {
-        
-        if ( name == null )
-            throw new NullArgumentException( "name cannot be null!" );
-        
-        List<AUP> retVal = findByCriteria( Restrictions.like( "name", name) );
-        
-        if (retVal.isEmpty())
-            return null;
-        
-        return retVal.get(0);
         
     }
 
@@ -158,6 +116,8 @@ public class AUPDAOHibernate extends GenericHibernateDAO <AUP, Long> implements 
         aup.getVersions().remove( aupVersion );
         return aupVersion;
     }
+
+    
 
     
 }

@@ -2,7 +2,28 @@ package org.glite.security.voms.admin.model.task;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@org.hibernate.annotations.OnDelete(action=OnDeleteAction.CASCADE)
+@Table(name="task")
 public abstract class Task {
     
     public enum TaskStatus {
@@ -11,17 +32,25 @@ public abstract class Task {
         COMPLETED,
         EXPIRED
     }
-    
+
+    @Id
+    @Column(name="task_id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
     Long id;
     
-    TaskTypeInfo typeInfo;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="task_type_id", nullable=false, updatable=false)
+    TaskType type;
     
     Date creationDate;
     Date expiryDate;
     Date completionDate;
-        
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
     TaskStatus status;
     
+        
     /**
      * @return the id
      */
@@ -34,9 +63,9 @@ public abstract class Task {
     /**
      * @return the typeInfo
      */
-    public TaskTypeInfo getTypeInfo() {
+    public TaskType getType() {
     
-        return typeInfo;
+        return type;
     }
 
     
@@ -52,9 +81,9 @@ public abstract class Task {
     /**
      * @param typeInfo the typeInfo to set
      */
-    public void setTypeInfo( TaskTypeInfo typeInfo ) {
+    public void setType( TaskType typeInfo ) {
     
-        this.typeInfo = typeInfo;
+        this.type = typeInfo;
     }
 
 
@@ -136,7 +165,63 @@ public abstract class Task {
     
         this.completionDate = completionDate;
     }
+
+    
+    
+    public void setCompleted(){
+        setCompletionDate( new Date() );
+        setStatus( TaskStatus.COMPLETED );
+    }
+    
+    public void SetExpired(){
+        setStatus( TaskStatus.EXPIRED );
+        
+    }
     
     
 
+    public boolean equals( Object other ) {
+
+        if ( this == other )
+            return true;
+        if ( !( other instanceof Task ) )
+            return false;
+
+        if ( other == null )
+            return false;
+
+        Task that = (Task) other;
+
+        if (!getType().equals( that.getType() ))
+            return false;
+        
+        if (!getCreationDate().equals( that.getCreationDate() ))
+            return false;
+        
+        if (!getExpiryDate().equals( that.getExpiryDate() ))
+            return false;
+        
+        if (!getStatus().equals( that.getStatus() ))
+            return false;
+        
+        return getId().equals( that.getId() );
+                   
+    }
+    
+    @Override
+    public int hashCode() {
+    
+        return new HashCodeBuilder(11,63).append( getType() ).append( getCreationDate() ).append(getExpiryDate()).append(getStatus()).append(getId()).toHashCode();
+                
+    }
+
+
+    
+    
+
+
+    
+    
+    
+    
 }

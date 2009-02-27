@@ -45,6 +45,9 @@ import org.glite.security.voms.admin.database.Auditable;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchMappingException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
+import org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord;
+import org.glite.security.voms.admin.model.task.SignAUPTask;
+import org.glite.security.voms.admin.model.task.Task;
 
 
 
@@ -67,14 +70,8 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     }
 
     Long id;
-    VOMSCA ca;
-
-    // Old information
-    String dn;
-    String cn;
-    String certURI;
-    
-    // New membership information
+        
+    // Base membership information (JSPG requirements)
     String name;
     String surname;
     String institution;
@@ -94,33 +91,14 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
     Set<Certificate> certificates = new HashSet<Certificate>();
     Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
-
-    public String getDn() {
-
-        return dn;
-    }
-
-    public void setDn( String name ) {
-
-        this.dn = name;
-    }
-
-    /**
-     * @return Returns the cn.
-     */
-    public String getCn() {
-
-        return cn;
-    }
-
-    /**
-     * @param cn
-     *            The cn to set.
-     */
-    public void setCn( String cn ) {
-
-        this.cn = cn;
-    }
+    
+    Set<Task> tasks = new HashSet <Task>();
+    Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord> ();
+    
+    
+    // Compatibility fields
+    String dn;
+    VOMSCA ca;
 
     /**
      * @return Returns the emailAddress.
@@ -149,39 +127,6 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         this.id = id;
     }
 
-    /**
-     * @return Returns the ca.
-     */
-    public VOMSCA getCa() {
-
-        return ca;
-    }
-
-    /**
-     * @param ca
-     *            The ca to set.
-     */
-    public void setCa( VOMSCA ca ) {
-
-        this.ca = ca;
-    }
-
-    /**
-     * @return Returns the certURI.
-     */
-    public String getCertURI() {
-
-        return certURI;
-    }
-
-    /**
-     * @param certURI
-     *            The certURI to set.
-     */
-    public void setCertURI( String certURI ) {
-
-        this.certURI = certURI;
-    }
 
     public Set getAttributes() {
 
@@ -240,7 +185,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
         if ( val == null )
             throw new NoSuchAttributeException( "Attribute \"" + name
-                    + "\" undefined for user \"" + dn + "\"." );
+                    + "\" undefined for user \"" + this + "\"." );
 
         val.setValue( value );
 
@@ -553,9 +498,9 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
     public VOMSUser populate( UserForm form ) {
 
-        setDn( form.getDn() );
+        // setDn( form.getDn() );
         // setCertURI( form.getCrlURI() );
-        setCn( form.getCn() );
+        // setCn( form.getCn() );
         setEmailAddress( form.getEmailAddress() );
 
         return this;
@@ -566,18 +511,18 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         if (u == null)
             throw new NullArgumentException("User passed as argument is null!");
         
-        setCn( u.getCN() );
+        // setCn( u.getCN() );
         setEmailAddress( u.getMail() );
     }
     public User asUser() {
 
         User u = new User();
 
-        u.setDN( getDn() );
-        u.setCA( getCa().getSubjectString() );
-        u.setCN( getCn() );
+        u.setDN( getDefaultCertificate().getSubjectString() );
+        u.setCA( getDefaultCertificate().getCa().getSubjectString() );
+        u.setCN( null );
         u.setMail( getEmailAddress() );
-        u.setCertUri( getCertURI() );
+        u.setCertUri( null);
 
         return u;
     }
@@ -658,7 +603,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     }
 
     public String getShortName(){
-        return dn;
+        return String.format("%s %s", name, surname);
     }
 
     
@@ -837,6 +782,63 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         }
         
         return false;
+    }
+
+    
+    /**
+     * @return the tasks
+     */
+    public Set <Task> getTasks() {
+    
+        return tasks;
+    }
+
+    
+    /**
+     * @param tasks the tasks to set
+     */
+    public void setTasks( Set <Task> tasks ) {
+    
+        this.tasks = tasks;
+    }
+    
+    
+    public void setDn(String dn){
+        this.dn = dn;
+    }
+    
+    @Deprecated
+    public String getDn(){
+        
+        return dn;
+    }
+    
+    @Deprecated
+    public VOMSCA getCa(){
+        
+        return ca;
+    }
+
+    public void setCa(VOMSCA ca){
+        this.ca = ca;
+    }
+    
+    /**
+     * @return the personalInformations
+     */
+    public Set <PersonalInformationRecord> getPersonalInformations() {
+    
+        return personalInformations;
+    }
+
+    
+    /**
+     * @param personalInformations the personalInformations to set
+     */
+    public void setPersonalInformations(
+            Set <PersonalInformationRecord> personalInformations ) {
+    
+        this.personalInformations = personalInformations;
     }
     
 }

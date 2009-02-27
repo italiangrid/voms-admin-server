@@ -1,14 +1,29 @@
 package org.glite.security.voms.admin.model.personal_info;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 
+@Entity
+@Table(name="personal_info")
 public class PersonalInformationRecord {
 
+    
+    @Id
+    @GeneratedValue
     Long id;
     
+    @ManyToOne
+    @JoinColumn(name="personal_info_type_id", nullable=false)
     PersonalInformationType type;
     
     String value;
+    
+    Boolean visible;
     
     
     public PersonalInformationRecord() {

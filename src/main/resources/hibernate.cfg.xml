@@ -40,16 +40,25 @@
         <mapping resource="model/Tag.hbm.xml"/>
         <mapping resource="model/TagMapping.hbm.xml"/>
         
-<!--        <event type="post-delete">-->
-<!--        		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
-<!--        </event>-->
-<!--        -->
-<!--        <event type="post-update">-->
-<!--       		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
-<!--        </event>-->
-<!--        -->
-<!--        <event type="post-insert">-->
-<!--       		<listener class="org.glite.security.voms.admin.database.listeners.VOMSHibernateListener"/>-->
-<!--        </event>-->
+        <!--  NEW MAPPINGS -->
+        
+        <!--  TASKS  -->
+        <mapping class="org.glite.security.voms.admin.model.task.TaskType"/>
+        <mapping class="org.glite.security.voms.admin.model.task.LogRecord"/>
+        <mapping class="org.glite.security.voms.admin.model.task.Task"/>
+        <mapping class="org.glite.security.voms.admin.model.task.ApproveUserRequestTask"/>
+        <mapping class="org.glite.security.voms.admin.model.task.SignAUPTask"/>
+        
+        <!-- REQUESTS -->
+        <mapping class="org.glite.security.voms.admin.model.request.Request"/>
+        <mapping class="org.glite.security.voms.admin.model.request.RequesterInfo"/>
+        <mapping class="org.glite.security.voms.admin.model.request.NewVOMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.model.request.GroupMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.model.request.RoleMembershipRequest"/>
+        
+        <!-- PERSONAL INFO -->
+        <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationType"/>
+        <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord"/>
+        
     </session-factory>
 </hibernate-configuration>

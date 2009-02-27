@@ -1,29 +1,39 @@
 package org.glite.security.voms.admin.model.personal_info;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="personal_info_type")
 public class PersonalInformationType {
     
+    public enum Type{
+        STRING,
+        PHONE_NUMBER,
+        EMAIL_ADDRESS,
+        URL
+    }
+    @Id
+    @GeneratedValue
     Long id;
     
-    String typeName;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false, unique=true)
+    Type type;
+    
     String description;
     
-    
-    
-    /**
+    /** 
      * @return the id
      */
     public Long getId() {
     
         return id;
-    }
-    
-    /**
-     * @return the typeName
-     */
-    public String getTypeName() {
-    
-        return typeName;
     }
     
     /**
@@ -41,15 +51,7 @@ public class PersonalInformationType {
     
         this.id = id;
     }
-    
-    /**
-     * @param typeName the typeName to set
-     */
-    public void setTypeName( String typeName ) {
-    
-        this.typeName = typeName;
-    }
-    
+        
     /**
      * @param description the description to set
      */
@@ -57,7 +59,23 @@ public class PersonalInformationType {
     
         this.description = description;
     }
+
     
+    /**
+     * @return the type
+     */
+    public Type getType() {
     
+        return type;
+    }
+
+    
+    /**
+     * @param type the type to set
+     */
+    public void setType( Type type ) {
+    
+        this.type = type;
+    }
     
 }

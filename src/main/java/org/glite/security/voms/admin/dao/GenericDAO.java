@@ -14,6 +14,7 @@ import java.io.Serializable;
  * state.
  *
  * @author Christian Bauer
+ * 
  */
 public interface GenericDAO<T, ID extends Serializable> {
 
@@ -24,7 +25,7 @@ public interface GenericDAO<T, ID extends Serializable> {
     List<T> findByExample(T exampleInstance, String... excludeProperty);
 
     T makePersistent(T entity);
-
+    
     void makeTransient(T entity);
 
     /**
