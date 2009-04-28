@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-  <!--
+<!--
     Copyright (c) Members of the EGEE Collaboration. 2006. See
     http://www.eu-egee.org/partners/ for details on the copyright holders.
 
@@ -13,25 +13,15 @@
 
     Authors: Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
   -->
-
-
 <!DOCTYPE struts-config PUBLIC
           "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
           "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
 
 <struts-config>
 
-  <global-exceptions>
-    <exception
-      key="error.servlet"
-      type="javax.servlet.ServletException"
-      path="/GeneralErrorPage.do" />
+  <form-beans>
+  
+  
 
-    <exception
-      key="error.authorization_failed"
-      type="org.glite.security.voms.admin.common.VOMSAuthorizationException"
-      path="/Login.do" />
-
-  </global-exceptions>
-
+  </form-beans>
 </struts-config>

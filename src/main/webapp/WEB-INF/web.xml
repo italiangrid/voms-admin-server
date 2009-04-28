@@ -77,11 +77,13 @@
 		<init-param>
 			<param-name>config</param-name>
 			<param-value>
-              /WEB-INF/struts/struts-actions-forms.xml,
+              /WEB-INF/struts/struts-action-forms.xml,
               /WEB-INF/struts/struts-global-exceptions.xml,
               /WEB-INF/struts/struts-global-forwards.xml,
               /WEB-INF/struts/struts-action-mappings.xml,
-              /WEB-INF/struts/struts-controller-config.xml
+              /WEB-INF/struts/struts-controller-config.xml,
+              /WEB-INF/struts/struts-action-forms-2_5.xml,
+              /WEB-INF/struts/struts-action-mappings-2_5.xml
             </param-value>
 		</init-param>
 		<init-param>
@@ -124,11 +126,15 @@
 		<welcome-file>/pages/index.jsp</welcome-file>
 	</welcome-file-list>
 
+
+    <!-- 
     <context-param>
         <param-name>
             org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
         </param-name>
         <param-value>/WEB-INF/tiles.xml</param-value>
     </context-param>
+    
+     -->
 
 </web-app>
