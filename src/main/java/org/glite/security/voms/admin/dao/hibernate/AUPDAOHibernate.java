@@ -3,7 +3,7 @@ package org.glite.security.voms.admin.dao.hibernate;
 import java.util.Date;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.dao.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.NoSuchAUPException;
 import org.glite.security.voms.admin.database.NoSuchAUPVersionException;

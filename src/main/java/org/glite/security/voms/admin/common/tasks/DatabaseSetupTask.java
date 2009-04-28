@@ -29,13 +29,13 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.Constants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.dao.DAOFactory;
-import org.glite.security.voms.admin.dao.TaskTypeDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSAdmin;
@@ -210,12 +210,19 @@ public class DatabaseSetupTask extends TimerTask {
             
             // Create task types
             TaskTypeDAO ttDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskTypeDAO();
-            TaskType tt = new TaskType();
-            tt.setName( "SignAUPTask" );
-            tt.setDescription( "This task is assigned to users that need to sign, or resign an AUP." );
+            TaskType signAupTaskType = new TaskType();
             
-            ttDAO.makePersistent( tt );
+            signAupTaskType.setName( "SignAUPTask" );
+            signAupTaskType.setDescription( "Tasks of this type are assigned to users that need to sign, or resign an AUP." );
             
+            
+            TaskType approveUserRequestTaskType = new TaskType();
+            approveUserRequestTaskType.setName( "ApproveUserRequestTask" );
+            approveUserRequestTaskType.setDescription( "Tasks of this type are assigned to VO admins that need to approve users' requests." );
+            
+            
+            ttDAO.makePersistent( signAupTaskType );
+            ttDAO.makePersistent( approveUserRequestTaskType );
             
             HibernateFactory.commitTransaction();
 

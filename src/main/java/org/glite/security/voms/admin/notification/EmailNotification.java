@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
@@ -47,6 +46,8 @@ public abstract class EmailNotification {
     String subject;
 
     String message;
+    
+    int deliveryAttemptCount = 0;
 
     public EmailNotification() {
 
@@ -158,6 +159,7 @@ public abstract class EmailNotification {
         int smtpServerPort = VOMSConfiguration.instance().getInt(
                 VOMSConfiguration.SERVICE_SMTP_SERVER_PORT, 25 );
 
+        deliveryAttemptCount++;
         try {
 
             e.setHostName( smtpServer );
@@ -176,11 +178,31 @@ public abstract class EmailNotification {
 
             e.send();
 
-        } catch ( EmailException e1 ) {
-            log.error( "Error setting up email notification!", e1 );
-            throw new VOMSNotificationException( e1.getMessage(), e1 );
+        } catch ( Throwable t ) {
+            log.error( "Error setting up email notification!", t);
+            throw new VOMSNotificationException( t.getMessage(), t );
 
         }
     }
+
+    
+    /**
+     * @return the deliveryAttemptCount
+     */
+    public int getDeliveryAttemptCount() {
+    
+        return deliveryAttemptCount;
+    }
+
+    
+    /**
+     * @param deliveryAttemptCount the deliveryAttemptCount to set
+     */
+    public void setDeliveryAttemptCount( int deliveryAttemptCount ) {
+    
+        this.deliveryAttemptCount = deliveryAttemptCount;
+    }
+    
+    
 
 }

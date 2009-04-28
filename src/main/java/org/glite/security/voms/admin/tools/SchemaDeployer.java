@@ -63,6 +63,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.type.LongType;
@@ -435,7 +436,7 @@ public class SchemaDeployer {
 
         }
 
-        return new Configuration().addProperties( dbProperties ).configure();
+        return new AnnotationConfiguration().addProperties( dbProperties ).configure();
     }
 
     private void doUndeploy() {

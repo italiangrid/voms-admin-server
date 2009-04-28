@@ -3,7 +3,7 @@ package org.glite.security.voms.admin.dao.hibernate;
 import java.util.List;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.dao.TagDAO;
+import org.glite.security.voms.admin.dao.generic.TagDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.model.Tag;
 import org.glite.security.voms.admin.operations.VOMSPermission;

@@ -31,16 +31,7 @@
 
 	<display-name>VOMS-ADMIN 2.5</display-name>
     
-    <!-- 
-    <filter>
-        <filter-name>struts2</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
-        <init-param>
-            <param-name>actionPackages</param-name>
-            <param-value>it.cnaf.infn.voms.actions</param-value>
-        </init-param>
-    </filter>
-    -->
+    
 	<filter>
 		<filter-name>security-context-filter</filter-name>
 		<filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
@@ -56,14 +47,7 @@
 		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
 	</filter>
 	
-    
-    <!--  
-    <filter-mapping>
-        <filter-name>struts2</filter-name>
-        <url-pattern>/s2/*.do</url-pattern>
-    </filter-mapping>
-    -->
-    
+       
 	<filter-mapping>
 		<filter-name>security-context-filter</filter-name>
 		<url-pattern>*.do</url-pattern>
@@ -78,26 +62,7 @@
 		<filter-name>axis-hibernate-session-filter</filter-name>
 		<url-pattern>/services/*</url-pattern>
 	</filter-mapping>
-
-    <!--  Struts 2 listeners -->
-    
-    <!-- Is this spring 
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoadListener
-        </listener-class>
-    </listener>
-    -->
-    
-    <!-- 
-    <listener>
-        <listener-class>
-            org.apache.struts2.tiles.StrutsTilesListener
-        </listener-class>
-    </listener>
-     -->
-     <!-- End of Struts 2 listeners -->
-    
+      
 	<listener>
 		<display-name>VOMSContextListener</display-name>
 		<listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
@@ -111,7 +76,13 @@
 		</servlet-class>
 		<init-param>
 			<param-name>config</param-name>
-			<param-value>/WEB-INF/struts-config.xml</param-value>
+			<param-value>
+              /WEB-INF/struts/struts-actions-forms.xml,
+              /WEB-INF/struts/struts-global-exceptions.xml,
+              /WEB-INF/struts/struts-global-forwards.xml,
+              /WEB-INF/struts/struts-action-mappings.xml,
+              /WEB-INF/struts/struts-controller-config.xml
+            </param-value>
 		</init-param>
 		<init-param>
 			<param-name>debug</param-name>

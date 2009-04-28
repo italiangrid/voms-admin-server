@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.dao.DAOFactory;
-import org.glite.security.voms.admin.dao.TaskDAO;
-import org.glite.security.voms.admin.dao.TaskLogRecordDAO;
-import org.glite.security.voms.admin.dao.TaskTypeDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.TaskDAO;
+import org.glite.security.voms.admin.dao.generic.TaskLogRecordDAO;
+import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSAdmin;
@@ -40,7 +40,10 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
         lr.setAdmin( a );
         lr.setDate( date );
         
+        t.getLogRecords().add( lr );
+        
         tlrDAO.makePersistent( lr );
+        makePersistent( t );
         
     }
 
@@ -92,11 +95,19 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
     }
 
     
+    
     public void removeAllTasks() {
 
         List<Task> tasks = findAll();
         
         for (Task t: tasks){
+            
+            // Clean up relationships
+            // t.setAdmin( null );
+            // t.setUser( null );
+            
+            // Remove log records
+            removeTaskLogRecords( t );
             
             makeTransient( t );
         }
@@ -106,6 +117,9 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
 
     
     public void removeTaskLogRecords(Task t){
+        
+        if (log.isDebugEnabled())
+            log.debug("Removing task "+t+" log records: "+t.getLogRecords());
         
         TaskLogRecordDAO tlrDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskLogRecordDAO();
         
@@ -135,6 +149,8 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
     public void deleteSignAUPTask(SignAUPTask t){
         getSession().delete( t );
     }
+
+    
     
     
 }

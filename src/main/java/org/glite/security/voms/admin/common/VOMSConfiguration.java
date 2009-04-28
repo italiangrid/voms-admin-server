@@ -103,6 +103,7 @@ public final class VOMSConfiguration {
     public static final String VOMS_ADMIN_SERVER_VERSION = "voms-admin.server.version";
     public static final String VOMS_ADMIN_INTERFACE_VERSION = "voms-admin.interface.version";
     
+    public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
     
     Log log = LogFactory.getLog( VOMSConfiguration.class );
 

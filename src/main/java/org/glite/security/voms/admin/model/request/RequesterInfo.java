@@ -1,6 +1,7 @@
 package org.glite.security.voms.admin.model.request;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -10,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 @Table( name="requester_info" )
@@ -37,7 +41,7 @@ public class RequesterInfo implements Serializable{
             columns=@Column(name="pi_key")
     )
     @Column(name="pi_value")            
-    Map <String, String> personalInformation;
+    Map <String, String> personalInformation = new HashMap <String, String>();
     
     Boolean voMember;
     
@@ -150,6 +154,45 @@ public class RequesterInfo implements Serializable{
     }
 
     
+    @Override
+    public boolean equals( Object other ) {
+
+        if ( this == other )
+            return true;
+
+        if ( !( other instanceof RequesterInfo ) )
+            return false;
+
+        if ( other == null )
+            return false;
+
+        RequesterInfo that = (RequesterInfo) other;
+
+        // Implement meaningful checks here
+
+        return new EqualsBuilder().append( certificateSubject,
+                that.certificateSubject ).append( certificateIssuer,
+                that.certificateIssuer ).append( emailAddress,
+                that.emailAddress )
+                .isEquals();
+
+    }
+    
+    public String addInfo(String name, String value){
+        
+        return personalInformation.put( name, value );
+    }
+    
+    public String getInfo(String name){
+        
+        return personalInformation.get( name );
+    }
+    @Override
+    public int hashCode() {
+        
+        return new HashCodeBuilder(17,37).append(certificateSubject).append( certificateIssuer ).append(emailAddress).toHashCode();
+        
+    }
     
     
 }

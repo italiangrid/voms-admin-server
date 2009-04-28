@@ -13,9 +13,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 
 @Entity
@@ -42,7 +40,7 @@ public abstract class Request implements Serializable {
     Long id;
     
     Date creationDate;
-    Date expiryDate;
+    Date expirationDate;
     Date completionDate;
     
     @ManyToOne(optional=false)
@@ -52,6 +50,7 @@ public abstract class Request implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
     StatusFlag status;
+
     
     /**
      * @return the id
@@ -60,6 +59,7 @@ public abstract class Request implements Serializable {
     
         return id;
     }
+
     
     /**
      * @return the creationDate
@@ -68,21 +68,23 @@ public abstract class Request implements Serializable {
     
         return creationDate;
     }
+
     
     /**
-     * @param id the id to set
+     * @return the expirationDate
      */
-    public void setId( Long id ) {
+    public Date getExpirationDate() {
     
-        this.id = id;
+        return expirationDate;
     }
+
     
     /**
-     * @param creationDate the creationDate to set
+     * @return the completionDate
      */
-    public void setCreationDate( Date creationDate ) {
+    public Date getCompletionDate() {
     
-        this.creationDate = creationDate;
+        return completionDate;
     }
 
     
@@ -96,20 +98,56 @@ public abstract class Request implements Serializable {
 
     
     /**
-     * @param requesterInfo the requesterInfo to set
-     */
-    public void setRequesterInfo( RequesterInfo requesterInfo ) {
-    
-        this.requesterInfo = requesterInfo;
-    }
-
-    
-    /**
      * @return the status
      */
     public StatusFlag getStatus() {
     
         return status;
+    }
+
+    
+    /**
+     * @param id the id to set
+     */
+    public void setId( Long id ) {
+    
+        this.id = id;
+    }
+
+    
+    /**
+     * @param creationDate the creationDate to set
+     */
+    public void setCreationDate( Date creationDate ) {
+    
+        this.creationDate = creationDate;
+    }
+
+    
+    /**
+     * @param expirationDate the expirationDate to set
+     */
+    public void setExpirationDate( Date expirationDate ) {
+    
+        this.expirationDate = expirationDate;
+    }
+
+    
+    /**
+     * @param completionDate the completionDate to set
+     */
+    public void setCompletionDate( Date completionDate ) {
+    
+        this.completionDate = completionDate;
+    }
+
+    
+    /**
+     * @param requesterInfo the requesterInfo to set
+     */
+    public void setRequesterInfo( RequesterInfo requesterInfo ) {
+    
+        this.requesterInfo = requesterInfo;
     }
 
     
@@ -120,5 +158,7 @@ public abstract class Request implements Serializable {
     
         this.status = status;
     }
+    
+    
     
 }

@@ -2,7 +2,6 @@ package org.glite.security.voms.admin.model.task;
 
 import java.io.Serializable;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,7 +21,7 @@ public class ApproveUserRequestTask extends Task implements Serializable {
     private static final long serialVersionUID = 1L;
   
     @ManyToOne
-    @JoinColumn(name="req_id", updatable=false)
+    @JoinColumn(name="req_id", updatable=false, nullable=false)
     Request request;
     
     public ApproveUserRequestTask() {

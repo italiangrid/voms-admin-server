@@ -1,6 +1,8 @@
 package org.glite.security.voms.admin.test;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 
 import org.apache.commons.logging.Log;
@@ -9,12 +11,12 @@ import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
-import org.glite.security.voms.admin.dao.AUPDAO;
-import org.glite.security.voms.admin.dao.DAOFactory;
-import org.glite.security.voms.admin.dao.TagDAO;
-import org.glite.security.voms.admin.dao.TaskDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.TagDAO;
+import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.Tag;
@@ -23,6 +25,7 @@ import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+
 
 
 public class TestAUP {
@@ -163,22 +166,33 @@ public class TestAUP {
                     
                     userDAO.acceptAUP( u, aup );
                     taskDAO.setSignAUPTaskCompleted( tt, u );
-                    u.getTasks().remove( t );
                     
+                    u.getTasks().remove( t );
+                    t.setUser( null );
+                    
+                    taskDAO.flush();
                 }
             }
             
         }
         
-        
+        HibernateFactory.commitTransaction();
     }
     
     public void testRemoveAllTasks(){
         
         TaskDAO taskDAO =  DAOFactory.instance( ).getTaskDAO();
+                    
+        for (Task t: taskDAO.findAll()){
+            log.info( "t.getLogRecords(): "+t.getLogRecords() );
+        }
+        
         taskDAO.removeAllTasks();
         
+        HibernateFactory.commitTransaction();
+        
     }
+    
     
     public TestAUP() {
 
@@ -192,8 +206,6 @@ public class TestAUP {
         createAUP();
         testSignAUPTask();
         testGetAUPToBeSigned();
-        
-        HibernateFactory.commitTransaction();
         
         testRemoveAllTasks();
         

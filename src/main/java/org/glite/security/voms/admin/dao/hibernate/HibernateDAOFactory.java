@@ -1,24 +1,23 @@
 package org.glite.security.voms.admin.dao.hibernate;
 
 import java.util.List;
-import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.dao.AUPDAO;
-import org.glite.security.voms.admin.dao.AUPVersionDAO;
-import org.glite.security.voms.admin.dao.DAOFactory;
-import org.glite.security.voms.admin.dao.TagDAO;
-import org.glite.security.voms.admin.dao.TaskDAO;
-import org.glite.security.voms.admin.dao.TaskLogRecordDAO;
-import org.glite.security.voms.admin.dao.TaskTypeDAO;
+import org.glite.security.voms.admin.dao.generic.RequestDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.AUPVersionDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.RequesterInfoDAO;
+import org.glite.security.voms.admin.dao.generic.TagDAO;
+import org.glite.security.voms.admin.dao.generic.TaskDAO;
+import org.glite.security.voms.admin.dao.generic.TaskLogRecordDAO;
+import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.model.AUPVersion;
-import org.glite.security.voms.admin.model.Tag;
+import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.task.LogRecord;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.TaskType;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -83,6 +82,19 @@ public class HibernateDAOFactory extends DAOFactory {
         return (TaskLogRecordDAO)instantiateDAO( TaskLogRecordDAOHibernate.class );
     }
     
+    @Override
+    public RequestDAO getRequestDAO() {
+
+        return (RequestDAO) instantiateDAO( RequestDAOHibernate.class ) ;
+    }
+    
+    @Override
+    public RequesterInfoDAO getRequesterInfoDAO() {
+
+        return (RequesterInfoDAO) instantiateDAO( RequesterInfoDAOHibernate.class );
+        
+    }
+    
     // Inline concrete DAO implementations with no business-related data access methods.
     // If we use public static nested classes, we can centralize all of them in one source file.
     public static class AUPVersionDAOHibernate 
@@ -96,6 +108,11 @@ public class HibernateDAOFactory extends DAOFactory {
         
     }
     
+    public static class RequesterInfoDAOHibernate
+        extends GenericHibernateDAO <RequesterInfo, Long>
+        implements RequesterInfoDAO{
+        
+    }
     public static class TaskLogRecordDAOHibernate
         extends GenericHibernateDAO <LogRecord, Long>
         implements TaskLogRecordDAO{
@@ -114,21 +131,12 @@ public class HibernateDAOFactory extends DAOFactory {
             return findByCriteria( Restrictions.eq( "task", t ) );
         }
         
-//        @Override
-//        public void makeTransient( LogRecord entity ) {
-//        
-//            entity.setTask( null );
-//            super.makeTransient( entity );
-//        }
         
         
     }
-
-
-
-
     
     
+
     
 
 }

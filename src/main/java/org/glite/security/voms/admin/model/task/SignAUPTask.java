@@ -3,7 +3,6 @@ package org.glite.security.voms.admin.model.task;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +22,7 @@ public class SignAUPTask extends Task implements Serializable {
     
     
     @ManyToOne
-    @JoinColumn(name="aup_id", updatable=false)
+    @JoinColumn(name="aup_id", updatable=false, nullable=false)
     AUP aup;
 
     

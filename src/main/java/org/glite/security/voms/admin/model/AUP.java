@@ -1,7 +1,6 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
-
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;

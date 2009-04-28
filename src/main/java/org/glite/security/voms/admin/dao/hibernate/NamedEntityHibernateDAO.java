@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.dao.NamedEntityDAO;
+import org.glite.security.voms.admin.dao.generic.NamedEntityDAO;
 import org.hibernate.criterion.Restrictions;
 
 

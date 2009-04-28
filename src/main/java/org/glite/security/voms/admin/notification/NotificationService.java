@@ -21,23 +21,116 @@
 package org.glite.security.voms.admin.notification;
 
 import java.util.List;
+import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.glite.security.voms.admin.request.VOMSNotificationException;
 
 public class NotificationService {
 
-    private static NotificationService instance = null;
-    
-    private List outgoing;
-    private List sent;
-    private List undelivered;
-    
+    private static final Log log = LogFactory
+            .getLog( NotificationService.class );
+
+    private static NotificationService singleton = null;
+
+    private List <EmailNotification> outgoing = new Vector <EmailNotification>();
+
+    private List <EmailNotification> undelivered = new Vector <EmailNotification>();
+
+    private Object lock = new Object();
+
     private NotificationService() {
 
-        
     }
-    
+
     public static NotificationService instance() {
 
-        return new NotificationService();
+        if ( singleton == null )
+            singleton = new NotificationService();
+
+        return singleton;
+    }
+
+    
+    
+    public void scheduledSend(EmailNotification n){
+        
+        log
+        .debug( "Adding notification '" + n
+                + "' to outgoing message queue." );
+        outgoing.add( n );
+    }
+    
+    
+    public void immediateSend( EmailNotification n ) {
+
+        log
+                .debug( "Adding notification '" + n
+                        + "' to outgoing message queue." );
+        outgoing.add( n );
+        deliverNotifications();
+
+    }
+    
+
+    public void deliverNotifications() {
+
+        synchronized ( lock ) {
+
+            for ( EmailNotification n : undelivered ) {
+
+                try {
+
+                    log.warn( "Trying to deliver undelivered notification '"
+                            + n + "'." );
+                    log.debug( "Delivery attempt #:"
+                            + n.getDeliveryAttemptCount() + 1 );
+                    n.send();
+
+                    log.info( "Notification '" + n + "' delivered succesfully" );
+
+                    undelivered.remove( n );
+
+                } catch ( VOMSNotificationException e ) {
+
+                    log.error( "Error sending notification '" + n + "': "
+                            + e.getMessage() );
+                    if ( log.isDebugEnabled() )
+                        log.error( "Error sending notification '" + n + "': "
+                                + e.getMessage(), e );
+
+                    outgoing.remove( n );
+                    undelivered.add( n );
+
+                }
+
+            }
+
+            for ( EmailNotification n : outgoing ) {
+
+                try {
+
+                    log.info( "Sending notification '" + n + "'." );
+                    n.send();
+                    log.info( "Notification '" + n + "' delivered succesfully" );
+                    outgoing.remove( n );
+
+                } catch ( VOMSNotificationException e ) {
+
+                    log.error( "Error sending notification '" + n + "': "
+                            + e.getMessage() );
+                    if ( log.isDebugEnabled() )
+                        log.error( "Error sending notification '" + n + "': "
+                                + e.getMessage(), e );
+
+                    outgoing.remove( n );
+                    undelivered.add( n );
+
+                }
+
+            }
+        }
+
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSUser;
@@ -202,18 +203,9 @@ public class LogRecord implements Serializable, Comparable <LogRecord>{
 
         LogRecord that = (LogRecord) other;
         
-        if (!getTask().equals( that.getTask() ))
-            return false;
-        if (!getDate().equals( that.getDate() ))
-            return false;
-        if (!getEvent().equals( that.getEvent() ))
-            return false;
-        if (getUser() != null && that.getUser()!= null)
-            return getUser().equals( that.getUser() );
-        if (getAdmin()!= null && that.getAdmin()!= null)
-            return getAdmin().equals( that.getAdmin() );
+        EqualsBuilder builder = new EqualsBuilder();
         
-        return true;
+        return builder.append( task, that.task ).append( date, that.date ).append( event, that.event).append(user, that.user).append(admin, that.admin).isEquals();
         
     }
     

@@ -55,10 +55,15 @@
         <mapping class="org.glite.security.voms.admin.model.request.NewVOMembershipRequest"/>
         <mapping class="org.glite.security.voms.admin.model.request.GroupMembershipRequest"/>
         <mapping class="org.glite.security.voms.admin.model.request.RoleMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.model.request.CertificateRequest"/>
         
         <!-- PERSONAL INFO -->
         <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationType"/>
         <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord"/>
+        
+        <!-- TEST -->
+        
+        
         
     </session-factory>
 </hibernate-configuration>

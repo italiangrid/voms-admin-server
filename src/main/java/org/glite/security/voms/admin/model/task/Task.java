@@ -1,7 +1,10 @@
 package org.glite.security.voms.admin.model.task;
 
 import java.util.Date;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -15,14 +18,19 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.glite.security.voms.admin.model.VOMSAdmin;
+import org.glite.security.voms.admin.model.VOMSUser;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@org.hibernate.annotations.OnDelete(action=OnDeleteAction.CASCADE)
 @Table(name="task")
 public abstract class Task {
     
@@ -50,6 +58,17 @@ public abstract class Task {
     @Column(nullable=false)
     TaskStatus status;
     
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="task")
+    @Sort(type=SortType.NATURAL)
+    SortedSet <LogRecord> logRecords = new TreeSet <LogRecord>();
+    
+    @ManyToOne
+    @JoinColumn(name="usr_id")
+    VOMSUser user;
+    
+    @ManyToOne
+    @JoinColumn(name="admin_id")
+    VOMSAdmin admin;
         
     /**
      * @return the id
@@ -204,7 +223,7 @@ public abstract class Task {
         if (!getStatus().equals( that.getStatus() ))
             return false;
         
-        return getId().equals( that.getId() );
+        return true;
                    
     }
     
@@ -217,10 +236,63 @@ public abstract class Task {
 
 
     
+    /**
+     * @return the logRecords
+     */
+    public SortedSet <LogRecord> getLogRecords() {
     
+        return logRecords;
+    }
 
 
     
+    /**
+     * @param logRecords the logRecords to set
+     */
+    public void setLogRecords( SortedSet <LogRecord> logRecords ) {
+    
+        this.logRecords = logRecords;
+    }
+
+
+    
+    /**
+     * @return the user
+     */
+    public VOMSUser getUser() {
+    
+        return user;
+    }
+
+
+    
+    /**
+     * @return the admin
+     */
+    public VOMSAdmin getAdmin() {
+    
+        return admin;
+    }
+
+
+    
+    /**
+     * @param user the user to set
+     */
+    public void setUser( VOMSUser user ) {
+    
+        this.user = user;
+    }
+
+
+    
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin( VOMSAdmin admin ) {
+    
+        this.admin = admin;
+    }
     
     
     

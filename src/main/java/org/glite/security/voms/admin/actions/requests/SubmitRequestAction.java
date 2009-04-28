@@ -32,8 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.glite.security.voms.admin.actionforms.SubmitRequestActionForm;
 import org.glite.security.voms.admin.actions.BaseAction;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSConfigurationException;
-import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.dao.RequestDAO;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.notification.ConfirmRequestNotification;

@@ -31,6 +31,7 @@ import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.notification.NotificationWorkerThread;
 
 
 
@@ -56,6 +57,8 @@ public final class VOMSService {
         
         log.info( "Configuration setup ok." );
 
+        NotificationWorkerThread.instance( getTimer() );
+        
         UpdateCATask.instance( getTimer() );
                   
         try {
