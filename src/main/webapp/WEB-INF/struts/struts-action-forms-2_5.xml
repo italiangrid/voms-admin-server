@@ -21,7 +21,30 @@
 
   <form-beans>
   
-  
+    <form-bean
+      name="AUPForm"
+      type="org.glite.security.voms.admin.actionforms.aup.AUPActionForm">
+
+      <form-property
+        name="id"
+        type="long" />
+      
+      <form-property
+        name="name"
+        type="string" />
+        
+        <form-property
+        name="description"
+        type="string" />
+        
+        <form-property
+        name="version"
+        type="string" />
+        
+        <form-property
+        name="url"
+        type="string" />
+    </form-bean>
 
   </form-beans>
 </struts-config>

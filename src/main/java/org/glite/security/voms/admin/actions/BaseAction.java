@@ -27,6 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import org.glite.security.voms.admin.common.Constants;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.SearchResults;
@@ -105,5 +107,15 @@ public class BaseAction extends Action {
                         VOMSConfiguration.instance().getVOName();
         
         return result;
+    }
+    
+    protected void message(HttpServletRequest req, String template, String param){
+        
+        ActionMessages msgs = new ActionMessages();
+        
+        msgs.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+                template, param));
+        
+        saveMessages(req, msgs);
     }
 }

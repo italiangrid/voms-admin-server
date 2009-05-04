@@ -291,6 +291,20 @@
 	<definition name=".search.user.attributes.page" extends=".userGroupsLayout">
 		<put name="centerPane" value="/pages/attributes/searchUserAttributes.jsp"/>
 	</definition>
+  
+    <!-- AUP DEFINITIONS -->
+    
+    <definition name=".list.aups" extends=".userGroupsLayout">
+      <put name="centerPane" value="/pages/aup/listAUPs.jsp"/>
+    </definition>
+    
+    <definition name=".create.aup" extends=".userGroupsLayout">
+      <put name="centerPane" value="/pages/aup/createAUP.jsp"/>
+    </definition>
+    
+    <definition name=".show.aup" extends=".userGroupsLayout">
+      <put name="centerPane" value="/pages/aup/showAUP.jsp"/>
+    </definition>
 	
 	<!-- SIBLINGS DEFINITIONS -->
 	<definition name=".siblings" extends=".siblingsLayout">

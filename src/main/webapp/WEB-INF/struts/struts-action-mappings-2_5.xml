@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!--
+  <!--
     Copyright (c) Members of the EGEE Collaboration. 2006. See
     http://www.eu-egee.org/partners/ for details on the copyright holders.
 
@@ -12,7 +12,7 @@
     specific language governing permissions and limitations under the License.
 
     Authors: Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
--->
+  -->
 
 <!DOCTYPE struts-config PUBLIC
           "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
@@ -22,6 +22,47 @@
 <struts-config>
 
   <action-mappings>
+
+    <!-- AUP action mappings -->
+    <action
+      path="/ListAUPs"
+      type="org.glite.security.voms.admin.actions.aup.ListAUPsAction"
+    >
+
+      <forward
+        name="success"
+        path=".list.aups" />
+
+    </action>
+    
+    <action
+      path="/ShowAUP"
+      type="org.glite.security.voms.admin.actions.aup.LoadAUPAction"
+    >
+
+      <forward
+        name="success"
+        path=".show.aup" />
+
+    </action>
+
+  
+    <action
+      path="/CreateAUP" forward=".create.aup"/>
+      
+    <action
+      name="AUPForm"
+      path="/SaveAUP"
+      type="org.glite.security.voms.admin.actions.aup.CreateAUPAction"
+    >
+
+        
+      <forward
+        name="success"
+        path=".list.aups" />
+
+    </action>
+    
 
   </action-mappings>
 
