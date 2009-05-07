@@ -63,6 +63,17 @@
 
     </action>
     
+    <action
+      path="/TestAUP"
+      type="org.glite.security.voms.admin.actions.aup.TestAction"
+    >
+
+        
+      <forward
+        name="success"
+        path="/pages/aup/test.jsp" />
+
+    </action>
 
   </action-mappings>
 
