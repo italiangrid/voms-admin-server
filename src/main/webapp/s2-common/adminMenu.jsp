@@ -1,5 +1,5 @@
 <%--
- Copyright (c) Members of the EGEE Collaboration. 2006.
+ Copyright (c) Members of the EGEE Collaboration. 2009.
  See http://www.eu-egee.org/partners/ for details on the copyright
  holders.
 
@@ -21,14 +21,9 @@
 
 <%@ include file="taglibs.jsp" %>
 
-<div class="menuItem"><html:link forward="manageUsers">VO management</html:link></div>
+<div class="menuItem">VO management</a></div>
 
-<div class="menuItem"><html:link forward="manageRequests">Subscriptions</html:link></div>
-<div class="menuItem"><html:link forward="configuration">Configuration</html:link></div>
+<div class="menuItem">Subscriptions</div>
+<div class="menuItem">Configuration</div>
 
-<div class="menuItem"><html:link forward="manageTags">Tags</html:link></div>
-<!--
-<div class="menuItem"><html:link forward="manageNotification">Messaging</html:link></div>
-
--->
-<div class="menuItem" id="helpMenuItem"><html:link forward="siblings">Other VOs on this server</html:link></div>
+<div class="menuItem" id="helpMenuItem">Other VOs on this server</div>

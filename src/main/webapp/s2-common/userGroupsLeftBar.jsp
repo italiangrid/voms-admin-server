@@ -22,59 +22,28 @@
 <%@ include file="taglibs.jsp" %>
 
 <div id="userGroupsLeftBar">
-
 <div class="leftBarHeader">
 	Manage
 </div>
 
-<voms:link 
-	action="/SearchUser"
-	context="vo"
-	permission="r" 
-	disabledStyleClass="disabledLink"
-	styleClass="vomsLink"
-	>
+<a href="#">
 	Users
-</voms:link>	
+</a>	
 
-<voms:link 
-	action="/SearchGroups"
-	context="vo"
-	permission="r" 
-	disabledStyleClass="disabledLink"
-	styleClass="vomsLink"
-	>
+<a href="#">
 	Groups
-</voms:link>	
+</a>	
 
-<voms:link 
-	action="/SearchRoles"
-	context="vo"
-	permission="r" 
-	disabledStyleClass="disabledLink"
-	styleClass="vomsLink"
-	>
+<a href="#">
 	Roles
-</voms:link>	
+</a>	
 
-<voms:link 
-	action="/SearchUserAttributes"
-	context="vo"
-	permission="ATTRIBUTES_READ" 
-	disabledStyleClass="disabledLink"
-	styleClass="vomsLink"
-	>
+<a href="#">
 	Attributes
-</voms:link>
+</a>
 
-<voms:link 
-	action="/SearchCAs"
-	context="vo"
-	permission="r" 
-	disabledStyleClass="disabledLink"
-	styleClass="vomsLink"
-	>
+<a href="#">
 	CAs
-</voms:link>
+</a>
 </div>
 

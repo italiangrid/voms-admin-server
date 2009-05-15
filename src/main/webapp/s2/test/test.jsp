@@ -2,6 +2,6 @@
 
 <div id="test-message">
 
-	Our message today is ${text}
+	Our message today is <s:property value="text"/>.
 
 </div>

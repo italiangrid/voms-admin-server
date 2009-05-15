@@ -2,32 +2,53 @@
 <!DOCTYPE struts PUBLIC
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
-
-    <struts>
-        <constant name="struts.devMode" value="true" />
-        <constant name="struts.configuration.xml.reload" value="true"/>
-        <constant name="struts.ui.theme" value="css_xhtml"/>
-        
-        
-        
-        <package name="base" extends="struts-default" namespace="base">
-            <interceptors>
-                <interceptor 
-                    name="authnInterceptor" 
-                    class="it.cnaf.infn.voms.interceptors.AuthenticatedAccessInterceptor"/>
-                    
-                 <interceptor 
-                    name="hibernateInterceptor" 
-                    class="it.cnaf.infn.voms.interceptors.HibernateInterceptor"/>
-                    
-                <interceptor-stack name="authenticatedStack">
-                    <interceptor-ref name="authnInterceptor"/>
-                    <interceptor-ref name="defaultStack"/>
-                    <interceptor-ref name="hibernateInterceptor"/>
-                </interceptor-stack>
-                
-            </interceptors>
-            
-            <default-interceptor-ref name="authenticatedStack"/>
-        </package>
-    </struts>
+<struts>
+	<!-- <constant name="struts.devMode" value="true" /> -->
+	<!-- <constant name="struts.configuration.xml.reload" value="true" /> -->
+	<constant name="struts.ui.theme" value="css_xhtml" />
+	<constant name="struts.convention.classes.reload" value="true" />
+	
+	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
+	<constant name="struts.convention.result.path" value="/s2"/>
+	
+	
+	<package name="base" extends="struts-default" namespace="base">
+		<result-types>
+			<result-type name="tiles"
+				class="org.apache.struts2.views.tiles.TilesResult" default="true" />
+		</result-types>
+		
+		<interceptors>
+			<interceptor name="authnInterceptor"
+				class="org.glite.security.voms.admin.view.interceptors.AuthenticatedAccessInterceptor" />
+			<interceptor name="hibernateInterceptor"
+				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
+				
+			<interceptor-stack name="authenticatedStack">
+				<interceptor-ref name="authnInterceptor" />
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="hibernateInterceptor" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="authenticatedStack" />
+	</package>
+	
+	<package name="user" extends="base" namespace="/user">
+	
+		<action name="User_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.user.User">
+			<result name="input">${destination}</result> 
+  			<result name="success">${destination}</result>  
+  			<result name="list">${destination}List</result>
+		</action>
+	</package>
+	
+	<package name="group" extends="base" namespace="/group">
+	
+		<action name="Group_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.group.Group">
+			<result name="input">${destination}</result> 
+  			<result name="success">${destination}</result>  
+  			<result name="list">${destination}List</result>
+		</action>
+	</package>
+	
+</struts>

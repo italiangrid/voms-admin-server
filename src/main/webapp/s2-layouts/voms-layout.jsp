@@ -20,9 +20,8 @@
 </script>
 
 </head>
-<body>
 
-	<%-- <voms:currentAdmin var="currentAdmin"/> --%>
+<body>
 	<div id="header">
 		<tiles2:insertAttribute name="header"/>
 	</div> <!-- header -->
@@ -33,7 +32,7 @@
 	
 	<div id="messages">
 		<tiles2:insertAttribute name="messages"/>
-	</div>
+	</div><!-- messages -->
 	
 	<div id="body">
 		<div id="leftBar">

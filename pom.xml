@@ -450,18 +450,30 @@
 			</artifactId>
 			<version>1.8.10-1</version>
 		</dependency>
-		<!--
-			Struts 2.x dependencies <dependency>
+		
+		<!-- Struts 2.x dependencies -->
+		<dependency>
 			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-core</artifactId> <version>2.1.2</version>
-			</dependency> <dependency> <groupId>org.apache.struts</groupId>
-			<artifactId>struts2-codebehind-plugin </artifactId>
-			<version>2.1.2</version> </dependency> <dependency>
+			<artifactId>struts2-core</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-rest-plugin</artifactId> <version>2.1.2</version>
-			</dependency> <dependency> <groupId>org.apache.struts</groupId>
-			<artifactId>struts2-tiles-plugin</artifactId>
-			<version>2.1.2</version> </dependency>
+			<artifactId>struts2-convention-plugin
+			</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-rest-plugin</artifactId>
+			<version>2.1.2</version>
+		</dependency>
 		-->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-tiles-plugin</artifactId>
+			<version>2.1.6</version>
+		</dependency>
 	</dependencies>
 </project>

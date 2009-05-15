@@ -20,6 +20,6 @@
 --%>
 <%@ include file="taglibs.jsp" %>
 
-<div class="menuItem"><html:link forward="manageUsers">VO management</html:link></div>
-<div class="menuItem"><html:link forward="configuration">Configuration</html:link></div>
-<div class="menuItem" id="helpMenuItem"><html:link forward="siblings">Other VOs on this server</html:link></div>
+<div class="menuItem"><a href="#">VO management</a></div>
+<div class="menuItem"><a href="#">Configuration</a></div>
+<div class="menuItem" id="helpMenuItem"><a href="#">Other VOs on this server</a></div>

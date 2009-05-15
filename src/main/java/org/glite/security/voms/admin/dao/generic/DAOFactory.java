@@ -62,4 +62,8 @@ public abstract class DAOFactory {
     public abstract RequestDAO getRequestDAO();
     
     public abstract RequesterInfoDAO getRequesterInfoDAO();
+    
+    public abstract GroupDAO getGroupDAO();
+    
+    public abstract UserDAO getUserDAO();
 }

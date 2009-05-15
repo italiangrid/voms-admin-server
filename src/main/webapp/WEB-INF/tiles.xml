@@ -23,8 +23,12 @@
         <put-attribute name="centerPane" value="/s2/test/test.jsp"/>
     </definition>
     
-    <definition name="list-users.page" extends="base-template">
-        <put-attribute name="centerPane" value="/s2/user/list-users.jsp"/>
+    <definition name="UserList" extends="base-template">
+        <put-attribute name="centerPane" value="/s2/user/UserList.jsp"/>
+    </definition>
+    
+    <definition name="GroupList" extends="base-template">
+        <put-attribute name="centerPane" value="/s2/group/GroupList.jsp"/>
     </definition>
     
 </tiles-definitions>
