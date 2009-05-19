@@ -45,9 +45,11 @@
 
 <p>An email has been sent to you with instructions on how to proceed
 with the registration for the ${voName } VO.</p>
-<p>Please follow the instructions before the following date:
+
+<div>
+Please follow the instructions before the following date:
 <ul>
 	<li> <span style="font-weight: bold"><fmt:formatDate type="both" value="${requestExpirationDate}" dateStyle="full"/></span></li>
 </ul>
 or your request will be discarded by voms-admin.
-</p>
+</div>

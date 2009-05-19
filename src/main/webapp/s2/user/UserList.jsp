@@ -1,8 +1,8 @@
 <%@include file="/s2-common/taglibs.jsp"%>
 
-<s:iterator value="userList" var="user">
+<s:iterator value="#request.userList">
 	<div>
-		<span class="user.id">%{user.id}</span>
-		<span class="user.name">%{user.name} ${user.surname}</span>
+		<span class="user.id">%{id}</span>
+		<span class="user.name">%{name} ${user.surname}</span>
 	</div>
 </s:iterator>

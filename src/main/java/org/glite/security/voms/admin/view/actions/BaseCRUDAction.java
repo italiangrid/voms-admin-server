@@ -55,10 +55,7 @@ public abstract class BaseCRUDAction<T, ID extends Serializable> extends ActionS
 	}
 	
 	public String list(){
-		
-		// Code to fetch list of objects and populate request
-		// for the view is the Tiles 'preparer'
-		
+				
 		log.debug(getActionClass()+":list");
 		setMappedRequest(RequestType.list);
 		return RequestType.list.toString();
@@ -121,7 +118,7 @@ public abstract class BaseCRUDAction<T, ID extends Serializable> extends ActionS
 	}
 
 	public void setDao(GenericDAO<T, ID> dao) {
-		log.debug("Setting DAO for concrete class '"+getActionClass()+"'");
+		log.debug("Setting DAO for concrete class '"+getActionClass()+"': "+ dao);
 		this.dao = dao;
 	}
 

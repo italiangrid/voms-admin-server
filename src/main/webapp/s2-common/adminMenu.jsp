@@ -21,7 +21,7 @@
 
 <%@ include file="taglibs.jsp" %>
 
-<div class="menuItem">VO management</a></div>
+<div class="menuItem">VO management</div>
 
 <div class="menuItem">Subscriptions</div>
 <div class="menuItem">Configuration</div>

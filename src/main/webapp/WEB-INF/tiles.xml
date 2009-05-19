@@ -23,12 +23,16 @@
         <put-attribute name="centerPane" value="/s2/test/test.jsp"/>
     </definition>
     
-    <definition name="UserList" extends="base-template">
+    <definition name="UserList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
         <put-attribute name="centerPane" value="/s2/user/UserList.jsp"/>
     </definition>
     
-    <definition name="GroupList" extends="base-template">
+    <definition name="GroupList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.group.ListGroupPreparer">
         <put-attribute name="centerPane" value="/s2/group/GroupList.jsp"/>
+    </definition>
+    
+    <definition name="Group" extends="base-template">
+    	<put-attribute name="centerPane" value="/s2/group/Group.jsp"/>
     </definition>
     
 </tiles-definitions>
