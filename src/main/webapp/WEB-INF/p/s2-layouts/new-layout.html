@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--<%@include file="/WEB-INF/pages/s2-common/taglibs.jsp"%>-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<!--<%@include file="/WEB-INF/pages/s2-common/meta.jsp" %>-->
+
+	<title>VOMS-ADMIN 2.5!</title>
+
+	<link rel="stylesheet" type="text/css" href="../style/style.css"/>
+
+	<!--<script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">-->
+	<!--</script>-->
+	<!---->
+	<!--<script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">-->
+	<!--</script>-->
+
+
+
+</head>
+
+<body>
+	<div id="container">
+        <div id="info" class="clear">
+        <div id="vo-info">
+          vo: <span id="vo-name">atlas</span>
+        </div>
+		<div id="user-info">
+			identity: <span class="userDN">/C=IT/O=INFN/OU=Personal Certificate/L=CNAF/CN=Andrea Ceccanti</span>
+		</div>
+        </div>
+        <div id="header" class="clear">
+			<div id="logo" class="clear">
+
+				<a href="#" id="logo-img">
+					<img src="/Users/andrea/Desktop/design/logo2.png" 
+					alt="VOMS Admin"/>	
+				</a>
+                <div id="version-info">
+                  version: <span>2.5</span>
+                </div>
+			</div>
+			<ul id="nav">
+				<li>Home</li>
+				<li>Manage</li>
+				<li>Configuration</li>
+				<li>Other VOs</li>
+			</ul>
+
+			<div id="search">
+				Search:
+        
+                <select class="selectBox">
+                  <option class="option">Users</option>
+                  <option class="option">Groups</option>
+                  <option class="option">Roles</option>
+                </select>
+				<input  id="searchField" type="text" size="15"/>
+                <input class="submitButton" type="submit" value="go!"/>               
+			</div>
+
+
+		</div> <!-- header -->
+
+		<div id="messages" class="clear">
+
+		</div><!-- messages -->
+
+		<div id="body" class="clear">
+			<div id="leftBar">
+
+			</div> <!-- leftBar -->
+
+			<div id="centerPane">
+
+			</div> <!-- centerPane -->
+		</div> <!-- body -->
+	</div><!-- container -->
+    
+    <div id="footer" class="clear">
+    </div> <!-- footer -->
+</body>
+</html>
