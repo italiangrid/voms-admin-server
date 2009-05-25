@@ -1,0 +1,12 @@
+<Context path="/voms/${test.vo.name}" 
+		docBase="${test.vo.docBase}"
+        debug="5" 
+        reloadable="true">
+        
+        <Environment name="VO_NAME" value="${test.vo.name}" type="java.lang.String"/>
+        <Environment name="CONFIG_DIR" value="${test.vo.confDir}" type="java.lang.String"/>
+        <Environment name="GLITE_LOCATION" value="${glite.location}" type="java.lang.String"/>
+        <Environment name="VOMS_LOCATION" value="${glite.location}" type="java.lang.String"/>
+        <Environment name="GLITE_LOCATION_VAR" value="${glite.location.var}" type="java.lang.String"/>
+</Context>
+
