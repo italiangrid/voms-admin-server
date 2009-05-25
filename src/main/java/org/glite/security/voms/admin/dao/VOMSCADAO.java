@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
@@ -222,12 +222,12 @@ public class VOMSCADAO implements Searchable {
 
     public VOMSCA getGroupCA() {
 
-        return getByName( Constants.GROUP_CA );
+        return getByName( VOMSServiceConstants.GROUP_CA );
     }
 
     public VOMSCA getRoleCA() {
 
-        return getByName( Constants.ROLE_CA );
+        return getByName( VOMSServiceConstants.ROLE_CA );
     }
 
     public static VOMSCADAO instance() {

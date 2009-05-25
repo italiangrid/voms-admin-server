@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.VOMSException;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.UnimplementedFeatureException;
@@ -359,12 +359,12 @@ public class VOMSACLService implements VOMSACL {
         if ( admin == null ){
             
             // Admin not found, check if internal admin is requested
-            if (issuer.equals( Constants.VIRTUAL_CA )){
+            if (issuer.equals( VOMSServiceConstants.VIRTUAL_CA )){
                 
                 // ANYUSER admin 
                 return VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
                 
-            }else if (issuer.equals( Constants.GROUP_CA )){
+            }else if (issuer.equals( VOMSServiceConstants.GROUP_CA )){
                 
                 VOMSGroup g = VOMSGroupDAO.instance().findByName( subject );
                 
@@ -373,7 +373,7 @@ public class VOMSACLService implements VOMSACL {
                 
                 return VOMSAdminDAO.instance().create( subject );
                 
-            }else if (issuer.equals( Constants.ROLE_CA )){
+            }else if (issuer.equals( VOMSServiceConstants.ROLE_CA )){
                 
                 String groupName = PathNamingScheme.getGroupName( subject );
                 String roleName = PathNamingScheme.getRoleName( subject );

@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
@@ -83,8 +83,8 @@ public class VOMSAdminDAO {
         String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
         Query q = HibernateFactory.getSession().createQuery( query );
 
-        q.setString( "dn", Constants.ANYUSER_ADMIN );
-        q.setString( "caDN", Constants.VIRTUAL_CA );
+        q.setString( "dn", VOMSServiceConstants.ANYUSER_ADMIN );
+        q.setString( "caDN", VOMSServiceConstants.VIRTUAL_CA );
 
         VOMSAdmin a = (VOMSAdmin) q.uniqueResult();
 
@@ -194,11 +194,11 @@ public class VOMSAdminDAO {
         
         if (PathNamingScheme.isGroup( fqan ))
             
-            return getByName( fqan, Constants.GROUP_CA );
+            return getByName( fqan, VOMSServiceConstants.GROUP_CA );
         
         else if (PathNamingScheme.isQualifiedRole( fqan ))
             
-            return getByName( fqan, Constants.ROLE_CA );
+            return getByName( fqan, VOMSServiceConstants.ROLE_CA );
         
         return null;
     }

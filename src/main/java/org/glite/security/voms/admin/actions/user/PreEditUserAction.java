@@ -35,7 +35,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.glite.security.voms.admin.actionforms.UserForm;
 import org.glite.security.voms.admin.actions.BaseAction;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSGroup;
@@ -79,7 +79,7 @@ public class PreEditUserAction extends BaseAction {
 
         }
 
-        request.setAttribute( Constants.UNASSIGNED_ROLES_KEY, unassignedRoles );
+        request.setAttribute( VOMSServiceConstants.UNASSIGNED_ROLES_KEY, unassignedRoles );
 
         List unsubscribedGroups = VOMSUserDAO.instance().getUnsubscribedGroups(
                 user.getId() );

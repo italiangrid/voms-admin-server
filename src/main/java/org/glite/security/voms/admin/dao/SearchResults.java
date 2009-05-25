@@ -37,11 +37,11 @@ public class SearchResults {
 
     int resultsPerPage;
 
-    protected SearchResults() {
+    public SearchResults() {
 
     }
 
-    protected SearchResults( int c, List res ) {
+    public SearchResults( int c, List res ) {
 
         count = c;
         results = res;

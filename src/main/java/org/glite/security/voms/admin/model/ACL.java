@@ -30,7 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -193,7 +193,7 @@ public class ACL implements Serializable{
                        
             VOMSAdmin admin = entry.getKey();
             
-            if (admin.getCa().getSubjectString().equals( Constants.ROLE_CA))
+            if (admin.getCa().getSubjectString().equals( VOMSServiceConstants.ROLE_CA))
                 result.put( admin, entry.getValue() );                
         }
         
@@ -208,7 +208,7 @@ public class ACL implements Serializable{
             
             VOMSAdmin admin = entry.getKey();   
             
-            if (admin.getCa().getSubjectString().equals( Constants.GROUP_CA))
+            if (admin.getCa().getSubjectString().equals( VOMSServiceConstants.GROUP_CA))
                 result.put( admin, entry.getValue() );
                 
         }   
@@ -252,8 +252,8 @@ public class ACL implements Serializable{
             
             VOMSAdmin admin  = admins.next();
             
-            if ((admin.getDn().equals( Constants.ANYUSER_ADMIN )) ||          
-            (!admin.getDn().startsWith(Constants.INTERNAL_DN_PREFIX)))
+            if ((admin.getDn().equals( VOMSServiceConstants.ANYUSER_ADMIN )) ||          
+            (!admin.getDn().startsWith(VOMSServiceConstants.INTERNAL_DN_PREFIX)))
                 result.put(admin,permissions.get(admin));
             
         }

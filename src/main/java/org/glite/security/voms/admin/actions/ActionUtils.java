@@ -23,7 +23,7 @@ package org.glite.security.voms.admin.actions;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.SearchResults;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
@@ -36,46 +36,46 @@ public class ActionUtils {
 
     public static void storeUser( HttpServletRequest request, VOMSUser u ) {
 
-        request.setAttribute( Constants.USER_KEY, u );
+        request.setAttribute( VOMSServiceConstants.USER_KEY, u );
 
     }
 
     public static void storeGroup( HttpServletRequest request, VOMSGroup g ) {
 
-        request.setAttribute( Constants.GROUP_KEY, g );
+        request.setAttribute( VOMSServiceConstants.GROUP_KEY, g );
 
     }
 
     public static void storeRole( HttpServletRequest request, VOMSRole r ) {
 
-        request.setAttribute( Constants.ROLE_KEY, r );
+        request.setAttribute( VOMSServiceConstants.ROLE_KEY, r );
 
     }
 
     public static void storeResults( HttpServletRequest request, SearchResults r ) {
 
-        request.setAttribute( Constants.RESULTS_KEY, r );
+        request.setAttribute( VOMSServiceConstants.RESULTS_KEY, r );
     }
 
     public static VOMSGroup getGroupFromRequest(HttpServletRequest request){
         
-        return (VOMSGroup) request.getAttribute(Constants.GROUP_KEY);
+        return (VOMSGroup) request.getAttribute(VOMSServiceConstants.GROUP_KEY);
         
     }
 
     public static VOMSRole getRoleFromRequest(HttpServletRequest request){
         
-        return (VOMSRole) request.getAttribute(Constants.ROLE_KEY);
+        return (VOMSRole) request.getAttribute(VOMSServiceConstants.ROLE_KEY);
         
     }
     public static SearchResults getResultsFromRequest( HttpServletRequest request ) {
 
         
-        return (SearchResults) request.getAttribute(Constants.RESULTS_KEY);
+        return (SearchResults) request.getAttribute(VOMSServiceConstants.RESULTS_KEY);
     }
 
     public static VOMSUser getUserFromRequest( HttpServletRequest request ) {
 
-        return (VOMSUser) request.getAttribute(Constants.USER_KEY);
+        return (VOMSUser) request.getAttribute(VOMSServiceConstants.USER_KEY);
     }
 }

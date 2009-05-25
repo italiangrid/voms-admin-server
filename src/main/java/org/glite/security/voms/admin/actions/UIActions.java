@@ -38,7 +38,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.glite.security.voms.admin.actionforms.UIActionForm;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.w3c.dom.Document;
 
 
@@ -74,7 +74,7 @@ public class UIActions extends BaseDispatchAction {
 
         HttpSession session = request.getSession();
 
-        Map statusMap = (Map) session.getAttribute( Constants.STATUS_MAP_KEY );
+        Map statusMap = (Map) session.getAttribute( VOMSServiceConstants.STATUS_MAP_KEY );
 
         if ( statusMap == null )
             statusMap = new HashMap();
@@ -85,7 +85,7 @@ public class UIActions extends BaseDispatchAction {
 
         statusMap.put( uForm.getPanelId(), uForm.getStatus() );
 
-        session.setAttribute( Constants.STATUS_MAP_KEY, statusMap );
+        session.setAttribute( VOMSServiceConstants.STATUS_MAP_KEY, statusMap );
 
         request.setAttribute("panelId",uForm.getPanelId());
         request.setAttribute("panelStatus", (uForm.getStatus() == null) ? "null": uForm.getStatus().toString());
@@ -99,7 +99,7 @@ public class UIActions extends BaseDispatchAction {
 
         HttpSession session = request.getSession();
 
-        Map statusMap = (Map) session.getAttribute( Constants.STATUS_MAP_KEY );
+        Map statusMap = (Map) session.getAttribute( VOMSServiceConstants.STATUS_MAP_KEY );
 
         if ( statusMap == null )
 

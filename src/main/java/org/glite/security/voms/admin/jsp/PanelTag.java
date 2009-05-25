@@ -37,7 +37,7 @@ import org.apache.axis.utils.DOM2Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.taglib.TagUtils;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -64,7 +64,7 @@ public class PanelTag extends TagSupport {
     
     
     protected boolean isActive(){
-        Map statusMap = (Map) pageContext.findAttribute(Constants.STATUS_MAP_KEY);
+        Map statusMap = (Map) pageContext.findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
         
         log.debug("statusMap:"+statusMap);
         if (statusMap == null)          

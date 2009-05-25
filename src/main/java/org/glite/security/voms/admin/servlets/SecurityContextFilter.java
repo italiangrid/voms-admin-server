@@ -33,7 +33,7 @@ import javax.servlet.ServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.SecurityContext;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.InitSecurityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
@@ -69,7 +69,7 @@ public class SecurityContextFilter implements Filter {
 
         String voName = VOMSConfiguration.instance().getVOName();
         req.setAttribute( "voName", voName );
-        req.setAttribute( Constants.CURRENT_ADMIN_KEY, CurrentAdmin.instance() );
+        req.setAttribute( VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin.instance() );
 
         chain.doFilter( req, res );
 

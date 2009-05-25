@@ -39,6 +39,7 @@ import org.glite.security.voms.admin.actionforms.UserForm;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
@@ -80,6 +81,11 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     String emailAddress;
     
     
+    
+    // Compatibility fields 
+    String dn;
+    VOMSCA ca;
+    
     // Creation time and validity info
     Date creationTime;
     Date endTime;
@@ -95,9 +101,6 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord> ();
     
     
-    // Compatibility fields
-    String dn;
-    VOMSCA ca;
 
     /**
      * @return Returns the emailAddress.
@@ -545,6 +548,10 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     }
 
     public String toString() {
+    	
+    	if (getName() == null || getName().equals(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE)){
+    		return getDn() + " ("+getId()+")";
+    	}
 
         return name + " " + surname + " ("+id+")";
     }
@@ -623,6 +630,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
             throw new AlreadyExistsException("Certificate '"+cert+"' is already bound to user '"+this+"'.");
         
         getCertificates().add(cert);
+        cert.setUser(this);
         
     }
     
@@ -802,25 +810,29 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     }
     
     
-    public void setDn(String dn){
-        this.dn = dn;
-    }
     
     @Deprecated
     public String getDn(){
         
+    	// If the default certificate exists for this user, take the dn from there...
+    	if (getDefaultCertificate() != null){
+        	return getDefaultCertificate().getSubjectString();
+        }
+    	
+    	// Compatibility behaviour
         return dn;
     }
     
     @Deprecated
     public VOMSCA getCa(){
+    	
+    	if (getDefaultCertificate() != null){
+        	return getDefaultCertificate().getCa();
+        }
         
-        return ca;
+        return null;
     }
 
-    public void setCa(VOMSCA ca){
-        this.ca = ca;
-    }
     
     /**
      * @return the personalInformations
@@ -839,5 +851,14 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     
         this.personalInformations = personalInformations;
     }
+
+	public void setDn(String dn) {
+		this.dn = dn;
+	}
+
+	public void setCa(VOMSCA ca) {
+		this.ca = ca;
+	}
+    
     
 }

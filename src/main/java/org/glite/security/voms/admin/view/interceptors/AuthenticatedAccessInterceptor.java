@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.StrutsStatics;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.InitSecurityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
@@ -43,7 +43,7 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor implemen
         HttpServletRequest req = (HttpServletRequest) ai.getInvocationContext().get( HTTP_REQUEST );
         InitSecurityContext.setContextFromRequest( req );
         req.setAttribute( "voName", VOMSConfiguration.instance().getVOName() );
-        req.setAttribute( Constants.CURRENT_ADMIN_KEY, CurrentAdmin.instance() );
+        req.setAttribute( VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin.instance() );
         
         return ai.invoke();
     }

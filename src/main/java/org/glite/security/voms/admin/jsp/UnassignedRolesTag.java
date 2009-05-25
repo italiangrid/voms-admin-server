@@ -28,7 +28,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 
 
 public class UnassignedRolesTag extends javax.servlet.jsp.tagext.TagSupport {
@@ -51,7 +51,7 @@ public class UnassignedRolesTag extends javax.servlet.jsp.tagext.TagSupport {
         List roles = null;
 
         Map unassignedRoles = (Map) pageContext
-                .findAttribute( Constants.UNASSIGNED_ROLES_KEY );
+                .findAttribute( VOMSServiceConstants.UNASSIGNED_ROLES_KEY );
 
         if ( unassignedRoles == null )
             throw new JspTagException(

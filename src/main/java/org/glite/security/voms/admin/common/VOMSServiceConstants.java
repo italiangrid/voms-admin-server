@@ -29,7 +29,7 @@ package org.glite.security.voms.admin.common;
  * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
  * 
  */
-final public class Constants {
+final public class VOMSServiceConstants {
 
     /** The prefix distinguishing real CAs and users from virtual ones. */
     static public final String INTERNAL_DN_PREFIX = "/O=VOMS/O=System";
@@ -147,6 +147,8 @@ final public class Constants {
     public static final String TAG_INSTITUTE_REPRESENTATIVE  = "Institute-Representative";
     
     public static final String TAG_VO_USER = "VO-User";
+    
+    public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "null";
     
 }
 

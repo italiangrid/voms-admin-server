@@ -71,7 +71,7 @@ public class InitSecurityContext {
      * Sets up the client's credentials. This method sets the current
      * <code>SecurityContext</code> to a new instance and initializes it from
      * the client's certificate. It also sets the {@linkplain
-     * Constants#SECURITY_CONTEXT_REMOTE_ADDRESS remote IP address property}.
+     * VOMSServiceConstants#SECURITY_CONTEXT_REMOTE_ADDRESS remote IP address property}.
      * 
      * <p>
      * If the certificate is invalid, or there is some other problem with the
@@ -79,7 +79,7 @@ public class InitSecurityContext {
      * <code>null</code>, unless the client is from localhost and the
      * configuration option <code>voms.localhost.defaults.to.local.admin</code>
      * is true. In this latter case, the credentials will be set to that of the
-     * {@linkplain Constants#LOCAL_ADMIN Local Database Administrator}.
+     * {@linkplain VOMSServiceConstants#LOCAL_ADMIN Local Database Administrator}.
      * 
      * @see org.glite.security.SecurityContext
      */
@@ -91,7 +91,7 @@ public class InitSecurityContext {
 
         // Store remote address.
         String remote = req.getRemoteAddr();
-        sc.setProperty( Constants.SECURITY_CONTEXT_REMOTE_ADDRESS, remote );
+        sc.setProperty( VOMSServiceConstants.SECURITY_CONTEXT_REMOTE_ADDRESS, remote );
 
         X509Certificate[] cert = null;
         try {
@@ -115,11 +115,11 @@ public class InitSecurityContext {
 
                 log
                         .warn( "*** Overriding null credentials from localhost with Local Database Admin ***" );
-                sc.setClientName( Constants.LOCAL_ADMIN );
-                sc.setIssuerName( Constants.VIRTUAL_CA );
+                sc.setClientName( VOMSServiceConstants.LOCAL_ADMIN );
+                sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
             } else {
-                sc.setClientName( Constants.UNAUTHENTICATED_CLIENT );
-                sc.setIssuerName( Constants.VIRTUAL_CA );
+                sc.setClientName( VOMSServiceConstants.UNAUTHENTICATED_CLIENT );
+                sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
             }
 
         } else {
@@ -148,20 +148,20 @@ public class InitSecurityContext {
             // Do not allow internal credentials coming from an external source.
             if ( sc.getClientName() != null
                     && sc.getClientName().startsWith(
-                            Constants.INTERNAL_DN_PREFIX ) ) {
+                            VOMSServiceConstants.INTERNAL_DN_PREFIX ) ) {
                 log
                         .error( "Client name starts with internal prefix, discarding credentials: "
                                 + sc.getClientName() );
-                sc.setClientName( Constants.UNAUTHENTICATED_CLIENT );
-                sc.setIssuerName( Constants.VIRTUAL_CA );
+                sc.setClientName( VOMSServiceConstants.UNAUTHENTICATED_CLIENT );
+                sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
             } else if ( sc.getIssuerName() != null
                     && sc.getIssuerName().startsWith(
-                            Constants.INTERNAL_DN_PREFIX ) ) {
+                            VOMSServiceConstants.INTERNAL_DN_PREFIX ) ) {
                 log
                         .error( "Client issuer starts with internal prefix, discarding credentials: "
                                 + sc.getClientName() );
-                sc.setClientName( Constants.UNAUTHENTICATED_CLIENT );
-                sc.setIssuerName( Constants.VIRTUAL_CA );
+                sc.setClientName( VOMSServiceConstants.UNAUTHENTICATED_CLIENT );
+                sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
             }
         }
     }
@@ -192,7 +192,7 @@ public class InitSecurityContext {
         // check the DN: configured, not virtual and matching the current
         String validDN = VOMSConfiguration.instance().getString(
                 "voms.fully.trusted.client.for.delegation.dn" );
-        if ( validDN == null || validDN.equals( Constants.LOCAL_ADMIN ) ) {
+        if ( validDN == null || validDN.equals( VOMSServiceConstants.LOCAL_ADMIN ) ) {
             throw new VOMSSecurityException(
                     "No valid trusted DN is configured" );
         }
@@ -205,7 +205,7 @@ public class InitSecurityContext {
         // check the CA: configured, not virtual and matching the current
         String validCA = VOMSConfiguration.instance().getString(
                 "voms.fully.trusted.client.for.delegation.ca" );
-        if ( validCA == null || validCA.equals( Constants.VIRTUAL_CA ) ) {
+        if ( validCA == null || validCA.equals( VOMSServiceConstants.VIRTUAL_CA ) ) {
             throw new VOMSSecurityException(
                     "No valid trusted CA is configured" );
         }
@@ -231,10 +231,10 @@ public class InitSecurityContext {
         SecurityContext sc = new SecurityContext();
         SecurityContext.setCurrentContext( sc );
         // sc.setAuthorizedAttributes(Arrays.asList(new String[] { }));
-        sc.setClientName( Constants.LOCAL_ADMIN );
-        sc.setIssuerName( Constants.VIRTUAL_CA );
+        sc.setClientName( VOMSServiceConstants.LOCAL_ADMIN );
+        sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
         if ( host != null )
-            sc.setProperty( Constants.SECURITY_CONTEXT_REMOTE_ADDRESS, host );
+            sc.setProperty( VOMSServiceConstants.SECURITY_CONTEXT_REMOTE_ADDRESS, host );
     }
 
     /**
@@ -246,8 +246,8 @@ public class InitSecurityContext {
         SecurityContext sc = new SecurityContext();
         SecurityContext.setCurrentContext( sc );
         // sc.setAuthorizedAttributes(Arrays.asList(new String[] { }));
-        sc.setClientName( Constants.INTERNAL_ADMIN );
-        sc.setIssuerName( Constants.VIRTUAL_CA );
+        sc.setClientName( VOMSServiceConstants.INTERNAL_ADMIN );
+        sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
     }
 
     /**
@@ -259,8 +259,8 @@ public class InitSecurityContext {
         log.info( "Clearing the security context" );
         SecurityContext sc = new SecurityContext();
         SecurityContext.setCurrentContext( sc );
-        sc.setClientName( Constants.UNAUTHENTICATED_CLIENT );
-        sc.setIssuerName( Constants.VIRTUAL_CA );
+        sc.setClientName( VOMSServiceConstants.UNAUTHENTICATED_CLIENT );
+        sc.setIssuerName( VOMSServiceConstants.VIRTUAL_CA );
     }
 }
 

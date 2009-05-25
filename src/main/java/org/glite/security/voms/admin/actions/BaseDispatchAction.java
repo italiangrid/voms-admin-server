@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.SearchResults;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
@@ -38,19 +38,19 @@ public class BaseDispatchAction extends DispatchAction {
 
     protected ActionForward findSuccess( ActionMapping mapping ) {
 
-        return mapping.findForward( Constants.SUCCESS );
+        return mapping.findForward( VOMSServiceConstants.SUCCESS );
 
     }
 
     protected ActionForward findFailure( ActionMapping mapping ) {
 
-        return mapping.findForward( Constants.FAILURE );
+        return mapping.findForward( VOMSServiceConstants.FAILURE );
 
     }
 
     protected ActionForward findConfirm( ActionMapping mapping ) {
 
-        return mapping.findForward( Constants.CONFIRM );
+        return mapping.findForward( VOMSServiceConstants.CONFIRM );
     }
 
     protected void storeUser( HttpServletRequest request, VOMSUser u ) {

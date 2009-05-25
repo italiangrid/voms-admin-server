@@ -9,6 +9,7 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSCA;
+import org.glite.security.voms.admin.model.VOMSUser;
 
 public class CertificateDAO {
 
@@ -62,20 +63,24 @@ public class CertificateDAO {
 		return null;
 	}
 
-	public Certificate create(String dn, String ca){
+	public Certificate create(VOMSUser u, String ca){
 		
-		assert dn != null: "null dn passed as argument!";
+		assert u != null: "null user passed as argument!";
 		assert ca != null: "null ca passed as argument!";
 		
-		VOMSCA dbCA = VOMSCADAO.instance().getByName(ca);
+		String normalizedCA = DNUtil.normalizeDN(ca);
+		
+		VOMSCA dbCA = VOMSCADAO.instance().getByName(normalizedCA);
 		
 		if (dbCA == null)
 			throw new NoSuchCAException("CA '"+ca+"' not found in database!");
 		Certificate cert = new Certificate();
 		
-		cert.setSubjectString(dn);
+		
+		cert.setSubjectString(DNUtil.normalizeDN(u.getDn()));
 		cert.setCa(dbCA);
 		cert.setCreationTime(new Date());
+		cert.setUser(u);
 		
 		HibernateFactory.getSession().save(cert);
 		return cert;

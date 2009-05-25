@@ -41,7 +41,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
@@ -845,7 +845,7 @@ public class SchemaDeployer {
 
             long adminId = a.getId().longValue();
 
-            if ( (a.getDn().equals( Constants.ANYUSER_ADMIN )) || (!a.getDn().startsWith( "/O=VOMS" )) ) {
+            if ( (a.getDn().equals( VOMSServiceConstants.ANYUSER_ADMIN )) || (!a.getDn().startsWith( "/O=VOMS" )) ) {
                 
                 log.debug("Migrating acls for admin : "+a.getDn());
 

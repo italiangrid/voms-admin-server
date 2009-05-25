@@ -30,6 +30,7 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class CreateUserOperation extends BaseVomsOperation {
 
+	
 	VOMSUser usr = null;
 
     String caDN = null;
@@ -47,12 +48,12 @@ public class CreateUserOperation extends BaseVomsOperation {
     }
     
     private CreateUserOperation(String username, String caName, String cn,String certUri,String email){
-        usr = new VOMSUser();
-        
-//        usr.setDn(username);
-//        usr.setCn(cn);
-//        usr.setCertURI(certUri);
+    	
+    	
+    	usr = new VOMSUser(); 
+        usr.setDn(username);        
         usr.setEmailAddress(email);
+       
         caDN = caName;
         
     }
@@ -60,7 +61,7 @@ public class CreateUserOperation extends BaseVomsOperation {
     
     protected Object doExecute() {
 		
-		return VOMSUserDAO.instance().create(usr);
+		return VOMSUserDAO.instance().create(usr, caDN);
 	}
 
 	public static CreateUserOperation instance(UserForm form){

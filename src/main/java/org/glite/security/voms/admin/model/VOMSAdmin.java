@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
@@ -182,7 +182,7 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
     }
 
     public boolean isInternalAdmin(){
-        return getCa().getSubjectString().startsWith( Constants.INTERNAL_DN_PREFIX );    
+        return getCa().getSubjectString().startsWith( VOMSServiceConstants.INTERNAL_DN_PREFIX );    
     }
     
     

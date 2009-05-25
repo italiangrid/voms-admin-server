@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.ModelDriven;
 
 @ParentPackage(value="base")
 @Result(name="success", location="test.page", type="tiles")
+
 public class TestAction extends BaseAction implements ModelDriven <TestModel>{
     
     private static final long serialVersionUID = 1L;
