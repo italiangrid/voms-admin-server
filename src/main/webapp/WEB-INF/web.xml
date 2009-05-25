@@ -34,7 +34,7 @@
     <!-- Struts 2 filter -->
     <filter>
         <filter-name>struts2</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
         
         <init-param>
             <param-name>actionPackages</param-name>
@@ -42,16 +42,6 @@
         </init-param>
         
     </filter>
-    
-	<filter>
-		<filter-name>security-context-filter</filter-name>
-		<filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
-	</filter>
-    
-	<filter>
-		<filter-name>hibernate-session-filter</filter-name>
-		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
-	</filter>
 	
 	<filter>
 		<filter-name>axis-hibernate-session-filter</filter-name>
@@ -61,19 +51,9 @@
     <!-- Struts 2 filter mapping -->
     <filter-mapping>
         <filter-name>struts2</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*.action</url-pattern>
     </filter-mapping>
     
-    
-	<filter-mapping>
-		<filter-name>security-context-filter</filter-name>
-		<url-pattern>*.do</url-pattern>
-	</filter-mapping>
-    
-    <filter-mapping>
-		<filter-name>hibernate-session-filter</filter-name>
-		<url-pattern>*.do</url-pattern>
-	</filter-mapping>
 	
 	<filter-mapping>
 		<filter-name>axis-hibernate-session-filter</filter-name>
@@ -81,14 +61,6 @@
 	</filter-mapping>
 	
 	<!--  Struts 2 listeners -->
-    
-    <!--   
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoadListener
-        </listener-class>
-    </listener>
-     -->
      
     <listener>
         <listener-class>
@@ -149,20 +121,13 @@
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
 	</servlet-mapping>
-	
-	<!-- Standard Struts1 Action Servlet Mapping -->
-	<!-- 
-	<servlet-mapping>
-		<servlet-name>action</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
-	-->
 
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
 		<welcome-file>/pages/index.jsp</welcome-file>
 	</welcome-file-list>
 
+	<!-- Tiles definitions configuration -->
     <context-param>
         <param-name>
             org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
