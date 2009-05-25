@@ -3,16 +3,16 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
-	<!-- <constant name="struts.devMode" value="true" /> -->
-	<!-- <constant name="struts.configuration.xml.reload" value="true" /> -->
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.configuration.xml.reload" value="true" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
 	<constant name="struts.convention.classes.reload" value="true" />
 	
 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
-	<constant name="struts.convention.result.path" value="/s2"/>
+	<constant name="struts.convention.result.path" value="/WEB-INF/pages/s2"/>
 	
+	<package name="base" extends="struts-default">
 	
-	<package name="base" extends="struts-default" namespace="base">
 		<result-types>
 			<result-type name="tiles"
 				class="org.apache.struts2.views.tiles.TilesResult" default="true" />
@@ -33,7 +33,7 @@
 		<default-interceptor-ref name="authenticatedStack" />
 	</package>
 	
-	<package name="user" extends="base" namespace="/user">
+	<package name="user" extends="base">
 	
 		<action name="User_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.user.User">
 			<result name="input">${destination}</result> 
@@ -42,6 +42,8 @@
 		</action>
 	</package>
 	
+	
+	<!-- 
 	<package name="group" extends="base" namespace="/group">
 	
 		<action name="Group_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.group.Group">
@@ -50,5 +52,5 @@
   			<result name="list">${destination}List</result>
 		</action>
 	</package>
-	
+	-->
 </struts>
