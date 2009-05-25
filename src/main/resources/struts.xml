@@ -9,7 +9,7 @@
 	<constant name="struts.convention.classes.reload" value="true" />
 	
 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
-	<constant name="struts.convention.result.path" value="/WEB-INF/pages/s2"/>
+	<constant name="struts.convention.result.path" value="/WEB-INF/p/s2"/>
 	
 	<package name="base" extends="struts-default">
 	
