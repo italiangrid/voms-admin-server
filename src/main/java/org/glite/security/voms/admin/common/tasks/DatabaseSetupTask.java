@@ -26,7 +26,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.Constants;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
@@ -88,13 +88,13 @@ public class DatabaseSetupTask extends TimerTask {
             // Add internal CAs
             VOMSCADAO caDAO = VOMSCADAO.instance();
 
-            caDAO.createCA( Constants.VIRTUAL_CA,
+            caDAO.createCA( VOMSServiceConstants.VIRTUAL_CA,
                     "A dummy CA for local org.glite.security.voms.admin.database mainteneance" );
             caDAO
-                    .createCA( Constants.GROUP_CA,
+                    .createCA( VOMSServiceConstants.GROUP_CA,
                             "A virtual CA for VOMS groups." );
-            caDAO.createCA( Constants.ROLE_CA, "A virtual CA for VOMS roles." );
-            caDAO.createCA( Constants.AUTHZMANAGER_ATTRIBUTE_CA,
+            caDAO.createCA( VOMSServiceConstants.ROLE_CA, "A virtual CA for VOMS roles." );
+            caDAO.createCA( VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
                     "A virtual CA for authz manager attributes" );
             
             // Create vo root group
@@ -107,15 +107,15 @@ public class DatabaseSetupTask extends TimerTask {
             VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
 
             VOMSAdmin internalAdmin = adminDAO.create(
-                    Constants.INTERNAL_ADMIN, Constants.VIRTUAL_CA );
+                    VOMSServiceConstants.INTERNAL_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
 
-            VOMSAdmin localAdmin = adminDAO.create( Constants.LOCAL_ADMIN,
-                    Constants.VIRTUAL_CA );
+            VOMSAdmin localAdmin = adminDAO.create( VOMSServiceConstants.LOCAL_ADMIN,
+                    VOMSServiceConstants.VIRTUAL_CA );
 
-            adminDAO.create( Constants.PUBLIC_ADMIN, Constants.VIRTUAL_CA );
+            adminDAO.create( VOMSServiceConstants.PUBLIC_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
 
             adminDAO
-                    .create( Constants.ANYUSER_ADMIN, Constants.VIRTUAL_CA );
+                    .create( VOMSServiceConstants.ANYUSER_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
             
             
             VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
