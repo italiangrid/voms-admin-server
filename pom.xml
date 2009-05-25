@@ -25,6 +25,7 @@
 		<filters>
 			<filter>resources/templates/style/colors.properties
 			</filter>
+			<filter>resources/debug/test.properties</filter>
 		</filters>
 		<resources>
 			<resource>
@@ -58,18 +59,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1-beta-1</version>
 				<executions>
 
-          <!-- Main VOMS-Admin server war -->
+					<!-- Main VOMS-Admin server war -->
 					<execution>
 						<id>VOMS-Admin server war creation</id>
 						<goals>
 							<goal>war</goal>
 						</goals>
 						<configuration>
+							
 							<webResources>
 								<resource>
-                  <!-- this is relative to the pom.xml directory -->
+									<!-- this is relative to the pom.xml directory -->
 									<directory>resources/templates/style
 									</directory>
 									<filtering>true</filtering>
@@ -86,11 +89,22 @@
 									<targetPath> WEB-INF/classes/org/glite/security/voms/admin/jsp
 									</targetPath>
 								</resource>
+								
+								<resource>
+									<directory>resources/debug</directory>
+									<filtering>true</filtering>
+									
+									<excludes>
+										<exclude>test.properties</exclude>
+										<exclude>conf/**</exclude>
+									</excludes>
+									<targetPath>META-INF</targetPath>
+								</resource>
 							</webResources>
 						</configuration>
 					</execution>
 
-          <!-- Siblings WAR -->
+					<!-- Siblings WAR -->
 					<execution>
 						<id>VOMS-Admin siblings war creation</id>
 						<goals>
@@ -108,7 +122,7 @@
 							</warSourceExcludes>
 							<webResources>
 								<resource>
-                  <!-- this is relative to the pom.xml directory -->
+									<!-- this is relative to the pom.xml directory -->
 									<directory>resources/templates/style
 									</directory>
 									<filtering>true</filtering>
@@ -118,7 +132,7 @@
 									<targetPath>style</targetPath>
 								</resource>
 								<resource>
-                  <!-- this is relative to the pom.xml directory -->
+									<!-- this is relative to the pom.xml directory -->
 									<directory>resources/templates/siblings
 									</directory>
 									<includes>
@@ -239,8 +253,10 @@
 				<configuration>
 					<server>tomcat</server>
 					<contextFile>
-						${basedir}/resources/debug/conf/etc/voms-admin/test_vo_mysql/voms-admin-test_vo_mysql.xml
+						target/glite-security-voms-admin/META-INF/context.xml
 					</contextFile>
+					<failOnError>false</failOnError>
+					<update>true</update>
 					<mode>both</mode>
 					<path>/voms/test_vo_mysql</path>
 				</configuration>
@@ -290,6 +306,15 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		
+		<repository>
+    		<id>apache.snapshots</id>
+    		<name>ASF Maven 2 Snapshot</name>
+    		<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+    		<snapshots>
+    			<enabled>true</enabled>
+    		</snapshots>
+  		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -427,11 +452,11 @@
 		</dependency>
 
 
-    <!--        <dependency>-->
-    <!--            <groupId>ojdbc</groupId>-->
-    <!--            <artifactId>ojdbc</artifactId>-->
-    <!--            <version>14</version>-->
-    <!--        </dependency>-->
+		<!--        <dependency>-->
+		<!--            <groupId>ojdbc</groupId>-->
+		<!--            <artifactId>ojdbc</artifactId>-->
+		<!--            <version>14</version>-->
+		<!--        </dependency>-->
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
@@ -450,7 +475,7 @@
 			</artifactId>
 			<version>1.8.10-1</version>
 		</dependency>
-		
+
 		<!-- Struts 2.x dependencies -->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -463,13 +488,6 @@
 			</artifactId>
 			<version>2.1.6</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-rest-plugin</artifactId>
-			<version>2.1.2</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-tiles-plugin</artifactId>
