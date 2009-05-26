@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page contentType="text/xhtml; charset=UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 
 <%@include file="/WEB-INF/p/s2-common/taglibs.jsp"%>
 
@@ -11,7 +11,7 @@
 
 <title><tiles2:insertAttribute name="title"/></title>
 
-<link rel="stylesheet" type="text/css" href="<s:url value="/style/style.css"/>"/>
+<link rel="stylesheet" type="text/css" href="<s:url value="/style/2.5/style.css"/>"/>
 
 <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
 </script>

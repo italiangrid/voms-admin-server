@@ -9,19 +9,15 @@
         <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/nav.jsp"/>
         <put-attribute name="search" value="/WEB-INF/p/s2-layouts/search.jsp"/>
     </definition>
-    
-    
-    
+ 
     <definition name="base-template" template="/WEB-INF/p/s2-layouts/new-layout.jsp">
         <put-attribute name="title" value="VOMS-Admin 2.5" type="string"/>
+        <put-attribute name="info" value="/WEB-INF/p/s2-layouts/info.jsp"/>
         <put-attribute name="header" value="default-header" type="definition"/>
+        
         <put-attribute name="messages" value="/WEB-INF/p/s2-layouts/messages.jsp"/>
-        <!-- 
-        <put-attribute name="leftBar" value="/s2-common/userGroupsLeftBar.jsp"/>
-        -->
-        <put-attribute name="leftBar" value=" " type="string"/>
-        <put-attribute name="centerPane" value="" type="string"/>
-        <put-attribute name="footer" value="/WEB-INF/p/s2-common/defaultFooter.jsp"/>
+        <put-attribute name="body" value=" " type="string"/>
+        <put-attribute name="footer" value="/WEB-INF/p/s2-layouts/footer.jsp"/>
     </definition>
     
     <definition name="siblings-template">
@@ -29,23 +25,23 @@
     </definition>
     
     <definition name="test.page" extends="base-template">
-        <put-attribute name="centerPane" value="/WEB-INF/p/s2/test/test.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/p/s2/test/test.jsp"/>
     </definition>
     
     <definition name="UserList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
-        <put-attribute name="centerPane" value="/WEB-INF/p/s2/user/UserList.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/p/s2/user/UserList.jsp"/>
     </definition>
     
     <definition name="GroupList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.group.ListGroupPreparer">
-        <put-attribute name="centerPane" value="/WEB-INF/p/s2/group/GroupList.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/p/s2/group/GroupList.jsp"/>
     </definition>
     
     <definition name="Group" extends="base-template">
-    	<put-attribute name="centerPane" value="/WEB-INF/p/s2/group/Group.jsp"/>
+    	<put-attribute name="body" value="/WEB-INF/p/s2/group/Group.jsp"/>
     </definition>
     
     <definition name="SearchUsers" extends="base-template">
-    	<put-attribute name="centerPane" value="/WEB-INF/p/s2/user/SearchUsers.jsp"/>
+    	<put-attribute name="body" value="/WEB-INF/p/s2/user/SearchUsers.jsp"/>
     </definition>
     
 </tiles-definitions>
