@@ -110,6 +110,18 @@ public class CurrentAdmin {
         }
     }
     
+    public boolean isVOAdmin(){
+    	
+    	if (hasPermissions(VOMSContext.getVoContext(), VOMSPermission.getAllPermissions()))
+    		return true;
+    	
+    	return false;
+    }
+    
+    public boolean canBrowseVO(){
+    	return hasPermissions(VOMSContext.getVoContext(), VOMSPermission.getContainerReadPermission().setMembershipReadPermission());
+    }
+    
     public boolean hasPermissions( VOMSContext c, VOMSPermission p ) {
 
         ACL acl = c.getACL();

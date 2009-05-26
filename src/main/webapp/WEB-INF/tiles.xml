@@ -4,44 +4,54 @@
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
        
 <tiles-definitions>
-
-    <definition name="default-header" template="/WEB-INF/p/s2-layouts/header.jsp">
+  
+    <definition name="empty-header" template="/WEB-INF/p/s2-layouts/header.jsp">
+        <put-attribute name="nav" value="" type="string" />
+        <put-attribute name="search" value="" type="string" />
+    </definition>
+    
+    <definition name="admin-header" template="/WEB-INF/p/s2-layouts/header.jsp">
         <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/admin-nav.jsp"/>
         <put-attribute name="search" value="/WEB-INF/p/s2-layouts/search.jsp"/>
     </definition>
- 
+    
+    <definition name="user-header" template="/WEB-INF/p/s2-layouts/header.jsp">
+        <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/user-nav.jsp"/>
+        <put-attribute name="search" value=""/>
+    </definition>
+    
     <definition name="base-template" template="/WEB-INF/p/s2-layouts/new-layout.jsp">
         <put-attribute name="title" value="VOMS-Admin 2.5" type="string"/>
         <put-attribute name="info" value="/WEB-INF/p/s2-layouts/info.jsp"/>
-        <put-attribute name="header" value="default-header" type="definition"/>
+        <put-attribute name="header" value="empty-header" type="definition"/>
         
         <put-attribute name="messages" value="/WEB-INF/p/s2-layouts/messages.jsp"/>
         <put-attribute name="body" value=" " type="string"/>
         <put-attribute name="footer" value="/WEB-INF/p/s2-layouts/footer.jsp"/>
     </definition>
+
+    <definition name="admin-template" extends="base-template">
+        <put-attribute name="header" value="admin-header" type="definition"/>
+    </definition>
     
-    <definition name="siblings-template">
+    <definition name="user-template" extends="base-template">
+        <put-attribute name="header" value="user-header" type="definition"/>
+    </definition>
+    
+    <definition name="siblings-template" extends="base-template">
     
     </definition>
     
-    <definition name="test.page" extends="base-template">
+    <definition name="test.page" extends="admin-template">
         <put-attribute name="body" value="/WEB-INF/p/s2/test/test.jsp"/>
     </definition>
     
-    <definition name="UserList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
-        <put-attribute name="body" value="/WEB-INF/p/s2/user/UserList.jsp"/>
+    <definition name="userHome" extends="user-template">
+      <put-attribute name="body" value="This will be user's home"/>
     </definition>
     
-    <definition name="GroupList" extends="base-template" preparer="org.glite.security.voms.admin.view.preparers.group.ListGroupPreparer">
-        <put-attribute name="body" value="/WEB-INF/p/s2/group/GroupList.jsp"/>
-    </definition>
-    
-    <definition name="Group" extends="base-template">
-    	<put-attribute name="body" value="/WEB-INF/p/s2/group/Group.jsp"/>
-    </definition>
-    
-    <definition name="SearchUsers" extends="base-template">
-    	<put-attribute name="body" value="/WEB-INF/p/s2/user/SearchUsers.jsp"/>
+    <definition name="adminHome" extends="admin-template">
+      <put-attribute name="body" value="This will be admins' home"/>
     </definition>
     
 </tiles-definitions>
