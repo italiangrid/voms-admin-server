@@ -1,4 +1,9 @@
 @IMPORT url("reset.css");
 @IMPORT url("text.css");
 @IMPORT url("layout.css");
+@IMPORT url("superfish.css");
 
+a:VISITED {
+	text-decoration: none;
+	color: inherit;
+}

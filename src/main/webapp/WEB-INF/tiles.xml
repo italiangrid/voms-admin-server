@@ -6,7 +6,7 @@
 <tiles-definitions>
 
     <definition name="default-header" template="/WEB-INF/p/s2-layouts/header.jsp">
-        <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/nav.jsp"/>
+        <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/admin-nav.jsp"/>
         <put-attribute name="search" value="/WEB-INF/p/s2-layouts/search.jsp"/>
     </definition>
  

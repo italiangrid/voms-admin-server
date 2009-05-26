@@ -16,8 +16,12 @@
 <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
 </script>
 
+<script type="text/javascript" src="<s:url value="/common/js/hoverIntent.js"/>"></script>
+<script type="text/javascript" src="<s:url value="/common/js/superfish.js"/>"></script>
+
 <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
 </script>
+
 </head>
 
 <body>

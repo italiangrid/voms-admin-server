@@ -1,6 +1,5 @@
-
 body{
-	background: #fff url("/img/bg5.png") repeat-x;
+	background: #fff url("../../img/bg5.png") repeat-x;
 	margin: 0 auto;
 	
 }
@@ -85,11 +84,16 @@ body{
 
 #nav {
 	float: left;
-	list-style: none;
-	margin: 0 0 0 20px;
+	margin: -8px 0 0 80px;
 }
 
+#nav ul{
+	
+	list-style:  none;
+	
+}
 
+/*
 #nav li {
 	float: left;
 	padding: 0 10px 0 10px;
@@ -103,7 +107,7 @@ body{
 	cursor: pointer;
 	text-decoration: underline;
 }
-
+*/
 #search{
 	float:right;
 }
@@ -192,7 +196,7 @@ body{
 }
 
 #footer{
-	background: #fff url("/img/bgfooter.png") repeat-x;
+	background: #fff url("../../img/bgfooter.png") repeat-x;
 	height: 100px;
 	width: 100%;
 }
