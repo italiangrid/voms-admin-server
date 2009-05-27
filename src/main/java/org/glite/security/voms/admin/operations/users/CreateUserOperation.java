@@ -26,6 +26,7 @@ import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.view.actions.user.User;
 
 
 public class CreateUserOperation extends BaseVomsOperation {
@@ -45,6 +46,12 @@ public class CreateUserOperation extends BaseVomsOperation {
             usr.setPhoneNumber( form.getPhoneNumber());
             usr.setEmailAddress( form.getEmailAddress() );
             
+    }
+    
+    private CreateUserOperation(VOMSUser user, String caSubject){
+    	
+    	usr = user;
+    	caDN = caSubject;
     }
     
     private CreateUserOperation(String username, String caName, String cn,String certUri,String email){
@@ -67,6 +74,11 @@ public class CreateUserOperation extends BaseVomsOperation {
 	public static CreateUserOperation instance(UserForm form){
 		
 		return new CreateUserOperation(form);
+	}
+	
+	public static CreateUserOperation instance(VOMSUser user, String caString){
+		
+		return new CreateUserOperation(user, caString);
 	}
     
     public static CreateUserOperation instance(String username, String caName, String cn,String certUri,String email){

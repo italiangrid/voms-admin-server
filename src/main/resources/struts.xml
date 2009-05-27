@@ -5,7 +5,7 @@
 <struts>
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.configuration.xml.reload" value="true" />
-	<constant name="struts.ui.theme" value="css_xhtml" />
+	<constant name="struts.ui.theme" value="simple" />
 	<constant name="struts.convention.classes.reload" value="true" />
 	
 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
@@ -25,12 +25,20 @@
 				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
 				
 			<interceptor-stack name="authenticatedStack">
+                <interceptor-ref name="logger"/>
 				<interceptor-ref name="authnInterceptor" />
 				<interceptor-ref name="defaultStack" />
 				<interceptor-ref name="hibernateInterceptor" />
 			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="authenticatedStack" />
+        
+        <default-action-ref name="login"/>
+        <action name="login">
+          <result type="redirect">
+            /home/login.action
+          </result>
+        </action>
 	</package>
 	
 	<package name="user" extends="base">

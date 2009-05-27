@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/p/s2-common/taglibs.jsp"%>
 
 <div id="logo">
-  <a href="#" id="logo-img">
+  <a href="<s:url value="/"/>" id="logo-img">
     <img 
     src="<s:url value="/img/logo.png"/>" alt="VOMS Admin" /> 
   </a>

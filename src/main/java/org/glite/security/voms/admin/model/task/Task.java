@@ -6,8 +6,6 @@ import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,8 +22,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSUser;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 

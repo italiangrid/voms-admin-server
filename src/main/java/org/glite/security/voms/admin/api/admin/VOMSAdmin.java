@@ -60,7 +60,7 @@ public interface VOMSAdmin {
      *
      * <p><b>Permission:</b> LIST on the VO group.
      *
-     * @see org.glite.security.voms.service.User
+     * @see org.glite.security.voms.service.UserAction
      * @param username The name of the user to look up.
      * @param userca The certificate authority of the user.
      * @return All information about the user that is known to VOMS.
@@ -74,7 +74,7 @@ public interface VOMSAdmin {
      *
      * <p><b>Permission:</b> ADD on the VO group.
      *
-     * @see org.glite.security.voms.service.User
+     * @see org.glite.security.voms.service.UserAction
      * @param user The user to update.
      */
     public void setUser (User user)

@@ -1,8 +1,7 @@
 <%@include file="/WEB-INF/p/s2-common/taglibs.jsp"%>
-
-<div id="search">Search: <select class="selectBox">
-  <option class="option">Users</option>
-  <option class="option">Groups</option>
-  <option class="option">Roles</option>
-</select> <input id="searchField" type="text" size="15" /> <input class="submitButton"
-  type="submit" value="go!" /></div>
+<s:form id="search" action="search" namespace="/search">Search: 
+<s:select list="#{'user':'Users','group':'Groups','role':'Roles', 'attribute':'Attributes'}" name="searchData.type"/>
+<s:textfield id="searchField" size="15" name="searchData.text"/>
+<s:hidden name="searchData.firstResult" value="0"/>
+<s:submit id="submitButton" value="go!"/>
+</s:form>

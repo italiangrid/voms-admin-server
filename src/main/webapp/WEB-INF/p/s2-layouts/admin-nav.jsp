@@ -2,7 +2,8 @@
 
 <div id="nav">
   <ul class="sf-menu">
-  <li><a href="#">Home</a></li>
+  
+  <li><a href="<s:url action='/home/login.action'/>">Home</a></li>
   
   <li class="current">
     <a href="#a">Manage</a>

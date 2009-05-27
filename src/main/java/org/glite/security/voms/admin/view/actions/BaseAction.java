@@ -3,8 +3,6 @@
  */
 package org.glite.security.voms.admin.view.actions;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
-
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -19,5 +17,10 @@ public class BaseAction extends ActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static final String SEARCH = "search";
+	public static final String LOAD = "load";
+	public static final String LIST = "list";
+	public static final String EDIT = "edit";
 
 }

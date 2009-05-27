@@ -37,11 +37,7 @@
     <definition name="user-template" extends="base-template">
         <put-attribute name="header" value="user-header" type="definition"/>
     </definition>
-    
-    <definition name="siblings-template" extends="base-template">
-    
-    </definition>
-    
+        
     <definition name="test.page" extends="admin-template">
         <put-attribute name="body" value="/WEB-INF/p/s2/test/test.jsp"/>
     </definition>
@@ -52,6 +48,15 @@
     
     <definition name="adminHome" extends="admin-template">
       <put-attribute name="body" value="This will be admins' home"/>
+    </definition>
+    
+    
+    <definition name="userSearch" extends="admin-template">
+      <put-attribute name="body" value="/WEB-INF/p/s2/user/search.jsp"/>
+    </definition>
+    
+    <definition name="registration" extends="base-template">
+      <put-attribute name="body" value="This is the registration page!"/>
     </definition>
     
 </tiles-definitions>

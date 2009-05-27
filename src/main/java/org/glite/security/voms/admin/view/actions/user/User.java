@@ -1,33 +1,107 @@
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.view.actions.BaseCRUDAction;
+import java.util.Date;
 
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
+public class User {
+	
+	Long id;
+	
+	String certificateSubject;
+	String certificateIssuer;
+	
+	String name;
+    String surname;
+    String institution;
+    String address;
+    String phoneNumber;
+    
+    String emailAddress;
+    
+    Date membershipExpiration;
 
-public class User extends BaseCRUDAction<VOMSUser, Long> implements Preparable, ModelDriven<VOMSUser> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	public User() {
-		
-		dao = DAOFactory.instance().getUserDAO();
-		
-	}
-	
-	public void prepare() throws Exception {
-		if (getRequestId() == 0)
-			model = new VOMSUser();
-		else{
-			model = dao.findById(getRequestId(), false);
-		}
-		
+    public User() {
+		// TODO Auto-generated constructor stub
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCertificateSubject() {
+		return certificateSubject;
+	}
+
+	public void setCertificateSubject(String certificateSubject) {
+		this.certificateSubject = certificateSubject;
+	}
+
+	public String getCertificateIssuer() {
+		return certificateIssuer;
+	}
+
+	public void setCertificateIssuer(String certificateIssuer) {
+		this.certificateIssuer = certificateIssuer;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public Date getMembershipExpiration() {
+		return membershipExpiration;
+	}
+
+	public void setMembershipExpiration(Date membershipExpiration) {
+		this.membershipExpiration = membershipExpiration;
+	}
+    
+    
 }

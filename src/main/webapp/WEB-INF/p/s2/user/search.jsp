@@ -1,22 +1,13 @@
 <%@include file="/WEB-INF/p/s2-common/taglibs.jsp"%>
 
+<div id="userSearch">
 
-<div id="searchUsersPane"><s:form action="search">
-  <s:hidden
-    name="searchData.firstResult"
-    value="0"
-  />
-  <s:textfield name="searchData.text" />
-  <s:submit value="Search users" />
-</s:form></div>
-<!-- searchPane -->
-
-<div id="searchResultsPane">
-
-<s:if test="searchResults.results.size == 0">
-	No users found.
-</s:if> 
-
+<s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
+No users found in this VO.
+</s:if>
+<s:elseif test="searchResults.results.size == 0">
+	No users found matching search string '<s:property value="searchResults.searchString"/>'.
+</s:elseif> 
 <s:else>
 
   <table
@@ -39,7 +30,5 @@
       </tr>
     </s:iterator>
   </table>
-
-
 </s:else>
 </div>

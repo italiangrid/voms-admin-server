@@ -11,8 +11,10 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @Results({
 	@Result(name="admin-home", location="adminHome"), 
 	@Result(name="user-home", location="userHome"),
-	@Result(name="guest-home", location="guestHome")
+	@Result(name="guest-home", location="guestHome"),
+	@Result(name="registration", location="registration")
 })
+
 public class LoginAction extends BaseAction {
 
 	/**
@@ -32,7 +34,7 @@ public class LoginAction extends BaseAction {
 		else if (admin.canBrowseVO())
 			return "guest-home";
 		
-		return SUCCESS;
+		return "registration";
 	}
 
 }
