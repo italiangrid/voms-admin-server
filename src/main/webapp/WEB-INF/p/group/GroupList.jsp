@@ -1,4 +1,4 @@
-<%@include file="/WEB-INF/p/common/taglibs.jsp"%>
+<%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <s:iterator value="#request.groupList" var="group">
 	<div>
