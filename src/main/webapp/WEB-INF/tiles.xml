@@ -5,29 +5,29 @@
        
 <tiles-definitions>
   
-    <definition name="empty-header" template="/WEB-INF/p/s2-layouts/header.jsp">
+    <definition name="empty-header" template="/WEB-INF/p/layouts/header.jsp">
         <put-attribute name="nav" value="" type="string" />
         <put-attribute name="search" value="" type="string" />
     </definition>
     
-    <definition name="admin-header" template="/WEB-INF/p/s2-layouts/header.jsp">
-        <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/admin-nav.jsp"/>
-        <put-attribute name="search" value="/WEB-INF/p/s2-layouts/search.jsp"/>
+    <definition name="admin-header" template="/WEB-INF/p/layouts/header.jsp">
+        <put-attribute name="nav" value="/WEB-INF/p/layouts/admin-nav.jsp"/>
+        <put-attribute name="search" value="/WEB-INF/p/layouts/search.jsp"/>
     </definition>
     
-    <definition name="user-header" template="/WEB-INF/p/s2-layouts/header.jsp">
-        <put-attribute name="nav" value="/WEB-INF/p/s2-layouts/user-nav.jsp"/>
+    <definition name="user-header" template="/WEB-INF/p/layouts/header.jsp">
+        <put-attribute name="nav" value="/WEB-INF/p/layouts/user-nav.jsp"/>
         <put-attribute name="search" value=""/>
     </definition>
     
-    <definition name="base-template" template="/WEB-INF/p/s2-layouts/new-layout.jsp">
+    <definition name="base-template" template="/WEB-INF/p/layouts/new-layout.jsp">
         <put-attribute name="title" value="VOMS-Admin 2.5" type="string"/>
-        <put-attribute name="info" value="/WEB-INF/p/s2-layouts/info.jsp"/>
+        <put-attribute name="info" value="/WEB-INF/p/layouts/info.jsp"/>
         <put-attribute name="header" value="empty-header" type="definition"/>
         
-        <put-attribute name="messages" value="/WEB-INF/p/s2-layouts/messages.jsp"/>
+        <put-attribute name="messages" value="/WEB-INF/p/layouts/messages.jsp"/>
         <put-attribute name="body" value=" " type="string"/>
-        <put-attribute name="footer" value="/WEB-INF/p/s2-layouts/footer.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/p/layouts/footer.jsp"/>
     </definition>
 
     <definition name="admin-template" extends="base-template">
