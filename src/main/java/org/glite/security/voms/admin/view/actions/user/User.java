@@ -2,6 +2,8 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class User {
 	
 	Long id;
@@ -103,5 +105,10 @@ public class User {
 		this.membershipExpiration = membershipExpiration;
 	}
     
+	@Override
+	public String toString() {
+
+		return ToStringBuilder.reflectionToString(this);
+	}
     
 }

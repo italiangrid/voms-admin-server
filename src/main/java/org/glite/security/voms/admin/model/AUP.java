@@ -20,6 +20,9 @@ public class AUP implements Serializable{
     
     private static final Log log = LogFactory.getLog( AUP.class );
     
+    public static final String VO_AUP_NAME = "VO-AUP";
+    public static final String GRID_AUP_NAME = "GRID-AUP";
+    
     Long id;
     String name;
     String description;

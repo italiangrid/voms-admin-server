@@ -117,7 +117,5 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO <AUP, Long> impleme
         return aupVersion;
     }
 
-    
-
-    
+	    
 }
