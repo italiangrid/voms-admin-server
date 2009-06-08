@@ -5,29 +5,29 @@
        
 <tiles-definitions>
   
-    <definition name="empty-header" template="/WEB-INF/p/layouts/header.jsp">
+    <definition name="empty-header" template="/WEB-INF/p/shared/header.jsp">
         <put-attribute name="nav" value="" type="string" />
         <put-attribute name="search" value="" type="string" />
     </definition>
     
-    <definition name="admin-header" template="/WEB-INF/p/layouts/header.jsp">
-        <put-attribute name="nav" value="/WEB-INF/p/layouts/admin-nav.jsp"/>
-        <put-attribute name="search" value="/WEB-INF/p/layouts/search.jsp"/>
+    <definition name="admin-header" template="/WEB-INF/p/shared/header.jsp">
+        <put-attribute name="nav" value="/WEB-INF/p/shared/admin-nav.jsp"/>
+        <put-attribute name="search" value="/WEB-INF/p/shared/search.jsp"/>
     </definition>
     
-    <definition name="user-header" template="/WEB-INF/p/layouts/header.jsp">
-        <put-attribute name="nav" value="/WEB-INF/p/layouts/user-nav.jsp"/>
+    <definition name="user-header" template="/WEB-INF/p/shared/header.jsp">
+        <put-attribute name="nav" value="/WEB-INF/p/shared/user-nav.jsp"/>
         <put-attribute name="search" value=""/>
     </definition>
     
-    <definition name="base-template" template="/WEB-INF/p/layouts/new-layout.jsp">
+    <definition name="base-template" template="/WEB-INF/p/shared/new-layout.jsp">
         <put-attribute name="title" value="VOMS-Admin 2.5" type="string"/>
-        <put-attribute name="info" value="/WEB-INF/p/layouts/info.jsp"/>
+        <put-attribute name="info" value="/WEB-INF/p/shared/info.jsp"/>
         <put-attribute name="header" value="empty-header" type="definition"/>
         
-        <put-attribute name="messages" value="/WEB-INF/p/layouts/messages.jsp"/>
+        <put-attribute name="messages" value="/WEB-INF/p/shared/messages.jsp"/>
         <put-attribute name="body" value=" " type="string"/>
-        <put-attribute name="footer" value="/WEB-INF/p/layouts/footer.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/p/shared/footer.jsp"/>
     </definition>
 
     <definition name="admin-template" extends="base-template">
@@ -39,7 +39,7 @@
     </definition>
         
     <definition name="test.page" extends="admin-template">
-        <put-attribute name="body" value="/WEB-INF/p/s2/test/test.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/p/test/test.jsp"/>
     </definition>
     
     <definition name="userHome" extends="user-template">
@@ -52,11 +52,15 @@
     
     
     <definition name="userSearch" extends="admin-template">
-      <put-attribute name="body" value="/WEB-INF/p/s2/user/search.jsp"/>
+      <put-attribute name="body" value="/WEB-INF/p/user/search.jsp"/>
     </definition>
     
-    <definition name="registration" extends="base-template">
-      <put-attribute name="body" value="This is the registration page!"/>
+    <definition name="register" extends="base-template">
+      <put-attribute name="body" value="/WEB-INF/p/register/registration.jsp"/>
+    </definition>
+    
+    <definition name="registerConfirmation" extends="base-template">
+      <put-attribute name="body" value="Registration confirmation!"/>
     </definition>
     
 </tiles-definitions>
