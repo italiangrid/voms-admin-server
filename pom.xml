@@ -16,6 +16,17 @@
 		<glite-services-namespace> http://glite.org/wsdl/services
 		</glite-services-namespace>
 	</properties>
+	<developers>
+		<developer>
+			<id>andreac</id>
+			<name>Andrea Ceccanti</name>
+			<email>andrea.ceccanti@cnaf.infn.it</email>
+			<organization>INFN CNAF</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
 	<build>
 		<!--
 			This filter is needed for the WAR creation. Unfortunately, the
@@ -43,6 +54,10 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<pluginManagement>
+			<plugins>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -55,6 +70,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>log4j.properties</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
