@@ -2,6 +2,7 @@
 @IMPORT url("text.css");
 @IMPORT url("layout.css");
 @IMPORT url("superfish.css");
+@IMPORT url("form.css");
 
 a:VISITED {
 	text-decoration: none;
