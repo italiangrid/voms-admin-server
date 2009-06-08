@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+<s:set name="theme" value="'simple'" scope="page" />
 <s:form id="search" action="search" namespace="/search">Search: 
 <s:select list="#{'user':'Users','group':'Groups','role':'Roles', 'attribute':'Attributes'}" name="searchData.type"/>
 <s:textfield id="searchField" size="15" name="searchData.text"/>
