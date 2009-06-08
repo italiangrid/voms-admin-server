@@ -124,7 +124,7 @@
 
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/p/s2/welcome.jsp</welcome-file>
+		<welcome-file>/WEB-INF/p/welcome.jsp</welcome-file>
 	</welcome-file-list>
 
 	<!-- Tiles definitions configuration -->
