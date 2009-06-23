@@ -42,7 +42,7 @@ public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
 
         // FIXME: add some exception handling here!
         List groups = (List) FindUnsubscribedGroupsOperation
-                .instance( new Long( userId ) );
+                .instance( new Long( userId ) ).execute();
 
         pageContext.setAttribute( var, groups );
 

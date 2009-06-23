@@ -43,7 +43,7 @@ public class FormatDNTag extends TagSupport {
     String dn;
 
     /** FIXME: Should allow for more characters inside the fields, to be standard compliant **/
-    private static final String regexTemplate = "=((?:(?:\\/(?!DN|DC|STREET|O|OU|CN|C|L|Email|emailAddress|UID|uid))?\\w?:?;?'?\"?`?\\s?\\.?@?-?\\(?\\)?,?)*)";
+    private static final String regexTemplate = "=((?:(?:\\/(?!DN|DC|STREET|O|OU|CN|C|L|E|Email|emailAddress|UID|uid))?\\w?:?;?'?\"?`?\\s?\\.?@?-?\\(?\\)?,?)*)";
 
     private void write( String s ) throws JspTagException {
 

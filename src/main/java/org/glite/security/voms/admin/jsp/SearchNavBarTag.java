@@ -21,9 +21,7 @@
 package org.glite.security.voms.admin.jsp;
 
 import java.net.MalformedURLException;
-import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -51,6 +49,8 @@ public class SearchNavBarTag extends TagSupport {
     String disabledLinkStyleClass;
 
     String linkStyleClass;
+    
+    String searchType;
 
     /**
      * 
@@ -66,17 +66,24 @@ public class SearchNavBarTag extends TagSupport {
     protected String buildURL( String text, int firstResult )
             throws MalformedURLException {
 
-        HashMap params = new HashMap();
+        StringBuilder url = new StringBuilder(searchURL);
 
-        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
-
-        String url = req.getContextPath() + searchURL;
-
-        params.put( "firstResults", new Integer( firstResult ) );
-        params.put( "text", text );
-
-        return TagUtils.getInstance().computeURL( pageContext, null, url, null,
-                null, null, params, null, false );
+        url.append("?searchData.firstResult="+firstResult);
+        
+        if (text != null)
+        	url.append("&searchData.text="+text);
+        
+        if (getSearchType() != null)
+        	url.append("&searchData.type="+getSearchType());
+        else
+        	url.append("&searchData.type=user");
+        
+//        params.put( "firstResult", new Integer( firstResult ) );
+//        params.put( "text", text );
+        
+//        UrlHelper.buildParametersString(params, url);
+       
+        return url.toString();
     }
 
     protected void writeLink( TagUtils t, SearchResults res, int firstResult,
@@ -260,4 +267,11 @@ public class SearchNavBarTag extends TagSupport {
         this.styleClass = styleClass;
     }
 
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 }

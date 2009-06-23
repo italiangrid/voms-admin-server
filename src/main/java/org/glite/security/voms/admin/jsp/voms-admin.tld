@@ -372,6 +372,30 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <tag>
+      <name>unassignedRoleMap</name>
+      <tag-class>org.glite.security.voms.admin.jsp.UnassignedRoleMapTag</tag-class>
+      <body-content>empty</body-content>
+      
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>java.util.Map</variable-class>
+            <scope>AT_END</scope>
+        </variable>
+      
+        <attribute>
+            <name>userId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <name>unassignedRoles</name>
         <tag-class>org.glite.security.voms.admin.jsp.UnassignedRolesTag</tag-class>
@@ -418,6 +442,7 @@
         <attribute>
             <name>userId</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
 
         <attribute>
