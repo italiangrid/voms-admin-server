@@ -27,38 +27,26 @@
 			<interceptor-stack name="authenticatedStack">
                 <interceptor-ref name="logger"/>
 				<interceptor-ref name="authnInterceptor" />
+                <interceptor-ref name="tokenSession">
+                  <param name="excludeMethods">*</param>
+                </interceptor-ref>
 				<interceptor-ref name="defaultStack" />
 				<interceptor-ref name="hibernateInterceptor" />
 			</interceptor-stack>
-		</interceptors>
+      </interceptors>
+    
+        
 		<default-interceptor-ref name="authenticatedStack" />
         
-        <default-action-ref name="login"/>
-        <action name="login">
-          <result type="redirect">
-            /home/login.action
+        <global-results>
+          <result name="invalid.token">tokenError</result>
+        </global-results>
+        
+        <action name="debug">
+          <result>
+            debug-template
           </result>
         </action>
-	</package>
+    </package>
 	
-	<package name="user" extends="base">
-	
-		<action name="User_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.user.User">
-			<result name="input">${destination}</result> 
-  			<result name="success">${destination}</result>  
-  			<result name="list">${destination}List</result>
-		</action>
-	</package>
-	
-	
-	<!-- 
-	<package name="group" extends="base" namespace="/group">
-	
-		<action name="Group_*"  method="{1}" class="org.glite.security.voms.admin.view.actions.group.Group">
-			<result name="input">${destination}</result> 
-  			<result name="success">${destination}</result>  
-  			<result name="list">${destination}List</result>
-		</action>
-	</package>
-	-->
 </struts>
