@@ -8,3 +8,13 @@ a:VISITED {
 	text-decoration: none;
 	color: inherit;
 }
+
+td.dn{
+
+	font-size: small;
+}
+
+.userRoleName, .dismissRoleBox{
+	float:left;
+	margin: 0 1em 0 1em;
+}

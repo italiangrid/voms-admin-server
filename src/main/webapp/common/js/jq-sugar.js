@@ -13,6 +13,21 @@ $(document).ready(function(){
 		$(this).parent().removeClass("focused");
 	});
 	
+	$('#createForm').hide();
+	
+	/** create user/groups/roles link magic **/
+	$('#startCreate').click( function(){
+		$(this).hide();
+		$('#createForm').show();
+	});
+	
+	$('#stopCreate').click( function(){
+		$("#createForm").hide();
+		$('#startCreate').show();
+		
+	});
+	
+	
 });
 
 

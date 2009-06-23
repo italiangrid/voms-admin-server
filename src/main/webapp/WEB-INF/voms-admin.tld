@@ -6,15 +6,29 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
     version="2.0">
 
-    <description>
-        VOMS JSP helpers tag library
-    </description>
-    
-    <tlib-version>1.2</tlib-version>
-    <short-name>voms</short-name>
-    
-    <uri>http://org.glite.security.voms.tags</uri>
-
+	<tlib-version>1.2</tlib-version>
+	<!--   <jsp-version>1.1</jsp-version> -->
+	
+	
+	<short-name>voms</short-name>
+	<uri>http://org.glite.security.voms.tags</uri>
+ 	<tag>
+        <name>pageCustomization</name>
+        <tag-class>org.glite.security.voms.admin.jsp.PageCustomizationTag</tag-class>
+        
+        <body-content>empty</body-content>
+        <attribute>
+            <name>pageName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        <attribute>
+            <name>styleClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <name>version</name>
         <tag-class>org.glite.security.voms.admin.jsp.VersionTag</tag-class>
@@ -358,6 +372,30 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <tag>
+      <name>unassignedRoleMap</name>
+      <tag-class>org.glite.security.voms.admin.jsp.UnassignedRoleMapTag</tag-class>
+      <body-content>empty</body-content>
+      
+        <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>java.util.Map</variable-class>
+            <scope>AT_END</scope>
+        </variable>
+      
+        <attribute>
+            <name>userId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <name>unassignedRoles</name>
         <tag-class>org.glite.security.voms.admin.jsp.UnassignedRolesTag</tag-class>
@@ -404,6 +442,7 @@
         <attribute>
             <name>userId</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
 
         <attribute>
