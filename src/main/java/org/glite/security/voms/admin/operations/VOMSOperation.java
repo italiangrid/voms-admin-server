@@ -31,7 +31,5 @@ public interface VOMSOperation {
     
     public Map getRequiredPermissions();
     
-    public boolean isAllowed();
-    
 
 }

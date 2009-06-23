@@ -33,7 +33,7 @@ public class BaseSearchOperation extends BaseVoReadOperation implements SearchOp
 			
 			String searchType = searchData.getType().toLowerCase();
 			
-			if (searchData.getText().trim().equals(""))
+			if (searchData.getText()!= null && searchData.getText().trim().equals(""))
 				searchData.setText(null);
 			
 			if (searchType.equals("user"))

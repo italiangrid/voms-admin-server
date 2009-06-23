@@ -106,7 +106,7 @@ public abstract class BaseVomsOperation implements VOMSOperation{
 		__requiredPermissions = new HashMap();
 	}
 	
-	public final boolean isAllowed(){
+	boolean isAllowed(){
 		
         CurrentAdmin admin = CurrentAdmin.instance();
         
