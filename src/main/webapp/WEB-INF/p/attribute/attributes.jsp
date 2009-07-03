@@ -9,7 +9,7 @@
             permission="ATTRIBUTES_READ|ATTRIBUTES_WRITE"/>
   
   <s:if test="#attr.canCreate">
-    <s:url action="create-form" namespace="/attribute" var="manageAttributeURL"/>
+    <s:url action="create" namespace="/attribute" var="manageAttributeURL"  method="input"/>
     <s:a href="%{manageAttributeURL}">Manage attribute classes</s:a>
   </s:if>
 </div>

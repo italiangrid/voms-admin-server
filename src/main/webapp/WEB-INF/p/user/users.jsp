@@ -31,7 +31,7 @@ No users found in this VO.
 
         <td width="95%">
           <div class="userDN">
-            <s:url action="load" namespace="/user" var="editURL">
+            <s:url action="edit" namespace="/user" var="editURL">
               <s:param name="userId" value="id"/>
             </s:url>
             <s:a href="%{editURL}">

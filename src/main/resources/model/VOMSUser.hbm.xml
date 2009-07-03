@@ -61,7 +61,7 @@
           <one-to-many class="org.glite.security.voms.admin.model.AUPAcceptanceRecord"/>
         </set>
         
-        <set name="tasks" lazy="false" inverse="true">
+        <set name="tasks" lazy="false" inverse="true" cascade="all-delete-orphan">
           <key column="usr_id" on-delete="cascade"/>
           <one-to-many class="org.glite.security.voms.admin.model.task.Task"/>        
         </set>

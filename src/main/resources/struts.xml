@@ -23,16 +23,17 @@
 				class="org.glite.security.voms.admin.view.interceptors.AuthenticatedAccessInterceptor" />
 			<interceptor name="hibernateInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
-				
+			
 			<interceptor-stack name="authenticatedStack">
                 <interceptor-ref name="logger"/>
 				<interceptor-ref name="authnInterceptor" />
                 <interceptor-ref name="tokenSession">
                   <param name="excludeMethods">*</param>
                 </interceptor-ref>
-				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="paramsPrepareParamsStack" />
 				<interceptor-ref name="hibernateInterceptor" />
 			</interceptor-stack>
+      
       </interceptors>
     
         

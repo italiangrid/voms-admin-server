@@ -24,6 +24,14 @@
           unique="false"
           
           />
+          
+        <property 
+          name="reacceptancePeriod"
+          type="int"
+          not-null="true"
+          unique="false"
+          />
+          
 		
         <set name="versions" sort="natural" cascade="all-delete-orphan" inverse="true">
           <key column="aup_id" on-delete="cascade"/>

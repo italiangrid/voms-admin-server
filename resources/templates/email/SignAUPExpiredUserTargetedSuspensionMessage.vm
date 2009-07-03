@@ -1,0 +1,15 @@
+Dear $recipient, your membership of VO $voName has been suspended
+since you failed to sign either the GRID or VO Acceptable Usage Policy 
+(AUP) in time.
+
+Your membership is still maintained in the VO $voName database,
+however you will not be able to get VOMS credentials for such
+VO until you explicitly accept the VO AUP.
+
+The VO AUP could be accepted by pointing your browser to the
+following URL:
+  
+$aupAcceptanceURL
+
+Your sincerely,
+Voms-Admin registration service for VO $voName

@@ -28,7 +28,7 @@
   </li>
   
   <li>
-    <a href="#ap">AUPs</a>
+    <a href="<s:url action="load" namespace="/aup"/>">AUPs</a>
   </li>
   
   <li class="bottom-menu-item">

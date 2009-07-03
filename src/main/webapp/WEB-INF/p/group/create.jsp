@@ -4,13 +4,15 @@
 <div class="createTab">
   <voms:hasPermissions var="canCreate" 
             context="/${voName}" 
-            permission="CONTAINER_READ|CONTAINER_WRITE"/>
+            permission="CONTAINER_READ|CONTAINER_WRITE"
+            />
   
   <s:if test="#attr.canCreate">
     
     <s:form 
       action="create"
       namespace="/group"
+      validate="true"
     >
       
       <s:select list="#request['voGroups']" name="parentGroupName" label="Parent group"/>

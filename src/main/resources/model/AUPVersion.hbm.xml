@@ -29,13 +29,30 @@
         <property 
           name="url"
           type="string"
-          not-null="true"/>     
+          not-null="false"/>     
             
+        <property 
+          name="text"
+          type="string"
+          not-null="false"
+          />    
+        
         <property 
           name="creationTime"
           type="timestamp"
           not-null="true"
         />
+        
+        <property 
+          name="lastForcedReacceptanceTime"
+          type="timestamp"
+          not-null="false"
+        />
+        
+        <property 
+          name="active"
+          type="boolean"
+          not-null="true"/>
 		
 	</class>
 

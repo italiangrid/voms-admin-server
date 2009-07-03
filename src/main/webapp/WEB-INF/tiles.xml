@@ -66,9 +66,15 @@
       <put-attribute name="content" value="/WEB-INF/p/user/users.jsp"/>
     </definition>
     
-    <definition name="userDetail" extends="template">
+    <definition name="userDetail" extends="template" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/userDetail.jsp"/>
     </definition>
+    
+    <definition name="addCertificate" extends="template" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/addCertificate.jsp"/>
+    </definition>
+    
+    
     
     <definition name="groups" extends="template">
       <put-attribute name="content" value="/WEB-INF/p/group/groups.jsp"/>
@@ -86,13 +92,28 @@
       <put-attribute name="content" value="/WEB-INF/p/role/create.jsp"/>
     </definition>
     
+    <definition name="aups" extends="template">
+      <put-attribute name="content" value="/WEB-INF/p/aup/aups.jsp"/>
+    </definition>
+    
+    <definition name="aupVersionDetail" extends="template">
+      <put-attribute name="content" value="/WEB-INF/p/aup/aupVersionDetail.jsp"/>
+    </definition>
+    
+    <definition name="addAupVersion" extends="template">
+      <put-attribute name="content" value="/WEB-INF/p/aup/addAupVersion.jsp"/>
+    </definition>
+    
+    <definition name="signAup" extends="template">
+      <put-attribute name="content" value="/WEB-INF/p/aup/signAup.jsp"/>
+    </definition>
     
     <definition name="attributes" extends="template">
       <put-attribute name="content" value="/WEB-INF/p/attribute/attributes.jsp"/>
     </definition>
     
-    <definition name="attributeEdit" extends="template" preparer="org.glite.security.voms.admin.view.preparers.attribute.ListAttributeClassesPreparer">
-      <put-attribute name="content" value="/WEB-INF/p/attribute/edit.jsp"/>
+    <definition name="attributeManage" extends="template" preparer="org.glite.security.voms.admin.view.preparers.attribute.ListAttributeClassesPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/attribute/manage.jsp"/>
     </definition>
     
     <definition name="register" extends="base-template">

@@ -8,7 +8,7 @@
             permission="CONTAINER_READ|CONTAINER_WRITE"/>
   
   <s:if test="#attr.canCreate">
-    <s:url action="create-form" namespace="/role" var="createRoleURL"/>
+    <s:url action="create" namespace="/role" var="createRoleURL" method="input"/>
     <s:a href="%{createRoleURL}">New role</s:a>
   </s:if>
 </div>

@@ -23,7 +23,6 @@
 <%@ taglib uri="http://org.glite.security.voms.tags" prefix="voms"%>
 <%@ taglib uri="http://struts.apache.org/tags-html-el" prefix="html"%>
 
-
 <voms:authorized permission="ATTRIBUTES_WRITE" context="vo">
 	<c:choose>
 		<c:when test="${!empty attributeDescriptions}">
