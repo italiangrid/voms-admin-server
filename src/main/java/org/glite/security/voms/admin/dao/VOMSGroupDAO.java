@@ -538,12 +538,15 @@ public class VOMSGroupDAO {
 
     }
 
-	public Object getMemberNames(VOMSGroup g) {
+	public Object getMemberSubjectStrings(VOMSGroup g) {
 		
 		if (g == null)
 			throw new NullArgumentException("Cannot get members of a null group!");
 		
-		String query = "select distinct m.user.dn from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null";
+		// String query = "select distinct m.user.dn from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null";
+		
+		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
+		
         return HibernateFactory.getSession().createQuery( query ).setEntity(
                 "group", g ).list();
 	}

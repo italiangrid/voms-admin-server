@@ -8,7 +8,6 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.operations.roles.CreateRoleOperation;
 import org.glite.security.voms.admin.operations.roles.DeleteRoleOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -16,7 +15,6 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
 	@Result(name=BaseAction.SUCCESS,location="/role/search.action", type="redirect"),
-	@Result(name=BaseAction.CREATE_FORM, location="roleCreate"),
 	@Result(name=BaseAction.INPUT, location="roleCreate")
 })
 
@@ -33,19 +31,6 @@ public class RoleActions extends BaseAction {
 	Long roleId;
 	String roleName;
 	
-	
-	@Action( value="create", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "*"})})
-	public String create() throws Exception{
-		
-		log.debug(String.format("roleId: %d, roleName: %s", getRoleId(), getRoleName()));
-		
-		
-		VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName()).execute();
-		if (r != null)
-			addActionMessage(getText("confirm.role.creation", r.getName()));
-	
-		return SUCCESS;
-	}
 	
 	@Action(value="delete", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "*"})})
 	public String delete() throws Exception{

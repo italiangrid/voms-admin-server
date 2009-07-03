@@ -63,6 +63,12 @@ public class SetUserAttributeOperation extends BaseVomsOperation {
     }
 
     public static SetUserAttributeOperation instance( VOMSUser u, String aName,
+            String aValue ) {
+
+        return new SetUserAttributeOperation( u, aName, null, aValue );
+    }
+    
+    public static SetUserAttributeOperation instance( VOMSUser u, String aName,
             String aDesc, String aValue ) {
 
         return new SetUserAttributeOperation( u, aName, aDesc, aValue );

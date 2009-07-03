@@ -13,206 +13,161 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
 
 @Entity
-@Table(name="task_log_record")
-public class LogRecord implements Serializable, Comparable <LogRecord>{
+@Table(name = "task_log_record")
+public class LogRecord implements Serializable, Comparable<LogRecord> {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue
-    Long id;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    TaskStatus event;
-    
-    @Column(nullable=false)
-    Date date;
-    
-    @ManyToOne
-    @JoinColumn(name="task_id", nullable=false)
-    Task task;
-    
-    @ManyToOne
-    @JoinColumn(name="admin_id")
-    VOMSAdmin admin;
-    
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    VOMSUser user;
-    
-    
-    public LogRecord() {
+	private static final long serialVersionUID = 1L;
 
-        // TODO Auto-generated constructor stub
-    }
+	@Id
+	@GeneratedValue
+	Long id;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	TaskStatus event;
 
-    
-    /**
-     * @return the id
-     */
-    public Long getId() {
-    
-        return id;
-    }
+	@Column(nullable = false)
+	Date date;
 
+	@ManyToOne
+	@JoinColumn(name = "task_id", nullable = false)
+	Task task;
 
-    
-    /**
-     * @return the event
-     */
-    public TaskStatus getEvent() {
-    
-        return event;
-    }
+	String adminDn;
 
+	String userDn;
 
-    
-    /**
-     * @return the date
-     */
-    public Date getDate() {
-    
-        return date;
-    }
+	public LogRecord() {
 
+		// TODO Auto-generated constructor stub
+	}
 
-    
-    /**
-     * @return the admin
-     */
-    public VOMSAdmin getAdmin() {
-    
-        return admin;
-    }
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
 
+		return id;
+	}
 
-    
-    /**
-     * @return the user
-     */
-    public VOMSUser getUser() {
-    
-        return user;
-    }
+	/**
+	 * @return the event
+	 */
+	public TaskStatus getEvent() {
 
+		return event;
+	}
 
-    
-    /**
-     * @param id the id to set
-     */
-    public void setId( Long id ) {
-    
-        this.id = id;
-    }
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
 
+		return date;
+	}
 
-    
-    /**
-     * @param event the event to set
-     */
-    public void setEvent( TaskStatus event ) {
-    
-        this.event = event;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
 
+		this.id = id;
+	}
 
-    
-    /**
-     * @param date the date to set
-     */
-    public void setDate( Date date ) {
-    
-        this.date = date;
-    }
+	/**
+	 * @param event
+	 *            the event to set
+	 */
+	public void setEvent(TaskStatus event) {
 
+		this.event = event;
+	}
 
-    
-    /**
-     * @param admin the admin to set
-     */
-    public void setAdmin( VOMSAdmin admin ) {
-    
-        this.admin = admin;
-    }
+	/**
+	 * @param date
+	 *            the date to set
+	 */
+	public void setDate(Date date) {
 
+		this.date = date;
+	}
 
-    
-    /**
-     * @param user the user to set
-     */
-    public void setUser( VOMSUser user ) {
-    
-        this.user = user;
-    }
+	public int compareTo(LogRecord o) {
 
-    
-    
+		return new CompareToBuilder().
+			append(task,o.task)
+			.append(date, o.date).append(event, o.event).toComparison();
+	}
 
-    public int compareTo( LogRecord o ) {
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
 
-        if (o == null) 
-            return 1;
-        
-        return - o.getDate().compareTo( o.getDate() );
-    }
+		return task;
+	}
 
+	/**
+	 * @param task
+	 *            the task to set
+	 */
+	public void setTask(Task task) {
 
+		this.task = task;
+	}
 
-    
-    /**
-     * @return the task
-     */
-    public Task getTask() {
-    
-        return task;
-    }
+	public boolean equals(Object other) {
 
+		if (this == other)
+			return true;
+		if (!(other instanceof LogRecord))
+			return false;
 
+		if (other == null)
+			return false;
 
-    
-    /**
-     * @param task the task to set
-     */
-    public void setTask( Task task ) {
-    
-        this.task = task;
-    }
-    
-    
-    public boolean equals( Object other ) {
+		LogRecord that = (LogRecord) other;
 
-        if ( this == other )
-            return true;
-        if ( !( other instanceof LogRecord ) )
-            return false;
+		EqualsBuilder builder = new EqualsBuilder();
 
-        if ( other == null )
-            return false;
+		return builder.append(task, that.task).append(date, that.date).append(
+				event, that.event).isEquals();
 
-        LogRecord that = (LogRecord) other;
-        
-        EqualsBuilder builder = new EqualsBuilder();
-        
-        return builder.append( task, that.task ).append( date, that.date ).append( event, that.event).append(user, that.user).append(admin, that.admin).isEquals();
-        
-    }
-    
-    @Override
-    public int hashCode() {
-        
-        return new HashCodeBuilder(17,35).append( task ).append( date ).append(event).append( user ).append(admin).toHashCode();
-        
-    }
+	}
+
+	@Override
+	public int hashCode() {
+
+		return new HashCodeBuilder(17, 35).append(task).append(date).append(
+				event).toHashCode();
+
+	}
+
+	public String getAdminDn() {
+		return adminDn;
+	}
+
+	public void setAdminDn(String adminDn) {
+		this.adminDn = adminDn;
+	}
+
+	public String getUserDn() {
+		return userDn;
+	}
+
+	public void setUserDn(String userDn) {
+		this.userDn = userDn;
+	}
+	
+	
 }

@@ -34,6 +34,9 @@ import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
 import org.glite.security.voms.admin.database.AttributeAlreadyExistsException;
@@ -44,7 +47,10 @@ import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserCreatedEvent;
+import org.glite.security.voms.admin.event.user.UserDeletedEvent;
+import org.glite.security.voms.admin.event.user.UserSignedAUPEvent;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.model.AUPVersion;
@@ -56,13 +62,13 @@ import org.glite.security.voms.admin.model.VOMSMapping;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
 
 
 
-public class VOMSUserDAO {
+public class VOMSUserDAO{
 
 	private static final Log log = LogFactory.getLog(VOMSUserDAO.class);
 
@@ -77,46 +83,76 @@ public class VOMSUserDAO {
 	}
 
 	public void acceptAUP(VOMSUser user, AUP aup ){
-	    if ( user == null )
+	    
+		if ( user == null )
             throw new NullArgumentException( "user cannot be null!" );
 	    
 	    if ( aup == null )
             throw new NullArgumentException( "aup cannot be null!" );
 	    
-	    AUPVersion aupVersion = aup.getCurrentVersion();
+	    AUPVersion aupVersion = aup.getActiveVersion();
 	    
 	    if (aupVersion == null)
 	        throw new NotFoundException("No registered version found for AUP '"+aup.getName()+"'.");
 	    
-	    if (!user.hasSignedAUP( aupVersion )){
+	    AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
+	    
+	    if (r == null){
 	        
 	        AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
 	        aupRecord.setLastAcceptanceDate( new Date() );
 	        
 	        user.getAupAcceptanceRecords().add( aupRecord );
-	        HibernateFactory.getSession().update( user );
-	    }else
-	        throw new AlreadyExistsException("User has already accepted this aup!");
+	        // HibernateFactory.getSession().update( user );
+	    
+	    }else{
+	    	
+	    	// User has signed but has been prompted to resign
+        	AUPAcceptanceRecord aupRecord = user.getAUPAccceptanceRecord(aupVersion);
+        	aupRecord.setLastAcceptanceDate(new Date());
+        	
+	    }
+	        
+	    SignAUPTask pendingTask = user.getPendingSignAUPTask(aupVersion.getAup());
+	    
+	    if (pendingTask != null)
+	    	pendingTask.setCompleted();
+	    
+	    EventManager.dispatch(new UserSignedAUPEvent(user,aupVersion.getAup()));
 	    
 	}
 
-	public void acceptAUPVersion(VOMSUser user, AUPVersion aupVersion){
-	    
-	    if ( user == null )
-            throw new NullArgumentException( "user cannot be null!" );
-	    
-	    if ( aupVersion == null )
-            throw new NullArgumentException( "aupVersion cannot be null!" );
-	    
-	    if (!user.hasSignedAUP( aupVersion )){
-            AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
-            aupRecord.setLastAcceptanceDate( new Date() );
-            
-            user.getAupAcceptanceRecords().add( aupRecord );
-            HibernateFactory.getSession().update( user );
-        }else
-            throw new AlreadyExistsException("User has already accepted this aup!");
-        
+	
+	public List<VOMSUser> getUsersWithPendingSignAUPTask(AUP aup){
+		
+		String queryString = "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
+		
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+		q.setEntity("aup", aup);
+		
+		return q.list();
+		
+	}
+	
+	public List<VOMSUser> getGridAUPFailingUsers(){
+		
+		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+		AUP gridAUP = aupDAO.getGridAUP();
+		
+		AUPVersion gridAUPActiveVersion = gridAUP.getActiveVersion();
+		
+		ArrayList<VOMSUser> result = new ArrayList<VOMSUser>();
+		
+		// Get users First that do not have an acceptance record for the active aup version and
+		// those that have an expired aup acceptance record
+		
+		String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty"; 
+		
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+		
+		
+		return q.list();
+		
 	}
 
 	public void addCertificate(VOMSUser u, String dn, String caDn){
@@ -386,6 +422,8 @@ public class VOMSUserDAO {
 
 		// HibernateFactory.getSession().save(usr);
 		HibernateFactory.getSession().save(voGroup);
+		
+		EventManager.dispatch(new UserCreatedEvent(usr));
 		return usr;
     	
     }
@@ -444,12 +482,17 @@ public class VOMSUserDAO {
     public void delete(VOMSUser u) {
 
 		log.debug("Deleting user \"" + u + "\".");
-		// Remove user
-//		if (getByDNandCA(u.getDn(), u.getCa().getDn()) == null)
-//			throw new NoSuchUserException("User \"" + u
-//					+ "\" is not defined in org.glite.security.voms.admin.database!");
-
-		removeFromGroup(u, VOMSGroupDAO.instance().getVOGroup());
+		
+		u.getCertificates().clear();
+		u.getMappings().clear();
+		u.getAttributes().clear();
+		u.getAupAcceptanceRecords().clear();
+		u.getPersonalInformations().clear();
+		u.getTasks().clear();
+		
+		HibernateFactory.getSession().delete(u);
+		
+		EventManager.dispatch(new UserDeletedEvent(u));
 
 	}
     
@@ -702,31 +745,13 @@ public class VOMSUserDAO {
 
 		log.debug("Removing user \"" + u + "\" from group \"" + g + "\".");
 
-//		if (getByDNandCA(u.getDn(), u.getCa().getDn()) == null)
-//			throw new NoSuchUserException("User \"" + u
-//					+ "\" is not defined in org.glite.security.voms.admin.database.");
-
 		if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
 			throw new NoSuchGroupException("Group \"" + g
 					+ "\" is not defined in database.");
 
 		u.removeFromGroup(g);
-
-		if (!g.isRootGroup()) {
-
-			HibernateFactory.getSession().save(u);
-
-		} else {
-
-			// Root group membership removal, let's delete the user as well.
-			log
-					.debug("Deleting user from database, since it is being removed from the VO root group.");
-
-            u.getAttributes().clear();
-			HibernateFactory.getSession().delete(u);
-
-			
-		}
+		
+		HibernateFactory.getSession().save(u);
 	}
 	
 	public SearchResults search(
@@ -802,4 +827,5 @@ public class VOMSUserDAO {
 		return u;
 
 	}
+	
 }

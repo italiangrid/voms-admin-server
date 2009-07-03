@@ -159,6 +159,10 @@ public abstract class EmailNotification {
         int smtpServerPort = VOMSConfiguration.instance().getInt(
                 VOMSConfiguration.SERVICE_SMTP_SERVER_PORT, 25 );
 
+        String userName = VOMSConfiguration.instance().getString(VOMSConfiguration.SERVICE_EMAIL_ACCOUNT_USERNAME, null);
+        String userPassword = VOMSConfiguration.instance().getString(VOMSConfiguration.SERVICE_EMAIL_ACCOUNT_PASSWORD, null);
+        boolean useTLS = VOMSConfiguration.instance().getBoolean(VOMSConfiguration.SERVICE_EMAIL_USE_TLS, false);
+        
         deliveryAttemptCount++;
         try {
 
@@ -168,6 +172,12 @@ public abstract class EmailNotification {
                     + VOMSConfiguration.instance().getVOName() );
             e.setSubject( subject );
             e.setMsg( message );
+            
+            if (userName!= null && userPassword != null)
+            	e.setAuthentication(userName, userPassword);
+            	
+            e.setTLS(useTLS);
+            	
 
             if ( recipientList.isEmpty() )
                 throw new VOMSNotificationException( "Empty reicipient list!" );

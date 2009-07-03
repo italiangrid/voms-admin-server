@@ -36,9 +36,9 @@ public class ListMemberNamesOperation extends BaseMemberhipReadOperation {
 
 	protected Object doExecute() {
 		if (!__context.isGroupContext())
-            return VOMSRoleDAO.instance().getMemberNames(__context.getGroup(),__context.getRole());
+            return VOMSRoleDAO.instance().getMemberSubjectStrings(__context.getGroup(),__context.getRole());
 
-		return VOMSGroupDAO.instance().getMemberNames(__context.getGroup());
+		return VOMSGroupDAO.instance().getMemberSubjectStrings(__context.getGroup());
 		
 		
 	}

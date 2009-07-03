@@ -31,6 +31,7 @@ public abstract class VelocityEmailNotification extends EmailNotification {
 
     private String templateFile;
     
+    protected String subjectPrefix = "[VOMS Admin]";
     
     public String getTemplateFile() {
     

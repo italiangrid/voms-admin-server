@@ -20,6 +20,8 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.common.tasks;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +36,7 @@ import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
@@ -223,6 +226,26 @@ public class DatabaseSetupTask extends TimerTask {
             
             ttDAO.makePersistent( signAupTaskType );
             ttDAO.makePersistent( approveUserRequestTaskType );
+            
+            // Setup Grid and VO AUPs
+            String gridAUPUrlString = VOMSConfiguration.instance().getString(VOMSConfiguration.GRID_AUP_URL, VOMSConfiguration.instance().getDefaultGridAUPURL());
+            String voAUPUrlString = VOMSConfiguration.instance().getString(VOMSConfiguration.VO_AUP_URL, VOMSConfiguration.instance().getDefaultVOAUPURL());
+            
+            try {
+            	
+            	URL gridAUPURL = new URL(gridAUPUrlString);
+            	URL voAUPURL = new URL(voAUPUrlString);
+            	
+            	AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+            	
+            	aupDAO.createGridAUP("...", "1.0", gridAUPURL);
+            	aupDAO.createVOAUP("...", "1.0", voAUPURL);
+			
+            
+            } catch (MalformedURLException e) {
+				log.error("Error parsing AUP url: "+e.getMessage());
+				log.error("Skipping creation of AUPs");
+			}
             
             HibernateFactory.commitTransaction();
 

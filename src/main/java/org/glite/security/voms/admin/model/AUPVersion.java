@@ -1,10 +1,13 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 public class AUPVersion implements Serializable, Comparable <AUPVersion> {
 
@@ -23,11 +26,17 @@ public class AUPVersion implements Serializable, Comparable <AUPVersion> {
 
     String url;
 
+    String text;
+    
     Date creationTime;
+    
+    Date lastForcedReacceptanceTime;
+    
+    Boolean active;
     
     public AUPVersion() {
 
-        // TODO Auto-generated constructor stub
+        setActive(false);
     }
 
     public boolean equals( Object other ) {
@@ -159,4 +168,83 @@ public class AUPVersion implements Serializable, Comparable <AUPVersion> {
         return getCreationTime().compareTo( o.getCreationTime() );
     }
 
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+    
+	
+	public String getURLContent(){
+		
+		if (getUrl() == null)
+			return null;
+		
+		
+			try {
+				
+				URL daURL = new URL(getUrl());
+				URLConnection conn = daURL.openConnection();
+				
+				conn.connect();
+				
+				String contentType = conn.getContentType();
+				
+				if (!contentType.startsWith("text")){
+					log.error("Unsupported content type for AUP: "+contentType);
+					return null;
+				
+				}else{
+					
+					//FIXME: leverage CONTENT length, 
+					StringBuilder text = new StringBuilder();
+					
+					int c;
+					// FIXME: implement more efficient AUP fetching
+					while ((c = conn.getInputStream().read())!= -1){
+						text.append((char)c);
+					}
+					
+					return text.toString();
+					
+				}
+			
+			
+			} catch (Exception e) {
+				log.error("Error in opening AUP version url: "+e.getMessage());
+				if (log.isDebugEnabled())
+					log.error("Error in opening AUP version url: "+e.getMessage(),e);
+				return null;
+			}
+			
+	}
+	
+	
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Date getLastForcedReacceptanceTime() {
+		return lastForcedReacceptanceTime;
+	}
+
+	public void setLastForcedReacceptanceTime(Date lastForcedReacceptanceTime) {
+		this.lastForcedReacceptanceTime = lastForcedReacceptanceTime;
+	}
+	
+	public Date lastUpdateTime(){
+		
+		if (getLastForcedReacceptanceTime()!= null)
+			return getLastForcedReacceptanceTime();
+		else return getCreationTime();
+	}
+	
+	
+	
 }

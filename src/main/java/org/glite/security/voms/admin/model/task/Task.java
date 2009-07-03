@@ -54,8 +54,9 @@ public abstract class Task {
     @Column(nullable=false)
     TaskStatus status;
     
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="task")
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="task")
     @Sort(type=SortType.NATURAL)
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     SortedSet <LogRecord> logRecords = new TreeSet <LogRecord>();
     
     @ManyToOne
@@ -186,11 +187,13 @@ public abstract class Task {
     public void setCompleted(){
         setCompletionDate( new Date() );
         setStatus( TaskStatus.COMPLETED );
+        
+        addLogRecord(getCompletionDate());
     }
     
     public void SetExpired(){
         setStatus( TaskStatus.EXPIRED );
-        
+        addLogRecord(new Date());
     }
     
     
@@ -290,6 +293,22 @@ public abstract class Task {
         this.admin = admin;
     }
     
+    protected void addLogRecord(Date d){
+    	
+    	LogRecord r = new LogRecord();
+    	
+    	r.setDate(d);
+    	r.setEvent(getStatus());
+    	r.setTask(this);
+    	
+    	if (getUser() != null)
+    		r.setUserDn(getUser().getDefaultCertificate().getSubjectString());
+    	if (getAdmin() != null)
+    		r.setAdminDn(getAdmin().getDn());
+    	
+    	getLogRecords().add(r);
+    	
+    }
     
     
 }

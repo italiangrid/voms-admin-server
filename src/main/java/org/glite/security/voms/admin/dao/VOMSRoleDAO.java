@@ -430,7 +430,7 @@ public class VOMSRoleDAO {
         return new VOMSRoleDAO();
     }
 
-	public Object getMemberNames(VOMSGroup g, VOMSRole r) {
+	public Object getMemberSubjectStrings(VOMSGroup g, VOMSRole r) {
 		if ( g == null )
             throw new IllegalArgumentException(
                     "group parameter must be non-null!" );
@@ -439,7 +439,8 @@ public class VOMSRoleDAO {
             throw new IllegalArgumentException(
                     "role parameter must be non-null!" );
         
-        String query = "select distinct m.user.dn from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role = :role";
+        String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
+        
         return HibernateFactory.getSession().createQuery( query ).setEntity(
                 "group", g ).setEntity( "role", r ).list();
 	}

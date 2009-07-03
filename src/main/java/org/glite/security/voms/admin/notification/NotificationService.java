@@ -20,117 +20,115 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.notification;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.request.VOMSNotificationException;
 
 public class NotificationService {
 
-    private static final Log log = LogFactory
-            .getLog( NotificationService.class );
+	private static final Log log = LogFactory.getLog(NotificationService.class);
 
-    private static NotificationService singleton = null;
+	private static NotificationService singleton = null;
 
-    private List <EmailNotification> outgoing = new Vector <EmailNotification>();
+	private LinkedBlockingQueue<EmailNotification> outgoingMessages = new LinkedBlockingQueue<EmailNotification>();
 
-    private List <EmailNotification> undelivered = new Vector <EmailNotification>();
+	ExecutorService executorService;
 
-    private Object lock = new Object();
+	int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt("voms.noification.max_delivery_attempt_count",5);
+	
+	long sleepTimeBeforeRetry = 30; 
+	
+	private NotificationService() {
+		
+		executorService = Executors.newSingleThreadExecutor();
+		executorService.submit(new NotificationRunner(outgoingMessages));
 
-    private NotificationService() {
+	}
 
-    }
+	public static NotificationService instance() {
 
-    public static NotificationService instance() {
+		if (singleton == null)
+			singleton = new NotificationService();
 
-        if ( singleton == null )
-            singleton = new NotificationService();
+		return singleton;
+	}
 
-        return singleton;
-    }
 
-    
-    
-    public void scheduledSend(EmailNotification n){
-        
-        log
-        .debug( "Adding notification '" + n
-                + "' to outgoing message queue." );
-        outgoing.add( n );
-    }
-    
-    
-    public void immediateSend( EmailNotification n ) {
+	
+	public void stop(){
+		
+		log.info("Shutting down notification service");
+		executorService.shutdown();
+		
+	}
 
-        log
-                .debug( "Adding notification '" + n
-                        + "' to outgoing message queue." );
-        outgoing.add( n );
-        deliverNotifications();
+	public void send(EmailNotification n) {
 
-    }
-    
+		log.debug("Adding notification '" + n + "' to outgoing message queue.");
+		outgoingMessages.add(n);
 
-    public void deliverNotifications() {
+	}
+	
+	class NotificationRunner implements Runnable{
+		
+		final LinkedBlockingQueue<EmailNotification> outgoingQueue;
+		
+		public NotificationRunner(LinkedBlockingQueue<EmailNotification> outgoingQueue) {
+			this.outgoingQueue = outgoingQueue;
+		}
+		
+		
+		public void run() {
+			for (;;){
+				
+				boolean deliveryHadErrors = false;
+				
+				try{
+					
+					EmailNotification n = outgoingQueue.take();
+					log.debug("Fetched outgoing message "+n);
+					
+					try{
+						n.send();
+						deliveryHadErrors = false;
+						log.debug("Notification '"+n+"' delivered succesfully.");
+					
+					}catch(VOMSNotificationException e){
+					
+						deliveryHadErrors = true;
+						log.error("Error dispatching email notification '"+n+"': "+e.getCause().getMessage());
+						
+						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount){
+							outgoingQueue.put(n);
+						}
+						else
+							log.warn("Discarding notification '"+n+"' after "+n.getDeliveryAttemptCount()+" failed delivery attempts.");
+						
+					}catch(Throwable t){
+						
+						log.error("Error dispatching email notification '"+n+"': "+t.getMessage());
+						if (log.isDebugEnabled())
+							log.error("Error dispatching email notification '"+n+"': "+t.getMessage(),t);
+						
+						deliveryHadErrors = true;
+						
+					}
+					
+					if (deliveryHadErrors && !outgoingQueue.isEmpty())
+						TimeUnit.SECONDS.sleep(sleepTimeBeforeRetry);
+						
+				}catch (InterruptedException e){
+					
+				}
+			}
+			
+		}
+	}
 
-        synchronized ( lock ) {
-
-            for ( EmailNotification n : undelivered ) {
-
-                try {
-
-                    log.warn( "Trying to deliver undelivered notification '"
-                            + n + "'." );
-                    log.debug( "Delivery attempt #:"
-                            + n.getDeliveryAttemptCount() + 1 );
-                    n.send();
-
-                    log.info( "Notification '" + n + "' delivered succesfully" );
-
-                    undelivered.remove( n );
-
-                } catch ( VOMSNotificationException e ) {
-
-                    log.error( "Error sending notification '" + n + "': "
-                            + e.getMessage() );
-                    if ( log.isDebugEnabled() )
-                        log.error( "Error sending notification '" + n + "': "
-                                + e.getMessage(), e );
-
-                    outgoing.remove( n );
-                    undelivered.add( n );
-
-                }
-
-            }
-
-            for ( EmailNotification n : outgoing ) {
-
-                try {
-
-                    log.info( "Sending notification '" + n + "'." );
-                    n.send();
-                    log.info( "Notification '" + n + "' delivered succesfully" );
-                    outgoing.remove( n );
-
-                } catch ( VOMSNotificationException e ) {
-
-                    log.error( "Error sending notification '" + n + "': "
-                            + e.getMessage() );
-                    if ( log.isDebugEnabled() )
-                        log.error( "Error sending notification '" + n + "': "
-                                + e.getMessage(), e );
-
-                    outgoing.remove( n );
-                    undelivered.add( n );
-
-                }
-
-            }
-        }
-
-    }
 }

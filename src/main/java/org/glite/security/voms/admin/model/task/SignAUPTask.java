@@ -38,6 +38,9 @@ public class SignAUPTask extends Task implements Serializable {
         this.expiryDate = expiryDate;
         creationDate = new Date(  );
         status = TaskStatus.CREATED;
+       
+        addLogRecord(getCreationDate());
+        
         
     }
     /**
@@ -60,7 +63,7 @@ public class SignAUPTask extends Task implements Serializable {
     @Override
     public String toString() {
     
-        return String.format( "SignAUPTask[id:%d, type:%s, aup:%s]", getId(),getType(),getAup());
+        return String.format( "SignAUPTask[id:%d, type:%s, aup:%s, user:%s, expires:%s]", getId(),getType(),getAup(), getUser().toString(), getExpiryDate());
         
     }
 }

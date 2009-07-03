@@ -3,9 +3,14 @@
  */
 package org.glite.security.voms.admin.view.actions;
 
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.interceptor.validation.SkipValidation;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
 import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
@@ -13,6 +18,7 @@ import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -32,11 +38,11 @@ public class BaseAction extends ActionSupport {
 	public static final String INPUT_DN_REGEX = "^[^<>&;]*$";
 	
 	public static final String SEARCH = "search";
-	public static final String LOAD = "load";
 	public static final String LIST = "list";
 	public static final String EDIT = "edit";
 	
-	public static final String CREATE_FORM = "create-form";
+	public static final String CREATE = "create";
+	public static final String SAVE = "save";
 	
 	
 	protected VOMSUser userById(Long id){
@@ -76,26 +82,21 @@ public class BaseAction extends ActionSupport {
 		
 		return (VOMSRole)FindRoleOperation.instance(name).execute();
 	}
-	
-	@Action(value=INPUT)
-	public String input() throws Exception{
+
+
+	protected String getBaseURL(){
 		
-		return INPUT;
-	}
-	
-	@SkipValidation
-	@Action(value=CREATE_FORM)
-	public String createForm() throws Exception{
+		HttpServletRequest req = ServletActionContext.getRequest();
 		
-		return CREATE_FORM;
-	}
-	
-	@Action(value=EDIT)
-	public String edit() throws Exception{
 		
-		return EDIT;
+		String result = req.getScheme()+"://"+
+        	req.getServerName()+":"+
+        	req.getServerPort()+"/voms/"+
+        	VOMSConfiguration.instance().getVOName();
+		
+		return result;
 	}
-	
 	
 
+	
 }

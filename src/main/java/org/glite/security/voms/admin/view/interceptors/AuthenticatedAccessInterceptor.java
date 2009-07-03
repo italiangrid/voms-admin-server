@@ -37,9 +37,7 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor implemen
     }
 
     public String intercept( ActionInvocation ai ) throws Exception {
-
-        log.info( "intercept();");
-        
+    	
         HttpServletRequest req = (HttpServletRequest) ai.getInvocationContext().get( HTTP_REQUEST );
         InitSecurityContext.setContextFromRequest( req );
         req.setAttribute( "voName", VOMSConfiguration.instance().getVOName() );

@@ -23,8 +23,7 @@ public class HibernateInterceptor extends AbstractInterceptor implements
     @Override
     public String intercept( ActionInvocation ai) throws Exception {
 
-        log.debug( "intercept();");
-        
+    	
         String result = ai.invoke();
         
         try {

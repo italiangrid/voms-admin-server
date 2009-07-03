@@ -28,10 +28,16 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
+import org.glite.security.voms.admin.common.tasks.AUPAcceptanceCheckTask;
 import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
+import org.glite.security.voms.admin.common.tasks.TaskStatusUpdater;
+import org.glite.security.voms.admin.common.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.notification.NotificationWorkerThread;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.LogListener;
+import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.ServiceNotificationDispatcher;
 
 
 
@@ -43,6 +49,7 @@ public final class VOMSService {
 
     public static void start(ServletContext ctxt) {
 
+    	
         VOMSConfiguration conf;
         try {
             
@@ -56,8 +63,14 @@ public final class VOMSService {
         log.info( "VOMS-Admin starting for vo:" + conf.getVOName() );
         
         log.info( "Configuration setup ok." );
-
-        NotificationWorkerThread.instance( getTimer() );
+        
+        Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+        
+        // Starts event manager
+        EventManager.instance();
+        EventManager.instance().register(new LogListener());
+        
+        ServiceNotificationDispatcher.instance();
         
         UpdateCATask.instance( getTimer() );
                   
@@ -81,12 +94,19 @@ public final class VOMSService {
         
         ExpiredRequestsPurgerTask.instance( getTimer() );
         
+        TaskStatusUpdater.instance(getTimer());
+        
+        AUPAcceptanceCheckTask.instance(getTimer());
+        
+        
         log.info( "VOMS-Admin started succesfully." );
     }
 
     public static void stop() {
 
         getTimer().cancel();
+        
+        NotificationService.instance().stop();
         
         // Close hibernate session factory
         HibernateFactory.getFactory().close();

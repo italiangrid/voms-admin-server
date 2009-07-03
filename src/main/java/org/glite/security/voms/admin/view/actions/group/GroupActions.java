@@ -8,47 +8,35 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
 import org.glite.security.voms.admin.operations.groups.DeleteGroupOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
-import org.glite.security.voms.admin.view.actions.role.RoleActions;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
+
 @Results({ 
 	@Result(name=BaseAction.SUCCESS,location="/group/search.action", type="redirect"),
-	@Result(name=BaseAction.CREATE_FORM,location="groupCreate"),
 	@Result(name=BaseAction.INPUT,location="groupCreate")
 })
 
-
-
-public class GroupActions extends BaseAction {
+public class GroupActions extends BaseAction implements ModelDriven<VOMSGroup>, Preparable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final Log log = LogFactory.getLog(RoleActions.class);
+	public static final Log log = LogFactory.getLog(GroupActions.class);
 	
 	Long groupId;
+	
 	String groupName;
 	String parentGroupName;
 	
+	VOMSGroup group;
 	
-	@Action( value="create", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "*"})})
-	public String create() throws Exception{
-		
-		log.debug(String.format("groupId: %d, groupName: %s, parentGroupName: %s", groupId, groupName, parentGroupName));
-		
-		String name = getParentGroupName()+"/"+getGroupName();
-		
-		VOMSGroup g = (VOMSGroup)CreateGroupOperation.instance(name).execute();
-		
-		if ( g != null)
-			addActionMessage(getText("confirm.group.creation", g.getName()));
-		
-		return SUCCESS;
-	}
+	
 	
 	@Action(value="delete", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "*"})})
 	public String delete() throws Exception{
@@ -84,6 +72,23 @@ public class GroupActions extends BaseAction {
 
 	public void setParentGroupName(String parentGroupName) {
 		this.parentGroupName = parentGroupName;
+	}
+
+	public VOMSGroup getModel() {
+		return group;
+	}
+
+	public void prepare() throws Exception {
+		
+		if (getModel() == null){
+			
+			if (getGroupId() != -1)
+				group = groupById(groupId);
+			else if (getGroupName() != null && getParentGroupName() == null)
+				group = groupByName(getGroupName());
+			
+		}
+		
 	}
 	
 	

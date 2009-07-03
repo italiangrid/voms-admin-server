@@ -76,6 +76,12 @@ public final class VOMSConfiguration {
     public static final String SERVICE_SMTP_SERVER = "voms.notification.smtp-server";
 
     public static final String SERVICE_SMTP_SERVER_PORT = "voms.notification.smtp-server.port";
+    
+    public static final String SERVICE_EMAIL_ACCOUNT_USERNAME= "voms.notification.username";
+    
+    public static final String SERVICE_EMAIL_ACCOUNT_PASSWORD= "voms.notification.password";
+    
+    public static final String SERVICE_EMAIL_USE_TLS= "voms.notification.use_tls";
 
     /**
      * VO Membership requests expiration time (in minutes).
@@ -104,6 +110,14 @@ public final class VOMSConfiguration {
     public static final String VOMS_ADMIN_INTERFACE_VERSION = "voms-admin.interface.version";
     
     public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
+    
+    /**
+     * AUP Properties
+     */
+    public static final String GRID_AUP_URL = "voms.grid_aup.url";
+    public static final String VO_AUP_URL = "voms.vo_aup.url";
+    public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
+    
     
     Log log = LogFactory.getLog( VOMSConfiguration.class );
 
@@ -885,6 +899,14 @@ public final class VOMSConfiguration {
 
 		return null;
 
+	}
+	
+	public String getDefaultGridAUPURL(){
+		return String.format("file://%s/etc/voms-admin/templates/aup/grid-aup.txt", getString("GLITE_LOCATION"));
+	}
+	
+	public String getDefaultVOAUPURL(){
+		return String.format("file://%s/etc/voms-admin/templates/aup/vo-aup.txt", getString("GLITE_LOCATION"));
 	}
     
     public ServletContext getServletContext(){

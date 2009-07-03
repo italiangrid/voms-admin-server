@@ -1,26 +1,25 @@
 package org.glite.security.voms.admin.dao.hibernate;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskDAO;
-import org.glite.security.voms.admin.dao.generic.TaskLogRecordDAO;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.task.ApproveUserRequestTask;
-import org.glite.security.voms.admin.model.task.LogRecord;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
+import org.hibernate.criterion.Restrictions;
 
 
 public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implements TaskDAO{
@@ -28,28 +27,10 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
     
     private static final Log log = LogFactory.getLog( TaskDAOHibernate.class );
     
-    protected void addTaskLogRecord(Task t, TaskStatus event, Date date, VOMSUser u, VOMSAdmin a){
-        
-        TaskLogRecordDAO tlrDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskLogRecordDAO();
-        
-        LogRecord lr = new LogRecord();
-        
-        lr.setTask( t );
-        lr.setEvent( event );
-        lr.setUser( u );
-        lr.setAdmin( a );
-        lr.setDate( date );
-        
-        t.getLogRecords().add( lr );
-        
-        tlrDAO.makePersistent( lr );
-        makePersistent( t );
-        
-    }
+    
 
     public ApproveUserRequestTask createApproveUserRequestTask( Request req ) {
-
-        // Look for already existing tasks for the same request? 
+    	
         return null;
     }
     
@@ -72,8 +53,6 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
         SignAUPTask t = new SignAUPTask(tt,aup,expiryDate);
         
         makePersistent( t );
-        
-        addTaskLogRecord( t, TaskStatus.CREATED, t.getCreationDate(), null, null );
         
         return t; 
         
@@ -100,55 +79,29 @@ public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implement
 
         List<Task> tasks = findAll();
         
-        for (Task t: tasks){
-            
-            // Clean up relationships
-            // t.setAdmin( null );
-            // t.setUser( null );
-            
-            // Remove log records
-            removeTaskLogRecords( t );
-            
-            makeTransient( t );
-        }
-        
+        for (Task t: tasks)
+        	makeTransient(t);
         
     }
+       
 
-    
-    public void removeTaskLogRecords(Task t){
-        
-        if (log.isDebugEnabled())
-            log.debug("Removing task "+t+" log records: "+t.getLogRecords());
-        
-        TaskLogRecordDAO tlrDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskLogRecordDAO();
-        
-        for (LogRecord lr: tlrDAO.findForTask( t ))
-            tlrDAO.makeTransient( lr );
-        
-        
-    }
-    
-    
-    public void setApproveUserRequestTaskCompleted( ApproveUserRequestTask t,
-            VOMSAdmin a ) {
+	public SignAUPTask createSignAUPTask(AUP aup) {
+		 
+		int lifetime = VOMSConfiguration.instance().getInt(VOMSConfiguration.SIGN_AUP_TASK_LIFETIME,1);
+		Calendar cal = Calendar.getInstance();
+		
+		// FIXME: change from MINUTE to DAYS when releasing
+		cal.add(Calendar.MINUTE,lifetime);
+		
+		return createSignAUPTask(aup, cal.getTime());
+		
+	}
 
-        t.setCompleted();
-        addTaskLogRecord( t, t.getStatus(), t.getCompletionDate(), null, a );
-        
-    }
-
-    public void setSignAUPTaskCompleted( SignAUPTask t, VOMSUser u ) {
-        
-        t.setCompleted();
-        addTaskLogRecord( t, t.getStatus(), t.getCompletionDate(), u, null );
-        
-        
-    }
-    
-    public void deleteSignAUPTask(SignAUPTask t){
-        getSession().delete( t );
-    }
+	public List<Task> getActiveTasks() {
+		
+		return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED), Restrictions.ne("status", TaskStatus.EXPIRED));
+		
+	}
 
     
     

@@ -47,7 +47,9 @@ import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchMappingException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord;
+import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
+import org.glite.security.voms.admin.model.task.Task.TaskStatus;
 
 
 
@@ -790,6 +792,18 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         
         return false;
     }
+    
+    
+    public AUPAcceptanceRecord getAUPAccceptanceRecord(AUPVersion aupVersion){
+    	
+    	for (AUPAcceptanceRecord r: aupAcceptanceRecords){
+            
+            if (r.getAupVersion().equals( aupVersion ))
+            	return r;
+    	}
+    	
+    	return null;
+    }
 
     
     /**
@@ -859,6 +873,67 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	public void setCa(VOMSCA ca) {
 		this.ca = ca;
 	}
+	
+	
+	public void assignTask(Task t){
+		
+		if (!getTasks().contains(t)){
+			
+			getTasks().add(t);
+			t.setUser(this);
+			
+		}
+	}
     
+	public boolean hasSignAUPTaskPending(AUP aup){
+		
+		if (getTasks().isEmpty())
+			return false;
+		
+		for (Task t: getTasks()){
+			
+			if (t instanceof SignAUPTask)	
+				return (((SignAUPTask) t).getAup().equals(aup));
+		}
+		
+		return false;
+		
+	}
+	
+	public SignAUPTask getPendingSignAUPTask(AUP aup){
+		
+		if (getTasks().isEmpty())
+			return null;
+		
+		for (Task t: getTasks()){
+			if ((t instanceof SignAUPTask && t.getStatus() != TaskStatus.COMPLETED))
+				return (SignAUPTask)t;
+		}
+		
+		return null;
+		
+	}
+	
+	public void suspend(String reason){
+		
+		for (Certificate c: getCertificates()){
+			
+			c.setSuspended(true);
+			c.setSuspensionReason(reason);
+			
+		}
+	}
+	
+	public boolean isSuspended(){
+		
+		for (Certificate c: getCertificates()){
+			
+			if (!c.isSuspended())
+				return false;
+		}
+		
+		return true;
+		
+	}
     
 }
