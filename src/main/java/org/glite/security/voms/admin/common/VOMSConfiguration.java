@@ -118,6 +118,11 @@ public final class VOMSConfiguration {
     public static final String VO_AUP_URL = "voms.vo_aup.url";
     public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
     
+    /**
+     * Membership Properties
+     */
+    public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
+    
     
     Log log = LogFactory.getLog( VOMSConfiguration.class );
 

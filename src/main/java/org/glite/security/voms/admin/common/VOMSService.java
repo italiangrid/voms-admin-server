@@ -28,7 +28,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
-import org.glite.security.voms.admin.common.tasks.AUPAcceptanceCheckTask;
+import org.glite.security.voms.admin.common.tasks.MembershipValidityCheckTask;
 import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.common.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.common.tasks.ThreadUncaughtExceptionHandler;
@@ -96,7 +96,7 @@ public final class VOMSService {
         
         TaskStatusUpdater.instance(getTimer());
         
-        AUPAcceptanceCheckTask.instance(getTimer());
+        MembershipValidityCheckTask.instance(getTimer());
         
         
         log.info( "VOMS-Admin started succesfully." );
