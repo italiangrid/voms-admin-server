@@ -16,28 +16,29 @@ import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
 
-public class AUPAcceptanceCheckTask extends TimerTask {
+public class MembershipValidityCheckTask extends TimerTask {
 	
-	private static final Log log = LogFactory.getLog( AUPAcceptanceCheckTask.class );
+	private static final Log log = LogFactory.getLog( MembershipValidityCheckTask.class );
 	
-	private static AUPAcceptanceCheckTask instance;
+	private static MembershipValidityCheckTask instance;
 	
 	Timer timer;
 	
-	public static AUPAcceptanceCheckTask instance(Timer t){
+	public static MembershipValidityCheckTask instance(Timer t){
 		
 		if (instance == null)
-			instance = new AUPAcceptanceCheckTask(t);
+			instance = new MembershipValidityCheckTask(t);
 		
 		return instance;
 		
 	}
 	
-	protected AUPAcceptanceCheckTask(Timer t) {
+	protected MembershipValidityCheckTask(Timer t) {
 		this.timer = t;
 		
 		if (timer != null){
@@ -79,8 +80,6 @@ public class AUPAcceptanceCheckTask extends TimerTask {
 		
 		for (VOMSUser u: gridAupFailingUsers){
 			
-			// log.debug("Found user '"+u+"' failing Grid AUP acceptance.");
-			
 			if (!u.hasSignAUPTaskPending(gridAUP)){
 			
 				SignAUPTask t = taskDAO.createSignAUPTask(gridAUP);
@@ -90,7 +89,6 @@ public class AUPAcceptanceCheckTask extends TimerTask {
 			
 			}else{
 				
-				// Suspend users that did not sign aup task in time
 				for (Task t: u.getTasks()){
 					
 					if (t instanceof SignAUPTask){
@@ -100,9 +98,8 @@ public class AUPAcceptanceCheckTask extends TimerTask {
 						if (tt.getAup().equals(gridAUP) && tt.getStatus().equals(TaskStatus.EXPIRED) && !u.isSuspended()){
 							log.info("Suspeding user '"+u+"' that failed to sign GRID AUP in time");
 							
-							String reason = "User failed to accept Grid AUP in the allowed time"; 
-							u.suspend(reason);
-							EventManager.dispatch(new UserSuspendedEvent(u,reason));
+							u.suspend(SuspensionReason.FAILED_TO_SIGN_AUP);
+							EventManager.dispatch(new UserSuspendedEvent(u,SuspensionReason.FAILED_TO_SIGN_AUP));
 						}
 						
 					}
@@ -111,12 +108,7 @@ public class AUPAcceptanceCheckTask extends TimerTask {
 			}
 		}
 		
-		
-		
-		
-		
 		HibernateFactory.commitTransaction();
-		// log.info("AUP Acceptance test task done...");
 
 	}
 
