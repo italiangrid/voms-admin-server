@@ -483,6 +483,7 @@
       <groupId>oracle</groupId>
       <artifactId>oracle-jdbc-driver</artifactId>
       <version>14</version>
+      <scope>provided</scope>
     </dependency>
     
     <dependency>
