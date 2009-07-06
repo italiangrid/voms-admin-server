@@ -478,13 +478,6 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.0.7</version>
     </dependency>
-
-    <dependency>
-      <groupId>oracle</groupId>
-      <artifactId>oracle-jdbc-driver</artifactId>
-      <version>14</version>
-      <scope>provided</scope>
-    </dependency>
     
     <dependency>
       <groupId>taglibs</groupId>
