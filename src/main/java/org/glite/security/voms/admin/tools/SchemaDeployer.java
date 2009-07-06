@@ -217,6 +217,7 @@ public class SchemaDeployer {
         
         boolean foundACL2 = false;
         boolean foundACL = false;
+        boolean foundAUP = false;
 
         try {
             
@@ -228,6 +229,9 @@ public class SchemaDeployer {
 
                 if ( tName.equals( "ACL2" ) || tName.equals( "acl2" ))
                     foundACL2 = true;
+                
+                if (tName.equalsIgnoreCase("aup"))
+                	foundAUP = true;
             }
         
             
@@ -245,6 +249,10 @@ public class SchemaDeployer {
             
         }
         
+        if ( foundACL2 && foundAUP ){
+        	log.info("Found existing voms-admin 2.5.x database..." );
+        	return 3;
+        }
         if ( foundACL2 ) {
             log.info( "Found existing voms-admin 2.0.x database..." );
             return 2;
@@ -259,24 +267,12 @@ public class SchemaDeployer {
         return -1;        
     }
 
-    private void doUpgrade() {
-
-        Configuration hibernateConfig = loadHibernateConfiguration();
-        
-        int existingDB = checkDatabaseExistence();
-        
-        if (existingDB == -1){
-            log.error("No voms-admin 1.2.x database found to upgrade!");
-            System.exit(-1);
-        }
-            
-        Session s = HibernateFactory.getSession();
+    private void doUpgrade1_2_19(Configuration hibernateConfig){
+    	
         HibernateFactory.beginTransaction();
         
-        try{
+    	try{
             
-            log.info( "Upgrading voms database..." );
-
             renameOldTables();
             
         
@@ -324,9 +320,36 @@ public class SchemaDeployer {
             HibernateFactory.closeSession();
             System.exit( 2 );
         }
+    	
+    }
+    
+    private void doUpgrade2_0_x(Configuration hibernateConfig){
+    	
+    	log.info("To be implemented :) !");
+    	System.exit(-1);
+    	
+    }
+    private void doUpgrade() {
+
+        Configuration hibernateConfig = loadHibernateConfiguration();
         
+        int existingDB = checkDatabaseExistence();
         
+        if (existingDB == -1){
+            log.error("No voms-admin 1.2.x database found to upgrade!");
+            System.exit(-1);
+        } 
         
+        if (existingDB == 1){
+        	log.info("Upgrading voms-admin 1.2.x database to the voms-admin 2.5.x structure.");
+        	doUpgrade1_2_19(hibernateConfig);
+        	
+        }
+        
+        if (existingDB ==  2){
+        	log.info("Upgrading voms-admin 2.0.x database to the voms-admin 2.5.x structure.");
+        	doUpgrade2_0_x(hibernateConfig);
+        }
         
     }
 
@@ -451,6 +474,13 @@ public class SchemaDeployer {
             System.exit( -1 );
         }
         
+        if (existingDB == 2){
+        	
+        	log.error("This tool cannot undeploy voms-admin 2.0.x databases! Please either upgrade the database to voms-admin 2.5 (using this tool) or use voms-admin-configure 2.0.x" +
+        			" tools to undeploy this database");
+        	
+        	System.exit(-1);
+        }
         if (existingDB < 0){
             
             log.error("No voms-admin database found!");
@@ -767,7 +797,7 @@ public class SchemaDeployer {
         s.createSQLQuery( "insert into roles(rid,role) select rid, role from roles_old" ).executeUpdate();
         s.createSQLQuery( "insert into usr(userid,dn,ca,cn,mail,cauri) select userid, dn, ca, cn, mail, cauri from usr_old" ).executeUpdate();
                 
-        s.createSQLQuery( "insert into version values('2')").executeUpdate();
+        s.createSQLQuery( "insert into version values('3')").executeUpdate();
         
         // Generic attributes migration
         s.createSQLQuery( "insert into attributes(a_id, a_name, a_desc) select a_id,a_name,a_desc from attributes_old" ).executeUpdate();
@@ -1048,3 +1078,4 @@ public class SchemaDeployer {
     }
 
 }
+

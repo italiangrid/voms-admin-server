@@ -3,17 +3,19 @@ package org.glite.security.voms.admin.event;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class LogListener implements EventListener {
+public class EventLogListener implements EventListener {
 
-	public static final Log log = LogFactory.getLog(LogListener.class);
+	public static final Log log = LogFactory.getLog(EventLogListener.class);
 	
-	public LogListener() {
+	public EventLogListener() {
+		
+		
 		
 	}
 	
 	
 	public void fire(Event e) {
-		log.info("Event received: "+e);
+		log.debug("Event received: "+e);
 	}
 
 	public EventMask getMask() {

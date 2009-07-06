@@ -39,6 +39,21 @@ No users found in this VO.
             </s:a>
           </div>
          </td>
+         
+         <td>
+         <voms:hasPermissions var="canDelete" 
+            context="/${voName}" 
+            permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE"/>
+            
+          <s:if test="#attr.canDelete">
+            <s:form action="delete" namespace="/user">
+              <s:url value="/img/delete_16.png" var="deleteImg"/>
+              <s:token/>
+              <s:hidden name="userId" value="%{#user.id}"/>
+              <s:submit src="%{deleteImg}" type="image"/>
+            </s:form>
+          </s:if>
+         </td>
       </tr>
     </s:iterator>
   </table>

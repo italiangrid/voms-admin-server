@@ -12,6 +12,7 @@ import org.glite.security.voms.admin.event.EventListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventMask;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
+import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
@@ -47,6 +48,14 @@ public class ServiceNotificationDispatcher implements EventListener {
 			
 			handle((SignAUPTaskAssignedEvent)e);
 			
+		}else if (e instanceof UserMembershipExpired){
+			
+			UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(((UserMembershipExpired) e).getUser());
+			msg.addRecipients(getVoAdminEmailList());
+			NotificationService.instance().send(msg);
+			
+			// Also inform user she has been suspended
+			
 		}
 		
 		
@@ -59,7 +68,7 @@ public class ServiceNotificationDispatcher implements EventListener {
 	protected void handle(UserSuspendedEvent e){
 		
 		// Notify admins
-		AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(e.getUser(), e.getReason());
+		AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(e.getUser(), e.getReason().getMessage());
 		msg.addRecipients(getVoAdminEmailList());
 		NotificationService.instance().send(msg);
 		

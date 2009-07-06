@@ -5,8 +5,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 
 
+@Entity
+@Table(name="certificate")
 public class Certificate implements Serializable {
 
     /**
@@ -14,22 +29,39 @@ public class Certificate implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     protected Long id;
 
+    @Column(name="subject_string", nullable=false, unique=true)
     protected String subjectString;
-
+    
+    
+    @ManyToOne(targetEntity=VOMSCA.class, optional=false)
+    @JoinColumn(name="ca_id", nullable=false)
     protected VOMSCA ca;
 
+    @Transient
     protected String email;
 
+    @Column(nullable=false)
     protected boolean suspended;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name="suspension_reason_code")
+    protected VOMSUser.SuspensionReason suspensionReasonCode;
+    
+    @Column(name="suspension_reason")
     protected String suspensionReason;
 
+    @Column(name="not_after")
     protected Date notAfter;
 
+    @Column(nullable=false, name="creation_time")
     protected Date creationTime;
 
+    @ManyToOne
+	@JoinColumn(name = "usr_id", nullable = false)
     protected VOMSUser user;
     
     public Certificate() {
@@ -187,5 +219,31 @@ public class Certificate implements Serializable {
         this.suspensionReason = suspensionReason;
     }
 
-    
+	public VOMSUser.SuspensionReason getSuspensionReasonCode() {
+		return suspensionReasonCode;
+	}
+
+	public void setSuspensionReasonCode(
+			VOMSUser.SuspensionReason suspensionReasonCode) {
+		this.suspensionReasonCode = suspensionReasonCode;
+	}
+	
+	
+	public void suspend(VOMSUser.SuspensionReason reason){
+		
+		setSuspended(true);
+		setSuspensionReasonCode(reason);
+		setSuspensionReason(reason.getMessage());
+	}
+	
+	public void restore(SuspensionReason reason){
+		
+		if (isSuspended() && getSuspensionReasonCode().equals(reason)){
+			
+			setSuspended(false);
+			setSuspensionReasonCode(null);
+			setSuspensionReason(null);
+			
+		}
+	}
 }

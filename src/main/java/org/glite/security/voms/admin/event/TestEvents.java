@@ -12,8 +12,8 @@ public class TestEvents implements EventGenerator{
 	
 		manager = EventManager.instance();
 		
-		register(new LogListener());
-		register(new LogListener());
+		register(new EventLogListener());
+		register(new EventLogListener());
 		
 		
 		

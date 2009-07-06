@@ -21,8 +21,10 @@
     	<mapping resource="model/VOMSSeqNumber.hbm.xml" />
         <mapping resource="model/VOMSAdmin.hbm.xml" />
         <mapping resource="model/VOMSCA.hbm.xml" />
+        <!--
         <mapping resource="model/Certificate.hbm.xml" />
         <mapping resource="model/VOMSUser.hbm.xml" />
+        -->
         <mapping resource="model/VOMSUserAttribute.hbm.xml" />
         <mapping resource="model/VOMSGroup.hbm.xml" />
         <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
@@ -41,6 +43,10 @@
         <mapping resource="model/TagMapping.hbm.xml"/>
         
         <!--  NEW MAPPINGS -->
+        
+        <!--  VOMS USER & CERTIFICATE -->
+        <mapping class="org.glite.security.voms.admin.model.VOMSUser"/>
+        <mapping class="org.glite.security.voms.admin.model.Certificate"/>
         
         <!--  TASKS  -->
         <mapping class="org.glite.security.voms.admin.model.task.TaskType"/>
@@ -61,7 +67,7 @@
         <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationType"/>
         <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord"/>
         
-        <!-- TEST -->
+        
         
         
         

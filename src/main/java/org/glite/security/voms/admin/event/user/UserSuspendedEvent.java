@@ -1,24 +1,28 @@
 package org.glite.security.voms.admin.event.user;
 
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 
 public class UserSuspendedEvent extends UserMembershipEvent {
 
-	String reason;
+	SuspensionReason reason;
 	
-	public UserSuspendedEvent(VOMSUser user, String reason) {
+	public UserSuspendedEvent(VOMSUser user, SuspensionReason reason) {
 		super(user);
 		setReason(reason);
 		
 	}
 
-	public String getReason() {
+	public SuspensionReason getReason() {
 		return reason;
 	}
 
-	public void setReason(String reason) {
+	public void setReason(SuspensionReason reason) {
 		this.reason = reason;
 	}
+
+	
+	
 
 	
 }

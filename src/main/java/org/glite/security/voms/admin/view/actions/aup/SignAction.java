@@ -14,6 +14,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.validator.annotations.FieldExpressionValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
@@ -45,8 +46,8 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparab
 		if (u == null)
 			throw new VOMSException("Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
 		
-		
-		VOMSUserDAO.instance().acceptAUP(u,aup);
+		if (aupAccepted)
+			VOMSUserDAO.instance().signAUP(u,aup);
 		
 		return SUCCESS;
 	}

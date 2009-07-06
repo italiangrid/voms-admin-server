@@ -1,0 +1,26 @@
+Dear $recipient, 
+
+you are requested to sign the VO $voName $aup.name AUP 
+in order to continue to be part of the  $voName VO.
+
+To sign the AUP, point your browser to the following 
+URL:
+
+$signAUPURL
+
+Be sure that a trusted and valid certificate linked
+to your VO membership in installed in the browser
+that you use to access the sign aup web page,
+or VOMS Admin will not be able to authenticate you 
+properly.
+
+Please sign the AUP before the following date:
+
+$expirationDate
+
+or your VO membership will be automatically suspended
+and you will not be able to obtain VOMS credentials
+for the $voName VO.
+
+Your sincerely,
+Voms-Admin registration service for VO $voName

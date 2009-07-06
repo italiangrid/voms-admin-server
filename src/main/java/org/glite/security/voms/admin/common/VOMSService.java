@@ -35,7 +35,7 @@ import org.glite.security.voms.admin.common.tasks.ThreadUncaughtExceptionHandler
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.LogListener;
+import org.glite.security.voms.admin.event.EventLogListener;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.ServiceNotificationDispatcher;
 
@@ -46,11 +46,66 @@ public final class VOMSService {
     static final Log log = LogFactory.getLog( VOMSService.class );
 
     static final Timer vomsTimer = new Timer( true );
+    
+    
+    protected static void configureVelocity(){
+    	
+    	try {
+            
+            Properties p = new Properties();
+            
+//            File based template conf
+              
+//            p.put("resource.loader","file");
+//            p.put("file.resource.loader.class","org.apache.velocity.runtime.resource.loader.FileResourceLoader");
+//            p.put("file.resource.loader.path",conf.getTemplatePath());
+            
+            // Classpath based template conf
+            p.put("resource.loader","cpath");
+            p.put("cpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+            
+            p.put( "runtime.log.logsystem.class","org.glite.security.voms.admin.velocity.VelocityLogger");
+             
+            Velocity.init(p);
+            log.info( "Velocity setup ok!" );
+            
+    } catch ( Exception e ) {
+           
+        log.error("Error initializing velocity template engine!");
+        throw new VOMSFatalException(e);
+    }
+    	
+    	
+    }
+    
+    protected static void configureEventManager(){
+    	
+    	// Starts event manager
+        EventManager.instance();
+        
+        EventManager.instance().register(new EventLogListener());
+        
+        ServiceNotificationDispatcher.instance();
+    }
+    
+    protected static void startBackgroundTasks(){
+    	
+    	UpdateCATask.instance( getTimer() );
+        
+        ExpiredRequestsPurgerTask.instance( getTimer() );
+        
+        TaskStatusUpdater.instance(getTimer());
+        
+        MembershipValidityCheckTask.instance(getTimer());
+    	
+    }
 
     public static void start(ServletContext ctxt) {
 
+    	Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
     	
         VOMSConfiguration conf;
+        
         try {
             
             conf = VOMSConfiguration.instance(ctxt);
@@ -62,42 +117,11 @@ public final class VOMSService {
 
         log.info( "VOMS-Admin starting for vo:" + conf.getVOName() );
         
-        log.info( "Configuration setup ok." );
-        
-        Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-        
-        // Starts event manager
-        EventManager.instance();
-        EventManager.instance().register(new LogListener());
-        
-        ServiceNotificationDispatcher.instance();
-        
-        UpdateCATask.instance( getTimer() );
-                  
-        try {
-            
-                Properties p = new Properties();
+        configureVelocity();
                 
-                p.put("resource.loader","file");
-                p.put("file.resource.loader.class","org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-                p.put("file.resource.loader.path",conf.getTemplatePath());
-                p.put( "runtime.log.logsystem.class","org.glite.security.voms.admin.velocity.VelocityLogger");
-                 
-                Velocity.init(p);
-                log.info( "Velocity setup ok!" );
-                
-        } catch ( Exception e ) {
-               
-            log.error("Error initializing velocity template engine!");
-            throw new VOMSFatalException(e);
-        }
+        configureEventManager();
         
-        ExpiredRequestsPurgerTask.instance( getTimer() );
-        
-        TaskStatusUpdater.instance(getTimer());
-        
-        MembershipValidityCheckTask.instance(getTimer());
-        
+        startBackgroundTasks();
         
         log.info( "VOMS-Admin started succesfully." );
     }

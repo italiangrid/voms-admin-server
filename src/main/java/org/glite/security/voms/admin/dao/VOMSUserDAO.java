@@ -23,6 +23,7 @@ package org.glite.security.voms.admin.dao;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,6 @@ import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
 import org.glite.security.voms.admin.database.AttributeAlreadyExistsException;
@@ -62,6 +62,7 @@ import org.glite.security.voms.admin.model.VOMSMapping;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
@@ -82,7 +83,7 @@ public class VOMSUserDAO{
 
 	}
 
-	public void acceptAUP(VOMSUser user, AUP aup ){
+	public void signAUP(VOMSUser user, AUP aup ){
 	    
 		if ( user == null )
             throw new NullArgumentException( "user cannot be null!" );
@@ -103,7 +104,7 @@ public class VOMSUserDAO{
 	        aupRecord.setLastAcceptanceDate( new Date() );
 	        
 	        user.getAupAcceptanceRecords().add( aupRecord );
-	        // HibernateFactory.getSession().update( user );
+	        
 	    
 	    }else{
 	    	
@@ -117,6 +118,11 @@ public class VOMSUserDAO{
 	    
 	    if (pendingTask != null)
 	    	pendingTask.setCompleted();
+	    
+	    if (user.isSuspended() && user.getSuspensionReasonCode().equals(SuspensionReason.FAILED_TO_SIGN_AUP))
+	    	user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);	    	
+	    	
+	    	
 	    
 	    EventManager.dispatch(new UserSignedAUPEvent(user,aupVersion.getAup()));
 	    
@@ -132,6 +138,18 @@ public class VOMSUserDAO{
 		
 		return q.list();
 		
+	}
+	
+	public List<VOMSUser> getExpiredUsers(){
+		
+		Date now = new Date();
+		
+		String queryString = "from VOMSUser u where u.endTime < :now";
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+		
+		q.setDate("now", now);
+		
+		return q.list();
 	}
 	
 	public List<VOMSUser> getGridAUPFailingUsers(){
@@ -337,15 +355,7 @@ public class VOMSUserDAO{
 		if (u != null)
 			throw new UserAlreadyExistsException("User " + u
 					+ " already in org.glite.security.voms.admin.database!");
-		/* 
-         * Email uniqueness checked out since otherwise vomrs cannot create
-         * multiple users with different certificates.
-         * 
-		if (findByEmail(emailAddress) != null)
-			throw new EmailAddressAlreadyBoundException("A user with the "
-					+ emailAddress + " email address is already in org.glite.security.voms.admin.database!");
-
-		 */
+		
 		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
 		if (ca == null)
@@ -377,24 +387,6 @@ public class VOMSUserDAO{
 		return u;
 	}
     
-//	public VOMSUser create(VOMSUser usr, String caDN) {
-    //
-//    		if (usr.getDn() == null || "".equals( usr.getDn() ))
-//    			throw new NullArgumentException("dn must be non-null!");
-    //
-//    		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
-    //
-//    		if (ca == null)
-//    			throw new NullArgumentException("CA " + caDN
-//    					+ " does not exist in org.glite.security.voms.admin.database!");
-    //
-//            usr.setDn( DNUtil.normalizeEmailAddressInDN( usr.getDn() ) );
-//    		usr.setCa(ca);
-    //
-//    		return create(usr);
-    //
-//    	}
-    
     
     public VOMSUser create(VOMSUser usr, String caDN){
     	
@@ -409,19 +401,29 @@ public class VOMSUserDAO{
     	if (cert != null)
     		throw new UserAlreadyExistsException("A user with the following subject '"+usr.getDn()+"' already exists in this VO.");
     	
-    	HibernateFactory.getSession().save(usr);
+    	
     	
     	cert = certDAO.create(usr, caDN);
     	usr.addCertificate(cert);
     	
+    	usr.setCreationTime(new Date());
     	
+    	
+    	Calendar c = Calendar.getInstance();
+    	c.setTime(usr.getCreationTime());
+    	
+    	// Default lifetime for membership is 12 months if not specified
+    	int lifetime= VOMSConfiguration.instance().getInt(VOMSConfiguration.DEFAULT_MEMBERSHIP_LIFETIME,12);
+    	
+    	c.add(Calendar.MONTH, lifetime);
+    	usr.setEndTime(c.getTime());
         
 		// Add user to VO root group
 		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-		addToGroup(usr, voGroup);
+		
+		usr.addToGroup(voGroup);
 
-		// HibernateFactory.getSession().save(usr);
-		HibernateFactory.getSession().save(voGroup);
+		HibernateFactory.getSession().save(usr);
 		
 		EventManager.dispatch(new UserCreatedEvent(usr));
 		return usr;

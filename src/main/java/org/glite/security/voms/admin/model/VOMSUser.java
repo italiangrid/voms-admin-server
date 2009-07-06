@@ -32,6 +32,20 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.User;
@@ -50,6 +64,8 @@ import org.glite.security.voms.admin.model.personal_info.PersonalInformationReco
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 
 
@@ -61,45 +77,121 @@ import org.glite.security.voms.admin.model.task.Task.TaskStatus;
  * @author andrea
  * 
  */
+
+@Entity
+@Table(name="usr")
 public class VOMSUser implements Serializable, Auditable, Comparable {
 
     private static final long serialVersionUID = -3815869585264835046L;
 
     public static final Log log = LogFactory.getLog( VOMSUser.class );
 
+    public enum SuspensionReason{
+    	
+    	FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."),
+    	MEMBERSHIP_EXPIRATION("User membership has expired."),
+    	SECURITY_INCIDENT("User membership has been suspended after a security incident."),
+    	OTHER("User membership has been suspended for another unknown reason.");
+    	
+    	String message;
+    	
+    	private SuspensionReason(String msg) {
+			this.message = msg;
+		}
+    	
+    	public String getMessage() {
+			return message;
+		}
+    	
+    	public void setMessage(String message) {
+			this.message = message;
+		}
+    	
+    }
     public VOMSUser() {
 
     }
 
+    @Id
+    @Column(name="userid")
+    @GeneratedValue(strategy=GenerationType.AUTO)
     Long id;
         
     // Base membership information (JSPG requirements)
+    @Column(nullable=false)
     String name;
+    
+    @Column(nullable=false)
     String surname;
+    
+    @Column(nullable=false)
     String institution;
+    
+    @Column(nullable=false)
     String address;
+    
+    @Column(nullable=false, name="phone_number")
     String phoneNumber;
     
+    @Column(nullable=false, unique=true, name="email_address")
     String emailAddress;
     
-    
-    
     // Compatibility fields 
+    
     String dn;
+    
+    /** This field is here for compatibility reasons **/
+    @ManyToOne(targetEntity=VOMSCA.class, optional=true)
+    @JoinColumn(name="ca")
     VOMSCA ca;
     
     // Creation time and validity info
+    @Column(name="creation_time", nullable=false)
     Date creationTime;
+    
+    @Column(name="end_time", nullable=false)
     Date endTime;
+    
+    @Column(name="suspended")
+    Boolean suspended;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="suspension_reason_code")
+    SuspensionReason suspensionReasonCode;
+    
+    @Column(name="suspension_reason")
+    String suspensionReason;
         
-    
-    
+    /** Generic attributes mapping **/
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
+    
+    /** Membership mappings **/ 
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @Sort(type=SortType.NATURAL)
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+    
+    /** User certificates **/
+    
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<Certificate> certificates = new HashSet<Certificate>();
+    
+    /** AUP acceptance records **/
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
     
+    /** Assigned tasks **/
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<Task> tasks = new HashSet <Task>();
+    
+    /** Personal information set **/
+    // FIXME: currently ignored by configuration
+    @Transient
     Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord> ();
     
     
@@ -258,8 +350,6 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         if ( !getMappings().add( m ) )
             throw new AlreadyExistsException( "User \"" + this
                     + "\" is already a member of group \"" + g + "\"." );
-
-        // g.getMappings().add( m );
 
         // Add this user to parent groups
         if ( !g.isRootGroup() ) {
@@ -914,26 +1004,63 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		
 	}
 	
-	public void suspend(String reason){
+	public void suspend(SuspensionReason reason){
+		
+		setSuspended(true);
+		setSuspensionReasonCode(reason);
+		setSuspensionReason(reason.getMessage());
 		
 		for (Certificate c: getCertificates()){
 			
-			c.setSuspended(true);
-			c.setSuspensionReason(reason);
-			
+			// Only suspend certificates that are not already suspended
+			// possibly for another reason.
+			if (!c.isSuspended())
+				c.suspend(reason);
 		}
+			
+	}
+	
+	/**
+	 * Restores membership and certificates that where suspended for the 
+	 * reason passed as argument
+	 * @param reason
+	 */
+	public void restore(SuspensionReason reason){
+		setSuspended(false);
+		setSuspensionReason(null);
+		
+		for (Certificate c: getCertificates())
+			c.restore(reason);
 	}
 	
 	public boolean isSuspended(){
 		
-		for (Certificate c: getCertificates()){
-			
-			if (!c.isSuspended())
-				return false;
-		}
-		
-		return true;
-		
+		return (suspended == null ? false : suspended);
+
+	}
+
+	public Boolean getSuspended() {
+		return suspended;
+	}
+
+	public void setSuspended(Boolean suspended) {
+		this.suspended = suspended;
+	}
+
+	public SuspensionReason getSuspensionReasonCode() {
+		return suspensionReasonCode;
+	}
+
+	public void setSuspensionReasonCode(SuspensionReason suspensionReasonCode) {
+		this.suspensionReasonCode = suspensionReasonCode;
+	}
+
+	public String getSuspensionReason() {
+		return suspensionReason;
+	}
+
+	public void setSuspensionReason(String suspensionReason) {
+		this.suspensionReason = suspensionReason;
 	}
     
 }

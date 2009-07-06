@@ -6,7 +6,7 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 
-public class UserMembershipEvent extends GenericEvent {
+public abstract class UserMembershipEvent extends GenericEvent {
 
 	VOMSUser user;
 	

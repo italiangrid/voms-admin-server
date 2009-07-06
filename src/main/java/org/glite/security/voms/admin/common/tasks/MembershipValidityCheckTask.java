@@ -13,6 +13,7 @@ import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
+import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSUser;
@@ -45,7 +46,7 @@ public class MembershipValidityCheckTask extends TimerTask {
 			
 			long period = 30L;
 			
-			log.info("Scheduling AUPAcceptanceCheckTask with period: "+ period+" seconds.");
+			log.info("Scheduling MembershiValidityCheckTask with period: "+ period+" seconds.");
 			timer.schedule(this,30*1000, period*1000);
 			
 		}
@@ -54,7 +55,6 @@ public class MembershipValidityCheckTask extends TimerTask {
 	@Override
 	public void run() {
 		
-		// log.info("AUP Acceptance test task started...");
 		HibernateFactory.beginTransaction();
 		
 		
@@ -62,19 +62,25 @@ public class MembershipValidityCheckTask extends TimerTask {
 		VOMSUserDAO userDAO = VOMSUserDAO.instance();
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 		
-		List<VOMSUser> gridAupFailingUsers;
+		// Suspend users whose membership has expired
+		// and inform VO managers
+		List<VOMSUser> expiredMembers = userDAO.getExpiredUsers();
 		
-		// Grid AUP checking
-		try{
+		for (VOMSUser u: expiredMembers){
 			
-			gridAupFailingUsers  = userDAO.getGridAUPFailingUsers();
-		
-		}catch (Throwable t) {
-			
-			// This should never happen
-			log.error("Error executing HSQL query: "+t.getMessage());
-			return;
+			if (!u.isSuspended()){
+				
+				log.debug("Suspending user '"+u+"' since its membership has expired.");
+				u.suspend(SuspensionReason.MEMBERSHIP_EXPIRATION);
+				EventManager.dispatch(new UserMembershipExpired(u));
+				
+			}
 		}
+		
+		// Suspend users that failed to sign AUP in time
+		List<VOMSUser> gridAupFailingUsers;
+			
+		gridAupFailingUsers  = userDAO.getGridAUPFailingUsers();
 		
 		AUP gridAUP = aupDAO.getGridAUP();
 		
@@ -110,8 +116,5 @@ public class MembershipValidityCheckTask extends TimerTask {
 		
 		HibernateFactory.commitTransaction();
 
-	}
-
-	
-	
+	}	
 }

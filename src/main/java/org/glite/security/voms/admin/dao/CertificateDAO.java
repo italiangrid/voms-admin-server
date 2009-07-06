@@ -82,7 +82,6 @@ public class CertificateDAO {
 		cert.setCreationTime(new Date());
 		cert.setUser(u);
 		
-		HibernateFactory.getSession().save(cert);
 		return cert;
 	}
 	
