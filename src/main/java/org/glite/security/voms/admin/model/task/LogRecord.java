@@ -35,7 +35,7 @@ public class LogRecord implements Serializable, Comparable<LogRecord> {
 	@Column(nullable = false)
 	TaskStatus event;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name="creation_time")
 	Date date;
 
 	@ManyToOne

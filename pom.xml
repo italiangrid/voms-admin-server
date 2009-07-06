@@ -482,7 +482,7 @@
     <dependency>
       <groupId>oracle</groupId>
       <artifactId>oracle-jdbc-driver</artifactId>
-      <version>10.2.0.4.0</version>
+      <version>14</version>
     </dependency>
     
     <dependency>
