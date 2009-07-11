@@ -97,6 +97,11 @@ public class CertificateRequest extends Request {
     
         this.certificate = certificate;
     }
+
+	public String getTypeName() {
+		
+		return "Certificate request";
+	}
     
     
 

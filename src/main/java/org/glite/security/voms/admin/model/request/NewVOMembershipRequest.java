@@ -38,6 +38,12 @@ public class NewVOMembershipRequest extends Request {
     
         this.confirmId = confirmId;
     }
+
+
+	public String getTypeName() {
+		
+		return "VO Membership request";
+	}
     
     
 

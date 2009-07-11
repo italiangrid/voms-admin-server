@@ -42,6 +42,13 @@ public class GroupMembershipRequest extends Request {
     }
 
 
+
+	public String getTypeName() {
+		
+		return "Group membership request";
+	}
+
+
     
 
     

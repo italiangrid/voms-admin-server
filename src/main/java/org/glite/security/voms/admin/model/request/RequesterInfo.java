@@ -28,9 +28,23 @@ public class RequesterInfo implements Serializable{
     @GeneratedValue
     Long id;
     
+    @Column(nullable=false)
     String certificateSubject;
-    String certificateIssuer;
     
+    @Column(nullable=false)
+    String certificateIssuer;
+       
+    String name;
+    
+    String surname;
+    
+    String institution;
+    
+    String address;
+    
+    String phoneNumber;
+    
+    @Column(nullable=false)
     String emailAddress;
     
     @org.hibernate.annotations.CollectionOfElements
@@ -192,6 +206,12 @@ public class RequesterInfo implements Serializable{
         
         return new HashCodeBuilder(17,37).append(certificateSubject).append( certificateIssuer ).append(emailAddress).toHashCode();
         
+    }
+    
+    @Override
+    public String toString() {
+
+    	return certificateSubject;
     }
     
     

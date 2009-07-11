@@ -41,4 +41,9 @@ public class RoleMembershipRequest extends GroupMembershipRequest {
         this.roleName = roleName;
     }
     
+    @Override
+    public String getTypeName() {
+    	
+    	return "Role membership request";
+    }
 }
