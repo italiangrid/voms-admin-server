@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSUser;
@@ -202,6 +203,7 @@ public abstract class Task {
 
         if ( this == other )
             return true;
+        
         if ( !( other instanceof Task ) )
             return false;
 
@@ -210,26 +212,34 @@ public abstract class Task {
 
         Task that = (Task) other;
 
-        if (!getType().equals( that.getType() ))
-            return false;
         
-        if (!getCreationDate().equals( that.getCreationDate() ))
-            return false;
+        EqualsBuilder builder = new EqualsBuilder();
         
-        if (!getExpiryDate().equals( that.getExpiryDate() ))
-            return false;
+        builder.append(type, that.type).
+        	append(creationDate, that.creationDate).
+        	append(expiryDate,that.expiryDate).
+        	append(completionDate, that.completionDate).
+        	append(status, that.status).
+        	append(admin,that.admin).append(user, that.user);
         
-        if (!getStatus().equals( that.getStatus() ))
-            return false;
-        
-        return true;
+        return builder.isEquals(); 
                    
     }
     
     @Override
     public int hashCode() {
+    	
+    	HashCodeBuilder builder = new HashCodeBuilder(11,63);
+    	
+    	builder.append(getType()).
+    	append(creationDate).
+    	append(expiryDate).
+    	append(completionDate).
+    	append(status).
+    	append(admin).
+    	append(user);
     
-        return new HashCodeBuilder(11,63).append( getType() ).append( getCreationDate() ).append(getExpiryDate()).append(getStatus()).append(getId()).toHashCode();
+        return builder.toHashCode();
                 
     }
 

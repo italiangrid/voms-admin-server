@@ -8,7 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.model.VOMSUser;
 
 
 @Entity
@@ -22,9 +25,8 @@ public class SignAUPTask extends Task implements Serializable {
     
     
     @ManyToOne
-    @JoinColumn(name="aup_id", updatable=false, nullable=false)
+    @JoinColumn(name="aup_id", nullable=false)
     AUP aup;
-
     
     public SignAUPTask() {
 
@@ -63,7 +65,33 @@ public class SignAUPTask extends Task implements Serializable {
     @Override
     public String toString() {
     
-        return String.format( "SignAUPTask[id:%d, type:%s, aup:%s, user:%s, expires:%s]", getId(),getType(),getAup(), getUser().toString(), getExpiryDate());
+        return String.format( "SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s]", getId(),getStatus(),getAup(), getUser().toString(), getExpiryDate());
         
     }
+    
+    @Override
+    public boolean equals(Object other) {
+    	
+    	if ( this == other )
+            return true;
+        
+        if ( !( other instanceof Task ) )
+            return false;
+
+        if ( other == null )
+            return false;
+
+        SignAUPTask that = (SignAUPTask) other;
+    
+        EqualsBuilder builder = new EqualsBuilder();
+        return builder.appendSuper(super.equals(other)).append(aup, that.aup).isEquals();
+        
+    }
+    
+    @Override
+    public int hashCode() {
+    	HashCodeBuilder builder = new HashCodeBuilder(17,57).appendSuper(super.hashCode()).append(aup);
+    	return builder.toHashCode();
+    }
+    
 }
