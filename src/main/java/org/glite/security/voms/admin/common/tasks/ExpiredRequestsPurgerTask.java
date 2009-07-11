@@ -76,7 +76,10 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
     public void run() {
 
         log.info( "Checking for expired requests..." );
+        HibernateFactory.beginTransaction();
         purgeExpiredRequests();
+        HibernateFactory.commitTransaction();
+        HibernateFactory.closeSession();
         log.info("Done.");
         
     }
@@ -110,8 +113,6 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
                      ExpiredRequestNotification n = new ExpiredRequestNotification(r.getEmailAddress());
                      n.send();
                  }
-                 
-                 HibernateFactory.commitTransaction();
                  
              }
             

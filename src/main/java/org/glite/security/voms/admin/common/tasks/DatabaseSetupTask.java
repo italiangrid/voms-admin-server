@@ -227,19 +227,21 @@ public class DatabaseSetupTask extends TimerTask {
             ttDAO.makePersistent( signAupTaskType );
             ttDAO.makePersistent( approveUserRequestTaskType );
             
-            // Setup Grid and VO AUPs
-            String gridAUPUrlString = VOMSConfiguration.instance().getString(VOMSConfiguration.GRID_AUP_URL, VOMSConfiguration.instance().getDefaultGridAUPURL());
+            // Setup VO AUP
             String voAUPUrlString = VOMSConfiguration.instance().getString(VOMSConfiguration.VO_AUP_URL, VOMSConfiguration.instance().getDefaultVOAUPURL());
+            
+            if (voAUPUrlString.trim().equals("")){
+            	log.warn("No url defined for VO AUP, using default setting...");
+            	voAUPUrlString = VOMSConfiguration.instance().getDefaultVOAUPURL();
+            }
             
             try {
             	
-            	URL gridAUPURL = new URL(gridAUPUrlString);
             	URL voAUPURL = new URL(voAUPUrlString);
             	
             	AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
             	
-            	aupDAO.createGridAUP("...", "1.0", gridAUPURL);
-            	aupDAO.createVOAUP("...", "1.0", voAUPURL);
+            	aupDAO.createVOAUP("", "1.0", voAUPURL);
 			
             
             } catch (MalformedURLException e) {

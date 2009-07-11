@@ -52,10 +52,13 @@ public class VOMSPermission implements Serializable, Cloneable {
     public static final int ATTRIBUTES_READ = 512;
 
     public static final int ATTRIBUTES_WRITE = 1024;
+    
+    public static final int PERSONAL_INFO_READ = 2048;
+    public static final int PERSONAL_INFO_WRITE = 4096;
+    
+    public static final int SUSPEND = 8192;
 
-    public static final int GRANT = 2048;
-
-    private static final int NUM_PERMISSIONS = 12;
+    private static final int NUM_PERMISSIONS = 14;
 
     private static final int ALL_PERMISSION_MASK = ~0 >>> ( 32 - NUM_PERMISSIONS );
 
@@ -137,9 +140,15 @@ public class VOMSPermission implements Serializable, Cloneable {
 
         if ( test( ATTRIBUTES_WRITE ) )
             permList.add( "ATTRIBUTES_WRITE" );
-
-        if ( test( GRANT ) )
-            permList.add( "GRANT" );
+        
+        if ( test( PERSONAL_INFO_READ) )
+        	permList.add("PERSONAL_INFO_READ");
+        
+        if ( test(PERSONAL_INFO_WRITE))
+        	permList.add("PERSONAL_INFO_WRITE");
+        
+        if ( test(SUSPEND) )
+        	permList.add("SUSPEND");
         
         return permList;
     		
@@ -160,6 +169,15 @@ public class VOMSPermission implements Serializable, Cloneable {
     		
     		return result;
     		
+    }
+    
+    public List<String> toStringList(){
+    	List<String> result = new ArrayList<String>();
+    	if (bits == 0)
+    		return result;
+    	
+    	return buildPermList();
+    	
     }
     
     
@@ -195,6 +213,13 @@ public class VOMSPermission implements Serializable, Cloneable {
     		buf.append(" Req:");
     		buf.append(test(REQUESTS_READ)?"r":"-");
     		buf.append(test(REQUESTS_WRITE)?"w":"-");
+    		
+    		buf.append(" Info:");
+    		buf.append(test(PERSONAL_INFO_READ)?"r":"-");
+    		buf.append(test(PERSONAL_INFO_WRITE)?"w":"-");
+    		
+    		buf.append(" Susp:");
+    		buf.append(test(SUSPEND)?"y":"-");
     		
     		return buf.toString();
     		
@@ -298,12 +323,19 @@ public class VOMSPermission implements Serializable, Cloneable {
         return test( ATTRIBUTES_WRITE );
     }
 
-    public boolean hasGrantPermission() {
-
-        return test( GRANT );
-
+    public boolean hasSuspendPermission(){
+    	
+    	return test (SUSPEND);
+    }
+    
+    public boolean hasPersonalInfoReadPermission(){
+    	return test(PERSONAL_INFO_READ);
     }
 
+    public boolean hasPersonalInfoWritePermission(){
+    	return test(PERSONAL_INFO_WRITE);
+    }
+    
     public VOMSPermission setContainerReadPermission() {
 
         set( CONTAINER_READ );
@@ -377,12 +409,6 @@ public class VOMSPermission implements Serializable, Cloneable {
         return this;
     }
 
-    public VOMSPermission setGrantPermission() {
-
-        set( GRANT );
-        return this;
-
-    }
 
     public VOMSPermission unsetContainerReadPermission() {
 
@@ -450,12 +476,25 @@ public class VOMSPermission implements Serializable, Cloneable {
         return this;
     }
 
-    public VOMSPermission unsetGrantPermission() {
-
-        unset( GRANT );
-        return this;
+    public VOMSPermission setPersonalInfoReadPermission(){
+    	
+    	set (PERSONAL_INFO_READ);
+    	return this;
+    }
+    
+    public VOMSPermission setPersonalInfoWritePermission(){
+    	
+    	set (PERSONAL_INFO_WRITE);
+    	return this;
+    }
+    
+    public VOMSPermission setSuspendPermission(){
+    	
+    	set (SUSPEND);
+    	return this;
     }
 
+    
     public VOMSPermission setAllPermissions() {
 
         set( ALL_PERMISSION_MASK );
@@ -513,6 +552,9 @@ public class VOMSPermission implements Serializable, Cloneable {
         return new VOMSPermission().setEmptyPermissions();
     }
 
+    public static VOMSPermission getSuspendPermissions(){
+    	return new VOMSPermission().setSuspendPermission();
+    }
     public static VOMSPermission getAttributesRWPermissions() {
 
         return new VOMSPermission().setAttributesReadPermission()
@@ -530,6 +572,52 @@ public class VOMSPermission implements Serializable, Cloneable {
         return Integer.toBinaryString( bits );
     }
 
+    public boolean has(String permString){
+    	
+    	if (permString == null)
+    		return false;
+    	
+    	if ( permString.equals( "CONTAINER_READ" ) )
+            return test( CONTAINER_READ );
+        else if ( permString.equals( "CONTAINER_WRITE" ) )
+            return test( CONTAINER_WRITE );
+        else if ( permString.equals( "MEMBERSHIP_READ" ) )
+        	return test( MEMBERSHIP_READ );
+        else if ( permString.equals( "MEMBERSHIP_WRITE" ) )
+        	return test( MEMBERSHIP_WRITE );
+        else if ( permString.equals( "ACL_READ" ) )
+        	return test( ACL_READ );
+     
+        else if ( permString.equals( "ACL_WRITE" ) )
+        	return test( ACL_WRITE );
+            
+        else if ( permString.equals( "ACL_DEFAULT" ) )
+        	return test( ACL_DEFAULT);
+            
+        else if ( permString.equals( "REQUESTS_READ" ) )
+        	return test( REQUESTS_READ );
+            
+        else if ( permString.equals( "REQUESTS_WRITE" ) )
+        	return test( REQUESTS_WRITE );
+            
+        else if ( permString.equals( "ATTRIBUTES_READ" ) )
+        	return test( ATTRIBUTES_READ );
+            
+        else if ( permString.equals( "ATTRIBUTES_WRITE" ) )
+        	return test( ATTRIBUTES_WRITE );
+            
+        else if ( permString.equals( "PERSONAL_INFO_READ"))
+        	return test( PERSONAL_INFO_READ );
+
+        else if ( permString.equals("PERSONAL_INFO_WRITE"))
+        	return test( PERSONAL_INFO_WRITE );
+        	
+        else if ( permString.equals("SUSPEND"))
+        	return test( SUSPEND );
+        else
+            throw new IllegalArgumentException(
+                    "Unknown permission passed as argument: " + permString );
+    }
     
     public static VOMSPermission fromStringArray(String[] perms){
     	
@@ -559,8 +647,12 @@ public class VOMSPermission implements Serializable, Cloneable {
                 perm.setAttributesReadPermission();
             else if ( perms[i].equals( "ATTRIBUTES_WRITE" ) )
                 perm.setAttributesWritePermission();
-            else if ( perms[i].equals( "GRANT" ) )
-                perm.setGrantPermission();
+            else if ( perms[i].equals( "PERSONAL_INFO_READ"))
+            	perm.setPersonalInfoReadPermission();
+            else if ( perms[i].equals("PERSONAL_INFO_WRITE"))
+            	perm.setPersonalInfoWritePermission();
+            else if ( perms[i].equals("SUSPEND"))
+            	perm.setSuspendPermission();
             else if ( perms[i].equals( "ALL" ) )
                 perm.setAllPermissions();
             else if ( perms[i].equals( "NONE" ) )

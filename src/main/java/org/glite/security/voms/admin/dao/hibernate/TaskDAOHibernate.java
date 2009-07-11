@@ -13,12 +13,14 @@ import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.task.ApproveUserRequestTask;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 

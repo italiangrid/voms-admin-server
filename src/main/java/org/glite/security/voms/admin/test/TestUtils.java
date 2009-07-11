@@ -1,5 +1,6 @@
 package org.glite.security.voms.admin.test;
 
+import java.net.URL;
 import java.util.Timer;
 
 import org.apache.commons.logging.Log;
@@ -8,6 +9,10 @@ import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
+import org.glite.security.voms.admin.dao.VOMSCADAO;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.model.VOMSUser;
+import org.hibernate.transaction.ResinTransactionManagerLookup;
 
 
 public class TestUtils {
@@ -23,7 +28,8 @@ public class TestUtils {
     
     public static void configureLogging(){
         
-        PropertyConfigurator.configure( Object.class.getResource( "/test/log4j.properties" ) );
+    	URL loggingConf = Object.class.getResource( "/test/log4j.properties" );
+        PropertyConfigurator.configure( loggingConf );
     }
     
     public static void setupVOMSConfiguration(){
@@ -37,14 +43,33 @@ public class TestUtils {
     
     public static void setupVOMSDB(){
         
-        // Configuration conf = loadHibernateConfiguration();
         UpdateCATask caTask = UpdateCATask.instance( t );
         caTask.run();
 
         DatabaseSetupTask task = DatabaseSetupTask.instance();
         task.run();
         
-        
+    }
+    
+    public static VOMSUser createUser(){
+    	
+    	VOMSUserDAO dao =  VOMSUserDAO.instance();
+    	
+    	VOMSUser u = dao.findByDNandCA(myDn, myCA); 
+    	if ( u == null){
+    		
+    		u = new VOMSUser();
+    		u.setDn(myDn);
+    		u.setEmailAddress(myEmail);
+    		dao.create(u,myCA);	  		
+    	}
+    	
+    	return u;
+    }
+    
+    public static VOMSUser getUser(){
+    	
+    	return VOMSUserDAO.instance().findByDNandCA(myDn, myCA);
     }
 
 }

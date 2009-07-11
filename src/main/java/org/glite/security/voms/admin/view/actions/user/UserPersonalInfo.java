@@ -1,12 +1,8 @@
 package org.glite.security.voms.admin.view.actions.user;
 
-import java.util.Date;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class User {
-	
-	Long id;
+public class UserPersonalInfo {
 	
 	String certificateSubject;
 	String certificateIssuer;
@@ -19,18 +15,9 @@ public class User {
     
     String emailAddress;
     
-    Date membershipExpiration;
 
-    public User() {
+    public UserPersonalInfo() {
 		// TODO Auto-generated constructor stub
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getCertificateSubject() {
@@ -97,13 +84,6 @@ public class User {
 		this.emailAddress = emailAddress;
 	}
 
-	public Date getMembershipExpiration() {
-		return membershipExpiration;
-	}
-
-	public void setMembershipExpiration(Date membershipExpiration) {
-		this.membershipExpiration = membershipExpiration;
-	}
     
 	@Override
 	public String toString() {

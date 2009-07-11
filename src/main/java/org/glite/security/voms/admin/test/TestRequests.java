@@ -10,22 +10,24 @@ import org.glite.security.voms.admin.model.request.RequesterInfo;
 
 
 public class TestRequests {
+	
+	
+	public void createRequest(String dn, String ca, String email){
+		
+	}
 
     public void testCreateVOMembershipRequest(){
         
+    	
+    	HibernateFactory.beginTransaction();
+    	
         RequesterInfo ri = new RequesterInfo();
         
         ri.setCertificateSubject( TestUtils.myDn );
         ri.setCertificateIssuer( TestUtils.myCA );
         ri.setEmailAddress( TestUtils.myEmail );
         
-        ri.addInfo( "PhoneNumber", "338-1620474" );
-        
         ri.setVoMember( false );
-        
-        RequesterInfoDAO riDAO = HibernateDAOFactory.instance().getRequesterInfoDAO();
-        
-        riDAO.makePersistent( ri );
         
         RequestDAO rDAO = HibernateDAOFactory.instance().getRequestDAO();
         

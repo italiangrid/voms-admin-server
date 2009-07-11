@@ -34,7 +34,7 @@ import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.RequestDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
-import org.glite.security.voms.admin.notification.ConfirmRequestNotification;
+import org.glite.security.voms.admin.notification.ConfirmRequest;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.request.VOMSNotificationException;
 import org.glite.security.voms.service.registration.RegistrationRequest;
@@ -88,7 +88,7 @@ public class VOMSRegistrationService implements VOMSRegistration {
             String confirmURL = buildConfirmURL( httpServletRequest, req );
             String cancelURL = buildCancelURL( httpServletRequest, req );
 
-            ConfirmRequestNotification n = new ConfirmRequestNotification(
+            ConfirmRequest n = new ConfirmRequest(
                     request.getEmailAddress(), confirmURL, cancelURL );
 
             try {
@@ -152,7 +152,7 @@ public class VOMSRegistrationService implements VOMSRegistration {
             String confirmURL = buildConfirmURL( httpServletRequest, req );
             String cancelURL = buildCancelURL( httpServletRequest, req );
 
-            ConfirmRequestNotification n = new ConfirmRequestNotification(
+            ConfirmRequest n = new ConfirmRequest(
                     request.getEmailAddress(), confirmURL, cancelURL );
 
             try {

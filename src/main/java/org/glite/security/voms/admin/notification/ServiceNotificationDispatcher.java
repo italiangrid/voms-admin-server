@@ -11,10 +11,14 @@ import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventMask;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.VOMSAdmin;
+import org.glite.security.voms.admin.model.VOMSMapping;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
@@ -54,10 +58,29 @@ public class ServiceNotificationDispatcher implements EventListener {
 			msg.addRecipients(getVoAdminEmailList());
 			NotificationService.instance().send(msg);
 			
-			// Also inform user she has been suspended
+			// Also inform user she has been suspended ?
+		}else if (e instanceof VOMembershipRequestSubmittedEvent){
+			VOMembershipRequestSubmittedEvent ee = (VOMembershipRequestSubmittedEvent)e;
 			
+			String recipient = ee.getRequest().getRequesterInfo().getEmailAddress();
+			
+			ConfirmRequest msg = new ConfirmRequest(recipient,ee.getConfirmURL(), ee.getCancelURL());
+			NotificationService.instance().send(msg);		
+						
+		}else if (e instanceof VOMembershipRequestConfirmedEvent){
+			
+			VOMembershipRequestConfirmedEvent ee = (VOMembershipRequestConfirmedEvent)e;
+			HandleRequest msg = new HandleRequest(ee.getRequest(),ee.getUrl());
+			
+			msg.addRecipients(getVoAdminEmailList());
+			
+			NotificationService.instance().send(msg);
+		}else if (e instanceof VOMembershipRequestApprovedEvent){
+			
+			RequestApproved msg = new RequestApproved(((VOMembershipRequestApprovedEvent) e).getRequest().getRequesterInfo().getEmailAddress());
+			
+			NotificationService.instance().send(msg);
 		}
-		
 		
 	}
 

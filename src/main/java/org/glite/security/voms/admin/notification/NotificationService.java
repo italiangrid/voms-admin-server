@@ -64,7 +64,7 @@ public class NotificationService {
 	public void stop(){
 		
 		log.info("Shutting down notification service");
-		executorService.shutdown();
+		executorService.shutdownNow();
 		
 	}
 
@@ -97,12 +97,12 @@ public class NotificationService {
 					try{
 						n.send();
 						deliveryHadErrors = false;
-						log.debug("Notification '"+n+"' delivered succesfully.");
+						log.info("Notification '"+n+"' delivered succesfully.");
 					
 					}catch(VOMSNotificationException e){
 					
 						deliveryHadErrors = true;
-						log.error("Error dispatching email notification '"+n+"': "+e.getCause().getMessage());
+						log.error("Error dispatching email notification '"+n+"': "+e.getCause());
 						
 						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount){
 							outgoingQueue.put(n);
@@ -125,6 +125,7 @@ public class NotificationService {
 						
 				}catch (InterruptedException e){
 					
+					return;
 				}
 			}
 			

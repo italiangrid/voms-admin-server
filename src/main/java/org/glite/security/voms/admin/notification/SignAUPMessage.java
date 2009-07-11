@@ -8,6 +8,7 @@ import org.glite.security.voms.admin.common.URLBuilder;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.task.SignAUPTask;
 
 public class SignAUPMessage extends AbstractVelocityNotification {
 	
@@ -25,15 +26,17 @@ public class SignAUPMessage extends AbstractVelocityNotification {
 	@Override
 	protected void buildMessage() {
 		
-		setSubject(subjectPrefix+" Sign AUP notification");
-		
 		VOMSConfiguration conf = VOMSConfiguration.instance(); 
         String voName = conf.getVOName();
         
+        setSubject("Sign '"+aup.getName()+"' notification for VO '"+conf.getVOName()+"'.");
+        
 		Date expirationDate = null;
         
-        if (user.hasSignAUPTaskPending(aup))
-        	expirationDate = user.getPendingSignAUPTask(aup).getExpiryDate();
+		SignAUPTask t = user.getPendingSignAUPTask(aup);
+        
+		if (t != null)
+        	expirationDate = t.getExpiryDate();
         
         
         context.put( "voName", voName );

@@ -84,13 +84,17 @@ public class HibernateFactory {
 
     public static Session getSession() {
 
+    	log.debug("Getting session for thread: "+ Thread.currentThread());
         Session s = (Session) threadSession.get();
         try {
 
             if ( s == null ) {
 
+            	
                 s = sessionFactory.openSession();
                 threadSession.set( s );
+                
+                log.debug("Opening new session for thread "+Thread.currentThread());
 
             }
 
@@ -109,8 +113,10 @@ public class HibernateFactory {
             Session s = (Session) threadSession.get();
             threadSession.set( null );
 
-            if ( s != null && s.isOpen() )
+            if ( s != null && s.isOpen() ){
+            	log.debug("Closing session for thread "+Thread.currentThread());
                 s.close();
+            }
 
         } catch ( HibernateException ex ) {
 

@@ -29,6 +29,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import ognl.OgnlContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -47,9 +49,11 @@ public class PrintPermissionTag extends TagSupport {
     private static final Log log = LogFactory.getLog( PrintPermissionTag.class );
     
     String header;
+    
+    String var;
 
     private static final String[] headerNames = { "Container", "Membership",
-            "ACL", "Attributes", "Requests" };
+            "ACL", "Attributes", "Requests", "Suspend" };
 
     private static final String[] shortHeaderNames = { "Cont.", "Memb.", "ACL",
             "Attr.", "Req." };
@@ -158,6 +162,20 @@ public class PrintPermissionTag extends TagSupport {
             if ( p.hasRequestWritePermission() )
                 out.write( "w" );
             out.write( "</td>" );
+            
+            // PERSONAL INFO
+            out.write( "<td>" );
+            if ( p.hasPersonalInfoReadPermission() )
+                out.write( "r" );
+            if ( p.hasPersonalInfoWritePermission() )
+                out.write( "w" );
+            out.write( "</td>" );
+            
+            // SUSPEND permission
+            out.write( "<td>" );
+            if ( p.hasSuspendPermission() )
+                out.write( "yes" );
+            out.write( "</td>" );
 
             // out.println( "</tr>" );
         } catch ( IOException e ) {
@@ -182,10 +200,9 @@ public class PrintPermissionTag extends TagSupport {
     }
 
     public int doStartTag() throws JspException {
-
-        LoopTagSupport ancestorLoop = (LoopTagSupport) findAncestorWithClass( this, LoopTagSupport.class );
-        
-        Object o = ancestorLoop.getCurrent();
+    	
+    	// Look in request context 
+    	Object o = pageContext.getAttribute(getVar());
         
         VOMSPermission p;
         
@@ -210,5 +227,15 @@ public class PrintPermissionTag extends TagSupport {
         
         return SKIP_BODY;
     }
+
+	public String getVar() {
+		return var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+    
+    
 
 }

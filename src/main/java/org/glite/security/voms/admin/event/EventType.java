@@ -4,7 +4,8 @@ public enum EventType {
 
 	UserMembershipEvent(0),
 	UserAUPEvent(1),
-	UserSuspensionEvent(2);
+	UserSuspensionEvent(2),
+	VOMembershipRequestEvent(3);
 	
 	
 	int bitNo;

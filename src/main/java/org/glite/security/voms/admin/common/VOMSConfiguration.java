@@ -114,14 +114,17 @@ public final class VOMSConfiguration {
     /**
      * AUP Properties
      */
-    public static final String GRID_AUP_URL = "voms.grid_aup.url";
-    public static final String VO_AUP_URL = "voms.vo_aup.url";
+    public static final String GRID_AUP_URL = "voms.aup.grid_aup.initial_url";
+    public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
     public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
     
     /**
      * Membership Properties
      */
     public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
+    
+    public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
+    
     
     
     Log log = LogFactory.getLog( VOMSConfiguration.class );
@@ -907,11 +910,11 @@ public final class VOMSConfiguration {
 	}
 	
 	public String getDefaultGridAUPURL(){
-		return String.format("file://%s/etc/voms-admin/templates/aup/grid-aup.txt", getString("GLITE_LOCATION"));
+		return String.format("file://%s/etc/voms-admin/%s/grid-aup.txt", getString("GLITE_LOCATION_VAR"), getVOName());
 	}
 	
 	public String getDefaultVOAUPURL(){
-		return String.format("file://%s/etc/voms-admin/templates/aup/vo-aup.txt", getString("GLITE_LOCATION"));
+		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt", getString("GLITE_LOCATION_VAR"), getVOName());
 	}
     
     public ServletContext getServletContext(){

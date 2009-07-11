@@ -54,13 +54,6 @@ public final class VOMSService {
             
             Properties p = new Properties();
             
-//            File based template conf
-              
-//            p.put("resource.loader","file");
-//            p.put("file.resource.loader.class","org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-//            p.put("file.resource.loader.path",conf.getTemplatePath());
-            
-            // Classpath based template conf
             p.put("resource.loader","cpath");
             p.put("cpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
             
@@ -134,6 +127,7 @@ public final class VOMSService {
         
         // Close hibernate session factory
         HibernateFactory.getFactory().close();
+        
         log.info( "VOMS admin stopped ." );
     }
 

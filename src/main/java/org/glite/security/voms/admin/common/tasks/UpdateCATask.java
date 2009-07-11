@@ -107,6 +107,7 @@ public final class UpdateCATask extends TimerTask {
         HibernateFactory.beginTransaction();
         updateCAs();
         HibernateFactory.commitTransaction();
+        HibernateFactory.closeSession();
         log.info( "CA update thread done." );
 
     }

@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
@@ -42,11 +43,18 @@ public class MembershipValidityCheckTask extends TimerTask {
 	protected MembershipValidityCheckTask(Timer t) {
 		this.timer = t;
 		
+		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean("voms.request.webui.enabled", true);
+		
+		if (!registrationEnabled){
+			log.info("MembershipValidityCheck thread not started since registration is DISABLED for this vo.");
+			return;
+		}
+		
 		if (timer != null){
 			
-			long period = 30L;
+			long period = VOMSConfiguration.instance().getLong(VOMSConfiguration.MEMBERSHIP_CHECK_PERIOD,30L); 
 			
-			log.info("Scheduling MembershiValidityCheckTask with period: "+ period+" seconds.");
+			log.info("Scheduling MembershipValidityCheckTask with period: "+ period+" seconds.");
 			timer.schedule(this,30*1000, period*1000);
 			
 		}
@@ -54,13 +62,12 @@ public class MembershipValidityCheckTask extends TimerTask {
 
 	@Override
 	public void run() {
-		
+		log.debug("started...");
 		HibernateFactory.beginTransaction();
 		
 		
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 		VOMSUserDAO userDAO = VOMSUserDAO.instance();
-		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 		
 		// Suspend users whose membership has expired
 		// and inform VO managers
@@ -78,43 +85,50 @@ public class MembershipValidityCheckTask extends TimerTask {
 		}
 		
 		// Suspend users that failed to sign AUP in time
-		List<VOMSUser> gridAupFailingUsers;
-			
-		gridAupFailingUsers  = userDAO.getGridAUPFailingUsers();
+		List<VOMSUser> voAupFailingUsers = userDAO.getAUPFailingUsers(aupDAO.getVOAUP());
 		
-		AUP gridAUP = aupDAO.getGridAUP();
+		log.debug("voAUPFailingUsers:"+voAupFailingUsers);
 		
-		for (VOMSUser u: gridAupFailingUsers){
-			
-			if (!u.hasSignAUPTaskPending(gridAUP)){
-			
-				SignAUPTask t = taskDAO.createSignAUPTask(gridAUP);
-				u.assignTask(t);
-				log.debug("Sign aup task assigned to user '"+u+"'.");
-				EventManager.dispatch(new SignAUPTaskAssignedEvent(u, gridAUP));
-			
-			}else{
-				
-				for (Task t: u.getTasks()){
-					
-					if (t instanceof SignAUPTask){
-						
-						SignAUPTask tt = (SignAUPTask)t;
-						
-						if (tt.getAup().equals(gridAUP) && tt.getStatus().equals(TaskStatus.EXPIRED) && !u.isSuspended()){
-							log.info("Suspeding user '"+u+"' that failed to sign GRID AUP in time");
-							
-							u.suspend(SuspensionReason.FAILED_TO_SIGN_AUP);
-							EventManager.dispatch(new UserSuspendedEvent(u,SuspensionReason.FAILED_TO_SIGN_AUP));
-						}
-						
-					}
-				}
-				
-			}
-		}
+		for (VOMSUser u: voAupFailingUsers)
+			checkAndPossiblySuspendUser(u, aupDAO.getVOAUP());
 		
 		HibernateFactory.commitTransaction();
+		HibernateFactory.closeSession();
+		log.debug("done.");
 
 	}	
+	
+	
+	protected void checkAndPossiblySuspendUser(VOMSUser u, AUP aup){
+		
+		log.debug("Checking user '"+u+"' compliance with '"+aup.getName()+"'");
+		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
+		
+		if (u.getPendingSignAUPTask(aup) == null){
+			
+			SignAUPTask t = taskDAO.createSignAUPTask(aup);
+			u.assignTask(t);
+			log.debug("Sign aup task assigned to user '"+u+"'.");
+			EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
+		
+		}else{
+			
+			for (Task t: u.getTasks()){
+				
+				if (t instanceof SignAUPTask){
+					
+					SignAUPTask tt = (SignAUPTask)t;
+					
+					if (tt.getAup().equals(aup) && tt.getStatus().equals(TaskStatus.EXPIRED) && !u.getSuspended()){
+						log.info("Suspeding user '"+u+"' that failed to sign GRID AUP in time");
+						
+						u.suspend(SuspensionReason.FAILED_TO_SIGN_AUP);
+						EventManager.dispatch(new UserSuspendedEvent(u,SuspensionReason.FAILED_TO_SIGN_AUP));
+					}
+					
+				}
+			}
+			
+		}
+	}
 }

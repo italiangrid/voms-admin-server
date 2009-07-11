@@ -1,7 +1,6 @@
 package org.glite.security.voms.admin.view.actions.group;
 
 
-import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -10,8 +9,6 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
@@ -24,8 +21,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 	@Result(name=BaseAction.INPUT,location="groupCreate")
 })
 
-@Action(value="create", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "execute"})})
-public class CreateAction extends BaseAction implements ModelDriven<VOMSGroup>, Preparable{
+@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "execute"})
+public class CreateAction extends GroupActionSupport{
 
 	/**
 	 * 
@@ -60,11 +57,7 @@ public class CreateAction extends BaseAction implements ModelDriven<VOMSGroup>, 
 		return group;
 	}
 
-	public void prepare() throws Exception {
-		
-		
-	}
-
+	
 	@RequiredStringValidator(type=ValidatorType.FIELD,message="A name for the group is required!")
 	@RegexFieldValidator(type=ValidatorType.FIELD, message="The group name field contains illegal characters!", expression="^[^<>&=;]*$")
 	public String getGroupName() {
@@ -81,6 +74,11 @@ public class CreateAction extends BaseAction implements ModelDriven<VOMSGroup>, 
 
 	public void setParentGroupName(String parentGroupName) {
 		this.parentGroupName = parentGroupName;
+	}
+	
+	@Override
+	public void prepare() throws Exception {
+		
 	}
 	
 	

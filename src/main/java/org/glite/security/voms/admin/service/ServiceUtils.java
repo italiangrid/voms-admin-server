@@ -216,8 +216,7 @@ public class ServiceUtils {
         cert.setId( c.getId() );
         cert.setSubject( c.getSubjectString() );
         cert.setIssuer( c.getCa().getSubjectString() );
-        if (c.getNotAfter() != null)
-            cert.setNotAfter( c.getNotAfter().toString() );
+        
         
         return cert;
         

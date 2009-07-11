@@ -63,7 +63,6 @@ public class VOMSRole implements Serializable, Auditable, Comparable {
     
     Set <TagMapping> tagMappings = new HashSet <TagMapping>();
     
-    
 
     /**
      * @return Returns the id.
@@ -311,7 +310,5 @@ public class VOMSRole implements Serializable, Auditable, Comparable {
     
         this.tagMappings = tagMappings;
     }
-
-    
     
 }

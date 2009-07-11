@@ -14,7 +14,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.validator.annotations.ExpressionValidator;
 import com.opensymphony.xwork2.validator.annotations.FieldExpressionValidator;
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
@@ -34,8 +36,11 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparab
 	
 	Long aupId;
 	
-	boolean aupAccepted;
+	String aupAccepted;
 	
+	
+
+
 	AUP aup;
 	
 	@Override
@@ -46,8 +51,13 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparab
 		if (u == null)
 			throw new VOMSException("Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
 		
-		if (aupAccepted)
+		if (aupAccepted.equals("true"))
 			VOMSUserDAO.instance().signAUP(u,aup);
+		else{
+			
+			addFieldError("aupAccepted", "You have to accept the terms of the AUP to proceed!");
+			return INPUT;
+		}
 		
 		return SUCCESS;
 	}
@@ -76,17 +86,16 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparab
 		}
 	}
 
-
-	public boolean isAupAccepted() {
+	@RequiredFieldValidator(type=ValidatorType.FIELD, message="You must sign the AUP.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^true$", message="You must accept the terms of the AUP to proceed")
+	public String getAupAccepted() {
 		return aupAccepted;
 	}
 
 
-	@RequiredFieldValidator(type=ValidatorType.FIELD, message="You must sign the AUP.")
-	public void setAupAccepted(boolean aupAccepted) {
+	public void setAupAccepted(String aupAccepted) {
 		this.aupAccepted = aupAccepted;
 	}
-	
 	
 
 }

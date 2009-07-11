@@ -20,48 +20,40 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.operations.requests;
 
-import java.util.Date;
-
 import org.glite.security.voms.admin.common.IllegalRequestStateException;
-import org.glite.security.voms.admin.dao.RequestDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.database.NoSuchRequestException;
-import org.glite.security.voms.admin.model.VOMembershipRequest;
-import org.glite.security.voms.admin.notification.RequestRejectedNotification;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
+import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.model.request.Request.StatusFlag;
 
 
 public class RejectVOMembershipOperation extends RequestRWOperation {
 
-    Long requestId;
+    NewVOMembershipRequest req;
     
-    private RejectVOMembershipOperation(Long reqId) {
+    private RejectVOMembershipOperation(NewVOMembershipRequest request) {
 
-        requestId = reqId;
+        this.req = request;
         
     }
     
     protected Object doExecute() {
 
-        VOMembershipRequest req = (VOMembershipRequest) LoadVOMembershipRequestOperation.instance( requestId ).execute();
         
-        if (req == null)
-            throw new NoSuchRequestException("No request found with id "+requestId);
-        
-        if (!req.getStatus().equals( VOMembershipRequest.CONFIRMED ))
+        if (!req.getStatus().equals( StatusFlag.CONFIRMED))
             throw new IllegalRequestStateException("Illegal state for request!");
         
-        req.setStatus( VOMembershipRequest.REJECTED );
-        req.setEvaluationDate( new Date() );
-        RequestDAO.instance().save( req );
+        req.reject();
         
-        // Notify user.
-        RequestRejectedNotification n = new RequestRejectedNotification(req.getEmailAddress(),"The VO admin didn't find appropriate to accept your request.");
-        n.send();
+        EventManager.dispatch(new VOMembershipRequestRejectedEvent(req,"The VO administrator didn't find appropriate to approve your membership request."));
         
         return req;
     }
 
-    public static RejectVOMembershipOperation instance(Long reqId) {
+    public static RejectVOMembershipOperation instance(NewVOMembershipRequest req) {
 
-        return new RejectVOMembershipOperation(reqId);
+        return new RejectVOMembershipOperation(req);
     }
 }

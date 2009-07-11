@@ -3,6 +3,8 @@
  */
 package org.glite.security.voms.admin.view.actions;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +99,13 @@ public class BaseAction extends ActionSupport {
 		return result;
 	}
 	
+	protected Date getFutureDate(Date initialDate, int field, int increment){
+		Calendar c = Calendar.getInstance();
+		c.setTime(initialDate);
+		c.add(field,increment);
+		
+		return c.getTime();
+	}
 
 	
 }

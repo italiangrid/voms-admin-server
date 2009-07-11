@@ -20,50 +20,48 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.operations.requests;
 
-import java.util.Date;
-
 import org.glite.security.voms.admin.common.IllegalRequestStateException;
-import org.glite.security.voms.admin.dao.RequestDAO;
-import org.glite.security.voms.admin.database.NoSuchRequestException;
-import org.glite.security.voms.admin.model.VOMembershipRequest;
-import org.glite.security.voms.admin.notification.RequestApprovedNotification;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.model.request.Request.StatusFlag;
+import org.glite.security.voms.admin.operations.BaseVomsOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
 
 
-public class ApproveVOMembershipOperation extends RequestRWOperation {
+public class ApproveVOMembershipOperation extends BaseVomsOperation {
 
-    Long requestId;
+       
+    NewVOMembershipRequest request;
     
-    private ApproveVOMembershipOperation(Long reqId) {
-
-        requestId = reqId;
-    }
+    private ApproveVOMembershipOperation(NewVOMembershipRequest req) {
+		request = req;
+	}
     
     protected Object doExecute() {
-
-        VOMembershipRequest req = (VOMembershipRequest) LoadVOMembershipRequestOperation.instance( requestId ).execute();
         
-        if (req == null)
-            throw new NoSuchRequestException("No request found with id "+requestId);
-        
-        if (!req.getStatus().equals( VOMembershipRequest.CONFIRMED ))
+        if (!request.getStatus().equals( StatusFlag.CONFIRMED))
             throw new IllegalRequestStateException("Illegal state for request!");
         
-        CreateUserOperation.instance( req.getDn(), req.getCa(), req.getCn(), null, req.getEmailAddress() ).execute();
+        CreateUserOperation.instance(request).execute();
         
-        req.setStatus( VOMembershipRequest.APPROVED );
-        req.setEvaluationDate( new Date() );
-        RequestDAO.instance().save( req );
+        request.approve();
+                
+        EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
         
-        // Notify user.
-        RequestApprovedNotification n = new RequestApprovedNotification(req.getEmailAddress());
-        n.send();
-        
-        return req;
+        return request;
     }
 
-    public static ApproveVOMembershipOperation instance(Long reqId) {
+    public static ApproveVOMembershipOperation instance(NewVOMembershipRequest req) {
 
-        return new ApproveVOMembershipOperation(reqId);
+        return new ApproveVOMembershipOperation(req);
     }
+
+	@Override
+	protected void setupPermissions() {
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission().setRequestsReadPermission().setRequestsWritePermission());
+		
+	}
 }

@@ -90,46 +90,47 @@ public class VOMSCADAO implements Searchable {
 
         Date now = new Date();
 
-        if ( now.after( ca.getNotAfter() ) ) {
-
-            log.warn( "CA '" + ca.getSubjectString()
-                    + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
-            
-            // The CA has expired, let's see if the new certificate extends its
-            // validity
-            if ( !now.after( caCert.getNotAfter() ) ) {
-                log.info( "Updating validity period for CA '"
-                        + ca.getSubjectString() + "' from '" + ca.getNotAfter()
-                        + "' to '" + caCert.getNotAfter() + "'." );
-                ca.update( caCert );
-                HibernateFactory.getSession().update( ca );
-
-            } else {
-
-                if ( VOMSConfiguration.instance().getBoolean(
-                        VOMSConfiguration.DROP_EXPIRED_CAS, false ) ) {
-                    
-                    // In this case the CA has expired and there is no
-                    // substitute certificate
-                    // We check if there are certificates bound to this ca, and,
-                    // if not, drop
-                    // the ca from the database.
-                    List <Certificate> certs = CertificateDAO.instance()
-                            .getForCA( ca );
-                    if ( certs.isEmpty() ) {
-
-                        log.warn( "Removing expired CA '"
-                                + ca.getSubjectString() + "' from database..." );
-                        // First remove the admins
-                        VOMSAdminDAO.instance().deleteFromCA( ca );
-                        HibernateFactory.getSession().delete( ca );
-                    }else
-                        log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
-                    
-                }
-            }
-        }
+//        if ( now.after( ca.getNotAfter() ) ) {
+//
+//            log.warn( "CA '" + ca.getSubjectString()
+//                    + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
+//            
+//            // The CA has expired, let's see if the new certificate extends its
+//            // validity
+//            if ( !now.after( caCert.getNotAfter() ) ) {
+//                log.info( "Updating validity period for CA '"
+//                        + ca.getSubjectString() + "' from '" + ca.getNotAfter()
+//                        + "' to '" + caCert.getNotAfter() + "'." );
+//                ca.update( caCert );
+//                HibernateFactory.getSession().update( ca );
+//
+//            } else {
+//
+//                if ( VOMSConfiguration.instance().getBoolean(
+//                        VOMSConfiguration.DROP_EXPIRED_CAS, false ) ) {
+//                    
+//                    // In this case the CA has expired and there is no
+//                    // substitute certificate
+//                    // We check if there are certificates bound to this ca, and,
+//                    // if not, drop
+//                    // the ca from the database.
+//                    List <Certificate> certs = CertificateDAO.instance()
+//                            .getForCA( ca );
+//                    if ( certs.isEmpty() ) {
+//
+//                        log.warn( "Removing expired CA '"
+//                                + ca.getSubjectString() + "' from database..." );
+//                        // First remove the admins
+//                        VOMSAdminDAO.instance().deleteFromCA( ca );
+//                        HibernateFactory.getSession().delete( ca );
+//                    }else
+//                        log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
+//                    
+//                }
+//            }
+    
     }
+    
 
     public void saveOrUpdateTrustedCA( X509Certificate caCert,
             String description ) {
@@ -145,9 +146,8 @@ public class VOMSCADAO implements Searchable {
                 log.debug( "Added [ " + ca.getSubjectString()
                         + "] to trusted CA database." );
 
-        } else
-            checkValidityAndUpdate( ca, caCert );
-
+        }
+        
     }
 
     public void saveTrustedCA( String caDN ) {

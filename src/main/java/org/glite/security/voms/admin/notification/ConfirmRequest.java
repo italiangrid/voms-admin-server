@@ -24,34 +24,30 @@ import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 
 
-public class RequestApprovedNotification extends VelocityEmailNotification {
+public class ConfirmRequest extends AbstractVelocityNotification {   
     
-    private static final String templateFileName = "RequestApproved.vm";
+    private String confirmURL;
+    private String cancelURL;
     
-    
-    public RequestApprovedNotification(String recipient) {
-
-        setTemplateFile( templateFileName );
-        addRecipient( recipient );
+    public ConfirmRequest(String recipient, String confirmURL, String cancelURL) {
         
-     
+        addRecipient( recipient );
+        this.confirmURL = confirmURL;
+        this.cancelURL = cancelURL;
     }
-
 
     protected void buildMessage() {
 
         VOMSConfiguration conf = VOMSConfiguration.instance(); 
         String voName = conf.getVOName();
-        
-        setSubject( "Your membership request for VO "+voName+" has been approved." );
-        
-        VelocityContext context = new VelocityContext();
-        
+        setSubject( "Your membership request for VO "+voName);
+               
         context.put( "voName", voName );
-        context.put( "recipient", getRecipientList().get( 0 ));
-        
-        buildMessageFromTemplate( context );
+        context.put( "recipient", getRecipientList().get(0));
+        context.put( "confirmURL", confirmURL);
+        context.put( "cancelURL", cancelURL);
+    
+        super.buildMessage();
         
     }
-
 }

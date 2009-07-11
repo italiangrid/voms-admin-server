@@ -20,6 +20,7 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.jsp;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 import javax.servlet.jsp.JspException;
@@ -28,7 +29,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.taglib.TagUtils;
 import org.glite.security.voms.admin.dao.SearchResults;
 
 
@@ -86,8 +86,8 @@ public class SearchNavBarTag extends TagSupport {
         return url.toString();
     }
 
-    protected void writeLink( TagUtils t, SearchResults res, int firstResult,
-            String content ) throws JspException {
+    protected void writeLink( SearchResults res, int firstResult,
+            String content ) throws JspException, IOException {
 
         String link;
         String url;
@@ -111,89 +111,95 @@ public class SearchNavBarTag extends TagSupport {
             link = "<div class=\"" + disabledLinkStyleClass + "\">" + content
                     + "</div>";
 
-        t.write( pageContext, link );
+        pageContext.getOut().write(link);
 
     }
 
-    protected void writeFirst( TagUtils t, SearchResults res )
-            throws JspException {
+    protected void writeFirst( SearchResults res )
+            throws JspException, IOException {
 
-        writeLink( t, res, 0, "first" );
-
-    }
-
-    protected void writeLast( TagUtils t, SearchResults res )
-            throws JspException {
-
-        writeLink( t, res, res.getCount() - res.getResultsPerPage(), "last" );
+        writeLink( res, 0, "first" );
 
     }
 
-    protected void writePrevious( TagUtils t, SearchResults res )
-            throws JspException {
+    protected void writeLast( SearchResults res )
+            throws JspException, IOException {
+
+        writeLink( res, res.getCount() - res.getResultsPerPage(), "last" );
+
+    }
+
+    protected void writePrevious( SearchResults res )
+            throws JspException, IOException {
 
         int previousIndex = res.getFirstResult() - res.getResultsPerPage();
         if (previousIndex < 0)
             previousIndex = 0;
         
-        writeLink( t, res, previousIndex,
+        writeLink( res, previousIndex,
                 "&lt;" );
 
     }
 
-    protected void writeNext( TagUtils t, SearchResults res )
-            throws JspException {
+    protected void writeNext( SearchResults res )
+            throws JspException, IOException {
         
-        writeLink( t, res, res.getFirstResult() + res.getResultsPerPage(),
+        writeLink(res, res.getFirstResult() + res.getResultsPerPage(),
                 "&gt;" );
 
     }
 
-    protected void writeResultCount( TagUtils t, SearchResults res )
-            throws JspException {
+    protected void writeResultCount( SearchResults res )
+            throws JspException, IOException {
 
         String resCount = ( res.getFirstResult() + 1 ) + "-"
                 + ( res.getFirstResult() + res.getResults().size() ) + " of "
                 + res.getCount();
 
-        t.write( pageContext, resCount );
+        pageContext.getOut().write(resCount);
+        
     }
 
     public int doStartTag() throws JspException {
 
         SearchResults results = (SearchResults) pageContext.findAttribute( id );
 
-        TagUtils tUtils = TagUtils.getInstance();
         if ( results == null )
             throw new JspTagException(
                     "SearchResults not found in pageContext. Key: " + id );
-
-        tUtils.write( pageContext, "<div class=\"" + styleClass + "\">\n" );
+        
+        try{
+        pageContext.getOut().write("<div class=\"" + styleClass + "\">\n" );
 
         if ( results.getFirstResult() > 0 ) {
 
             // Not the second page
             if ( ( results.getFirstResult() - results.getResultsPerPage() ) > 0 )
-                writeFirst( tUtils, results );
+                writeFirst( results );
 
-            writePrevious( tUtils, results );
+            writePrevious( results );
 
         }
 
-        writeResultCount( tUtils, results );
+        writeResultCount( results );
 
         if ( results.getRemainingCount() > 0 ) {
 
-            writeNext( tUtils, results );
+            writeNext( results );
 
             // Not the last - 1 page.
             if ( results.getRemainingCount() > results.getResultsPerPage()) {
 
-                writeLast( tUtils, results );
+                writeLast( results );
             }
         }
 
-        tUtils.write( pageContext, "</div>" );
+        pageContext.getOut().write("</div>");
+        }catch(IOException e){
+        	
+        	log.error("Error writing jsp page: "+e.getMessage(),e);
+        	throw new JspException("Error writing jsp page: "+e.getMessage(), e);
+        }
         return SKIP_BODY;
     }
 

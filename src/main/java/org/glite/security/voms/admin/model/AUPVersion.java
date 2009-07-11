@@ -238,7 +238,7 @@ public class AUPVersion implements Serializable, Comparable <AUPVersion> {
 		this.lastForcedReacceptanceTime = lastForcedReacceptanceTime;
 	}
 	
-	public Date lastUpdateTime(){
+	public Date getLastUpdateTime(){
 		
 		if (getLastForcedReacceptanceTime()!= null)
 			return getLastForcedReacceptanceTime();

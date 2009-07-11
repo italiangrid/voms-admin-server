@@ -1,6 +1,7 @@
 package org.glite.security.voms.admin.dao.generic;
 
 import java.util.Date;
+import java.util.List;
 
 import org.glite.security.voms.admin.model.request.CertificateRequest;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
@@ -13,9 +14,17 @@ import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 public interface RequestDAO extends GenericDAO <Request, Long>{
 
  
-    NewVOMembershipRequest createVOMembershipRequest(RequesterInfo requester, Date expirationDate);
-    GroupMembershipRequest createGroupMembershipRequest();
-    RoleMembershipRequest createRoleMembershipRequest();
-    CertificateRequest createCertificateRequest();
+    public NewVOMembershipRequest createVOMembershipRequest(RequesterInfo requester, Date expirationDate);
+    
+    public GroupMembershipRequest createGroupMembershipRequest();
+    
+    public RoleMembershipRequest createRoleMembershipRequest();
+    
+    public CertificateRequest createCertificateRequest();
+	
+    public NewVOMembershipRequest findActiveVOMembershipRequest(RequesterInfo requester);
+    
+    public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests();
+    
     
 }

@@ -82,6 +82,8 @@ public class VOMSUserDAO{
 	private VOMSUserDAO() {
 
 	}
+	
+	
 
 	public void signAUP(VOMSUser user, AUP aup ){
 	    
@@ -96,10 +98,13 @@ public class VOMSUserDAO{
 	    if (aupVersion == null)
 	        throw new NotFoundException("No registered version found for AUP '"+aup.getName()+"'.");
 	    
+	    log.debug("User '"+user+"' signing aup version '"+aupVersion+"'");
+	    
 	    AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
 	    
 	    if (r == null){
 	        
+	    	log.debug("Creating new aup acceptance record!");
 	        AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
 	        aupRecord.setLastAcceptanceDate( new Date() );
 	        
@@ -108,22 +113,34 @@ public class VOMSUserDAO{
 	    
 	    }else{
 	    	
+	    	log.debug("Updating existing acceptance record");
 	    	// User has signed but has been prompted to resign
         	AUPAcceptanceRecord aupRecord = user.getAUPAccceptanceRecord(aupVersion);
         	aupRecord.setLastAcceptanceDate(new Date());
         	
 	    }
 	        
-	    SignAUPTask pendingTask = user.getPendingSignAUPTask(aupVersion.getAup());
+	    SignAUPTask pendingTask;
 	    
-	    if (pendingTask != null)
-	    	pendingTask.setCompleted();
-	    
-	    if (user.isSuspended() && user.getSuspensionReasonCode().equals(SuspensionReason.FAILED_TO_SIGN_AUP))
-	    	user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);	    	
+	    do{
 	    	
-	    	
+	    	pendingTask = user.getPendingSignAUPTask(aupVersion.getAup());
 	    
+	    	if (pendingTask != null){
+	    		log.debug("Setting task '"+pendingTask+"' completed");
+	    		pendingTask.setCompleted();
+	    	}
+	    	
+	    }while(pendingTask != null);
+	    
+	    if (user.isSuspended() && 
+	    		user.getSuspensionReasonCode().equals(SuspensionReason.FAILED_TO_SIGN_AUP)){
+	    		
+		    	log.debug("Restoring user '"+user+"'");
+	    		user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);
+	    }
+	    
+	    HibernateFactory.getSession().saveOrUpdate(user);
 	    EventManager.dispatch(new UserSignedAUPEvent(user,aupVersion.getAup()));
 	    
 	}
@@ -152,26 +169,72 @@ public class VOMSUserDAO{
 		return q.list();
 	}
 	
-	public List<VOMSUser> getGridAUPFailingUsers(){
+	public List<VOMSUser> getAUPFailingUsers(AUP aup){
 		
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		AUP gridAUP = aupDAO.getGridAUP();
+		List<VOMSUser> result = new ArrayList<VOMSUser>();
 		
-		AUPVersion gridAUPActiveVersion = gridAUP.getActiveVersion();
+		AUPVersion activeVersion = aup.getActiveVersion();
 		
-		ArrayList<VOMSUser> result = new ArrayList<VOMSUser>();
+		// Get users First that do not have any acceptance records 
+		String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty";
 		
-		// Get users First that do not have an acceptance record for the active aup version and
-		// those that have an expired aup acceptance record
-		
-		String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty"; 
 		
 		Query q = HibernateFactory.getSession().createQuery(queryString);
+		result.addAll(q.list());
+		
+		log.debug("Users with no acceptance records for aup:"+result);
+		
+		// Add users that have an expired aup acceptance record due to aup update or acceptance retriggering.
+		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion = :aupVersion and r.lastAcceptanceDate < :lastUpdateTime ";
 		
 		
-		return q.list();
+		Query q2 = HibernateFactory.getSession().createQuery(qString);
+		q2.setEntity("aupVersion", activeVersion);
+		q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+		List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
+		result.addAll(expiredDueToAUPUpdateUsers);
+		
+		log.debug("Users that signed the AUP before it was last updated:"+expiredDueToAUPUpdateUsers);
+		
+		// Add users that have an expired aup acceptance record
+		Query q3 = HibernateFactory.getSession().createQuery("select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion = :aupVersion " +
+				"and r.lastAcceptanceDate > :lastUpdateTime ");
+		q3.setEntity("aupVersion", activeVersion);
+		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+		
+		List<VOMSUser> potentiallyExpiredUsers = q3.list();
+		HibernateFactory.getSession().flush();
+		
+		log.debug("Users that needs checking since their aup acceptance record could be expired:"+potentiallyExpiredUsers);
+		Date now = new Date();
+		
+		for (VOMSUser u: potentiallyExpiredUsers){
+			 
+			AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup.getActiveVersion());
+			
+			log.debug("Checking user '"+u+"'");
+			Calendar c = Calendar.getInstance();
+			c.setTime(r.getLastAcceptanceDate());
+			log.debug("Last acceptance date calendar time:"+c.getTime());
+			c.add(Calendar.MINUTE, aup.getReacceptancePeriod());
+			log.debug("Last acceptance date after adding "+aup.getReacceptancePeriod()+": "+c.getTime());
+			
+			log.debug("Last aup acceptance date: "+r.getLastAcceptanceDate()+
+					", aup acceptance validity deadline: "+c.getTime() +
+					", now: "+now);
+			
+			if (c.getTime().before(now)){
+				
+				log.debug(String.format("Adding user %s to results due to expired aup acceptance report (aup validity expiration)", u.toString()));
+				result.add(u);
+			}
+		}
+		
+		
+		return result;	
 		
 	}
+	
 
 	public void addCertificate(VOMSUser u, String dn, String caDn){
 		assert u != null: "User must be non-null!";
@@ -227,7 +290,6 @@ public class VOMSUserDAO{
 		String subjectString = DNUtil.getBCasX500(x509Cert.getSubjectX500Principal());
 		cert.setSubjectString(subjectString);
 		cert.setCreationTime(new Date());
-		cert.setNotAfter(x509Cert.getNotAfter());
 		cert.setSuspended(false);
 		cert.setCa(ca);
 		
@@ -304,6 +366,9 @@ public class VOMSUserDAO{
     	
     		if (usr.getDn() == null)
     			throw new NullArgumentException("Please specify a dn for the user!");
+    		
+    		if (usr.getEmailAddress() == null )
+                throw new NullArgumentException("Please specify an email address for the user!");
     	}
         
     }

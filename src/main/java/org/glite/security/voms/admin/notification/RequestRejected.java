@@ -20,39 +20,31 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.notification;
 
-import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.model.VOMembershipRequest;
 
-
-public class HandleRequestNotification extends VelocityEmailNotification {
-
-    private static final String templateFileName = "HandleRequest.vm";
+public class RequestRejected extends AbstractVelocityNotification {
     
-    VOMembershipRequest request;
-    String requestManagementURL;
+    String rejectReasons;
     
-    public HandleRequestNotification(VOMembershipRequest request, 
-                String requestManagementURL) {
+    
+    public RequestRejected(String recipient, String rejectReasons) {
         
-        setTemplateFile( templateFileName );
-        this.request = request;
-        this.requestManagementURL = requestManagementURL;
+    	addRecipient( recipient );
+        this.rejectReasons = rejectReasons;
     }
+
 
     protected void buildMessage() {
-        
         String voName = VOMSConfiguration.instance().getVOName();
-        setSubject( "A membership request for VO "+voName+" requires your approval." );
         
-        VelocityContext context = new VelocityContext();
+        setSubject( "Your membership request for VO "+voName+" has been rejected." );
         
         context.put( "voName", voName );
-        context.put( "recipient", "VO Admin");
-        context.put( "req", request);
-        context.put( "requestManagementURL", requestManagementURL);
+        context.put( "recipient", getRecipientList().get( 0 ));
+        context.put( "rejectReasons", rejectReasons);
         
-        buildMessageFromTemplate( context );
+        super.buildMessage();
         
     }
+
 }

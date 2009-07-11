@@ -23,7 +23,7 @@ public class AdminTargetedUserSuspensionMessage extends
 		VOMSConfiguration conf = VOMSConfiguration.instance(); 
         String voName = conf.getVOName();
         
-        setSubject(subjectPrefix+" User suspension notification");
+        setSubject("User suspension notification");
         context.put( "voName", voName );
         context.put("user", user);
         context.put( "recipient", getRecipientList().get(0));

@@ -4,6 +4,7 @@ import org.apache.velocity.VelocityContext;
 
 public abstract class AbstractVelocityNotification extends VelocityEmailNotification {
 
+	public static final String subjectPrefix = "[VOMS Admin]";
 	VelocityContext context;
 	String templatePrefix;
 	
@@ -34,6 +35,13 @@ public abstract class AbstractVelocityNotification extends VelocityEmailNotifica
 	public void setTemplatePrefix(String templatePrefix) {
 		this.templatePrefix = templatePrefix;
 	}
+
+	@Override
+	public void setSubject(String subject) {
+		
+		super.setSubject(subjectPrefix+" "+subject);
+	}
+	
 	
 	
 }

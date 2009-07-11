@@ -20,39 +20,35 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.notification;
 
-import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 
 
-public class ConfirmRequestNotification extends VelocityEmailNotification {   
+public class HandleRequest extends AbstractVelocityNotification {
+
     
-    private static final String templateFileName = "ConfirmRequest.vm";
+    NewVOMembershipRequest request;
+
+    String requestManagementURL;
     
-    private String confirmURL;
-    private String cancelURL;
-    
-    public ConfirmRequestNotification(String recipient, String confirmURL, String cancelURL) {
+    public HandleRequest(NewVOMembershipRequest request, 
+                String requestManagementURL) {
         
-        setTemplateFile( templateFileName );
-        addRecipient( recipient );
-        this.confirmURL = confirmURL;
-        this.cancelURL = cancelURL;
+        this.request = request;
+        this.requestManagementURL = requestManagementURL;
     }
 
     protected void buildMessage() {
-
-        VOMSConfiguration conf = VOMSConfiguration.instance(); 
-        String voName = conf.getVOName();
-        setSubject( "Your membership request for VO "+voName);
-                
-        VelocityContext context = new VelocityContext();
+        
+        String voName = VOMSConfiguration.instance().getVOName();
+        setSubject( "A membership request for VO "+voName+" requires your approval." );
         
         context.put( "voName", voName );
-        context.put( "recipient", getRecipientList().get(0));
-        context.put( "confirmURL", confirmURL);
-        context.put( "cancelURL", cancelURL);
-    
-        buildMessageFromTemplate( context );
+        context.put( "recipient", "VO Admin");
+        context.put( "req", request);
+        context.put( "requestManagementURL", requestManagementURL);
+        
+        buildMessage();
         
     }
 }

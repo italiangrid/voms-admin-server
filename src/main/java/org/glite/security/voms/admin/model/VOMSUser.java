@@ -37,6 +37,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,7 +50,6 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.User;
-import org.glite.security.voms.admin.actionforms.UserForm;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
@@ -61,6 +61,7 @@ import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchMappingException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord;
+import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.model.task.Task.TaskStatus;
@@ -153,7 +154,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     Date endTime;
     
     @Column(name="suspended")
-    Boolean suspended;
+    Boolean suspended = false;
     
     @Enumerated(EnumType.STRING)
     @Column(name="suspension_reason_code")
@@ -185,7 +186,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
     
     /** Assigned tasks **/
-    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user")
+    @OneToMany(cascade={CascadeType.ALL}, mappedBy="user", fetch=FetchType.EAGER)
     @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     Set<Task> tasks = new HashSet <Task>();
     
@@ -590,15 +591,6 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
     }
 
-    public VOMSUser populate( UserForm form ) {
-
-        // setDn( form.getDn() );
-        // setCertURI( form.getCrlURI() );
-        // setCn( form.getCn() );
-        setEmailAddress( form.getEmailAddress() );
-
-        return this;
-    }
 
     public void fromUser(User u){
         
@@ -974,18 +966,49 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 			
 		}
 	}
+	
+	public Task removeTask(Task t){
+		
+		if (getTasks().contains(t)){
+			boolean b = getTasks().remove(t);
+			t.setUser(null);
+			
+			return t;
+		}
+		
+		return null;
+		
+	}
     
-	public boolean hasSignAUPTaskPending(AUP aup){
+	public boolean hasPendingSignAUPTasks(){
+		if (getTasks().isEmpty())
+			return false;
+		
+		for (Task t: getTasks())
+			if (t instanceof SignAUPTask){
+				SignAUPTask aupTask = (SignAUPTask)t;
+				
+				if (aupTask.getStatus().equals(TaskStatus.COMPLETED))
+					return true;
+			}
+		
+		return false;
+	}
+	
+	public boolean hasPendingSignAUPTask(AUP aup){
 		
 		if (getTasks().isEmpty())
 			return false;
 		
-		for (Task t: getTasks()){
-			
-			if (t instanceof SignAUPTask)	
-				return (((SignAUPTask) t).getAup().equals(aup));
-		}
-		
+		for (Task t: getTasks())
+			if (t instanceof SignAUPTask){
+				SignAUPTask aupTask = (SignAUPTask)t;
+				log.debug("aupTask: "+aupTask);
+				if (aupTask.getAup().equals(aup) && (!aupTask.getStatus().equals(TaskStatus.COMPLETED))){
+					log.debug("Found pending aup task: "+aupTask);
+					return true;
+				}
+			}
 		return false;
 		
 	}
@@ -996,8 +1019,13 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 			return null;
 		
 		for (Task t: getTasks()){
-			if ((t instanceof SignAUPTask && t.getStatus() != TaskStatus.COMPLETED))
-				return (SignAUPTask)t;
+			
+			if (t instanceof SignAUPTask){
+				
+				SignAUPTask aupTask = (SignAUPTask)t;
+				if (aupTask.getAup().equals(aup) && !aupTask.getStatus().equals(TaskStatus.COMPLETED))
+					return aupTask;
+			}			
 		}
 		
 		return null;
@@ -1033,6 +1061,15 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 			c.restore(reason);
 	}
 	
+	public void restore(){
+		setSuspended(false);
+		setSuspensionReason(null);
+		
+		for (Certificate c: getCertificates())
+			c.restore();
+		
+		
+	}
 	public boolean isSuspended(){
 		
 		return (suspended == null ? false : suspended);
@@ -1063,4 +1100,21 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		this.suspensionReason = suspensionReason;
 	}
     
+	
+	public static VOMSUser fromRequesterInfo(RequesterInfo ri){
+		
+		VOMSUser u = new VOMSUser();
+		
+		u.setDn(ri.getCertificateSubject());
+		// Personal information
+		u.setName(ri.getInfo("name"));
+		u.setSurname(ri.getInfo("surname"));
+		u.setAddress(ri.getInfo("address"));
+		u.setInstitution(ri.getInfo("institution"));
+		u.setPhoneNumber(ri.getInfo("phoneNumber"));
+		
+		u.setEmailAddress(ri.getEmailAddress());
+		
+		return u;
+	}
 }

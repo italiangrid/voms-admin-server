@@ -20,9 +20,9 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.actionforms.UserForm;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -35,17 +35,6 @@ public class CreateUserOperation extends BaseVomsOperation {
 
     String caDN = null;
     
-    private CreateUserOperation(UserForm form){
-    	
-    		usr = new VOMSUser();
-            usr.setName( form.getName() );
-            usr.setSurname( form.getSurname() );
-            usr.setInstitution( form.getInstitution() );
-            usr.setAddress( form.getAddress() );
-            usr.setPhoneNumber( form.getPhoneNumber());
-            usr.setEmailAddress( form.getEmailAddress() );
-            
-    }
     
     private CreateUserOperation(VOMSUser user, String caSubject){
     	
@@ -64,16 +53,19 @@ public class CreateUserOperation extends BaseVomsOperation {
         
     }
     
-    
+    private CreateUserOperation(NewVOMembershipRequest request){
+    	usr = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
+    	caDN = request.getRequesterInfo().getCertificateIssuer();
+    	
+    }
     protected Object doExecute() {
 		
 		return VOMSUserDAO.instance().create(usr, caDN);
 	}
-
-	public static CreateUserOperation instance(UserForm form){
-		
-		return new CreateUserOperation(form);
-	}
+    
+    public static CreateUserOperation instance(NewVOMembershipRequest request){
+    	return new CreateUserOperation(request);
+    }
 	
 	public static CreateUserOperation instance(VOMSUser user, String caString){
 		

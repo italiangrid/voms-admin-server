@@ -39,11 +39,8 @@ public class VOMSCA implements Serializable {
     Short id;
 
     String subjectString;
-    X500Principal subjectDER;
 
     String description;
-    
-    Date notAfter;
     
     Date creationTime;
     
@@ -58,8 +55,6 @@ public class VOMSCA implements Serializable {
         assert cert != null: "X509Certificate is null!";
         
         subjectString = DNUtil.getBCasX500( cert.getSubjectX500Principal() );
-        subjectDER = cert.getSubjectX500Principal();
-        notAfter = cert.getNotAfter();
         creationTime = new Date();
         
         this.description = description;
@@ -195,37 +190,5 @@ public class VOMSCA implements Serializable {
     
         this.creationTime = creationTime;
     }
-
-    
-    public X500Principal getSubjectDER() {
-    
-        return subjectDER;
-    }
-
-    
-    public void setSubjectDER( X500Principal subjectDER ) {
-    
-        this.subjectDER = subjectDER;
-    }
-
-    
-    public Date getNotAfter() {
-    
-        return notAfter;
-    }
-
-    
-    public void setNotAfter( Date notAfter ) {
-    
-        this.notAfter = notAfter;
-    }
-    
-    public void update(X509Certificate cert){
-        
-        this.notAfter = cert.getNotAfter();
-        
-    }
-    
-    
     
 }

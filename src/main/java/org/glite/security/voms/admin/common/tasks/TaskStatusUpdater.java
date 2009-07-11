@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
@@ -23,6 +24,13 @@ public class TaskStatusUpdater extends TimerTask {
 	
 	private TaskStatusUpdater(Timer t) {
 		timer = t;
+		
+		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean("voms.request.webui.enabled", true);
+		
+		if (!registrationEnabled){
+			log.info("TaskStatusUpdater thread not started since registration is DISABLED for this vo.");
+			return;
+		}
 		
 		if (timer != null){
 			
@@ -49,7 +57,6 @@ public class TaskStatusUpdater extends TimerTask {
 	@Override
 	public void run() {
 		// log.info("TaskStatusUpdater started...");
-		
 		HibernateFactory.beginTransaction();
 		
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
@@ -58,7 +65,6 @@ public class TaskStatusUpdater extends TimerTask {
 		
 		for (Task t: activeTasks){
 			
-			// log.debug("Found active task :"+t);
 			Date now = new Date();
 			
 			if (t.getExpiryDate().before(now)){
@@ -69,7 +75,8 @@ public class TaskStatusUpdater extends TimerTask {
 		}
 		
 		HibernateFactory.commitTransaction();
-		// log.info("TaskStatusUpdater done.");
+		HibernateFactory.closeSession();
+		
 	}
 	
 

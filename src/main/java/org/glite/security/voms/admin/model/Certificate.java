@@ -16,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.security.auth.x500.X500Principal;
 
 import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
+import org.hibernate.annotations.Type;
 
 
 @Entity
@@ -51,11 +53,10 @@ public class Certificate implements Serializable {
     @Column(name="suspension_reason_code")
     protected VOMSUser.SuspensionReason suspensionReasonCode;
     
-    @Column(name="suspension_reason")
+    //FIXME: temporary change to suspended_reason to make it work
+    // with VOMS
+    @Column(name="suspended_reason")
     protected String suspensionReason;
-
-    @Column(name="not_after")
-    protected Date notAfter;
 
     @Column(nullable=false, name="creation_time")
     protected Date creationTime;
@@ -63,6 +64,11 @@ public class Certificate implements Serializable {
     @ManyToOne
 	@JoinColumn(name = "usr_id", nullable = false)
     protected VOMSUser user;
+    
+    // VOMS compatibility fields
+//    @Type(type="org.glite.security.voms.admin.database.X500PrincipalType")
+//    @Column(name="subject_der")
+//    X500Principal subjectDer;
     
     public Certificate() {
 
@@ -109,15 +115,6 @@ public class Certificate implements Serializable {
         this.id = id;
     }
 
-    public Date getNotAfter() {
-
-        return notAfter;
-    }
-
-    public void setNotAfter( Date notAfter ) {
-
-        this.notAfter = notAfter;
-    }
 
 
     public String getSubjectString() {
@@ -236,6 +233,16 @@ public class Certificate implements Serializable {
 		setSuspensionReason(reason.getMessage());
 	}
 	
+	
+	public void restore(){
+		
+		if (isSuspended()){
+			setSuspended(false);
+			setSuspensionReasonCode(null);
+			setSuspensionReason(null);
+		}
+		
+	}
 	public void restore(SuspensionReason reason){
 		
 		if (isSuspended() && getSuspensionReasonCode().equals(reason)){

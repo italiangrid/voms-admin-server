@@ -20,7 +20,6 @@ public abstract class AUPVersionActions extends BaseAction implements Preparable
 	
 	Long aupId;
 	
-	
 	AUP aup;
 	
 	String version;

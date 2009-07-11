@@ -9,10 +9,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage(value="base")
 @Results({
-	@Result(name="admin-home", location="adminHome"), 
-	@Result(name="user-home", location="userHome"),
-	@Result(name="guest-home", location="guestHome"),
-	@Result(name="register", location="register")
+	@Result(name="admin-home", location="/admin/home.action", type="redirect"), 
+	@Result(name="user-home", location="/user/home.action", type="redirect"),
+	@Result(name="guest-home", location="guestHome")
 })
 
 public class LoginAction extends BaseAction {
@@ -31,10 +30,8 @@ public class LoginAction extends BaseAction {
 			return "admin-home";
 		else if (admin.isVoUser())
 			return "user-home";
-		else if (admin.canBrowseVO())
-			return "guest-home";
-		
-		return "register";
+		else 		
+			return "register";
 	}
 
 }

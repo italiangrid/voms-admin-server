@@ -10,7 +10,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.actions.user.CertUtil;
+import org.glite.security.voms.admin.common.CertUtil;
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.Certificate;
