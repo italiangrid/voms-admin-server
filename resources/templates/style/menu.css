@@ -1,37 +1,35 @@
-.menuItem {
+#menu{
+	float:left;
+	background-color: ${menu-background};
+	color: ${menu-color};
+	width: 100%;
+}
+
+#menu ul li{
 	font-weight: bold;
 	display: inline;
 	float: left;
 	text-align: center;
 	padding: .5em;
+	margin-left: 3px;
 }
 
-#helpMenuItem {
+#menu ul li.last-menu-item{
 	display: inline;
 	float: right;
 	font-weight: bold;
 	text-align: center;
+
 }
 
-.menuItem a{
+#menu ul li a{
 	
 	color: #325B0A;
 	
 }
 
-.menuItem a:HOVER{
+#menu ul li a:HOVER{
 	
 	color: black;
 	text-decoration: underline;
 }
-
-/*
-.menuItem:HOVER a{
-	text-decoration: underline;
-}
-
-
-.menuItem A:LINK, A:ACTIVE, A:VISITED {
-	text-decoration: none;
-}
-*/

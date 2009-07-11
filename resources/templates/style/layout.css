@@ -3,8 +3,8 @@ body{
 	font-size: 9pt;
 	background-color: ${background};
 	color: ${color};
-	max-width: 775px;
-	min-width: 775px;
+	max-width: 960px;
+	min-width: 960px;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
@@ -19,53 +19,48 @@ body{
 
 #header{
 	color: ${header-color};
-}
-
-#headerTitle {
-	float:left;
-	font-size: 9pt;
-	color: white;
-/*	background-image: url("../img/VomsAdminHeaderBackgroundTile.png");
-	background-repeat: repeat-x; */
-	background-color: #1b5790;
-	text-align: left;
-	width: 775px;
-}
-
-#vaInfo {
-	font-size: smaller;
-	font-weight: bold;
-	float:left;
-	padding: .5em;
-	color: #d2dcf3
-
-}
-
-#adminDN{
-
-	font-weight: bold;
-	color: white;
-}
-
-#voInfo{
-	clear: both;
-	float: left;
-
-}
-
-#headerInfo {
-	clear: both;
-	float: left;
+	
+	-moz-border-radius-topleft:10px;
+	-moz-border-radius-topright:10px;
+	
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	
+	
+	background-color:#1B5790;
+	
 	text-align:left;
-	font-size: smaller;
-	padding-left: .5em;
-	background-color: ${table-row-odd-background};
+	width:100%;
+	margin-top:5px;
+	float: left;
 }
 
-#voName {
-	color: white;
-	font-weight: bold;
+#header a{
+	float: left;	
+	padding: 5px 0 5px 5px;
+}
 
+#admin-info {
+	float:right;
+	font-size:smaller;
+	padding:25px 5px 0;
+}
+
+#vo-info, #admin-info {
+	color: #d2dcf3;
+	display:inline;
+	font-weight:bold;
+}
+
+#vo-info {
+	float:left;
+	font-size:smaller;
+	padding:25px 0 0 5px;
+}
+
+#admin-info span, #vo-info span{
+	font-weight: bold;
+	color: white;	
 }
 
 .voName{
@@ -74,26 +69,14 @@ body{
 	font-size: larger;
 }
 
-#helpMenuItem {
 
-}
-
-#menu{
-	padding: 0;
-	float:left;
-	background-color: ${menu-background};
-	color: ${menu-color};
-	/*border-top: 1px solid ${border-color};  	
-	border-bottom: 1px solid ${border-color}; */
-/*	background-image: url("../img/menu_background.png"); */
-	width: 100%;
-}
 
 #messages{
-	padding:.1em .1em 0 0;
-	min-height: 2em;
 	font-size: 8pt;
 	font-weight: bold;
+	min-height: 1em;
+	margin: 5px;
+	padding-top: 5px;
 }
 
 #body{
@@ -101,61 +84,20 @@ body{
 }
 
 
-
-
 #footer{
 	margin-top: 1em;
 	border-top: 1px solid ${border-color}; 
+	padding-top: 5px;
 	font-size: xx-small;
 	background-color: ${background};
 	color: ${header-color};
 }
 
 
-
-
-
-
-#leftBar {
-/*	position: relative; */
-	display: block;
-	float: left;
-	width: 12%;
-	padding-bottom: 0px;
-	padding-left: 0px;
-	padding-right: 0px;
-	min-height:520px;
-}
-
-.leftBarHeader{
-	text-align: center;
-	font-weight: bold;
-	color: #325B0A; 
-	padding-top: .5ex;
-	padding-bottom: .5ex;
-	background-color: ${menu-background};
-	
-	/* old look n feel */
-	/*	color: ${header-color}; */
-	/*	border-bottom: 1px solid ${border-color}; */
-	/*	background-image: url('../img/header_background.png');
-	background-repeat: repeat-x;
-	background-position: bottom	left;
-	*/
-	
-}
-
-#userGroupsLeftBar{
-	font-size: 8pt;
-	border: 1px solid ${border-color};	
-	text-align: left;
-}
-
-
-#centerPane {
+#content {
 	float: left;
 	display: block;
-	width: 84%;
+	width: 86%;
 	margin-left: 2%;
 	padding-right: 0px;
 	text-align:left;
@@ -165,26 +107,21 @@ body{
 	min-height:520px;
 }
 
-#createUserPane {
-	float: left;
-	font-size: 8pt;
-}
- 
 
-#searchResultsPane, #searchGroupsResultsPane, #searchRolesResultsPane{
-	clear: both;
-	padding-top: 1em;
-}
-
-#searchUsersPane, #searchGroupsPane, #searchRolesPane, #searchUserAttributesPane{
+#searchPane{
 	float: left;
 }
 
-#createGroupPane, #createRolePane, #createUserPane, #manageAttributeClassesPane{
+#createPane{
 	float: right;
 	font-size: 8pt;
 	margin-bottom: 1ex;
 	max-width: 50%;
+}
+
+.searchResultsPane{
+	clear: both;
+	padding-top: 1em;
 }
 
 #listAttributeDescriptionsPane{
@@ -193,22 +130,14 @@ body{
 
 .separator{
 	clear: both;	
-	height: 1ex;
+	height: 1em;
 }
 
 #addACLEntryBox, #addDefaultACLEntryBox, #addCertificateBox{
 	float:right;	
 }
 
-#leftBar a:hover{
-	text-decoration: underline;
-}
+.wwgroup{
 
-
-#leftBar a{
-	padding: .5em;
-}
-
-#leftBar .disabledLink{
-	padding: .5em;	
+	margin-bottom: 1em;
 }

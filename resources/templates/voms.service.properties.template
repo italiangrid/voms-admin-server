@@ -7,12 +7,12 @@ voms.cafiles = @CA.FILES@
 # voms ca updater period in seconds
 voms.cafiles.period = 1800
 
-## voms auditing facility
-voms.auditing = false
-
 ## voms notification facility
 voms.notification.email-address = @NOTIFICATION.EMAIL_ADDRESS@
 voms.notification.smtp-server = @NOTIFICATION.SMTP_SERVER@
+# voms.notification.username = ...
+# voms.notification.password = ...
+# voms.notification.use_tls = false
 
 ## should the vo be configured to be read accessible for authenticated clients?
 ## (mkgridmap clients need this!)
@@ -45,5 +45,9 @@ voms.mkgridmap.translate_dn_email_format = false
 
 ## Should the webui always show full DNs (instead of just the first CN)?
 # voms.webapp.always-show-full-dns = true
+
+## AUP options
+
+voms.aup.vo_aup.initial_url =  @VO_AUP_URL@
 
 #### Add other options after this line

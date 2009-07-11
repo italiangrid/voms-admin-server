@@ -1,6 +1,14 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h2>Roles</h2>
+<div id="searchPane">
+<s:form validate="true" theme="simple">
+  <s:hidden name="searchData.type" value="%{'role'}"/>
+  <s:textfield name="searchData.text" size="20"/>
+  <s:submit value="%{'Search roles'}" cssClass="submitButton"/>
+</s:form>
+</div>
+
+<div id="createPane">
 
 <div class="createTab">
   <voms:hasPermissions var="canCreate" 
@@ -13,14 +21,9 @@
   </s:if>
 </div>
 
-<div class="searchTab">
+</div>
 
-<s:form validate="true">
-  <s:hidden name="searchData.type" value="%{'role'}"/>
-  <s:textfield name="searchData.text" size="20"/>
-  <s:submit value="%{'Search roles'}"/>
-</s:form>
-
+<div class="searchResultsPane">
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
 No roles defined for this VO.
 </s:if>
@@ -71,6 +74,8 @@ No roles defined for this VO.
   
   <s:url action="search" namespace="/role" var="searchURL"/>
   
+  <div class="resultsFooter">
+  
   <voms:searchNavBar context="vo" 
       permission="r" 
       disabledLinkStyleClass="disabledLink"
@@ -79,5 +84,7 @@ No roles defined for this VO.
       searchURL="${searchURL}"
       styleClass="resultsCount"
       />
+   </div>
 </s:else>
+
 </div>

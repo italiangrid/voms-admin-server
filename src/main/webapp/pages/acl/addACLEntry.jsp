@@ -30,7 +30,6 @@
 Add an acl entry to <c:if test="${acl.defaultACL}">default</c:if> ACL for context: <span class="highlight">${context}</span>.
 </div>
 
-
 <html:form action="/AddACLEntry" method="post" onsubmit="return validateAddACLEntryForm(this)">
 	<html:hidden property="aclId" value="${acl.id}"/>
 	<html:hidden property="method" value="addEntry"/>

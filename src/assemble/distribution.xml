@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
+    <!-- 
     <id>server-${server-version}-${age}</id>
+     -->
+     <id>server</id>
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <formats>
@@ -67,7 +70,7 @@
             <source>resources/templates/log4j.properties</source>
             <outputDirectory>/share/voms-admin/tools/classes</outputDirectory>
         </file>
-
+        
         <file>
             <source>target/glite-security-voms-admin.jar</source>
             <outputDirectory>/share/java</outputDirectory>

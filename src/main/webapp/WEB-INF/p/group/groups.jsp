@@ -1,9 +1,16 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 
-<h2>Groups</h2>
+<div id="searchPane">
+  <s:form validate="true" theme="simple">
+    <s:hidden name="searchData.type" value="%{'group'}"/>
+    <s:textfield name="searchData.text" size="20" cssClass="text"/>
+    <s:submit value="%{'Search groups'}" cssClass="submitButton"/>
+  </s:form>
+</div>
 
-<div class="createTab">
+
+<div id="createPane">
   <voms:hasPermissions var="canCreate" 
             context="/${voName}" 
             permission="CONTAINER_READ|CONTAINER_WRITE"/>
@@ -13,14 +20,8 @@
     <s:a href="%{createGroupURL}">New group</s:a>
   </s:if>
 </div>
- 
-<div class="searchTab">
 
-<s:form validate="true">
-  <s:hidden name="searchData.type" value="%{'group'}"/>
-  <s:textfield name="searchData.text" size="20"/>
-  <s:submit value="%{'Search groups'}"/>
-</s:form>
+<div class="searchResultsPane">
 
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
 No groups found in this VO.
@@ -43,7 +44,7 @@ No groups found in this VO.
 
         <td width="95%">
           <div class="groupName">
-            <s:url action="edit" namespace="/group" var="editURL" method="load">
+            <s:url action="edit" namespace="/group" var="editURL">
               <s:param name="groupId" value="id"/>
             </s:url>
             <s:a href="%{editURL}">
@@ -69,9 +70,9 @@ No groups found in this VO.
       </tr>
     </s:iterator>
   </table>
-  
   <s:url action="search" namespace="/group" var="searchURL"/>
   
+  <div class="resultsFooter">
   <voms:searchNavBar context="vo" 
       permission="r" 
       disabledLinkStyleClass="disabledLink"
@@ -80,5 +81,8 @@ No groups found in this VO.
       searchURL="${searchURL}"
       styleClass="resultsCount"
       />
+  </div>
 </s:else>
 </div>
+ 
+

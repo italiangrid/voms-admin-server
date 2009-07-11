@@ -13,12 +13,16 @@
 
 		<property name="name" type="string" update="true" insert="true"
 			column="dn" not-null="true" unique="true" />
+      
+        <property name="description" type="string" update="true" insert="true"
+          column="description"/>
 			
 		<many-to-one name="parent" column="parent"
 			class="org.glite.security.voms.admin.model.VOMSGroup" not-null="false" />
 			
 		<property name="must" type="boolean" column="must" not-null="true"/>
-
+      
+        <property name="restricted" type="boolean" column="restricted" not-null="false"/>
 
 		<set name="attributes" cascade="all-delete-orphan" inverse="true">
 			<key column="g_id" on-delete="cascade"/>

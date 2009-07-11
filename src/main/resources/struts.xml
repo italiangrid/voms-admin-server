@@ -10,6 +10,7 @@
 	
 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
 	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
+    
 	
 	<package name="base" extends="struts-default">
 	
@@ -24,15 +25,52 @@
 			<interceptor name="hibernateInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
 			
-			<interceptor-stack name="authenticatedStack">
+        <interceptor-stack name="authenticatedStack">
+                
                 <interceptor-ref name="logger"/>
-				<interceptor-ref name="authnInterceptor" />
+                
+                <interceptor-ref name="authnInterceptor" />
+                
                 <interceptor-ref name="tokenSession">
                   <param name="excludeMethods">*</param>
                 </interceptor-ref>
-				<interceptor-ref name="paramsPrepareParamsStack" />
-				<interceptor-ref name="hibernateInterceptor" />
-			</interceptor-stack>
+                <interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*,^struts\..*</param>
+                </interceptor-ref>
+                
+                <interceptor-ref name="servletConfig"/>
+                
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="chain"/>
+                
+                
+                <interceptor-ref name="modelDriven"/>
+                <interceptor-ref name="fileUpload"/>
+                
+                <interceptor-ref name="checkbox"/>
+                
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="actionMappingParams"/>
+                
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*,^struts\..*</param>
+                </interceptor-ref>
+                
+                <interceptor-ref name="conversionError"/>
+                
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">input,back,cancel</param>    
+                </interceptor-ref>
+                
+                <interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel</param>
+                </interceptor-ref>
+                
+                <interceptor-ref name="hibernateInterceptor" />
+            </interceptor-stack>
       
       </interceptors>
     

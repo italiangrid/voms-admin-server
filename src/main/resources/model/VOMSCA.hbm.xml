@@ -16,23 +16,11 @@
     				unique="true" 
     				not-null="true" 
     				type="string"/>
-
-    			<property 
-					name="subjectDER"
-					type="org.glite.security.voms.admin.database.X500PrincipalType"
-					column="subject_der"
-				/>
 				
     			<property 
     				name="description" 
     				column="description" 
     				type="string"/>
-    			
-    			<property 
-					name="notAfter"
-					column="not_after"
-					type="timestamp"
-				/>
 			
 				<property 
 					name="creationTime"

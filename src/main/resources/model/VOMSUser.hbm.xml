@@ -32,7 +32,8 @@
 		<property name="address" type="text" column="address" not-null="true"/>
 		
 		<property name="phoneNumber" type="java.lang.String" column="phone_number" not-null="true"/>
-		<property name="emailAddress" type="java.lang.String" column="email_address" not-null="true" unique="true"/>
+    
+		<property name="emailAddress" type="java.lang.String" column="email_address" not-null="true"/>
 		
 		
 		<!-- Membership creation time and validity end time -->

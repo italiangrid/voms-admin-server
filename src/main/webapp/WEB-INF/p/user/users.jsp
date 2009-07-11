@@ -1,22 +1,28 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h2>Users</h2>
+<div id="searchPane">
+  <s:form validate="true" theme="simple">
+    <s:hidden name="searchData.type" value="%{'user'}"/>
+    <s:textfield name="searchData.text" size="20"/>
+    <s:submit value="%{'Search users'}" cssClass="submitButton"/>
+  </s:form>
+</div>
 
-<div class="searchTab">
+<div id="createPane">
+  <a href="#">New user</a>
+</div>
 
-<s:form validate="true">
-  <s:hidden name="searchData.type" value="%{'user'}"/>
-  <s:textfield name="searchData.text" size="20"/>
-  <s:submit value="%{'Search users'}"/>
-</s:form>
-
-<s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
-No users found in this VO.
-</s:if>
-<s:elseif test="searchResults.results.size == 0">
-  No users found matching search string '<s:property value="searchResults.searchString"/>'.
-</s:elseif> 
-<s:else>
+<div class="searchResultsPane">
+  
+  <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
+    No users found in this VO.
+  </s:if>
+  <s:elseif test="searchResults.results.size == 0">
+    No users found matching search string '<s:property value="searchResults.searchString"/>'.
+  </s:elseif>
+  <s:else>
+  <h2>Users:</h2>
+  
   <table
     class="table"
     cellpadding="0"
@@ -40,6 +46,33 @@ No users found in this VO.
           </div>
          </td>
          
+         
+          <voms:hasPermissions var="canSuspend" 
+            context="/${voName}" 
+            permission="CONTAINER_READ|MEMBERSHIP_READ|SUSPEND"/>
+            
+            <s:if test="#attr.canSuspend and not suspended">
+              <td>
+              <s:url action="suspend" namespace="/user" method="input" var="suspendURL">
+                <s:param name="userId" value="%{#user.id}"/>
+              </s:url>
+              <s:a href="%{suspendURL}" cssClass="actionLink">
+                suspend
+              </s:a>
+              </td>
+            </s:if>
+            <s:if test="#attr.canSuspend and suspended">
+              <td>
+              <s:url action="restore" namespace="/user" var="restoreURL">
+                <s:param name="userId" value="%{#user.id}"/>
+              </s:url>
+              
+              <s:a href="%{restoreURL}" cssClass="actionLink">
+                restore
+              </s:a>
+              </td>
+            </s:if>
+         
          <td>
          <voms:hasPermissions var="canDelete" 
             context="/${voName}" 
@@ -47,7 +80,7 @@ No users found in this VO.
             
           <s:if test="#attr.canDelete">
             <s:form action="delete" namespace="/user">
-              <s:url value="/img/delete_16.png" var="deleteImg"/>
+              <s:url value="/img/delete_16.png" var="deleteImg" />
               <s:token/>
               <s:hidden name="userId" value="%{#user.id}"/>
               <s:submit src="%{deleteImg}" type="image"/>
@@ -60,13 +93,15 @@ No users found in this VO.
   
   <s:url action="search" namespace="/user" var="searchURL"/>
   
-  <voms:searchNavBar context="vo" 
-      permission="r" 
-      disabledLinkStyleClass="disabledLink"
-      id="searchResults"
-      linkStyleClass="navBarLink"
-      searchURL="${searchURL}"
-      styleClass="resultsCount"
-      />
-</s:else>
+  <div class="resultsFooter">
+    <voms:searchNavBar context="vo" 
+        permission="r" 
+        disabledLinkStyleClass="disabledLink"
+        id="searchResults"
+        linkStyleClass="navBarLink"
+        searchURL="${searchURL}"
+        styleClass="resultsCount"
+        />
+   </div>
+  </s:else>
 </div>

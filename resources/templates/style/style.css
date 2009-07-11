@@ -1,9 +1,11 @@
+@IMPORT url("reset.css");
 @IMPORT url("layout.css");
 @IMPORT url("tables.css");
 @IMPORT url("menu.css");
 @IMPORT url("link.css");
 @IMPORT url("form.css");
 @IMPORT url("registration.css");
+@IMPORT url("left-bar.css");
 
 .userDN {
 	text-align: left;
@@ -109,7 +111,7 @@
 	color: ${header-color};
 }
 
-.header1{
+h1, .header1{
 	
 	display: block;
 	clear: both;
@@ -121,7 +123,8 @@
 	margin-bottom: 1em;
 	
 }
-.header2 {
+
+h2, .header2 {
 	display: block;
 	clear: both;
 	width: 100%;
@@ -132,7 +135,7 @@
 	margin-bottom: 1em;
 }
 
-.header3{
+h3, .header3{
 	display: block;
 	clear: both;
 	width: 100%;
@@ -145,7 +148,6 @@
 .label {
 	color: ${label-color};
 	font-weight: bold;
-	text-align: right;
 }
 
 .labels {
@@ -231,17 +233,16 @@
 	background-color: ${panel-header-background};
 	color: ${panel-header-color};
 
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
 	
 	float: left;
 	font-weight: bold;
+	width: 100%;
 	
-	/*
-	old look n feel.
-	border: 1px solid ${border-color};
-	background-image: url('../img/header_background.png');
-	background-repeat: repeat-x;
-	background-position: bottom	left;
-	*/
 }
 
 .panelContent{

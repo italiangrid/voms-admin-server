@@ -1,0 +1,48 @@
+#leftBar {
+	display: block;
+	float: left;
+	width: 12%;
+	min-height:520px;
+}
+
+.leftBarHeader{
+	text-align: center;
+	font-weight: bold;
+	color: #325B0A; 
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	background-color: ${menu-background};
+	
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	
+	border-top: 1px solid ${border-color};
+	border-left: 1px solid ${border-color};
+	border-right: 1px solid ${border-color};
+}
+
+#adminLeftBar{
+	font-size: 8pt;
+	border-bottom: 1px solid ${border-color};	
+	text-align: left;
+}
+
+#adminLeftBar a{
+	border-left: 1px solid ${border-color};
+	border-right: 1px solid ${border-color};
+}
+#leftBar a:hover{
+	text-decoration: underline;
+}
+
+
+#leftBar a{
+	padding: .5em;
+}
+
+#leftBar .disabledLink{
+	padding: .5em;	
+}

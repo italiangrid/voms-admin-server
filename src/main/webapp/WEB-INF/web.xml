@@ -73,36 +73,6 @@
 		<listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
 	</listener>
 
-	<!-- Standard Struts 1.x Action Servlet Configuration (with debugging) -->
-	<!-- 
-	<servlet>
-		<servlet-name>action</servlet-name>
-		<servlet-class>
-			org.apache.struts.action.ActionServlet
-		</servlet-class>
-		<init-param>
-			<param-name>config</param-name>
-			<param-value>
-              /WEB-INF/struts/struts-action-forms.xml,
-              /WEB-INF/struts/struts-global-exceptions.xml,
-              /WEB-INF/struts/struts-global-forwards.xml,
-              /WEB-INF/struts/struts-action-mappings.xml,
-              /WEB-INF/struts/struts-controller-config.xml,
-              /WEB-INF/struts/struts-action-forms-2_5.xml,
-              /WEB-INF/struts/struts-action-mappings-2_5.xml
-            </param-value>
-		</init-param>
-		<init-param>
-			<param-name>debug</param-name>
-			<param-value>2</param-value>
-		</init-param>
-		<init-param>
-			<param-name>detail</param-name>
-			<param-value>2</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	-->
 
 	<servlet>
 		<servlet-name>axis</servlet-name>

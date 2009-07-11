@@ -1,10 +1,16 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 
-<h2>Attribute classes</h2>
+<div id="searchPane">
+<s:form validate="true" theme="simple">
+  <s:hidden name="searchData.type" value="%{'attribute'}"/>
+  <s:textfield name="searchData.text" size="20"/>
+  <s:submit value="%{'Search attributes'}" cssClass="submitButton"/>
+</s:form>
+</div>
 
-<div class="createTab">
-  <voms:hasPermissions var="canCreate" 
+<div id="createPane">
+<voms:hasPermissions var="canCreate" 
             context="/${voName}" 
             permission="ATTRIBUTES_READ|ATTRIBUTES_WRITE"/>
   
@@ -14,13 +20,8 @@
   </s:if>
 </div>
 
-<div class="searchTab">
+<div class="searchResultsPane">
 
-<s:form validate="true">
-  <s:hidden name="searchData.type" value="%{'attribute'}"/>
-  <s:textfield name="searchData.text" size="20"/>
-  <s:submit value="%{'Search attributes'}"/>
-</s:form>
 
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
 No attribute classes defined in this VO.
@@ -56,6 +57,7 @@ No attribute classes defined in this VO.
   
   <s:url action="search" namespace="/attribute" var="searchURL"/>
   
+  <div id="resultsFooter">
   <voms:searchNavBar context="vo" 
       permission="ATTRIBUTE_READ" 
       disabledLinkStyleClass="disabledLink"
@@ -64,5 +66,7 @@ No attribute classes defined in this VO.
       searchURL="${searchURL}"
       styleClass="resultsCount"
       />
+   </div>
 </s:else>
+
 </div>

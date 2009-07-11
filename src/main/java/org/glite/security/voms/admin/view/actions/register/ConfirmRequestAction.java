@@ -14,7 +14,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 @Results({
 	@Result(name=BaseAction.INPUT,location="register"),
-	@Result(name=BaseAction.SUCCESS,location="registerConfirmed"),
+	@Result(name=BaseAction.SUCCESS,location="registrationConfirmed"),
 })
 public class ConfirmRequestAction extends RegisterActionSupport {
 

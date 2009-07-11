@@ -259,7 +259,8 @@ class UpgradeVO(ConfigureAction):
              'TRUSTED_ADMIN.CA': "",
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients'))
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+             'VO_AUP_URL': self.user_options['vo-aup-url']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -435,6 +436,9 @@ class InstallVOAction(ConfigureAction):
         set_default(self.user_options,"uri","%s:%s" % (socket.gethostname(),self.user_options['port']))
         
         set_default(self.user_options,"timeout", "86400")
+        
+        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (os.environ['GLITE_LOCATION_VAR'],
+                                                                                                  self.user_options['vo']))
                 
         if self.user_options['vo'] == 'siblings':
             raise VomsConfigureError, "Cannot create a vo named siblings, that name is reserved!"
@@ -479,6 +483,12 @@ class InstallVOAction(ConfigureAction):
         self.write_service_properties()
         self.write_context()
         
+        shutil.copy(VomsConstants.vo_aup_template, vo_conf_dir)
+        
+        setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+        
         if not os.path.exists(VomsConstants.voms_siblings_context):
             self.write_siblings_context()
         
@@ -488,6 +498,8 @@ class InstallVOAction(ConfigureAction):
             self.write_voms_properties()
         else:
             print "Skipping voms core configuration creation"
+            
+        
         
     
     def write_database_properties(self):
@@ -517,11 +529,11 @@ class InstallVOAction(ConfigureAction):
              'TRUSTED_ADMIN.CA': self.user_options['ta.ca'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients'))
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+             'VO_AUP_URL': self.user_options['vo-aup-url']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
-        
         ConfigureAction.write_and_close(self, 
                                         vo_service_properties_file(self.user_options['vo']), 
                                         t.sub(m))
@@ -864,7 +876,7 @@ class VomsConstants:
     glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
     glite_loc_log = os.environ.get("GLITE_LOCATION_LOG","/var/log/glite")
     
-    version = "2.5.1"
+    version = "2.5.0"
     
     db_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.database.properties.template")
     service_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.service.properties.template")
@@ -877,6 +889,8 @@ class VomsConstants:
     
     voms_siblings_context_template = os.path.join(glite_loc,"etc","voms-admin","templates", "siblings-context.xml.template")
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
+    
+    vo_aup_template = os.path.join(glite_loc,"etc","voms-admin","templates", "aup", "vo-aup.txt")
     
     voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
     voms_siblings_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-siblings.war")
@@ -939,7 +953,8 @@ class VomsConstants:
               "timeout=",
               "shortfqans",
               "read-access-for-authenticated-clients",
-              "skip-voms-core"]
+              "skip-voms-core",
+              "vo-aup-url="]
 
     short_options = "hvV";
 

@@ -16,7 +16,7 @@
 <s:form action="save-certificate" enctype="multipart/form-data" namespace="/user" method="POST">
   <s:token/>
   <s:hidden name="userId" value="%{model.id}"/>
-  <s:textfield name="subject" size="45" label="Subject"/>
+  <s:textfield name="subject" size="45" label="Subject" labelposition="top"/>
   <s:select name="caSubject" list="#request.trustedCas" listKey="subjectString" listValue="subjectString"/>
   <s:file name="certificateFile"/>
   <s:submit value="%{'Add certificate'}"/>  

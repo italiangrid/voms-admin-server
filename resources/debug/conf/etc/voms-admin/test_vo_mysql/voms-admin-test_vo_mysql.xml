@@ -1,16 +1,17 @@
+
 <Context path="/voms/test_vo_mysql" 
-		docBase="/Users/andrea/workspace/voms-25-latest-devel/src/main/webapp"
-        debug="5" 
+		docBase="/opt/glite/share/webapps/glite-security-voms-admin.war"
+        debug="0" 
         reloadable="true">
         
         <Environment name="VO_NAME" value="test_vo_mysql" type="java.lang.String"/>
         
-        <Environment name="CONFIG_DIR" value="/Users/andrea/workspace/voms-25-latest-devel/resources/debug/conf" type="java.lang.String"/>
+        <Environment name="CONFIG_DIR" value="/opt/glite/var/etc/voms-admin/test_vo_mysql" type="java.lang.String"/>
         
         <Environment name="GLITE_LOCATION" value="/opt/glite" type="java.lang.String"/>
         
         <Environment name="GLITE_LOCATION_VAR" value="/opt/glite/var" type="java.lang.String"/>
         
         <Environment name="VOMS_LOCATION" value="/opt/glite" type="java.lang.String"/>
+        
 </Context>
-

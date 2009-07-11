@@ -1,19 +1,16 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h2>Acceptable Usage Policies (AUPs)</h2>
-
-
-<s:if test="gridAUP is null">
-  No Grid AUP defined for this VO.
-</s:if>
+<h1>VO Acceptable Usage Policy (AUP)</h1>
   
-
+<s:if test="voAUP is null">
+  No VO AUP defined for this VO.
+</s:if>
 <s:else>
-  <h3>Grid AUP</h3>
+  <h3>VO AUP</h3>
   <div>
     <s:form action="change-reacceptance-period" namespace="/aup" validate="true">
-      <s:hidden name="aupId" value="%{gridAUP.id}"/>
-      <s:textfield name="period" value="%{gridAUP.reacceptancePeriod}" label="Reacceptance period (in days)" size="4"/>
+      <s:hidden name="aupId" value="%{model.id}"/>
+      <s:textfield name="period" value="%{model.reacceptancePeriod}" label="Reacceptance period (in days)" size="4"/>
       <s:submit value="%{'Change'}"/>
     </s:form>
   </div>
@@ -25,13 +22,13 @@
       <th>Creation date</th>
       <th>Active</th>
     </tr>
-    <s:iterator value="gridAUP.versions" var="version">
+    <s:iterator value="versions" var="version">
       <tr>
         <td>
-          <s:url action="version" namespace="/aup" var="versionDetailURL">
+          <s:url action="version" namespace="/aup" var="voVersionDetailURL">
             <s:param name="aupVersionId" value="id"/>
           </s:url>
-          <s:a href="%{#versionDetailURL}">
+          <s:a href="%{#voVersionDetailURL}">
             <s:property value="version"/>
           </s:a>
         </td>
@@ -45,7 +42,7 @@
           </s:if>
           <s:else>
             <s:form action="set-active-version" namespace="/aup">
-              <s:hidden name="aupId" value="%{gridAUP.id}"/>
+              <s:hidden name="aupId" value="%{model.id}"/>
               <s:hidden name="version" value="%{#version.version}"/>
               <s:submit value="%{'Set active'}"/>
             </s:form>
@@ -53,9 +50,9 @@
         </td>
         
         <td>
-          <s:if test="%{gridAUP.versions.size > 1 and not #version.active}">
+          <s:if test="%{versions.size > 1 and not #version.active}">
             <s:form action="remove-version" namespace="/aup">
-              <s:hidden name="aupId" value="%{gridAUP.id}"/>
+              <s:hidden name="aupId" value="%{model.id}"/>
               <s:hidden name="version" value="%{#version.version}"/>
               <s:submit value="%{'Remove'}"/>
             </s:form>
@@ -66,28 +63,25 @@
       </tr>
     </s:iterator>
   </table>
-  <s:url action="add-version" method="input" namespace="/aup" var="addVersionURL">
-    <s:param name="aupId" value="gridAUP.id"/>
+  <s:url action="add-version" method="input" namespace="/aup" var="voAddVersionURL">
+    <s:param name="aupId" value="id"/>
   </s:url>
   <div>
-  <s:a href="%{#addVersionURL}">
+  <s:a href="%{#voAddVersionURL}">
     Add a new version
   </s:a>
   </div>
   
   <div>
-  <s:a href="#reaccept">
+  <s:url 
+    action="trigger-acceptance" 
+    namespace="/aup"
+    var="voAUPReacceptanceURL"
+ >
+    <s:param name="aupId" value="id"/>
+ </s:url >
+  <s:a href="%{#voAUPReacceptanceURL}">
     Trigger reacceptance of currently active version
   </s:a>
-  </div>
-</s:else>
-  
-<s:if test="voAUP is null">
-  No Grid AUP defined for this VO.
-</s:if>
-<s:else>
-  <h3>VO AUP</h3>
-  <div>
-    
   </div>
 </s:else>

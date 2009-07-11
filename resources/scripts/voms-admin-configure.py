@@ -304,6 +304,12 @@ def usage():
      --skip-voms-core
                            Skips voms core configuration creation (i.e., only voms-admin
                            is configured).
+    
+     --vo-aup-url          Sets the URL for the initial version of the VO acceptable usage 
+                           policy. Usually the URL points to a local or remote, http accessible
+                           text file. If this option is not set a template vo-aup file will
+                           be created in vo runtime configuration directory 
+                           ($GLITE_LOCATION_VAR/etc/voms-admin/<vo-name>/vo-aup.txt).
     """
     
     print usage_str
