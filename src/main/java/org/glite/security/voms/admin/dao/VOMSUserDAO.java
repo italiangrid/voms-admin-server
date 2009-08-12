@@ -84,7 +84,6 @@ public class VOMSUserDAO{
 	}
 	
 	
-
 	public void signAUP(VOMSUser user, AUP aup ){
 	    
 		if ( user == null )
@@ -294,6 +293,12 @@ public class VOMSUserDAO{
 		cert.setCa(ca);
 		
 		cert.setUser(u);
+		
+		if (u.isSuspended()){
+			cert.setSuspended(true);
+			cert.setSuspensionReason(u.getSuspensionReason());
+		}
+		
 		u.addCertificate(cert);
 		
 		// FIXME: Find a way to extract email address from certificate in a meaningful

@@ -102,7 +102,7 @@ public class NotificationService {
 					}catch(VOMSNotificationException e){
 					
 						deliveryHadErrors = true;
-						log.error("Error dispatching email notification '"+n+"': "+e.getCause());
+						log.error("Error dispatching email notification '"+n+"': "+e, e);
 						
 						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount){
 							outgoingQueue.put(n);

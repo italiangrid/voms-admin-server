@@ -21,8 +21,12 @@
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.common.IllegalRequestStateException;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request.StatusFlag;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
@@ -45,10 +49,13 @@ public class ApproveVOMembershipOperation extends BaseVomsOperation {
         if (!request.getStatus().equals( StatusFlag.CONFIRMED))
             throw new IllegalRequestStateException("Illegal state for request!");
         
-        CreateUserOperation.instance(request).execute();
+        VOMSUser user = (VOMSUser) CreateUserOperation.instance(request).execute();
         
         request.approve();
-                
+        
+        // Add a sign aup record for the user
+        VOMSUserDAO.instance().signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
+        
         EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
         
         return request;

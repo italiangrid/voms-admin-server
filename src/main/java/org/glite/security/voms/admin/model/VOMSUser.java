@@ -134,7 +134,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     @Column(nullable=false, name="phone_number")
     String phoneNumber;
     
-    @Column(nullable=false, unique=true, name="email_address")
+    @Column(nullable=false, unique=false, name="email_address")
     String emailAddress;
     
     // Compatibility fields 
@@ -701,8 +701,8 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     
         return certificates;
     }
-
     
+        
     public void setCertificates( Set<Certificate> certificates ) {
     
         this.certificates = certificates;
@@ -1100,6 +1100,15 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		this.suspensionReason = suspensionReason;
 	}
     
+	public boolean hasSuspendedCertificates(){
+		
+		for (Certificate c: certificates)
+			if (c.isSuspended())
+				return true;
+		
+		
+		return false;
+	}
 	
 	public static VOMSUser fromRequesterInfo(RequesterInfo ri){
 		
@@ -1107,11 +1116,11 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		
 		u.setDn(ri.getCertificateSubject());
 		// Personal information
-		u.setName(ri.getInfo("name"));
-		u.setSurname(ri.getInfo("surname"));
-		u.setAddress(ri.getInfo("address"));
-		u.setInstitution(ri.getInfo("institution"));
-		u.setPhoneNumber(ri.getInfo("phoneNumber"));
+		u.setName(ri.getName());
+		u.setSurname(ri.getSurname());
+		u.setAddress(ri.getAddress());
+		u.setInstitution(ri.getInstitution());
+		u.setPhoneNumber(ri.getPhoneNumber());
 		
 		u.setEmailAddress(ri.getEmailAddress());
 		

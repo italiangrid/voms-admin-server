@@ -1,5 +1,6 @@
 package org.glite.security.voms.admin.notification;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
 
 public abstract class AbstractVelocityNotification extends VelocityEmailNotification {
@@ -42,6 +43,9 @@ public abstract class AbstractVelocityNotification extends VelocityEmailNotifica
 		super.setSubject(subjectPrefix+" "+subject);
 	}
 	
-	
+	@Override
+	public String toString() {
+		return ""+super.toString()+"[subject='"+getSubject()+"',recipients='"+StringUtils.join(getRecipientList(),",")+"']";
+	}
 	
 }

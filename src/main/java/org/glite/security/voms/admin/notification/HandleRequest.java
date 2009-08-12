@@ -48,7 +48,7 @@ public class HandleRequest extends AbstractVelocityNotification {
         context.put( "req", request);
         context.put( "requestManagementURL", requestManagementURL);
         
-        buildMessage();
+        super.buildMessage();
         
     }
 }

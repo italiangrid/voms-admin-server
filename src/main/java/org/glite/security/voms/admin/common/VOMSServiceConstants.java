@@ -148,7 +148,7 @@ final public class VOMSServiceConstants {
     
     public static final String TAG_VO_USER = "VO-User";
     
-    public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "null";
+    public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "";
     
 }
 

@@ -41,6 +41,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.JNDIConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -125,6 +126,10 @@ public final class VOMSConfiguration {
     
     public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
     
+    // Test property
+    
+    public static final String TEST_VO_NAME = "test_vo_mysql";
+    
     
     
     Log log = LogFactory.getLog( VOMSConfiguration.class );
@@ -135,7 +140,7 @@ public final class VOMSConfiguration {
     
     private CompositeConfiguration config;
 
-    private static final String[] jndiProperties = new String[] { "VO_NAME",
+    private static final String[] voRuntimeProperties = new String[] { "VO_NAME",
             "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION"};
     
     private void configureLogging(){
@@ -223,7 +228,7 @@ public final class VOMSConfiguration {
         
     }
     
-    private void loadJNDIProperties(){
+    private void loadVORuntimeProperties(){
 
         JNDIConfiguration jndiConfig;
 
@@ -242,11 +247,57 @@ public final class VOMSConfiguration {
                             + e.getMessage(), e );
 
         }
-
+        
+        SystemConfiguration systemConfig = new SystemConfiguration();
+        
+        if (log.isDebugEnabled()){
+        	
+        	log.debug("JNDI Configuration contents: ");
+        	Iterator jndiKeysIter = jndiConfig.getKeys();
+        	
+        	while (jndiKeysIter.hasNext()){
+        		
+        		String key = (String) jndiKeysIter.next();
+        		log.debug(key+" = "+jndiConfig.getProperty(key));
+        		
+        	}
+        	
+        	log.debug("System Configuration contents: ");
+        	Iterator systemKeysIter = systemConfig.getKeys();
+        	
+        	while (systemKeysIter.hasNext()){
+        		
+        		String key = (String)systemKeysIter.next();
+        		log.debug(key+" = "+systemConfig.getProperty(key));
+        	}
+        }
+        
         jndiConfig.setPrefix( "java:comp/env" );
-        checkJNDIProperties( jndiConfig );
+        
+        // Add values coming from JNDI context
         config.addConfiguration( jndiConfig );
-        config.setProperty( VO_NAME, jndiConfig.getProperty( "VO_NAME" ));
+        
+        for ( int i = 0; i < voRuntimeProperties.length; i++ )
+            if ( !config.containsKey( voRuntimeProperties[i] ) ){
+                log.debug("VO runtime property '"+voRuntimeProperties[i]+"' not found in JNDI context! Checking system properties for fallback value!");
+                
+                if (!systemConfig.containsKey(voRuntimeProperties[i]))              	
+                	throw new VOMSConfigurationException(
+                			"Error loading voms-admin configuration: '"
+                                + voRuntimeProperties[i]
+                                + "' VO runtime property, needed to properly initialize voms-admin services, was not found " 
+                                + "in JNDI naming service and in the process environment!" );
+                
+                // Property value found in environment
+                config.setProperty(voRuntimeProperties[i], systemConfig.getString(voRuntimeProperties[i]));
+                log.debug("VO runtime property '"+voRuntimeProperties[i]+"' found in the system properties with value: '"+systemConfig.getString(voRuntimeProperties[i]));
+                
+                
+            }
+        
+        // Rename the VO_NAME property for internal use
+        // FIXME: is this really needed?
+        config.setProperty( VO_NAME, config.getString("VO_NAME" ));
         
     }
     
@@ -275,7 +326,7 @@ public final class VOMSConfiguration {
         config = new CompositeConfiguration();
 
         if (useJNDI)
-            loadJNDIProperties();
+            loadVORuntimeProperties();
         else
             config.addConfiguration( new SystemConfiguration() );
         
@@ -310,19 +361,6 @@ public final class VOMSConfiguration {
 
     }
 
-    private void checkJNDIProperties( Configuration jndiConfig ) {
-
-        for ( int i = 0; i < jndiProperties.length; i++ )
-            if ( !jndiConfig.containsKey( jndiProperties[i] ) )
-                throw new VOMSConfigurationException(
-                        "Error loading voms-admin configuration: "
-                                + jndiProperties[i]
-                                + " jndi property not found!" );
-
-    }
-
-    
-    
     public Properties getDatabaseProperties(){
         
         String propFileName = getString( "GLITE_LOCATION_VAR" )+"/etc/voms-admin/"+getVOName()+"/voms.database.properties";
