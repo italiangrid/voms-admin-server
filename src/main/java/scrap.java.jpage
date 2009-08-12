@@ -1,5 +1,4 @@
-org.glite.security.voms.admin.model.VOMSUser.SuspensionReason r;
+java.util.Properties p = new java.util.Properties();
 
-r = org.glite.security.voms.admin.model.VOMSUser.SuspensionReason.OTHER;
-r.setMessage("Ciccio!");
-System.out.println(r.getMessage());
+p.put("Nome", "Valerio");
+System.out.println(p);
