@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
+<h1>Generic attributes:</h1>
 
 <div id="searchPane">
 <s:form validate="true" theme="simple">

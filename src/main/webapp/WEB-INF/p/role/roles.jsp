@@ -1,5 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<h1>Roles:</h1>
 <div id="searchPane">
 <s:form validate="true" theme="simple">
   <s:hidden name="searchData.type" value="%{'role'}"/>

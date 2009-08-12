@@ -13,14 +13,19 @@
     
     <link rel="stylesheet" type="text/css"
       href="<s:url value="/style/style.css"/>" />
+      
+    <link type="text/css" 
+      href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
+      rel="stylesheet" />
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
     	
     </script>
     
-    <script type="text/javascript"
-      src="<s:url value="/common/js/hoverIntent.js"/>"></script>
-    <script type="text/javascript" src="<s:url value="/common/js/superfish.js"/>"></script>
+    <script type="text/javascript" src="<s:url value="/common/js/jquery-ui.js"/>">
+      
+    </script>
+    
     
     <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
     </script>
@@ -43,10 +48,8 @@
   
   <div id="body">
       <tiles2:insertAttribute name="leftBar" />
-
-    <div id="content">
+      
       <tiles2:insertAttribute name="content" />
-    </div> <!-- centerPane -->
   </div> <!-- body -->
   
   <div id="footer">

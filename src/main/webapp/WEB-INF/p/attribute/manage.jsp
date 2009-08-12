@@ -23,6 +23,12 @@
   </s:if>
   <s:else>
     <table cellpadding="0" cellspacing="0">
+      <tr>
+        <th>Attribute name</th>
+        <th>Uniqueness check</th>
+        <th/>
+        
+      </tr>
       <s:iterator var="attributeClass" value="#request.attributeClasses">
         <tr>
           <td><s:property value="name"/></td>

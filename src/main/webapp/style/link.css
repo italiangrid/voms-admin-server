@@ -1,0 +1,73 @@
+.vomsLink {
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+}
+
+.vomsLink:HOVER {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.navBarLink {
+	font-weight: bold;
+	text-decoration: none;
+	padding-left: .5ex;
+	padding-right: .5ex;
+}
+
+.navBarLink:HOVER {
+	text-decoration: underline;
+}
+
+.actionLink {
+	font-size: x-small;
+	text-decoration: none;
+	
+}
+
+.actionLink:HOVER {
+	
+	text-decoration: underline;
+}
+
+.imageLink{
+	border-width: 0px;
+	text-decoration: none;
+}
+
+.imageLink:HOVER {
+	border-width: 0px;
+	text-decoration: none;
+}
+
+.imageText{
+	text-decoration: none;	
+	font-size: smaller;	
+	vertical-align: middle;
+}
+
+.imagetText:HOVER{
+	text-decoration: underline;	
+	vertical-align: middle;
+}
+.disabledLink {
+	display: inline;
+	font-weight: bold;
+	text-decoration: underline;
+	display: block;
+	color: rgb(155,155,155);
+}
+
+a,A {
+	color: #456aac;
+	text-decoration: none;
+}
+
+a:HOVER{
+	text-decoration: underline;
+}
+
+a img{
+	border: none;
+}

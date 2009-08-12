@@ -25,7 +25,7 @@ used to contact you in relation to this activity.
 
 <s:form action="submit-request" validate="true">
   <h2>Your distinguished name (DN):</h2>
-  <div class="regDN">
+  <div class="highlight">
       <s:property value="requester.certificateSubject"/>
   </div>
   <h2>Your CA:</h2>
@@ -34,22 +34,22 @@ used to contact you in relation to this activity.
   </div>
   <ul class="form">
     <li>
-      <s:textfield name="name" label="%{'Your name'}" size="80"/>
+      <s:textfield name="name" label="%{'Your name'}" size="40"/>
     </li>
     <li>
-      <s:textfield name="surname" label="%{'Your surname'}" size="80"/>
+      <s:textfield name="surname" label="%{'Your surname'}" size="40"/>
     </li>
     <li>
-      <s:textfield name="institution" label="%{'Your institution'}" size="80"/>
+      <s:textfield name="institution" label="%{'Your institution'}" size="40"/>
     </li>
     <li>
-      <s:textfield name="phoneNumber" label="%{'Your phoneNumber'}" size="80"/>
+      <s:textfield name="phoneNumber" label="%{'Your phoneNumber'}" size="40"/>
     </li>
     <li>
-      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="80"/>
+      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40"/>
     </li>
     <li>
-      <s:textfield name="requester.emailAddress" value="%{requester.emailAddress}" size="80" label="%{'Your email address'}"/>
+      <s:textfield name="requester.emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}"/>
     </li>
     <li>
       <s:label for="aupAccepted">

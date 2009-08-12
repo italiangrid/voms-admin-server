@@ -1,12 +1,11 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>VO Acceptable Usage Policy (AUP)</h1>
+<h1>Acceptable Usage Policy:</h1>
   
 <s:if test="voAUP is null">
-  No VO AUP defined for this VO.
+  No acceptable usage policy defined for this VO.
 </s:if>
 <s:else>
-  <h3>VO AUP</h3>
   <div>
     <s:form action="change-reacceptance-period" namespace="/aup" validate="true">
       <s:hidden name="aupId" value="%{model.id}"/>

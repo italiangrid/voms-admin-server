@@ -104,4 +104,11 @@
         </param-name>
         <param-value>/WEB-INF/tiles.xml</param-value>
     </context-param>
+    
+    <context-param>
+      <param-name>
+        org.apache.tiles.definition.dao.LocaleUrlDefinitionDAO.CHECK_REFRESH
+      </param-name>
+      <param-value>true</param-value>
+    </context-param>
 </web-app>

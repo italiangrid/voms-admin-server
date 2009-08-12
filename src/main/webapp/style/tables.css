@@ -1,0 +1,55 @@
+table{
+	width: 100%;
+	padding: 0px;
+	border-collapse: collapse;	
+}
+
+th {
+	padding: 0.5em;
+	text-align: left;
+	border-bottom: 1px solid rgb(200,200,200);
+	
+	font-weight: bold;
+}
+
+tr td{
+	padding: 0.5em;	
+	border-bottom: 1px solid rgb(200,200,200);
+}
+
+.tableRowOdd{
+	background-color: #F5F5F5;
+}
+
+.tableRowEven{
+	
+}
+
+td.actions{
+	text-align: right;
+	vertical-align: bottom;
+}
+
+
+table.noborder tr td, table.noborder tr th{
+	border: 0;
+	padding: .5em 0;
+}
+
+td.dismissRoleBox{
+	text-align: right;
+	vertical-align: top;
+}
+
+td.roleAssign{
+	text-align: right;
+	vertical-align: top;
+}
+
+tr.suspended-cert-row{
+	background-color: #FFEBE8;
+}
+
+tr.suspended-cert-row td{
+	border-color: #FF0000;
+}

@@ -20,13 +20,17 @@
  */
 
 .wwFormTable {}
+/**
 .label {
     
     float:left;
     width:30%
 }
+
+**/
 .errorLabel {color:red; }
 .errorMessage {font-weight:bold; color:red; }
 .checkboxLabel {}
 .checkboxErrorLabel {color:red; }
 .required {color:red;}
+.wwgrp{ margin-top: 1em}

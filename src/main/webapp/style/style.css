@@ -1,0 +1,480 @@
+@IMPORT url("reset.css");
+@IMPORT url("layout.css");
+@IMPORT url("tables.css");
+@IMPORT url("menu.css");
+@IMPORT url("link.css");
+@IMPORT url("form.css");
+@IMPORT url("registration.css");
+@IMPORT url("left-bar.css");
+
+.userDN {
+	text-align: left;
+	font-size: x-small;
+	font-weight: bold;
+}
+
+.userCA {
+	font-size: xx-small;
+	color: #505050;
+	padding: .5em 0;
+}
+
+.userEmail{
+	font-size: smaller;
+	font-weight: bold;
+}
+
+
+.resultsHeader {
+	font-size: xx-small;
+	display: block;
+	float: right;
+	margin-bottom: .5ex;
+}
+
+.resultsFooter {
+	font-size: xx-small;
+	display: block;
+	float: right;
+	margin-top: .5ex;
+}
+
+.resultsCount {
+	display: table-cell;
+	padding-left: 1ex;
+	padding-right: 1ex;
+}
+
+.resultsNavBarButton {
+	display: inline;
+	
+}
+
+.roleCell {
+	margin-top: .1em;
+}
+
+.role {
+	display: block;
+	float: left;
+	clear: both;
+	font-weight: bold;
+}
+
+.group {
+	text-align: left;
+	font-weight: bold;
+}
+
+.action {
+	display: block;
+	float: right;
+	font-size: x-small;
+}
+
+.roleAssign {
+	font-size: x-small;
+	
+	margin-top: .5em;
+}
+
+.roleAssign .submitButton {
+	font-size: xx-small;
+}
+
+.roleAssign .selectBox {
+	font-size: x-small;
+}
+
+.subscribeGroups {
+	display: block;
+	font-size: x-small;
+	text-align: right;
+	margin-top: .5em;
+}
+
+.subscribeGroups .submitButton {
+	font-size: x-small;
+}
+
+.subscribeGroups .selectBox {
+	font-size: x-small;
+}
+
+/** HEADERS **/
+.header {
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: #505050;
+}
+
+h1, .header1{
+	
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: #505050;
+	font-size: larger; 
+	margin-bottom: 1em;
+	
+}
+
+h2, .header2 {
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: #505050;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+h3, .header3{
+	display: block;
+	clear: both;
+	width: 100%;
+
+	font-weight: bold;
+	color: #505050;
+	margin-bottom: 1em;
+}
+
+.label {
+	
+	font-weight: bold;
+}
+
+.labels {
+	
+	text-align: right;
+
+}
+.deleteUserForm {
+	text-align: right;
+}
+
+.deleteUserForm .submitButton {
+	font-size: x-small;
+}
+
+.detailsBlock .submitButton {
+	font-size: x-small;
+}
+
+
+.attributeName {
+	text-align: left;
+	font-weight: bold;
+}
+
+.attributeValue {
+	font-weight: bold;
+}
+
+.errorMessages {
+	margin: 0;
+	padding: 0;
+	padding-left: 1em;
+	padding-right: 1em;
+	font-weight: bold;
+	text-align: center;
+}
+
+.errorMessage{
+	font-weight: bold;
+	padding: .1em;
+	padding-left: 1ex;
+	padding-right: 1ex;
+
+}
+
+.errorMessage .message{
+	display: none;
+}
+
+
+.errorMessage .detailedMessage {
+	background-color: #ffffff;
+	color: #cc0000;
+	display: inline;
+	padding: .1em;
+	padding-left: 1ex;
+	padding-right: 1ex;
+
+}
+
+.messages {
+
+	color: #006600;
+	background-color: white; 
+
+	display: inline;
+	text-align: center;
+	padding-left: 1ex;
+	padding-right: 1ex;	
+}
+
+
+.panel{
+	font-size: 8pt;
+	background-color: white;	
+	color: black;
+
+}
+
+.panelHeader{
+
+	background-color: #ccdeaf;
+	color: #325B0A;;
+
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	
+	float: left;
+	font-weight: bold;
+	width: 100%;
+	
+}
+
+.panelContent{
+	padding-left: 1ex;
+	padding-right: 1ex; 
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	border-left: 1px solid rgb(200,200,200);
+	border-right: 1px solid rgb(200,200,200);
+	border-bottom: 1px solid rgb(200,200,200);
+}
+
+.panelTitle{
+	float: left;
+	padding-left: 1ex;
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+}
+
+.panelButton{
+	float: right;
+	padding-right: 1ex;
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	
+}
+
+.panel .inputField,.selectBox,.caSelectBox,.submitButton{
+
+	font-size: 8pt;
+}
+
+.admin .userDN{
+	font-size: smaller;
+	font-weight: bold;
+}
+
+.admin .userCA{
+	font-size: x-small;
+}
+
+.voMembershipInfo, .genericAttributesInfo{
+	padding-left: 2em;
+
+}
+
+.highlight{
+	color: #006600;
+	font-weight: bold;
+}
+
+.expiredCA{
+	color: #cc0000;
+	font-weight: bold;
+	text-align: center;
+}
+
+.caCN{
+	font-family: monospace;
+	font-variant: small-caps;
+}
+
+.configurationInfo{
+
+	background-color: #ececec  ;
+}
+
+.unspecified{
+	
+	font-size: x-small;
+	color: rgb(200,200,200);
+}
+
+.personal-info{
+	padding: .5em 0 0 0;
+}
+
+.certSubject{
+	font-size: x-small;
+}
+
+.certIssuer{
+	font-size: xx-small;
+	color: #505050;
+}
+
+.suspended-cert{
+	
+}
+
+ol.certificate-info{
+		
+}
+
+ol.certificate-info li{
+	padding: .5em 0;
+}
+
+.email{
+	padding: 1em 0;
+}
+
+.username{
+	font-weight: bold;	
+}
+.institution{
+	padding-top: .5em;
+	font-size: smaller;
+	color: #505050
+}
+
+.warning {
+	color: #cc0000;
+	
+	font-size: smaller;
+}
+.suspensionReason{
+	
+	
+	font-style: italic;	
+}
+
+h1.username{
+	font-size: 16pt;
+	font-variant: small-caps;
+	border-bottom: 1px dotted #CCCCCC;
+	float: right;
+	margin-bottom: 1em;	
+}
+h1.username span.institution{
+	font-size: 9pt;	
+}
+
+h1 span{
+	font-size: 9pt;
+}
+
+dl{
+	font-size: smaller;	
+}
+
+dd, dt{
+	padding: .2em 0;		
+}
+
+dt{
+	margin-top: 1em;
+	color: #808080;	
+	font-weight: bold;
+}
+
+.info-tab{
+	clear: both;
+	border-color:#C8C8C8 #C8C8C8 #B8B8B8 #C8C8C8; 
+	border-style:solid;
+	border-width:1px 1px 2px;
+	
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;	
+	
+	margin-bottom: 2em;
+	
+}
+
+.info-tab h2{
+	border-bottom:1px solid #CCCCCC;
+	background-color:#F5F5F5;
+	color:#353535;
+	
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	margin: 0;
+	padding: 1em 0;
+	
+
+}
+
+.info-tab h2 span{	
+	padding: 0 1em;
+	text-shadow:0 1px 0 #FFFFFF;
+
+}
+
+.info-tab div.content{
+	clear: both;
+	padding: 1em;
+	
+}
+
+#add-certificate-link{
+	float: right;
+}
+
+a.info-tab-hide{
+	float: right;
+	padding-right: 5px;
+	font-size: x-small;
+	
+}
+
+.groupName{
+	color: #006600;
+	font-weight: bold;
+}
+
+.cert-date-info{
+	margin-top: 1em;
+	font-size: xx-small;
+	font-weight: bold;
+}
+
+.cert-date-info span{
+	font-weight: normal;
+}
+
+.cert-status-info{
+	margin-top: 2em;
+}
+
+.cert-status-info span{
+	color: #cc0000;
+	font-weight: bold
+}
+
+.cert-status-info .suspensionReason{
+	font-weight: normal;
+	color: black;
+}
+.cert-operations{
+	float: right;	
+}

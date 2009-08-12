@@ -3,9 +3,20 @@ Dear $recipient,
 as VO administrator of VO $voName, your authorization is requested for the 
 VO membership request issued by the following user:
 
-DN: $req.getDn()
-CA: $req.getCa()
-Email: $req.getEmailAddress()
+Certificate information:
+
+	Subject: $req.requesterInfo.certificateSubject
+	Issuer:  $req.requesterInfo.certificateIssuer
+	
+Personal information:
+
+	Name: $req.requesterInfo.name
+	Surname: $req.requesterInfo.surname
+	Institution: $req.requesterInfo.institution
+	Address: $req.requesterInfo.address
+	Phone number: $req.requesterInfo.phoneNumber
+	
+	Email: $req.requesterInfo.emailAddress
 
 In order to handle this membership request, point your browser
 to the following URL:

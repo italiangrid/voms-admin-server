@@ -11,7 +11,7 @@ Please follow the instructions before the following date:
   <li> 
     <span style="font-weight: bold">
     
-      <s:property value="expirationDate"/>
+      <s:property value="model.expirationDate"/>
 
     </span>
 </li>
