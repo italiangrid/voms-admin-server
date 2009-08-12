@@ -11,7 +11,8 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @Results({
 	@Result(name="admin-home", location="/admin/home.action", type="redirect"), 
 	@Result(name="user-home", location="/user/home.action", type="redirect"),
-	@Result(name="guest-home", location="guestHome")
+	@Result(name="guest-home", location="guestHome"),
+	@Result(name="register", location="/register/start.action", type="redirect")
 })
 
 public class LoginAction extends BaseAction {

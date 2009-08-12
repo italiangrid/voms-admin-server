@@ -10,7 +10,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="adminHome"),
+	@Result(name=BaseAction.SUCCESS,location="/home/login.action", type="redirect"),
 	@Result(name=BaseAction.INPUT,location="requestDetails")
 })
 public class DecisionAction extends RequestActionSupport {

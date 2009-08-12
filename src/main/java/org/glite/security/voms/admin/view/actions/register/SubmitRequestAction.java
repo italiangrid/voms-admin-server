@@ -3,26 +3,18 @@ package org.glite.security.voms.admin.view.actions.register;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.StrutsStatics;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
-import org.glite.security.voms.admin.model.VOMembershipRequest;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-
 
 @ParentPackage("base")
 @Results({
@@ -59,15 +51,17 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		if (result != null)
 			return result;
 		
+		//FIXME: Change timespan for request expirations
 		Date expirationDate = getFutureDate(new Date(), Calendar.MINUTE, 5);
 		
-		requester.addInfo("name", name);
-		requester.addInfo("surname", surname);
-		requester.addInfo("institution", institution);
-		requester.addInfo("address", address);
-		requester.addInfo("phoneNumber", phoneNumber);
+		requester.setName(name);
+		requester.setSurname(surname);
+		requester.setInstitution(institution);
+		requester.setAddress(address);
+		requester.setPhoneNumber(phoneNumber);
 		
 		request = DAOFactory.instance().getRequestDAO().createVOMembershipRequest(requester, expirationDate);
+		
 		String confirmURL = buildConfirmURL();
 		String cancelURL = buildCancelURL();
 		

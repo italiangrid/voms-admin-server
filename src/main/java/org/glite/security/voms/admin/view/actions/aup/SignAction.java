@@ -24,7 +24,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 @Results({
 	@Result(name=BaseAction.INPUT, location="signAup"),
-	@Result(name=BaseAction.SUCCESS, location="/user/search.action", type="redirect")
+	@Result(name=BaseAction.SUCCESS, location="/home/login.action", type="redirect")
 })
 
 public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparable{
@@ -37,9 +37,6 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparab
 	Long aupId;
 	
 	String aupAccepted;
-	
-	
-
 
 	AUP aup;
 	
