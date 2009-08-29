@@ -34,368 +34,374 @@ import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.acl.VOMSACL;
 
-
 public class VOMSACLService implements VOMSACL {
-	
-	private static final Log log = LogFactory.getLog( VOMSACLService.class );
 
-    public void addACLEntry( String container, ACLEntry entry, boolean propagateToChildrenContexts) throws RemoteException ,
-            VOMSException {
+	private static final Log log = LogFactory.getLog(VOMSACLService.class);
 
-    	log.info("addACLEntry('container="+container+"', entry='"+entry+"');");
-    	
-    	if (container == null)
-    		throw new NullArgumentException("Container cannot be null!");
-    	
-    	if (entry == null)
-    		throw new NullArgumentException("Container cannot be null!");
-    	
-        
-        try {
+	public void addACLEntry(String container, ACLEntry entry,
+			boolean propagateToChildrenContexts) throws RemoteException,
+			VOMSException {
 
-            ACL theACL = (ACL) LoadACLOperation.instance( container ).execute();
-            
-            VOMSAdmin theAdmin = getAdminFromEntry( entry );
-            
-            if (theAdmin == null)
-                throw new NoSuchAdminException("Unknown or illegal admin! '"+entry.getAdminSubject()+","+entry.getAdminIssuer()+"'");
-                                                
-            
-            VOMSPermission perms = VOMSPermission.fromBits(entry.getVomsPermissionBits());
-            
-            SaveACLEntryOperation.instance(theACL, theAdmin, perms, propagateToChildrenContexts).execute();
-            
-            
-            HibernateFactory.commitTransaction();
-            
-        } catch ( RuntimeException e ) {
+		log.info("addACLEntry('container=" + container + "', entry='" + entry
+				+ "');");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-            
-        }
-        
-    }
+		if (container == null)
+			throw new NullArgumentException("Container cannot be null!");
 
-    public void addDefaultACLEntry( String group, ACLEntry entry )
-            throws RemoteException , VOMSException {
+		if (entry == null)
+			throw new NullArgumentException("Container cannot be null!");
 
-        log
-                .info( "addDefaultACLEntry("
-                        + StringUtils.join( new Object[] { group, entry }, ',' )
-                        + ");" );
-        
-        if ( group == null )
-            throw new NullArgumentException( "group cannot be null!" );
-        
-        if ( entry == null )
-            throw new NullArgumentException( "entry cannot be null!" );
-        
-        VOMSGroup g = null;
-        
-        try {
+		try {
 
-            g = (VOMSGroup) FindGroupOperation.instance( group ).execute();
-            
-            if (g == null)
-                throw new NoSuchGroupException("Group '"+g+"' not found in database!");
-            
-            ACL acl = g.getDefaultACL();
-            
-            if (acl == null)
-                acl = ACLDAO.instance().create( g, true);
-            
-            VOMSAdmin theAdmin = getAdminFromEntry( entry );
-            
-            VOMSPermission perms = VOMSPermission.fromBits(entry.getVomsPermissionBits());
-            
-            SaveACLEntryOperation.instance(acl, theAdmin, perms).execute();
+			ACL theACL = (ACL) LoadACLOperation.instance(container).execute();
 
+			VOMSAdmin theAdmin = getAdminFromEntry(entry);
 
-            // Commit hibernate transaction
-            HibernateFactory.commitTransaction();
+			if (theAdmin == null)
+				throw new NoSuchAdminException("Unknown or illegal admin! '"
+						+ entry.getAdminSubject() + ","
+						+ entry.getAdminIssuer() + "'");
 
-        } catch ( RuntimeException e ) {
+			VOMSPermission perms = VOMSPermission.fromBits(entry
+					.getVomsPermissionBits());
 
-            log.error( e );
+			SaveACLEntryOperation.instance(theACL, theAdmin, perms,
+					propagateToChildrenContexts).execute();
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+			HibernateFactory.commitTransaction();
 
-            // Clean up the just created ACL, if that's the case
-            if (g != null)
-                if (g.getDefaultACL()!= null && g.getDefaultACL().getPermissions().isEmpty())
-                    ACLDAO.instance().delete( g.getDefaultACL() );
-            
-            throw e;
-        }
-    }
+		} catch (RuntimeException e) {
 
-    
-    protected ACLEntry[] getACLImpl(String container, boolean defaultACL) throws VOMSException{
-        
-        ACL acl = (ACL) LoadACLOperation.instance( container, defaultACL ).execute();
-        return ServiceUtils.toACLEntryArray( acl );
-        
-    }
-    public ACLEntry[] getACL( String container ) throws RemoteException ,
-            VOMSException {
- 
-        log.info( "getACL("+container+ ");" );
-        
-        if ( container == null )
-            throw new NullArgumentException( "container cannot be null!" );
-        
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
 
-            
-            ACLEntry[] retVal = getACLImpl( container, false );
-            HibernateFactory.commitTransaction();
-            
-            return retVal;
+		}
 
-        } catch ( RuntimeException e ) {
+	}
 
-            log.error( e );
+	public void addDefaultACLEntry(String group, ACLEntry entry)
+			throws RemoteException, VOMSException {
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+		log.info("addDefaultACLEntry("
+				+ StringUtils.join(new Object[] { group, entry }, ',') + ");");
 
-            throw e;
-        }
-              
-    }
+		if (group == null)
+			throw new NullArgumentException("group cannot be null!");
 
-    public ACLEntry[] getDefaultACL( String container ) throws RemoteException ,
-            VOMSException {
-        
-        log.info( "getDefaultACL("+container+");" );
-        if ( container == null )
-            throw new NullArgumentException( "container cannot be null!" );
-        
-        try {
+		if (entry == null)
+			throw new NullArgumentException("entry cannot be null!");
 
-            
-            ACLEntry[] retVal = getACLImpl( container, true );
-            HibernateFactory.commitTransaction();
-            
-            return retVal;
+		VOMSGroup g = null;
 
-        } catch ( RuntimeException e ) {
+		try {
 
-            log.error( e );
+			g = (VOMSGroup) FindGroupOperation.instance(group).execute();
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+			if (g == null)
+				throw new NoSuchGroupException("Group '" + g
+						+ "' not found in database!");
 
-            throw e;
-        }
-    }
+			ACL acl = g.getDefaultACL();
 
-    public void removeACLEntry( String container, ACLEntry entry, boolean removeFromChildrenContexts )
-            throws RemoteException , VOMSException {
-        
-        log.info( "removeACLEntry("
-                + StringUtils.join( new Object[] { container, entry,
-                        removeFromChildrenContexts }, ',' ) + ");" );
-        
-        if ( container == null )
-            throw new NullArgumentException( "container cannot be null!" );
-        
-        if ( entry == null )
-            throw new NullArgumentException( "entry cannot be null!" );
-        
-        try {
+			if (acl == null)
+				acl = ACLDAO.instance().create(g, true);
 
-            ACL theACL = (ACL) LoadACLOperation.instance( container ).execute();
-            VOMSAdmin admin = getAdminFromEntry( entry );
+			VOMSAdmin theAdmin = getAdminFromEntry(entry);
 
+			VOMSPermission perms = VOMSPermission.fromBits(entry
+					.getVomsPermissionBits());
 
-            DeleteACLEntryOperation.instance( theACL, admin, removeFromChildrenContexts).execute();
-            // Commit hibernate transaction
-            HibernateFactory.commitTransaction();
+			SaveACLEntryOperation.instance(acl, theAdmin, perms).execute();
 
-        } catch ( RuntimeException e ) {
+			// Commit hibernate transaction
+			HibernateFactory.commitTransaction();
 
-            log.error( e );
+		} catch (RuntimeException e) {
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+			log.error(e);
 
-            throw e;
-        }
-        
-    }
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
 
-    public void removeDefaultACLEntry( String group, ACLEntry entry )
-            throws RemoteException , VOMSException {
-        
-        log
-                .info( "removeDefaultACLEntry("
-                        + StringUtils.join( new Object[] { group, entry }, ',' )
-                        + ");" );
-        
-        if ( group == null )
-            throw new NullArgumentException( "group cannot be null!" );
-        
-        if ( entry == null )
-            throw new NullArgumentException( "entry cannot be null!" );
-        
-        try {
+			// Clean up the just created ACL, if that's the case
+			if (g != null)
+				if (g.getDefaultACL() != null
+						&& g.getDefaultACL().getPermissions().isEmpty())
+					ACLDAO.instance().delete(g.getDefaultACL());
 
-            ACL theACL = (ACL) LoadACLOperation.instance( group, true ).execute();
-            
-            if (theACL == null)
-                throw new NoSuchACLException("Default ACL is not defined for group "+group);
-            
-            VOMSAdmin admin = getAdminFromEntry( entry );
+			throw e;
+		}
+	}
 
+	protected ACLEntry[] getACLImpl(String container, boolean defaultACL)
+			throws VOMSException {
 
-            DeleteACLEntryOperation.instance( theACL, admin ).execute();
+		ACL acl = (ACL) LoadACLOperation.instance(container, defaultACL)
+				.execute();
+		return ServiceUtils.toACLEntryArray(acl);
 
-            // Commit hibernate transaction
-            HibernateFactory.commitTransaction();
+	}
 
-        } catch ( RuntimeException e ) {
+	public ACLEntry[] getACL(String container) throws RemoteException,
+			VOMSException {
 
-            log.error( e );
+		log.info("getACL(" + container + ");");
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+		if (container == null)
+			throw new NullArgumentException("container cannot be null!");
 
-            throw e;
-        }
-        
+		try {
 
-    }
+			ACLEntry[] retVal = getACLImpl(container, false);
+			HibernateFactory.commitTransaction();
 
-    
-    protected void setACLImpl( String container, boolean defaultACL, ACLEntry[] entries ) throws VOMSException{
-        
-        if ( container == null )
-            throw new NullArgumentException( "container cannot be null!" );
-        
-        if ( entries == null )
-            throw new NullArgumentException( "entries cannot be null!" );
-        
-        VOMSGroup g = null;
-        
-        try {
+			return retVal;
 
-            ACL theACL = (ACL) LoadACLOperation.instance( container, defaultACL ).execute();
-            
-            if (theACL == null && defaultACL){
-                
-                g = VOMSGroupDAO.instance().findByName( container );
-                theACL = ACLDAO.instance().create( g, true );
-            }
-                
-                
-            SetACLOperation.instance( theACL, ServiceUtils.toPermissionMap( entries )).execute();    
+		} catch (RuntimeException e) {
 
-            // Commit hibernate transaction
-            HibernateFactory.commitTransaction();
+			log.error(e);
 
-        } catch ( RuntimeException e ) {
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
 
-            log.error( e );
+			throw e;
+		}
 
-            if ( log.isDebugEnabled() ) {
-                log.error( e.getMessage(), e );
-            }
+	}
 
-            // Clean up the just created ACL, if that's the case
-            if (g != null)
-                if (g.getDefaultACL()!= null && g.getDefaultACL().getPermissions().isEmpty())
-                    ACLDAO.instance().delete( g.getDefaultACL() );
-            
-            throw e;
-        }
-        
-    }
-    
-    public void setACL( String container, ACLEntry[] entries ) throws RemoteException ,
-            VOMSException {
+	public ACLEntry[] getDefaultACL(String container) throws RemoteException,
+			VOMSException {
 
-        log.info( "setACL("
-                + StringUtils.join( new Object[] { container, entries }, ',' )
-                + ");" );
-        
-        
-        setACLImpl( container, false, entries );
-        
-    }
+		log.info("getDefaultACL(" + container + ");");
+		if (container == null)
+			throw new NullArgumentException("container cannot be null!");
 
-    public void setDefaultACL( String group, ACLEntry[] entries )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "setDefaultACL("
-                + StringUtils.join( new Object[] { group, entries }, ',' )
-                + ");" );
-        
-        setACLImpl( group, true, entries );
+			ACLEntry[] retVal = getACLImpl(container, true);
+			HibernateFactory.commitTransaction();
 
-    }
+			return retVal;
 
-    
-    protected VOMSAdmin getAdminFromEntry(ACLEntry entry){
-        
-        if ( entry.getAdminSubject() == null )
-            throw new NullArgumentException( "entry.adminSubject cannot be null!" );
-        
-        if ( entry.getAdminIssuer() == null )
-            throw new NullArgumentException( "entry.adminIssuer cannot be null!" );
-        
-        String subject = entry.getAdminSubject();
-        String issuer = entry.getAdminIssuer();
-        
-        VOMSAdmin admin = VOMSAdminDAO.instance().getByName( subject, issuer );
+		} catch (RuntimeException e) {
 
-        if ( admin == null ){
-            
-            // Admin not found, check if internal admin is requested
-            if (issuer.equals( VOMSServiceConstants.VIRTUAL_CA )){
-                
-                // ANYUSER admin 
-                return VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
-                
-            }else if (issuer.equals( VOMSServiceConstants.GROUP_CA )){
-                
-                VOMSGroup g = VOMSGroupDAO.instance().findByName( subject );
-                
-                if (g == null)
-                    throw new NoSuchGroupException("Group '"+subject+"' is not defined in database!");
-                
-                return VOMSAdminDAO.instance().create( subject );
-                
-            }else if (issuer.equals( VOMSServiceConstants.ROLE_CA )){
-                
-                String groupName = PathNamingScheme.getGroupName( subject );
-                String roleName = PathNamingScheme.getRoleName( subject );
-                
-                VOMSGroup g = VOMSGroupDAO.instance().findByName( groupName );
-                VOMSRole r = VOMSRoleDAO.instance().findByName( roleName );
-                
-                if (g == null)
-                    throw new NoSuchGroupException("Group '"+groupName+"' is not defined in database!");
-                
-                if (r == null)
-                    throw new NoSuchRoleException("Role '"+roleName+"' is not defined in database!");
-                
-                return VOMSAdminDAO.instance().create( subject );                
-            }
-            
-            // Another type of admin
-            return VOMSAdminDAO.instance().create(subject,issuer);
-                
-        }
-        
-        return admin;
-        
-    }
+			log.error(e);
+
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
+
+			throw e;
+		}
+	}
+
+	public void removeACLEntry(String container, ACLEntry entry,
+			boolean removeFromChildrenContexts) throws RemoteException,
+			VOMSException {
+
+		log.info("removeACLEntry("
+				+ StringUtils.join(new Object[] { container, entry,
+						removeFromChildrenContexts }, ',') + ");");
+
+		if (container == null)
+			throw new NullArgumentException("container cannot be null!");
+
+		if (entry == null)
+			throw new NullArgumentException("entry cannot be null!");
+
+		try {
+
+			ACL theACL = (ACL) LoadACLOperation.instance(container).execute();
+			VOMSAdmin admin = getAdminFromEntry(entry);
+
+			DeleteACLEntryOperation.instance(theACL, admin,
+					removeFromChildrenContexts).execute();
+			// Commit hibernate transaction
+			HibernateFactory.commitTransaction();
+
+		} catch (RuntimeException e) {
+
+			log.error(e);
+
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
+
+			throw e;
+		}
+
+	}
+
+	public void removeDefaultACLEntry(String group, ACLEntry entry)
+			throws RemoteException, VOMSException {
+
+		log.info("removeDefaultACLEntry("
+				+ StringUtils.join(new Object[] { group, entry }, ',') + ");");
+
+		if (group == null)
+			throw new NullArgumentException("group cannot be null!");
+
+		if (entry == null)
+			throw new NullArgumentException("entry cannot be null!");
+
+		try {
+
+			ACL theACL = (ACL) LoadACLOperation.instance(group, true).execute();
+
+			if (theACL == null)
+				throw new NoSuchACLException(
+						"Default ACL is not defined for group " + group);
+
+			VOMSAdmin admin = getAdminFromEntry(entry);
+
+			DeleteACLEntryOperation.instance(theACL, admin).execute();
+
+			// Commit hibernate transaction
+			HibernateFactory.commitTransaction();
+
+		} catch (RuntimeException e) {
+
+			log.error(e);
+
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
+
+			throw e;
+		}
+
+	}
+
+	protected void setACLImpl(String container, boolean defaultACL,
+			ACLEntry[] entries) throws VOMSException {
+
+		if (container == null)
+			throw new NullArgumentException("container cannot be null!");
+
+		if (entries == null)
+			throw new NullArgumentException("entries cannot be null!");
+
+		VOMSGroup g = null;
+
+		try {
+
+			ACL theACL = (ACL) LoadACLOperation.instance(container, defaultACL)
+					.execute();
+
+			if (theACL == null && defaultACL) {
+
+				g = VOMSGroupDAO.instance().findByName(container);
+				theACL = ACLDAO.instance().create(g, true);
+			}
+
+			SetACLOperation.instance(theACL,
+					ServiceUtils.toPermissionMap(entries)).execute();
+
+			// Commit hibernate transaction
+			HibernateFactory.commitTransaction();
+
+		} catch (RuntimeException e) {
+
+			log.error(e);
+
+			if (log.isDebugEnabled()) {
+				log.error(e.getMessage(), e);
+			}
+
+			// Clean up the just created ACL, if that's the case
+			if (g != null)
+				if (g.getDefaultACL() != null
+						&& g.getDefaultACL().getPermissions().isEmpty())
+					ACLDAO.instance().delete(g.getDefaultACL());
+
+			throw e;
+		}
+
+	}
+
+	public void setACL(String container, ACLEntry[] entries)
+			throws RemoteException, VOMSException {
+
+		log.info("setACL("
+				+ StringUtils.join(new Object[] { container, entries }, ',')
+				+ ");");
+
+		setACLImpl(container, false, entries);
+
+	}
+
+	public void setDefaultACL(String group, ACLEntry[] entries)
+			throws RemoteException, VOMSException {
+
+		log
+				.info("setDefaultACL("
+						+ StringUtils
+								.join(new Object[] { group, entries }, ',')
+						+ ");");
+
+		setACLImpl(group, true, entries);
+
+	}
+
+	protected VOMSAdmin getAdminFromEntry(ACLEntry entry) {
+
+		if (entry.getAdminSubject() == null)
+			throw new NullArgumentException(
+					"entry.adminSubject cannot be null!");
+
+		if (entry.getAdminIssuer() == null)
+			throw new NullArgumentException("entry.adminIssuer cannot be null!");
+
+		String subject = entry.getAdminSubject();
+		String issuer = entry.getAdminIssuer();
+
+		VOMSAdmin admin = VOMSAdminDAO.instance().getByName(subject, issuer);
+
+		if (admin == null) {
+
+			// Admin not found, check if internal admin is requested
+			if (issuer.equals(VOMSServiceConstants.VIRTUAL_CA)) {
+
+				// ANYUSER admin
+				return VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+
+			} else if (issuer.equals(VOMSServiceConstants.GROUP_CA)) {
+
+				VOMSGroup g = VOMSGroupDAO.instance().findByName(subject);
+
+				if (g == null)
+					throw new NoSuchGroupException("Group '" + subject
+							+ "' is not defined in database!");
+
+				return VOMSAdminDAO.instance().create(subject);
+
+			} else if (issuer.equals(VOMSServiceConstants.ROLE_CA)) {
+
+				String groupName = PathNamingScheme.getGroupName(subject);
+				String roleName = PathNamingScheme.getRoleName(subject);
+
+				VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+				VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+
+				if (g == null)
+					throw new NoSuchGroupException("Group '" + groupName
+							+ "' is not defined in database!");
+
+				if (r == null)
+					throw new NoSuchRoleException("Role '" + roleName
+							+ "' is not defined in database!");
+
+				return VOMSAdminDAO.instance().create(subject);
+			}
+
+			// Another type of admin
+			return VOMSAdminDAO.instance().create(subject, issuer);
+
+		}
+
+		return admin;
+
+	}
 }

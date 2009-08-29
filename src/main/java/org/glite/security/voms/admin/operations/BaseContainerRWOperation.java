@@ -21,16 +21,16 @@
 
 package org.glite.security.voms.admin.operations;
 
-public abstract class BaseContainerRWOperation extends SingleContextVomsOperation {
+public abstract class BaseContainerRWOperation extends
+		SingleContextVomsOperation {
 
 	protected BaseContainerRWOperation(VOMSContext ctxt) {
 		super(ctxt);
 	}
 
 	protected void setupPermissions() {
-		addRequiredPermission(__context,VOMSPermission.getContainerRWPermissions());				
+		addRequiredPermission(__context, VOMSPermission
+				.getContainerRWPermissions());
 	}
-
-	
 
 }

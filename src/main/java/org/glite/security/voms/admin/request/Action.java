@@ -23,5 +23,5 @@ package org.glite.security.voms.admin.request;
 
 public interface Action {
 
-    public Object execute();
+	public Object execute();
 }

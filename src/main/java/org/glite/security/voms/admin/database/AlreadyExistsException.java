@@ -22,27 +22,27 @@ package org.glite.security.voms.admin.database;
 
 public class AlreadyExistsException extends VOMSDatabaseException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public AlreadyExistsException( String message ) {
+	public AlreadyExistsException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public AlreadyExistsException( String message, Throwable t ) {
+	public AlreadyExistsException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public AlreadyExistsException( Throwable t ) {
+	public AlreadyExistsException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

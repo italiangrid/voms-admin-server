@@ -31,54 +31,55 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
-
 public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
 
-    String attributeName;
-    
-    String attributeValue;
+	String attributeName;
 
-    protected Object doExecute() {
+	String attributeValue;
 
-        return VOMSRoleDAO.instance().setAttribute( __context.getRole(),
-                __context.getGroup(), attributeName, 
-                attributeValue );
-    }
+	protected Object doExecute() {
 
-    private SetRoleAttributeOperation( VOMSGroup g, VOMSRole r,
-            String aName, String aValue ) {
+		return VOMSRoleDAO.instance().setAttribute(__context.getRole(),
+				__context.getGroup(), attributeName, attributeValue);
+	}
 
-        super( VOMSContext.instance( g, r ) );
-        
-        attributeName = aName;
-        attributeValue = aValue;
+	private SetRoleAttributeOperation(VOMSGroup g, VOMSRole r, String aName,
+			String aValue) {
 
-    }
+		super(VOMSContext.instance(g, r));
 
-    public static SetRoleAttributeOperation instance( String groupName,
-            String roleName, AttributeValue val) {
-        
-        if (val == null)
-            throw new NullArgumentException("Null attribute value passed as argument!");
-        
-        VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName ).execute();
-        VOMSRole r = (VOMSRole) FindRoleOperation.instance( roleName ).execute();
-        
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' not found!");
-        
-        if (r == null)
-            throw new NoSuchRoleException("Role '"+roleName+"' not found!");
-        
-        
-        return new SetRoleAttributeOperation(g,r,val.getAttributeClass().getName(), val.getValue());
-        
-    }
-    
-    public static SetRoleAttributeOperation instance( VOMSGroup g,
-            VOMSRole r, String aName, String aValue ) {
+		attributeName = aName;
+		attributeValue = aValue;
 
-        return new SetRoleAttributeOperation( g, r, aName, aValue );
-    }
+	}
+
+	public static SetRoleAttributeOperation instance(String groupName,
+			String roleName, AttributeValue val) {
+
+		if (val == null)
+			throw new NullArgumentException(
+					"Null attribute value passed as argument!");
+
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' not found!");
+
+		if (r == null)
+			throw new NoSuchRoleException("Role '" + roleName + "' not found!");
+
+		return new SetRoleAttributeOperation(g, r, val.getAttributeClass()
+				.getName(), val.getValue());
+
+	}
+
+	public static SetRoleAttributeOperation instance(VOMSGroup g, VOMSRole r,
+			String aName, String aValue) {
+
+		return new SetRoleAttributeOperation(g, r, aName, aValue);
+	}
 
 }

@@ -24,33 +24,30 @@ import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
-
 public class ListUserRolesOperation extends BaseVoReadOperation {
-    
-    String username, caDN;
-    
 
-    public ListUserRolesOperation( String username, String caDN ) {
+	String username, caDN;
 
-        this.username = username;
-        this.caDN = caDN;
-    }
+	public ListUserRolesOperation(String username, String caDN) {
 
+		this.username = username;
+		this.caDN = caDN;
+	}
 
-    protected Object doExecute() {
+	protected Object doExecute() {
 
-        VOMSUser u = (VOMSUser) FindUserOperation.instance( username, caDN ).execute();
-        
-        if (u == null)
-            throw new NoSuchUserException("No user '"+username+","+caDN+"' found in org.glite.security.voms.admin.database.");
-        
-        return u.getRoleMappings();
-    }
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDN)
+				.execute();
 
-    
-    public static ListUserRolesOperation instance(String username, String caDN) {
+		if (u == null)
+			throw new NoSuchUserException("No user '" + username + "," + caDN
+					+ "' found in org.glite.security.voms.admin.database.");
 
-        return new ListUserRolesOperation(username, caDN);
-    }
+		return u.getRoleMappings();
+	}
+
+	public static ListUserRolesOperation instance(String username, String caDN) {
+
+		return new ListUserRolesOperation(username, caDN);
+	}
 }

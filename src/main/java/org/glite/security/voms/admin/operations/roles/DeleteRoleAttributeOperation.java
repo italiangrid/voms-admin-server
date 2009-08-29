@@ -29,40 +29,44 @@ import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 
-
-
 public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
-   
-    String attributeName;
-    
-    protected Object doExecute() {
-        
-        VOMSRoleDAO.instance().deleteAttributeByName( __context.getRole(), __context.getGroup(),attributeName);
-        return null;
-    }
-    
-    private DeleteRoleAttributeOperation(VOMSGroup g, VOMSRole r, String attributeName){
-        super(VOMSContext.instance( g,r ));
-        this.attributeName = attributeName;
-    }
-    
-    public static DeleteRoleAttributeOperation instance(VOMSGroup g, VOMSRole r, String attributeName) {
 
-        return new DeleteRoleAttributeOperation(g,r,attributeName);
-    }
-    
-    public static DeleteRoleAttributeOperation instance(String groupName, String roleName, String attributeName) {
+	String attributeName;
 
-        VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName ).execute();
-        VOMSRole r = (VOMSRole) FindRoleOperation.instance( roleName ).execute();
-        
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' not found!");
-        
-        if (r == null)
-            throw new NoSuchRoleException("Role '"+roleName+"' not found!");
-        
-        return new DeleteRoleAttributeOperation(g,r,attributeName);
-    }
+	protected Object doExecute() {
+
+		VOMSRoleDAO.instance().deleteAttributeByName(__context.getRole(),
+				__context.getGroup(), attributeName);
+		return null;
+	}
+
+	private DeleteRoleAttributeOperation(VOMSGroup g, VOMSRole r,
+			String attributeName) {
+		super(VOMSContext.instance(g, r));
+		this.attributeName = attributeName;
+	}
+
+	public static DeleteRoleAttributeOperation instance(VOMSGroup g,
+			VOMSRole r, String attributeName) {
+
+		return new DeleteRoleAttributeOperation(g, r, attributeName);
+	}
+
+	public static DeleteRoleAttributeOperation instance(String groupName,
+			String roleName, String attributeName) {
+
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' not found!");
+
+		if (r == null)
+			throw new NoSuchRoleException("Role '" + roleName + "' not found!");
+
+		return new DeleteRoleAttributeOperation(g, r, attributeName);
+	}
 
 }

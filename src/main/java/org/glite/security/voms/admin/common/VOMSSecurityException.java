@@ -22,24 +22,24 @@ package org.glite.security.voms.admin.common;
 
 public class VOMSSecurityException extends VOMSException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public VOMSSecurityException( String message ) {
+	public VOMSSecurityException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSSecurityException( String message, Throwable t ) {
+	public VOMSSecurityException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSSecurityException() {
-		super((String)null);
+	public VOMSSecurityException() {
+		super((String) null);
 	}
 }

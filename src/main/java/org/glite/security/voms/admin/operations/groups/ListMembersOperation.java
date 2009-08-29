@@ -27,18 +27,19 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseMemberhipReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public class ListMembersOperation extends BaseMemberhipReadOperation {
 
-    private ListMembersOperation(VOMSContext context){
-     
-        super(context);
-        
-    }
+	private ListMembersOperation(VOMSContext context) {
+
+		super(context);
+
+	}
+
 	protected Object doExecute() {
-        
-        if (!__context.isGroupContext())
-            return VOMSRoleDAO.instance().getMembers(__context.getGroup(),__context.getRole());
+
+		if (!__context.isGroupContext())
+			return VOMSRoleDAO.instance().getMembers(__context.getGroup(),
+					__context.getRole());
 
 		return VOMSGroupDAO.instance().getMembers(__context.getGroup());
 	}
@@ -47,10 +48,10 @@ public class ListMembersOperation extends BaseMemberhipReadOperation {
 
 		return new ListMembersOperation(VOMSContext.instance(g, r));
 	}
-    
-    public static ListMembersOperation instance(String context){
-        
-        return new ListMembersOperation(VOMSContext.instance( context ));
-           
-    }
+
+	public static ListMembersOperation instance(String context) {
+
+		return new ListMembersOperation(VOMSContext.instance(context));
+
+	}
 }

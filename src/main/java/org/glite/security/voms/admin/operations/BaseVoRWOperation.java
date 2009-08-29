@@ -22,11 +22,12 @@
 package org.glite.security.voms.admin.operations;
 
 public abstract class BaseVoRWOperation extends BaseVomsOperation {
-	
+
 	protected void setupPermissions() {
-	
-		addRequiredPermission(VOMSContext.getVoContext(),VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-		
+
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerRWPermissions().setMembershipRWPermission());
+
 	}
 
 }

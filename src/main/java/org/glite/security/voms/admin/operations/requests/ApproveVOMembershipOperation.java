@@ -34,41 +34,44 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
 
-
 public class ApproveVOMembershipOperation extends BaseVomsOperation {
 
-       
-    NewVOMembershipRequest request;
-    
-    private ApproveVOMembershipOperation(NewVOMembershipRequest req) {
+	NewVOMembershipRequest request;
+
+	private ApproveVOMembershipOperation(NewVOMembershipRequest req) {
 		request = req;
 	}
-    
-    protected Object doExecute() {
-        
-        if (!request.getStatus().equals( StatusFlag.CONFIRMED))
-            throw new IllegalRequestStateException("Illegal state for request!");
-        
-        VOMSUser user = (VOMSUser) CreateUserOperation.instance(request).execute();
-        
-        request.approve();
-        
-        // Add a sign aup record for the user
-        VOMSUserDAO.instance().signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
-        
-        EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
-        
-        return request;
-    }
 
-    public static ApproveVOMembershipOperation instance(NewVOMembershipRequest req) {
+	protected Object doExecute() {
 
-        return new ApproveVOMembershipOperation(req);
-    }
+		if (!request.getStatus().equals(StatusFlag.CONFIRMED))
+			throw new IllegalRequestStateException("Illegal state for request!");
+
+		VOMSUser user = (VOMSUser) CreateUserOperation.instance(request)
+				.execute();
+
+		request.approve();
+
+		// Add a sign aup record for the user
+		VOMSUserDAO.instance().signAUP(user,
+				DAOFactory.instance().getAUPDAO().getVOAUP());
+
+		EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+
+		return request;
+	}
+
+	public static ApproveVOMembershipOperation instance(
+			NewVOMembershipRequest req) {
+
+		return new ApproveVOMembershipOperation(req);
+	}
 
 	@Override
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission().setRequestsReadPermission().setRequestsWritePermission());
-		
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerRWPermissions().setMembershipRWPermission()
+				.setRequestsReadPermission().setRequestsWritePermission());
+
 	}
 }

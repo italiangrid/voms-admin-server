@@ -29,155 +29,151 @@ import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.hibernate.Query;
 
-
 public class RequestDAO {
 
-    
-    
-    private RequestDAO() {
+	private RequestDAO() {
 
-        HibernateFactory.beginTransaction();
-        
-    }
+		HibernateFactory.beginTransaction();
 
-    public static RequestDAO instance() {
+	}
 
-        return new RequestDAO();
-    }
+	public static RequestDAO instance() {
 
-    public VOMembershipRequest findFromAdmin(){
-        CurrentAdmin admin = CurrentAdmin.instance();
-        
-        VOMembershipRequest req = findByDNCA( admin.getRealSubject(), admin.getRealIssuer() );
-        
-        return req;   
-    }
-    
-    public VOMembershipRequest createFromDNCA(String dn, String ca, String emailAddress){
-        
-        VOMembershipRequest req = new VOMembershipRequest();
-        
-        req.setDn( dn );
-        req.setCa( ca );
-        req.setCn( null );
-        req.setEmailAddress( emailAddress );
-        
-        req.setCreationDate( new Date() );
-        req.setStatus( VOMembershipRequest.SUBMITTED );
+		return new RequestDAO();
+	}
 
-        req.setConfirmId( UUID.randomUUID().toString() );
-        save( req );
+	public VOMembershipRequest findFromAdmin() {
+		CurrentAdmin admin = CurrentAdmin.instance();
 
-        return req;
-        
-    }
-    public VOMembershipRequest createFromAdmin( String emailAddress ) {
+		VOMembershipRequest req = findByDNCA(admin.getRealSubject(), admin
+				.getRealIssuer());
 
-        CurrentAdmin admin = CurrentAdmin.instance();
+		return req;
+	}
 
-        VOMembershipRequest req = new VOMembershipRequest();
+	public VOMembershipRequest createFromDNCA(String dn, String ca,
+			String emailAddress) {
 
-        req.setDn( admin.getRealSubject() );
-        req.setCa( admin.getRealIssuer() );
-        req.setCn( admin.getRealCN() );
-        req.setEmailAddress( emailAddress );
-        req.setCreationDate( new Date() );
-        req.setStatus( VOMembershipRequest.SUBMITTED );
+		VOMembershipRequest req = new VOMembershipRequest();
 
-        req.setConfirmId( UUID.randomUUID().toString() );
-        save( req );
+		req.setDn(dn);
+		req.setCa(ca);
+		req.setCn(null);
+		req.setEmailAddress(emailAddress);
 
-        return req;
-    }
+		req.setCreationDate(new Date());
+		req.setStatus(VOMembershipRequest.SUBMITTED);
 
-    public VOMembershipRequest findById( Long id ) {
+		req.setConfirmId(UUID.randomUUID().toString());
+		save(req);
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where id = :id";
-        Query q = HibernateFactory.getSession().createQuery( query ).setLong(
-                "id", id.longValue() );
+		return req;
 
-        return (VOMembershipRequest) q.uniqueResult();
-    }
-    
-    public VOMembershipRequest findPendingForUser(String dn, String caDN ){
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status <= 1";
-        Query q = HibernateFactory.getSession().createQuery( query ).setString( "dn", dn).setString("ca",caDN);
-        
-        return (VOMembershipRequest) q.uniqueResult();
-           
-    }
-    public VOMembershipRequest findByDNCA( String dn, String caDN ) {
+	}
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status = 0";
-        Query q = HibernateFactory.getSession().createQuery( query ).setString( "dn", dn).setString("ca",caDN);
-        
-        return (VOMembershipRequest) q.uniqueResult();
-    }
+	public VOMembershipRequest createFromAdmin(String emailAddress) {
 
-    public List getUnconfirmed() {
+		CurrentAdmin admin = CurrentAdmin.instance();
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = 0";
-        Query q = HibernateFactory
-        .getSession()
-        .createQuery( query );
-        
-        return q.list();
-        
-    }
+		VOMembershipRequest req = new VOMembershipRequest();
 
-    public List getPending() {
+		req.setDn(admin.getRealSubject());
+		req.setCa(admin.getRealIssuer());
+		req.setCn(admin.getRealCN());
+		req.setEmailAddress(emailAddress);
+		req.setCreationDate(new Date());
+		req.setStatus(VOMembershipRequest.SUBMITTED);
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :status";
+		req.setConfirmId(UUID.randomUUID().toString());
+		save(req);
 
-        Query q = HibernateFactory
-                .getSession()
-                .createQuery( query )
-                .setInteger( "status", VOMembershipRequest.CONFIRMED.intValue() );
+		return req;
+	}
 
-        return q.list();
+	public VOMembershipRequest findById(Long id) {
 
-    }
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where id = :id";
+		Query q = HibernateFactory.getSession().createQuery(query).setLong(
+				"id", id.longValue());
 
-    public List getProcessed() {
+		return (VOMembershipRequest) q.uniqueResult();
+	}
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :approved or status = :rejected";
+	public VOMembershipRequest findPendingForUser(String dn, String caDN) {
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status <= 1";
+		Query q = HibernateFactory.getSession().createQuery(query).setString(
+				"dn", dn).setString("ca", caDN);
 
-        Query q = HibernateFactory.getSession().createQuery( query )
-                .setInteger( "approved",
-                        VOMembershipRequest.APPROVED.intValue() ).setInteger(
-                        "rejected", VOMembershipRequest.REJECTED.intValue() );
+		return (VOMembershipRequest) q.uniqueResult();
 
-        return q.list();
+	}
 
-    }
+	public VOMembershipRequest findByDNCA(String dn, String caDN) {
 
-    public List getAll() {
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status = 0";
+		Query q = HibernateFactory.getSession().createQuery(query).setString(
+				"dn", dn).setString("ca", caDN);
 
-        String query = "from org.glite.security.voms.admin.model.VOMembershipRequest";
+		return (VOMembershipRequest) q.uniqueResult();
+	}
 
-        return HibernateFactory.getSession().createQuery( query ).list();
+	public List getUnconfirmed() {
 
-    }
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = 0";
+		Query q = HibernateFactory.getSession().createQuery(query);
 
-    public void save( VOMembershipRequest req ) {
+		return q.list();
 
-        HibernateFactory.getSession().save( req );
+	}
 
-    }
+	public List getPending() {
 
-    public void update( VOMembershipRequest req ) {
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :status";
 
-        HibernateFactory.getSession().update( req );
+		Query q = HibernateFactory.getSession().createQuery(query).setInteger(
+				"status", VOMembershipRequest.CONFIRMED.intValue());
 
-    }
+		return q.list();
 
-    public void delete( VOMembershipRequest req ) {
+	}
 
-        HibernateFactory.getSession().delete( req );
-    }
+	public List getProcessed() {
 
-    
-    
-    
-    
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :approved or status = :rejected";
+
+		Query q = HibernateFactory
+				.getSession()
+				.createQuery(query)
+				.setInteger("approved", VOMembershipRequest.APPROVED.intValue())
+				.setInteger("rejected", VOMembershipRequest.REJECTED.intValue());
+
+		return q.list();
+
+	}
+
+	public List getAll() {
+
+		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest";
+
+		return HibernateFactory.getSession().createQuery(query).list();
+
+	}
+
+	public void save(VOMembershipRequest req) {
+
+		HibernateFactory.getSession().save(req);
+
+	}
+
+	public void update(VOMembershipRequest req) {
+
+		HibernateFactory.getSession().update(req);
+
+	}
+
+	public void delete(VOMembershipRequest req) {
+
+		HibernateFactory.getSession().delete(req);
+	}
+
 }

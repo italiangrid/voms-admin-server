@@ -25,34 +25,34 @@ import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.VOMSDBVersion;
 
-
-
-
 public class VOMSVersionDAO {
 
-    private VOMSVersionDAO() {
+	private VOMSVersionDAO() {
 
-        super();
-    }
+		super();
+	}
 
-    public static VOMSVersionDAO instance() {
+	public static VOMSVersionDAO instance() {
 
-        return new VOMSVersionDAO();
-    }
+		return new VOMSVersionDAO();
+	}
 
-    public void setupVersion() {
+	public void setupVersion() {
 
-        VOMSDBVersion v = new VOMSDBVersion();
-        v.setVersion( VOMSServiceConstants.VOMS_DB_VERSION );
+		VOMSDBVersion v = new VOMSDBVersion();
+		v.setVersion(VOMSServiceConstants.VOMS_DB_VERSION);
 
-        HibernateFactory.beginTransaction();
-        HibernateFactory.getSession().createQuery(
-                "delete from org.glite.security.voms.admin.model.VOMSDBVersion" ).executeUpdate();
-        HibernateFactory.commitTransaction();
-        HibernateFactory.beginTransaction();
-        HibernateFactory.getSession().save( v );
-        HibernateFactory.commitTransaction();
+		HibernateFactory.beginTransaction();
+		HibernateFactory
+				.getSession()
+				.createQuery(
+						"delete from org.glite.security.voms.admin.model.VOMSDBVersion")
+				.executeUpdate();
+		HibernateFactory.commitTransaction();
+		HibernateFactory.beginTransaction();
+		HibernateFactory.getSession().save(v);
+		HibernateFactory.commitTransaction();
 
-    }
+	}
 
 }

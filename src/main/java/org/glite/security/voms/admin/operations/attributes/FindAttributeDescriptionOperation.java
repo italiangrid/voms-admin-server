@@ -26,38 +26,35 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class FindAttributeDescriptionOperation extends BaseVomsOperation {
 
-    String name;
-    
-    private FindAttributeDescriptionOperation(String name){
-        
-        this.name = name;
-    }
-    
-    
-    protected Object doExecute() {
+	String name;
 
-        VOMSAttributeDescription desc = VOMSAttributeDAO.instance().getAttributeDescriptionByName( name );
-        return desc;
-    }
+	private FindAttributeDescriptionOperation(String name) {
 
-    
-    protected void setupPermissions() {
+		this.name = name;
+	}
 
-        VOMSContext voContext = VOMSContext.getVoContext();
-        
-        addRequiredPermission(voContext, VOMSPermission
-                .getContainerReadPermission().setAttributesReadPermission());
+	protected Object doExecute() {
 
-    }
-    
-    
-    public static FindAttributeDescriptionOperation instance(String name){
-        
-        return new FindAttributeDescriptionOperation(name);
-        
-    }
+		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+				.getAttributeDescriptionByName(name);
+		return desc;
+	}
+
+	protected void setupPermissions() {
+
+		VOMSContext voContext = VOMSContext.getVoContext();
+
+		addRequiredPermission(voContext, VOMSPermission
+				.getContainerReadPermission().setAttributesReadPermission());
+
+	}
+
+	public static FindAttributeDescriptionOperation instance(String name) {
+
+		return new FindAttributeDescriptionOperation(name);
+
+	}
 
 }

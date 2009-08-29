@@ -5,33 +5,30 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class ListAttributesForUserOperation extends BaseVomsOperation {
 
-    protected VOMSUser _user;
+	protected VOMSUser _user;
 
-    
-    
-    private ListAttributesForUserOperation(VOMSUser u) {
+	private ListAttributesForUserOperation(VOMSUser u) {
 
-        _user = u;
-    }
-    
-    
-    protected Object doExecute() {
+		_user = u;
+	}
 
-        return _user.getAttributes();
-    }
+	protected Object doExecute() {
 
-    protected void setupPermissions() {
+		return _user.getAttributes();
+	}
 
-        addRequiredPermission( VOMSContext.getVoContext(), VOMSPermission.getEmptyPermissions().setAttributesReadPermission() );
+	protected void setupPermissions() {
 
-    }
-    
-    public static ListAttributesForUserOperation instance(VOMSUser u) {
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getEmptyPermissions().setAttributesReadPermission());
 
-        return new ListAttributesForUserOperation(u);
-    }
+	}
+
+	public static ListAttributesForUserOperation instance(VOMSUser u) {
+
+		return new ListAttributesForUserOperation(u);
+	}
 
 }

@@ -22,48 +22,45 @@ package org.glite.security.voms.admin.api.attributes;
 
 import java.io.Serializable;
 
+public class AttributeClass implements Serializable {
 
-public class AttributeClass implements Serializable{
-
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    private String name;
-    private String description;
-    private boolean uniquenessChecked;
-    
-    public String getDescription() {
-    
-        return description;
-    }
-    
-    public void setDescription( String description ) {
-    
-        this.description = description;
-    }
-    
-    public String getName() {
-    
-        return name;
-    }
-    
-    public void setName( String name ) {
-    
-        this.name = name;
-    }
+	private static final long serialVersionUID = 1L;
 
-    
-    public boolean isUniquenessChecked() {
-    
-        return uniquenessChecked;
-    }
+	private String name;
+	private String description;
+	private boolean uniquenessChecked;
 
-    
-    public void setUniquenessChecked( boolean uniquenessChecked ) {
-    
-        this.uniquenessChecked = uniquenessChecked;
-    }
-    
+	public String getDescription() {
+
+		return description;
+	}
+
+	public void setDescription(String description) {
+
+		this.description = description;
+	}
+
+	public String getName() {
+
+		return name;
+	}
+
+	public void setName(String name) {
+
+		this.name = name;
+	}
+
+	public boolean isUniquenessChecked() {
+
+		return uniquenessChecked;
+	}
+
+	public void setUniquenessChecked(boolean uniquenessChecked) {
+
+		this.uniquenessChecked = uniquenessChecked;
+	}
+
 }

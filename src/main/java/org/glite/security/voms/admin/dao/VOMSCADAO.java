@@ -37,261 +37,258 @@ import org.hibernate.Session;
 
 public class VOMSCADAO implements Searchable {
 
-    public static final Log log = LogFactory.getLog( VOMSCADAO.class );
-
-    private VOMSCADAO() {
-
-        HibernateFactory.beginTransaction();
-    }
-
-    public VOMSCA createCA( String caDN, String description ) {
-
-        if ( caDN == null )
-            throw new NullArgumentException( "caDN must be non-null!" );
-        
-        log.info( "Adding  '" + caDN + "' to trusted CA database." );
-
-        VOMSCA ca = new VOMSCA( caDN, description );
-
-        HibernateFactory.getSession().save( ca );
-
-        return ca;
-    }
-
-    public VOMSCA create( X509Certificate caCert, String description ) {
-
-        assert caCert != null : "CA certificate is null!";
-        Date now = new Date();
-
-        if ( now.after( caCert.getNotAfter() )
-                && ( !VOMSConfiguration.instance().getBoolean(
-                         VOMSConfiguration.CREATE_EXPIRED_CAS, false ) ) ) {
+	public static final Log log = LogFactory.getLog(VOMSCADAO.class);
+
+	private VOMSCADAO() {
 
-            log.warn( "CA '"
-                    + DNUtil.getBCasX500( caCert.getSubjectX500Principal() )
-                    + "' certificate has expired on " + caCert.getNotAfter()
-                    + " so it will not be added to the voms database!" );
-            return null;
+		HibernateFactory.beginTransaction();
+	}
+
+	public VOMSCA createCA(String caDN, String description) {
 
-        }
+		if (caDN == null)
+			throw new NullArgumentException("caDN must be non-null!");
 
-        VOMSCA ca = new VOMSCA( caCert, description );
-        HibernateFactory.getSession().save( ca );
-        return ca;
+		log.info("Adding  '" + caDN + "' to trusted CA database.");
 
-    }
+		VOMSCA ca = new VOMSCA(caDN, description);
 
-    public void saveOrUpdateTrustedCA( X509Certificate caCert ) {
+		HibernateFactory.getSession().save(ca);
 
-        saveOrUpdateTrustedCA( caCert, null );
-    }
+		return ca;
+	}
 
-    public void checkValidityAndUpdate( VOMSCA ca, X509Certificate caCert ) {
+	public VOMSCA create(X509Certificate caCert, String description) {
 
-        Date now = new Date();
+		assert caCert != null : "CA certificate is null!";
+		Date now = new Date();
 
-//        if ( now.after( ca.getNotAfter() ) ) {
-//
-//            log.warn( "CA '" + ca.getSubjectString()
-//                    + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
-//            
-//            // The CA has expired, let's see if the new certificate extends its
-//            // validity
-//            if ( !now.after( caCert.getNotAfter() ) ) {
-//                log.info( "Updating validity period for CA '"
-//                        + ca.getSubjectString() + "' from '" + ca.getNotAfter()
-//                        + "' to '" + caCert.getNotAfter() + "'." );
-//                ca.update( caCert );
-//                HibernateFactory.getSession().update( ca );
-//
-//            } else {
-//
-//                if ( VOMSConfiguration.instance().getBoolean(
-//                        VOMSConfiguration.DROP_EXPIRED_CAS, false ) ) {
-//                    
-//                    // In this case the CA has expired and there is no
-//                    // substitute certificate
-//                    // We check if there are certificates bound to this ca, and,
-//                    // if not, drop
-//                    // the ca from the database.
-//                    List <Certificate> certs = CertificateDAO.instance()
-//                            .getForCA( ca );
-//                    if ( certs.isEmpty() ) {
-//
-//                        log.warn( "Removing expired CA '"
-//                                + ca.getSubjectString() + "' from database..." );
-//                        // First remove the admins
-//                        VOMSAdminDAO.instance().deleteFromCA( ca );
-//                        HibernateFactory.getSession().delete( ca );
-//                    }else
-//                        log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
-//                    
-//                }
-//            }
-    
-    }
-    
+		if (now.after(caCert.getNotAfter())
+				&& (!VOMSConfiguration.instance().getBoolean(
+						VOMSConfiguration.CREATE_EXPIRED_CAS, false))) {
 
-    public void saveOrUpdateTrustedCA( X509Certificate caCert,
-            String description ) {
+			log.warn("CA '"
+					+ DNUtil.getBCasX500(caCert.getSubjectX500Principal())
+					+ "' certificate has expired on " + caCert.getNotAfter()
+					+ " so it will not be added to the voms database!");
+			return null;
 
-        assert caCert != null : "CA certificate is null!";
+		}
 
-        VOMSCA ca = getFromCertificate( caCert );
+		VOMSCA ca = new VOMSCA(caCert, description);
+		HibernateFactory.getSession().save(ca);
+		return ca;
 
-        if ( ca == null ) {
+	}
 
-            ca = create( caCert, description );
-            if ( ca != null )
-                log.debug( "Added [ " + ca.getSubjectString()
-                        + "] to trusted CA database." );
+	public void saveOrUpdateTrustedCA(X509Certificate caCert) {
 
-        }
-        
-    }
+		saveOrUpdateTrustedCA(caCert, null);
+	}
 
-    public void saveTrustedCA( String caDN ) {
+	public void checkValidityAndUpdate(VOMSCA ca, X509Certificate caCert) {
 
-        VOMSCA ca = getByName( caDN );
+		Date now = new Date();
 
-        if ( ca == null ) {
+		// if ( now.after( ca.getNotAfter() ) ) {
+		//
+		// log.warn( "CA '" + ca.getSubjectString()
+		// + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
+		//            
+		// // The CA has expired, let's see if the new certificate extends its
+		// // validity
+		// if ( !now.after( caCert.getNotAfter() ) ) {
+		// log.info( "Updating validity period for CA '"
+		// + ca.getSubjectString() + "' from '" + ca.getNotAfter()
+		// + "' to '" + caCert.getNotAfter() + "'." );
+		// ca.update( caCert );
+		// HibernateFactory.getSession().update( ca );
+		//
+		// } else {
+		//
+		// if ( VOMSConfiguration.instance().getBoolean(
+		// VOMSConfiguration.DROP_EXPIRED_CAS, false ) ) {
+		//                    
+		// // In this case the CA has expired and there is no
+		// // substitute certificate
+		// // We check if there are certificates bound to this ca, and,
+		// // if not, drop
+		// // the ca from the database.
+		// List <Certificate> certs = CertificateDAO.instance()
+		// .getForCA( ca );
+		// if ( certs.isEmpty() ) {
+		//
+		// log.warn( "Removing expired CA '"
+		// + ca.getSubjectString() + "' from database..." );
+		// // First remove the admins
+		// VOMSAdminDAO.instance().deleteFromCA( ca );
+		// HibernateFactory.getSession().delete( ca );
+		// }else
+		// log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
+		//                    
+		// }
+		// }
 
-            log.debug( "Adding [ " + caDN + "] to trusted CA database." );
-            createCA( caDN, null );
+	}
 
-        } else
-            log.debug( caDN + " is already in trusted CA database." );
+	public void saveOrUpdateTrustedCA(X509Certificate caCert, String description) {
 
-    }
+		assert caCert != null : "CA certificate is null!";
 
-    public VOMSCA getByName( String caDN ) {
+		VOMSCA ca = getFromCertificate(caCert);
 
-        if ( caDN == null )
-            throw new NullArgumentException( "caDN must be non-null!" );
+		if (ca == null) {
 
-        String queryString = "from VOMSCA as ca where ca.subjectString = :caDN";
+			ca = create(caCert, description);
+			if (ca != null)
+				log.debug("Added [ " + ca.getSubjectString()
+						+ "] to trusted CA database.");
 
-        VOMSCA res = (VOMSCA) HibernateFactory.getSession().createQuery(
-                queryString ).setString( "caDN", caDN ).uniqueResult();
+		}
 
-        return res;
+	}
 
-    }
+	public void saveTrustedCA(String caDN) {
 
-    public VOMSCA getByID( Short caID ) {
+		VOMSCA ca = getByName(caDN);
 
-        return (VOMSCA) HibernateFactory.getSession().get( VOMSCA.class, caID );
+		if (ca == null) {
 
-    }
+			log.debug("Adding [ " + caDN + "] to trusted CA database.");
+			createCA(caDN, null);
 
-    public VOMSCA getFromCertificate( X509Certificate cert ) {
+		} else
+			log.debug(caDN + " is already in trusted CA database.");
 
-        VOMSCA model = new VOMSCA( cert, null );
+	}
 
-        String query = "from VOMSCA as ca where ca.subjectString = :modelCA";
-        VOMSCA result = (VOMSCA) HibernateFactory.getSession().createQuery(
-                query ).setString( "modelCA", model.getSubjectString() )
-                .uniqueResult();
+	public VOMSCA getByName(String caDN) {
 
-        return result;
-    }
+		if (caDN == null)
+			throw new NullArgumentException("caDN must be non-null!");
 
-    public VOMSCA getByID( short caID ) {
+		String queryString = "from VOMSCA as ca where ca.subjectString = :caDN";
 
-        return getByID( new Short( caID ) );
+		VOMSCA res = (VOMSCA) HibernateFactory.getSession().createQuery(
+				queryString).setString("caDN", caDN).uniqueResult();
 
-    }
+		return res;
 
-    public List getAll() {
+	}
 
-        String query = "from VOMSCA";
+	public VOMSCA getByID(Short caID) {
 
-        List res = HibernateFactory.getSession().createQuery( query ).list();
+		return (VOMSCA) HibernateFactory.getSession().get(VOMSCA.class, caID);
 
-        return res;
-    }
+	}
 
-    public List getValid() {
+	public VOMSCA getFromCertificate(X509Certificate cert) {
 
-        String query = "from VOMSCA where subjectString not like '/O=VOMS%'";
+		VOMSCA model = new VOMSCA(cert, null);
 
-        List res = HibernateFactory.getSession().createQuery( query ).list();
+		String query = "from VOMSCA as ca where ca.subjectString = :modelCA";
+		VOMSCA result = (VOMSCA) HibernateFactory.getSession().createQuery(
+				query).setString("modelCA", model.getSubjectString())
+				.uniqueResult();
 
-        return res;
-    }
+		return result;
+	}
 
-    public VOMSCA getGroupCA() {
+	public VOMSCA getByID(short caID) {
 
-        return getByName( VOMSServiceConstants.GROUP_CA );
-    }
+		return getByID(new Short(caID));
 
-    public VOMSCA getRoleCA() {
+	}
 
-        return getByName( VOMSServiceConstants.ROLE_CA );
-    }
+	public List getAll() {
 
-    public static VOMSCADAO instance() {
+		String query = "from VOMSCA";
 
-        return new VOMSCADAO();
-    }
+		List res = HibernateFactory.getSession().createQuery(query).list();
 
-    public int countMatches( String text ) {
+		return res;
+	}
 
-        if ( text == null || "".equals( text.trim() ) )
-            return getValid().size();
+	public List getValid() {
 
-        String searchString = "%" + text + "%";
+		String query = "from VOMSCA where subjectString not like '/O=VOMS%'";
 
-        String query = "select count(distinct ca) from VOMSCA ca where ca.subjectString not like '/O=VOMS%' and ca.subjectString like :searchString";
+		List res = HibernateFactory.getSession().createQuery(query).list();
 
-        int count = ( (Long) HibernateFactory.getSession().createQuery( query )
-                .setString( "searchString", searchString ).uniqueResult() )
-                .intValue();
+		return res;
+	}
 
-        return count;
-    }
+	public VOMSCA getGroupCA() {
 
-    public SearchResults getAll( int firstResult, int maxResults ) {
+		return getByName(VOMSServiceConstants.GROUP_CA);
+	}
 
-        String query = "from VOMSCA where subjectString not like '/O=VOMS%'";
+	public VOMSCA getRoleCA() {
 
-        int count = getValid().size();
-        List cas = HibernateFactory.getSession().createQuery( query )
-                .setFirstResult( firstResult ).setMaxResults( maxResults )
-                .list();
+		return getByName(VOMSServiceConstants.ROLE_CA);
+	}
 
-        SearchResults results = SearchResults.instance();
-        results.setCount( count );
-        results.setFirstResult( firstResult );
-        results.setResultsPerPage( maxResults );
-        results.setResults( cas );
-        results.setSearchString( null );
+	public static VOMSCADAO instance() {
 
-        return results;
-    }
+		return new VOMSCADAO();
+	}
 
-    public SearchResults search( String text, int firstResult, int maxResults ) {
+	public int countMatches(String text) {
 
-        if ( ( text == null || "".equals( text.trim() ) || text.length() == 0 ) )
-            return getAll( firstResult, maxResults );
+		if (text == null || "".equals(text.trim()))
+			return getValid().size();
 
-        String searchString = "%" + text + "%";
-        String query = "select ca from VOMSCA ca where ca.subjectString not like '/O=VOMS%' and ca.subjectString like :searchString";
+		String searchString = "%" + text + "%";
 
-        List cas = HibernateFactory.getSession().createQuery( query )
-                .setString( "searchString", searchString ).setFirstResult(
-                        firstResult ).setMaxResults( maxResults ).list();
+		String query = "select count(distinct ca) from VOMSCA ca where ca.subjectString not like '/O=VOMS%' and ca.subjectString like :searchString";
 
-        SearchResults results = SearchResults.instance();
+		int count = ((Long) HibernateFactory.getSession().createQuery(query)
+				.setString("searchString", searchString).uniqueResult())
+				.intValue();
 
-        results.setCount( countMatches( text ) );
-        results.setFirstResult( firstResult );
-        results.setResultsPerPage( maxResults );
-        results.setResults( cas );
-        results.setSearchString( text );
+		return count;
+	}
 
-        return results;
+	public SearchResults getAll(int firstResult, int maxResults) {
 
-    }
+		String query = "from VOMSCA where subjectString not like '/O=VOMS%'";
+
+		int count = getValid().size();
+		List cas = HibernateFactory.getSession().createQuery(query)
+				.setFirstResult(firstResult).setMaxResults(maxResults).list();
+
+		SearchResults results = SearchResults.instance();
+		results.setCount(count);
+		results.setFirstResult(firstResult);
+		results.setResultsPerPage(maxResults);
+		results.setResults(cas);
+		results.setSearchString(null);
+
+		return results;
+	}
+
+	public SearchResults search(String text, int firstResult, int maxResults) {
+
+		if ((text == null || "".equals(text.trim()) || text.length() == 0))
+			return getAll(firstResult, maxResults);
+
+		String searchString = "%" + text + "%";
+		String query = "select ca from VOMSCA ca where ca.subjectString not like '/O=VOMS%' and ca.subjectString like :searchString";
+
+		List cas = HibernateFactory.getSession().createQuery(query).setString(
+				"searchString", searchString).setFirstResult(firstResult)
+				.setMaxResults(maxResults).list();
+
+		SearchResults results = SearchResults.instance();
+
+		results.setCount(countMatches(text));
+		results.setFirstResult(firstResult);
+		results.setResultsPerPage(maxResults);
+		results.setResults(cas);
+		results.setSearchString(text);
+
+		return results;
+
+	}
 
 }

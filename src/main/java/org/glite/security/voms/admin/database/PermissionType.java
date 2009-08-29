@@ -34,109 +34,109 @@ import org.hibernate.usertype.UserType;
 
 public class PermissionType implements UserType {
 
-    public static final Log log = LogFactory.getLog( PermissionType.class );
+	public static final Log log = LogFactory.getLog(PermissionType.class);
 
-    private static final int[] SQL_TYPES = { Types.INTEGER };
+	private static final int[] SQL_TYPES = { Types.INTEGER };
 
-    public PermissionType() {
+	public PermissionType() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public int[] sqlTypes() {
+	public int[] sqlTypes() {
 
-        return SQL_TYPES;
-    }
+		return SQL_TYPES;
+	}
 
-    public Class returnedClass() {
+	public Class returnedClass() {
 
-        return VOMSPermission.class;
-    }
+		return VOMSPermission.class;
+	}
 
-    public boolean equals( Object x, Object y ) throws HibernateException {
+	public boolean equals(Object x, Object y) throws HibernateException {
 
-        if ( x == y )
-            return true;
+		if (x == y)
+			return true;
 
-        if ( x == null || y == null )
-            return false;
+		if (x == null || y == null)
+			return false;
 
-        return x.equals( y );
+		return x.equals(y);
 
-    }
+	}
 
-    public int hashCode( Object x ) throws HibernateException {
+	public int hashCode(Object x) throws HibernateException {
 
-        return x.hashCode();
+		return x.hashCode();
 
-    }
+	}
 
-    public Object nullSafeGet( ResultSet rs, String[] names, Object owner )
-            throws HibernateException , SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+			throws HibernateException, SQLException {
 
-        int bits = rs.getInt( names[0] );
+		int bits = rs.getInt(names[0]);
 
-        if ( rs.wasNull() )
-            return null;
-        else
-            return new VOMSPermission( bits );
+		if (rs.wasNull())
+			return null;
+		else
+			return new VOMSPermission(bits);
 
-    }
+	}
 
-    public void nullSafeSet( PreparedStatement st, Object value, int index )
-            throws HibernateException , SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index)
+			throws HibernateException, SQLException {
 
-        if ( value == null )
-            st.setNull( index, Types.INTEGER );
+		if (value == null)
+			st.setNull(index, Types.INTEGER);
 
-        else {
+		else {
 
-            VOMSPermission p = (VOMSPermission) value;
-            st.setInt( index, p.getBits() );
-        }
+			VOMSPermission p = (VOMSPermission) value;
+			st.setInt(index, p.getBits());
+		}
 
-    }
+	}
 
-    public Object deepCopy( Object value ) throws HibernateException {
+	public Object deepCopy(Object value) throws HibernateException {
 
-        VOMSPermission p = (VOMSPermission) value, clone = null;
+		VOMSPermission p = (VOMSPermission) value, clone = null;
 
-        if ( value == null )
-            return null;
+		if (value == null)
+			return null;
 
-        try {
+		try {
 
-            clone = (VOMSPermission) p.clone();
+			clone = (VOMSPermission) p.clone();
 
-        } catch ( CloneNotSupportedException e ) {
-            log.info( e.getMessage(), e );
-            return value;
-        }
+		} catch (CloneNotSupportedException e) {
+			log.info(e.getMessage(), e);
+			return value;
+		}
 
-        return clone;
-    }
+		return clone;
+	}
 
-    public boolean isMutable() {
+	public boolean isMutable() {
 
-        return true;
-    }
+		return true;
+	}
 
-    public Serializable disassemble( Object value ) throws HibernateException {
+	public Serializable disassemble(Object value) throws HibernateException {
 
-        return (Serializable) deepCopy( value );
-    }
+		return (Serializable) deepCopy(value);
+	}
 
-    public Object assemble( Serializable cached, Object owner )
-            throws HibernateException {
+	public Object assemble(Serializable cached, Object owner)
+			throws HibernateException {
 
-        return deepCopy( cached );
-    }
+		return deepCopy(cached);
+	}
 
-    public Object replace( Object original, Object target, Object owner )
-            throws HibernateException {
+	public Object replace(Object original, Object target, Object owner)
+			throws HibernateException {
 
-        return deepCopy( original );
-    }
+		return deepCopy(original);
+	}
 
 }

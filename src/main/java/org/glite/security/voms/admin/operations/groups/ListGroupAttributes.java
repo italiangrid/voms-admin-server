@@ -26,15 +26,14 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class ListGroupAttributes extends BaseVomsOperation {
 
-
 	protected Object doExecute() {
 
 		return VOMSAttributeDAO.instance().getGroupAttributes();
 	}
 
-
 	protected void setupPermissions() {
-		addRequiredPermissionOnAllGroups(VOMSPermission.getEmptyPermissions().setAttributesReadPermission());	
+		addRequiredPermissionOnAllGroups(VOMSPermission.getEmptyPermissions()
+				.setAttributesReadPermission());
 	}
 
 }

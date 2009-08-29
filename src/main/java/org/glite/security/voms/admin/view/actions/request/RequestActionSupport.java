@@ -10,31 +10,31 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({})
-public class RequestActionSupport extends BaseAction implements Preparable, ModelDriven<Request> {
-	
+@Results( {})
+public class RequestActionSupport extends BaseAction implements Preparable,
+		ModelDriven<Request> {
 
 	Long requestId = -1L;
-	
+
 	Request request;
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-
 	public void prepare() throws Exception {
-		if (request  == null){
-			
+		if (request == null) {
+
 			if (requestId != -1L)
-				request = DAOFactory.instance().getRequestDAO().findById(requestId, true);
+				request = DAOFactory.instance().getRequestDAO().findById(
+						requestId, true);
 		}
-		
+
 	}
 
 	public Request getModel() {
-		
+
 		return request;
 	}
 
@@ -46,6 +46,4 @@ public class RequestActionSupport extends BaseAction implements Preparable, Mode
 		this.requestId = requestId;
 	}
 
-	
-	
 }

@@ -26,30 +26,28 @@ import java.util.List;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
 public class FindUnassignedRoles extends BaseVoReadOperation {
 
-    Long userId;
+	Long userId;
 
-    Long groupId;
+	Long groupId;
 
-    private FindUnassignedRoles( Long uId, Long gId ) {
+	private FindUnassignedRoles(Long uId, Long gId) {
 
-        userId = uId;
-        groupId = gId;
-    }
+		userId = uId;
+		groupId = gId;
+	}
 
-    public Object doExecute() {
+	public Object doExecute() {
 
-        List result = VOMSUserDAO.instance().getUnAssignedRoles( userId,
-                groupId );
-        return result;
-    }
+		List result = VOMSUserDAO.instance()
+				.getUnAssignedRoles(userId, groupId);
+		return result;
+	}
 
-    public static FindUnassignedRoles instance( Long userId, Long groupId ) {
+	public static FindUnassignedRoles instance(Long userId, Long groupId) {
 
-        return new FindUnassignedRoles( userId,
-                groupId ) ;
-    }
+		return new FindUnassignedRoles(userId, groupId);
+	}
 
 }

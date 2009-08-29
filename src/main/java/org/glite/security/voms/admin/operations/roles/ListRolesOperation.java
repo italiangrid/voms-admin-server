@@ -23,21 +23,19 @@ package org.glite.security.voms.admin.operations.roles;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
 public class ListRolesOperation extends BaseVoReadOperation {
 
-    protected ListRolesOperation() {
+	protected ListRolesOperation() {
 
-    }
+	}
 
-    
-    protected Object doExecute() {
+	protected Object doExecute() {
 
-        return VOMSRoleDAO.instance().getAll();
-    }
+		return VOMSRoleDAO.instance().getAll();
+	}
 
-    public static ListRolesOperation instance(){
-        
-        return new ListRolesOperation();
-    }
+	public static ListRolesOperation instance() {
+
+		return new ListRolesOperation();
+	}
 }

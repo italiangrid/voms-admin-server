@@ -10,56 +10,49 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="aclDetail.jsp"),
-	@Result(name=BaseAction.INPUT,location="aclManage.jsp")
-})
+@Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail.jsp"),
+		@Result(name = BaseAction.INPUT, location = "aclManage.jsp") })
 public class AjaxLoadAction extends ACLActionSupport {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	Long aclGroupId = -1L;
 	Long aclRoleId = -1L;
-	
+
 	Boolean showDefaultACL;
-	
+
 	VOMSContext vomsContext;
-	
+
 	@SkipValidation
 	public String execute() throws Exception {
 		return SUCCESS;
 	}
-	
+
 	@Override
 	public void prepare() throws Exception {
-		
+
 		vomsContext = null;
-		
-		if (getModel() == null){
-			if (aclGroupId != -1L && aclRoleId !=-1L)
+
+		if (getModel() == null) {
+			if (aclGroupId != -1L && aclRoleId != -1L)
 				vomsContext = VOMSContext.instance(aclGroupId, aclRoleId);
 			else if (aclGroupId != -1L)
 				vomsContext = VOMSContext.instance(groupById(aclGroupId));
-			
-			
-			if (vomsContext != null){
-			
-				if(showDefaultACL != null && vomsContext.isGroupContext())
+
+			if (vomsContext != null) {
+
+				if (showDefaultACL != null && vomsContext.isGroupContext())
 					model = vomsContext.getGroup().getDefaultACL();
 				else
 					model = vomsContext.getACL();
 			}
-			
-		}
-		
-	}
 
-	
+		}
+
+	}
 
 	public Long getAclGroupId() {
 		return aclGroupId;
@@ -77,8 +70,6 @@ public class AjaxLoadAction extends ACLActionSupport {
 		this.aclRoleId = aclRoleId;
 	}
 
-	
-
 	public Boolean getShowDefaultACL() {
 		return showDefaultACL;
 	}
@@ -95,6 +86,4 @@ public class AjaxLoadAction extends ACLActionSupport {
 		this.vomsContext = vomsContext;
 	}
 
-	
-		
 }

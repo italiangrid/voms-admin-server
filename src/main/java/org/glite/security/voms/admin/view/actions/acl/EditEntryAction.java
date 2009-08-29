@@ -11,49 +11,45 @@ import org.glite.security.voms.admin.operations.acls.SaveACLEntryOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="manage", type="chain"),
-	@Result(name=BaseAction.INPUT, location="editACLEntry")
-})
+@Results( {
+		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
+		@Result(name = BaseAction.INPUT, location = "editACLEntry") })
 public class EditEntryAction extends ACLActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	List<String> selectedPermissions;
 	VOMSPermission permission;
-		
+
 	@Override
 	public String execute() throws Exception {
-		
+
 		String permString;
-		
+
 		if (selectedPermissions == null)
 			permString = "NONE";
 		else if (selectedPermissions.contains("ALL"))
 			permString = "ALL";
 		else
-			permString = StringUtils.join(selectedPermissions,"|");
-		
-		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(), 
-                admin, 
-                VOMSPermission.fromString( permString ),
-                propagate);                
-		
+			permString = StringUtils.join(selectedPermissions, "|");
+
+		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
+				admin, VOMSPermission.fromString(permString), propagate);
+
 		op.execute();
-		
+
 		return SUCCESS;
 	}
-	
-	public void prepareInput() throws Exception{
+
+	public void prepareInput() throws Exception {
 		prepare();
-		
+
 		if (permission == null)
 			permission = getModel().getPermissions(getAdmin());
-		
+
 	}
 
 	public VOMSPermission getPermission() {
@@ -71,7 +67,5 @@ public class EditEntryAction extends ACLActionSupport {
 	public void setSelectedPermissions(List<String> selectedPermissions) {
 		this.selectedPermissions = selectedPermissions;
 	}
-	
-	
 
 }

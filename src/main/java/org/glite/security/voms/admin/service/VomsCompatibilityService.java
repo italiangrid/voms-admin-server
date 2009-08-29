@@ -30,7 +30,6 @@ import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.groups.ListMemberNamesOperation;
 import org.glite.security.voms.service.compatibility.VOMSCompatibility;
 
-
 public class VomsCompatibilityService implements VOMSCompatibility {
 
 	private static final Log log = LogFactory
@@ -60,16 +59,17 @@ public class VomsCompatibilityService implements VOMSCompatibility {
 			String voName = VOMSConfiguration.instance().getVOName();
 			List members = (List) ListMemberNamesOperation.instance(
 					"/" + voName).execute();
-            
-            if (VOMSConfiguration.instance().getBoolean( "voms.mkgridmap.translate_dn_email_format",false ))
-                members = ServiceUtils.decorateDNList( (List<String>)members );
+
+			if (VOMSConfiguration.instance().getBoolean(
+					"voms.mkgridmap.translate_dn_email_format", false))
+				members = ServiceUtils.decorateDNList((List<String>) members);
 
 			return ServiceUtils.toStringArray(members);
 
 		} catch (RuntimeException e) {
-		    
-		    ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
+
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
 		}
 
 	}
@@ -82,16 +82,17 @@ public class VomsCompatibilityService implements VOMSCompatibility {
 
 			List members = (List) ListMemberNamesOperation.instance(container)
 					.execute();
-            
-            if (VOMSConfiguration.instance().getBoolean( "voms.mkgridmap.translate_dn_email_format",false ))
-                members = ServiceUtils.decorateDNList( (List<String>)members );
-            
+
+			if (VOMSConfiguration.instance().getBoolean(
+					"voms.mkgridmap.translate_dn_email_format", false))
+				members = ServiceUtils.decorateDNList((List<String>) members);
+
 			return ServiceUtils.toStringArray(members);
 
 		} catch (RuntimeException e) {
 
-		    ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
 		}
 
 	}

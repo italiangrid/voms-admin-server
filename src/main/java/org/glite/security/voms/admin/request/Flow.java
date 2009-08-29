@@ -23,10 +23,10 @@ package org.glite.security.voms.admin.request;
 
 public interface Flow {
 
-    State getCurrentState();
+	State getCurrentState();
 
-    State process( Event e );
+	State process(Event e);
 
-    boolean inFinalState();
+	boolean inFinalState();
 
 }

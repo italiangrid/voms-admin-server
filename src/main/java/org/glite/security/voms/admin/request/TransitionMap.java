@@ -29,109 +29,109 @@ import java.util.Set;
 
 public class TransitionMap {
 
-    Map map = new HashMap();
+	Map map = new HashMap();
 
-    public TransitionMap() {
+	public TransitionMap() {
 
-        super();
-    }
+		super();
+	}
 
-    public void addTransition( String initialStateName, Event e,
-            String finalStateName ) {
+	public void addTransition(String initialStateName, Event e,
+			String finalStateName) {
 
-        State initialState = getState( initialStateName );
-        State finalState = getState( finalStateName );
+		State initialState = getState(initialStateName);
+		State finalState = getState(finalStateName);
 
-        addTransition( initialState, new BaseTransition( e, finalState ) );
+		addTransition(initialState, new BaseTransition(e, finalState));
 
-    }
+	}
 
-    public void addTransition( State initialState, Transition t ) {
+	public void addTransition(State initialState, Transition t) {
 
-        Set transitions = (Set) map.get( initialState );
+		Set transitions = (Set) map.get(initialState);
 
-        if ( transitions == null ) {
+		if (transitions == null) {
 
-            transitions = new HashSet();
-            transitions.add( t );
-            map.put( initialState, transitions );
+			transitions = new HashSet();
+			transitions.add(t);
+			map.put(initialState, transitions);
 
-        } else {
+		} else {
 
-            if ( transitions.contains( t ) )
-                return;
+			if (transitions.contains(t))
+				return;
 
-            transitions.add( t );
-        }
-    }
+			transitions.add(t);
+		}
+	}
 
-    public State getTargetState( State initialState, Event receivedEvent ) {
+	public State getTargetState(State initialState, Event receivedEvent) {
 
-        Set transitions = (Set) map.get( initialState );
+		Set transitions = (Set) map.get(initialState);
 
-        if ( transitions == null )
-            return null;
+		if (transitions == null)
+			return null;
 
-        Iterator i = transitions.iterator();
+		Iterator i = transitions.iterator();
 
-        while ( i.hasNext() ) {
+		while (i.hasNext()) {
 
-            Transition t = (Transition) i.next();
-            if ( t.getEvent().equals( receivedEvent ) )
-                return t.getTargetState();
-        }
+			Transition t = (Transition) i.next();
+			if (t.getEvent().equals(receivedEvent))
+				return t.getTargetState();
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public void addStates( String[] stateNames ) {
+	public void addStates(String[] stateNames) {
 
-        for ( int i = 0; i < stateNames.length; i++ )
-            map.put( new BaseState( stateNames[i] ), null );
-    }
+		for (int i = 0; i < stateNames.length; i++)
+			map.put(new BaseState(stateNames[i]), null);
+	}
 
-    public void addStates( State[] states ) {
+	public void addStates(State[] states) {
 
-        for ( int i = 0; i < states.length; i++ )
-            map.put( states[i], null );
-    }
+		for (int i = 0; i < states.length; i++)
+			map.put(states[i], null);
+	}
 
-    public State getState( String name ) {
+	public State getState(String name) {
 
-        State s = new BaseState( name );
-        if ( map.containsKey( s ) )
-            return s;
+		State s = new BaseState(name);
+		if (map.containsKey(s))
+			return s;
 
-        return null;
+		return null;
 
-    }
+	}
 
-    public boolean containsKey( Object key ) {
+	public boolean containsKey(Object key) {
 
-        return map.containsKey( key );
-    }
+		return map.containsKey(key);
+	}
 
-    public boolean isFinalState( State s ) {
+	public boolean isFinalState(State s) {
 
-        Set transitions = (Set) map.get( s );
-        return transitions != null ? transitions.isEmpty() : true;
-    }
+		Set transitions = (Set) map.get(s);
+		return transitions != null ? transitions.isEmpty() : true;
+	}
 
-    public String toString() {
+	public String toString() {
 
-        if ( map.isEmpty() )
-            return "[]";
+		if (map.isEmpty())
+			return "[]";
 
-        StringBuffer buf = new StringBuffer();
+		StringBuffer buf = new StringBuffer();
 
-        Iterator i = map.keySet().iterator();
+		Iterator i = map.keySet().iterator();
 
-        while ( i.hasNext() ) {
-            Object key = i.next();
-            buf.append( "\n" + key + ":" + map.get( key ) );
-        }
+		while (i.hasNext()) {
+			Object key = i.next();
+			buf.append("\n" + key + ":" + map.get(key));
+		}
 
-        return buf.toString();
-    }
+		return buf.toString();
+	}
 
 }

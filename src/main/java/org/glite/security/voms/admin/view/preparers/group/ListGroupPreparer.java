@@ -11,15 +11,14 @@ import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 
 public class ListGroupPreparer extends ViewPreparerSupport {
 
-	public void execute(TilesRequestContext requestContext, AttributeContext attributeContext)
-			throws PreparerException {
-		
-		
-		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
-		
+	public void execute(TilesRequestContext requestContext,
+			AttributeContext attributeContext) throws PreparerException {
+
+		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation
+				.instance().execute();
+
 		requestContext.getRequestScope().put("voGroups", groups);
-		
-		
+
 	}
 
 }

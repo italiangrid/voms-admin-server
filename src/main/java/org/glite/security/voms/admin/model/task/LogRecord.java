@@ -35,7 +35,7 @@ public class LogRecord implements Serializable, Comparable<LogRecord> {
 	@Column(nullable = false)
 	TaskStatus event;
 
-	@Column(nullable = false, name="creation_time")
+	@Column(nullable = false, name = "creation_time")
 	Date date;
 
 	@ManyToOne
@@ -104,9 +104,8 @@ public class LogRecord implements Serializable, Comparable<LogRecord> {
 
 	public int compareTo(LogRecord o) {
 
-		return new CompareToBuilder().
-			append(task,o.task)
-			.append(date, o.date).append(event, o.event).toComparison();
+		return new CompareToBuilder().append(task, o.task).append(date, o.date)
+				.append(event, o.event).toComparison();
 	}
 
 	/**
@@ -168,6 +167,5 @@ public class LogRecord implements Serializable, Comparable<LogRecord> {
 	public void setUserDn(String userDn) {
 		this.userDn = userDn;
 	}
-	
-	
+
 }

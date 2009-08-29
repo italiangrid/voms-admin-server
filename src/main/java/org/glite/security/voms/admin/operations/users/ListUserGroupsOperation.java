@@ -24,31 +24,31 @@ import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
 public class ListUserGroupsOperation extends BaseVoReadOperation {
 
-    String username, caDN;
-    
-   
-    private ListUserGroupsOperation(String name, String ca){
-        
-        username = name;
-        caDN = ca;
-        
-    }
-        
-    protected Object doExecute() {
+	String username, caDN;
 
-        VOMSUser u = (VOMSUser) FindUserOperation.instance( username, caDN ).execute();
-        if (u == null)
-            throw new NoSuchUserException("No user '"+username+","+caDN+"' found in org.glite.security.voms.admin.database.");
-        
-        return u.getGroups(); 
-    }
-    
-    public static ListUserGroupsOperation instance(String username, String caDn) {
-        
-        return new ListUserGroupsOperation(username,caDn);
-    }
+	private ListUserGroupsOperation(String name, String ca) {
+
+		username = name;
+		caDN = ca;
+
+	}
+
+	protected Object doExecute() {
+
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDN)
+				.execute();
+		if (u == null)
+			throw new NoSuchUserException("No user '" + username + "," + caDN
+					+ "' found in org.glite.security.voms.admin.database.");
+
+		return u.getGroups();
+	}
+
+	public static ListUserGroupsOperation instance(String username, String caDn) {
+
+		return new ListUserGroupsOperation(username, caDn);
+	}
 
 }

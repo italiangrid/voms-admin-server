@@ -26,55 +26,54 @@ import java.util.Date;
 
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 
-
 public class VOMembershipRequest extends AbstractRequest {
 
-    public VOMembershipRequest() {
+	public VOMembershipRequest() {
 
-    }
+	}
 
-    public Date getExpirationTime() {
+	public Date getExpirationTime() {
 
-        int expirationTimeInMinutes = VOMSConfiguration.instance().getInt(
-                VOMSConfiguration.VO_MEMBERSHIP_EXPIRATION_TIME );
+		int expirationTimeInMinutes = VOMSConfiguration.instance().getInt(
+				VOMSConfiguration.VO_MEMBERSHIP_EXPIRATION_TIME);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime( creationTime );
-        c.add( Calendar.MINUTE, expirationTimeInMinutes );
+		Calendar c = Calendar.getInstance();
+		c.setTime(creationTime);
+		c.add(Calendar.MINUTE, expirationTimeInMinutes);
 
-        return c.getTime();
+		return c.getTime();
 
-    }
+	}
 
-    public boolean hasExpired() {
+	public boolean hasExpired() {
 
-        Date now = new Date();
-        return ( getExpirationTime().compareTo( now ) > 0 );
-    }
+		Date now = new Date();
+		return (getExpirationTime().compareTo(now) > 0);
+	}
 
-    public State getCurrentState() {
+	public State getCurrentState() {
 
-        return stateMachine.getCurrentState();
-    }
+		return stateMachine.getCurrentState();
+	}
 
-    public State process( Event e ) {
+	public State process(Event e) {
 
-        return stateMachine.process( e );
-    }
+		return stateMachine.process(e);
+	}
 
-    public boolean inFinalState() {
+	public boolean inFinalState() {
 
-        return stateMachine.inFinalState();
-    }
+		return stateMachine.inFinalState();
+	}
 
-    public Date getCreationTime() {
+	public Date getCreationTime() {
 
-        return creationTime;
-    }
+		return creationTime;
+	}
 
-    public void setCreationTime( Date creationTime ) {
+	public void setCreationTime(Date creationTime) {
 
-        this.creationTime = creationTime;
-    }
+		this.creationTime = creationTime;
+	}
 
 }

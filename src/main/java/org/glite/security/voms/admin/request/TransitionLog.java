@@ -26,25 +26,25 @@ import java.util.TreeSet;
 
 public class TransitionLog {
 
-    Set tLog = new TreeSet();
+	Set tLog = new TreeSet();
 
-    public TransitionLog() {
+	public TransitionLog() {
 
-    }
+	}
 
-    public void logException( State s, StateMachineException ex ) {
+	public void logException(State s, StateMachineException ex) {
 
-        tLog.add( TransitionLogEntry.instance( s, ex ) );
-    }
+		tLog.add(TransitionLogEntry.instance(s, ex));
+	}
 
-    public void logTransition( State start, State end, Event cause ) {
+	public void logTransition(State start, State end, Event cause) {
 
-        tLog.add( TransitionLogEntry.instance( start, end, cause ) );
-    }
+		tLog.add(TransitionLogEntry.instance(start, end, cause));
+	}
 
-    public String toString() {
+	public String toString() {
 
-        return tLog.toString();
-    }
+		return tLog.toString();
+	}
 
 }

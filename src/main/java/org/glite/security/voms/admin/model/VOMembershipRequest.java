@@ -22,161 +22,135 @@ package org.glite.security.voms.admin.model;
 
 import java.util.Date;
 
-
 public class VOMembershipRequest {
 
-    public static final Integer SUBMITTED = new Integer(0);
-    public static final Integer CONFIRMED = new Integer(1);
-    
-    public static final Integer APPROVED = new Integer(2);
-    public static final Integer REJECTED = new Integer(3);
-    
-    Long id;
-    Date creationDate;
-    Date evaluationDate;
-    
-    String dn;
-    String ca;
-    String cn;
-    String emailAddress;
-    
-    Integer status;
-    
-    String confirmId;
-    
-    
-    public VOMembershipRequest() {
+	public static final Integer SUBMITTED = new Integer(0);
+	public static final Integer CONFIRMED = new Integer(1);
 
-         
-    }
-        
-    public Date getCreationDate() {
-    
-        return creationDate;
-    }
-    
-    public void setCreationDate( Date creationDate ) {
-    
-        this.creationDate = creationDate;
-    }
-    
-    public Long getId() {
-    
-        return id;
-    }
-    
-    public void setId( Long id ) {
-    
-        this.id = id;
-    }
-    
-    public Integer getStatus() {
-    
-        return status;
-    }
-    
-    public void setStatus( Integer status ) {
-    
-        this.status = status;
-    }
-    
-    public boolean equals( Object other ) {
-    
-        if (this == other)
-            return true;
-        
-        if (!(other instanceof VOMembershipRequest))
-            return false;
-        
-        VOMembershipRequest that = (VOMembershipRequest)other;
-        return getId().equals( that.getId() );
-    }
-    
-    
-    
-    public String getCa() {
-    
-        return ca;
-    }
+	public static final Integer APPROVED = new Integer(2);
+	public static final Integer REJECTED = new Integer(3);
 
+	Long id;
+	Date creationDate;
+	Date evaluationDate;
 
-    
-    public void setCa( String ca ) {
-    
-        this.ca = ca;
-    }
+	String dn;
+	String ca;
+	String cn;
+	String emailAddress;
 
+	Integer status;
 
-    
-    public String getCn() {
-    
-        return cn;
-    }
+	String confirmId;
 
+	public VOMembershipRequest() {
 
-    
-    public void setCn( String cn ) {
-    
-        this.cn = cn;
-    }
+	}
 
+	public Date getCreationDate() {
 
-    
-    public String getConfirmId() {
-    
-        return confirmId;
-    }
+		return creationDate;
+	}
 
+	public void setCreationDate(Date creationDate) {
 
-    
-    public void setConfirmId( String confirmId ) {
-    
-        this.confirmId = confirmId;
-    }
+		this.creationDate = creationDate;
+	}
 
+	public Long getId() {
 
-    
-    public String getDn() {
-    
-        return dn;
-    }
+		return id;
+	}
 
+	public void setId(Long id) {
 
-    
-    public void setDn( String dn ) {
-    
-        this.dn = dn;
-    }
+		this.id = id;
+	}
 
+	public Integer getStatus() {
 
-    
-    public String getEmailAddress() {
-    
-        return emailAddress;
-    }
+		return status;
+	}
 
+	public void setStatus(Integer status) {
 
-    
-    public void setEmailAddress( String emailAddress ) {
-    
-        this.emailAddress = emailAddress;
-    }
+		this.status = status;
+	}
 
+	public boolean equals(Object other) {
 
-    public int hashCode() {
-        return getId().hashCode();
-    }
+		if (this == other)
+			return true;
 
-    
-    public Date getEvaluationDate() {
-    
-        return evaluationDate;
-    }
+		if (!(other instanceof VOMembershipRequest))
+			return false;
 
-    
-    public void setEvaluationDate( Date evaluationDate ) {
-    
-        this.evaluationDate = evaluationDate;
-    }
-    
+		VOMembershipRequest that = (VOMembershipRequest) other;
+		return getId().equals(that.getId());
+	}
+
+	public String getCa() {
+
+		return ca;
+	}
+
+	public void setCa(String ca) {
+
+		this.ca = ca;
+	}
+
+	public String getCn() {
+
+		return cn;
+	}
+
+	public void setCn(String cn) {
+
+		this.cn = cn;
+	}
+
+	public String getConfirmId() {
+
+		return confirmId;
+	}
+
+	public void setConfirmId(String confirmId) {
+
+		this.confirmId = confirmId;
+	}
+
+	public String getDn() {
+
+		return dn;
+	}
+
+	public void setDn(String dn) {
+
+		this.dn = dn;
+	}
+
+	public String getEmailAddress() {
+
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+
+		this.emailAddress = emailAddress;
+	}
+
+	public int hashCode() {
+		return getId().hashCode();
+	}
+
+	public Date getEvaluationDate() {
+
+		return evaluationDate;
+	}
+
+	public void setEvaluationDate(Date evaluationDate) {
+
+		this.evaluationDate = evaluationDate;
+	}
+
 }

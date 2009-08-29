@@ -23,7 +23,6 @@ package org.glite.security.voms.admin.operations.groups;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
 public class SearchGroupsOperation extends BaseVoReadOperation {
 
 	String text;
@@ -39,12 +38,10 @@ public class SearchGroupsOperation extends BaseVoReadOperation {
 		this.maxResults = maxResults;
 	}
 
-	public static SearchGroupsOperation instance(
-			String text,
-			int firstResult,
+	public static SearchGroupsOperation instance(String text, int firstResult,
 			int maxResults) {
 
-	    return new SearchGroupsOperation(text, firstResult, maxResults);
+		return new SearchGroupsOperation(text, firstResult, maxResults);
 	}
 
 	protected Object doExecute() {

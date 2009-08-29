@@ -23,27 +23,27 @@ package org.glite.security.voms.admin.database;
 
 public class IllegalOperationException extends VOMSDatabaseException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public IllegalOperationException( String message ) {
+	public IllegalOperationException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public IllegalOperationException( String message, Throwable t ) {
+	public IllegalOperationException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public IllegalOperationException( Throwable t ) {
+	public IllegalOperationException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

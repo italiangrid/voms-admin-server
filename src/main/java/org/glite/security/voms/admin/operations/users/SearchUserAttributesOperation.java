@@ -29,32 +29,34 @@ public class SearchUserAttributesOperation extends BaseVomsOperation {
 
 	private String searchString;
 
-    private int firstResult;
+	private int firstResult;
 
-    private int maxResults;
-    
-    
-    private SearchUserAttributesOperation(String sString, int firstRes, int maxRes){
-    	this.searchString = sString;
-    	this.firstResult = firstRes;
-    	this.maxResults = maxRes;
-    }
-	
+	private int maxResults;
+
+	private SearchUserAttributesOperation(String sString, int firstRes,
+			int maxRes) {
+		this.searchString = sString;
+		this.firstResult = firstRes;
+		this.maxResults = maxRes;
+	}
+
 	protected Object doExecute() {
 
-		return VOMSAttributeDAO.instance().searchUserAttributes(searchString, firstResult, maxResults);
+		return VOMSAttributeDAO.instance().searchUserAttributes(searchString,
+				firstResult, maxResults);
 	}
 
-	
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getEmptyPermissions().setAttributesReadPermission());
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getEmptyPermissions().setAttributesReadPermission());
 
 	}
-	
-	
-	public static SearchUserAttributesOperation instance(String searchString, int firstResult, int maxResults){
-		
-		return new SearchUserAttributesOperation(searchString,firstResult,maxResults);
+
+	public static SearchUserAttributesOperation instance(String searchString,
+			int firstResult, int maxResults) {
+
+		return new SearchUserAttributesOperation(searchString, firstResult,
+				maxResults);
 	}
 
 }

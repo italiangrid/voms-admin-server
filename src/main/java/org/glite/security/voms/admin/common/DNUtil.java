@@ -39,72 +39,73 @@ import javax.security.auth.x500.X500Principal;
  */
 public class DNUtil {
 
-    // Fixed to allow numeric CN fields in the DN
-    private static final String PROXY_PATTERN = "^CN=((limited )*proxy)$";
+	// Fixed to allow numeric CN fields in the DN
+	private static final String PROXY_PATTERN = "^CN=((limited )*proxy)$";
 
-    private static final String[] OID_REGEX = { "^OID.1.2.840.113549.1.9.1=",
-            "^OID.0.9.2342.19200300.100.1.25=",
-            "^OID.0.9.2342.19200300.100.1.1=" };
+	private static final String[] OID_REGEX = { "^OID.1.2.840.113549.1.9.1=",
+			"^OID.0.9.2342.19200300.100.1.25=",
+			"^OID.0.9.2342.19200300.100.1.1=" };
 
-    private static final String[] OID_NAME = { "Email=", // Email or
-            // emailAddress
-            "DC=", "UID=" // UID or UserID
-    };
+	private static final String[] OID_NAME = { "Email=", // Email or
+			// emailAddress
+			"DC=", "UID=" // UID or UserID
+	};
 
-    /**
-     * Converts BouncyCastle's X500 principal to something, which is used in the
-     * Globus libraries by default (whatever it is).
-     * 
-     * @param principal
-     *            the subject's or the issuer's X500 principal
-     * @return the proper string represetnation
-     */
-    public static String getBCasX500( X500Principal principal ) {
+	/**
+	 * Converts BouncyCastle's X500 principal to something, which is used in the
+	 * Globus libraries by default (whatever it is).
+	 * 
+	 * @param principal
+	 *            the subject's or the issuer's X500 principal
+	 * @return the proper string represetnation
+	 */
+	public static String getBCasX500(X500Principal principal) {
 
-        String[] rdns = principal.getName( X500Principal.RFC1779 ).split( ", " );
+		String[] rdns = principal.getName(X500Principal.RFC1779).split(", ");
 
-        StringBuffer name = new StringBuffer();
-        for ( int i = rdns.length - 1; i >= 0; i-- ) {
-            if ( rdns[i].matches( PROXY_PATTERN ) )
-                continue;
-            for ( int o = 0; o < OID_REGEX.length; o++ ) {
-                rdns[i] = rdns[i].replaceFirst( OID_REGEX[o], OID_NAME[o] );
-            }
-            name.append( "/" ).append( rdns[i] );
-        }
-        return name.toString();
-    }
-    
-    public static String normalizeEmailAddressInDN(String dn){
-        return dn.replaceAll(
-                "/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=",
-                "/Email=" );
-    }
-    
-    public static String normalizeUIDInDN(String dn){
-        
-        return dn.replaceAll("/(UserId|USERID|userId|userid|uid|Uid)=",
-                "/UID=");
-    }
-    
-    public static String normalizeDN(String dn){
-        return normalizeUIDInDN( normalizeEmailAddressInDN( dn ));
-    }
-    
-    public static String getEmailAddressFromDN(String dn){
-        
-        Pattern emailPattern = Pattern.compile( "Email=([^/]*)");
-        Matcher m = emailPattern.matcher( dn );
-        
-        if (m.find()){
-            
-            return m.group(1);
-        }
-        
-        return null;
-    }
-    
-    public static String getEmailAddressFromExtensions(X509Certificate cert) {
+		StringBuffer name = new StringBuffer();
+		for (int i = rdns.length - 1; i >= 0; i--) {
+			if (rdns[i].matches(PROXY_PATTERN))
+				continue;
+			for (int o = 0; o < OID_REGEX.length; o++) {
+				rdns[i] = rdns[i].replaceFirst(OID_REGEX[o], OID_NAME[o]);
+			}
+			name.append("/").append(rdns[i]);
+		}
+		return name.toString();
+	}
+
+	public static String normalizeEmailAddressInDN(String dn) {
+		return dn
+				.replaceAll(
+						"/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=",
+						"/Email=");
+	}
+
+	public static String normalizeUIDInDN(String dn) {
+
+		return dn
+				.replaceAll("/(UserId|USERID|userId|userid|uid|Uid)=", "/UID=");
+	}
+
+	public static String normalizeDN(String dn) {
+		return normalizeUIDInDN(normalizeEmailAddressInDN(dn));
+	}
+
+	public static String getEmailAddressFromDN(String dn) {
+
+		Pattern emailPattern = Pattern.compile("Email=([^/]*)");
+		Matcher m = emailPattern.matcher(dn);
+
+		if (m.find()) {
+
+			return m.group(1);
+		}
+
+		return null;
+	}
+
+	public static String getEmailAddressFromExtensions(X509Certificate cert) {
 
 		try {
 

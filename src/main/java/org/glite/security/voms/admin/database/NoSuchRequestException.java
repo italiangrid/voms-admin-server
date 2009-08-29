@@ -22,20 +22,17 @@ package org.glite.security.voms.admin.database;
 
 import org.glite.security.voms.admin.common.NotFoundException;
 
-
-
-
 public class NoSuchRequestException extends NotFoundException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchRequestException( String message ) {
+	public NoSuchRequestException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
 }

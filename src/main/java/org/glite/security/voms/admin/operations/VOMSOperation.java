@@ -25,11 +25,10 @@ import java.util.Map;
 
 public interface VOMSOperation {
 
-    public Object execute();
+	public Object execute();
 
-    public String getName();
-    
-    public Map getRequiredPermissions();
-    
+	public String getName();
+
+	public Map getRequiredPermissions();
 
 }

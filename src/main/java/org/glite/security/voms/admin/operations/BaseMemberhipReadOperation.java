@@ -21,19 +21,20 @@
 
 package org.glite.security.voms.admin.operations;
 
-public abstract class BaseMemberhipReadOperation extends SingleContextVomsOperation {
+public abstract class BaseMemberhipReadOperation extends
+		SingleContextVomsOperation {
 
 	protected BaseMemberhipReadOperation(VOMSContext ctxt) {
 		super(ctxt);
-		
+
 	}
 
 	protected void setupPermissions() {
-		
-		addRequiredPermission(VOMSContext.instance(__context.getGroup().getParent()),VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(__context,VOMSPermission.getEmptyPermissions().setMembershipReadPermission());
-	}
 
-	
+		addRequiredPermission(VOMSContext.instance(__context.getGroup()
+				.getParent()), VOMSPermission.getContainerReadPermission());
+		addRequiredPermission(__context, VOMSPermission.getEmptyPermissions()
+				.setMembershipReadPermission());
+	}
 
 }

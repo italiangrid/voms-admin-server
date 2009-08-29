@@ -22,22 +22,22 @@ package org.glite.security.voms.admin.common;
 
 public class VOMSSyntaxException extends VOMSException {
 
-    public VOMSSyntaxException( String message ) {
+	public VOMSSyntaxException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSSyntaxException( String message, Throwable t ) {
+	public VOMSSyntaxException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSSyntaxException( Throwable t ) {
+	public VOMSSyntaxException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

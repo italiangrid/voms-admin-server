@@ -23,52 +23,52 @@ package org.glite.security.voms.admin.request;
 
 public class BaseTransition implements Transition {
 
-    State targetState;
+	State targetState;
 
-    Event event;
+	Event event;
 
-    public BaseTransition( Event e, State s ) {
+	public BaseTransition(Event e, State s) {
 
-        this.event = e;
-        this.targetState = s;
-    }
+		this.event = e;
+		this.targetState = s;
+	}
 
-    public Event getEvent() {
+	public Event getEvent() {
 
-        return event;
-    }
+		return event;
+	}
 
-    public State getTargetState() {
+	public State getTargetState() {
 
-        return targetState;
-    }
+		return targetState;
+	}
 
-    public boolean equals( Object other ) {
+	public boolean equals(Object other) {
 
-        if ( this == other )
-            return true;
-        if ( !( other instanceof BaseTransition ) )
-            return false;
+		if (this == other)
+			return true;
+		if (!(other instanceof BaseTransition))
+			return false;
 
-        BaseTransition that = (BaseTransition) other;
-        if ( this.event.equals( that.event ) )
-            return true;
+		BaseTransition that = (BaseTransition) other;
+		if (this.event.equals(that.event))
+			return true;
 
-        return false;
-    }
+		return false;
+	}
 
-    public int hashCode() {
+	public int hashCode() {
 
-        int result = 14;
+		int result = 14;
 
-        result = 29 * result + event.hashCode();
+		result = 29 * result + event.hashCode();
 
-        return result;
-    }
+		return result;
+	}
 
-    public String toString() {
+	public String toString() {
 
-        return event + "->" + targetState;
-    }
+		return event + "->" + targetState;
+	}
 
 }

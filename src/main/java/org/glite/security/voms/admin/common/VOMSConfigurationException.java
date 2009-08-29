@@ -22,16 +22,16 @@ package org.glite.security.voms.admin.common;
 
 public class VOMSConfigurationException extends VOMSException {
 
-    public VOMSConfigurationException( String message ) {
+	public VOMSConfigurationException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSConfigurationException( String message, Throwable t ) {
+	public VOMSConfigurationException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

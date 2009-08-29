@@ -6,14 +6,15 @@ public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent 
 
 	String confirmURL;
 	String cancelURL;
-	
-	public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r, String confirmURL, String cancelURL){
+
+	public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r,
+			String confirmURL, String cancelURL) {
 		super(r);
-		
+
 		request = r;
 		this.confirmURL = confirmURL;
 		this.cancelURL = cancelURL;
-		
+
 	}
 
 	public String getConfirmURL() {
@@ -32,7 +33,4 @@ public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent 
 		this.cancelURL = cancelURL;
 	}
 
-	
-
-	
 }

@@ -26,64 +26,63 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class DeleteRoleOperation extends BaseVomsOperation {
 
-    String roleName = null;
+	String roleName = null;
 
-    Long roleId;
+	Long roleId;
 
-    VOMSRole role = null;
+	VOMSRole role = null;
 
-    private DeleteRoleOperation( Long roleId ) {
+	private DeleteRoleOperation(Long roleId) {
 
-        this.roleId = roleId;
-    }
+		this.roleId = roleId;
+	}
 
-    private DeleteRoleOperation( String roleName ) {
+	private DeleteRoleOperation(String roleName) {
 
-        this.roleName = roleName;
-    }
+		this.roleName = roleName;
+	}
 
-    private DeleteRoleOperation( VOMSRole r ) {
+	private DeleteRoleOperation(VOMSRole r) {
 
-        this.role = r;
-    }
+		this.role = r;
+	}
 
-    protected Object doExecute() {
+	protected Object doExecute() {
 
-        if ( role == null ) {
+		if (role == null) {
 
-            if ( roleName != null )
-                return VOMSRoleDAO.instance().delete( roleName );
-            else
-                return VOMSRoleDAO.instance().delete( roleId );
-        }
+			if (roleName != null)
+				return VOMSRoleDAO.instance().delete(roleName);
+			else
+				return VOMSRoleDAO.instance().delete(roleId);
+		}
 
-        else
-            return VOMSRoleDAO.instance().delete( role );
+		else
+			return VOMSRoleDAO.instance().delete(role);
 
-        
-    }
+	}
 
-    public static DeleteRoleOperation instance( String name ) {
-        
-        return new DeleteRoleOperation( name ) ;
-    }
+	public static DeleteRoleOperation instance(String name) {
 
-    public static DeleteRoleOperation instance( VOMSRole r ) {
+		return new DeleteRoleOperation(name);
+	}
 
-        return new DeleteRoleOperation( r ) ;
-    }
+	public static DeleteRoleOperation instance(VOMSRole r) {
 
-    public static DeleteRoleOperation instance( Long id ) {
+		return new DeleteRoleOperation(r);
+	}
 
-        return new DeleteRoleOperation( id ) ;
-    }
+	public static DeleteRoleOperation instance(Long id) {
 
-    protected void setupPermissions() {
+		return new DeleteRoleOperation(id);
+	}
 
-        addRequiredPermission( VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions() );
-        
-    }
+	protected void setupPermissions() {
+
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerRWPermissions());
+
+	}
 }

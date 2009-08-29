@@ -1,30 +1,29 @@
 package org.glite.security.voms.admin.database;
 
-
 public class AlreadyConfirmedRequestException extends
-        ConfirmationRequestException {
+		ConfirmationRequestException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public AlreadyConfirmedRequestException( String message ) {
+	public AlreadyConfirmedRequestException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public AlreadyConfirmedRequestException( String message, Throwable t ) {
+	public AlreadyConfirmedRequestException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public AlreadyConfirmedRequestException( Throwable t ) {
+	public AlreadyConfirmedRequestException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

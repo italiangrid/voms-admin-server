@@ -39,100 +39,100 @@ import org.glite.security.voms.admin.event.EventLogListener;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.ServiceNotificationDispatcher;
 
-
-
 public final class VOMSService {
 
-    static final Log log = LogFactory.getLog( VOMSService.class );
+	static final Log log = LogFactory.getLog(VOMSService.class);
 
-    static final Timer vomsTimer = new Timer( true );
-    
-    
-    protected static void configureVelocity(){
-    	
-    	try {
-            
-            Properties p = new Properties();
-            
-            p.put("resource.loader","cpath");
-            p.put("cpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            
-            p.put( "runtime.log.logsystem.class","org.glite.security.voms.admin.velocity.VelocityLogger");
-             
-            Velocity.init(p);
-            log.info( "Velocity setup ok!" );
-            
-    } catch ( Exception e ) {
-           
-        log.error("Error initializing velocity template engine!");
-        throw new VOMSFatalException(e);
-    }
-    	
-    	
-    }
-    
-    protected static void configureEventManager(){
-    	
-    	// Starts event manager
-        EventManager.instance();
-        
-        EventManager.instance().register(new EventLogListener());
-        
-        ServiceNotificationDispatcher.instance();
-    }
-    
-    protected static void startBackgroundTasks(){
-    	
-    	UpdateCATask.instance( getTimer() );
-        
-        ExpiredRequestsPurgerTask.instance( getTimer() );
-        
-        TaskStatusUpdater.instance(getTimer());
-        
-        MembershipValidityCheckTask.instance(getTimer());
-    	
-    }
+	static final Timer vomsTimer = new Timer(true);
 
-    public static void start(ServletContext ctxt) {
+	protected static void configureVelocity() {
 
-    	Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-    	
-        VOMSConfiguration conf;
-        
-        try {
-            
-            conf = VOMSConfiguration.instance(ctxt);
+		try {
 
-        } catch ( VOMSConfigurationException e ) {
-            log.fatal( "VOMS-Admin configuration failed!", e );
-            throw new VOMSFatalException( e );
-        }
+			Properties p = new Properties();
 
-        log.info( "VOMS-Admin starting for vo:" + conf.getVOName() );
-        
-        configureVelocity();
-                
-        configureEventManager();
-        
-        startBackgroundTasks();
-        
-        log.info( "VOMS-Admin started succesfully." );
-    }
+			p.put("resource.loader", "cpath");
+			p
+					.put("cpath.resource.loader.class",
+							"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-    public static void stop() {
+			p.put("runtime.log.logsystem.class",
+					"org.glite.security.voms.admin.velocity.VelocityLogger");
 
-        getTimer().cancel();
-        
-        NotificationService.instance().stop();
-        
-        // Close hibernate session factory
-        HibernateFactory.getFactory().close();
-        
-        log.info( "VOMS admin stopped ." );
-    }
+			Velocity.init(p);
+			log.info("Velocity setup ok!");
 
-    public static Timer getTimer() {
+		} catch (Exception e) {
 
-        return vomsTimer;
-    }
+			log.error("Error initializing velocity template engine!");
+			throw new VOMSFatalException(e);
+		}
+
+	}
+
+	protected static void configureEventManager() {
+
+		// Starts event manager
+		EventManager.instance();
+
+		EventManager.instance().register(new EventLogListener());
+
+		ServiceNotificationDispatcher.instance();
+	}
+
+	protected static void startBackgroundTasks() {
+
+		UpdateCATask.instance(getTimer());
+
+		ExpiredRequestsPurgerTask.instance(getTimer());
+
+		TaskStatusUpdater.instance(getTimer());
+
+		MembershipValidityCheckTask.instance(getTimer());
+
+	}
+
+	public static void start(ServletContext ctxt) {
+
+		Thread
+				.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+
+		VOMSConfiguration conf;
+
+		try {
+
+			conf = VOMSConfiguration.instance(ctxt);
+
+		} catch (VOMSConfigurationException e) {
+			log.fatal("VOMS-Admin configuration failed!", e);
+			throw new VOMSFatalException(e);
+		}
+
+		log.info("VOMS-Admin starting for vo:" + conf.getVOName());
+
+		configureVelocity();
+
+		configureEventManager();
+
+		startBackgroundTasks();
+
+		log.info("VOMS-Admin started succesfully.");
+	}
+
+	public static void stop() {
+
+		getTimer().cancel();
+
+		NotificationService.instance().stop();
+
+		// Close hibernate session factory
+		HibernateFactory.getFactory().close();
+
+		log.info("VOMS admin stopped .");
+	}
+
+	public static Timer getTimer() {
+
+		return vomsTimer;
+	}
 }

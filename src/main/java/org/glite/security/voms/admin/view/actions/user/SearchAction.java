@@ -9,15 +9,11 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
+@Results( {
 
-@Results({
-	
-	@Result(name=BaseAction.SUCCESS, location="users"),
-	@Result(name=BaseAction.INPUT, location="users")		
-})
-
-public class SearchAction extends
-		BaseSearchAction implements Preparable{
+@Result(name = BaseAction.SUCCESS, location = "users"),
+		@Result(name = BaseAction.INPUT, location = "users") })
+public class SearchAction extends BaseSearchAction implements Preparable {
 
 	/**
 	 * 
@@ -26,6 +22,6 @@ public class SearchAction extends
 
 	public void prepare() throws Exception {
 		initSearchData(USER_SEARCH_NAME);
-		
+
 	}
 }

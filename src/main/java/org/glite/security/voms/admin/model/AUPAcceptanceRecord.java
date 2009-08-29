@@ -3,139 +3,133 @@ package org.glite.security.voms.admin.model;
 import java.io.Serializable;
 import java.util.Date;
 
-
 public class AUPAcceptanceRecord implements Serializable {
-    
-    /**
+
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    Long id;
-    
-    AUPVersion aupVersion;
-    
-    VOMSUser user;
-    
-    Date lastAcceptanceDate;
-    
-    public AUPAcceptanceRecord(VOMSUser u, AUPVersion aup){
-        this.user = u;
-        this.aupVersion = aup;
-    }
-    
-    public AUPAcceptanceRecord() {
+	private static final long serialVersionUID = 1L;
 
-        // TODO Auto-generated constructor stub
-    }
-    
-    public boolean equals( Object other ) {
+	Long id;
 
-        if ( this == other )
-            return true;
-        
-        if ( !( other instanceof AUPAcceptanceRecord ) )
-            return false;
+	AUPVersion aupVersion;
 
-        if ( other == null )
-            return false;
+	VOMSUser user;
 
-        AUPAcceptanceRecord that = (AUPAcceptanceRecord) other;
+	Date lastAcceptanceDate;
 
-        // Implement meaningful checks here
-        return (getUser().equals( that.getUser()) && getAupVersion().equals( that.getAupVersion() ));
-        
-    }
+	public AUPAcceptanceRecord(VOMSUser u, AUPVersion aup) {
+		this.user = u;
+		this.aupVersion = aup;
+	}
 
-    
-    @Override
-    public int hashCode() {
-        
-        if (getId() != null)
-            return getId().hashCode();
-        
-        return super.hashCode();
-    }
-    
-    /**
-     * @return the id
-     */
-    public Long getId() {
-    
-        return id;
-    }
+	public AUPAcceptanceRecord() {
 
-    
-    /**
-     * @return the aupVersion
-     */
-    public AUPVersion getAupVersion() {
-    
-        return aupVersion;
-    }
+		// TODO Auto-generated constructor stub
+	}
 
-    
-    /**
-     * @return the user
-     */
-    public VOMSUser getUser() {
-    
-        return user;
-    }
+	public boolean equals(Object other) {
 
-    
-    /**
-     * @return the lastAcceptanceDate
-     */
-    public Date getLastAcceptanceDate() {
-    
-        return lastAcceptanceDate;
-    }
+		if (this == other)
+			return true;
 
-    
-    /**
-     * @param id the id to set
-     */
-    public void setId( Long id ) {
-    
-        this.id = id;
-    }
+		if (!(other instanceof AUPAcceptanceRecord))
+			return false;
 
-    
-    /**
-     * @param aupVersion the aupVersion to set
-     */
-    public void setAupVersion( AUPVersion aupVersion ) {
-    
-        this.aupVersion = aupVersion;
-    }
+		if (other == null)
+			return false;
 
-    
-    /**
-     * @param user the user to set
-     */
-    public void setUser( VOMSUser user ) {
-    
-        this.user = user;
-    }
+		AUPAcceptanceRecord that = (AUPAcceptanceRecord) other;
 
-    
-    /**
-     * @param lastAcceptanceDate the lastAcceptanceDate to set
-     */
-    public void setLastAcceptanceDate( Date lastAcceptanceDate ) {
-    
-        this.lastAcceptanceDate = lastAcceptanceDate;
-    }
-    
-    @Override
-    public String toString() {
-    
-        return String.format("[user: %s, aupVersion: %s, lastAcceptanceDate: %s]",user, aupVersion, lastAcceptanceDate);
-    }
-    
-    
-    
-    
+		// Implement meaningful checks here
+		return (getUser().equals(that.getUser()) && getAupVersion().equals(
+				that.getAupVersion()));
+
+	}
+
+	@Override
+	public int hashCode() {
+
+		if (getId() != null)
+			return getId().hashCode();
+
+		return super.hashCode();
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+
+		return id;
+	}
+
+	/**
+	 * @return the aupVersion
+	 */
+	public AUPVersion getAupVersion() {
+
+		return aupVersion;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public VOMSUser getUser() {
+
+		return user;
+	}
+
+	/**
+	 * @return the lastAcceptanceDate
+	 */
+	public Date getLastAcceptanceDate() {
+
+		return lastAcceptanceDate;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
+
+		this.id = id;
+	}
+
+	/**
+	 * @param aupVersion
+	 *            the aupVersion to set
+	 */
+	public void setAupVersion(AUPVersion aupVersion) {
+
+		this.aupVersion = aupVersion;
+	}
+
+	/**
+	 * @param user
+	 *            the user to set
+	 */
+	public void setUser(VOMSUser user) {
+
+		this.user = user;
+	}
+
+	/**
+	 * @param lastAcceptanceDate
+	 *            the lastAcceptanceDate to set
+	 */
+	public void setLastAcceptanceDate(Date lastAcceptanceDate) {
+
+		this.lastAcceptanceDate = lastAcceptanceDate;
+	}
+
+	@Override
+	public String toString() {
+
+		return String.format(
+				"[user: %s, aupVersion: %s, lastAcceptanceDate: %s]", user,
+				aupVersion, lastAcceptanceDate);
+	}
 
 }

@@ -26,35 +26,39 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public class DeleteGroupAttributeOperation extends BaseAttributeRWOperation {
 
-    String attributeName;
+	String attributeName;
 
 	private DeleteGroupAttributeOperation(VOMSGroup g, String aName) {
 		super(VOMSContext.instance(g));
 		attributeName = aName;
 	}
-	
+
 	protected Object doExecute() {
 
-		VOMSGroupDAO.instance().deleteAttribute(__context.getGroup(), attributeName);
+		VOMSGroupDAO.instance().deleteAttribute(__context.getGroup(),
+				attributeName);
 		return null;
 	}
 
-	public static DeleteGroupAttributeOperation instance(VOMSGroup g, String aName) {
+	public static DeleteGroupAttributeOperation instance(VOMSGroup g,
+			String aName) {
 
 		return new DeleteGroupAttributeOperation(g, aName);
 	}
-    
-    public static DeleteGroupAttributeOperation instance(String groupName, String aName) {
-        
-        VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName ).execute();
 
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' does not exist in this vo.");
-        
-        return new DeleteGroupAttributeOperation(g, aName);
-    }
+	public static DeleteGroupAttributeOperation instance(String groupName,
+			String aName) {
+
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' does not exist in this vo.");
+
+		return new DeleteGroupAttributeOperation(g, aName);
+	}
 
 }

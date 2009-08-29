@@ -28,32 +28,34 @@ import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejec
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request.StatusFlag;
 
-
 public class RejectVOMembershipOperation extends RequestRWOperation {
 
-    NewVOMembershipRequest req;
-    
-    private RejectVOMembershipOperation(NewVOMembershipRequest request) {
+	NewVOMembershipRequest req;
 
-        this.req = request;
-        
-    }
-    
-    protected Object doExecute() {
+	private RejectVOMembershipOperation(NewVOMembershipRequest request) {
 
-        
-        if (!req.getStatus().equals( StatusFlag.CONFIRMED))
-            throw new IllegalRequestStateException("Illegal state for request!");
-        
-        req.reject();
-        
-        EventManager.dispatch(new VOMembershipRequestRejectedEvent(req,"The VO administrator didn't find appropriate to approve your membership request."));
-        
-        return req;
-    }
+		this.req = request;
 
-    public static RejectVOMembershipOperation instance(NewVOMembershipRequest req) {
+	}
 
-        return new RejectVOMembershipOperation(req);
-    }
+	protected Object doExecute() {
+
+		if (!req.getStatus().equals(StatusFlag.CONFIRMED))
+			throw new IllegalRequestStateException("Illegal state for request!");
+
+		req.reject();
+
+		EventManager
+				.dispatch(new VOMembershipRequestRejectedEvent(
+						req,
+						"The VO administrator didn't find appropriate to approve your membership request."));
+
+		return req;
+	}
+
+	public static RejectVOMembershipOperation instance(
+			NewVOMembershipRequest req) {
+
+		return new RejectVOMembershipOperation(req);
+	}
 }

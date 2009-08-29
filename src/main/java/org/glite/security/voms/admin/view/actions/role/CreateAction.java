@@ -14,47 +14,42 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="/role/search.action", type="redirect"),
-	@Result(name=BaseAction.INPUT, location="roleCreate")
-})
-
-@Action(value="create", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "execute"})})
-public class CreateAction extends RoleActionSupport{
+@Results( {
+		@Result(name = BaseAction.SUCCESS, location = "/role/search.action", type = "redirect"),
+		@Result(name = BaseAction.INPUT, location = "roleCreate") })
+@Action(value = "create", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
+		"tokenSession.includeMethods", "execute" }) })
+public class CreateAction extends RoleActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
 	VOMSRole role;
 	String roleName;
-	
+
 	public VOMSRole getModel() {
-		
+
 		return role;
 	}
 
 	public void prepare() throws Exception {
-		
-		
+
 	}
 
-	
 	public String execute() throws Exception {
-		
-		VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName()).execute();
+
+		VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName())
+				.execute();
 		if (r != null)
 			addActionMessage(getText("confirm.role.creation", r.getName()));
-	
+
 		return SUCCESS;
 	}
 
-	
-	@RequiredStringValidator(type=ValidatorType.FIELD,message="A name for the role is required!")
-	@RegexFieldValidator(type=ValidatorType.FIELD, message="The role name field contains illegal characters!", expression="^[^<>&=;]*$")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the role is required!")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getRoleName() {
 		return roleName;
 	}
@@ -62,7 +57,5 @@ public class CreateAction extends RoleActionSupport{
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	
-	
-	
+
 }

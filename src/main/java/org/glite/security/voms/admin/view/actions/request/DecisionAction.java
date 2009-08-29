@@ -9,30 +9,31 @@ import org.glite.security.voms.admin.operations.requests.RejectVOMembershipOpera
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="/home/login.action", type="redirect"),
-	@Result(name=BaseAction.INPUT,location="requestDetails")
-})
+@Results( {
+		@Result(name = BaseAction.SUCCESS, location = "/home/login.action", type = "redirect"),
+		@Result(name = BaseAction.INPUT, location = "requestDetails") })
 public class DecisionAction extends RequestActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	String decision;
-	
+
 	@Override
 	public String execute() throws Exception {
-		
-		if (request instanceof NewVOMembershipRequest){
-			
+
+		if (request instanceof NewVOMembershipRequest) {
+
 			if (decision.equals("approve"))
-				ApproveVOMembershipOperation.instance((NewVOMembershipRequest)request).execute();
+				ApproveVOMembershipOperation.instance(
+						(NewVOMembershipRequest) request).execute();
 			else
-				RejectVOMembershipOperation.instance((NewVOMembershipRequest)request).execute();
-		}		
-		
+				RejectVOMembershipOperation.instance(
+						(NewVOMembershipRequest) request).execute();
+		}
+
 		return SUCCESS;
 	}
 
@@ -44,5 +45,4 @@ public class DecisionAction extends RequestActionSupport {
 		this.decision = decision;
 	}
 
-	
 }

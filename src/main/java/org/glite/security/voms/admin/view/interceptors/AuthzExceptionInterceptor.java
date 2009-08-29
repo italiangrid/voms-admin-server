@@ -15,7 +15,8 @@ import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
 public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 
 	public static final String ERROR_KEY = "voms-authorization-error";
-	public static final Log log = LogFactory.getLog(AuthzExceptionInterceptor.class);
+	public static final Log log = LogFactory
+			.getLog(AuthzExceptionInterceptor.class);
 	/**
 	 * 
 	 */
@@ -33,42 +34,43 @@ public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 		} catch (Exception e) {
 
 			if (e instanceof VOMSAuthorizationException) {
-				
-				log.debug("Caught VOMS authorization exception: "+e);
 
-				VOMSAuthorizationException ae = (VOMSAuthorizationException)e;
+				log.debug("Caught VOMS authorization exception: " + e);
+
+				VOMSAuthorizationException ae = (VOMSAuthorizationException) e;
 				ai.getInvocationContext().getValueStack().push(ae);
-				
-				ServletActionContext.getResponse().addCookie(new Cookie("error", e.getMessage()));
-								
-				if (ai.getAction() instanceof AuthorizationErrorAware){
-					
-					AuthorizationErrorAware aeaAction = (AuthorizationErrorAware) ai.getAction();
+
+				ServletActionContext.getResponse().addCookie(
+						new Cookie("error", e.getMessage()));
+
+				if (ai.getAction() instanceof AuthorizationErrorAware) {
+
+					AuthorizationErrorAware aeaAction = (AuthorizationErrorAware) ai
+							.getAction();
 					return aeaAction.getAuthorizationErrorResult();
-					
+
 				}
-				return BaseAction.INPUT;				
-			} 
-			
-			
-			// Fall back to standard exception mapping mechanism for other exceptions
+				return BaseAction.INPUT;
+			}
+
+			// Fall back to standard exception mapping mechanism for other
+			// exceptions
 			throw e;
 		}
 
 	}
 }
 
+class AuthzExceptionHolder {
 
-class AuthzExceptionHolder{
-	
 	VOMSAuthorizationException authorizationException;
-	
+
 	public AuthzExceptionHolder(VOMSAuthorizationException e) {
 		authorizationException = e;
 	}
 
 	public VOMSAuthorizationException getAuthorizationException() {
 		return authorizationException;
-	}	
-	
+	}
+
 }

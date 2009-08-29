@@ -22,46 +22,45 @@ package org.glite.security.voms.admin.api.attributes;
 
 import java.io.Serializable;
 
-
 public class AttributeValue implements Serializable {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    AttributeClass attributeClass;
-    String context;
-    String value;
-    
-    public AttributeClass getAttributeClass() {
-    
-        return attributeClass;
-    }
-    
-    public void setAttributeClass( AttributeClass attributeClass ) {
-    
-        this.attributeClass = attributeClass;
-    }
-    
-    public String getContext() {
-    
-        return context;
-    }
-    
-    public void setContext( String context ) {
-    
-        this.context = context;
-    }
-    
-    public String getValue() {
-    
-        return value;
-    }
-    
-    public void setValue( String value ) {
-    
-        this.value = value;
-    }
-    
+	private static final long serialVersionUID = 1L;
+
+	AttributeClass attributeClass;
+	String context;
+	String value;
+
+	public AttributeClass getAttributeClass() {
+
+		return attributeClass;
+	}
+
+	public void setAttributeClass(AttributeClass attributeClass) {
+
+		this.attributeClass = attributeClass;
+	}
+
+	public String getContext() {
+
+		return context;
+	}
+
+	public void setContext(String context) {
+
+		this.context = context;
+	}
+
+	public String getValue() {
+
+		return value;
+	}
+
+	public void setValue(String value) {
+
+		this.value = value;
+	}
+
 }

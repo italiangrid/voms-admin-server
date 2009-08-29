@@ -22,32 +22,32 @@ package org.glite.security.voms.admin.model;
 
 public class VOMSCapability {
 
-    Long id;
+	Long id;
 
-    String capability;
+	String capability;
 
-    public VOMSCapability() {
+	public VOMSCapability() {
 
-    }
+	}
 
-    public String getCapability() {
+	public String getCapability() {
 
-        return capability;
-    }
+		return capability;
+	}
 
-    public void setCapability( String capability ) {
+	public void setCapability(String capability) {
 
-        this.capability = capability;
-    }
+		this.capability = capability;
+	}
 
-    public Long getId() {
+	public Long getId() {
 
-        return id;
-    }
+		return id;
+	}
 
-    public void setId( Long id ) {
+	public void setId(Long id) {
 
-        this.id = id;
-    }
+		this.id = id;
+	}
 
 }

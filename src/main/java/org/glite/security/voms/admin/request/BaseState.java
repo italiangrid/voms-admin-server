@@ -23,66 +23,66 @@ package org.glite.security.voms.admin.request;
 
 public class BaseState implements State {
 
-    String name;
+	String name;
 
-    ActionSequence actions = new ActionSequence();
+	ActionSequence actions = new ActionSequence();
 
-    public BaseState( String name ) {
+	public BaseState(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    public String getName() {
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    public void setName( String name ) {
+	public void setName(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    public boolean equals( Object other ) {
+	public boolean equals(Object other) {
 
-        // TODO Auto-generated method stub
-        if ( this == other )
-            return true;
-        if ( !( other instanceof BaseState ) )
-            return false;
+		// TODO Auto-generated method stub
+		if (this == other)
+			return true;
+		if (!(other instanceof BaseState))
+			return false;
 
-        BaseState that = (BaseState) other;
-        return name.equals( that.name );
+		BaseState that = (BaseState) other;
+		return name.equals(that.name);
 
-    }
+	}
 
-    public int hashCode() {
+	public int hashCode() {
 
-        return name.hashCode();
-    }
+		return name.hashCode();
+	}
 
-    public String toString() {
+	public String toString() {
 
-        return "s(" + name + ")";
-    }
+		return "s(" + name + ")";
+	}
 
-    public ActionSequence getActions() {
+	public ActionSequence getActions() {
 
-        return actions;
-    }
+		return actions;
+	}
 
-    public Object executeActions() {
+	public Object executeActions() {
 
-        return actions.execute();
-    }
+		return actions.execute();
+	}
 
-    public void addAction( Action a ) {
+	public void addAction(Action a) {
 
-        actions.addAction( a );
-    }
+		actions.addAction(a);
+	}
 
-    public void removeAction( Action a ) {
+	public void removeAction(Action a) {
 
-        actions.removeAction( a );
-    }
+		actions.removeAction(a);
+	}
 
 }

@@ -9,24 +9,25 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-public class AdminActionSupport extends BaseAction implements ModelDriven<VOMSAdmin>, Preparable{
+public class AdminActionSupport extends BaseAction implements
+		ModelDriven<VOMSAdmin>, Preparable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	VOMSAdmin admin;
-	
+
 	public VOMSAdmin getModel() {
-		
+
 		return admin;
 	}
 
 	public void prepare() throws Exception {
-	
+
 		admin = CurrentAdmin.instance().getAdmin();
-		
+
 	}
 
 }

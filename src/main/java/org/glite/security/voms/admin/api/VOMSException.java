@@ -20,7 +20,6 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.api;
 
-
 public class VOMSException extends Exception {
 
 }

@@ -10,15 +10,14 @@ import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.model.VOMSCA;
 
 public class AddCertificatePreparer extends ViewPreparerSupport {
-	
+
 	@Override
 	public void execute(TilesRequestContext tilesContext,
 			AttributeContext attributeContext) throws PreparerException {
-		
-		
+
 		List<VOMSCA> trustedCas = VOMSCADAO.instance().getValid();
 		tilesContext.getRequestScope().put("trustedCas", trustedCas);
-		
+
 	}
 
 }

@@ -23,14 +23,13 @@ package org.glite.security.voms.admin.operations.groups;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
 
-
 public class DeleteAllGroupsOperation extends BaseVoRWOperation {
 
 	private DeleteAllGroupsOperation() {
 
 	}
 
-	 protected Object doExecute() {
+	protected Object doExecute() {
 
 		VOMSGroupDAO.instance().deleteAll();
 		return null;

@@ -23,89 +23,83 @@ import org.glite.security.voms.admin.model.task.Task.TaskStatus;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
+		TaskDAO {
 
-public class TaskDAOHibernate extends GenericHibernateDAO <Task, Long> implements TaskDAO{
+	private static final Log log = LogFactory.getLog(TaskDAOHibernate.class);
 
-    
-    private static final Log log = LogFactory.getLog( TaskDAOHibernate.class );
-    
-    
+	public ApproveUserRequestTask createApproveUserRequestTask(Request req) {
 
-    public ApproveUserRequestTask createApproveUserRequestTask( Request req ) {
-    	
-        return null;
-    }
-    
-    public SignAUPTask createSignAUPTask( AUP aup, Date expiryDate ) {
+		return null;
+	}
 
-        TaskTypeDAO ttDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskTypeDAO();
-        
-        if ( aup == null )
-            throw new NullArgumentException( "aup cannot be null!" );
-        
-        if ( expiryDate == null )
-            throw new NullArgumentException( "expiryDate cannot be null!" );
-        
-        
-        TaskType tt = ttDAO.findByName( "SignAUPTask" );
-        
-        if (tt == null)
-            throw new VOMSDatabaseException("Inconsistent database! Task type for SignAUPTask not found in database!");
-        
-        SignAUPTask t = new SignAUPTask(tt,aup,expiryDate);
-        
-        makePersistent( t );
-        
-        return t; 
-        
-    }
-    
-    public List <Task> findApproveUserRequestTasks() {
+	public SignAUPTask createSignAUPTask(AUP aup, Date expiryDate) {
 
-        return findConcrete( ApproveUserRequestTask.class );
-        
-    }
+		TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
+				.getTaskTypeDAO();
 
-    protected List<Task> findConcrete(Class clazz){
-        return getSession().createCriteria( clazz ).list();
-    }
+		if (aup == null)
+			throw new NullArgumentException("aup cannot be null!");
 
-    public List <Task> findSignAUPTasks() {
+		if (expiryDate == null)
+			throw new NullArgumentException("expiryDate cannot be null!");
 
-        return findConcrete( SignAUPTask.class );
-    }
+		TaskType tt = ttDAO.findByName("SignAUPTask");
 
-    
-    
-    public void removeAllTasks() {
+		if (tt == null)
+			throw new VOMSDatabaseException(
+					"Inconsistent database! Task type for SignAUPTask not found in database!");
 
-        List<Task> tasks = findAll();
-        
-        for (Task t: tasks)
-        	makeTransient(t);
-        
-    }
-       
+		SignAUPTask t = new SignAUPTask(tt, aup, expiryDate);
+
+		makePersistent(t);
+
+		return t;
+
+	}
+
+	public List<Task> findApproveUserRequestTasks() {
+
+		return findConcrete(ApproveUserRequestTask.class);
+
+	}
+
+	protected List<Task> findConcrete(Class clazz) {
+		return getSession().createCriteria(clazz).list();
+	}
+
+	public List<Task> findSignAUPTasks() {
+
+		return findConcrete(SignAUPTask.class);
+	}
+
+	public void removeAllTasks() {
+
+		List<Task> tasks = findAll();
+
+		for (Task t : tasks)
+			makeTransient(t);
+
+	}
 
 	public SignAUPTask createSignAUPTask(AUP aup) {
-		 
-		int lifetime = VOMSConfiguration.instance().getInt(VOMSConfiguration.SIGN_AUP_TASK_LIFETIME,1);
+
+		int lifetime = VOMSConfiguration.instance().getInt(
+				VOMSConfiguration.SIGN_AUP_TASK_LIFETIME, 1);
 		Calendar cal = Calendar.getInstance();
-		
+
 		// FIXME: change from MINUTE to DAYS when releasing
-		cal.add(Calendar.MINUTE,lifetime);
-		
+		cal.add(Calendar.MINUTE, lifetime);
+
 		return createSignAUPTask(aup, cal.getTime());
-		
+
 	}
 
 	public List<Task> getActiveTasks() {
-		
-		return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED), Restrictions.ne("status", TaskStatus.EXPIRED));
-		
+
+		return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED),
+				Restrictions.ne("status", TaskStatus.EXPIRED));
+
 	}
 
-    
-    
-    
 }

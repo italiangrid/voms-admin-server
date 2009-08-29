@@ -23,32 +23,31 @@ package org.glite.security.voms.admin.notification;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 
-
 public class HandleRequest extends AbstractVelocityNotification {
 
-    
-    NewVOMembershipRequest request;
+	NewVOMembershipRequest request;
 
-    String requestManagementURL;
-    
-    public HandleRequest(NewVOMembershipRequest request, 
-                String requestManagementURL) {
-        
-        this.request = request;
-        this.requestManagementURL = requestManagementURL;
-    }
+	String requestManagementURL;
 
-    protected void buildMessage() {
-        
-        String voName = VOMSConfiguration.instance().getVOName();
-        setSubject( "A membership request for VO "+voName+" requires your approval." );
-        
-        context.put( "voName", voName );
-        context.put( "recipient", "VO Admin");
-        context.put( "req", request);
-        context.put( "requestManagementURL", requestManagementURL);
-        
-        super.buildMessage();
-        
-    }
+	public HandleRequest(NewVOMembershipRequest request,
+			String requestManagementURL) {
+
+		this.request = request;
+		this.requestManagementURL = requestManagementURL;
+	}
+
+	protected void buildMessage() {
+
+		String voName = VOMSConfiguration.instance().getVOName();
+		setSubject("A membership request for VO " + voName
+				+ " requires your approval.");
+
+		context.put("voName", voName);
+		context.put("recipient", "VO Admin");
+		context.put("req", request);
+		context.put("requestManagementURL", requestManagementURL);
+
+		super.buildMessage();
+
+	}
 }

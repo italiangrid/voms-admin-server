@@ -25,83 +25,70 @@ import java.io.Serializable;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
+public abstract class VOMSBaseAttribute implements VomsAttributeValue,
+		Serializable {
 
-public abstract class VOMSBaseAttribute implements VomsAttributeValue,Serializable {
+	VOMSAttributeDescription attributeDescription;
+	String value;
+	String context;
 
-    VOMSAttributeDescription attributeDescription;
-    String value;
-    String context;
-    
-    public AttributeValue asAttributeValue() {
+	public AttributeValue asAttributeValue() {
 
-        AttributeClass aClass = getAttributeDescription().asAttributeClass();
-        
-        AttributeValue val = new AttributeValue();
-        val.setAttributeClass( aClass );
-        
-        val.setContext( getContext() );
-        
-        val.setValue( getValue() );
-        
-        return val;
-    }
-     
-    
-    protected VOMSBaseAttribute() {
+		AttributeClass aClass = getAttributeDescription().asAttributeClass();
 
-        
-    }
-    
-    protected VOMSBaseAttribute(VOMSAttributeDescription desc, String value) {
+		AttributeValue val = new AttributeValue();
+		val.setAttributeClass(aClass);
 
-        this.attributeDescription = desc;
-        this.value = value;
-    }
+		val.setContext(getContext());
 
+		val.setValue(getValue());
 
-    
-    public VOMSAttributeDescription getAttributeDescription() {
-    
-        return attributeDescription;
-    }
+		return val;
+	}
 
+	protected VOMSBaseAttribute() {
 
-    
-    public void setAttributeDescription(
-            VOMSAttributeDescription attributeDescription ) {
-    
-        this.attributeDescription = attributeDescription;
-    }
+	}
 
+	protected VOMSBaseAttribute(VOMSAttributeDescription desc, String value) {
 
-    
-    
-    public void setContext( String context ) {
-    
-        this.context = context;
-    }
+		this.attributeDescription = desc;
+		this.value = value;
+	}
 
+	public VOMSAttributeDescription getAttributeDescription() {
 
-    
-    public String getValue() {
-    
-        return value;
-    }
+		return attributeDescription;
+	}
 
+	public void setAttributeDescription(
+			VOMSAttributeDescription attributeDescription) {
 
-    
-    public void setValue( String value ) {
-    
-        this.value = value;
-    }
-    
-    public String getName() {
+		this.attributeDescription = attributeDescription;
+	}
 
-        return attributeDescription.getName();
-    }
+	public void setContext(String context) {
 
-    public void setName( String name ) {
+		this.context = context;
+	}
 
-        attributeDescription.setName( name );
-    }
+	public String getValue() {
+
+		return value;
+	}
+
+	public void setValue(String value) {
+
+		this.value = value;
+	}
+
+	public String getName() {
+
+		return attributeDescription.getName();
+	}
+
+	public void setName(String name) {
+
+		attributeDescription.setName(name);
+	}
 }

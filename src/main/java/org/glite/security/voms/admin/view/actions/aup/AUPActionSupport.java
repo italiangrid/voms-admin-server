@@ -13,41 +13,35 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT, location="aups")
-})
+@Results( { @Result(name = BaseAction.INPUT, location = "aups") })
+public class AUPActionSupport extends BaseAction implements Preparable,
+		ModelDriven<AUP> {
 
-public class AUPActionSupport extends BaseAction implements Preparable, ModelDriven<AUP>{
-
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	AUP voAUP;
-	
+
 	public void prepare() throws Exception {
-		
+
 		AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			
+
 		if (voAUP == null)
 			voAUP = dao.getVOAUP();
-		
+
 	}
 
-
-
 	@Action("load")
-	public String load() throws Exception{
-		
+	public String load() throws Exception {
+
 		return INPUT;
 	}
 
-
 	public AUP getModel() {
-		
+
 		return voAUP;
 	}
-	
+
 }

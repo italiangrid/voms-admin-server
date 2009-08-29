@@ -6,21 +6,21 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 public class SearchData {
 
 	String text;
-	
+
 	String type;
-	
+
 	int firstResult;
 	int maxResults;
-	
+
 	Long groupId;
-	
+
 	Long roleId;
-	
+
 	public SearchData() {
 		// TODO Auto-generated constructor stub
 	}
 
-	@RegexFieldValidator(type=ValidatorType.FIELD, message="the search text field contains illegal characters!", expression="^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "the search text field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getText() {
 		return text;
 	}
@@ -68,5 +68,5 @@ public class SearchData {
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
 	}
-	
+
 }

@@ -28,297 +28,260 @@ import org.hibernate.annotations.SortType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="task")
+@Table(name = "task")
 public abstract class Task {
-    
-    public enum TaskStatus {
-        CREATED,
-        REASSIGNED,
-        COMPLETED,
-        EXPIRED
-    }
 
-    @Id
-    @Column(name="task_id")
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    Long id;
-    
-    @ManyToOne(optional=false)
-    @JoinColumn(name="task_type_id", nullable=false, updatable=false)
-    TaskType type;
-    
-    Date creationDate;
-    Date expiryDate;
-    Date completionDate;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    TaskStatus status;
-    
-    @OneToMany(cascade={CascadeType.ALL}, mappedBy="task")
-    @Sort(type=SortType.NATURAL)
-    @org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-    SortedSet <LogRecord> logRecords = new TreeSet <LogRecord>();
-    
-    @ManyToOne
-    @JoinColumn(name="usr_id")
-    VOMSUser user;
-    
-    @ManyToOne
-    @JoinColumn(name="admin_id")
-    VOMSAdmin admin;
-        
-    /**
-     * @return the id
-     */
-    public Long getId() {
-    
-        return id;
-    }
+	public enum TaskStatus {
+		CREATED, REASSIGNED, COMPLETED, EXPIRED
+	}
 
-    
-    /**
-     * @return the typeInfo
-     */
-    public TaskType getType() {
-    
-        return type;
-    }
+	@Id
+	@Column(name = "task_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	Long id;
 
-    
-    /**
-     * @param id the id to set
-     */
-    public void setId( Long id ) {
-    
-        this.id = id;
-    }
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "task_type_id", nullable = false, updatable = false)
+	TaskType type;
 
-    
-    /**
-     * @param typeInfo the typeInfo to set
-     */
-    public void setType( TaskType typeInfo ) {
-    
-        this.type = typeInfo;
-    }
+	Date creationDate;
+	Date expiryDate;
+	Date completionDate;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	TaskStatus status;
 
-    
-    /**
-     * @return the creationDate
-     */
-    public Date getCreationDate() {
-    
-        return creationDate;
-    }
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "task")
+	@Sort(type = SortType.NATURAL)
+	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	SortedSet<LogRecord> logRecords = new TreeSet<LogRecord>();
 
+	@ManyToOne
+	@JoinColumn(name = "usr_id")
+	VOMSUser user;
 
-    
-    /**
-     * @param creationDate the creationDate to set
-     */
-    public void setCreationDate( Date creationDate ) {
-    
-        this.creationDate = creationDate;
-    }
+	@ManyToOne
+	@JoinColumn(name = "admin_id")
+	VOMSAdmin admin;
 
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
 
-    
-    /**
-     * @return the status
-     */
-    public TaskStatus getStatus() {
-    
-        return status;
-    }
+		return id;
+	}
 
+	/**
+	 * @return the typeInfo
+	 */
+	public TaskType getType() {
 
-    
-    /**
-     * @param status the status to set
-     */
-    public void setStatus( TaskStatus status ) {
-    
-        this.status = status;
-    }
+		return type;
+	}
 
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
 
-    
-    /**
-     * @return the expiryDate
-     */
-    public Date getExpiryDate() {
-    
-        return expiryDate;
-    }
+		this.id = id;
+	}
 
+	/**
+	 * @param typeInfo
+	 *            the typeInfo to set
+	 */
+	public void setType(TaskType typeInfo) {
 
-    
-    /**
-     * @param expiryDate the expiryDate to set
-     */
-    public void setExpiryDate( Date expiryDate ) {
-    
-        this.expiryDate = expiryDate;
-    }
+		this.type = typeInfo;
+	}
 
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
 
-    
-    /**
-     * @return the completionDate
-     */
-    public Date getCompletionDate() {
-    
-        return completionDate;
-    }
+		return creationDate;
+	}
 
+	/**
+	 * @param creationDate
+	 *            the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
 
-    
-    /**
-     * @param completionDate the completionDate to set
-     */
-    public void setCompletionDate( Date completionDate ) {
-    
-        this.completionDate = completionDate;
-    }
+		this.creationDate = creationDate;
+	}
 
-    
-    
-    public void setCompleted(){
-        setCompletionDate( new Date() );
-        setStatus( TaskStatus.COMPLETED );
-        
-        addLogRecord(getCompletionDate());
-    }
-    
-    public void SetExpired(){
-        setStatus( TaskStatus.EXPIRED );
-        addLogRecord(new Date());
-    }
-    
-    
+	/**
+	 * @return the status
+	 */
+	public TaskStatus getStatus() {
 
-    public boolean equals( Object other ) {
+		return status;
+	}
 
-        if ( this == other )
-            return true;
-        
-        if ( !( other instanceof Task ) )
-            return false;
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(TaskStatus status) {
 
-        if ( other == null )
-            return false;
+		this.status = status;
+	}
 
-        Task that = (Task) other;
+	/**
+	 * @return the expiryDate
+	 */
+	public Date getExpiryDate() {
 
-        
-        EqualsBuilder builder = new EqualsBuilder();
-        
-        builder.append(type, that.type).
-        	append(creationDate, that.creationDate).
-        	append(expiryDate,that.expiryDate).
-        	append(completionDate, that.completionDate).
-        	append(status, that.status).
-        	append(admin,that.admin).append(user, that.user);
-        
-        return builder.isEquals(); 
-                   
-    }
-    
-    @Override
-    public int hashCode() {
-    	
-    	HashCodeBuilder builder = new HashCodeBuilder(11,67);
-    	
-    	builder.append(getType()).
-    	append(creationDate).
-    	append(expiryDate).
-    	append(completionDate).
-    	append(status).
-    	append(admin).
-    	append(user);
-    
-        return builder.toHashCode();
-                
-    }
+		return expiryDate;
+	}
 
+	/**
+	 * @param expiryDate
+	 *            the expiryDate to set
+	 */
+	public void setExpiryDate(Date expiryDate) {
 
-    
-    /**
-     * @return the logRecords
-     */
-    public SortedSet <LogRecord> getLogRecords() {
-    
-        return logRecords;
-    }
+		this.expiryDate = expiryDate;
+	}
 
+	/**
+	 * @return the completionDate
+	 */
+	public Date getCompletionDate() {
 
-    
-    /**
-     * @param logRecords the logRecords to set
-     */
-    public void setLogRecords( SortedSet <LogRecord> logRecords ) {
-    
-        this.logRecords = logRecords;
-    }
+		return completionDate;
+	}
 
+	/**
+	 * @param completionDate
+	 *            the completionDate to set
+	 */
+	public void setCompletionDate(Date completionDate) {
 
-    
-    /**
-     * @return the user
-     */
-    public VOMSUser getUser() {
-    
-        return user;
-    }
+		this.completionDate = completionDate;
+	}
 
+	public void setCompleted() {
+		setCompletionDate(new Date());
+		setStatus(TaskStatus.COMPLETED);
 
-    
-    /**
-     * @return the admin
-     */
-    public VOMSAdmin getAdmin() {
-    
-        return admin;
-    }
+		addLogRecord(getCompletionDate());
+	}
 
+	public void SetExpired() {
+		setStatus(TaskStatus.EXPIRED);
+		addLogRecord(new Date());
+	}
 
-    
-    /**
-     * @param user the user to set
-     */
-    public void setUser( VOMSUser user ) {
-    
-        this.user = user;
-    }
+	public boolean equals(Object other) {
 
+		if (this == other)
+			return true;
 
-    
-    /**
-     * @param admin the admin to set
-     */
-    public void setAdmin( VOMSAdmin admin ) {
-    
-        this.admin = admin;
-    }
-    
-    protected void addLogRecord(Date d){
-    	
-    	LogRecord r = new LogRecord();
-    	
-    	r.setDate(d);
-    	r.setEvent(getStatus());
-    	r.setTask(this);
-    	
-    	if (getUser() != null)
-    		r.setUserDn(getUser().getDefaultCertificate().getSubjectString());
-    	if (getAdmin() != null)
-    		r.setAdminDn(getAdmin().getDn());
-    	
-    	getLogRecords().add(r);
-    	
-    }
-    
-    
+		if (!(other instanceof Task))
+			return false;
+
+		if (other == null)
+			return false;
+
+		Task that = (Task) other;
+
+		EqualsBuilder builder = new EqualsBuilder();
+
+		builder.append(type, that.type).append(creationDate, that.creationDate)
+				.append(expiryDate, that.expiryDate).append(completionDate,
+						that.completionDate).append(status, that.status)
+				.append(admin, that.admin).append(user, that.user);
+
+		return builder.isEquals();
+
+	}
+
+	@Override
+	public int hashCode() {
+
+		HashCodeBuilder builder = new HashCodeBuilder(11, 67);
+
+		builder.append(getType()).append(creationDate).append(expiryDate)
+				.append(completionDate).append(status).append(admin).append(
+						user);
+
+		return builder.toHashCode();
+
+	}
+
+	/**
+	 * @return the logRecords
+	 */
+	public SortedSet<LogRecord> getLogRecords() {
+
+		return logRecords;
+	}
+
+	/**
+	 * @param logRecords
+	 *            the logRecords to set
+	 */
+	public void setLogRecords(SortedSet<LogRecord> logRecords) {
+
+		this.logRecords = logRecords;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public VOMSUser getUser() {
+
+		return user;
+	}
+
+	/**
+	 * @return the admin
+	 */
+	public VOMSAdmin getAdmin() {
+
+		return admin;
+	}
+
+	/**
+	 * @param user
+	 *            the user to set
+	 */
+	public void setUser(VOMSUser user) {
+
+		this.user = user;
+	}
+
+	/**
+	 * @param admin
+	 *            the admin to set
+	 */
+	public void setAdmin(VOMSAdmin admin) {
+
+		this.admin = admin;
+	}
+
+	protected void addLogRecord(Date d) {
+
+		LogRecord r = new LogRecord();
+
+		r.setDate(d);
+		r.setEvent(getStatus());
+		r.setTask(this);
+
+		if (getUser() != null)
+			r.setUserDn(getUser().getDefaultCertificate().getSubjectString());
+		if (getAdmin() != null)
+			r.setAdminDn(getAdmin().getDn());
+
+		getLogRecords().add(r);
+
+	}
+
 }

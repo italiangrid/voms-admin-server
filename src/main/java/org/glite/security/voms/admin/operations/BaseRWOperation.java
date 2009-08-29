@@ -25,14 +25,13 @@ public abstract class BaseRWOperation extends SingleContextVomsOperation {
 
 	protected BaseRWOperation(VOMSContext ctxt) {
 		super(ctxt);
-		
+
 	}
 
 	protected void setupPermissions() {
 		// TODO Auto-generated method stub
-		addRequiredPermission(__context,VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
+		addRequiredPermission(__context, VOMSPermission
+				.getContainerRWPermissions().setMembershipRWPermission());
 	}
-
-	
 
 }

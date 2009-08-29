@@ -13,27 +13,23 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="attributes.jsp"),
-	@Result(name=BaseAction.INPUT, location="attributes.jsp")
-})
+@Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
+		@Result(name = BaseAction.INPUT, location = "attributes.jsp") })
 public class AttributeActions extends RoleActionSupport {
-
-
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Long groupId = -1L;
-	
+
 	String attributeName;
-	
+
 	String attributeValue;
-	
+
 	VOMSGroup group;
-	
+
 	public String getAttributeName() {
 		return attributeName;
 	}
@@ -42,7 +38,7 @@ public class AttributeActions extends RoleActionSupport {
 		this.attributeName = attributeName;
 	}
 
-	@RegexFieldValidator(type=ValidatorType.FIELD, message="This field contains illegal characters!", expression="^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getAttributeValue() {
 		return attributeValue;
 	}
@@ -50,29 +46,29 @@ public class AttributeActions extends RoleActionSupport {
 	public void setAttributeValue(String attributeValue) {
 		this.attributeValue = attributeValue;
 	}
-	
-	
+
 	@Action("set-attribute")
-	public String setAttribute() throws Exception{
-		
-		SetRoleAttributeOperation.instance(getGroup(),getModel(),getAttributeName(),getAttributeValue()).execute();
-		
-		
+	public String setAttribute() throws Exception {
+
+		SetRoleAttributeOperation.instance(getGroup(), getModel(),
+				getAttributeName(), getAttributeValue()).execute();
+
 		return SUCCESS;
 	}
-	
+
 	@Action("delete-attribute")
-	public String deleteAttribute() throws Exception{
-		
-		DeleteRoleAttributeOperation.instance(getGroup(), getModel(), getAttributeName()).execute();
+	public String deleteAttribute() throws Exception {
+
+		DeleteRoleAttributeOperation.instance(getGroup(), getModel(),
+				getAttributeName()).execute();
 		return SUCCESS;
 	}
-	
+
 	@Override
 	public void prepare() throws Exception {
-		
+
 		super.prepare();
-		
+
 		group = groupById(groupId);
 	}
 
@@ -80,7 +76,6 @@ public class AttributeActions extends RoleActionSupport {
 		return groupId;
 	}
 
-	
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
 	}
@@ -88,7 +83,5 @@ public class AttributeActions extends RoleActionSupport {
 	public VOMSGroup getGroup() {
 		return group;
 	}
-	
-	
 
 }

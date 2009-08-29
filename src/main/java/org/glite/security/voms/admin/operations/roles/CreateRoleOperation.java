@@ -32,50 +32,47 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 
-
-
 public class CreateRoleOperation extends BaseVomsOperation {
 
-    String roleName;
+	String roleName;
 
-    private CreateRoleOperation( String roleName ) {
+	private CreateRoleOperation(String roleName) {
 
-        this.roleName = roleName;
-    }
+		this.roleName = roleName;
+	}
 
-    private void setupACLs(VOMSRole r){
-        
-        List groups = (List) ListGroupsOperation.instance().execute();
-        
-        Iterator groupsIter = groups.iterator();
-        
-        while(groupsIter.hasNext())                
-            r.importACL((VOMSGroup)groupsIter.next());   
-        
-    }
-    
-    protected Object doExecute() {
-        
-        VOMSRole r = VOMSRoleDAO.instance().create( roleName );
-        
-        setupACLs(r);
-        
-        HibernateFactory.getSession().save(r);
-        
-        return r;
-    }
+	private void setupACLs(VOMSRole r) {
 
-    public static CreateRoleOperation instance( String roleName ) {
+		List groups = (List) ListGroupsOperation.instance().execute();
 
-        
-        
-        return new CreateRoleOperation( roleName ) ;
-    }
+		Iterator groupsIter = groups.iterator();
 
-    protected void setupPermissions() {
+		while (groupsIter.hasNext())
+			r.importACL((VOMSGroup) groupsIter.next());
 
-        addRequiredPermission( VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions() );
-        
-    }
+	}
+
+	protected Object doExecute() {
+
+		VOMSRole r = VOMSRoleDAO.instance().create(roleName);
+
+		setupACLs(r);
+
+		HibernateFactory.getSession().save(r);
+
+		return r;
+	}
+
+	public static CreateRoleOperation instance(String roleName) {
+
+		return new CreateRoleOperation(roleName);
+	}
+
+	protected void setupPermissions() {
+
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerRWPermissions());
+
+	}
 
 }

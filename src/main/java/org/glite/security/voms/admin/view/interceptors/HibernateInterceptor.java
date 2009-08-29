@@ -8,36 +8,33 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
-
 public class HibernateInterceptor extends AbstractInterceptor implements
-        StrutsStatics {
+		StrutsStatics {
 
-    
-    private static final Log log = LogFactory
-            .getLog( HibernateInterceptor.class );
-    /**
+	private static final Log log = LogFactory
+			.getLog(HibernateInterceptor.class);
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public String intercept( ActionInvocation ai) throws Exception {
+	@Override
+	public String intercept(ActionInvocation ai) throws Exception {
 
-    	
-        String result = ai.invoke();
-        
-        try {
+		String result = ai.invoke();
 
-            HibernateFactory.commitTransaction();
+		try {
 
-        }finally {
+			HibernateFactory.commitTransaction();
 
-            HibernateFactory.closeSession();
+		} finally {
 
-        }
-        
-        return result;
-        
-    }
+			HibernateFactory.closeSession();
+
+		}
+
+		return result;
+
+	}
 
 }

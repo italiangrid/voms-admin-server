@@ -22,27 +22,27 @@ package org.glite.security.voms.admin.database;
 
 public class VOMSInconsistentDatabaseException extends VOMSDatabaseException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public VOMSInconsistentDatabaseException( String message ) {
+	public VOMSInconsistentDatabaseException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSInconsistentDatabaseException( String message, Throwable t ) {
+	public VOMSInconsistentDatabaseException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSInconsistentDatabaseException( Throwable t ) {
+	public VOMSInconsistentDatabaseException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

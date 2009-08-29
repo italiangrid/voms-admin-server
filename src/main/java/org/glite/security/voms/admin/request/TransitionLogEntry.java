@@ -25,121 +25,121 @@ import java.util.Date;
 
 public class TransitionLogEntry implements Comparable {
 
-    private Date time;
+	private Date time;
 
-    private State initialState;
+	private State initialState;
 
-    private State finalState;
+	private State finalState;
 
-    private Event cause;
+	private Event cause;
 
-    private StateMachineException exception;
+	private StateMachineException exception;
 
-    private TransitionLogEntry( Date time, State s, State t, Event c ) {
+	private TransitionLogEntry(Date time, State s, State t, Event c) {
 
-        this.time = time;
-        initialState = s;
-        finalState = t;
-        cause = c;
-    }
+		this.time = time;
+		initialState = s;
+		finalState = t;
+		cause = c;
+	}
 
-    private TransitionLogEntry( Date time, State s, StateMachineException ex ) {
+	private TransitionLogEntry(Date time, State s, StateMachineException ex) {
 
-        this.time = time;
-        initialState = s;
-        exception = ex;
-    }
+		this.time = time;
+		initialState = s;
+		exception = ex;
+	}
 
-    public StateMachineException getException() {
+	public StateMachineException getException() {
 
-        return exception;
-    }
+		return exception;
+	}
 
-    public void setException( StateMachineException exception ) {
+	public void setException(StateMachineException exception) {
 
-        this.exception = exception;
-    }
+		this.exception = exception;
+	}
 
-    public Event getCause() {
+	public Event getCause() {
 
-        return cause;
-    }
+		return cause;
+	}
 
-    public void setCause( Event cause ) {
+	public void setCause(Event cause) {
 
-        this.cause = cause;
-    }
+		this.cause = cause;
+	}
 
-    public State getFinalState() {
+	public State getFinalState() {
 
-        return finalState;
-    }
+		return finalState;
+	}
 
-    public void setFinalState( State finalState ) {
+	public void setFinalState(State finalState) {
 
-        this.finalState = finalState;
-    }
+		this.finalState = finalState;
+	}
 
-    public Date getTime() {
+	public Date getTime() {
 
-        return time;
-    }
+		return time;
+	}
 
-    public void setTime( Date time ) {
+	public void setTime(Date time) {
 
-        this.time = time;
-    }
+		this.time = time;
+	}
 
-    public State getInitialState() {
+	public State getInitialState() {
 
-        return initialState;
-    }
+		return initialState;
+	}
 
-    public void setInitialState( State initialState ) {
+	public void setInitialState(State initialState) {
 
-        this.initialState = initialState;
-    }
+		this.initialState = initialState;
+	}
 
-    public static TransitionLogEntry instance( State initialState,
-            State finalState, Event cause ) {
+	public static TransitionLogEntry instance(State initialState,
+			State finalState, Event cause) {
 
-        TransitionLogEntry entry = new TransitionLogEntry( new Date(),
-                initialState, finalState, cause );
-        return entry;
-    }
+		TransitionLogEntry entry = new TransitionLogEntry(new Date(),
+				initialState, finalState, cause);
+		return entry;
+	}
 
-    public static TransitionLogEntry instance( State initialState,
-            StateMachineException e ) {
+	public static TransitionLogEntry instance(State initialState,
+			StateMachineException e) {
 
-        TransitionLogEntry entry = new TransitionLogEntry( new Date(),
-                initialState, e );
-        return entry;
-    }
+		TransitionLogEntry entry = new TransitionLogEntry(new Date(),
+				initialState, e);
+		return entry;
+	}
 
-    public int compareTo( Object o ) {
+	public int compareTo(Object o) {
 
-        if ( this.equals( o ) )
-            return 0;
-        TransitionLogEntry that = (TransitionLogEntry) o;
-        return this.time.compareTo( that.time );
-    }
+		if (this.equals(o))
+			return 0;
+		TransitionLogEntry that = (TransitionLogEntry) o;
+		return this.time.compareTo(that.time);
+	}
 
-    public String toString() {
+	public String toString() {
 
-        StringBuffer buf = new StringBuffer();
-        buf.append( "<" );
-        buf.append( time );
-        buf.append( "," + initialState );
+		StringBuffer buf = new StringBuffer();
+		buf.append("<");
+		buf.append(time);
+		buf.append("," + initialState);
 
-        if ( exception == null ) {
+		if (exception == null) {
 
-            buf.append( ":" + cause + "-->" + finalState );
+			buf.append(":" + cause + "-->" + finalState);
 
-        } else
-            buf.append( ": exception " + exception );
+		} else
+			buf.append(": exception " + exception);
 
-        buf.append( ">" );
-        return buf.toString();
-    }
+		buf.append(">");
+		return buf.toString();
+	}
 
 }

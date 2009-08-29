@@ -7,13 +7,11 @@ import org.glite.security.voms.admin.operations.users.DeleteUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="/user/search.action", type="redirect"),
-	@Result(name=BaseAction.INPUT, location="usersDetail")
-})
+@Results( {
+		@Result(name = BaseAction.SUCCESS, location = "/user/search.action", type = "redirect"),
+		@Result(name = BaseAction.INPUT, location = "usersDetail") })
 public class DeleteAction extends UserActionSupport {
-	
-	
+
 	/**
 	 * 
 	 */
@@ -21,9 +19,9 @@ public class DeleteAction extends UserActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		
+
 		DeleteUserOperation.instance(getModel()).execute();
-		
+
 		return SUCCESS;
 	}
 

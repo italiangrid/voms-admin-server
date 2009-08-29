@@ -23,10 +23,10 @@ package org.glite.security.voms.admin.request;
 
 public class RequestFactory {
 
-    public RequestFactory() {
+	public RequestFactory() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 }

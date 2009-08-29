@@ -26,37 +26,35 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.common.VOMSException;
 
-
 public abstract class VelocityEmailNotification extends EmailNotification {
 
-    private String templateFile;
-    
-    protected String subjectPrefix = "[VOMS Admin]";
-    
-    public String getTemplateFile() {
-    
-        return templateFile;
-    }
-    
-    public void setTemplateFile( String templateFile ) {
-    
-        this.templateFile = templateFile;
-    }
-    
-    protected void buildMessageFromTemplate(VelocityContext context){
-        
-        StringWriter w = new StringWriter();
-        
-        try {
-            
-            Velocity.mergeTemplate( templateFile, "UTF-8", context, w);
-        
-        } catch ( Exception e ) {
-            throw new VOMSException(e);
-        }
-        
-        setMessage( w.toString() );
-    }
-    
+	private String templateFile;
+
+	protected String subjectPrefix = "[VOMS Admin]";
+
+	public String getTemplateFile() {
+
+		return templateFile;
+	}
+
+	public void setTemplateFile(String templateFile) {
+
+		this.templateFile = templateFile;
+	}
+
+	protected void buildMessageFromTemplate(VelocityContext context) {
+
+		StringWriter w = new StringWriter();
+
+		try {
+
+			Velocity.mergeTemplate(templateFile, "UTF-8", context, w);
+
+		} catch (Exception e) {
+			throw new VOMSException(e);
+		}
+
+		setMessage(w.toString());
+	}
 
 }

@@ -29,9 +29,6 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
-
-
 public class DeleteGroupOperation extends BaseVomsOperation {
 
 	String groupName = null;
@@ -39,15 +36,14 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 	Long groupId;
 
 	VOMSGroup group;
-    
+
 	private DeleteGroupOperation(String groupName) {
 
 		this.groupName = groupName;
 	}
 
 	private DeleteGroupOperation(VOMSGroup g) {
-        
-        
+
 		this.group = g;
 	}
 
@@ -66,20 +62,23 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 				group = VOMSGroupDAO.instance().findById(groupId);
 		}
 
-        if (group == null){
-         
-            String msg;
-            
-         if (groupName == null)
-             msg = "Group having id '"+groupId+"' not found in org.glite.security.voms.admin.database";
-         else
-             msg = "Group '"+groupName+"' not found in org.glite.security.voms.admin.database.";
-         
-         throw new NoSuchGroupException(msg);
-         
-        }
+		if (group == null) {
 
-        
+			String msg;
+
+			if (groupName == null)
+				msg = "Group having id '"
+						+ groupId
+						+ "' not found in org.glite.security.voms.admin.database";
+			else
+				msg = "Group '"
+						+ groupName
+						+ "' not found in org.glite.security.voms.admin.database.";
+
+			throw new NoSuchGroupException(msg);
+
+		}
+
 		VOMSGroupDAO.instance().delete(group);
 		return group;
 	}
@@ -101,37 +100,43 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 	}
 
 	protected void setupPermissions() {
-		
+
 		VOMSContext ctxt;
-		
+
 		if (group == null) {
 
 			if (groupName != null) {
 				String parentGroupName = PathNamingScheme
 						.getParentGroupName(groupName);
-                
-                VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
-                        parentGroupName);
-                
-                if (parentGroup == null)
-                    throw new NoSuchGroupException("Group '"+parentGroupName+"' not found in org.glite.security.voms.admin.database!");
-                
-				ctxt= VOMSContext.instance(parentGroup);
+
+				VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
+						parentGroupName);
+
+				if (parentGroup == null)
+					throw new NoSuchGroupException(
+							"Group '"
+									+ parentGroupName
+									+ "' not found in org.glite.security.voms.admin.database!");
+
+				ctxt = VOMSContext.instance(parentGroup);
 
 			} else {
 
 				VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
-                
-                if (g == null)
-                    throw new NoSuchGroupException("Group having id '"+groupId+"' not found in org.glite.security.voms.admin.database!");
-                
-				ctxt= VOMSContext.instance(g.getParent());
+
+				if (g == null)
+					throw new NoSuchGroupException(
+							"Group having id '"
+									+ groupId
+									+ "' not found in org.glite.security.voms.admin.database!");
+
+				ctxt = VOMSContext.instance(g.getParent());
 			}
 
 		} else
 			ctxt = VOMSContext.instance(group.getParent());
 
-		addRequiredPermission(ctxt,VOMSPermission.getContainerRWPermissions());
-		
+		addRequiredPermission(ctxt, VOMSPermission.getContainerRWPermissions());
+
 	}
 }

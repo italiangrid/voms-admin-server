@@ -17,11 +17,10 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT,location="register"),
-	@Result(name=BaseAction.SUCCESS,location="registerConfirmation"),
-})
-public  abstract class RegisterActionSupport extends BaseAction implements Preparable, ModelDriven<NewVOMembershipRequest>{
+@Results( { @Result(name = BaseAction.INPUT, location = "register"),
+		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation")})
+public abstract class RegisterActionSupport extends BaseAction implements
+		Preparable, ModelDriven<NewVOMembershipRequest> {
 
 	public static final String CONFIRMATION_NEEDED = "needToConfirm";
 	public static final String PLEASE_WAIT = "pleaseWait";
@@ -33,77 +32,82 @@ public  abstract class RegisterActionSupport extends BaseAction implements Prepa
 	private static final long serialVersionUID = 1L;
 
 	Long requestId = -1L;
-	
+
 	NewVOMembershipRequest request;
-	
-	
+
 	RequesterInfo requester;
-	
-	
-	protected String checkExistingPendingRequests(){
-		
+
+	protected String checkExistingPendingRequests() {
+
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
-		
-		NewVOMembershipRequest req = dao.findActiveVOMembershipRequest(requester);
-		
-		if (req != null){
-			
+
+		NewVOMembershipRequest req = dao
+				.findActiveVOMembershipRequest(requester);
+
+		if (req != null) {
+
 			if (req.getStatus().equals(StatusFlag.SUBMITTED))
 				return CONFIRMATION_NEEDED;
-			
-			if (req.getStatus().equals(StatusFlag.CONFIRMED) || req.getStatus().equals(StatusFlag.PENDING))  
+
+			if (req.getStatus().equals(StatusFlag.CONFIRMED)
+					|| req.getStatus().equals(StatusFlag.PENDING))
 				return PLEASE_WAIT;
-			
+
 		}
 		return null;
 	}
-	
-	protected RequesterInfo requesterInfoFromCurrentAdmin(){
-		
+
+	protected RequesterInfo requesterInfoFromCurrentAdmin() {
+
 		RequesterInfo i = new RequesterInfo();
 		CurrentAdmin admin = CurrentAdmin.instance();
 		i.setCertificateSubject(admin.getRealSubject());
 		i.setCertificateIssuer(admin.getRealIssuer());
 		i.setEmailAddress(admin.getRealEmailAddress());
-		
+
 		return i;
-		
+
 	}
+
 	public void prepare() throws Exception {
-		
+
 		requester = requesterInfoFromCurrentAdmin();
-		
-		if (getModel() == null){
-			
-			if (requestId != -1L){
+
+		if (getModel() == null) {
+
+			if (requestId != -1L) {
 				RequestDAO dao = DAOFactory.instance().getRequestDAO();
-				request = (NewVOMembershipRequest)dao.findById(requestId, true);
-			}	
+				request = (NewVOMembershipRequest) dao
+						.findById(requestId, true);
+			}
 		}
-		
+
 	}
-	
+
 	public NewVOMembershipRequest getModel() {
-		
+
 		return request;
 	}
-	
+
 	public Long getRequestId() {
 		return requestId;
 	}
+
 	public void setRequestId(Long requestId) {
 		this.requestId = requestId;
 	}
+
 	public RequesterInfo getRequester() {
 		return requester;
 	}
+
 	public void setRequester(RequesterInfo requester) {
 		this.requester = requester;
 	}
 
-	public boolean registrationEnabled(){
-		return VOMSConfiguration.instance().getBoolean(VOMSConfiguration.REGISTRATION_SERVICE_ENABLED,true); 
+	public boolean registrationEnabled() {
+		return VOMSConfiguration.instance().getBoolean(
+				VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true);
 	}
-	
 
 }

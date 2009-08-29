@@ -25,26 +25,25 @@ import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
 
+public class UpdateUserOperation extends BaseVoRWOperation {
 
-public class UpdateUserOperation extends BaseVoRWOperation{
+	VOMSUser user;
 
-    VOMSUser user;
+	private UpdateUserOperation(VOMSUser u) {
 
-    private UpdateUserOperation( VOMSUser u ) {
+		user = u;
 
-        user = u;
+	}
 
-    }
-    
-    public Object doExecute() {
+	public Object doExecute() {
 
-        VOMSUserDAO.instance().update( user );
-        return null;
-    }
+		VOMSUserDAO.instance().update(user);
+		return null;
+	}
 
-    public static UpdateUserOperation instance( VOMSUser usr ) {
+	public static UpdateUserOperation instance(VOMSUser usr) {
 
-        return new UpdateUserOperation( usr ) ;
-    }
+		return new UpdateUserOperation(usr);
+	}
 
 }

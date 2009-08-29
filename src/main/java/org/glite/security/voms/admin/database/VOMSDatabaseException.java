@@ -24,27 +24,27 @@ import org.glite.security.voms.admin.common.VOMSException;
 
 public class VOMSDatabaseException extends VOMSException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public VOMSDatabaseException( String message ) {
+	public VOMSDatabaseException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSDatabaseException( String message, Throwable t ) {
+	public VOMSDatabaseException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSDatabaseException( Throwable t ) {
+	public VOMSDatabaseException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

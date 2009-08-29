@@ -24,21 +24,19 @@ package org.glite.security.voms.admin.operations.users;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
-
 public class ListUsersOperation extends BaseVoReadOperation {
 
-    protected ListUsersOperation(){
-        
-    }
-    
-    protected Object doExecute() {
+	protected ListUsersOperation() {
 
-        return VOMSUserDAO.instance().getAll();
-        
-    }
+	}
 
-    public static ListUsersOperation instance(){
-        return new ListUsersOperation();
-    }
+	protected Object doExecute() {
+
+		return VOMSUserDAO.instance().getAll();
+
+	}
+
+	public static ListUsersOperation instance() {
+		return new ListUsersOperation();
+	}
 }

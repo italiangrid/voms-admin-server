@@ -24,35 +24,34 @@ import java.io.Serializable;
 
 import org.glite.security.voms.admin.database.Auditable;
 
-
 public class VOMSSeqNumber implements Serializable, Auditable {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    String seq;
+	String seq;
 
-    public VOMSSeqNumber() {
+	public VOMSSeqNumber() {
 
-    }
+	}
 
-    /**
-     * @return Returns the seq.
-     */
-    public String getSeq() {
+	/**
+	 * @return Returns the seq.
+	 */
+	public String getSeq() {
 
-        return seq;
-    }
+		return seq;
+	}
 
-    /**
-     * @param seq
-     *            The seq to set.
-     */
-    public void setSeq( String seq ) {
+	/**
+	 * @param seq
+	 *            The seq to set.
+	 */
+	public void setSeq(String seq) {
 
-        this.seq = seq;
-    }
+		this.seq = seq;
+	}
 
 }

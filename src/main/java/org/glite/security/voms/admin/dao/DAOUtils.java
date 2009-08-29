@@ -31,43 +31,51 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class DAOUtils {
-	
+
 	private static final Log log = LogFactory.getLog(DAOUtils.class);
-	
-	public static boolean hasPermissionOnPath(VOMSGroup g, VOMSPermission requiredPermission){
-		
-		VOMSGroup  parent = g.getParent();
-        CurrentAdmin admin = CurrentAdmin.instance();
-				
-		do{
-		
-            if (!admin.hasPermissions( VOMSContext.instance( parent ), requiredPermission ))
+
+	public static boolean hasPermissionOnPath(VOMSGroup g,
+			VOMSPermission requiredPermission) {
+
+		VOMSGroup parent = g.getParent();
+		CurrentAdmin admin = CurrentAdmin.instance();
+
+		do {
+
+			if (!admin.hasPermissions(VOMSContext.instance(parent),
+					requiredPermission))
 				return false;
-			
+
 			parent = parent.getParent();
-			
-		}while (!parent.isRootGroup());
-		
+
+		} while (!parent.isRootGroup());
+
 		return true;
 	}
-	
-	public static List filterGroupList(List results, VOMSPermission requiredPermission){
-		
+
+	public static List filterGroupList(List results,
+			VOMSPermission requiredPermission) {
+
 		Iterator i = results.iterator();
-		
-		while (i.hasNext()){
-			
-			VOMSGroup group = (VOMSGroup)i.next();
-			
-			if (!hasPermissionOnPath(group,requiredPermission)){
-				log.debug("Filtering out \""+group+"\" from search results since current admin doesn't have "+requiredPermission+" permissions in the parent group.");
+
+		while (i.hasNext()) {
+
+			VOMSGroup group = (VOMSGroup) i.next();
+
+			if (!hasPermissionOnPath(group, requiredPermission)) {
+				log
+						.debug("Filtering out \""
+								+ group
+								+ "\" from search results since current admin doesn't have "
+								+ requiredPermission
+								+ " permissions in the parent group.");
 				i.remove();
 			}
-				
+
 		}
-		
-		return results;	
-		
+
+		return results;
+
 	}
 
 }

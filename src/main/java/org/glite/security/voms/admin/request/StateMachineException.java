@@ -23,33 +23,33 @@ package org.glite.security.voms.admin.request;
 
 public class StateMachineException extends RuntimeException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public StateMachineException() {
+	public StateMachineException() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public StateMachineException( String message ) {
+	public StateMachineException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public StateMachineException( Throwable cause ) {
+	public StateMachineException(Throwable cause) {
 
-        super( cause );
-        // TODO Auto-generated constructor stub
-    }
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
-    public StateMachineException( String message, Throwable cause ) {
+	public StateMachineException(String message, Throwable cause) {
 
-        super( message, cause );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

@@ -26,47 +26,46 @@ import javax.servlet.jsp.JspException;
 
 import org.glite.security.voms.admin.operations.users.FindUnsubscribedGroupsOperation;
 
-
 public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    String userId;
+	String userId;
 
-    String var;
+	String var;
 
-    public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException {
 
-        // FIXME: add some exception handling here!
-        List groups = (List) FindUnsubscribedGroupsOperation
-                .instance( new Long( userId ) ).execute();
+		// FIXME: add some exception handling here!
+		List groups = (List) FindUnsubscribedGroupsOperation.instance(
+				new Long(userId)).execute();
 
-        pageContext.setAttribute( var, groups );
+		pageContext.setAttribute(var, groups);
 
-        return SKIP_BODY;
-    }
+		return SKIP_BODY;
+	}
 
-    public String getUserId() {
+	public String getUserId() {
 
-        return userId;
-    }
+		return userId;
+	}
 
-    public void setUserId( String userId ) {
+	public void setUserId(String userId) {
 
-        this.userId = userId;
-    }
+		this.userId = userId;
+	}
 
-    public String getVar() {
+	public String getVar() {
 
-        return var;
-    }
+		return var;
+	}
 
-    public void setVar( String var ) {
+	public void setVar(String var) {
 
-        this.var = var;
-    }
+		this.var = var;
+	}
 
 }

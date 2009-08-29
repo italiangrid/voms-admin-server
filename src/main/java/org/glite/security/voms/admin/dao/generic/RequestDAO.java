@@ -10,21 +10,20 @@ import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 
+public interface RequestDAO extends GenericDAO<Request, Long> {
 
-public interface RequestDAO extends GenericDAO <Request, Long>{
+	public NewVOMembershipRequest createVOMembershipRequest(
+			RequesterInfo requester, Date expirationDate);
 
- 
-    public NewVOMembershipRequest createVOMembershipRequest(RequesterInfo requester, Date expirationDate);
-    
-    public GroupMembershipRequest createGroupMembershipRequest();
-    
-    public RoleMembershipRequest createRoleMembershipRequest();
-    
-    public CertificateRequest createCertificateRequest();
-	
-    public NewVOMembershipRequest findActiveVOMembershipRequest(RequesterInfo requester);
-    
-    public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests();
-    
-    
+	public GroupMembershipRequest createGroupMembershipRequest();
+
+	public RoleMembershipRequest createRoleMembershipRequest();
+
+	public CertificateRequest createCertificateRequest();
+
+	public NewVOMembershipRequest findActiveVOMembershipRequest(
+			RequesterInfo requester);
+
+	public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests();
+
 }

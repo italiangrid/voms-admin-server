@@ -36,129 +36,128 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
-public class X500PrincipalType implements UserType{
-    private static final Log log = LogFactory.getLog( X500PrincipalType.class );
+public class X500PrincipalType implements UserType {
+	private static final Log log = LogFactory.getLog(X500PrincipalType.class);
 
-    private static final int[] SQL_TYPES = { Types.BLOB };
-    
-    private static final int BUF_SIZE = 2048;
-    
-    public X500PrincipalType() {
-        
-        super();
-     
-    }
-    
-    public boolean equals( Object x, Object y ) throws HibernateException {
+	private static final int[] SQL_TYPES = { Types.BLOB };
 
-        if (x == y)
-            return true;
-        
-        if (x == null || y == null)
-            return false;
-        
-        return x.equals( y );
-        
-    }
+	private static final int BUF_SIZE = 2048;
 
-    public int hashCode( Object x) throws HibernateException {
+	public X500PrincipalType() {
 
-        return x.hashCode();
-    }
+		super();
 
-    public boolean isMutable() {
-        return true;
-    }
+	}
 
-    
-    private X500Principal readPrincipal(InputStream is){
-        
-        try {
-            
-            byte[] buf = new byte[BUF_SIZE];                       
-            
-            int readBytes = is.read( buf );
-            
-            byte[] val = new byte[readBytes];
-            
-            System.arraycopy( buf, 0, val, 0, readBytes );
-            
-            return new X500Principal(val);
-            
-        } catch ( IOException e ) {
-            log.error( "Error deserializing principal DER representation!" );
-            return null;
-            
-        }
-           
-    }
-    
-    
-    public Object nullSafeGet( ResultSet rs, String[] names, Object owner) throws HibernateException , SQLException {
+	public boolean equals(Object x, Object y) throws HibernateException {
 
-        InputStream is =  rs.getBinaryStream( names[0] );
-        
-        if (rs.wasNull())
-            return null;
-        
-        return readPrincipal( is );
-    }
+		if (x == y)
+			return true;
 
-    public void nullSafeSet( PreparedStatement statement, Object value, int index ) throws HibernateException , SQLException {
+		if (x == null || y == null)
+			return false;
 
-        if (value == null){
-            
-            statement.setNull( index, Types.BLOB);
-        
-        }else{
-            
-            X500Principal p =  (X500Principal)value;
-            ByteArrayInputStream bas = new ByteArrayInputStream(p.getEncoded());
-            statement.setBinaryStream( index, bas, p.getEncoded().length);
-             
-        }
-        
-    }
+		return x.equals(y);
 
-    
+	}
 
-    public Class returnedClass() {
+	public int hashCode(Object x) throws HibernateException {
 
-        return X500Principal.class;
-        
-    }
+		return x.hashCode();
+	}
 
-    public int[] sqlTypes() {
+	public boolean isMutable() {
+		return true;
+	}
 
-        return SQL_TYPES;
-    }
+	private X500Principal readPrincipal(InputStream is) {
 
-    
-    public Object deepCopy( Object value ) throws HibernateException {
+		try {
 
-        if (value == null)
-            return null;
-        
-        X500Principal p = (X500Principal)value;
-        X500Principal clone = new X500Principal(p.getEncoded());
-        
-        return clone;
-        
-    }
+			byte[] buf = new byte[BUF_SIZE];
 
-    public Object assemble( Serializable cached, Object owner) throws HibernateException {
-        
-        return deepCopy( cached );
-    }
+			int readBytes = is.read(buf);
 
-    public Object replace( Object original, Object target, Object owner) throws HibernateException {
-        
-        return deepCopy( original );
-    }
-    
-    public Serializable disassemble( Object value ) throws HibernateException {
+			byte[] val = new byte[readBytes];
 
-        return (Serializable)deepCopy( value );
-    }
+			System.arraycopy(buf, 0, val, 0, readBytes);
+
+			return new X500Principal(val);
+
+		} catch (IOException e) {
+			log.error("Error deserializing principal DER representation!");
+			return null;
+
+		}
+
+	}
+
+	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+			throws HibernateException, SQLException {
+
+		InputStream is = rs.getBinaryStream(names[0]);
+
+		if (rs.wasNull())
+			return null;
+
+		return readPrincipal(is);
+	}
+
+	public void nullSafeSet(PreparedStatement statement, Object value, int index)
+			throws HibernateException, SQLException {
+
+		if (value == null) {
+
+			statement.setNull(index, Types.BLOB);
+
+		} else {
+
+			X500Principal p = (X500Principal) value;
+			ByteArrayInputStream bas = new ByteArrayInputStream(p.getEncoded());
+			statement.setBinaryStream(index, bas, p.getEncoded().length);
+
+		}
+
+	}
+
+	public Class returnedClass() {
+
+		return X500Principal.class;
+
+	}
+
+	public int[] sqlTypes() {
+
+		return SQL_TYPES;
+	}
+
+	public Object deepCopy(Object value) throws HibernateException {
+
+		if (value == null)
+			return null;
+
+		X500Principal p = (X500Principal) value;
+		X500Principal clone = new X500Principal(p.getEncoded());
+
+		return clone;
+
+	}
+
+	public Object assemble(Serializable cached, Object owner)
+			throws HibernateException {
+
+		return deepCopy(cached);
+	}
+
+	public Object replace(Object original, Object target, Object owner)
+			throws HibernateException {
+
+		return deepCopy(original);
+	}
+
+	public Serializable disassemble(Object value) throws HibernateException {
+
+		return (Serializable) deepCopy(value);
+	}
 
 }

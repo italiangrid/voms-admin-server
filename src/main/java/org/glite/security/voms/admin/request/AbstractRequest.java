@@ -25,12 +25,12 @@ import java.util.Date;
 
 public abstract class AbstractRequest implements Request {
 
-    protected Date creationTime;
+	protected Date creationTime;
 
-    protected StateMachine stateMachine;
+	protected StateMachine stateMachine;
 
-    public AbstractRequest() {
+	public AbstractRequest() {
 
-    }
+	}
 
 }

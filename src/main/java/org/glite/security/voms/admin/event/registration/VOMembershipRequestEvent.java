@@ -7,12 +7,11 @@ import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 public abstract class VOMembershipRequestEvent extends GenericEvent {
 
 	NewVOMembershipRequest request;
-	
+
 	public VOMembershipRequestEvent(NewVOMembershipRequest r) {
 		super(EventType.VOMembershipRequestEvent);
 		request = r;
-		
-		
+
 	}
 
 	public NewVOMembershipRequest getRequest() {
@@ -22,7 +21,5 @@ public abstract class VOMembershipRequestEvent extends GenericEvent {
 	public void setRequest(NewVOMembershipRequest request) {
 		this.request = request;
 	}
-	
-	
 
 }

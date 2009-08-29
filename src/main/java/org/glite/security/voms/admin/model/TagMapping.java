@@ -10,67 +10,65 @@ public class TagMapping implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Long id;
-	
+
 	Tag tag;
 	VOMSGroup group;
 	VOMSRole role;
 	VOMSAdmin admin;
-	
-	
+
 	public TagMapping() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public TagMapping(Tag tt, VOMSGroup gg, VOMSRole rr, VOMSAdmin aa){
-	    
-	    tag = tt;
-	    group = gg;
-	    role = rr;
-	    admin = aa;
+
+	public TagMapping(Tag tt, VOMSGroup gg, VOMSRole rr, VOMSAdmin aa) {
+
+		tag = tt;
+		group = gg;
+		role = rr;
+		admin = aa;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
-		
+
 		if (this == other)
 			return true;
-		
+
 		if (other == null)
 			return false;
-		
-		if ( !(other instanceof TagMapping))
+
+		if (!(other instanceof TagMapping))
 			return false;
-		
-		TagMapping that = (TagMapping)other;
-		
+
+		TagMapping that = (TagMapping) other;
+
 		if (!getTag().equals(that.getTag()))
 			return false;
-		
+
 		if (!getGroup().equals(that.getGroup()))
 			return false;
-		
-		if ((getRole()!= null) && (that.getRole() != null))
+
+		if ((getRole() != null) && (that.getRole() != null))
 			return getRole().equals(that.getRole());
-		
+
 		return false;
 	}
-	
+
 	public int hashCode() {
 
-        int result = 14;
+		int result = 14;
 
-        result = 29 * result + getTag().hashCode();
+		result = 29 * result + getTag().hashCode();
 
-        result = 29 * result + getGroup().hashCode();
+		result = 29 * result + getGroup().hashCode();
 
-        if ( getRole() != null )
-            result = 29 * result + getRole().hashCode();
+		if (getRole() != null)
+			result = 29 * result + getRole().hashCode();
 
-        return result;
-    }
-	
+		return result;
+	}
 
 	public VOMSGroup getGroup() {
 		return group;
@@ -103,43 +101,39 @@ public class TagMapping implements Serializable {
 	public void setTag(Tag tag) {
 		this.tag = tag;
 	}
-	
-	public boolean isGroupMapping(){
-	    
-	    if ( tag == null )
-            throw new NullArgumentException( "tag cannot be null!" );
-	    
-	    if ( group == null )
-            throw new NullArgumentException( "group cannot be null!" );
-	    
-	    return (role == null);
-	}
-	
-	public boolean isRoleMapping(){
-	    
-        return !isGroupMapping();
-	    
+
+	public boolean isGroupMapping() {
+
+		if (tag == null)
+			throw new NullArgumentException("tag cannot be null!");
+
+		if (group == null)
+			throw new NullArgumentException("group cannot be null!");
+
+		return (role == null);
 	}
 
-    
-    /**
-     * @return the admin
-     */
-    public VOMSAdmin getAdmin() {
-    
-        return admin;
-    }
+	public boolean isRoleMapping() {
 
-    
-    /**
-     * @param admin the admin to set
-     */
-    public void setAdmin( VOMSAdmin admin ) {
-    
-        this.admin = admin;
-    }
+		return !isGroupMapping();
 
-    
-	
+	}
+
+	/**
+	 * @return the admin
+	 */
+	public VOMSAdmin getAdmin() {
+
+		return admin;
+	}
+
+	/**
+	 * @param admin
+	 *            the admin to set
+	 */
+	public void setAdmin(VOMSAdmin admin) {
+
+		this.admin = admin;
+	}
 
 }

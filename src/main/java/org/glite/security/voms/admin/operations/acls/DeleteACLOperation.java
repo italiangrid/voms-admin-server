@@ -28,42 +28,42 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class DeleteACLOperation extends BaseVomsOperation {
 
-    ACL acl;
+	ACL acl;
 
-    VOMSAdmin admin;
+	VOMSAdmin admin;
 
-    VOMSPermission permission;
+	VOMSPermission permission;
 
-    public DeleteACLOperation( ACL acl, VOMSAdmin a, VOMSPermission p ) {
+	public DeleteACLOperation(ACL acl, VOMSAdmin a, VOMSPermission p) {
 
-        this.acl = acl;
-        this.admin = a;
-        this.permission = p;
-    }
+		this.acl = acl;
+		this.admin = a;
+		this.permission = p;
+	}
 
-    protected Object doExecute() {
+	protected Object doExecute() {
 
-        acl.removePermissions( admin );
+		acl.removePermissions(admin);
 
-        HibernateFactory.getSession().save( acl );
-        return acl;
-    }
+		HibernateFactory.getSession().save(acl);
+		return acl;
+	}
 
-    public static DeleteACLOperation
-    instance( ACL acl, VOMSAdmin a, VOMSPermission p ) {
+	public static DeleteACLOperation instance(ACL acl, VOMSAdmin a,
+			VOMSPermission p) {
 
-        return new DeleteACLOperation( acl, a, p ) ;
-    }
+		return new DeleteACLOperation(acl, a, p);
+	}
 
 	protected void setupPermissions() {
-		
-		VOMSContext ctxt =VOMSContext.instance( acl.getGroup(), acl.getRole() );
-		VOMSPermission p  = VOMSPermission.getEmptyPermissions().setACLReadPermission().setACLWritePermission();
-		addRequiredPermission(ctxt,p);
-		
+
+		VOMSContext ctxt = VOMSContext.instance(acl.getGroup(), acl.getRole());
+		VOMSPermission p = VOMSPermission.getEmptyPermissions()
+				.setACLReadPermission().setACLWritePermission();
+		addRequiredPermission(ctxt, p);
+
 	}
 
 }

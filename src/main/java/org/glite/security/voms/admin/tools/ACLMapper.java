@@ -25,73 +25,75 @@ import java.util.List;
 
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class ACLMapper {
-    
-    public static final short ALL = 1;
-    public static final short CREATE = 2;
-    public static final short DELETE = 3;
-    public static final short ADD = 4;
-    public static final short REMOVE = 5;
-    public static final short SET_ACL = 6;
-    public static final short GET_ACL = 7;
-    public static final short SET_DEFAULT_ACL = 8;
-    public static final short GET_DEFAULT_ACL = 9;
-    public static final short LIST = 10;
-    public static final short LIST_ANY_REQUEST = 11;
-    public static final short DELETE_ANY_REQUEST = 11;
-    
-        
-    public static VOMSPermission translatePermissions(List operations){
-        
-        VOMSPermission perms = VOMSPermission.getEmptyPermissions();
-        
-        Iterator i = operations.iterator();
-        
-        while (i.hasNext()){
-            
-            short op = ((Short)i.next()).shortValue();
-            
-            switch ( op ) {
-             
-                case ALL:
-                    return VOMSPermission.getAllPermissions();
-                    
-                case CREATE:
-                case DELETE:
-                    perms.setContainerReadPermission().setContainerWritePermission().setMembershipRWPermission();
-                    break;
-                    
-                case ADD:                    
-                case REMOVE:
-                    perms.setContainerReadPermission().setMembershipRWPermission();
-                    break;
-                    
-                case SET_ACL:
-                    perms.setACLReadPermission().setACLWritePermission();
-                    break;
-                    
-                case GET_ACL:
-                    perms.setACLReadPermission();
-                    break;
-                    
-                case SET_DEFAULT_ACL:
-                    perms.setACLReadPermission().setACLWritePermission().setACLDefaultPermission();
-                    break;
-                    
-                case GET_DEFAULT_ACL:
-                    perms.setACLDefaultPermission().setACLReadPermission();
-                    break;
-                    
-                case LIST:
-                    perms.setContainerReadPermission().setMembershipReadPermission();
-                    break;
-                    
-                default:
-                    continue;      
-            }
-        }
-        
-        return perms;
-    }
+
+	public static final short ALL = 1;
+	public static final short CREATE = 2;
+	public static final short DELETE = 3;
+	public static final short ADD = 4;
+	public static final short REMOVE = 5;
+	public static final short SET_ACL = 6;
+	public static final short GET_ACL = 7;
+	public static final short SET_DEFAULT_ACL = 8;
+	public static final short GET_DEFAULT_ACL = 9;
+	public static final short LIST = 10;
+	public static final short LIST_ANY_REQUEST = 11;
+	public static final short DELETE_ANY_REQUEST = 11;
+
+	public static VOMSPermission translatePermissions(List operations) {
+
+		VOMSPermission perms = VOMSPermission.getEmptyPermissions();
+
+		Iterator i = operations.iterator();
+
+		while (i.hasNext()) {
+
+			short op = ((Short) i.next()).shortValue();
+
+			switch (op) {
+
+			case ALL:
+				return VOMSPermission.getAllPermissions();
+
+			case CREATE:
+			case DELETE:
+				perms.setContainerReadPermission()
+						.setContainerWritePermission()
+						.setMembershipRWPermission();
+				break;
+
+			case ADD:
+			case REMOVE:
+				perms.setContainerReadPermission().setMembershipRWPermission();
+				break;
+
+			case SET_ACL:
+				perms.setACLReadPermission().setACLWritePermission();
+				break;
+
+			case GET_ACL:
+				perms.setACLReadPermission();
+				break;
+
+			case SET_DEFAULT_ACL:
+				perms.setACLReadPermission().setACLWritePermission()
+						.setACLDefaultPermission();
+				break;
+
+			case GET_DEFAULT_ACL:
+				perms.setACLDefaultPermission().setACLReadPermission();
+				break;
+
+			case LIST:
+				perms.setContainerReadPermission()
+						.setMembershipReadPermission();
+				break;
+
+			default:
+				continue;
+			}
+		}
+
+		return perms;
+	}
 }

@@ -5,35 +5,33 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class ListAttributesForGroupOperation extends BaseVomsOperation {
 
-    
-    VOMSGroup _vomsGroup;
-    
-    private ListAttributesForGroupOperation(VOMSGroup g) {
+	VOMSGroup _vomsGroup;
 
-        _vomsGroup = g;
-        
-    }
-    
-    protected Object doExecute() {
+	private ListAttributesForGroupOperation(VOMSGroup g) {
 
-        return _vomsGroup.getAttributes();
-    }
+		_vomsGroup = g;
 
-    protected void setupPermissions() {
+	}
 
-        addRequiredPermissionOnPath( _vomsGroup.getParent(), 
-                VOMSPermission.getContainerReadPermission() );
-        
-        addRequiredPermission( VOMSContext.instance( _vomsGroup ), 
-                VOMSPermission.getEmptyPermissions().setAttributesReadPermission() );
-       
-    }
+	protected Object doExecute() {
 
-    public static ListAttributesForGroupOperation instance(VOMSGroup g) {
+		return _vomsGroup.getAttributes();
+	}
 
-        return new ListAttributesForGroupOperation(g);
-    }
+	protected void setupPermissions() {
+
+		addRequiredPermissionOnPath(_vomsGroup.getParent(), VOMSPermission
+				.getContainerReadPermission());
+
+		addRequiredPermission(VOMSContext.instance(_vomsGroup), VOMSPermission
+				.getEmptyPermissions().setAttributesReadPermission());
+
+	}
+
+	public static ListAttributesForGroupOperation instance(VOMSGroup g) {
+
+		return new ListAttributesForGroupOperation(g);
+	}
 }

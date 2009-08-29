@@ -33,7 +33,6 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 
-
 public class RemoveMemberOperation extends BaseVomsOperation {
 
 	VOMSUser user;
@@ -52,14 +51,14 @@ public class RemoveMemberOperation extends BaseVomsOperation {
 
 		List childrenGroups = (List) ListChildrenGroupsOperation
 				.instance(group).execute();
-		
+
 		Iterator i = childrenGroups.iterator();
 
-		while (i.hasNext()){
-            VOMSGroup childGroup = (VOMSGroup)i.next();
-            if (user.isMember( childGroup ))
-                instance(user, childGroup).execute();
-        }
+		while (i.hasNext()) {
+			VOMSGroup childGroup = (VOMSGroup) i.next();
+			if (user.isMember(childGroup))
+				instance(user, childGroup).execute();
+		}
 
 		VOMSUserDAO.instance().removeFromGroup(user, group);
 		return null;
@@ -70,25 +69,31 @@ public class RemoveMemberOperation extends BaseVomsOperation {
 		return new RemoveMemberOperation(u, g);
 	}
 
-	public static RemoveMemberOperation instance(String groupName, String username, String caDn){
-		
-		VOMSUser u = (VOMSUser)FindUserOperation.instance(username,caDn).execute();
-		VOMSGroup g = (VOMSGroup)FindGroupOperation.instance(groupName).execute();
-		
-        if (u == null)
-            throw new NoSuchUserException("User '"+username+","+caDn+"' not found in this vo.");
-        
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' does not exist in this vo.");
-        
-		return new RemoveMemberOperation(u,g);
-		
+	public static RemoveMemberOperation instance(String groupName,
+			String username, String caDn) {
+
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
+				.execute();
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+
+		if (u == null)
+			throw new NoSuchUserException("User '" + username + "," + caDn
+					+ "' not found in this vo.");
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' does not exist in this vo.");
+
+		return new RemoveMemberOperation(u, g);
+
 	}
-	
-	
+
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group.getParent()), VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission.getMembershipRWPermissions().setContainerReadPermission());
+		addRequiredPermission(VOMSContext.instance(group.getParent()),
+				VOMSPermission.getContainerReadPermission());
+		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+				.getMembershipRWPermissions().setContainerReadPermission());
 	}
 
 }

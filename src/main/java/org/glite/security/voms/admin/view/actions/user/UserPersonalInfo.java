@@ -3,20 +3,19 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class UserPersonalInfo {
-	
+
 	String certificateSubject;
 	String certificateIssuer;
-	
-	String name;
-    String surname;
-    String institution;
-    String address;
-    String phoneNumber;
-    
-    String emailAddress;
-    
 
-    public UserPersonalInfo() {
+	String name;
+	String surname;
+	String institution;
+	String address;
+	String phoneNumber;
+
+	String emailAddress;
+
+	public UserPersonalInfo() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -84,11 +83,10 @@ public class UserPersonalInfo {
 		this.emailAddress = emailAddress;
 	}
 
-    
 	@Override
 	public String toString() {
 
 		return ToStringBuilder.reflectionToString(this);
 	}
-    
+
 }

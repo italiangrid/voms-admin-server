@@ -880,7 +880,7 @@ class X509Helper:
         else:
             openssl = 'openssl'
         
-        base_cmd = openssl+' x509 -in %s -noout ' % self.filename
+        base_cmd = openssl+' x509 -in \'%s\' -noout ' % self.filename
         
         status,subject = commands.getstatusoutput(base_cmd+'-subject')
         if status:

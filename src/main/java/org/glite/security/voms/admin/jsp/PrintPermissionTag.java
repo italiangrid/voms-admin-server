@@ -37,196 +37,195 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class PrintPermissionTag extends TagSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public static final String SHORT_HEADER = "short";
+	public static final String SHORT_HEADER = "short";
 
-    public static final String LONG_HEADER = "long";
+	public static final String LONG_HEADER = "long";
 
-    private static final Log log = LogFactory.getLog( PrintPermissionTag.class );
-    
-    String header;
-    
-    String var;
+	private static final Log log = LogFactory.getLog(PrintPermissionTag.class);
 
-    private static final String[] headerNames = { "Container", "Membership",
-            "ACL", "Attributes", "Requests", "Suspend" };
+	String header;
 
-    private static final String[] shortHeaderNames = { "Cont.", "Memb.", "ACL",
-            "Attr.", "Req." };
+	String var;
 
+	private static final String[] headerNames = { "Container", "Membership",
+			"ACL", "Attributes", "Requests", "Suspend" };
 
-    public String getHeader() {
+	private static final String[] shortHeaderNames = { "Cont.", "Memb.", "ACL",
+			"Attr.", "Req." };
 
-        return header;
-    }
+	public String getHeader() {
 
-    public void setHeader( String header ) {
+		return header;
+	}
 
-        this.header = header;
-    }
+	public void setHeader(String header) {
 
-    private void printLongHeader() throws JspException {
+		this.header = header;
+	}
 
-        JspWriter out = pageContext.getOut();
+	private void printLongHeader() throws JspException {
 
-        try {
+		JspWriter out = pageContext.getOut();
 
-            out
-                    .println( "<table class='table' cellpadding='0' cellspacing='0'>" );
-            out.println( "<tr class='tableHeaderRow'>" );
+		try {
 
-            for ( int i = 0; i < headerNames.length; i++ )
-                out.println( "<td>" + headerNames[i] + "</td>" );
-            
-            out.println("</tr>");
+			out
+					.println("<table class='table' cellpadding='0' cellspacing='0'>");
+			out.println("<tr class='tableHeaderRow'>");
 
-        } catch ( IOException e ) {
+			for (int i = 0; i < headerNames.length; i++)
+				out.println("<td>" + headerNames[i] + "</td>");
 
-            throw new JspTagException( e.getMessage() );
-        }
+			out.println("</tr>");
 
-    }
+		} catch (IOException e) {
 
-    private void printShortHeader() throws JspException {
+			throw new JspTagException(e.getMessage());
+		}
 
-        JspWriter out = pageContext.getOut();
+	}
 
-        try {
+	private void printShortHeader() throws JspException {
 
-            out
-                    .println( "<table class='table' cellpadding='0' cellspacing='0'>" );
-            out.println( "<tr class='tableHeaderRow'>" );
+		JspWriter out = pageContext.getOut();
 
-            for ( int i = 0; i < shortHeaderNames.length; i++ )
-                out.println( "<td>" + shortHeaderNames[i] + "</td>" );
+		try {
 
-            out.println("</tr>");
-            
-        } catch ( IOException e ) {
+			out
+					.println("<table class='table' cellpadding='0' cellspacing='0'>");
+			out.println("<tr class='tableHeaderRow'>");
 
-            throw new JspTagException( e.getMessage() );
-        }
+			for (int i = 0; i < shortHeaderNames.length; i++)
+				out.println("<td>" + shortHeaderNames[i] + "</td>");
 
-    }
+			out.println("</tr>");
 
-    private void printPermissions( VOMSPermission p ) throws JspException {
+		} catch (IOException e) {
 
-        JspWriter out = pageContext.getOut();
+			throw new JspTagException(e.getMessage());
+		}
 
-        try {
+	}
 
-            // out.println( "<tr class='tableRow'>" );
-            // CONTAINER permissions
-            out.write( "<td>" );
-            if ( p.hasContainerReadPermission() )
-                out.write( "r" );
-            if ( p.hasContainerWritePermission() )
-                out.write( "w" );
+	private void printPermissions(VOMSPermission p) throws JspException {
 
-            out.write( "</td>" );
+		JspWriter out = pageContext.getOut();
 
-            // MEMBERSHIP permissions
-            out.write( "<td>" );
-            if ( p.hasMembershipReadPermission() )
-                out.write( "r" );
-            if ( p.hasMembershipWritePermission() )
-                out.write( "w" );
-            out.write( "</td>" );
+		try {
 
-            // ACL permissions
-            out.write( "<td>" );
-            if ( p.hasACLReadPermission() )
-                out.write( "r" );
-            if ( p.hasACLWritePermission() )
-                out.write( "w" );
-            if ( p.hasACLDefaultPermission() )
-                out.write( "d" );
-            out.write( "</td>" );
+			// out.println( "<tr class='tableRow'>" );
+			// CONTAINER permissions
+			out.write("<td>");
+			if (p.hasContainerReadPermission())
+				out.write("r");
+			if (p.hasContainerWritePermission())
+				out.write("w");
 
-            // ATTRIBUTES permissions
-            out.write( "<td>" );
-            if ( p.hasAttributeReadPermission() )
-                out.write( "r" );
-            if ( p.hasAttributeWritePermission() )
-                out.write( "w" );
-            out.write( "</td>" );
+			out.write("</td>");
 
-            // REQUESTS permissions
-            out.write( "<td>" );
-            if ( p.hasRequestReadPermission() )
-                out.write( "r" );
-            if ( p.hasRequestWritePermission() )
-                out.write( "w" );
-            out.write( "</td>" );
-            
-            // PERSONAL INFO
-            out.write( "<td>" );
-            if ( p.hasPersonalInfoReadPermission() )
-                out.write( "r" );
-            if ( p.hasPersonalInfoWritePermission() )
-                out.write( "w" );
-            out.write( "</td>" );
-            
-            // SUSPEND permission
-            out.write( "<td>" );
-            if ( p.hasSuspendPermission() )
-                out.write( "yes" );
-            out.write( "</td>" );
+			// MEMBERSHIP permissions
+			out.write("<td>");
+			if (p.hasMembershipReadPermission())
+				out.write("r");
+			if (p.hasMembershipWritePermission())
+				out.write("w");
+			out.write("</td>");
 
-            // out.println( "</tr>" );
-        } catch ( IOException e ) {
+			// ACL permissions
+			out.write("<td>");
+			if (p.hasACLReadPermission())
+				out.write("r");
+			if (p.hasACLWritePermission())
+				out.write("w");
+			if (p.hasACLDefaultPermission())
+				out.write("d");
+			out.write("</td>");
 
-            throw new JspTagException( e.getMessage() );
+			// ATTRIBUTES permissions
+			out.write("<td>");
+			if (p.hasAttributeReadPermission())
+				out.write("r");
+			if (p.hasAttributeWritePermission())
+				out.write("w");
+			out.write("</td>");
 
-        }
+			// REQUESTS permissions
+			out.write("<td>");
+			if (p.hasRequestReadPermission())
+				out.write("r");
+			if (p.hasRequestWritePermission())
+				out.write("w");
+			out.write("</td>");
 
-    }
+			// PERSONAL INFO
+			out.write("<td>");
+			if (p.hasPersonalInfoReadPermission())
+				out.write("r");
+			if (p.hasPersonalInfoWritePermission())
+				out.write("w");
+			out.write("</td>");
 
-    private void printFooter() throws JspException {
+			// SUSPEND permission
+			out.write("<td>");
+			if (p.hasSuspendPermission())
+				out.write("yes");
+			out.write("</td>");
 
-        JspWriter out = pageContext.getOut();
+			// out.println( "</tr>" );
+		} catch (IOException e) {
 
-        try {
-            out.write( "</table>" );
-        } catch ( IOException e ) {
+			throw new JspTagException(e.getMessage());
 
-            throw new JspTagException( e.getMessage() );
-        }
+		}
 
-    }
+	}
 
-    public int doStartTag() throws JspException {
-    	
-    	// Look in request context 
-    	Object o = pageContext.getAttribute(getVar());
-        
-        VOMSPermission p;
-        
-        if (o instanceof Map.Entry){
-            p = (VOMSPermission)((Map.Entry)o).getValue();
-            
-        }else
-            p = (VOMSPermission)o;
-        
-        if ( header == null )
-            header = SHORT_HEADER;
+	private void printFooter() throws JspException {
 
-       // if ( SHORT_HEADER.equals( header ) )
-       //     printShortHeader();
+		JspWriter out = pageContext.getOut();
 
-//        if ( LONG_HEADER.equals( header ) )
-//            printLongHeader();
+		try {
+			out.write("</table>");
+		} catch (IOException e) {
 
-        printPermissions( p );
+			throw new JspTagException(e.getMessage());
+		}
 
-//        printFooter();
-        
-        return SKIP_BODY;
-    }
+	}
+
+	public int doStartTag() throws JspException {
+
+		// Look in request context
+		Object o = pageContext.getAttribute(getVar());
+
+		VOMSPermission p;
+
+		if (o instanceof Map.Entry) {
+			p = (VOMSPermission) ((Map.Entry) o).getValue();
+
+		} else
+			p = (VOMSPermission) o;
+
+		if (header == null)
+			header = SHORT_HEADER;
+
+		// if ( SHORT_HEADER.equals( header ) )
+		// printShortHeader();
+
+		// if ( LONG_HEADER.equals( header ) )
+		// printLongHeader();
+
+		printPermissions(p);
+
+		// printFooter();
+
+		return SKIP_BODY;
+	}
 
 	public String getVar() {
 		return var;
@@ -235,7 +234,5 @@ public class PrintPermissionTag extends TagSupport {
 	public void setVar(String var) {
 		this.var = var;
 	}
-    
-    
 
 }

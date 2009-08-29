@@ -30,67 +30,65 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 
-
-
 /**
  * @author andrea
  *
  */
 /**
  * @author andrea
- *
+ * 
  */
 public class RoleAttributesTag extends TagSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    private String var;
-    
-    private String groupVar;
-    
-    public String getGroupVar() {
-    
-        return groupVar;
-    }
+	private static final long serialVersionUID = 1L;
 
+	private String var;
 
-    
-    public void setGroupVar( String groupVar ) {
-    
-        this.groupVar = groupVar;
-    }
+	private String groupVar;
 
+	public String getGroupVar() {
 
-    public String getVar() {
-    
-        return var;
-    }
+		return groupVar;
+	}
 
-    
-    public void setVar( String var ) {
-    
-        this.var = var;
-    }
-    
-    public int doStartTag() throws JspException {
-        
-        VOMSRole r = (VOMSRole)pageContext.getAttribute( "vomsRole", PageContext.REQUEST_SCOPE );
-        VOMSGroup g = (VOMSGroup)pageContext.findAttribute(  (groupVar== null) ? "vomsGroup": groupVar);
+	public void setGroupVar(String groupVar) {
 
-        if (r == null)
-            throw new JspTagException( "No role found in org.glite.security.voms.admin.request context!" );
-        
-        if (g == null)
-            throw new JspTagException( "No group found in org.glite.security.voms.admin.request context!" );
-        
-        Set attributes = r.getAttributesInGroup( g );
-        
-        pageContext.setAttribute( var, attributes);
-        
-        return SKIP_BODY;
-    }
+		this.groupVar = groupVar;
+	}
+
+	public String getVar() {
+
+		return var;
+	}
+
+	public void setVar(String var) {
+
+		this.var = var;
+	}
+
+	public int doStartTag() throws JspException {
+
+		VOMSRole r = (VOMSRole) pageContext.getAttribute("vomsRole",
+				PageContext.REQUEST_SCOPE);
+		VOMSGroup g = (VOMSGroup) pageContext
+				.findAttribute((groupVar == null) ? "vomsGroup" : groupVar);
+
+		if (r == null)
+			throw new JspTagException(
+					"No role found in org.glite.security.voms.admin.request context!");
+
+		if (g == null)
+			throw new JspTagException(
+					"No group found in org.glite.security.voms.admin.request context!");
+
+		Set attributes = r.getAttributesInGroup(g);
+
+		pageContext.setAttribute(var, attributes);
+
+		return SKIP_BODY;
+	}
 
 }

@@ -29,55 +29,55 @@ import org.apache.commons.logging.LogFactory;
 
 public class ActionSequence implements Action {
 
-    private static final Log log = LogFactory.getLog( ActionSequence.class );
+	private static final Log log = LogFactory.getLog(ActionSequence.class);
 
-    private Vector actions = new Vector();
+	private Vector actions = new Vector();
 
-    public ActionSequence() {
+	public ActionSequence() {
 
-        super();
-     
-    }
+		super();
 
-    public void addAction( Action a ) {
+	}
 
-        actions.add( a );
-    }
+	public void addAction(Action a) {
 
-    public void removeAction( Action a ) {
+		actions.add(a);
+	}
 
-        actions.remove( a );
-    }
+	public void removeAction(Action a) {
 
-    public Object execute() {
+		actions.remove(a);
+	}
 
-        if ( actions.isEmpty() ) {
-            log.debug( "No actions defined, nothing to do!" );
-            return null;
-        }
+	public Object execute() {
 
-        Vector returnValues = new Vector();
-        Iterator i = actions.iterator();
+		if (actions.isEmpty()) {
+			log.debug("No actions defined, nothing to do!");
+			return null;
+		}
 
-        while ( i.hasNext() ) {
+		Vector returnValues = new Vector();
+		Iterator i = actions.iterator();
 
-            Action a = null;
+		while (i.hasNext()) {
 
-            try {
-                a = (Action) i.next();
-                log.debug( "Executing " + a );
-                Object retValue = a.execute();
-                returnValues.add( retValue );
+			Action a = null;
 
-            } catch ( Throwable t ) {
+			try {
+				a = (Action) i.next();
+				log.debug("Executing " + a);
+				Object retValue = a.execute();
+				returnValues.add(retValue);
 
-                log.error( "Error executing action " + a, t );
-                return null;
-            }
+			} catch (Throwable t) {
 
-        }
+				log.error("Error executing action " + a, t);
+				return null;
+			}
 
-        return returnValues;
-    }
+		}
+
+		return returnValues;
+	}
 
 }

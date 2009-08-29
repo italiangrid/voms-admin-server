@@ -23,5 +23,5 @@ package org.glite.security.voms.admin.request;
 
 public interface Event {
 
-    public String getName();
+	public String getName();
 }

@@ -37,186 +37,197 @@ import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSGroup;
 
+public abstract class BaseVomsOperation implements VOMSOperation {
 
+	static {
 
+		StandardToStringStyle stss = new StandardToStringStyle();
 
-public abstract class BaseVomsOperation implements VOMSOperation{
-		
-    static{
-        
-        StandardToStringStyle stss = new StandardToStringStyle();
-        
-        stss.setUseClassName( false );
-        stss.setUseIdentityHashCode( false );
-                
-        ToStringBuilder.setDefaultStyle( stss );
-        
-    }
-    
+		stss.setUseClassName(false);
+		stss.setUseIdentityHashCode(false);
+
+		ToStringBuilder.setDefaultStyle(stss);
+
+	}
+
 	protected Map __requiredPermissions = null;
-	
-    private static final Log __log = LogFactory.getLog( BaseVomsOperation.class );
 
-	private boolean permissionsInitialized(){
-		
-		if (__requiredPermissions==null || __requiredPermissions.isEmpty())
+	private static final Log __log = LogFactory.getLog(BaseVomsOperation.class);
+
+	private boolean permissionsInitialized() {
+
+		if (__requiredPermissions == null || __requiredPermissions.isEmpty())
 			return false;
-		
+
 		return true;
 	}
-	
-	protected final void addRequiredPermission(VOMSContext ctxt, VOMSPermission p){
+
+	protected final void addRequiredPermission(VOMSContext ctxt,
+			VOMSPermission p) {
 		if (ctxt == null)
-			throw new NullArgumentException("Cannot add a null context to required permissions");
-		
+			throw new NullArgumentException(
+					"Cannot add a null context to required permissions");
+
 		if (p == null)
-			throw new NullArgumentException("Cannot set a null permission for a context.");
-		
-		__requiredPermissions.put(ctxt,p);
+			throw new NullArgumentException(
+					"Cannot set a null permission for a context.");
+
+		__requiredPermissions.put(ctxt, p);
 	}
-	
-	protected final void addRequiredPermissionOnAllGroups(VOMSPermission p){
-		
+
+	protected final void addRequiredPermissionOnAllGroups(VOMSPermission p) {
+
 		Iterator allGroups = VOMSGroupDAO.instance().findAll().iterator();
-		
-		while(allGroups.hasNext())
-			addRequiredPermission(VOMSContext.instance((VOMSGroup)allGroups.next()), p);
+
+		while (allGroups.hasNext())
+			addRequiredPermission(VOMSContext.instance((VOMSGroup) allGroups
+					.next()), p);
 	}
-	
-	protected final void addRequiredPermissionOnPath(VOMSGroup leafGroup, VOMSPermission p){
-		
+
+	protected final void addRequiredPermissionOnPath(VOMSGroup leafGroup,
+			VOMSPermission p) {
+
 		if (leafGroup == null)
-			throw new NullArgumentException("Cannot add a null context to required permissions");
-		
+			throw new NullArgumentException(
+					"Cannot add a null context to required permissions");
+
 		if (p == null)
-			throw new NullArgumentException("Cannot set a null permission for a context.");
-		
+			throw new NullArgumentException(
+					"Cannot set a null permission for a context.");
+
 		addRequiredPermission(VOMSContext.instance(leafGroup), p);
-		
+
 		VOMSGroup parent = leafGroup.getParent();
-		
-		do{	
+
+		do {
 			addRequiredPermission(VOMSContext.instance(parent), p);
 			parent = parent.getParent();
-			
-		}while(!parent.isRootGroup());
-		
+
+		} while (!parent.isRootGroup());
+
 	}
-	
-	protected BaseVomsOperation(){
+
+	protected BaseVomsOperation() {
 		__requiredPermissions = new HashMap();
 	}
-	
-	AuthorizationResponse isAllowed(){
-		
-        CurrentAdmin admin = CurrentAdmin.instance();
-        
-	    if (!permissionsInitialized())
-			setupPermissions();
-		
-		if (__requiredPermissions.isEmpty())
-			throw new VOMSFatalException("Required permissions not defined for "+getName()+" operation!");
-		
-		Iterator contexts = __requiredPermissions.keySet().iterator();
-				
-		while(contexts.hasNext()){
-			
-			VOMSContext ctxt = (VOMSContext) contexts.next();
-			VOMSPermission requiredPerms = (VOMSPermission) __requiredPermissions.get(ctxt);
 
-            ACL acl = ctxt.getACL();
-            
-            if ( acl == null )
-                    throw new VOMSInconsistentDatabaseException(
-                            "ACL not found for context \"" + ctxt+ "\"." );
-            
-			if (!admin.hasPermissions(ctxt,requiredPerms))
-                return AuthorizationResponse.deny(ctxt, requiredPerms);
-			
+	AuthorizationResponse isAllowed() {
+
+		CurrentAdmin admin = CurrentAdmin.instance();
+
+		if (!permissionsInitialized())
+			setupPermissions();
+
+		if (__requiredPermissions.isEmpty())
+			throw new VOMSFatalException(
+					"Required permissions not defined for " + getName()
+							+ " operation!");
+
+		Iterator contexts = __requiredPermissions.keySet().iterator();
+
+		while (contexts.hasNext()) {
+
+			VOMSContext ctxt = (VOMSContext) contexts.next();
+			VOMSPermission requiredPerms = (VOMSPermission) __requiredPermissions
+					.get(ctxt);
+
+			ACL acl = ctxt.getACL();
+
+			if (acl == null)
+				throw new VOMSInconsistentDatabaseException(
+						"ACL not found for context \"" + ctxt + "\".");
+
+			if (!admin.hasPermissions(ctxt, requiredPerms))
+				return AuthorizationResponse.deny(ctxt, requiredPerms);
+
 		}
 		return AuthorizationResponse.permit();
 	}
-	
-	public final Object execute(){
-        
-        logOperation();
-        
-        AuthorizationResponse response = isAllowed();
-		
-        if (!response.isAllowed())
-			throw new VOMSAuthorizationException(CurrentAdmin.instance().getAdmin(),this, response);
-			
-		return doExecute();
-			
-	}
-	
-	protected abstract void setupPermissions();
-	protected abstract Object doExecute();
-    
-    protected final void addPermissionsOnPath(VOMSGroup g, VOMSPermission p){
-        VOMSGroup parentGroup = g.getParent();
-        
-        do{
-            __log.debug( "Adding required permission "+p+" for group: "+parentGroup );
-            addRequiredPermission( VOMSContext.instance( parentGroup ), p );
-            parentGroup = parentGroup.getParent();
-            
-        }while(!parentGroup.isRootGroup());
-        
-        addRequiredPermission( VOMSContext.instance( parentGroup ), p );
-    }
 
-    protected final void logRequiredPermissions(){
-        __log.debug( "["+this.getClass()+"] requiredPerms: "+ToStringBuilder.reflectionToString( __requiredPermissions )+"");
-    }
-    
-    protected final String logOperationMessage(){
-        
-        StringBuffer logStr = new StringBuffer();
-        
-        String opName = getName();
-        logStr.append( opName +"(");
-        logStr.append(logArgs());
-        logStr.append( ")");
-        
-        return logStr.toString();
-        
-    }
-    
-    protected String logArgs(){
-        
-        String message = ToStringBuilder.reflectionToString( this );
-        
-        // FIXME: really a quick n' dirty trick to build these log messages...:(
-        message = message.replaceAll( ",?__\\p{Alpha}*=[^,\\]]*,?", "" );
-        return message;
-    }
-    
-    protected final void logOperation(){
-        
-        String adminSubj = CurrentAdmin.instance().getRealSubject();
-        String adminIssuer = CurrentAdmin.instance().getRealIssuer();
-        
-        String message = "Operation: "+ logOperationMessage()+" - ("+adminSubj+","+adminIssuer+")";
-        __log.info( message );
-        
-    }
-    
-	public String getName(){
-		
-        String clazzName = this.getClass().getName();
-        return clazzName.substring( clazzName.lastIndexOf( '.' )+1 );
-        
-		
+	public final Object execute() {
+
+		logOperation();
+
+		AuthorizationResponse response = isAllowed();
+
+		if (!response.isAllowed())
+			throw new VOMSAuthorizationException(CurrentAdmin.instance()
+					.getAdmin(), this, response);
+
+		return doExecute();
+
+	}
+
+	protected abstract void setupPermissions();
+
+	protected abstract Object doExecute();
+
+	protected final void addPermissionsOnPath(VOMSGroup g, VOMSPermission p) {
+		VOMSGroup parentGroup = g.getParent();
+
+		do {
+			__log.debug("Adding required permission " + p + " for group: "
+					+ parentGroup);
+			addRequiredPermission(VOMSContext.instance(parentGroup), p);
+			parentGroup = parentGroup.getParent();
+
+		} while (!parentGroup.isRootGroup());
+
+		addRequiredPermission(VOMSContext.instance(parentGroup), p);
+	}
+
+	protected final void logRequiredPermissions() {
+		__log.debug("[" + this.getClass() + "] requiredPerms: "
+				+ ToStringBuilder.reflectionToString(__requiredPermissions)
+				+ "");
+	}
+
+	protected final String logOperationMessage() {
+
+		StringBuffer logStr = new StringBuffer();
+
+		String opName = getName();
+		logStr.append(opName + "(");
+		logStr.append(logArgs());
+		logStr.append(")");
+
+		return logStr.toString();
+
+	}
+
+	protected String logArgs() {
+
+		String message = ToStringBuilder.reflectionToString(this);
+
+		// FIXME: really a quick n' dirty trick to build these log messages...:(
+		message = message.replaceAll(",?__\\p{Alpha}*=[^,\\]]*,?", "");
+		return message;
+	}
+
+	protected final void logOperation() {
+
+		String adminSubj = CurrentAdmin.instance().getRealSubject();
+		String adminIssuer = CurrentAdmin.instance().getRealIssuer();
+
+		String message = "Operation: " + logOperationMessage() + " - ("
+				+ adminSubj + "," + adminIssuer + ")";
+		__log.info(message);
+
+	}
+
+	public String getName() {
+
+		String clazzName = this.getClass().getName();
+		return clazzName.substring(clazzName.lastIndexOf('.') + 1);
+
 	}
 
 	public final Map getRequiredPermissions() {
 
 		if (!permissionsInitialized())
 			setupPermissions();
-		
+
 		return __requiredPermissions;
 	}
-	
-	
+
 }

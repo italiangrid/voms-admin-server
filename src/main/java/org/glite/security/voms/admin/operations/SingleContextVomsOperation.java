@@ -22,10 +22,10 @@
 package org.glite.security.voms.admin.operations;
 
 public abstract class SingleContextVomsOperation extends BaseVomsOperation {
-	
+
 	protected VOMSContext __context = null;
-	
-	protected SingleContextVomsOperation(VOMSContext ctxt){
+
+	protected SingleContextVomsOperation(VOMSContext ctxt) {
 		this.__context = ctxt;
 	}
 

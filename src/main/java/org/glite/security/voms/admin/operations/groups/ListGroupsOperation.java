@@ -24,7 +24,6 @@ import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.operations.BaseContainerReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public final class ListGroupsOperation extends BaseContainerReadOperation {
 
 	private ListGroupsOperation() {

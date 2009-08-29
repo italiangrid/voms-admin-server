@@ -10,39 +10,39 @@ import org.glite.security.voms.admin.common.VOMSConfiguration;
 
 public class VersionTag extends TagSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public VersionTag() {
+	public VersionTag() {
 
-        super();
-    }
+		super();
+	}
 
-    @Override
-    public int doStartTag() throws JspException {
+	@Override
+	public int doStartTag() throws JspException {
 
-        VOMSConfiguration conf = VOMSConfiguration.instance();
+		VOMSConfiguration conf = VOMSConfiguration.instance();
 
-        String version = conf
-                .getString( VOMSConfiguration.VOMS_ADMIN_SERVER_VERSION );
+		String version = conf
+				.getString(VOMSConfiguration.VOMS_ADMIN_SERVER_VERSION);
 
-        try {
+		try {
 
-            if ( version == null )
+			if (version == null)
 
-                pageContext.getOut().print( "undefined version" );
+				pageContext.getOut().print("undefined version");
 
-            else
-                pageContext.getOut().print( version );
+			else
+				pageContext.getOut().print(version);
 
-        } catch ( IOException e ) {
+		} catch (IOException e) {
 
-            throw new JspTagException( "Error writing version information!" );
-        }
+			throw new JspTagException("Error writing version information!");
+		}
 
-        return SKIP_BODY;
-    }
+		return SKIP_BODY;
+	}
 
 }

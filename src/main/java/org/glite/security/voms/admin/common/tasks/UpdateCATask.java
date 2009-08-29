@@ -44,8 +44,6 @@ import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.hibernate.JDBCException;
 
-
-
 /**
  * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
  * @author <a href="mailto:Akos.Frohner@cern.ch">Akos Frohner</a>
@@ -55,136 +53,137 @@ import org.hibernate.JDBCException;
  */
 public final class UpdateCATask extends TimerTask {
 
-    static final Log log = LogFactory.getLog( UpdateCATask.class );
+	static final Log log = LogFactory.getLog(UpdateCATask.class);
 
-    static private UpdateCATask instance = null;
+	static private UpdateCATask instance = null;
 
-    protected Timer timer;
+	protected Timer timer;
 
-    public static UpdateCATask instance( Timer theTimer ) {
+	public static UpdateCATask instance(Timer theTimer) {
 
-        if ( instance == null )
-            instance = new UpdateCATask( theTimer );
+		if (instance == null)
+			instance = new UpdateCATask(theTimer);
 
-        return instance;
-    }
+		return instance;
+	}
 
-    private UpdateCATask( Timer theTimer ) {
+	private UpdateCATask(Timer theTimer) {
 
-        timer = theTimer;
-        // Configure UpdateCATask
-        VOMSConfiguration config = VOMSConfiguration.instance();
+		timer = theTimer;
+		// Configure UpdateCATask
+		VOMSConfiguration config = VOMSConfiguration.instance();
 
-        if ( config.getBoolean( VOMSConfiguration.READONLY, false ) ) {
-            log
-                    .info( "CA update thread not started.  This is a read-only VOMS Admin instance" );
-            return;
-        }
+		if (config.getBoolean(VOMSConfiguration.READONLY, false)) {
+			log
+					.info("CA update thread not started.  This is a read-only VOMS Admin instance");
+			return;
+		}
 
-        if ( timer != null ) {
-            long period = config.getLong( VOMSConfiguration.CAFILES_PERIOD, -1 );
+		if (timer != null) {
+			long period = config.getLong(VOMSConfiguration.CAFILES_PERIOD, -1);
 
-            if ( period > 0 ) {
+			if (period > 0) {
 
-                log.info( "Scheduling UpdateCATask with period: " + period
-                        + " seconds." );
-                
-                timer.schedule( this, 60*1000, period * 1000 );
+				log.info("Scheduling UpdateCATask with period: " + period
+						+ " seconds.");
 
-            } else {
+				timer.schedule(this, 60 * 1000, period * 1000);
 
-                log
-                        .info( "CA update thread not started. voms.cafiles.period is negative or undefined." );
-                return;
-            }
-        }
+			} else {
 
-    }
+				log
+						.info("CA update thread not started. voms.cafiles.period is negative or undefined.");
+				return;
+			}
+		}
 
-    public void run() {
+	}
 
-        log.info( "CA update thread started..." );
-        HibernateFactory.beginTransaction();
-        updateCAs();
-        HibernateFactory.commitTransaction();
-        HibernateFactory.closeSession();
-        log.info( "CA update thread done." );
+	public void run() {
 
-    }
+		log.info("CA update thread started...");
+		HibernateFactory.beginTransaction();
+		updateCAs();
+		HibernateFactory.commitTransaction();
+		HibernateFactory.closeSession();
+		log.info("CA update thread done.");
 
-    
-    public synchronized static void updateCAs() {
+	}
 
-        String caFiles = VOMSConfiguration.instance().getString(
-                VOMSConfiguration.CAFILES,
-                "/etc/grid-security/certificates/*.0" );
+	public synchronized static void updateCAs() {
 
-        log.info( "Updating CAs from: " + caFiles );
+		String caFiles = VOMSConfiguration.instance().getString(
+				VOMSConfiguration.CAFILES,
+				"/etc/grid-security/certificates/*.0");
 
-        if ( caFiles != null ) {
+		log.info("Updating CAs from: " + caFiles);
 
-            try {
+		if (caFiles != null) {
 
-                VOMSCADAO dao = VOMSCADAO.instance();
-                FileCertReader certReader = new FileCertReader();
+			try {
 
-                Vector cas = certReader.readAnchors( caFiles );
+				VOMSCADAO dao = VOMSCADAO.instance();
+				FileCertReader certReader = new FileCertReader();
 
-                Iterator caIter = cas.iterator();
-                
-                List <VOMSCA> knownCAs = dao.getValid(); 
+				Vector cas = certReader.readAnchors(caFiles);
 
-                while ( caIter.hasNext() ) {
+				Iterator caIter = cas.iterator();
 
-                    TrustAnchor anchor = (TrustAnchor) caIter.next();
-                    X509Certificate caCert = anchor.getTrustedCert();
+				List<VOMSCA> knownCAs = dao.getValid();
 
-                    String caDN = DNUtil.getBCasX500( caCert
-                            .getSubjectX500Principal() );
-                    
-                    log.debug( "Checking CA: " + caDN );
-                    
-                    boolean foundCA = false;
-                    
-                    for (VOMSCA knownCA: knownCAs)                        
-                        if (knownCA.getDn().equals( caDN )){
-                            foundCA = true;
-                            log.debug( caDN + " is already in the trusted CA database." );
-                        }
-                        
-                    if (!foundCA)
-                        dao.createCA( caDN, null );
+				while (caIter.hasNext()) {
 
-                }
+					TrustAnchor anchor = (TrustAnchor) caIter.next();
+					X509Certificate caCert = anchor.getTrustedCert();
 
-            } catch ( CertificateException e ) {
+					String caDN = DNUtil.getBCasX500(caCert
+							.getSubjectX500Principal());
 
-                log
-                        .error(
-                                "Certificate parsing error while updating trusted CA database!",
-                                e );
-                throw new VOMSException(
-                        "Certificate parsing error while updating trusted CA database!",
-                        e );
+					log.debug("Checking CA: " + caDN);
 
-            } catch ( IOException e ) {
-                log
-                        .error(
-                                "File access error while updating trusted CA database!",
-                                e );
-                throw new VOMSException(
-                        "File access error while updating trusted CA database!",
-                        e );
+					boolean foundCA = false;
 
-            } catch ( VOMSDatabaseException e ) {
+					for (VOMSCA knownCA : knownCAs)
+						if (knownCA.getDn().equals(caDN)) {
+							foundCA = true;
+							log
+									.debug(caDN
+											+ " is already in the trusted CA database.");
+						}
 
-                log.error( "Error updating trusted CA database!", e );
-                throw new VOMSException( "Error updating trusted CA database!",
-                        e );
+					if (!foundCA)
+						dao.createCA(caDN, null);
 
-            }
+				}
 
-        }
+			} catch (CertificateException e) {
 
-    }
+				log
+						.error(
+								"Certificate parsing error while updating trusted CA database!",
+								e);
+				throw new VOMSException(
+						"Certificate parsing error while updating trusted CA database!",
+						e);
+
+			} catch (IOException e) {
+				log
+						.error(
+								"File access error while updating trusted CA database!",
+								e);
+				throw new VOMSException(
+						"File access error while updating trusted CA database!",
+						e);
+
+			} catch (VOMSDatabaseException e) {
+
+				log.error("Error updating trusted CA database!", e);
+				throw new VOMSException("Error updating trusted CA database!",
+						e);
+
+			}
+
+		}
+
+	}
 }

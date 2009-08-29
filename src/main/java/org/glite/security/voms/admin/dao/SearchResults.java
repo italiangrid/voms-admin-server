@@ -27,100 +27,100 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class SearchResults {
 
-    int count;
+	int count;
 
-    List results;
+	List results;
 
-    String searchString;
+	String searchString;
 
-    int firstResult;
+	int firstResult;
 
-    int resultsPerPage;
+	int resultsPerPage;
 
-    public SearchResults() {
+	public SearchResults() {
 
-    }
+	}
 
-    public SearchResults( int c, List res ) {
+	public SearchResults(int c, List res) {
 
-        count = c;
-        results = res;
-    }
+		count = c;
+		results = res;
+	}
 
-    public int getCount() {
+	public int getCount() {
 
-        return count;
-    }
+		return count;
+	}
 
-    public void setCount( int count ) {
+	public void setCount(int count) {
 
-        this.count = count;
-    }
+		this.count = count;
+	}
 
-    public List getResults() {
+	public List getResults() {
 
-        return results;
-    }
+		return results;
+	}
 
-    public void setResults( List results ) {
+	public void setResults(List results) {
 
-        this.results = results;
-    }
+		this.results = results;
+	}
 
-    public static SearchResults instance( int c, List res ) {
+	public static SearchResults instance(int c, List res) {
 
-        return new SearchResults( c, res );
-    }
+		return new SearchResults(c, res);
+	}
 
-    public static SearchResults instance() {
+	public static SearchResults instance() {
 
-        return new SearchResults();
-    }
+		return new SearchResults();
+	}
 
-    public int getFirstResult() {
+	public int getFirstResult() {
 
-        return firstResult;
-    }
+		return firstResult;
+	}
 
-    public void setFirstResult( int firstResult ) {
+	public void setFirstResult(int firstResult) {
 
-        this.firstResult = firstResult;
-    }
+		this.firstResult = firstResult;
+	}
 
-    public int getRemainingCount() {
+	public int getRemainingCount() {
 
-        int value = 0;
+		int value = 0;
 
-        if ( results == null )
-            value = getCount() - getFirstResult();
-        else
-            value = getCount() - getFirstResult() - getResults().size();
+		if (results == null)
+			value = getCount() - getFirstResult();
+		else
+			value = getCount() - getFirstResult() - getResults().size();
 
-        return value;
-    }
+		return value;
+	}
 
-    public int getResultsPerPage() {
+	public int getResultsPerPage() {
 
-        return resultsPerPage;
-    }
+		return resultsPerPage;
+	}
 
-    public void setResultsPerPage( int resultsPerPage ) {
+	public void setResultsPerPage(int resultsPerPage) {
 
-        this.resultsPerPage = resultsPerPage;
-    }
+		this.resultsPerPage = resultsPerPage;
+	}
 
-    public String getSearchString() {
+	public String getSearchString() {
 
-        return searchString;
-    }
+		return searchString;
+	}
 
-    public void setSearchString( String searchString ) {
+	public void setSearchString(String searchString) {
 
-        this.searchString = searchString;
-    }
-    
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+		this.searchString = searchString;
+	}
+
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
 }

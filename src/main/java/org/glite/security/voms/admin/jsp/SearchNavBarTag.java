@@ -31,247 +31,246 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.dao.SearchResults;
 
-
 public class SearchNavBarTag extends TagSupport {
 
-    private static final Log log = LogFactory.getLog( SearchNavBarTag.class );
+	private static final Log log = LogFactory.getLog(SearchNavBarTag.class);
 
-    String id;
+	String id;
 
-    String searchURL;
+	String searchURL;
 
-    String context;
+	String context;
 
-    String permission;
+	String permission;
 
-    String styleClass;
+	String styleClass;
 
-    String disabledLinkStyleClass;
+	String disabledLinkStyleClass;
 
-    String linkStyleClass;
-    
-    String searchType;
+	String linkStyleClass;
 
-    /**
+	String searchType;
+
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public SearchNavBarTag() {
+	public SearchNavBarTag() {
 
-        super();
+		super();
 
-    }
+	}
 
-    protected String buildURL( String text, int firstResult )
-            throws MalformedURLException {
+	protected String buildURL(String text, int firstResult)
+			throws MalformedURLException {
 
-        StringBuilder url = new StringBuilder(searchURL);
-        
-        String querySeparator = "?";
-        
-        if (url.indexOf(querySeparator) != -1)
-        	querySeparator = "&";
-        
-        url.append(querySeparator+"searchData.firstResult="+firstResult);
-        
-        if (text != null)
-        	url.append("&searchData.text="+text);
-        
-        if (getSearchType() != null)
-        	url.append("&searchData.type="+getSearchType());
-       
-        return url.toString();
-    }
+		StringBuilder url = new StringBuilder(searchURL);
 
-    protected void writeLink( SearchResults res, int firstResult,
-            String content ) throws JspException, IOException {
+		String querySeparator = "?";
 
-        String link;
-        String url;
+		if (url.indexOf(querySeparator) != -1)
+			querySeparator = "&";
 
-        try {
-            url = buildURL( res.getSearchString(), firstResult );
+		url.append(querySeparator + "searchData.firstResult=" + firstResult);
 
-        } catch ( MalformedURLException e ) {
+		if (text != null)
+			url.append("&searchData.text=" + text);
 
-            throw new JspTagException( "Error building searchURL: "
-                    + e.getMessage(), e );
+		if (getSearchType() != null)
+			url.append("&searchData.type=" + getSearchType());
 
-        }
+		return url.toString();
+	}
 
-        if ( org.glite.security.voms.admin.jsp.TagUtils.isAuthorized( pageContext, context, permission ) ) {
+	protected void writeLink(SearchResults res, int firstResult, String content)
+			throws JspException, IOException {
 
-            link = "<a href=\"" + url + "\" class=\"" + linkStyleClass + "\">"
-                    + content + "</a>";
+		String link;
+		String url;
 
-        } else
-            link = "<div class=\"" + disabledLinkStyleClass + "\">" + content
-                    + "</div>";
+		try {
+			url = buildURL(res.getSearchString(), firstResult);
 
-        pageContext.getOut().write(link);
+		} catch (MalformedURLException e) {
 
-    }
+			throw new JspTagException("Error building searchURL: "
+					+ e.getMessage(), e);
 
-    protected void writeFirst( SearchResults res )
-            throws JspException, IOException {
+		}
 
-        writeLink( res, 0, "first" );
+		if (org.glite.security.voms.admin.jsp.TagUtils.isAuthorized(
+				pageContext, context, permission)) {
 
-    }
+			link = "<a href=\"" + url + "\" class=\"" + linkStyleClass + "\">"
+					+ content + "</a>";
 
-    protected void writeLast( SearchResults res )
-            throws JspException, IOException {
+		} else
+			link = "<div class=\"" + disabledLinkStyleClass + "\">" + content
+					+ "</div>";
 
-        writeLink( res, res.getCount() - res.getResultsPerPage(), "last" );
+		pageContext.getOut().write(link);
 
-    }
+	}
 
-    protected void writePrevious( SearchResults res )
-            throws JspException, IOException {
+	protected void writeFirst(SearchResults res) throws JspException,
+			IOException {
 
-        int previousIndex = res.getFirstResult() - res.getResultsPerPage();
-        if (previousIndex < 0)
-            previousIndex = 0;
-        
-        writeLink( res, previousIndex,
-                "&lt;" );
+		writeLink(res, 0, "first");
 
-    }
+	}
 
-    protected void writeNext( SearchResults res )
-            throws JspException, IOException {
-        
-        writeLink(res, res.getFirstResult() + res.getResultsPerPage(),
-                "&gt;" );
+	protected void writeLast(SearchResults res) throws JspException,
+			IOException {
 
-    }
+		writeLink(res, res.getCount() - res.getResultsPerPage(), "last");
 
-    protected void writeResultCount( SearchResults res )
-            throws JspException, IOException {
+	}
 
-        String resCount = ( res.getFirstResult() + 1 ) + "-"
-                + ( res.getFirstResult() + res.getResults().size() ) + " of "
-                + res.getCount();
+	protected void writePrevious(SearchResults res) throws JspException,
+			IOException {
 
-        pageContext.getOut().write(resCount);
-        
-    }
+		int previousIndex = res.getFirstResult() - res.getResultsPerPage();
+		if (previousIndex < 0)
+			previousIndex = 0;
 
-    public int doStartTag() throws JspException {
+		writeLink(res, previousIndex, "&lt;");
 
-        SearchResults results = (SearchResults) pageContext.findAttribute( id );
+	}
 
-        if ( results == null ){
-            
-        	// Don't write anything...
-        	return SKIP_BODY;
-        }
-        try{
-        
-        	pageContext.getOut().write("<div class=\"" + styleClass + "\">\n" );
+	protected void writeNext(SearchResults res) throws JspException,
+			IOException {
 
-        if ( results.getFirstResult() > 0 ) {
+		writeLink(res, res.getFirstResult() + res.getResultsPerPage(), "&gt;");
 
-            // Not the second page
-            if ( ( results.getFirstResult() - results.getResultsPerPage() ) > 0 )
-                writeFirst( results );
+	}
 
-            writePrevious( results );
+	protected void writeResultCount(SearchResults res) throws JspException,
+			IOException {
 
-        }
+		String resCount = (res.getFirstResult() + 1) + "-"
+				+ (res.getFirstResult() + res.getResults().size()) + " of "
+				+ res.getCount();
 
-        writeResultCount( results );
+		pageContext.getOut().write(resCount);
 
-        if ( results.getRemainingCount() > 0 ) {
+	}
 
-            writeNext( results );
+	public int doStartTag() throws JspException {
 
-            // Not the last - 1 page.
-            if ( results.getRemainingCount() > results.getResultsPerPage()) {
+		SearchResults results = (SearchResults) pageContext.findAttribute(id);
 
-                writeLast( results );
-            }
-        }
+		if (results == null) {
 
-        pageContext.getOut().write("</div>");
-        }catch(IOException e){
-        	
-        	log.error("Error writing jsp page: "+e.getMessage(),e);
-        	throw new JspException("Error writing jsp page: "+e.getMessage(), e);
-        }
-        return SKIP_BODY;
-    }
+			// Don't write anything...
+			return SKIP_BODY;
+		}
+		try {
 
-    public String getContext() {
+			pageContext.getOut().write("<div class=\"" + styleClass + "\">\n");
 
-        return context;
-    }
+			if (results.getFirstResult() > 0) {
 
-    public void setContext( String context ) {
+				// Not the second page
+				if ((results.getFirstResult() - results.getResultsPerPage()) > 0)
+					writeFirst(results);
 
-        this.context = context;
-    }
+				writePrevious(results);
 
-    public String getDisabledLinkStyleClass() {
+			}
 
-        return disabledLinkStyleClass;
-    }
+			writeResultCount(results);
 
-    public void setDisabledLinkStyleClass( String disabledLinkStyleClass ) {
+			if (results.getRemainingCount() > 0) {
 
-        this.disabledLinkStyleClass = disabledLinkStyleClass;
-    }
+				writeNext(results);
 
-    public String getId() {
+				// Not the last - 1 page.
+				if (results.getRemainingCount() > results.getResultsPerPage()) {
 
-        return id;
-    }
+					writeLast(results);
+				}
+			}
 
-    public void setId( String id ) {
+			pageContext.getOut().write("</div>");
+		} catch (IOException e) {
 
-        this.id = id;
-    }
+			log.error("Error writing jsp page: " + e.getMessage(), e);
+			throw new JspException("Error writing jsp page: " + e.getMessage(),
+					e);
+		}
+		return SKIP_BODY;
+	}
 
-    public String getLinkStyleClass() {
+	public String getContext() {
 
-        return linkStyleClass;
-    }
+		return context;
+	}
 
-    public void setLinkStyleClass( String linkStyleClass ) {
+	public void setContext(String context) {
 
-        this.linkStyleClass = linkStyleClass;
-    }
+		this.context = context;
+	}
 
-    public String getPermission() {
+	public String getDisabledLinkStyleClass() {
 
-        return permission;
-    }
+		return disabledLinkStyleClass;
+	}
 
-    public void setPermission( String permission ) {
+	public void setDisabledLinkStyleClass(String disabledLinkStyleClass) {
 
-        this.permission = permission;
-    }
+		this.disabledLinkStyleClass = disabledLinkStyleClass;
+	}
 
-    public String getSearchURL() {
+	public String getId() {
 
-        return searchURL;
-    }
+		return id;
+	}
 
-    public void setSearchURL( String searchURL ) {
+	public void setId(String id) {
 
-        this.searchURL = searchURL;
-    }
+		this.id = id;
+	}
 
-    public String getStyleClass() {
+	public String getLinkStyleClass() {
 
-        return styleClass;
-    }
+		return linkStyleClass;
+	}
 
-    public void setStyleClass( String styleClass ) {
+	public void setLinkStyleClass(String linkStyleClass) {
 
-        this.styleClass = styleClass;
-    }
+		this.linkStyleClass = linkStyleClass;
+	}
+
+	public String getPermission() {
+
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+
+		this.permission = permission;
+	}
+
+	public String getSearchURL() {
+
+		return searchURL;
+	}
+
+	public void setSearchURL(String searchURL) {
+
+		this.searchURL = searchURL;
+	}
+
+	public String getStyleClass() {
+
+		return styleClass;
+	}
+
+	public void setStyleClass(String styleClass) {
+
+		this.styleClass = styleClass;
+	}
 
 	public String getSearchType() {
 		return searchType;

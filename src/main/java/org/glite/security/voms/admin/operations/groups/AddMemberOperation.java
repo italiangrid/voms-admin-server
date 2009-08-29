@@ -31,7 +31,6 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 
-
 public class AddMemberOperation extends BaseVomsOperation {
 
 	VOMSUser user;
@@ -63,24 +62,30 @@ public class AddMemberOperation extends BaseVomsOperation {
 		return new AddMemberOperation(u, g);
 	}
 
-	
-	public static AddMemberOperation instance(String groupName, String username, String caDn){
-		
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(username,caDn).execute();
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
-		
-        if (u == null)
-            throw new NoSuchUserException("User '"+username+","+caDn+"' not found in this vo.");
-        
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' does not exist in this vo.");
-		return new AddMemberOperation(u,g);
-		
-		
+	public static AddMemberOperation instance(String groupName,
+			String username, String caDn) {
+
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
+				.execute();
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+
+		if (u == null)
+			throw new NoSuchUserException("User '" + username + "," + caDn
+					+ "' not found in this vo.");
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' does not exist in this vo.");
+		return new AddMemberOperation(u, g);
+
 	}
+
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group.getParent()), VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission.getMembershipRWPermissions());
-		
+		addRequiredPermission(VOMSContext.instance(group.getParent()),
+				VOMSPermission.getContainerReadPermission());
+		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+				.getMembershipRWPermissions());
+
 	}
 }

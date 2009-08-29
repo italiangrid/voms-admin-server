@@ -25,27 +25,27 @@ import org.glite.security.voms.admin.common.NotFoundException;
 
 public class NoSuchCAException extends NotFoundException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchCAException( String message ) {
+	public NoSuchCAException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchCAException( String message, Throwable t ) {
+	public NoSuchCAException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchCAException( Throwable t ) {
+	public NoSuchCAException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

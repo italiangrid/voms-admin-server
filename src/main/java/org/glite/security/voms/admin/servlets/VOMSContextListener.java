@@ -29,46 +29,43 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.common.VOMSService;
 
-
 public class VOMSContextListener implements ServletContextListener {
 
-    static final Log log = LogFactory.getLog( VOMSContextListener.class );
+	static final Log log = LogFactory.getLog(VOMSContextListener.class);
 
-    public VOMSContextListener() {
+	public VOMSContextListener() {
 
-        super();
+		super();
 
-    }
+	}
 
-    public void contextInitialized( ServletContextEvent ctxtEvent ) {
+	public void contextInitialized(ServletContextEvent ctxtEvent) {
 
-        try {
-            
-            VOMSService.start(ctxtEvent.getServletContext());
-        } catch ( VOMSException e ) {
+		try {
 
-            log.fatal( "VOMS-Admin setup failure!", e );
+			VOMSService.start(ctxtEvent.getServletContext());
+		} catch (VOMSException e) {
 
-        }
+			log.fatal("VOMS-Admin setup failure!", e);
 
-    }
+		}
 
-    public void contextDestroyed( ServletContextEvent ctxtEvent ) { 
-        
-        VOMSService.stop();
-        
-        
-        // Release commons logging 
-        // see http://wiki.apache.org/jakarta-commons/Logging/FrequentlyAskedQuestions
-        // and
-        // http://issues.apache.org/bugzilla/show_bug.cgi?id=26372#c15
-        
-        java.beans.Introspector.flushCaches();
-        LogFactory.release(Thread.currentThread().getContextClassLoader());
-        java.beans.Introspector.flushCaches();
-        
-        
-        
-    }
+	}
+
+	public void contextDestroyed(ServletContextEvent ctxtEvent) {
+
+		VOMSService.stop();
+
+		// Release commons logging
+		// see
+		// http://wiki.apache.org/jakarta-commons/Logging/FrequentlyAskedQuestions
+		// and
+		// http://issues.apache.org/bugzilla/show_bug.cgi?id=26372#c15
+
+		java.beans.Introspector.flushCaches();
+		LogFactory.release(Thread.currentThread().getContextClassLoader());
+		java.beans.Introspector.flushCaches();
+
+	}
 
 }

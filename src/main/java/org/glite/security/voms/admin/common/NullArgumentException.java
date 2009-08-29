@@ -22,27 +22,27 @@ package org.glite.security.voms.admin.common;
 
 public class NullArgumentException extends VOMSException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NullArgumentException( String message ) {
+	public NullArgumentException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NullArgumentException( String message, Throwable t ) {
+	public NullArgumentException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NullArgumentException( Throwable t ) {
+	public NullArgumentException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

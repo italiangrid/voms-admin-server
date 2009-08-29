@@ -27,35 +27,33 @@ import org.glite.security.voms.admin.notification.EmailNotification;
 
 public class EmailNotificationAction implements Action {
 
-    private static final Log log = LogFactory
-            .getLog( EmailNotificationAction.class );
+	private static final Log log = LogFactory
+			.getLog(EmailNotificationAction.class);
 
-    EmailNotification notification;
+	EmailNotification notification;
 
-    public EmailNotification getNotification() {
+	public EmailNotification getNotification() {
 
-        return notification;
-    }
+		return notification;
+	}
 
-    public void setNotification( EmailNotification notification ) {
+	public void setNotification(EmailNotification notification) {
 
-        this.notification = notification;
-    }
+		this.notification = notification;
+	}
 
-    public EmailNotificationAction( EmailNotification n ) {
+	public EmailNotificationAction(EmailNotification n) {
 
-        notification = n;
-    }
+		notification = n;
+	}
 
-    public Object execute() {
+	public Object execute() {
 
-        log
-                .debug( "Sending notification to "
-                        + notification.getRecipientList() );
+		log.debug("Sending notification to " + notification.getRecipientList());
 
-        notification.send();
+		notification.send();
 
-        return null;
-    }
+		return null;
+	}
 
 }

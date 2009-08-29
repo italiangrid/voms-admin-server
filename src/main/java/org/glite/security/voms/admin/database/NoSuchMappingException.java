@@ -24,27 +24,27 @@ import org.glite.security.voms.admin.common.NotFoundException;
 
 public class NoSuchMappingException extends NotFoundException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchMappingException( String message ) {
+	public NoSuchMappingException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchMappingException( String message, Throwable t ) {
+	public NoSuchMappingException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchMappingException( Throwable t ) {
+	public NoSuchMappingException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

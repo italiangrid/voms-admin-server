@@ -5,46 +5,42 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="vo_membership_req")
+@Table(name = "vo_membership_req")
 public class NewVOMembershipRequest extends Request {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    @Column(nullable=false)
-    String confirmId;
-    
-    public NewVOMembershipRequest() {
+	private static final long serialVersionUID = 1L;
 
-        // TODO Auto-generated constructor stub
-    }
+	@Column(nullable = false)
+	String confirmId;
 
-    
-    /**
-     * @return the confirmId
-     */
-    public String getConfirmId() {
-    
-        return confirmId;
-    }
+	public NewVOMembershipRequest() {
 
-    
-    /**
-     * @param confirmId the confirmId to set
-     */
-    public void setConfirmId( String confirmId ) {
-    
-        this.confirmId = confirmId;
-    }
+		// TODO Auto-generated constructor stub
+	}
 
+	/**
+	 * @return the confirmId
+	 */
+	public String getConfirmId() {
+
+		return confirmId;
+	}
+
+	/**
+	 * @param confirmId
+	 *            the confirmId to set
+	 */
+	public void setConfirmId(String confirmId) {
+
+		this.confirmId = confirmId;
+	}
 
 	public String getTypeName() {
-		
+
 		return "VO Membership request";
 	}
-    
-    
 
 }

@@ -27,7 +27,6 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseMemberhipReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public class ListMemberNamesOperation extends BaseMemberhipReadOperation {
 
 	protected ListMemberNamesOperation(VOMSContext ctxt) {
@@ -36,22 +35,23 @@ public class ListMemberNamesOperation extends BaseMemberhipReadOperation {
 
 	protected Object doExecute() {
 		if (!__context.isGroupContext())
-            return VOMSRoleDAO.instance().getMemberSubjectStrings(__context.getGroup(),__context.getRole());
+			return VOMSRoleDAO.instance().getMemberSubjectStrings(
+					__context.getGroup(), __context.getRole());
 
-		return VOMSGroupDAO.instance().getMemberSubjectStrings(__context.getGroup());
-		
-		
+		return VOMSGroupDAO.instance().getMemberSubjectStrings(
+				__context.getGroup());
+
 	}
-	
+
 	public static ListMemberNamesOperation instance(VOMSGroup g, VOMSRole r) {
 
 		return new ListMemberNamesOperation(VOMSContext.instance(g, r));
 	}
-    
-    public static ListMemberNamesOperation instance(String context){
-        
-        return new ListMemberNamesOperation(VOMSContext.instance( context ));
-           
-    }
+
+	public static ListMemberNamesOperation instance(String context) {
+
+		return new ListMemberNamesOperation(VOMSContext.instance(context));
+
+	}
 
 }

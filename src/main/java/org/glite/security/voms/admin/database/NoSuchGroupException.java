@@ -25,27 +25,27 @@ import org.glite.security.voms.admin.common.NotFoundException;
 
 public class NoSuchGroupException extends NotFoundException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchGroupException( String message ) {
+	public NoSuchGroupException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchGroupException( String message, Throwable t ) {
+	public NoSuchGroupException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchGroupException( Throwable t ) {
+	public NoSuchGroupException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

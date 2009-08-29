@@ -25,23 +25,22 @@ import java.util.List;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
-
 public class ListCaOperation extends BaseVoReadOperation {
 
-    private ListCaOperation(){
-        
-    }
-    protected Object doExecute() {
+	private ListCaOperation() {
 
-        List cas = VOMSCADAO.instance().getValid();
-        return cas;
-        
-    }
-    
-    public static ListCaOperation instance() {
+	}
 
-        return new ListCaOperation();
-    }
+	protected Object doExecute() {
+
+		List cas = VOMSCADAO.instance().getValid();
+		return cas;
+
+	}
+
+	public static ListCaOperation instance() {
+
+		return new ListCaOperation();
+	}
 
 }

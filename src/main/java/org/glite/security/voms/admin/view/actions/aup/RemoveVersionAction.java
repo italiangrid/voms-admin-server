@@ -8,31 +8,23 @@ import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT, location="aups"),
-	@Result(name=BaseAction.SUCCESS, location="/aup/load.action", type="redirect")
-})
+@Results( {
+		@Result(name = BaseAction.INPUT, location = "aups"),
+		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
 public class RemoveVersionAction extends AUPVersionActions {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
 	@Override
 	public String execute() throws Exception {
-		AUPDAO dao  = DAOFactory.instance().getAUPDAO();
-		
+		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
 		dao.removeVersion(getModel(), getVersion());
 		return SUCCESS;
-		
+
 	}
 
-	
-
-	
-	
-	
-	
 }

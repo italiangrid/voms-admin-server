@@ -10,30 +10,31 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-public class GroupActionSupport extends BaseAction implements ModelDriven<VOMSGroup>, Preparable{
+public class GroupActionSupport extends BaseAction implements
+		ModelDriven<VOMSGroup>, Preparable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Long groupId = -1L;
 	VOMSGroup group;
-	
+
 	List<VOMSAttributeDescription> attributeClasses;
-	
-	
+
 	public VOMSGroup getModel() {
 		return group;
 	}
 
 	public void prepare() throws Exception {
-		
+
 		if (getModel() == null)
-			if (getGroupId()!= -1)
+			if (getGroupId() != -1)
 				group = groupById(getGroupId());
-		
-		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO.instance().getAllAttributeDescriptions();
+
+		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
+				.instance().getAllAttributeDescriptions();
 	}
 
 	public Long getGroupId() {
@@ -48,10 +49,9 @@ public class GroupActionSupport extends BaseAction implements ModelDriven<VOMSGr
 		return attributeClasses;
 	}
 
-	public void setAttributeClasses(List<VOMSAttributeDescription> attributeClasses) {
+	public void setAttributeClasses(
+			List<VOMSAttributeDescription> attributeClasses) {
 		this.attributeClasses = attributeClasses;
 	}
-	
-	
-	
+
 }

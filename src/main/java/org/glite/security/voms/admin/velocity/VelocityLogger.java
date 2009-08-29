@@ -25,42 +25,41 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogSystem;
 
-
 public class VelocityLogger implements LogSystem {
-    
-    private static final Log log = LogFactory.getLog( VelocityLogger.class );
 
-    public void init( RuntimeServices runtime) throws Exception {
+	private static final Log log = LogFactory.getLog(VelocityLogger.class);
 
-        log.info( "Initializing Velocity logging services." );
+	public void init(RuntimeServices runtime) throws Exception {
 
-    }
+		log.info("Initializing Velocity logging services.");
 
-    public void logVelocityMessage( int debugLevel, String message ) {
+	}
 
-        switch ( debugLevel ) {
-        
-        case LogSystem.DEBUG_ID:
-            log.debug( message );
-            break;
-            
-        case LogSystem.INFO_ID:
-            log.info( message );
-            break;
-            
-        case LogSystem.WARN_ID:
-            log.warn( message );
-            break;
-            
-        case LogSystem.ERROR_ID:
-            log.error( message );
-            break;
+	public void logVelocityMessage(int debugLevel, String message) {
 
-        default:
-            log.info( message );
-            break;
-        }
+		switch (debugLevel) {
 
-    }
+		case LogSystem.DEBUG_ID:
+			log.debug(message);
+			break;
+
+		case LogSystem.INFO_ID:
+			log.info(message);
+			break;
+
+		case LogSystem.WARN_ID:
+			log.warn(message);
+			break;
+
+		case LogSystem.ERROR_ID:
+			log.error(message);
+			break;
+
+		default:
+			log.info(message);
+			break;
+		}
+
+	}
 
 }

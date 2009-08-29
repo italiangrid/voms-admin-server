@@ -65,25 +65,28 @@ public class FindGroupOperation extends BaseVomsOperation {
 	}
 
 	protected void setupPermissions() {
-		if (name != null){
-		
+		if (name != null) {
+
 			String parentGroupName = PathNamingScheme.getParentGroupName(name);
 
 			VOMSContext ctxt = VOMSContext.instance(VOMSGroupDAO.instance()
 					.findByName(parentGroupName));
 
-			addRequiredPermission(ctxt, VOMSPermission.getContainerReadPermission());
-		
-		}else if (id != null){
-			
-			VOMSGroup parentGroup = VOMSGroupDAO.instance().findById(id).getParent();
-			
+			addRequiredPermission(ctxt, VOMSPermission
+					.getContainerReadPermission());
+
+		} else if (id != null) {
+
+			VOMSGroup parentGroup = VOMSGroupDAO.instance().findById(id)
+					.getParent();
+
 			VOMSContext ctxt = VOMSContext.instance(parentGroup);
-			
-			addRequiredPermission(ctxt, VOMSPermission.getContainerReadPermission());
-			
+
+			addRequiredPermission(ctxt, VOMSPermission
+					.getContainerReadPermission());
+
 		}
-		
+
 		return;
 	}
 }

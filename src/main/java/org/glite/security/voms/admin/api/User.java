@@ -23,54 +23,71 @@
 
 package org.glite.security.voms.admin.api;
 
-/** 
- * Identifies a user in the VOMS database. 
+/**
+ * Identifies a user in the VOMS database.
  * 
  * @author <a href="mailto:Akos.Frohner@cern.ch">Akos Frohner</a>
  * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
  */
 public class User {
 
-    /** Empty default constructor. */
-    public User () {}
+	/** Empty default constructor. */
+	public User() {
+	}
 
-    /** Get the distinguished name of this user. */
-    public String getDN () { return null; }
+	/** Get the distinguished name of this user. */
+	public String getDN() {
+		return null;
+	}
 
-    /** Set the distinguished name of this user. */
-    public void setDN (String dn) { }
-    
-    /** Get the distinguished name of the CA that issued 
-        the certificate of this user. */
-    public String getCA () { return null; }
+	/** Set the distinguished name of this user. */
+	public void setDN(String dn) {
+	}
 
-    /** Set the distinguished name of the CA that issued 
-        the certificate of this user. */
-    public void setCA (String ca) { }
+	/**
+	 * Get the distinguished name of the CA that issued the certificate of this
+	 * user.
+	 */
+	public String getCA() {
+		return null;
+	}
 
-    /** Get the common name of this user. */
-    public String getCN () { return null; }
-    
-    /** Set the common name of this user.
-    public void setCN(String cn) { }
+	/**
+	 * Set the distinguished name of the CA that issued the certificate of this
+	 * user.
+	 */
+	public void setCA(String ca) {
+	}
 
-    /** Get the URL of the user's certificate. */
-    public String getCertUri () { return null; }
+	/** Get the common name of this user. */
+	public String getCN() {
+		return null;
+	}
 
-    /** Set the URL of the user's certificate. */
-    public void setCertUri(String certUri) { }
+	/**
+	 * Set the common name of this user. public void setCN(String cn) { }
+	 * 
+	 * /** Get the URL of the user's certificate.
+	 */
+	public String getCertUri() {
+		return null;
+	}
 
-    /** Get the email address of the user. */
-    public String getMail () { return null; }
+	/** Set the URL of the user's certificate. */
+	public void setCertUri(String certUri) {
+	}
 
-    /** Set the email address of the user. */
-    public void setMail(String mail) { }
+	/** Get the email address of the user. */
+	public String getMail() {
+		return null;
+	}
+
+	/** Set the email address of the user. */
+	public void setMail(String mail) {
+	}
 
 }
 
-
-// Please do not change this line. 
-// arch-tag: 1bfa8b99-381f-4208-8d45-e55d5928c8cf 
-
-
+// Please do not change this line.
+// arch-tag: 1bfa8b99-381f-4208-8d45-e55d5928c8cf
 

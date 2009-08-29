@@ -37,86 +37,88 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 
-
-
 public class CreateGroupOperation extends BaseVomsOperation {
-    private static final Log log = LogFactory
-            .getLog( CreateGroupOperation.class );
+	private static final Log log = LogFactory
+			.getLog(CreateGroupOperation.class);
 
-    String groupName;
+	String groupName;
 
-    private CreateGroupOperation( String name ) {
+	private CreateGroupOperation(String name) {
 
-        groupName = name;
-    }
+		groupName = name;
+	}
 
-    private void setupACLs(VOMSGroup g){
+	private void setupACLs(VOMSGroup g) {
 
-        log.debug("Setting up acls for group '"+g+"'.");
-        
-        // Setup the ACL for the newly created group starting from the
-        // parent's default ACL, if exists, or from the parent's ACL.
-        if ( g.getParent().getDefaultACL() != null )
-            g.importACL( g.getParent().getDefaultACL() );
-        else
-            g.importACL( g.getParent().getACL() );
-        
-        // Create ACLs for existing roles
-        List roles = (List) ListRolesOperation.instance().execute();
-        
-        Iterator rolesIter = roles.iterator();
-        
-        while (rolesIter.hasNext()){
-            
-            VOMSRole r = (VOMSRole) rolesIter.next();
-            log.debug("Importing group '"+g+"' acl in role '"+r+"'.");
-            r.importACL(g);
-            HibernateFactory.getSession().save(r);
-            
-        }
-        
-    }
-    protected Object doExecute() {
+		log.debug("Setting up acls for group '" + g + "'.");
 
-        VOMSGroup g = VOMSGroupDAO.instance().create( groupName );
+		// Setup the ACL for the newly created group starting from the
+		// parent's default ACL, if exists, or from the parent's ACL.
+		if (g.getParent().getDefaultACL() != null)
+			g.importACL(g.getParent().getDefaultACL());
+		else
+			g.importACL(g.getParent().getACL());
 
-        setupACLs(g);
-        
-        HibernateFactory.getSession().save(g);
+		// Create ACLs for existing roles
+		List roles = (List) ListRolesOperation.instance().execute();
 
-        return g;
-    }
+		Iterator rolesIter = roles.iterator();
 
-    public static CreateGroupOperation instance( String groupName ) {
+		while (rolesIter.hasNext()) {
 
-        return new CreateGroupOperation( groupName );
-    }
+			VOMSRole r = (VOMSRole) rolesIter.next();
+			log.debug("Importing group '" + g + "' acl in role '" + r + "'.");
+			r.importACL(g);
+			HibernateFactory.getSession().save(r);
 
-    protected void setupPermissions() {
+		}
 
-        String parentGroupName = PathNamingScheme
-                .getParentGroupName( groupName );
+	}
 
-        VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
-                parentGroupName );
-        
-        // Add CONTAINER_READ permissions on the path from the root group to
-        // the grandfather of the group that is being created
-        addPermissionsOnPath( parentGroup, VOMSPermission.getContainerReadPermission() );
+	protected Object doExecute() {
 
-        // Add CONTAINER_WRITE permissions on the parent group of the group that is 
-        // being created
-        addRequiredPermission( VOMSContext.instance( parentGroup ), VOMSPermission.getContainerRWPermissions() );
-        
-        if (!parentGroup.isRootGroup()){
-            addRequiredPermission( VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions() );    
-        }
+		VOMSGroup g = VOMSGroupDAO.instance().create(groupName);
 
-        if (log.isDebugEnabled())
-            logRequiredPermissions();
-    }
-    
-    protected String logArgs() {
-        return ToStringBuilder.reflectionToString( this );
-    }
+		setupACLs(g);
+
+		HibernateFactory.getSession().save(g);
+
+		return g;
+	}
+
+	public static CreateGroupOperation instance(String groupName) {
+
+		return new CreateGroupOperation(groupName);
+	}
+
+	protected void setupPermissions() {
+
+		String parentGroupName = PathNamingScheme.getParentGroupName(groupName);
+
+		VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
+				parentGroupName);
+
+		// Add CONTAINER_READ permissions on the path from the root group to
+		// the grandfather of the group that is being created
+		addPermissionsOnPath(parentGroup, VOMSPermission
+				.getContainerReadPermission());
+
+		// Add CONTAINER_WRITE permissions on the parent group of the group that
+		// is
+		// being created
+		addRequiredPermission(VOMSContext.instance(parentGroup), VOMSPermission
+				.getContainerRWPermissions());
+
+		if (!parentGroup.isRootGroup()) {
+			addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+					.getContainerRWPermissions());
+		}
+
+		if (log.isDebugEnabled())
+			logRequiredPermissions();
+	}
+
+	protected String logArgs() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 }

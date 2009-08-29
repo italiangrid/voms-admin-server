@@ -24,15 +24,13 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public abstract class RequestReadOperation extends BaseVomsOperation {
 
+	protected final void setupPermissions() {
 
-    protected final void setupPermissions() {
-        
-        addRequiredPermission( VOMSContext.getVoContext(), 
-                VOMSPermission.getEmptyPermissions().setRequestsReadPermission());
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getEmptyPermissions().setRequestsReadPermission());
 
-    }
+	}
 
 }

@@ -20,18 +20,18 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.operations;
 
-public abstract class BaseContainerReadOperation extends SingleContextVomsOperation {
+public abstract class BaseContainerReadOperation extends
+		SingleContextVomsOperation {
 
 	protected BaseContainerReadOperation(VOMSContext ctxt) {
 		super(ctxt);
-		
+
 	}
 
 	protected void setupPermissions() {
-		addRequiredPermission(__context, VOMSPermission.getContainerReadPermission());
-		
-	}
+		addRequiredPermission(__context, VOMSPermission
+				.getContainerReadPermission());
 
-	
+	}
 
 }

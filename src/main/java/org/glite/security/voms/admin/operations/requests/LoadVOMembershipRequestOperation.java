@@ -22,23 +22,22 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.dao.RequestDAO;
 
-
 public class LoadVOMembershipRequestOperation extends RequestReadOperation {
 
-    Long requestId;
-    
-    private LoadVOMembershipRequestOperation(Long reqId) {
+	Long requestId;
 
-        requestId = reqId;
-    }
-    
-    protected Object doExecute() {
+	private LoadVOMembershipRequestOperation(Long reqId) {
 
-        return RequestDAO.instance().findById( requestId);
-    }
+		requestId = reqId;
+	}
 
-    public static LoadVOMembershipRequestOperation instance(Long reqId) {
+	protected Object doExecute() {
 
-        return new LoadVOMembershipRequestOperation(reqId);
-    }
+		return RequestDAO.instance().findById(requestId);
+	}
+
+	public static LoadVOMembershipRequestOperation instance(Long reqId) {
+
+		return new LoadVOMembershipRequestOperation(reqId);
+	}
 }

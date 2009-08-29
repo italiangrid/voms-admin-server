@@ -33,53 +33,59 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 
-
 public class AssignRoleOperation extends BaseVomsOperation {
 
-    VOMSUser user;
+	VOMSUser user;
 
-    VOMSGroup group;
+	VOMSGroup group;
 
-    VOMSRole role;
+	VOMSRole role;
 
-    private AssignRoleOperation( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	private AssignRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-        user = u;
-        group = g;
-        role = r;
-    }
+		user = u;
+		group = g;
+		role = r;
+	}
 
-    public Object doExecute() {
+	public Object doExecute() {
 
-        VOMSUserDAO.instance().assignRole( user, group, role );
-        return null;
-    }
+		VOMSUserDAO.instance().assignRole(user, group, role);
+		return null;
+	}
 
-    public static AssignRoleOperation instance( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	public static AssignRoleOperation instance(VOMSUser u, VOMSGroup g,
+			VOMSRole r) {
 
-        return new AssignRoleOperation( u, g, r );
-    }
+		return new AssignRoleOperation(u, g, r);
+	}
 
-    public static AssignRoleOperation instance(String groupName, String roleName, String userName, String caDn){
-    		
-    		VOMSUser u = (VOMSUser)FindUserOperation.instance(userName,caDn).execute();
-    		VOMSGroup g = (VOMSGroup)FindGroupOperation.instance(groupName).execute();
-    		VOMSRole r = (VOMSRole)FindRoleOperation.instance(roleName).execute();
-            
-            if (u == null)
-                throw new NoSuchUserException("User '"+userName+","+caDn+"' not found in org.glite.security.voms.admin.database.");
-            if (g == null)
-                throw new NoSuchGroupException("Group '"+groupName+"' not found in org.glite.security.voms.admin.database.");
-            if (r == null)
-                throw new NoSuchRoleException("Role '"+roleName+"' not found in org.glite.security.voms.admin.database.");
-    		
-    		return new AssignRoleOperation(u,g,r);
-    	
-    }
-    
-    
+	public static AssignRoleOperation instance(String groupName,
+			String roleName, String userName, String caDn) {
+
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
+				.execute();
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+
+		if (u == null)
+			throw new NoSuchUserException("User '" + userName + "," + caDn
+					+ "' not found in org.glite.security.voms.admin.database.");
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' not found in org.glite.security.voms.admin.database.");
+		if (r == null)
+			throw new NoSuchRoleException("Role '" + roleName
+					+ "' not found in org.glite.security.voms.admin.database.");
+
+		return new AssignRoleOperation(u, g, r);
+
+	}
+
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission.getContainerReadPermission().setMembershipRWPermission());
+		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+				.getContainerReadPermission().setMembershipRWPermission());
 	}
 
 }

@@ -49,8 +49,6 @@ import org.glite.security.voms.admin.model.VOMSSeqNumber;
 import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
-
 /**
  * 
  * @author andrea
@@ -58,202 +56,211 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
  */
 public class DatabaseSetupTask extends TimerTask {
 
-    private static final Log log = LogFactory.getLog( DatabaseSetupTask.class );
+	private static final Log log = LogFactory.getLog(DatabaseSetupTask.class);
 
-    private Timer timer;
+	private Timer timer;
 
-    private static DatabaseSetupTask instance = null;
+	private static DatabaseSetupTask instance = null;
 
-    public static DatabaseSetupTask instance(){
-        return instance(null);
-    }
-    
-    public static DatabaseSetupTask instance( Timer t ) {
+	public static DatabaseSetupTask instance() {
+		return instance(null);
+	}
 
-        if ( instance == null )
-            instance = new DatabaseSetupTask( t );
-        return instance;
+	public static DatabaseSetupTask instance(Timer t) {
 
-    }
+		if (instance == null)
+			instance = new DatabaseSetupTask(t);
+		return instance;
 
-    private DatabaseSetupTask( Timer timer ) {
+	}
 
-        this.timer = timer;
-    }
+	private DatabaseSetupTask(Timer timer) {
 
-    public void run() {
+		this.timer = timer;
+	}
 
-        List admins = VOMSAdminDAO.instance().getAll();
-        List cas = VOMSCADAO.instance().getAll();
+	public void run() {
 
-        if ( admins.isEmpty() || cas.isEmpty() ) {
-           
-            // Add internal CAs
-            VOMSCADAO caDAO = VOMSCADAO.instance();
+		List admins = VOMSAdminDAO.instance().getAll();
+		List cas = VOMSCADAO.instance().getAll();
 
-            caDAO.createCA( VOMSServiceConstants.VIRTUAL_CA,
-                    "A dummy CA for local org.glite.security.voms.admin.database mainteneance" );
-            caDAO
-                    .createCA( VOMSServiceConstants.GROUP_CA,
-                            "A virtual CA for VOMS groups." );
-            caDAO.createCA( VOMSServiceConstants.ROLE_CA, "A virtual CA for VOMS roles." );
-            caDAO.createCA( VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
-                    "A virtual CA for authz manager attributes" );
-            
-            // Create vo root group
-            VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
+		if (admins.isEmpty() || cas.isEmpty()) {
 
-            // Set correct db version
-            VOMSVersionDAO.instance().setupVersion();
+			// Add internal CAs
+			VOMSCADAO caDAO = VOMSCADAO.instance();
 
-            // Add internal admins
-            VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
+			caDAO
+					.createCA(VOMSServiceConstants.VIRTUAL_CA,
+							"A dummy CA for local org.glite.security.voms.admin.database mainteneance");
+			caDAO.createCA(VOMSServiceConstants.GROUP_CA,
+					"A virtual CA for VOMS groups.");
+			caDAO.createCA(VOMSServiceConstants.ROLE_CA,
+					"A virtual CA for VOMS roles.");
+			caDAO.createCA(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
+					"A virtual CA for authz manager attributes");
 
-            VOMSAdmin internalAdmin = adminDAO.create(
-                    VOMSServiceConstants.INTERNAL_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
+			// Create vo root group
+			VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
 
-            VOMSAdmin localAdmin = adminDAO.create( VOMSServiceConstants.LOCAL_ADMIN,
-                    VOMSServiceConstants.VIRTUAL_CA );
+			// Set correct db version
+			VOMSVersionDAO.instance().setupVersion();
 
-            adminDAO.create( VOMSServiceConstants.PUBLIC_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
+			// Add internal admins
+			VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
 
-            adminDAO
-                    .create( VOMSServiceConstants.ANYUSER_ADMIN, VOMSServiceConstants.VIRTUAL_CA );
-            
-            
-            VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
-            VOMSPermission readVoPermissions = VOMSPermission.getContainerReadPermission().setMembershipReadPermission();
+			VOMSAdmin internalAdmin = adminDAO.create(
+					VOMSServiceConstants.INTERNAL_ADMIN,
+					VOMSServiceConstants.VIRTUAL_CA);
 
-            ACL voGroupACL = new ACL( voGroup, false );
-            voGroup.getAcls().add( voGroupACL );
+			VOMSAdmin localAdmin = adminDAO.create(
+					VOMSServiceConstants.LOCAL_ADMIN,
+					VOMSServiceConstants.VIRTUAL_CA);
 
-            voGroupACL.setPermissions( localAdmin, allPermissions );
-            voGroupACL.setPermissions( internalAdmin, allPermissions );
-            
-            // Create VO-Admin role and admin
-            
-            VOMSRole voAdminRole = VOMSRoleDAO.instance().create( "VO-Admin" );            
-            
-            VOMSAdmin voAdmin = VOMSAdminDAO.instance().create( voGroup.getName()+"/Role=VO-Admin" );
-            
-            voGroupACL.setPermissions( voAdmin, allPermissions);
-            
-            VOMSSeqNumber seqNum = new VOMSSeqNumber();
-            seqNum.setSeq( "0" );
-            HibernateFactory.getSession().save( seqNum );
+			adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
+					VOMSServiceConstants.VIRTUAL_CA);
 
-            // Trusted admin creation
+			adminDAO.create(VOMSServiceConstants.ANYUSER_ADMIN,
+					VOMSServiceConstants.VIRTUAL_CA);
 
-            String trustedAdminDn = VOMSConfiguration.instance().getString(
-                    "voms.trusted.admin.subject" );
+			VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
+			VOMSPermission readVoPermissions = VOMSPermission
+					.getContainerReadPermission().setMembershipReadPermission();
 
-            if ( trustedAdminDn == null ) {
+			ACL voGroupACL = new ACL(voGroup, false);
+			voGroup.getAcls().add(voGroupACL);
 
-                voAdminRole.importACL( voGroup );
-                HibernateFactory.commitTransaction();
-                return;
-            }
+			voGroupACL.setPermissions(localAdmin, allPermissions);
+			voGroupACL.setPermissions(internalAdmin, allPermissions);
 
-            String trustedAdminCa = VOMSConfiguration.instance().getString(
-                    "voms.trusted.admin.ca" );
+			// Create VO-Admin role and admin
 
-            if ( trustedAdminCa == null ) {
-                log
-                        .error( "Missing \"voms.trusted.admin.ca\" configuration parameter. Skipping creation of the trusted admin..." );
-                return;
-            }
+			VOMSRole voAdminRole = VOMSRoleDAO.instance().create("VO-Admin");
 
-            VOMSCA ca = VOMSCADAO.instance().getByName( trustedAdminCa );
+			VOMSAdmin voAdmin = VOMSAdminDAO.instance().create(
+					voGroup.getName() + "/Role=VO-Admin");
 
-            if ( ca == null ) {
+			voGroupACL.setPermissions(voAdmin, allPermissions);
 
-                log
-                        .error( "Trusted admin ca \""
-                                + trustedAdminCa
-                                + "\" not found in org.glite.security.voms.admin.database. Skipping creation of the trusted admin..." );
-                return;
-            }
-            
-            VOMSAdmin trustedAdmin = VOMSAdminDAO.instance().getByName(
-                    trustedAdminDn, ca.getSubjectString() );
-            
-            if ( trustedAdmin == null ) {
+			VOMSSeqNumber seqNum = new VOMSSeqNumber();
+			seqNum.setSeq("0");
+			HibernateFactory.getSession().save(seqNum);
 
-                String emailAddress = DNUtil.getEmailAddressFromDN( trustedAdminDn );
-                
-                // Get default email address from voms service configuration
-                if (emailAddress == null)
-                    emailAddress = VOMSConfiguration.instance().getString( "voms.notification.email-address" );
-                    
-                trustedAdmin = VOMSAdminDAO.instance().create(
-                        trustedAdminDn, ca.getSubjectString(), emailAddress );
+			// Trusted admin creation
 
-            }
+			String trustedAdminDn = VOMSConfiguration.instance().getString(
+					"voms.trusted.admin.subject");
 
-            voGroupACL.setPermissions( trustedAdmin, allPermissions );
-            
-            log.info( "Trusted admin created." );
-            
-            
-            if (VOMSConfiguration.instance().getBoolean(VOMSConfiguration.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS, false)){
-            
-                // Grant read-only access to authenticated clients
-                VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
-                        .getAnyAuthenticatedUserAdmin();
-                VOMSPermission readOnlyPerms = VOMSPermission
-                        .getEmptyPermissions().setContainerReadPermission()
-                        .setMembershipReadPermission();
-                voGroupACL.setPermissions( anyUserAdmin, readOnlyPerms );
-                
-            }
-            
-            // Import ACL *after* trusted and anyuser admins have been created!
-            voAdminRole.importACL( voGroup );
-            
-            
-            // Create task types
-            TaskTypeDAO ttDAO = DAOFactory.instance( DAOFactory.HIBERNATE ).getTaskTypeDAO();
-            TaskType signAupTaskType = new TaskType();
-            
-            signAupTaskType.setName( "SignAUPTask" );
-            signAupTaskType.setDescription( "Tasks of this type are assigned to users that need to sign, or resign an AUP." );
-            
-            
-            TaskType approveUserRequestTaskType = new TaskType();
-            approveUserRequestTaskType.setName( "ApproveUserRequestTask" );
-            approveUserRequestTaskType.setDescription( "Tasks of this type are assigned to VO admins that need to approve users' requests." );
-            
-            
-            ttDAO.makePersistent( signAupTaskType );
-            ttDAO.makePersistent( approveUserRequestTaskType );
-            
-            // Setup VO AUP
-            String voAUPUrlString = VOMSConfiguration.instance().getString(VOMSConfiguration.VO_AUP_URL, VOMSConfiguration.instance().getDefaultVOAUPURL());
-            
-            if (voAUPUrlString.trim().equals("")){
-            	log.warn("No url defined for VO AUP, using default setting...");
-            	voAUPUrlString = VOMSConfiguration.instance().getDefaultVOAUPURL();
-            }
-            
-            try {
-            	
-            	URL voAUPURL = new URL(voAUPUrlString);
-            	
-            	AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-            	
-            	aupDAO.createVOAUP("", "1.0", voAUPURL);
-			
-            
-            } catch (MalformedURLException e) {
-				log.error("Error parsing AUP url: "+e.getMessage());
+			if (trustedAdminDn == null) {
+
+				voAdminRole.importACL(voGroup);
+				HibernateFactory.commitTransaction();
+				return;
+			}
+
+			String trustedAdminCa = VOMSConfiguration.instance().getString(
+					"voms.trusted.admin.ca");
+
+			if (trustedAdminCa == null) {
+				log
+						.error("Missing \"voms.trusted.admin.ca\" configuration parameter. Skipping creation of the trusted admin...");
+				return;
+			}
+
+			VOMSCA ca = VOMSCADAO.instance().getByName(trustedAdminCa);
+
+			if (ca == null) {
+
+				log
+						.error("Trusted admin ca \""
+								+ trustedAdminCa
+								+ "\" not found in org.glite.security.voms.admin.database. Skipping creation of the trusted admin...");
+				return;
+			}
+
+			VOMSAdmin trustedAdmin = VOMSAdminDAO.instance().getByName(
+					trustedAdminDn, ca.getSubjectString());
+
+			if (trustedAdmin == null) {
+
+				String emailAddress = DNUtil
+						.getEmailAddressFromDN(trustedAdminDn);
+
+				// Get default email address from voms service configuration
+				if (emailAddress == null)
+					emailAddress = VOMSConfiguration.instance().getString(
+							"voms.notification.email-address");
+
+				trustedAdmin = VOMSAdminDAO.instance().create(trustedAdminDn,
+						ca.getSubjectString(), emailAddress);
+
+			}
+
+			voGroupACL.setPermissions(trustedAdmin, allPermissions);
+
+			log.info("Trusted admin created.");
+
+			if (VOMSConfiguration.instance().getBoolean(
+					VOMSConfiguration.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS,
+					false)) {
+
+				// Grant read-only access to authenticated clients
+				VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
+						.getAnyAuthenticatedUserAdmin();
+				VOMSPermission readOnlyPerms = VOMSPermission
+						.getEmptyPermissions().setContainerReadPermission()
+						.setMembershipReadPermission();
+				voGroupACL.setPermissions(anyUserAdmin, readOnlyPerms);
+
+			}
+
+			// Import ACL *after* trusted and anyuser admins have been created!
+			voAdminRole.importACL(voGroup);
+
+			// Create task types
+			TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
+					.getTaskTypeDAO();
+			TaskType signAupTaskType = new TaskType();
+
+			signAupTaskType.setName("SignAUPTask");
+			signAupTaskType
+					.setDescription("Tasks of this type are assigned to users that need to sign, or resign an AUP.");
+
+			TaskType approveUserRequestTaskType = new TaskType();
+			approveUserRequestTaskType.setName("ApproveUserRequestTask");
+			approveUserRequestTaskType
+					.setDescription("Tasks of this type are assigned to VO admins that need to approve users' requests.");
+
+			ttDAO.makePersistent(signAupTaskType);
+			ttDAO.makePersistent(approveUserRequestTaskType);
+
+			// Setup VO AUP
+			String voAUPUrlString = VOMSConfiguration.instance().getString(
+					VOMSConfiguration.VO_AUP_URL,
+					VOMSConfiguration.instance().getDefaultVOAUPURL());
+
+			if (voAUPUrlString.trim().equals("")) {
+				log.warn("No url defined for VO AUP, using default setting...");
+				voAUPUrlString = VOMSConfiguration.instance()
+						.getDefaultVOAUPURL();
+			}
+
+			try {
+
+				URL voAUPURL = new URL(voAUPUrlString);
+
+				AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+				aupDAO.createVOAUP("", "1.0", voAUPURL);
+
+			} catch (MalformedURLException e) {
+				log.error("Error parsing AUP url: " + e.getMessage());
 				log.error("Skipping creation of AUPs");
 			}
-            
-            HibernateFactory.commitTransaction();
 
-            
-        }
+			HibernateFactory.commitTransaction();
 
-    }
+		}
+
+	}
 
 }

@@ -27,20 +27,18 @@ import org.apache.axis.handlers.BasicHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 public class SoapMonitorHandler extends BasicHandler {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    private static final Log log = LogFactory.getLog( SoapMonitorHandler.class );
-    
-    public void invoke( MessageContext msgContext ) throws AxisFault {
-        
-        
-        Message msg = msgContext.getCurrentMessage();
-        log.info( "Current message: "+msg.getSOAPPartAsString() );
-    }
+	private static final long serialVersionUID = 1L;
+	private static final Log log = LogFactory.getLog(SoapMonitorHandler.class);
+
+	public void invoke(MessageContext msgContext) throws AxisFault {
+
+		Message msg = msgContext.getCurrentMessage();
+		log.info("Current message: " + msg.getSOAPPartAsString());
+	}
 
 }

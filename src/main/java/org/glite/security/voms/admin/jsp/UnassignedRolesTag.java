@@ -30,57 +30,56 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 
-
 public class UnassignedRolesTag extends javax.servlet.jsp.tagext.TagSupport {
 
-    public static final Log log = LogFactory.getLog( UnassignedRolesTag.class );
+	public static final Log log = LogFactory.getLog(UnassignedRolesTag.class);
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    String id;
+	String id;
 
-    String groupId;
+	String groupId;
 
-    String var;
+	String var;
 
-    public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException {
 
-        List roles = null;
+		List roles = null;
 
-        Map unassignedRoles = (Map) pageContext
-                .findAttribute( VOMSServiceConstants.UNASSIGNED_ROLES_KEY );
+		Map unassignedRoles = (Map) pageContext
+				.findAttribute(VOMSServiceConstants.UNASSIGNED_ROLES_KEY);
 
-        if ( unassignedRoles == null )
-            throw new JspTagException(
-                    "Unassigned roles mappings not found in page context!" );
+		if (unassignedRoles == null)
+			throw new JspTagException(
+					"Unassigned roles mappings not found in page context!");
 
-        roles = (List) unassignedRoles.get( new Long( groupId ) );
-        pageContext.setAttribute( var, roles );
+		roles = (List) unassignedRoles.get(new Long(groupId));
+		pageContext.setAttribute(var, roles);
 
-        return SKIP_BODY;
-    }
+		return SKIP_BODY;
+	}
 
-    public String getVar() {
+	public String getVar() {
 
-        return var;
-    }
+		return var;
+	}
 
-    public void setVar( String var ) {
+	public void setVar(String var) {
 
-        this.var = var;
-    }
+		this.var = var;
+	}
 
-    public String getGroupId() {
+	public String getGroupId() {
 
-        return groupId;
-    }
+		return groupId;
+	}
 
-    public void setGroupId( String groupId ) {
+	public void setGroupId(String groupId) {
 
-        this.groupId = groupId;
-    }
+		this.groupId = groupId;
+	}
 
 }

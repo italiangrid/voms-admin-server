@@ -25,35 +25,34 @@ import java.io.Serializable;
 
 import org.glite.security.voms.admin.database.Auditable;
 
-
 public class VOMSDBVersion implements Serializable, Auditable {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    Integer version;
+	Integer version;
 
-    public VOMSDBVersion() {
+	public VOMSDBVersion() {
 
-    }
+	}
 
-    /**
-     * @return Returns the version.
-     */
-    public Integer getVersion() {
+	/**
+	 * @return Returns the version.
+	 */
+	public Integer getVersion() {
 
-        return version;
-    }
+		return version;
+	}
 
-    /**
-     * @param version
-     *            The version to set.
-     */
-    public void setVersion( Integer version ) {
+	/**
+	 * @param version
+	 *            The version to set.
+	 */
+	public void setVersion(Integer version) {
 
-        this.version = version;
-    }
+		this.version = version;
+	}
 
 }

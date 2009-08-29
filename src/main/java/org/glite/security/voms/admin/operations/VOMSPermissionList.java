@@ -27,48 +27,45 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-
 public class VOMSPermissionList {
 
-    List permissions = new ArrayList();
-    
-    private VOMSPermissionList(){
-        
-        
-    }
-    
-    public void addPermission(VOMSPermission p){
-        permissions.add( p );
-    }
-    
-    public boolean satifies(VOMSPermission other){
-        
-        Iterator i = permissions.iterator();
-        
-        while (i.hasNext()){
-            
-            VOMSPermission p = (VOMSPermission)i.next();
-            
-            if (p.satisfies( other ))
-                return true;
-            
-        }
-        
-        return false;
-    }
-    
-    
-    public int size() {
+	List permissions = new ArrayList();
 
-        return permissions.size();
-    }
+	private VOMSPermissionList() {
 
-    public static VOMSPermissionList instance(){
-        return new VOMSPermissionList();
-    }
-    
-    public String toString() {
-    
-        return ToStringBuilder.reflectionToString(this);
-    }
+	}
+
+	public void addPermission(VOMSPermission p) {
+		permissions.add(p);
+	}
+
+	public boolean satifies(VOMSPermission other) {
+
+		Iterator i = permissions.iterator();
+
+		while (i.hasNext()) {
+
+			VOMSPermission p = (VOMSPermission) i.next();
+
+			if (p.satisfies(other))
+				return true;
+
+		}
+
+		return false;
+	}
+
+	public int size() {
+
+		return permissions.size();
+	}
+
+	public static VOMSPermissionList instance() {
+		return new VOMSPermissionList();
+	}
+
+	public String toString() {
+
+		return ToStringBuilder.reflectionToString(this);
+	}
 }

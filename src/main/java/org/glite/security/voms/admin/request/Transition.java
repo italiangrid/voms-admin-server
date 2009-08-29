@@ -23,8 +23,8 @@ package org.glite.security.voms.admin.request;
 
 public interface Transition {
 
-    State getTargetState();
+	State getTargetState();
 
-    Event getEvent();
+	Event getEvent();
 
 }

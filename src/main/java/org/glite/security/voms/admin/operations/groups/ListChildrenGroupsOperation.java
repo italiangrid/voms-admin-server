@@ -27,10 +27,8 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.BaseContainerReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public class ListChildrenGroupsOperation extends BaseContainerReadOperation {
 
-	
 	private ListChildrenGroupsOperation(VOMSGroup g) {
 		super(VOMSContext.instance(g));
 	}
@@ -43,14 +41,15 @@ public class ListChildrenGroupsOperation extends BaseContainerReadOperation {
 	public static ListChildrenGroupsOperation instance(VOMSGroup g) {
 		return new ListChildrenGroupsOperation(g);
 	}
-    
-    public static ListChildrenGroupsOperation instance(String groupName){
-        
-        VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName ).execute();
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' is not defined in database!");
-        return new ListChildrenGroupsOperation(g);
-        
-    }
-}
 
+	public static ListChildrenGroupsOperation instance(String groupName) {
+
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' is not defined in database!");
+		return new ListChildrenGroupsOperation(g);
+
+	}
+}

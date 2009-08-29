@@ -23,28 +23,27 @@ package org.glite.security.voms.admin.notification;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 
 public class RequestRejected extends AbstractVelocityNotification {
-    
-    String rejectReasons;
-    
-    
-    public RequestRejected(String recipient, String rejectReasons) {
-        
-    	addRecipient( recipient );
-        this.rejectReasons = rejectReasons;
-    }
 
+	String rejectReasons;
 
-    protected void buildMessage() {
-        String voName = VOMSConfiguration.instance().getVOName();
-        
-        setSubject( "Your membership request for VO "+voName+" has been rejected." );
-        
-        context.put( "voName", voName );
-        context.put( "recipient", getRecipientList().get( 0 ));
-        context.put( "rejectReasons", rejectReasons);
-        
-        super.buildMessage();
-        
-    }
+	public RequestRejected(String recipient, String rejectReasons) {
+
+		addRecipient(recipient);
+		this.rejectReasons = rejectReasons;
+	}
+
+	protected void buildMessage() {
+		String voName = VOMSConfiguration.instance().getVOName();
+
+		setSubject("Your membership request for VO " + voName
+				+ " has been rejected.");
+
+		context.put("voName", voName);
+		context.put("recipient", getRecipientList().get(0));
+		context.put("rejectReasons", rejectReasons);
+
+		super.buildMessage();
+
+	}
 
 }

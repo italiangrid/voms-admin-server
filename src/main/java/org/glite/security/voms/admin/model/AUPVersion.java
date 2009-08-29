@@ -8,165 +8,163 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+public class AUPVersion implements Serializable, Comparable<AUPVersion> {
 
-public class AUPVersion implements Serializable, Comparable <AUPVersion> {
-
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    private static final Log log = LogFactory.getLog( AUPVersion.class );
+	private static final long serialVersionUID = 1L;
 
-    Long id;
+	private static final Log log = LogFactory.getLog(AUPVersion.class);
 
-    AUP aup = null;
+	Long id;
 
-    String version;
+	AUP aup = null;
 
-    String url;
+	String version;
 
-    String text;
-    
-    Date creationTime;
-    
-    Date lastForcedReacceptanceTime;
-    
-    Boolean active;
-    
-    public AUPVersion() {
+	String url;
 
-        setActive(false);
-    }
+	String text;
 
-    public boolean equals( Object other ) {
+	Date creationTime;
 
-        if ( this == other )
-            return true;
+	Date lastForcedReacceptanceTime;
 
-        if ( !( other instanceof AUPVersion ) )
-            return false;
+	Boolean active;
 
-        if ( other == null )
-            return false;
+	public AUPVersion() {
 
-        AUPVersion that = (AUPVersion) other;
+		setActive(false);
+	}
 
-        if ( getAup().equals( that.getAup() ) )
-            return getVersion().equals( that.getVersion() );
-        else
-            return false;
+	public boolean equals(Object other) {
 
-    }
+		if (this == other)
+			return true;
 
-    @Override
-    public int hashCode() {
+		if (!(other instanceof AUPVersion))
+			return false;
 
-        if ( this.getId() != null )
-            return getId().hashCode();
+		if (other == null)
+			return false;
 
-        return super.hashCode();
-    }
+		AUPVersion that = (AUPVersion) other;
 
-    // Getters and Setters
-    /**
-     * @return the id
-     */
-    public Long getId() {
+		if (getAup().equals(that.getAup()))
+			return getVersion().equals(that.getVersion());
+		else
+			return false;
 
-        return id;
-    }
+	}
 
-    /**
-     * @return the aup
-     */
-    public AUP getAup() {
+	@Override
+	public int hashCode() {
 
-        return aup;
-    }
+		if (this.getId() != null)
+			return getId().hashCode();
 
-    /**
-     * @return the version
-     */
-    public String getVersion() {
+		return super.hashCode();
+	}
 
-        return version;
-    }
+	// Getters and Setters
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
 
-    /**
-     * @return the creationTime
-     */
-    public Date getCreationTime() {
+		return id;
+	}
 
-        return creationTime;
-    }
+	/**
+	 * @return the aup
+	 */
+	public AUP getAup() {
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId( Long id ) {
+		return aup;
+	}
 
-        this.id = id;
-    }
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
 
-    /**
-     * @param aup
-     *            the aup to set
-     */
-    public void setAup( AUP aup ) {
+		return version;
+	}
 
-        this.aup = aup;
-    }
+	/**
+	 * @return the creationTime
+	 */
+	public Date getCreationTime() {
 
-    /**
-     * @param version
-     *            the version to set
-     */
-    public void setVersion( String version ) {
+		return creationTime;
+	}
 
-        this.version = version;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
 
-    /**
-     * @param creationTime
-     *            the creationTime to set
-     */
-    public void setCreationTime( Date creationTime ) {
+		this.id = id;
+	}
 
-        this.creationTime = creationTime;
-    }
+	/**
+	 * @param aup
+	 *            the aup to set
+	 */
+	public void setAup(AUP aup) {
 
-    /**
-     * @return the url
-     */
-    public String getUrl() {
+		this.aup = aup;
+	}
 
-        return url;
-    }
+	/**
+	 * @param version
+	 *            the version to set
+	 */
+	public void setVersion(String version) {
 
-    /**
-     * @param url
-     *            the url to set
-     */
-    public void setUrl( String url ) {
+		this.version = version;
+	}
 
-        this.url = url;
-    }
+	/**
+	 * @param creationTime
+	 *            the creationTime to set
+	 */
+	public void setCreationTime(Date creationTime) {
 
-    @Override
-    public String toString() {
+		this.creationTime = creationTime;
+	}
 
-        return String.format(
-                "[version:%s, url:%s, creationTime:%s]", version,
-                url, creationTime.toString());
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
 
-    }
+		return url;
+	}
 
-    public int compareTo( AUPVersion o ) {
+	/**
+	 * @param url
+	 *            the url to set
+	 */
+	public void setUrl(String url) {
 
-        return getCreationTime().compareTo( o.getCreationTime() );
-    }
+		this.url = url;
+	}
+
+	@Override
+	public String toString() {
+
+		return String.format("[version:%s, url:%s, creationTime:%s]", version,
+				url, creationTime.toString());
+
+	}
+
+	public int compareTo(AUPVersion o) {
+
+		return getCreationTime().compareTo(o.getCreationTime());
+	}
 
 	public String getText() {
 		return text;
@@ -175,53 +173,51 @@ public class AUPVersion implements Serializable, Comparable <AUPVersion> {
 	public void setText(String text) {
 		this.text = text;
 	}
-    
-	
-	public String getURLContent(){
-		
+
+	public String getURLContent() {
+
 		if (getUrl() == null)
 			return null;
-		
-		
-			try {
-				
-				URL daURL = new URL(getUrl());
-				URLConnection conn = daURL.openConnection();
-				
-				conn.connect();
-				
-				String contentType = conn.getContentType();
-				
-				if (!contentType.startsWith("text")){
-					log.error("Unsupported content type for AUP: "+contentType);
-					return null;
-				
-				}else{
-					
-					//FIXME: leverage CONTENT length, 
-					StringBuilder text = new StringBuilder();
-					
-					int c;
-					// FIXME: implement more efficient AUP fetching
-					while ((c = conn.getInputStream().read())!= -1){
-						text.append((char)c);
-					}
-					
-					return text.toString();
-					
-				}
-			
-			
-			} catch (Exception e) {
-				log.error("Error in opening AUP version url: "+e.getMessage());
-				if (log.isDebugEnabled())
-					log.error("Error in opening AUP version url: "+e.getMessage(),e);
+
+		try {
+
+			URL daURL = new URL(getUrl());
+			URLConnection conn = daURL.openConnection();
+
+			conn.connect();
+
+			String contentType = conn.getContentType();
+
+			if (!contentType.startsWith("text")) {
+				log.error("Unsupported content type for AUP: " + contentType);
 				return null;
+
+			} else {
+
+				// FIXME: leverage CONTENT length,
+				StringBuilder text = new StringBuilder();
+
+				int c;
+				// FIXME: implement more efficient AUP fetching
+				while ((c = conn.getInputStream().read()) != -1) {
+					text.append((char) c);
+				}
+
+				return text.toString();
+
 			}
-			
+
+		} catch (Exception e) {
+			log.error("Error in opening AUP version url: " + e.getMessage());
+			if (log.isDebugEnabled())
+				log.error(
+						"Error in opening AUP version url: " + e.getMessage(),
+						e);
+			return null;
+		}
+
 	}
-	
-	
+
 	public Boolean getActive() {
 		return active;
 	}
@@ -237,14 +233,13 @@ public class AUPVersion implements Serializable, Comparable <AUPVersion> {
 	public void setLastForcedReacceptanceTime(Date lastForcedReacceptanceTime) {
 		this.lastForcedReacceptanceTime = lastForcedReacceptanceTime;
 	}
-	
-	public Date getLastUpdateTime(){
-		
-		if (getLastForcedReacceptanceTime()!= null)
+
+	public Date getLastUpdateTime() {
+
+		if (getLastForcedReacceptanceTime() != null)
 			return getLastForcedReacceptanceTime();
-		else return getCreationTime();
+		else
+			return getCreationTime();
 	}
-	
-	
-	
+
 }

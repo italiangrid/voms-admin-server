@@ -27,22 +27,22 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class ListUserAttributesOperation extends BaseVomsOperation {
 
-	private ListUserAttributesOperation(){}
-	
+	private ListUserAttributesOperation() {
+	}
+
 	protected Object doExecute() {
-	
+
 		return VOMSAttributeDAO.instance().getUserAttributes();
 	}
 
-	
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getEmptyPermissions().setAttributesReadPermission());
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getEmptyPermissions().setAttributesReadPermission());
 
 	}
 
-	
-	public static ListUserAttributesOperation instance(){
-		
+	public static ListUserAttributesOperation instance() {
+
 		return new ListUserAttributesOperation();
 	}
 }

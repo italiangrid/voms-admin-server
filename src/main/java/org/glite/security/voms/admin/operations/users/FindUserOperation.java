@@ -24,63 +24,60 @@ package org.glite.security.voms.admin.operations.users;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
+public class FindUserOperation extends BaseVoReadOperation {
 
-public class FindUserOperation extends BaseVoReadOperation{
+	Long id;
 
-    Long id;
+	String dn = null;
 
-    String dn = null;
+	String caDN = null;
 
-    String caDN = null;
+	String emailAddress = null;
 
-    String emailAddress = null;
+	private FindUserOperation(Long userId) {
 
-    private FindUserOperation( Long userId ) {
+		id = userId;
+	}
 
-        id = userId;
-    }
+	private FindUserOperation(String dn, String ca) {
 
-    private FindUserOperation( String dn, String ca ) {
+		this.dn = dn;
+		this.caDN = ca;
+	}
 
-        this.dn = dn;
-        this.caDN = ca;
-    }
+	private FindUserOperation(String emailAddress) {
 
-    private FindUserOperation( String emailAddress ) {
+		this.emailAddress = emailAddress;
+	}
 
-        this.emailAddress = emailAddress;
-    }
+	protected Object doExecute() {
 
+		if (dn == null)
 
-    protected Object doExecute() {
+			return VOMSUserDAO.instance().findById(id);
 
-        if ( dn == null )
+		else if (emailAddress == null)
 
-            return VOMSUserDAO.instance().findById( id );
+			return VOMSUserDAO.instance().findByDNandCA(dn, caDN);
 
-        else if ( emailAddress == null )
-        
+		else
+			return VOMSUserDAO.instance().findByEmail(emailAddress);
 
-            return VOMSUserDAO.instance().findByDNandCA( dn, caDN );
+	}
 
-        else
-            return VOMSUserDAO.instance().findByEmail( emailAddress );
+	public static FindUserOperation instance(Long id) {
 
-    }
+		return new FindUserOperation(id);
+	}
 
-    public static FindUserOperation instance( Long id ) {
+	public static FindUserOperation instance(String dn, String caDN) {
 
-        return new FindUserOperation( id );
-    }
+		return new FindUserOperation(dn, caDN);
+	}
 
-    public static FindUserOperation instance( String dn, String caDN ) {
+	public static FindUserOperation instance(String emailAddress) {
 
-        return new FindUserOperation( dn, caDN ) ;
-    }
-
-    public static FindUserOperation instance( String emailAddress ) {
-
-        return new FindUserOperation( emailAddress ) ;
-    }
+		return new FindUserOperation(emailAddress);
+	}
 
 }

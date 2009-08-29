@@ -23,30 +23,29 @@ package org.glite.security.voms.admin.database;
 
 import org.glite.security.voms.admin.common.NotFoundException;
 
-
 public class NoSuchAdminException extends NotFoundException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchAdminException( String message ) {
+	public NoSuchAdminException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchAdminException( String message, Throwable t ) {
+	public NoSuchAdminException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchAdminException( Throwable t ) {
+	public NoSuchAdminException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

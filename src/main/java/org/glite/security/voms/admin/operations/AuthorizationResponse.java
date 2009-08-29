@@ -1,24 +1,25 @@
 package org.glite.security.voms.admin.operations;
 
 public class AuthorizationResponse {
-	
+
 	boolean allowed;
-	
+
 	private AuthorizationResponse() {
-		
+
 	}
-	
+
 	private VOMSContext failingContext;
 	private VOMSPermission requiredPermissions;
 	private String failureReason;
-	
-	public static AuthorizationResponse permit(){
+
+	public static AuthorizationResponse permit() {
 		AuthorizationResponse resp = new AuthorizationResponse();
 		resp.allowed = true;
 		return resp;
 	}
-	
-	public static AuthorizationResponse deny(VOMSContext failingContext, VOMSPermission requiredPermissions){
+
+	public static AuthorizationResponse deny(VOMSContext failingContext,
+			VOMSPermission requiredPermissions) {
 		AuthorizationResponse resp = new AuthorizationResponse();
 		resp.allowed = false;
 		resp.failingContext = failingContext;
@@ -56,5 +57,5 @@ public class AuthorizationResponse {
 
 	public void setFailureReason(String failureReason) {
 		this.failureReason = failureReason;
-	}	
+	}
 }

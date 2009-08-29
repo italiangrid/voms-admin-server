@@ -25,27 +25,26 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class ListAttributeDescriptionsOperation extends BaseVomsOperation {
 
-    private ListAttributeDescriptionsOperation(){
-        
-    }
-    
-    protected Object doExecute() {
-        return VOMSAttributeDAO.instance().getAllAttributeDescriptions();
-    }
+	private ListAttributeDescriptionsOperation() {
 
-    protected void setupPermissions() {
+	}
 
-        VOMSContext voContext = VOMSContext.getVoContext();
-        
-        addRequiredPermission(voContext, VOMSPermission
-                .getContainerReadPermission().setAttributesReadPermission());
+	protected Object doExecute() {
+		return VOMSAttributeDAO.instance().getAllAttributeDescriptions();
+	}
 
-    }
+	protected void setupPermissions() {
 
-    public static ListAttributeDescriptionsOperation instance(){
-        return new ListAttributeDescriptionsOperation();
-    }
+		VOMSContext voContext = VOMSContext.getVoContext();
+
+		addRequiredPermission(voContext, VOMSPermission
+				.getContainerReadPermission().setAttributesReadPermission());
+
+	}
+
+	public static ListAttributeDescriptionsOperation instance() {
+		return new ListAttributeDescriptionsOperation();
+	}
 }

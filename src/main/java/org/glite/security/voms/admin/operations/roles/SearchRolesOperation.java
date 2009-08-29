@@ -23,32 +23,29 @@ package org.glite.security.voms.admin.operations.roles;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
-
 public class SearchRolesOperation extends BaseVoReadOperation {
 
-    String text;
+	String text;
 
-    int firstResult;
+	int firstResult;
 
-    int maxResults;
+	int maxResults;
 
-    
-    
-    private SearchRolesOperation(String searchString, int firstR, int maxR) {
-        text = searchString;
-        firstResult = firstR;
-        maxResults = maxR;
-        
-    }
+	private SearchRolesOperation(String searchString, int firstR, int maxR) {
+		text = searchString;
+		firstResult = firstR;
+		maxResults = maxR;
 
-    protected Object doExecute() {
-             
-        return VOMSRoleDAO.instance().search(text,firstResult,maxResults);
-    }
-    
-    public static SearchRolesOperation instance(String searchString, int firstR, int maxR){
-        return new SearchRolesOperation(searchString,firstR,maxR);
-    }
+	}
+
+	protected Object doExecute() {
+
+		return VOMSRoleDAO.instance().search(text, firstResult, maxResults);
+	}
+
+	public static SearchRolesOperation instance(String searchString,
+			int firstR, int maxR) {
+		return new SearchRolesOperation(searchString, firstR, maxR);
+	}
 
 }

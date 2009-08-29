@@ -9,5 +9,4 @@ public class VOMembershipRequestApprovedEvent extends VOMembershipRequestEvent {
 		// TODO Auto-generated constructor stub
 	}
 
-	
 }

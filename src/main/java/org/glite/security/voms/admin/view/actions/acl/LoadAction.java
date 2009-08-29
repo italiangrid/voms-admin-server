@@ -8,16 +8,13 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="aclDetail"),
-	@Result(name=BaseAction.INPUT, location="aclDetail")
-})
+@Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail"),
+		@Result(name = BaseAction.INPUT, location = "aclDetail") })
 public class LoadAction extends ACLActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
 }

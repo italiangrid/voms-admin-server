@@ -12,11 +12,10 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS, location="searchMember.jsp"),
-	@Result(name=BaseAction.INPUT, location="searchMemberError.jsp")		
-})
-public class SearchMemberAction extends BaseSearchAction implements ModelDriven<VOMSRole>, Preparable{
+@Results( { @Result(name = BaseAction.SUCCESS, location = "searchMember.jsp"),
+		@Result(name = BaseAction.INPUT, location = "searchMemberError.jsp") })
+public class SearchMemberAction extends BaseSearchAction implements
+		ModelDriven<VOMSRole>, Preparable {
 
 	/**
 	 * 
@@ -24,25 +23,22 @@ public class SearchMemberAction extends BaseSearchAction implements ModelDriven<
 	private static final long serialVersionUID = 1L;
 	VOMSGroup group;
 	VOMSRole role;
-	
+
 	public void prepare() throws Exception {
 		initSearchData(ROLE_MEMBER_SEARCH_NAME);
-		
+
 		group = groupById(searchData.getGroupId());
 		role = roleById(searchData.getRoleId());
-		
+
 	}
 
 	public VOMSGroup getGroup() {
 		return group;
 	}
 
-
 	public VOMSRole getModel() {
 
 		return role;
 	}
-	
-	
-	
+
 }

@@ -16,63 +16,60 @@ import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="userDetail"),
-	@Result(name=BaseAction.EDIT, location="addCertificate"),
-	@Result(name=BaseAction.INPUT, location="addCertificate")
-})
-public class CertificateActions extends UserActionSupport{
+@Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
+		@Result(name = BaseAction.EDIT, location = "addCertificate"),
+		@Result(name = BaseAction.INPUT, location = "addCertificate") })
+public class CertificateActions extends UserActionSupport {
 
-	
 	public static final Log log = LogFactory.getLog(CertificateActions.class);
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-		
+
 	Long certificateId;
-	
+
 	File certificateFile;
-	
+
 	String subject;
 	String caSubject;
-	
+
 	@Action("delete-certificate")
-	public String deleteCertificate() throws Exception{
-		
-		
+	public String deleteCertificate() throws Exception {
+
 		// FIXME: do this with an operation!
-		Certificate cert = CertificateDAO.instance().findById(getCertificateId());
+		Certificate cert = CertificateDAO.instance().findById(
+				getCertificateId());
 		VOMSUserDAO.instance().deleteCertificate(getModel(), cert);
-		
+
 		return SUCCESS;
-		
+
 	}
-	
+
 	@Action("add-certificate")
-	public String addCertificate() throws Exception{
+	public String addCertificate() throws Exception {
 		return INPUT;
 	}
-	
+
 	@Action("save-certificate")
-	public String saveCertificate() throws Exception{
-		
+	public String saveCertificate() throws Exception {
+
 		// FIXME: do this with an operation!
-		if (certificateFile != null){
-			
-			X509Certificate cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
+		if (certificateFile != null) {
+
+			X509Certificate cert = CertUtil
+					.parseCertficate(new FileInputStream(certificateFile));
 			VOMSUserDAO.instance().addCertificate(getModel(), cert);
-			
-		}else{
-			
-			VOMSUserDAO.instance().addCertificate(getModel(), subject,caSubject);
-			
+
+		} else {
+
+			VOMSUserDAO.instance().addCertificate(getModel(), subject,
+					caSubject);
+
 		}
-		
-		
+
 		return SUCCESS;
 	}
 
@@ -107,6 +104,5 @@ public class CertificateActions extends UserActionSupport{
 	public void setCertificateId(Long certificateId) {
 		this.certificateId = certificateId;
 	}
-	
-	
+
 }

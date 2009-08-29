@@ -34,39 +34,38 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.database.HibernateFactory;
 
-
 public class HibernateSessionFilter implements Filter {
 
-    private static final Log log = LogFactory
-            .getLog( HibernateSessionFilter.class );
+	private static final Log log = LogFactory
+			.getLog(HibernateSessionFilter.class);
 
-    public void init( FilterConfig arg0 ) throws ServletException {
+	public void init(FilterConfig arg0) throws ServletException {
 
-    }
+	}
 
-    public void doFilter( ServletRequest req, ServletResponse res,
-            FilterChain chain ) throws IOException , ServletException {
+	public void doFilter(ServletRequest req, ServletResponse res,
+			FilterChain chain) throws IOException, ServletException {
 
-        chain.doFilter( req, res );
+		chain.doFilter(req, res);
 
-        try {
+		try {
 
-            HibernateFactory.commitTransaction();
+			HibernateFactory.commitTransaction();
 
-        } finally {
+		} finally {
 
-            HibernateFactory.closeSession();
+			HibernateFactory.closeSession();
 
-        }
+		}
 
-    }
+	}
 
-    public void destroy() {
+	public void destroy() {
 
-    }
+	}
 
-    public HibernateSessionFilter() {
+	public HibernateSessionFilter() {
 
-    }
+	}
 
 }

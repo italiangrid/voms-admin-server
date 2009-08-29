@@ -9,27 +9,26 @@ import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Result(name=BaseAction.SUCCESS, location="adminHome")
+@Result(name = BaseAction.SUCCESS, location = "adminHome")
 public class HomeAction extends AdminActionSupport {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	List<NewVOMembershipRequest> pendingRequests;
-	
+
 	@Override
 	public void prepare() throws Exception {
-		
-		pendingRequests = DAOFactory.instance().getRequestDAO().findConfirmedVOMembershipRequests();
+
+		pendingRequests = DAOFactory.instance().getRequestDAO()
+				.findConfirmedVOMembershipRequests();
 		super.prepare();
 	}
 
-    public List<NewVOMembershipRequest> getPendingRequests() {
+	public List<NewVOMembershipRequest> getPendingRequests() {
 		return pendingRequests;
 	}
-	
-	
+
 }

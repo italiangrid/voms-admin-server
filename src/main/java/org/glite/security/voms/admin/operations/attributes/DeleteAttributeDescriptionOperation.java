@@ -28,28 +28,26 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 public class DeleteAttributeDescriptionOperation extends BaseVomsOperation {
 
 	String name;
-	
-	private DeleteAttributeDescriptionOperation(String name){
+
+	private DeleteAttributeDescriptionOperation(String name) {
 		this.name = name;
 	}
-	
+
 	protected Object doExecute() {
-	
+
 		return VOMSAttributeDAO.instance().deleteAttributeDescription(name);
 	}
 
-	
-	
 	protected void setupPermissions() {
-		
+
 		VOMSContext voContext = VOMSContext.getVoContext();
-		
+
 		addRequiredPermission(voContext, VOMSPermission
 				.getContainerRWPermissions().setAttributesReadPermission()
 				.setAttributesWritePermission());
 	}
-	
-	public static DeleteAttributeDescriptionOperation instance(String name){
+
+	public static DeleteAttributeDescriptionOperation instance(String name) {
 		return new DeleteAttributeDescriptionOperation(name);
 	}
 

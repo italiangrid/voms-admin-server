@@ -15,6 +15,18 @@
     <interface-version>2.0.2</interface-version>
     <glite-services-namespace> http://glite.org/wsdl/services
     </glite-services-namespace>
+  
+
+    <project.build.sourceEncoding>
+      UTF-8
+    </project.build.sourceEncoding>
+
+    <project.reporting.outputEncoding>
+      UTF-8
+    </project.reporting.outputEncoding>
+
+  
+    
   </properties>
   <developers>
     <developer>
@@ -92,8 +104,9 @@
             <configuration>
 
               <webResources>
+              	<!-- 
                 <resource>
-                  <!-- this is relative to the pom.xml directory -->
+                 
                   <directory>resources/templates/style
                   </directory>
                   <filtering>true</filtering>
@@ -102,6 +115,7 @@
                   </excludes>
                   <targetPath>style</targetPath>
                 </resource>
+                 -->
                 <resource>
                   <directory>src/main/resources</directory>
                   <includes>
@@ -143,8 +157,8 @@
               <warSourceExcludes>WEB-INF/web.xml
               </warSourceExcludes>
               <webResources>
+              	<!-- 
                 <resource>
-                  <!-- this is relative to the pom.xml directory -->
                   <directory>resources/templates/style
                   </directory>
                   <filtering>true</filtering>
@@ -153,6 +167,7 @@
                   </excludes>
                   <targetPath>style</targetPath>
                 </resource>
+                -->
                 <resource>
                   <!-- this is relative to the pom.xml directory -->
                   <directory>resources/templates/siblings
@@ -250,6 +265,8 @@
           </execution>
         </executions>
       </plugin>
+      
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -258,15 +275,16 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+      
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-4</version>
         <configuration>
           <descriptors>
             <descriptor>src/assemble/distribution.xml
             </descriptor>
           </descriptors>
         </configuration>
+        <version>2.2-beta-4</version>
         <executions> 
           <execution>
           <phase>package</phase> 

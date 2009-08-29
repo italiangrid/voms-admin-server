@@ -23,33 +23,33 @@ package org.glite.security.voms.admin.request;
 
 public class NoSuchTransitionException extends StateMachineException {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchTransitionException() {
+	public NoSuchTransitionException() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchTransitionException( String message ) {
+	public NoSuchTransitionException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchTransitionException( Throwable cause ) {
+	public NoSuchTransitionException(Throwable cause) {
 
-        super( cause );
-        // TODO Auto-generated constructor stub
-    }
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
-    public NoSuchTransitionException( String message, Throwable cause ) {
+	public NoSuchTransitionException(String message, Throwable cause) {
 
-        super( message, cause );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

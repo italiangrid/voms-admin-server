@@ -9,12 +9,11 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results({
-	
-	@Result(name=BaseAction.SUCCESS, location="groups"),
-	@Result(name=BaseAction.INPUT, location="groups")		
-})
-public class SearchAction extends BaseSearchAction implements Preparable{
+@Results( {
+
+@Result(name = BaseAction.SUCCESS, location = "groups"),
+		@Result(name = BaseAction.INPUT, location = "groups") })
+public class SearchAction extends BaseSearchAction implements Preparable {
 
 	/**
 	 * 

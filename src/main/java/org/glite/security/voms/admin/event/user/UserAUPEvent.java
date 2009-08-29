@@ -9,12 +9,12 @@ public class UserAUPEvent extends GenericEvent {
 
 	VOMSUser user;
 	AUP aup;
-	
+
 	public UserAUPEvent(VOMSUser user, AUP aup) {
 		super(EventType.UserAUPEvent);
 		setUser(user);
 		setAup(aup);
-		
+
 	}
 
 	public VOMSUser getUser() {
@@ -32,5 +32,5 @@ public class UserAUPEvent extends GenericEvent {
 	public void setAup(AUP aup) {
 		this.aup = aup;
 	}
-	
+
 }

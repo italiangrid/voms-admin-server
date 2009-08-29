@@ -60,448 +60,454 @@ import org.glite.security.voms.service.attributes.VOMSAttributes;
 
 public class VomsAttributesService implements VOMSAttributes {
 
-    private static final Log log = LogFactory
-            .getLog( VomsAttributesService.class );
+	private static final Log log = LogFactory
+			.getLog(VomsAttributesService.class);
 
-    public void createAttributeClass( String name, String description,
-            boolean unique ) throws RemoteException , VOMSException {
+	public void createAttributeClass(String name, String description,
+			boolean unique) throws RemoteException, VOMSException {
 
-        log.info( "createAttributeClass("
-                + StringUtils.join( new Object[] { name, description,
-                        new Boolean( unique ) }, ',' ) + ");" );
+		log.info("createAttributeClass("
+				+ StringUtils.join(new Object[] { name, description,
+						new Boolean(unique) }, ',') + ");");
 
-        try {
+		try {
 
-            Validator.validateInputString( name, "Invalid characters in attribute class name!");
-            Validator.validateInputString( description , "Invalid characters in attribute class description!");
-            
-            CreateAttributeDescriptionOperation.instance( name, description,
-                    new Boolean( unique ) ).execute();
+			Validator.validateInputString(name,
+					"Invalid characters in attribute class name!");
+			Validator.validateInputString(description,
+					"Invalid characters in attribute class description!");
 
-        } catch ( RuntimeException e ) {
+			CreateAttributeDescriptionOperation.instance(name, description,
+					new Boolean(unique)).execute();
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+		} catch (RuntimeException e) {
 
-    }
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-    public void createAttributeClass( String name, String description )
-            throws RemoteException , VOMSException {
+	}
 
-        log.info( "createAttributeClass("
-                + StringUtils.join( new Object[] { name, description }, ',' )
-                + ");" );
+	public void createAttributeClass(String name, String description)
+			throws RemoteException, VOMSException {
 
-        try {
-            
-            Validator.validateInputString( name, "Invalid characters in attribute class name!");
-            Validator.validateInputString( description , "Invalid characters in attribute class description!");
-            
-            CreateAttributeDescriptionOperation.instance( name, description,
-                    new Boolean( false ) ).execute();
+		log.info("createAttributeClass("
+				+ StringUtils.join(new Object[] { name, description }, ',')
+				+ ");");
 
-        } catch ( RuntimeException e ) {
+		try {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+			Validator.validateInputString(name,
+					"Invalid characters in attribute class name!");
+			Validator.validateInputString(description,
+					"Invalid characters in attribute class description!");
 
-    public void createAttributeClass( String name ) throws RemoteException ,
-            VOMSException {
+			CreateAttributeDescriptionOperation.instance(name, description,
+					new Boolean(false)).execute();
 
-        log.info( "createAttributeClass("
-                + StringUtils.join( new Object[] { name }, ',' ) + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-            Validator.validateInputString( name, "Invalid characters in attribute class name!");
-            
-            CreateAttributeDescriptionOperation.instance( name, null,
-                    new Boolean( false ) ).execute();
+	public void createAttributeClass(String name) throws RemoteException,
+			VOMSException {
 
-        } catch ( RuntimeException e ) {
+		log.info("createAttributeClass("
+				+ StringUtils.join(new Object[] { name }, ',') + ");");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		try {
 
-    public void deleteAttributeClass( String name ) throws RemoteException ,
-            VOMSException {
+			Validator.validateInputString(name,
+					"Invalid characters in attribute class name!");
 
-        log.info( "deleteAttributeClass("
-                + StringUtils.join( new Object[] { name }, ',' ) + ");" );
+			CreateAttributeDescriptionOperation.instance(name, null,
+					new Boolean(false)).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            DeleteAttributeDescriptionOperation.instance( name ).execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteAttributeClass(String name) throws RemoteException,
+			VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+		log.info("deleteAttributeClass("
+				+ StringUtils.join(new Object[] { name }, ',') + ");");
 
-    }
+		try {
 
-    public void deleteAttributeClass( AttributeClass attributeClass )
-            throws RemoteException , VOMSException {
+			DeleteAttributeDescriptionOperation.instance(name).execute();
 
-        log.info( "deleteAttributeClass("
-                + StringUtils.join( new Object[] { attributeClass }, ',' )
-                + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-            DeleteAttributeDescriptionOperation.instance(
-                    attributeClass.getName() ).execute();
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteAttributeClass(AttributeClass attributeClass)
+			throws RemoteException, VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		log
+				.info("deleteAttributeClass("
+						+ StringUtils
+								.join(new Object[] { attributeClass }, ',')
+						+ ");");
 
-    public void deleteGroupAttribute( String groupName, String attributeName )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "deleteGroupAttribute("
-                + StringUtils.join( new Object[] { groupName, attributeName },
-                        ',' ) + ");" );
+			DeleteAttributeDescriptionOperation.instance(
+					attributeClass.getName()).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            DeleteGroupAttributeOperation.instance( groupName, attributeName )
-                    .execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteGroupAttribute(String groupName, String attributeName)
+			throws RemoteException, VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		log.info("deleteGroupAttribute("
+				+ StringUtils.join(new Object[] { groupName, attributeName },
+						',') + ");");
 
-    public void deleteGroupAttribute( String groupName, AttributeValue value )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "deleteGroupAttribute("
-                + StringUtils.join( new Object[] { groupName, value }, ',' )
-                + ");" );
+			DeleteGroupAttributeOperation.instance(groupName, attributeName)
+					.execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            DeleteGroupAttributeOperation.instance( groupName,
-                    value.getAttributeClass().getName() ).execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteGroupAttribute(String groupName, AttributeValue value)
+			throws RemoteException, VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		log.info("deleteGroupAttribute("
+				+ StringUtils.join(new Object[] { groupName, value }, ',')
+				+ ");");
 
-    public void deleteRoleAttribute( String groupName, String roleName,
-            String attributeName ) throws RemoteException , VOMSException {
+		try {
 
-        log.info( "deleteRoleAttribute("
-                + StringUtils.join( new Object[] { groupName, roleName,
-                        attributeName }, ',' ) + ");" );
+			DeleteGroupAttributeOperation.instance(groupName,
+					value.getAttributeClass().getName()).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            if ( PathNamingScheme.isRole( roleName ) )
-                roleName = PathNamingScheme.getRoleName( roleName );
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-            DeleteRoleAttributeOperation.instance( groupName, roleName,
-                    attributeName ).execute();
+	public void deleteRoleAttribute(String groupName, String roleName,
+			String attributeName) throws RemoteException, VOMSException {
 
-        } catch ( RuntimeException e ) {
+		log.info("deleteRoleAttribute("
+				+ StringUtils.join(new Object[] { groupName, roleName,
+						attributeName }, ',') + ");");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;        }
-    }
+		try {
 
-    public void deleteRoleAttribute( String groupName, String roleName,
-            AttributeValue attributeValue ) throws RemoteException ,
-            VOMSException {
+			if (PathNamingScheme.isRole(roleName))
+				roleName = PathNamingScheme.getRoleName(roleName);
 
-        log.info( "deleteRoleAttribute("
-                + StringUtils.join( new Object[] { groupName, roleName,
-                        attributeValue.getAttributeClass().getName() }, ',' ) + ");" );
+			DeleteRoleAttributeOperation.instance(groupName, roleName,
+					attributeName).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            if ( PathNamingScheme.isRole( roleName ) )
-                roleName = PathNamingScheme.getRoleName( roleName );
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-            DeleteRoleAttributeOperation.instance( groupName, roleName,
-                    attributeValue.getAttributeClass().getName() ).execute();
+	public void deleteRoleAttribute(String groupName, String roleName,
+			AttributeValue attributeValue) throws RemoteException,
+			VOMSException {
 
-        } catch ( RuntimeException e ) {
+		log.info("deleteRoleAttribute("
+				+ StringUtils.join(new Object[] { groupName, roleName,
+						attributeValue.getAttributeClass().getName() }, ',')
+				+ ");");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		try {
 
-    public void deleteUserAttribute( User user, String attributeName )
-            throws RemoteException , VOMSException {
+			if (PathNamingScheme.isRole(roleName))
+				roleName = PathNamingScheme.getRoleName(roleName);
 
-        log.info( "deleteUserAttribute("
-                + StringUtils.join( new Object[] { user, attributeName }, ',' )
-                + ");" );
+			DeleteRoleAttributeOperation.instance(groupName, roleName,
+					attributeValue.getAttributeClass().getName()).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            DeleteUserAttributeOperation.instance( user, attributeName )
-                    .execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteUserAttribute(User user, String attributeName)
+			throws RemoteException, VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		log.info("deleteUserAttribute("
+				+ StringUtils.join(new Object[] { user, attributeName }, ',')
+				+ ");");
 
-    public void deleteUserAttribute( User user, AttributeValue attributeValue )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "deleteUserAttribute("
-                + StringUtils.join( new Object[] { user, attributeValue }, ',' )
-                + ");" );
+			DeleteUserAttributeOperation.instance(user, attributeName)
+					.execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            DeleteUserAttributeOperation.instance( user,
-                    attributeValue.getAttributeClass().getName() ).execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void deleteUserAttribute(User user, AttributeValue attributeValue)
+			throws RemoteException, VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+		log.info("deleteUserAttribute("
+				+ StringUtils.join(new Object[] { user, attributeValue }, ',')
+				+ ");");
 
-    public AttributeClass getAttributeClass( String name )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "getAttributeClass("
-                + StringUtils.join( new Object[] { name }, ',' ) + ");" );
+			DeleteUserAttributeOperation.instance(user,
+					attributeValue.getAttributeClass().getName()).execute();
 
-        try {
+		} catch (RuntimeException e) {
 
-            VOMSAttributeDescription desc = (VOMSAttributeDescription) FindAttributeDescriptionOperation
-                    .instance( name ).execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-            return desc.asAttributeClass();
+	public AttributeClass getAttributeClass(String name)
+			throws RemoteException, VOMSException {
 
-        } catch ( RuntimeException e ) {
+		log.info("getAttributeClass("
+				+ StringUtils.join(new Object[] { name }, ',') + ");");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+		try {
 
-    }
+			VOMSAttributeDescription desc = (VOMSAttributeDescription) FindAttributeDescriptionOperation
+					.instance(name).execute();
 
-    public AttributeClass[] listAttributeClasses() throws RemoteException ,
-            VOMSException {
+			return desc.asAttributeClass();
 
-        log.info( "listAttributeClasses("
-                + StringUtils.join( new Object[] {}, ',' ) + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-            List descriptions = (List) ListAttributeDescriptionsOperation
-                    .instance().execute();
+	}
 
-            return ServiceUtils.toAttributeClassArray( descriptions );
+	public AttributeClass[] listAttributeClasses() throws RemoteException,
+			VOMSException {
 
-        } catch ( RuntimeException e ) {
+		log.info("listAttributeClasses("
+				+ StringUtils.join(new Object[] {}, ',') + ");");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+		try {
 
-    }
+			List descriptions = (List) ListAttributeDescriptionsOperation
+					.instance().execute();
 
-    public AttributeValue[] listGroupAttributes( String groupName )
-            throws RemoteException , VOMSException {
+			return ServiceUtils.toAttributeClassArray(descriptions);
 
-        log.info( "listGroupAttributes("
-                + StringUtils.join( new Object[] { groupName }, ',' ) + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-            VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName )
-                    .execute();
+	}
 
-            if ( g == null )
-                throw new NoSuchGroupException( "Group '" + groupName
-                        + "' not found!" );
+	public AttributeValue[] listGroupAttributes(String groupName)
+			throws RemoteException, VOMSException {
 
-            Collection attributes = (Collection) ListAttributesForGroupOperation
-                    .instance( g ).execute();
+		log.info("listGroupAttributes("
+				+ StringUtils.join(new Object[] { groupName }, ',') + ");");
 
-            return ServiceUtils.toAttributeValueArray( attributes );
+		try {
 
-        } catch ( RuntimeException e ) {
+			VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+					.execute();
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+			if (g == null)
+				throw new NoSuchGroupException("Group '" + groupName
+						+ "' not found!");
 
-    }
+			Collection attributes = (Collection) ListAttributesForGroupOperation
+					.instance(g).execute();
 
-    public AttributeValue[] listRoleAttributes( String groupName,
-            String roleName ) throws RemoteException , VOMSException {
+			return ServiceUtils.toAttributeValueArray(attributes);
 
-        log.info( "listRoleAttributes("
-                + StringUtils.join( new Object[] { groupName, roleName }, ',' )
-                + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-            if ( roleName.startsWith( "Role=" ) )
-                roleName = PathNamingScheme.getRoleName( roleName );
+	}
 
-            VOMSRole r = (VOMSRole) FindRoleOperation.instance( roleName )
-                    .execute();
-            VOMSGroup g = (VOMSGroup) FindGroupOperation.instance( groupName )
-                    .execute();
+	public AttributeValue[] listRoleAttributes(String groupName, String roleName)
+			throws RemoteException, VOMSException {
 
-            if ( r == null )
-                throw new NoSuchRoleException( "Role '" + roleName
-                        + "' not found!" );
+		log.info("listRoleAttributes("
+				+ StringUtils.join(new Object[] { groupName, roleName }, ',')
+				+ ");");
 
-            if ( g == null )
-                throw new NoSuchRoleException( "Group '" + groupName
-                        + "' not found!" );
+		try {
 
-            Collection attributes = (Collection) ListRoleAttributesOperation
-                    .instance( g, r ).execute();
+			if (roleName.startsWith("Role="))
+				roleName = PathNamingScheme.getRoleName(roleName);
 
-            return ServiceUtils.toAttributeValueArray( attributes );
+			VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName)
+					.execute();
+			VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+					.execute();
 
-        } catch ( RuntimeException e ) {
+			if (r == null)
+				throw new NoSuchRoleException("Role '" + roleName
+						+ "' not found!");
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+			if (g == null)
+				throw new NoSuchRoleException("Group '" + groupName
+						+ "' not found!");
 
-    }
+			Collection attributes = (Collection) ListRoleAttributesOperation
+					.instance(g, r).execute();
 
-    public AttributeValue[] listUserAttributes( User user )
-            throws RemoteException , VOMSException {
+			return ServiceUtils.toAttributeValueArray(attributes);
 
-        log.info( "listUserAttributes("
-                + StringUtils.join( new Object[] { user }, ',' ) + ");" );
+		} catch (RuntimeException e) {
 
-        try {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
-            VOMSUser u = (VOMSUser) FindUserOperation.instance( user.getDN(),
-                    user.getCA() ).execute();
+	}
 
-            if ( u == null )
-                throw new NoSuchUserException( "User '" + user.getDN() + ","
-                        + user.getCA() + "' not found!" );
+	public AttributeValue[] listUserAttributes(User user)
+			throws RemoteException, VOMSException {
 
-            Collection attributes = (Collection) ListAttributesForUserOperation
-                    .instance( u ).execute();
+		log.info("listUserAttributes("
+				+ StringUtils.join(new Object[] { user }, ',') + ");");
 
-            return ServiceUtils.toAttributeValueArray( attributes );
+		try {
 
-        } catch ( RuntimeException e ) {
+			VOMSUser u = (VOMSUser) FindUserOperation.instance(user.getDN(),
+					user.getCA()).execute();
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;        
-        
-        }
+			if (u == null)
+				throw new NoSuchUserException("User '" + user.getDN() + ","
+						+ user.getCA() + "' not found!");
 
-    }
+			Collection attributes = (Collection) ListAttributesForUserOperation
+					.instance(u).execute();
 
-    public void saveAttributeClass( AttributeClass in0 )
-            throws RemoteException , VOMSException {
+			return ServiceUtils.toAttributeValueArray(attributes);
 
-        log.info( "saveAttributeClass("
-                + StringUtils.join( new Object[] { in0 }, ',' ) + ");" );
+		} catch (RuntimeException e) {
 
-       
-        
-        throw new UnimplementedFeatureException( "saveAttributeClass(...)" );
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
 
-            
-    }
+		}
 
-    public void setGroupAttribute( String groupName,
-            AttributeValue attributeValue ) throws RemoteException ,
-            VOMSException {
+	}
 
-        log.info( "setGroupAttribute("
-                + StringUtils.join( new Object[] { groupName, attributeValue },
-                        ',' ) + ");" );
+	public void saveAttributeClass(AttributeClass in0) throws RemoteException,
+			VOMSException {
 
-        try {
+		log.info("saveAttributeClass("
+				+ StringUtils.join(new Object[] { in0 }, ',') + ");");
 
-            Validator.validateInputString( attributeValue.getValue(), "Invalid characters in attribute value!");
-            SetGroupAttributeOperation.instance( groupName, attributeValue )
-                    .execute();
+		throw new UnimplementedFeatureException("saveAttributeClass(...)");
 
-        } catch ( RuntimeException e ) {
+	}
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
-    }
+	public void setGroupAttribute(String groupName,
+			AttributeValue attributeValue) throws RemoteException,
+			VOMSException {
 
-    public void setRoleAttribute( String groupName, String roleName,
-            AttributeValue attributeValue ) throws RemoteException ,
-            VOMSException {
+		log.info("setGroupAttribute("
+				+ StringUtils.join(new Object[] { groupName, attributeValue },
+						',') + ");");
 
-        log.info( "setRoleAttribute("
-                + StringUtils.join( new Object[] { groupName, roleName,
-                        attributeValue }, ',' ) + ");" );
+		try {
 
-        try {
+			Validator.validateInputString(attributeValue.getValue(),
+					"Invalid characters in attribute value!");
+			SetGroupAttributeOperation.instance(groupName, attributeValue)
+					.execute();
 
-            Validator.validateInputString( attributeValue.getValue(), "Invalid characters in attribute value!");
-            if ( PathNamingScheme.isRole( roleName ) )
-                roleName = PathNamingScheme.getRoleName( roleName );
+		} catch (RuntimeException e) {
 
-            SetRoleAttributeOperation.instance( groupName, roleName,
-                    attributeValue ).execute();
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+	}
 
-        } catch ( RuntimeException e ) {
+	public void setRoleAttribute(String groupName, String roleName,
+			AttributeValue attributeValue) throws RemoteException,
+			VOMSException {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-            
-        
-        }
-    }
+		log.info("setRoleAttribute("
+				+ StringUtils.join(new Object[] { groupName, roleName,
+						attributeValue }, ',') + ");");
 
-    public void setUserAttribute( User user, AttributeValue attributeValue )
-            throws RemoteException , VOMSException {
+		try {
 
-        log.info( "setUserAttribute("
-                + StringUtils.join( new Object[] { user, attributeValue }, ',' )
-                + ");" );
+			Validator.validateInputString(attributeValue.getValue(),
+					"Invalid characters in attribute value!");
+			if (PathNamingScheme.isRole(roleName))
+				roleName = PathNamingScheme.getRoleName(roleName);
 
-        try {
+			SetRoleAttributeOperation.instance(groupName, roleName,
+					attributeValue).execute();
 
-            
-            Validator.validateInputString( attributeValue.getValue(), "Invalid characters in attribute value!");
-            SetUserAttributeOperation.instance( user, attributeValue )
-                    .execute();
-            
-        } catch ( RuntimeException e ) {
+		} catch (RuntimeException e) {
 
-            ServiceExceptionHelper.handleServiceException( log, e );
-            throw e;
-        }
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
 
-    }
+		}
+	}
+
+	public void setUserAttribute(User user, AttributeValue attributeValue)
+			throws RemoteException, VOMSException {
+
+		log.info("setUserAttribute("
+				+ StringUtils.join(new Object[] { user, attributeValue }, ',')
+				+ ");");
+
+		try {
+
+			Validator.validateInputString(attributeValue.getValue(),
+					"Invalid characters in attribute value!");
+			SetUserAttributeOperation.instance(user, attributeValue).execute();
+
+		} catch (RuntimeException e) {
+
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+
+	}
 
 }

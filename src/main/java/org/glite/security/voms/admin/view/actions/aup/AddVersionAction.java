@@ -13,34 +13,31 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT, location="addAupVersion"),
-	@Result(name=BaseAction.SUCCESS, location="/aup/load.action", type="redirect")
-})
+@Results( {
+		@Result(name = BaseAction.INPUT, location = "addAupVersion"),
+		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
 public class AddVersionAction extends AUPVersionActions {
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	String url;
-	
+
 	@Override
 	public String execute() throws Exception {
-	
-		AUPDAO dao  = DAOFactory.instance().getAUPDAO();
-		
+
+		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
 		dao.addVersion(getModel(), getVersion(), new URL(getUrl()));
 		return SUCCESS;
-		
+
 	}
-	
-	@RequiredStringValidator(type=ValidatorType.FIELD, message="The url field is required!")
+
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The url field is required!")
 	public String getUrl() {
 		return url;
 	}
-
 
 	public void setUrl(String url) {
 		this.url = url;

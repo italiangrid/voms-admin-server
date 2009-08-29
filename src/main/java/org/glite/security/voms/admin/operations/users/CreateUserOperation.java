@@ -27,59 +27,59 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-
 public class CreateUserOperation extends BaseVomsOperation {
 
-	
 	VOMSUser usr = null;
 
-    String caDN = null;
-    
-    
-    private CreateUserOperation(VOMSUser user, String caSubject){
-    	
-    	usr = user;
-    	caDN = caSubject;
-    }
-    
-    private CreateUserOperation(String username, String caName, String cn,String certUri,String email){
-    	
-    	
-    	usr = new VOMSUser(); 
-        usr.setDn(username);        
-        usr.setEmailAddress(email);
-       
-        caDN = caName;
-        
-    }
-    
-    private CreateUserOperation(NewVOMembershipRequest request){
-    	usr = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
-    	caDN = request.getRequesterInfo().getCertificateIssuer();
-    	
-    }
-    protected Object doExecute() {
-		
+	String caDN = null;
+
+	private CreateUserOperation(VOMSUser user, String caSubject) {
+
+		usr = user;
+		caDN = caSubject;
+	}
+
+	private CreateUserOperation(String username, String caName, String cn,
+			String certUri, String email) {
+
+		usr = new VOMSUser();
+		usr.setDn(username);
+		usr.setEmailAddress(email);
+
+		caDN = caName;
+
+	}
+
+	private CreateUserOperation(NewVOMembershipRequest request) {
+		usr = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
+		caDN = request.getRequesterInfo().getCertificateIssuer();
+
+	}
+
+	protected Object doExecute() {
+
 		return VOMSUserDAO.instance().create(usr, caDN);
 	}
-    
-    public static CreateUserOperation instance(NewVOMembershipRequest request){
-    	return new CreateUserOperation(request);
-    }
-	
-	public static CreateUserOperation instance(VOMSUser user, String caString){
-		
+
+	public static CreateUserOperation instance(NewVOMembershipRequest request) {
+		return new CreateUserOperation(request);
+	}
+
+	public static CreateUserOperation instance(VOMSUser user, String caString) {
+
 		return new CreateUserOperation(user, caString);
 	}
-    
-    public static CreateUserOperation instance(String username, String caName, String cn,String certUri,String email){
-        return new CreateUserOperation(username, caName, cn,certUri,email);
-    }
+
+	public static CreateUserOperation instance(String username, String caName,
+			String cn, String certUri, String email) {
+		return new CreateUserOperation(username, caName, cn, certUri, email);
+	}
 
 	protected void setupPermissions() {
-		
-		addRequiredPermission(VOMSContext.getVoContext(),VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-		
+
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerRWPermissions().setMembershipRWPermission());
+
 	}
-	
+
 }

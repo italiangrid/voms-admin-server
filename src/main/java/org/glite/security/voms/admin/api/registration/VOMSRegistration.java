@@ -25,13 +25,12 @@ package org.glite.security.voms.admin.api.registration;
 
 import org.glite.security.voms.admin.api.VOMSException;
 
-
 public interface VOMSRegistration {
-    
-    public void submitRegistrationRequest(RegistrationRequest req)
-        throws VOMSException;
-    
-    public void submitRegistrationRequestForUser(String userSubject, String caSubject, RegistrationRequest req)
-        throws VOMSException;
+
+	public void submitRegistrationRequest(RegistrationRequest req)
+			throws VOMSException;
+
+	public void submitRegistrationRequestForUser(String userSubject,
+			String caSubject, RegistrationRequest req) throws VOMSException;
 
 }

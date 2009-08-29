@@ -28,60 +28,53 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 
-
-
 public class CurrentAdminInfoTag extends TagSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
+	String var;
 
-    String var;
-    
-    public CurrentAdminInfoTag() {
+	public CurrentAdminInfoTag() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException {
 
-        CurrentAdmin admin = CurrentAdmin.instance();
-        try {
+		CurrentAdmin admin = CurrentAdmin.instance();
+		try {
 
-            if (var != null){
-                
-                pageContext.getRequest().setAttribute( var, admin);
-                
-            }else{
-            
-                if ( admin == null )
-                    pageContext.getOut().print( "unknown admin" );
-                else
-                    pageContext.getOut().print( admin.getRealSubject() );
-            }
-            
-            
-        } catch ( IOException e ) {
-            throw new JspTagException( "Error writing CurrentAdminInfo!" );
-        }
+			if (var != null) {
 
-        return SKIP_BODY;
-    }
+				pageContext.getRequest().setAttribute(var, admin);
 
-    
-    public String getVar() {
-    
-        return var;
-    }
+			} else {
 
-    
-    public void setVar( String var ) {
-    
-        this.var = var;
-    }
+				if (admin == null)
+					pageContext.getOut().print("unknown admin");
+				else
+					pageContext.getOut().print(admin.getRealSubject());
+			}
 
-    
+		} catch (IOException e) {
+			throw new JspTagException("Error writing CurrentAdminInfo!");
+		}
+
+		return SKIP_BODY;
+	}
+
+	public String getVar() {
+
+		return var;
+	}
+
+	public void setVar(String var) {
+
+		this.var = var;
+	}
+
 }

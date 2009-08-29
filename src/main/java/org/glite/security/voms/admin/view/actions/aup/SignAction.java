@@ -20,79 +20,73 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT, location="signAup"),
-	@Result(name=BaseAction.SUCCESS, location="/home/login.action", type="redirect")
-})
-
-public class SignAction extends BaseAction implements ModelDriven<AUP>, Preparable{
+@Results( {
+		@Result(name = BaseAction.INPUT, location = "signAup"),
+		@Result(name = BaseAction.SUCCESS, location = "/home/login.action", type = "redirect") })
+public class SignAction extends BaseAction implements ModelDriven<AUP>,
+		Preparable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Long aupId;
-	
+
 	String aupAccepted;
 
 	AUP aup;
-	
+
 	@Override
 	public String execute() throws Exception {
-		
+
 		VOMSUser u = CurrentAdmin.instance().getVoUser();
-		
+
 		if (u == null)
-			throw new VOMSException("Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
-		
+			throw new VOMSException(
+					"Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
+
 		if (aupAccepted.equals("true"))
-			VOMSUserDAO.instance().signAUP(u,aup);
-		else{
-			
-			addFieldError("aupAccepted", "You have to accept the terms of the AUP to proceed!");
+			VOMSUserDAO.instance().signAUP(u, aup);
+		else {
+
+			addFieldError("aupAccepted",
+					"You have to accept the terms of the AUP to proceed!");
 			return INPUT;
 		}
-		
+
 		return SUCCESS;
 	}
 
-
 	public AUP getModel() {
-		
+
 		return aup;
 	}
-
 
 	public Long getAupId() {
 		return aupId;
 	}
 
-
 	public void setAupId(Long aupId) {
 		this.aupId = aupId;
 	}
 
-
 	public void prepare() throws Exception {
-		if (aup == null){
+		if (aup == null) {
 			AUPDAO dao = DAOFactory.instance().getAUPDAO();
 			aup = dao.findById(aupId, false);
 		}
 	}
 
-	@RequiredFieldValidator(type=ValidatorType.FIELD, message="You must sign the AUP.")
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^true$", message="You must accept the terms of the AUP to proceed")
+	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
 	public String getAupAccepted() {
 		return aupAccepted;
 	}
 
-
 	public void setAupAccepted(String aupAccepted) {
 		this.aupAccepted = aupAccepted;
 	}
-	
 
 }

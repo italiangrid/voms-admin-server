@@ -22,31 +22,27 @@ package org.glite.security.voms.admin.notification;
 
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 
-
 public class RequestApproved extends AbstractVelocityNotification {
-    
-    
-    
-    public RequestApproved(String recipient) {
 
-        addRecipient( recipient );
-        
-     
-    }
+	public RequestApproved(String recipient) {
 
+		addRecipient(recipient);
 
-    protected void buildMessage() {
+	}
 
-        VOMSConfiguration conf = VOMSConfiguration.instance(); 
-        String voName = conf.getVOName();
-        
-        setSubject( "Your membership request for VO "+voName+" has been approved." );
-        
-        context.put( "voName", voName );
-        context.put( "recipient", getRecipientList().get( 0 ));
-        
-        super.buildMessage();
-        
-    }
+	protected void buildMessage() {
+
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		String voName = conf.getVOName();
+
+		setSubject("Your membership request for VO " + voName
+				+ " has been approved.");
+
+		context.put("voName", voName);
+		context.put("recipient", getRecipientList().get(0));
+
+		super.buildMessage();
+
+	}
 
 }

@@ -13,22 +13,21 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
-@Table(name="institution")
-
+@Table(name = "institution")
 public class Institution {
-	
+
 	@Id
-	@Column(name="institution_id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "institution_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
-	
+
 	Date creationDate;
-	
-	@Column(unique=true)
+
+	@Column(unique = true)
 	String name;
-	
+
 	String description;
-	
+
 	public Institution() {
 		// TODO Auto-generated constructor stub
 	}
@@ -64,33 +63,31 @@ public class Institution {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
-		
+
 		if (this == other)
 			return true;
-		
+
 		if (!(other instanceof Institution))
 			return false;
-		
+
 		if (other == null)
 			return false;
-		
-		Institution that = (Institution)other;
-		
+
+		Institution that = (Institution) other;
+
 		EqualsBuilder builder = new EqualsBuilder();
 		builder.append(name, that.name);
-		
+
 		return builder.isEquals();
 	}
-	
+
 	@Override
 	public int hashCode() {
-		 
-		return new HashCodeBuilder(17,35).append( name ).toHashCode();
+
+		return new HashCodeBuilder(17, 35).append(name).toHashCode();
 	}
-	
-	
 
 }

@@ -23,11 +23,11 @@ package org.glite.security.voms.admin.request;
 
 public interface State {
 
-    ActionSequence getActions();
+	ActionSequence getActions();
 
-    Object executeActions();
+	Object executeActions();
 
-    public void addAction( Action a );
+	public void addAction(Action a);
 
-    public void removeAction( Action a );
+	public void removeAction(Action a);
 }

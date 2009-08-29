@@ -28,8 +28,6 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.IllegalStateException;
 import org.glite.security.voms.admin.database.Auditable;
 
-
-
 /**
  * 
  * 
@@ -40,311 +38,312 @@ import org.glite.security.voms.admin.database.Auditable;
  */
 public class VOMSMapping implements Serializable, Auditable, Comparable {
 
-    private static final Log log = LogFactory.getLog( VOMSMapping.class );
+	private static final Log log = LogFactory.getLog(VOMSMapping.class);
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Long id;
+	private Long id;
 
-    private VOMSUser user;
+	private VOMSUser user;
 
-    private VOMSGroup group;
+	private VOMSGroup group;
 
-    private VOMSRole role;
+	private VOMSRole role;
 
-    private VOMSCapability capability = null;
+	private VOMSCapability capability = null;
 
-    public VOMSMapping() {
+	public VOMSMapping() {
 
-    }
+	}
 
-    public VOMSMapping( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	public VOMSMapping(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-        user = u;
-        group = g;
-        role = r;
-    }
+		user = u;
+		group = g;
+		role = r;
+	}
 
-    public static VOMSMapping instance( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	public static VOMSMapping instance(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-        VOMSMapping m = new VOMSMapping( u, g, r );
-        return m;
+		VOMSMapping m = new VOMSMapping(u, g, r);
+		return m;
 
-    }
+	}
 
-    public static VOMSMapping instance( VOMSUser u, VOMSGroup g ) {
+	public static VOMSMapping instance(VOMSUser u, VOMSGroup g) {
 
-        return instance( u, g, null );
+		return instance(u, g, null);
 
-    }
+	}
 
-    public VOMSCapability getCapability() {
+	public VOMSCapability getCapability() {
 
-        return capability;
-    }
+		return capability;
+	}
 
-    public void setCapability( VOMSCapability capability ) {
+	public void setCapability(VOMSCapability capability) {
 
-        this.capability = capability;
-    }
+		this.capability = capability;
+	}
 
-    public VOMSGroup getGroup() {
+	public VOMSGroup getGroup() {
 
-        return group;
-    }
+		return group;
+	}
 
-    public void setGroup( VOMSGroup group ) {
+	public void setGroup(VOMSGroup group) {
 
-        this.group = group;
-    }
+		this.group = group;
+	}
 
-    public VOMSRole getRole() {
+	public VOMSRole getRole() {
 
-        return role;
-    }
+		return role;
+	}
 
-    public void setRole( VOMSRole role ) {
+	public void setRole(VOMSRole role) {
 
-        this.role = role;
-    }
+		this.role = role;
+	}
 
-    public VOMSUser getUser() {
+	public VOMSUser getUser() {
 
-        return user;
-    }
+		return user;
+	}
 
-    public void setUser( VOMSUser user ) {
+	public void setUser(VOMSUser user) {
 
-        this.user = user;
-    }
+		this.user = user;
+	}
 
-    public Long getId() {
+	public Long getId() {
 
-        return id;
-    }
+		return id;
+	}
 
-    public void setId( Long id ) {
+	public void setId(Long id) {
 
-        this.id = id;
-    }
+		this.id = id;
+	}
 
-    public boolean equals( Object other ) {
+	public boolean equals(Object other) {
 
-        log.debug( "Comparing mappings for EQUALITY. this=" + this + ", other="
-                + other );
+		log.debug("Comparing mappings for EQUALITY. this=" + this + ", other="
+				+ other);
 
-        if ( this == other ) {
-            log.debug( "Same object, will return true" );
-            return true;
-        }
+		if (this == other) {
+			log.debug("Same object, will return true");
+			return true;
+		}
 
-        if ( !( other instanceof VOMSMapping ) ) {
-            log.debug( "The other is not a VOMSMapping, will return false." );
-            return false;
-        }
+		if (!(other instanceof VOMSMapping)) {
+			log.debug("The other is not a VOMSMapping, will return false.");
+			return false;
+		}
 
-        if ( other == null ) {
-            log.debug( "The other is null, returning false" );
-            return false;
-        }
+		if (other == null) {
+			log.debug("The other is null, returning false");
+			return false;
+		}
 
-        VOMSMapping that = (VOMSMapping) other;
+		VOMSMapping that = (VOMSMapping) other;
 
-        if ( !getUser().equals( that.getUser() ) ) {
+		if (!getUser().equals(that.getUser())) {
 
-            log.debug( "Different users, will return false." );
+			log.debug("Different users, will return false.");
 
-            return false;
-        }
+			return false;
+		}
 
-        if ( this.isGroupMapping() && that.isGroupMapping() ) {
+		if (this.isGroupMapping() && that.isGroupMapping()) {
 
-            log.debug( "Both group mappings" );
+			log.debug("Both group mappings");
 
-            boolean result = getGroup().equals( that.getGroup() );
+			boolean result = getGroup().equals(that.getGroup());
 
-            log.debug( "Will return: " + result );
-            return result;
+			log.debug("Will return: " + result);
+			return result;
 
-        }
+		}
 
-        if ( this.isRoleMapping() && that.isRoleMapping() ) {
+		if (this.isRoleMapping() && that.isRoleMapping()) {
 
-            log.debug( "Both role mappings" );
+			log.debug("Both role mappings");
 
-            boolean result = ( getGroup().equals( that.getGroup() ) && getRole()
-                    .equals( that.getRole() ) );
+			boolean result = (getGroup().equals(that.getGroup()) && getRole()
+					.equals(that.getRole()));
 
-            log.debug( "Will return: " + result );
-            return result;
-        }
+			log.debug("Will return: " + result);
+			return result;
+		}
 
-        log.debug( "Incompatible mappings." );
-        log.debug( "Will return: " + false + " as equality result." );
-        return false;
+		log.debug("Incompatible mappings.");
+		log.debug("Will return: " + false + " as equality result.");
+		return false;
 
-    }
+	}
 
-    public boolean isGroupMapping() {
+	public boolean isGroupMapping() {
 
-        if ( getUser() == null )
-            throw new IllegalStateException(
-                    "This mapping has not been initialized (user== null)!" );
+		if (getUser() == null)
+			throw new IllegalStateException(
+					"This mapping has not been initialized (user== null)!");
 
-        if ( getGroup() == null )
-            throw new IllegalStateException(
-                    "This mapping has not been initialized (group == null)!" );
+		if (getGroup() == null)
+			throw new IllegalStateException(
+					"This mapping has not been initialized (group == null)!");
 
-        return ( getRole() == null );
-    }
+		return (getRole() == null);
+	}
 
-    public boolean isRoleMapping() {
+	public boolean isRoleMapping() {
 
-        if ( getUser() == null )
-            throw new IllegalStateException(
-                    "This mapping has not been initialized (user== null)!" );
+		if (getUser() == null)
+			throw new IllegalStateException(
+					"This mapping has not been initialized (user== null)!");
 
-        if ( getGroup() == null )
-            throw new IllegalStateException(
-                    "This mapping has not been initialized (group == null)!" );
+		if (getGroup() == null)
+			throw new IllegalStateException(
+					"This mapping has not been initialized (group == null)!");
 
-        return ( getRole() != null );
-    }
+		return (getRole() != null);
+	}
 
-    public int hashCode() {
+	public int hashCode() {
 
-        int result = 14;
+		int result = 14;
 
-        result = 29 * result + getUser().hashCode();
+		result = 29 * result + getUser().hashCode();
 
-        result = 29 * result + getGroup().hashCode();
+		result = 29 * result + getGroup().hashCode();
 
-        if ( getRole() != null )
-            result = 29 * result + getRole().hashCode();
+		if (getRole() != null)
+			result = 29 * result + getRole().hashCode();
 
-        if ( getCapability() != null )
-            result = 29 * result + getCapability().hashCode();
+		if (getCapability() != null)
+			result = 29 * result + getCapability().hashCode();
 
-        return result;
-    }
+		return result;
+	}
 
-    public String toString() {
+	public String toString() {
 
-        StringBuffer buf = new StringBuffer();
-        if ( getUser() != null )
-            buf.append( getUser() + "," );
+		StringBuffer buf = new StringBuffer();
+		if (getUser() != null)
+			buf.append(getUser() + ",");
 
-        buf.append(getFQAN());
-        
-        return buf.toString();
-    }
+		buf.append(getFQAN());
 
-    public String getFQAN(){
-        
-        StringBuffer buf = new StringBuffer();
-        
-        if ( getGroup() != null )
-            buf.append( getGroup() );
+		return buf.toString();
+	}
 
-        if ( getRole() != null ) 
-            buf.append( "/" + getRole() );
-        
-        return buf.toString();
-        
-    }
-    public int compareTo( Object o ) {
+	public String getFQAN() {
 
-        if ( this.equals( o ) )
-            return 0;
+		StringBuffer buf = new StringBuffer();
 
-        log.debug( "Comparing mappings. this=" + this + ", other=" + o );
+		if (getGroup() != null)
+			buf.append(getGroup());
 
-        VOMSMapping that = (VOMSMapping) o;
+		if (getRole() != null)
+			buf.append("/" + getRole());
 
-        if ( !getUser().equals( that.getUser() ) ) {
-            log.debug( "Different users." );
+		return buf.toString();
 
-            int result = getUser().compareTo( that.getUser() );
-            log.debug( "Will return " + result );
+	}
 
-            return result;
-        }
+	public int compareTo(Object o) {
 
-        if ( isGroupMapping() && that.isGroupMapping() ) {
+		if (this.equals(o))
+			return 0;
 
-            log.debug( "Both group mappings" );
-            int result = getGroup().compareTo( that.getGroup() );
+		log.debug("Comparing mappings. this=" + this + ", other=" + o);
 
-            log.debug( "Will return: " + result );
-            return result;
-        }
+		VOMSMapping that = (VOMSMapping) o;
 
-        if ( isRoleMapping() && that.isRoleMapping() ) {
+		if (!getUser().equals(that.getUser())) {
+			log.debug("Different users.");
 
-            log.debug( "Both role mappings" );
-            int result;
-            int groupResult = getGroup().compareTo( that.getGroup() );
+			int result = getUser().compareTo(that.getUser());
+			log.debug("Will return " + result);
 
-            if ( groupResult == 0 ) {
+			return result;
+		}
 
-                log.debug( "Roles in the same group, check role name" );
-                result = getRole().compareTo( that.getRole() );
-            } else {
+		if (isGroupMapping() && that.isGroupMapping()) {
 
-                log
-                        .debug( "Roles in different groups, the group name is enough." );
-                result = groupResult;
-            }
+			log.debug("Both group mappings");
+			int result = getGroup().compareTo(that.getGroup());
 
-            log.debug( "Will return: " + result );
-            return result;
-        }
+			log.debug("Will return: " + result);
+			return result;
+		}
 
-        // One role, one group, will sort against groups.
+		if (isRoleMapping() && that.isRoleMapping()) {
 
-        log.debug( "One is a role, one is a group, will sort against groups." );
+			log.debug("Both role mappings");
+			int result;
+			int groupResult = getGroup().compareTo(that.getGroup());
 
-        if ( this.isGroupMapping() && that.isRoleMapping() ) {
-            log.debug( "This group, that role" );
-            int result;
-            int groupResult = getGroup().compareTo( that.getGroup() );
-            if ( groupResult == 0 ) {
+			if (groupResult == 0) {
 
-                log.debug( "Same group, group mappings comes first." );
-                result = -1;
+				log.debug("Roles in the same group, check role name");
+				result = getRole().compareTo(that.getRole());
+			} else {
 
-            } else {
+				log
+						.debug("Roles in different groups, the group name is enough.");
+				result = groupResult;
+			}
 
-                log.debug( "Different groups, using group sorting." );
-                result = groupResult;
-            }
+			log.debug("Will return: " + result);
+			return result;
+		}
 
-            log.debug( "Will return: " + result );
-            return result;
-        }
+		// One role, one group, will sort against groups.
 
-        if ( this.isRoleMapping() && that.isGroupMapping() ) {
-            log.debug( "This role, that group" );
-            int result;
-            int groupResult = getGroup().compareTo( that.getGroup() );
-            if ( groupResult == 0 ) {
-                log.debug( "Same group, group mappings comes first." );
-                result = 1;
-            } else {
-                log.debug( "Different groups, using group sorting." );
-                result = groupResult;
-            }
-            log.debug( "Will return: " + result );
-            return result;
-        }
+		log.debug("One is a role, one is a group, will sort against groups.");
 
-        int result = 1;
-        log.debug( "Unhandled situation. THIS IS A BUG!!!!!! FIXMEEEEE!!!" );
-        log.debug( "Will return: " + result );
-        return result;
-    }
+		if (this.isGroupMapping() && that.isRoleMapping()) {
+			log.debug("This group, that role");
+			int result;
+			int groupResult = getGroup().compareTo(that.getGroup());
+			if (groupResult == 0) {
+
+				log.debug("Same group, group mappings comes first.");
+				result = -1;
+
+			} else {
+
+				log.debug("Different groups, using group sorting.");
+				result = groupResult;
+			}
+
+			log.debug("Will return: " + result);
+			return result;
+		}
+
+		if (this.isRoleMapping() && that.isGroupMapping()) {
+			log.debug("This role, that group");
+			int result;
+			int groupResult = getGroup().compareTo(that.getGroup());
+			if (groupResult == 0) {
+				log.debug("Same group, group mappings comes first.");
+				result = 1;
+			} else {
+				log.debug("Different groups, using group sorting.");
+				result = groupResult;
+			}
+			log.debug("Will return: " + result);
+			return result;
+		}
+
+		int result = 1;
+		log.debug("Unhandled situation. THIS IS A BUG!!!!!! FIXMEEEEE!!!");
+		log.debug("Will return: " + result);
+		return result;
+	}
 
 }

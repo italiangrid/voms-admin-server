@@ -30,29 +30,28 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class TestTag extends TagSupport {
-	
+
 	protected List contextList = new ArrayList();
-	
-	
+
 	public int doStartTag() throws JspException {
-		
+
 		try {
 			pageContext.getOut().write("<div class='testTag'>");
-		} catch (IOException e) {			
+		} catch (IOException e) {
 			throw new JspTagException(e.getMessage());
 		}
-		
+
 		return EVAL_BODY_INCLUDE;
 	}
-	
-	
+
 	public int doEndTag() throws JspException {
 		Iterator i = contextList.iterator();
-		
-		while (i.hasNext()){
-			
+
+		while (i.hasNext()) {
+
 			try {
-				pageContext.getOut().write("<div class='innerTag'>"+i.next()+"</div>\n");
+				pageContext.getOut().write(
+						"<div class='innerTag'>" + i.next() + "</div>\n");
 			} catch (IOException e) {
 				throw new JspTagException(e.getMessage());
 			}

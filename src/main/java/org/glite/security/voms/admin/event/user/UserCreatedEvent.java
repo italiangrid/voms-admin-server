@@ -7,6 +7,6 @@ public class UserCreatedEvent extends UserMembershipEvent {
 	public UserCreatedEvent(VOMSUser user) {
 		super(user);
 		// TODO Auto-generated constructor stub
-	}	
-	
+	}
+
 }

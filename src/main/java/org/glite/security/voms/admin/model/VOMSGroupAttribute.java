@@ -20,85 +20,79 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.model;
 
+public class VOMSGroupAttribute extends VOMSBaseAttribute {
 
-
-public class VOMSGroupAttribute extends VOMSBaseAttribute{
-
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    VOMSGroup group; 
-    
-    
-    public VOMSGroupAttribute() {
+	private static final long serialVersionUID = 1L;
+	VOMSGroup group;
 
-        // TODO Auto-generated constructor stub
-    }
-    
-    public static VOMSGroupAttribute instance(VOMSAttributeDescription desc,String value, VOMSGroup g) {
+	public VOMSGroupAttribute() {
 
-        return new VOMSGroupAttribute(desc,value,g);
-    }
-    
-    protected VOMSGroupAttribute(VOMSAttributeDescription desc,String value, VOMSGroup g) {
+		// TODO Auto-generated constructor stub
+	}
 
-        super(desc, value);
-        this.group = g;
-        
-    }
-    
-    
-    public String getContext() {
+	public static VOMSGroupAttribute instance(VOMSAttributeDescription desc,
+			String value, VOMSGroup g) {
 
-        return group.getName();
-    }
+		return new VOMSGroupAttribute(desc, value, g);
+	}
 
+	protected VOMSGroupAttribute(VOMSAttributeDescription desc, String value,
+			VOMSGroup g) {
 
-    
-    public VOMSGroup getGroup() {
-    
-        return group;
-    }
+		super(desc, value);
+		this.group = g;
 
+	}
 
-    
-    public void setGroup( VOMSGroup group ) {
-    
-        this.group = group;
-    }
-    
-    public boolean equals( Object other ) {
-    
-        if ( this == other )
-            return true;
+	public String getContext() {
 
-        if ( !( other instanceof VOMSGroupAttribute ) )
-            return false;
+		return group.getName();
+	}
 
-        if ( other == null )
-            return false;
+	public VOMSGroup getGroup() {
 
-        VOMSGroupAttribute that = (VOMSGroupAttribute) other;
-        
-        if (getGroup().equals( that.getGroup() ))
-            return getAttributeDescription()
-                .equals( that.getAttributeDescription() );
-        
-        return false;
-     
-    }
-    
-    public int hashCode() {
-    
-        int result = 14;
+		return group;
+	}
 
-        result = 29 * result + getAttributeDescription().hashCode();
-        
-        if (getGroup() != null)
-            result = 29 * result + getGroup().hashCode();
-        
-        return result;
+	public void setGroup(VOMSGroup group) {
 
-    }
+		this.group = group;
+	}
+
+	public boolean equals(Object other) {
+
+		if (this == other)
+			return true;
+
+		if (!(other instanceof VOMSGroupAttribute))
+			return false;
+
+		if (other == null)
+			return false;
+
+		VOMSGroupAttribute that = (VOMSGroupAttribute) other;
+
+		if (getGroup().equals(that.getGroup()))
+			return getAttributeDescription().equals(
+					that.getAttributeDescription());
+
+		return false;
+
+	}
+
+	public int hashCode() {
+
+		int result = 14;
+
+		result = 29 * result + getAttributeDescription().hashCode();
+
+		if (getGroup() != null)
+			result = 29 * result + getGroup().hashCode();
+
+		return result;
+
+	}
 }

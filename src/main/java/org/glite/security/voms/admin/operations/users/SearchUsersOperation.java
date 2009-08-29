@@ -24,34 +24,33 @@ package org.glite.security.voms.admin.operations.users;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 
-
 public class SearchUsersOperation extends BaseVoReadOperation {
 
-    private String searchString;
+	private String searchString;
 
-    private int firstResult;
+	private int firstResult;
 
-    private int maxResults;
+	private int maxResults;
 
-    private SearchUsersOperation( String searchString, int firstResult,
-            int maxResults ) {
+	private SearchUsersOperation(String searchString, int firstResult,
+			int maxResults) {
 
-        this.searchString = searchString;
-        this.firstResult = firstResult;
-        this.maxResults = maxResults;
+		this.searchString = searchString;
+		this.firstResult = firstResult;
+		this.maxResults = maxResults;
 
-    }
+	}
 
-    public Object doExecute() {
+	public Object doExecute() {
 
-        return VOMSUserDAO.instance().search( searchString, firstResult,
-                maxResults );
-    }
+		return VOMSUserDAO.instance().search(searchString, firstResult,
+				maxResults);
+	}
 
-    public static SearchUsersOperation instance( String searchString, int firstResult,
-            int maxResults ) {
+	public static SearchUsersOperation instance(String searchString,
+			int firstResult, int maxResults) {
 
-        return new SearchUsersOperation(searchString, firstResult, maxResults );
-    }
+		return new SearchUsersOperation(searchString, firstResult, maxResults);
+	}
 
 }

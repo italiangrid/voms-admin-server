@@ -30,33 +30,34 @@ import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 
-
 public class NotificationUtil {
-    
-    public static Set getEmailAddressesForAdmin(VOMSAdmin a){
-        
-        Set emails = new HashSet();
-        
-        if (!a.isInternalAdmin())
-            emails.add( a.getEmailAddress() );
-        else{
-            
-            if (a.isGroupAdmin()){
-                
-                VOMSGroup g  = VOMSGroupDAO.instance().findByName( a.getDn() );
-                emails.addAll( g.getMembersEmailAddresses() );
-                   
-            }else if (a.isRoleAdmin()){
-                
-                VOMSRole r = VOMSRoleDAO.instance().findByName( PathNamingScheme.getRoleName( a.getDn() ) );
-                VOMSGroup g = VOMSGroupDAO.instance().findByName( PathNamingScheme.getGroupName( a.getDn() ) );
-                emails.addAll( r.getMembersEmailAddresses( g ) );
-                
-            }
-            
-        }
-        
-        return emails;
-    }
+
+	public static Set getEmailAddressesForAdmin(VOMSAdmin a) {
+
+		Set emails = new HashSet();
+
+		if (!a.isInternalAdmin())
+			emails.add(a.getEmailAddress());
+		else {
+
+			if (a.isGroupAdmin()) {
+
+				VOMSGroup g = VOMSGroupDAO.instance().findByName(a.getDn());
+				emails.addAll(g.getMembersEmailAddresses());
+
+			} else if (a.isRoleAdmin()) {
+
+				VOMSRole r = VOMSRoleDAO.instance().findByName(
+						PathNamingScheme.getRoleName(a.getDn()));
+				VOMSGroup g = VOMSGroupDAO.instance().findByName(
+						PathNamingScheme.getGroupName(a.getDn()));
+				emails.addAll(r.getMembersEmailAddresses(g));
+
+			}
+
+		}
+
+		return emails;
+	}
 
 }

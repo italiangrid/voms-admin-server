@@ -22,22 +22,22 @@ package org.glite.security.voms.admin.common;
 
 public class VOMSFatalException extends VOMSException {
 
-    public VOMSFatalException( String message ) {
+	public VOMSFatalException(String message) {
 
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSFatalException( String message, Throwable t ) {
+	public VOMSFatalException(String message, Throwable t) {
 
-        super( message, t );
-        // TODO Auto-generated constructor stub
-    }
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-    public VOMSFatalException( Throwable t ) {
+	public VOMSFatalException(Throwable t) {
 
-        super( t );
-        // TODO Auto-generated constructor stub
-    }
+		super(t);
+		// TODO Auto-generated constructor stub
+	}
 
 }

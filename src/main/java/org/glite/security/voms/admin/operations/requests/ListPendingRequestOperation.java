@@ -22,23 +22,19 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.dao.RequestDAO;
 
-
 public class ListPendingRequestOperation extends RequestReadOperation {
 
-    
-    private ListPendingRequestOperation() {
+	private ListPendingRequestOperation() {
 
-        
-    }
-        
-    protected Object doExecute() {
+	}
 
+	protected Object doExecute() {
 
-        return RequestDAO.instance().getPending();
-    }
+		return RequestDAO.instance().getPending();
+	}
 
-    public static ListPendingRequestOperation instance() {
+	public static ListPendingRequestOperation instance() {
 
-        return new ListPendingRequestOperation();
-    }
+		return new ListPendingRequestOperation();
+	}
 }

@@ -38,7 +38,6 @@ import org.glite.security.voms.admin.common.InitSecurityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 
-
 /**
  * 
  * @author andrea
@@ -46,37 +45,38 @@ import org.glite.security.voms.admin.operations.CurrentAdmin;
  */
 public class SecurityContextFilter implements Filter {
 
-    protected Log log = LogFactory.getLog( SecurityContextFilter.class );
+	protected Log log = LogFactory.getLog(SecurityContextFilter.class);
 
-    public SecurityContextFilter() {
+	public SecurityContextFilter() {
 
-        super();
-        // TODO Auto-generated constructor stub
-    }
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public void init( FilterConfig arg0 ) throws ServletException {
+	public void init(FilterConfig arg0) throws ServletException {
 
-    }
+	}
 
-    public void doFilter( ServletRequest req, ServletResponse res,
-            FilterChain chain ) throws IOException , ServletException {
+	public void doFilter(ServletRequest req, ServletResponse res,
+			FilterChain chain) throws IOException, ServletException {
 
-        InitSecurityContext.setContextFromRequest( req );
-        SecurityContext theContext = SecurityContext.getCurrentContext();
+		InitSecurityContext.setContextFromRequest(req);
+		SecurityContext theContext = SecurityContext.getCurrentContext();
 
-        String clientDN = theContext.getClientName();
-        String issuer = theContext.getIssuerName();
+		String clientDN = theContext.getClientName();
+		String issuer = theContext.getIssuerName();
 
-        String voName = VOMSConfiguration.instance().getVOName();
-        req.setAttribute( "voName", voName );
-        req.setAttribute( VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin.instance() );
+		String voName = VOMSConfiguration.instance().getVOName();
+		req.setAttribute("voName", voName);
+		req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
+				.instance());
 
-        chain.doFilter( req, res );
+		chain.doFilter(req, res);
 
-    }
+	}
 
-    public void destroy() {
+	public void destroy() {
 
-    }
+	}
 
 }

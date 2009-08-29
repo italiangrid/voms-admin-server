@@ -10,36 +10,35 @@ import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-public abstract class AUPVersionActions extends BaseAction implements Preparable, ModelDriven<AUP>{
+public abstract class AUPVersionActions extends BaseAction implements
+		Preparable, ModelDriven<AUP> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Long aupId;
-	
+
 	AUP aup;
-	
+
 	String version;
-		
+
 	public void prepare() throws Exception {
-		if (aup == null){
-			
+		if (aup == null) {
+
 			AUPDAO dao = DAOFactory.instance().getAUPDAO();
 			aup = dao.findById(aupId, true);
 		}
-		
+
 	}
 
 	public AUP getModel() {
-		
+
 		return aup;
 	}
-	
-	
-	@RequiredStringValidator(type=ValidatorType.FIELD, message="The version string is required")
+
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The version string is required")
 	public String getVersion() {
 		return version;
 	}
@@ -48,7 +47,6 @@ public abstract class AUPVersionActions extends BaseAction implements Preparable
 		this.version = version;
 	}
 
-	
 	public Long getAupId() {
 		return aupId;
 	}
@@ -56,6 +54,5 @@ public abstract class AUPVersionActions extends BaseAction implements Preparable
 	public void setAupId(Long aupId) {
 		this.aupId = aupId;
 	}
-	
-	
+
 }

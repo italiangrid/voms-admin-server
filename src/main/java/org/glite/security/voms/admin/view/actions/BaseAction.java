@@ -25,9 +25,8 @@ import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * @author andrea
- *
+ * 
  */
-
 
 public class BaseAction extends ActionSupport {
 
@@ -35,78 +34,74 @@ public class BaseAction extends ActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String INPUT_FORM_REGEX = "^[^<>&=;]*$";
 	public static final String INPUT_DN_REGEX = "^[^<>&;]*$";
-	
+
 	public static final String SEARCH = "search";
 	public static final String LIST = "list";
 	public static final String EDIT = "edit";
-	
+
 	public static final String CREATE = "create";
 	public static final String SAVE = "save";
-	
+
 	public static final String AUTHZ_ERROR = "authorizationError";
-	
-	protected VOMSUser userById(Long id){
+
+	protected VOMSUser userById(Long id) {
 		if (id == null)
 			throw new NullArgumentException("'id' cannot be null!");
-		
-		return (VOMSUser)FindUserOperation.instance(id).execute();
-	}
-	
-	
-	protected VOMSGroup groupByName(String name){
-		
-		if (name == null)
-			throw new NullArgumentException("'name' cannot be null!");
-		
-		return (VOMSGroup)FindGroupOperation.instance(name).execute();
-		
-	}
-	protected VOMSGroup groupById(Long id){
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
-		
-		return (VOMSGroup)FindGroupOperation.instance(id).execute();
-	}
-	
-	protected VOMSRole roleById(Long id){
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
-		
-		return (VOMSRole)FindRoleOperation.instance(id).execute();
-	}
-	
-	protected VOMSRole roleByName(String name){
-		
-		if (name == null)
-			throw new NullArgumentException("'name' cannot be null!");
-		
-		return (VOMSRole)FindRoleOperation.instance(name).execute();
+
+		return (VOMSUser) FindUserOperation.instance(id).execute();
 	}
 
+	protected VOMSGroup groupByName(String name) {
 
-	protected String getBaseURL(){
-		
+		if (name == null)
+			throw new NullArgumentException("'name' cannot be null!");
+
+		return (VOMSGroup) FindGroupOperation.instance(name).execute();
+
+	}
+
+	protected VOMSGroup groupById(Long id) {
+		if (id == null)
+			throw new NullArgumentException("'id' cannot be null!");
+
+		return (VOMSGroup) FindGroupOperation.instance(id).execute();
+	}
+
+	protected VOMSRole roleById(Long id) {
+		if (id == null)
+			throw new NullArgumentException("'id' cannot be null!");
+
+		return (VOMSRole) FindRoleOperation.instance(id).execute();
+	}
+
+	protected VOMSRole roleByName(String name) {
+
+		if (name == null)
+			throw new NullArgumentException("'name' cannot be null!");
+
+		return (VOMSRole) FindRoleOperation.instance(name).execute();
+	}
+
+	protected String getBaseURL() {
+
 		HttpServletRequest req = ServletActionContext.getRequest();
-		
-		
-		String result = req.getScheme()+"://"+
-        	req.getServerName()+":"+
-        	req.getServerPort()+"/voms/"+
-        	VOMSConfiguration.instance().getVOName();
-		
+
+		String result = req.getScheme() + "://" + req.getServerName() + ":"
+				+ req.getServerPort() + "/voms/"
+				+ VOMSConfiguration.instance().getVOName();
+
 		return result;
 	}
-	
-	protected Date getFutureDate(Date initialDate, int field, int increment){
+
+	protected Date getFutureDate(Date initialDate, int field, int increment) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(initialDate);
-		c.add(field,increment);
-		
+		c.add(field, increment);
+
 		return c.getTime();
 	}
 
-	
 }

@@ -6,11 +6,11 @@ import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 public class UserSuspendedEvent extends UserMembershipEvent {
 
 	SuspensionReason reason;
-	
+
 	public UserSuspendedEvent(VOMSUser user, SuspensionReason reason) {
 		super(user);
 		setReason(reason);
-		
+
 	}
 
 	public SuspensionReason getReason() {
@@ -21,8 +21,4 @@ public class UserSuspendedEvent extends UserMembershipEvent {
 		this.reason = reason;
 	}
 
-	
-	
-
-	
 }

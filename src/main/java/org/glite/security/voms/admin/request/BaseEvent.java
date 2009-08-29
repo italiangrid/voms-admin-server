@@ -23,42 +23,42 @@ package org.glite.security.voms.admin.request;
 
 public class BaseEvent implements Event {
 
-    String name;
+	String name;
 
-    public String getName() {
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    public void setName( String name ) {
+	public void setName(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    public BaseEvent( String name ) {
+	public BaseEvent(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    public boolean equals( Object other ) {
+	public boolean equals(Object other) {
 
-        if ( this == other )
-            return true;
-        if ( !( other instanceof BaseEvent ) )
-            return false;
-        BaseEvent that = (BaseEvent) other;
+		if (this == other)
+			return true;
+		if (!(other instanceof BaseEvent))
+			return false;
+		BaseEvent that = (BaseEvent) other;
 
-        return name.equals( that.name );
-    }
+		return name.equals(that.name);
+	}
 
-    public int hashCode() {
+	public int hashCode() {
 
-        return name.hashCode();
-    }
+		return name.hashCode();
+	}
 
-    public String toString() {
+	public String toString() {
 
-        return "e(" + name + ")";
-    }
+		return "e(" + name + ")";
+	}
 
 }

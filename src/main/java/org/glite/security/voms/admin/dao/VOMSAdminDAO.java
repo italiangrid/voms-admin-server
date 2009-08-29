@@ -42,324 +42,321 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.hibernate.Query;
 
-
-
 public class VOMSAdminDAO {
 
-    public static final Log log = LogFactory.getLog( VOMSAdminDAO.class );
+	public static final Log log = LogFactory.getLog(VOMSAdminDAO.class);
 
-    protected VOMSAdminDAO() {
+	protected VOMSAdminDAO() {
 
-        HibernateFactory.beginTransaction();
+		HibernateFactory.beginTransaction();
 
-    }
+	}
 
-    public static VOMSAdminDAO instance() {
+	public static VOMSAdminDAO instance() {
 
-        return new VOMSAdminDAO();
-    }
+		return new VOMSAdminDAO();
+	}
 
-    public List getAll() {
+	public List getAll() {
 
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin";
-        List result = HibernateFactory.getSession().createQuery( query ).list();
-        return result;
-    }
-    
-    public List<VOMSAdmin> getNonInternalAdmins(){
-        
-        String caDN = "/O=VOMS/O=System%";
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString not like :caDN";
-        
-        Query q = HibernateFactory.getSession().createQuery( query );
-        q.setString( "caDN", caDN );
-        
-        return q.list();
-        
-    }
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin";
+		List result = HibernateFactory.getSession().createQuery(query).list();
+		return result;
+	}
 
-    public VOMSAdmin getAnyAuthenticatedUserAdmin() {
+	public List<VOMSAdmin> getNonInternalAdmins() {
 
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
-        Query q = HibernateFactory.getSession().createQuery( query );
+		String caDN = "/O=VOMS/O=System%";
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString not like :caDN";
 
-        q.setString( "dn", VOMSServiceConstants.ANYUSER_ADMIN );
-        q.setString( "caDN", VOMSServiceConstants.VIRTUAL_CA );
+		Query q = HibernateFactory.getSession().createQuery(query);
+		q.setString("caDN", caDN);
 
-        VOMSAdmin a = (VOMSAdmin) q.uniqueResult();
+		return q.list();
 
-        if ( a == null )
-            throw new VOMSDatabaseException(
-                    "Database corrupted! ANYUSER_ADMIN not found in admins table!" );
+	}
 
-        return a;
+	public VOMSAdmin getAnyAuthenticatedUserAdmin() {
 
-    }
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		Query q = HibernateFactory.getSession().createQuery(query);
 
-    public VOMSAdmin getById(Long id){
-        
-        if (id == null)
-            throw new NullArgumentException("id must be non-null!");
-        
-        return (VOMSAdmin)HibernateFactory.getSession().load(VOMSAdmin.class,id);
-        
-    }
-    
-    public VOMSAdmin getByName( String dn, String caDN ) {
+		q.setString("dn", VOMSServiceConstants.ANYUSER_ADMIN);
+		q.setString("caDN", VOMSServiceConstants.VIRTUAL_CA);
 
-        if ( dn == null )
-            throw new NullArgumentException( "dn must be non-null!" );
+		VOMSAdmin a = (VOMSAdmin) q.uniqueResult();
 
-        if ( caDN == null )
-            throw new NullArgumentException( "caDN must be non-null!" );
-        
-        // Normalize dn & ca 
-        dn = DNUtil.normalizeDN(dn);
-        caDN = DNUtil.normalizeDN(caDN);
+		if (a == null)
+			throw new VOMSDatabaseException(
+					"Database corrupted! ANYUSER_ADMIN not found in admins table!");
 
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
-        Query q = HibernateFactory.getSession().createQuery( query );
+		return a;
 
-        q.setString( "dn", dn );
-        q.setString( "caDN", caDN );
+	}
 
-        return (VOMSAdmin) q.uniqueResult();
-        
-    }
-     
-    public VOMSAdmin getFromUser(VOMSUser u){
-        
-        assert u != null: "Cannot look for an admin starting from a null user!";
-        
-        VOMSAdmin result = null;
-        
-        for(Certificate c: u.getCertificates()){
-        
-            // Return the first certificate found...
-            result = getByName( c.getSubjectString(), c.getCa().getSubjectString() );
-            
-            if (result != null)
-                break;
-        }
-        
-        return result;
-    }
-    
-    public VOMSAdmin createFromUser(VOMSUser u){
-        
-        assert u != null: "Cannot create an admin starting from a null user!";
-        
-        VOMSAdmin admin = getFromUser( u );
-        
-        if (admin != null)
-            return admin;
-        
-        admin = new VOMSAdmin();
-        Certificate c = u.getDefaultCertificate();
-        
-        admin.setDn( c.getSubjectString() );
-        admin.setCa( c.getCa());
-        admin.setEmailAddress( u.getEmailAddress() );
-             
-        HibernateFactory.getSession().save( admin );
-        
-        return admin;
-    }
-    
-    public List getRoleAdmins(VOMSRole r){
-        String searchString = "%Role="+r.getName();
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
-        
-        return HibernateFactory.getSession().createQuery( query ).setString( "searchString", searchString ).list();
-        
-    }
-    public void deleteRoleAdmins(VOMSRole r){
-        
-        String searchString = "%Role="+r.getName();
-        String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
-        Iterator i= HibernateFactory.getSession().createQuery( query ).setString( "searchString", searchString ).iterate();
-        
-        while (i.hasNext()){
-            
-            VOMSAdmin a = (VOMSAdmin)i.next();
-            delete( a );
-        }
-        
-    }
-    
-    public VOMSAdmin getByFQAN(String fqan){
-        
-        if (fqan == null)
-            throw new NullArgumentException("fqan must be non-null!");
-        
-        if (PathNamingScheme.isGroup( fqan ))
-            
-            return getByName( fqan, VOMSServiceConstants.GROUP_CA );
-        
-        else if (PathNamingScheme.isQualifiedRole( fqan ))
-            
-            return getByName( fqan, VOMSServiceConstants.ROLE_CA );
-        
-        return null;
-    }
-    
-    public VOMSAdmin create( String fqan){
-        
-        if (fqan == null)
-            throw new NullArgumentException("fqan must be non-null!");
-        
-        PathNamingScheme.checkSyntax( fqan );
-        
-        VOMSAdmin admin = new VOMSAdmin();
-        admin.setDn( fqan );
-        
-        if (PathNamingScheme.isGroup( fqan ))
-            
-            admin.setCa( VOMSCADAO.instance().getGroupCA() );
-        
-        else if (PathNamingScheme.isQualifiedRole( fqan ))
-            
-            admin.setCa( VOMSCADAO.instance().getRoleCA());
-        
-        HibernateFactory.getSession().save( admin );
-        
-        return admin;
-            
-        
-    }
-    
-    
-    
+	public VOMSAdmin getById(Long id) {
 
-    public VOMSAdmin create(String dn, String caDN){
-        
-        return create(dn,caDN,null);
-    }
-    
-    public VOMSAdmin create( String dn, String caDN, String emailAddress ) {
+		if (id == null)
+			throw new NullArgumentException("id must be non-null!");
 
-        if ( dn == null )
-            throw new NullArgumentException( "dn must be non-null!" );
+		return (VOMSAdmin) HibernateFactory.getSession().load(VOMSAdmin.class,
+				id);
 
-        if ( caDN == null )
-            throw new NullArgumentException( "caDN must be non-null!" );
+	}
 
-        // Fix for https://savannah.cern.ch/bugs/?31068
-        caDN = DNUtil.normalizeDN( caDN );
-        
-        VOMSAdmin admin = new VOMSAdmin();
-        VOMSCA ca = VOMSCADAO.instance().getByName( caDN );
+	public VOMSAdmin getByName(String dn, String caDN) {
 
-        if ( ca == null )
-            throw new IllegalArgumentException( "Unkown CA " + caDN
-                    + " passed as argument!" );
+		if (dn == null)
+			throw new NullArgumentException("dn must be non-null!");
 
-        dn = DNUtil.normalizeDN( dn );
-        admin.setDn( dn );
-        admin.setCa( ca );
-        admin.setEmailAddress( emailAddress );
-        HibernateFactory.getSession().save( admin );
-        return admin;
+		if (caDN == null)
+			throw new NullArgumentException("caDN must be non-null!");
 
-    }
+		// Normalize dn & ca
+		dn = DNUtil.normalizeDN(dn);
+		caDN = DNUtil.normalizeDN(caDN);
 
-    public VOMSAdmin create( VOMSAdmin admin ) {
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		Query q = HibernateFactory.getSession().createQuery(query);
 
-        if ( admin == null )
-            throw new NullArgumentException( "admin must not be null!" );
+		q.setString("dn", dn);
+		q.setString("caDN", caDN);
 
-        admin.setDn( DNUtil.normalizeDN( admin.getDn() ) );
-        HibernateFactory.getSession().save( admin );
-        return admin;
+		return (VOMSAdmin) q.uniqueResult();
 
-    }
+	}
 
-    public void delete( VOMSAdmin admin ) {
+	public VOMSAdmin getFromUser(VOMSUser u) {
 
-        if ( admin == null )
-            throw new NullArgumentException( "admin must not be null!" );
+		assert u != null : "Cannot look for an admin starting from a null user!";
 
-        HibernateFactory.getSession().delete( admin );
+		VOMSAdmin result = null;
 
-    }
+		for (Certificate c : u.getCertificates()) {
 
-    public List<VOMSAdmin> getFromCA(VOMSCA ca){
-        
-        assert ca != null: "ca must be non-null!";
-        
-        String query = "from VOMSAdmin where ca = :ca";
-        return HibernateFactory.getSession().createQuery( query ).setEntity( "ca", ca ).list();
-        
-    }
-    public void deleteFromCA(VOMSCA ca){
-        
-        assert ca != null: "ca must be non-null!";
-                
-        log.debug( "Deleting all admins from CA '"+ca+"'" );
-        ACLDAO aclDAO = ACLDAO.instance();
-        
-        for (VOMSAdmin a: getFromCA( ca )){
-            
-            if (aclDAO.hasActivePermissions( a ))
-                aclDAO.deletePermissionsForAdmin( a );
-            
-            HibernateFactory.getSession().delete( a );
-        }
-        
-    }
-    public void delete( String dn, String caDN ) {
+			// Return the first certificate found...
+			result = getByName(c.getSubjectString(), c.getCa()
+					.getSubjectString());
 
-        if ( dn == null )
-            throw new NullArgumentException( "dn must be non-null!" );
+			if (result != null)
+				break;
+		}
 
-        if ( caDN == null )
-            throw new NullArgumentException( "caDN must be non-null!" );
+		return result;
+	}
 
-        VOMSCA ca = VOMSCADAO.instance().getByName( caDN );
+	public VOMSAdmin createFromUser(VOMSUser u) {
 
-        if ( ca == null )
-            throw new NoSuchCAException( "Unknown CA '" + caDN
-                    + "'." );
+		assert u != null : "Cannot create an admin starting from a null user!";
 
-        // FIXME: do it without using an HQL update!
-        Query q = HibernateFactory.getSession().createQuery(
-                "delete from org.glite.security.voms.admin.model.VOMSAdmin where dn = :dn and ca =:ca" )
-                .setString( "dn", dn ).setParameter( "ca", ca );
+		VOMSAdmin admin = getFromUser(u);
 
-        q.executeUpdate();
-    }
+		if (admin != null)
+			return admin;
 
-    
-    public void saveOrUpdate( VOMSAdmin a ) {
+		admin = new VOMSAdmin();
+		Certificate c = u.getDefaultCertificate();
 
-        HibernateFactory.getSession().saveOrUpdate( a );
-    }
+		admin.setDn(c.getSubjectString());
+		admin.setCa(c.getCa());
+		admin.setEmailAddress(u.getEmailAddress());
 
-    public void update( VOMSAdmin a ) {
+		HibernateFactory.getSession().save(admin);
 
-        HibernateFactory.getSession().update( a );
-    }
-    
-    
-    public void assignTagInGroup(VOMSAdmin a, Tag t, VOMSGroup g){
-    	 	
-    	
-    	
-    	
-    }
-    
-    
-    public void assignTagInAllGroups(VOMSAdmin a, Tag t){
-        
-        List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
-        
-        for (VOMSGroup g: groups){
-            
-            if (!a.getTagsInGroup( g ).contains( t ))
-                a.assignTagInGroup( g, t );
-        }
-        
-        update( a );
-    }
-    
+		return admin;
+	}
+
+	public List getRoleAdmins(VOMSRole r) {
+		String searchString = "%Role=" + r.getName();
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
+
+		return HibernateFactory.getSession().createQuery(query).setString(
+				"searchString", searchString).list();
+
+	}
+
+	public void deleteRoleAdmins(VOMSRole r) {
+
+		String searchString = "%Role=" + r.getName();
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
+		Iterator i = HibernateFactory.getSession().createQuery(query)
+				.setString("searchString", searchString).iterate();
+
+		while (i.hasNext()) {
+
+			VOMSAdmin a = (VOMSAdmin) i.next();
+			delete(a);
+		}
+
+	}
+
+	public VOMSAdmin getByFQAN(String fqan) {
+
+		if (fqan == null)
+			throw new NullArgumentException("fqan must be non-null!");
+
+		if (PathNamingScheme.isGroup(fqan))
+
+			return getByName(fqan, VOMSServiceConstants.GROUP_CA);
+
+		else if (PathNamingScheme.isQualifiedRole(fqan))
+
+			return getByName(fqan, VOMSServiceConstants.ROLE_CA);
+
+		return null;
+	}
+
+	public VOMSAdmin create(String fqan) {
+
+		if (fqan == null)
+			throw new NullArgumentException("fqan must be non-null!");
+
+		PathNamingScheme.checkSyntax(fqan);
+
+		VOMSAdmin admin = new VOMSAdmin();
+		admin.setDn(fqan);
+
+		if (PathNamingScheme.isGroup(fqan))
+
+			admin.setCa(VOMSCADAO.instance().getGroupCA());
+
+		else if (PathNamingScheme.isQualifiedRole(fqan))
+
+			admin.setCa(VOMSCADAO.instance().getRoleCA());
+
+		HibernateFactory.getSession().save(admin);
+
+		return admin;
+
+	}
+
+	public VOMSAdmin create(String dn, String caDN) {
+
+		return create(dn, caDN, null);
+	}
+
+	public VOMSAdmin create(String dn, String caDN, String emailAddress) {
+
+		if (dn == null)
+			throw new NullArgumentException("dn must be non-null!");
+
+		if (caDN == null)
+			throw new NullArgumentException("caDN must be non-null!");
+
+		// Fix for https://savannah.cern.ch/bugs/?31068
+		caDN = DNUtil.normalizeDN(caDN);
+
+		VOMSAdmin admin = new VOMSAdmin();
+		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+
+		if (ca == null)
+			throw new IllegalArgumentException("Unkown CA " + caDN
+					+ " passed as argument!");
+
+		dn = DNUtil.normalizeDN(dn);
+		admin.setDn(dn);
+		admin.setCa(ca);
+		admin.setEmailAddress(emailAddress);
+		HibernateFactory.getSession().save(admin);
+		return admin;
+
+	}
+
+	public VOMSAdmin create(VOMSAdmin admin) {
+
+		if (admin == null)
+			throw new NullArgumentException("admin must not be null!");
+
+		admin.setDn(DNUtil.normalizeDN(admin.getDn()));
+		HibernateFactory.getSession().save(admin);
+		return admin;
+
+	}
+
+	public void delete(VOMSAdmin admin) {
+
+		if (admin == null)
+			throw new NullArgumentException("admin must not be null!");
+
+		HibernateFactory.getSession().delete(admin);
+
+	}
+
+	public List<VOMSAdmin> getFromCA(VOMSCA ca) {
+
+		assert ca != null : "ca must be non-null!";
+
+		String query = "from VOMSAdmin where ca = :ca";
+		return HibernateFactory.getSession().createQuery(query).setEntity("ca",
+				ca).list();
+
+	}
+
+	public void deleteFromCA(VOMSCA ca) {
+
+		assert ca != null : "ca must be non-null!";
+
+		log.debug("Deleting all admins from CA '" + ca + "'");
+		ACLDAO aclDAO = ACLDAO.instance();
+
+		for (VOMSAdmin a : getFromCA(ca)) {
+
+			if (aclDAO.hasActivePermissions(a))
+				aclDAO.deletePermissionsForAdmin(a);
+
+			HibernateFactory.getSession().delete(a);
+		}
+
+	}
+
+	public void delete(String dn, String caDN) {
+
+		if (dn == null)
+			throw new NullArgumentException("dn must be non-null!");
+
+		if (caDN == null)
+			throw new NullArgumentException("caDN must be non-null!");
+
+		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+
+		if (ca == null)
+			throw new NoSuchCAException("Unknown CA '" + caDN + "'.");
+
+		// FIXME: do it without using an HQL update!
+		Query q = HibernateFactory
+				.getSession()
+				.createQuery(
+						"delete from org.glite.security.voms.admin.model.VOMSAdmin where dn = :dn and ca =:ca")
+				.setString("dn", dn).setParameter("ca", ca);
+
+		q.executeUpdate();
+	}
+
+	public void saveOrUpdate(VOMSAdmin a) {
+
+		HibernateFactory.getSession().saveOrUpdate(a);
+	}
+
+	public void update(VOMSAdmin a) {
+
+		HibernateFactory.getSession().update(a);
+	}
+
+	public void assignTagInGroup(VOMSAdmin a, Tag t, VOMSGroup g) {
+
+	}
+
+	public void assignTagInAllGroups(VOMSAdmin a, Tag t) {
+
+		List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
+
+		for (VOMSGroup g : groups) {
+
+			if (!a.getTagsInGroup(g).contains(t))
+				a.assignTagInGroup(g, t);
+		}
+
+		update(a);
+	}
+
 }

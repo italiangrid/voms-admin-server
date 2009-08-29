@@ -27,55 +27,55 @@ import org.glite.security.voms.service.attributes.AttributeClass;
 
 public class VOMSAttributeDescription implements Serializable {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    Long id;
+	Long id;
 
-    String name;
+	String name;
 
-    String description;
-    
-    Boolean unique = new Boolean(false);
-    
-    public Long getId() {
+	String description;
 
-        return id;
-    }
+	Boolean unique = new Boolean(false);
 
-    public void setId( Long id ) {
+	public Long getId() {
 
-        this.id = id;
-    }
+		return id;
+	}
 
-    public String getName() {
+	public void setId(Long id) {
 
-        return name;
-    }
+		this.id = id;
+	}
 
-    public void setName( String name ) {
+	public String getName() {
 
-        this.name = name;
-    }
+		return name;
+	}
 
-    public String getDescription() {
+	public void setName(String name) {
 
-        return description;
-    }
+		this.name = name;
+	}
 
-    public void setDescription( String description ) {
+	public String getDescription() {
 
-        this.description = description;
-    }
-    
-    public boolean isUnique(){
-    	
-    	return unique.booleanValue();
-    }
+		return description;
+	}
 
-    public Boolean getUnique() {
+	public void setDescription(String description) {
+
+		this.description = description;
+	}
+
+	public boolean isUnique() {
+
+		return unique.booleanValue();
+	}
+
+	public Boolean getUnique() {
 		return unique;
 	}
 
@@ -83,55 +83,55 @@ public class VOMSAttributeDescription implements Serializable {
 		this.unique = unique;
 	}
 
-	public boolean equals( Object other ) {
+	public boolean equals(Object other) {
 
-        if ( this == other )
-            return true;
+		if (this == other)
+			return true;
 
-        if ( !( other instanceof VOMSAttributeDescription ) )
-            return false;
+		if (!(other instanceof VOMSAttributeDescription))
+			return false;
 
-        if ( other == null )
-            return false;
+		if (other == null)
+			return false;
 
-        VOMSAttributeDescription that = (VOMSAttributeDescription) other;
+		VOMSAttributeDescription that = (VOMSAttributeDescription) other;
 
-        return ( getName().equals( that.getName() ) );
-    }
+		return (getName().equals(that.getName()));
+	}
 
-    public int hashCode() {
+	public int hashCode() {
 
-        return getName().hashCode();
-    }
+		return getName().hashCode();
+	}
 
-    public VOMSAttributeDescription() {
+	public VOMSAttributeDescription() {
 
-        super();
+		super();
 
-    }
+	}
 
-    public VOMSAttributeDescription( String name, String desc ) {
+	public VOMSAttributeDescription(String name, String desc) {
 
-        this.name = name;
-        this.description = desc;
-    }
-    
-    public VOMSAttributeDescription( String name, String desc, boolean uniq ) {
+		this.name = name;
+		this.description = desc;
+	}
 
-        this.name = name;
-        this.description = desc;
-        this.unique = new Boolean(uniq);
-    }
+	public VOMSAttributeDescription(String name, String desc, boolean uniq) {
 
-    public AttributeClass asAttributeClass(){
-        
-        AttributeClass ac = new AttributeClass();
-        
-        ac.setName( getName() );
-        ac.setDescription( getDescription() );
-        ac.setUniquenessChecked( getUnique().booleanValue() );
-        
-        return ac;
-        
-    }
+		this.name = name;
+		this.description = desc;
+		this.unique = new Boolean(uniq);
+	}
+
+	public AttributeClass asAttributeClass() {
+
+		AttributeClass ac = new AttributeClass();
+
+		ac.setName(getName());
+		ac.setDescription(getDescription());
+		ac.setUniquenessChecked(getUnique().booleanValue());
+
+		return ac;
+
+	}
 }

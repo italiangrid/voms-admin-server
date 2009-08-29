@@ -16,12 +16,14 @@ public class ManagePreparer extends ViewPreparerSupport {
 	@Override
 	public void execute(TilesRequestContext tilesContext,
 			AttributeContext attributeContext) throws PreparerException {
-		
-		List<VOMSGroup> groups = (List<VOMSGroup>)ListGroupsOperation.instance().execute();
-		List<VOMSRole> roles = (List<VOMSRole>)ListRolesOperation.instance().execute();
-		
+
+		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation
+				.instance().execute();
+		List<VOMSRole> roles = (List<VOMSRole>) ListRolesOperation.instance()
+				.execute();
+
 		tilesContext.getRequestScope().put("voGroups", groups);
 		tilesContext.getRequestScope().put("voRoles", roles);
-		
+
 	}
 }

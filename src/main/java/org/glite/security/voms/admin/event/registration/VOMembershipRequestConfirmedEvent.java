@@ -5,8 +5,9 @@ import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 public class VOMembershipRequestConfirmedEvent extends VOMembershipRequestEvent {
 
 	String url;
-	
-	public VOMembershipRequestConfirmedEvent(NewVOMembershipRequest r, String managementURL) {
+
+	public VOMembershipRequestConfirmedEvent(NewVOMembershipRequest r,
+			String managementURL) {
 		super(r);
 		url = managementURL;
 	}
@@ -14,7 +15,5 @@ public class VOMembershipRequestConfirmedEvent extends VOMembershipRequestEvent 
 	public String getUrl() {
 		return url;
 	}
-	
-	
 
 }

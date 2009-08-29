@@ -6,10 +6,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-
-@Results({
-	@Result(name=BaseAction.SUCCESS,location="aclHelp"),
-})
+@Results( { @Result(name = BaseAction.SUCCESS, location = "aclHelp")})
 public class HelpAction extends BaseAction {
 
 }

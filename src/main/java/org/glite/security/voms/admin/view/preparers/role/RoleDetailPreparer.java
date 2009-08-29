@@ -9,14 +9,15 @@ import org.apache.tiles.preparer.ViewPreparerSupport;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 
-public class RoleDetailPreparer extends ViewPreparerSupport{
+public class RoleDetailPreparer extends ViewPreparerSupport {
 
 	@Override
 	public void execute(TilesRequestContext tilesContext,
 			AttributeContext attributeContext) throws PreparerException {
-		
-		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
+
+		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation
+				.instance().execute();
 		tilesContext.getRequestScope().put("voGroups", groups);
-		
+
 	}
 }

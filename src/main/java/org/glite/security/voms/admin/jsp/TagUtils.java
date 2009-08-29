@@ -47,16 +47,17 @@ public class TagUtils {
 
 		if (permissionMap.isEmpty())
 			return false;
-		
+
 		Iterator i = permissionMap.entrySet().iterator();
-		
-		while(i.hasNext()){
-			
+
+		while (i.hasNext()) {
+
 			Map.Entry entry = (Entry) i.next();
-			if (!isAuthorized(pageContext, (String)entry.getKey(), (String)entry.getValue()))
+			if (!isAuthorized(pageContext, (String) entry.getKey(),
+					(String) entry.getValue()))
 				return false;
 		}
-		
+
 		return true;
 
 	}
@@ -82,8 +83,9 @@ public class TagUtils {
 
 		else {
 
-            if (context.matches( "^vo/.*$" ))
-                context = context.replace( "vo", VOMSContext.getVoContext().getGroup().getName() );
+			if (context.matches("^vo/.*$"))
+				context = context.replace("vo", VOMSContext.getVoContext()
+						.getGroup().getName());
 			try {
 
 				return VOMSContext.instance(context);

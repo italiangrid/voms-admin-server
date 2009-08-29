@@ -9,22 +9,20 @@ import org.glite.security.voms.admin.model.task.ApproveUserRequestTask;
 import org.glite.security.voms.admin.model.task.SignAUPTask;
 import org.glite.security.voms.admin.model.task.Task;
 
+public interface TaskDAO extends GenericDAO<Task, Long> {
 
-
-public interface TaskDAO extends GenericDAO <Task, Long>{
-	
 	SignAUPTask createSignAUPTask(AUP aup);
 
-    SignAUPTask createSignAUPTask(AUP aup, Date expiryDate);
-        
-    ApproveUserRequestTask createApproveUserRequestTask(Request req);
-    
-    List <Task> findSignAUPTasks();
-    
-    List <Task> findApproveUserRequestTasks();
-    
-    void removeAllTasks();
-    
-    List <Task> getActiveTasks();
-       
+	SignAUPTask createSignAUPTask(AUP aup, Date expiryDate);
+
+	ApproveUserRequestTask createApproveUserRequestTask(Request req);
+
+	List<Task> findSignAUPTasks();
+
+	List<Task> findApproveUserRequestTasks();
+
+	void removeAllTasks();
+
+	List<Task> getActiveTasks();
+
 }

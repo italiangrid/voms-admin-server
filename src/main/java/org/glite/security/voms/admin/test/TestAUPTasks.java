@@ -13,57 +13,52 @@ import org.glite.security.voms.admin.model.task.SignAUPTask;
 public class TestAUPTasks {
 
 	public static final Log log = LogFactory.getLog(TestAUPTasks.class);
-	
-	
-	
+
 	public TestAUPTasks() {
-		
+
 		HibernateFactory.beginTransaction();
-		
+
 		VOMSUser u = TestUtils.createUser();
-		log.info("User "+u);
-		
+		log.info("User " + u);
+
 		TaskDAO tDAO = DAOFactory.instance().getTaskDAO();
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		
+
 		SignAUPTask t1 = tDAO.createSignAUPTask(aupDAO.getVOAUP());
 		u.assignTask(t1);
-		
+
 		HibernateFactory.commitTransaction();
-		
+
 		HibernateFactory.beginTransaction();
-		
+
 		SignAUPTask t2 = tDAO.createSignAUPTask(aupDAO.getVOAUP());
 		u.assignTask(t2);
-		
+
 		HibernateFactory.commitTransaction();
-		
+
 		HibernateFactory.beginTransaction();
-		
+
 		VOMSUserDAO.instance().signAUP(u, aupDAO.getVOAUP());
-		
+
 		HibernateFactory.commitTransaction();
-		
+
 		SignAUPTask t3 = u.getPendingSignAUPTask(aupDAO.getVOAUP());
-		
+
 		log.info("done");
-		
-		
-		
-		
+
 	}
-	
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		TestUtils.configureLogging();
-        TestUtils.setupVOMSConfiguration();
-        TestUtils.setupVOMSDB();
+		TestUtils.setupVOMSConfiguration();
+		TestUtils.setupVOMSDB();
 
-        new TestAUPTasks();
-        
-        System.exit(0);
+		new TestAUPTasks();
+
+		System.exit(0);
 
 	}
 

@@ -12,40 +12,38 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-@Results({
-	@Result(name=BaseAction.INPUT,location="register"),
-	@Result(name=BaseAction.SUCCESS,location="registrationConfirmed"),
-})
+@Results( { @Result(name = BaseAction.INPUT, location = "register"),
+		@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed") })
 public class ConfirmRequestAction extends RegisterActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	String confirmId;
-	
+
 	@Override
 	public String execute() throws Exception {
-		
+
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
-		
+
 		if (!request.getStatus().equals(StatusFlag.SUBMITTED))
-			throw new IllegalArgumentException("Cannot confirm an already confirmed request!");
-		
-		
+			throw new IllegalArgumentException(
+					"Cannot confirm an already confirmed request!");
+
 		if (request.getConfirmId().equals(confirmId))
 			request.setStatus(StatusFlag.CONFIRMED);
-		
-		String manageURL = getBaseURL()+"/home/login.action";
-		
-		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,manageURL));
+
+		String manageURL = getBaseURL() + "/home/login.action";
+
+		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
+				manageURL));
 		return SUCCESS;
 	}
 
-	@RequiredFieldValidator(type=ValidatorType.FIELD, message="A confirmation id is required!")
+	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "A confirmation id is required!")
 	public String getConfirmId() {
 		return confirmId;
 	}
@@ -53,7 +51,5 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 	public void setConfirmId(String confirmId) {
 		this.confirmId = confirmId;
 	}
-	
-	
 
 }

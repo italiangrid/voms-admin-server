@@ -37,292 +37,289 @@ import org.glite.security.voms.admin.database.Auditable;
 import org.glite.security.voms.admin.model.task.Task;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
-
 public class VOMSAdmin implements Serializable, Auditable, Cloneable {
 
-    private static Log log = LogFactory.getLog( VOMSAdmin.class );
+	private static Log log = LogFactory.getLog(VOMSAdmin.class);
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = -5459874418491929253L;
+	private static final long serialVersionUID = -5459874418491929253L;
 
-    Long id;
+	Long id;
 
-    String dn;
+	String dn;
 
-    VOMSCA ca;
+	VOMSCA ca;
 
-    String emailAddress;
-    
-    Set<TagMapping> tagMappings = new HashSet <TagMapping>();
-    
-    Set<Task> tasks = new HashSet<Task>();
-    
-    public VOMSAdmin() {
+	String emailAddress;
 
-    }
+	Set<TagMapping> tagMappings = new HashSet<TagMapping>();
 
-    /**
-     * @return Returns the ca.
-     */
-    public VOMSCA getCa() {
+	Set<Task> tasks = new HashSet<Task>();
 
-        return ca;
-    }
+	public VOMSAdmin() {
 
-    /**
-     * @param ca
-     *            The ca to set.
-     */
-    public void setCa( VOMSCA ca ) {
+	}
 
-        this.ca = ca;
-    }
+	/**
+	 * @return Returns the ca.
+	 */
+	public VOMSCA getCa() {
 
-    /**
-     * @return Returns the dn.
-     */
-    public String getDn() {
+		return ca;
+	}
 
-        return dn;
-    }
+	/**
+	 * @param ca
+	 *            The ca to set.
+	 */
+	public void setCa(VOMSCA ca) {
 
-    /**
-     * @param dn
-     *            The dn to set.
-     */
-    public void setDn( String dn ) {
+		this.ca = ca;
+	}
 
-        this.dn = dn;
-    }
+	/**
+	 * @return Returns the dn.
+	 */
+	public String getDn() {
 
-    /**
-     * @return Returns the id.
-     */
-    public Long getId() {
+		return dn;
+	}
 
-        return id;
-    }
+	/**
+	 * @param dn
+	 *            The dn to set.
+	 */
+	public void setDn(String dn) {
 
-    /**
-     * @param id
-     *            The id to set.
-     */
-    public void setId( Long id ) {
+		this.dn = dn;
+	}
 
-        this.id = id;
-    }
+	/**
+	 * @return Returns the id.
+	 */
+	public Long getId() {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals( Object other ) {
+		return id;
+	}
 
-        if ( this == other )
-            return true;
+	/**
+	 * @param id
+	 *            The id to set.
+	 */
+	public void setId(Long id) {
 
-        if ( !( other instanceof VOMSAdmin ) )
-            return false;
+		this.id = id;
+	}
 
-        if ( other == null )
-            return false;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object other) {
 
-        final VOMSAdmin that = (VOMSAdmin) other;
+		if (this == other)
+			return true;
 
-        return ( getDn().equals( that.getDn() ) );
-    }
+		if (!(other instanceof VOMSAdmin))
+			return false;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
+		if (other == null)
+			return false;
 
-        return getDn().hashCode();
-    }
+		final VOMSAdmin that = (VOMSAdmin) other;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() throws CloneNotSupportedException {
+		return (getDn().equals(that.getDn()));
+	}
 
-        VOMSAdmin newInstance = (VOMSAdmin) super.clone();
-        newInstance.id = id;
-        newInstance.dn = dn;
-        newInstance.ca = ca;
-        return newInstance;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
 
-    /* Service methods */
+		return getDn().hashCode();
+	}
 
-    public String toString() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException {
 
-    		ToStringBuilder builder = new ToStringBuilder(this);
-    		
-    		return builder.append(dn).append(ca.getSubjectString()).toString();
-        
-    }
-    
-    
-    public String getEmailAddress() {
-    
-        return emailAddress;
-    }
+		VOMSAdmin newInstance = (VOMSAdmin) super.clone();
+		newInstance.id = id;
+		newInstance.dn = dn;
+		newInstance.ca = ca;
+		return newInstance;
+	}
 
-    
-    public void setEmailAddress( String emailAddress ) {
-    
-        this.emailAddress = emailAddress;
-    }
+	/* Service methods */
 
-    public boolean isInternalAdmin(){
-        return getCa().getSubjectString().startsWith( VOMSServiceConstants.INTERNAL_DN_PREFIX );    
-    }
-    
-    
-    public boolean isGroupAdmin(){
-        
-        boolean result;
-        try{
-            
-            result = PathNamingScheme.isGroup( getDn() );
-            
-        }catch (VOMSSyntaxException e) {
-            
-            return false;
-        }
-        
-        return result ;
-    }
-    
-    public boolean isRoleAdmin(){
-        boolean result;
-        
-        try{
-            
-            result = PathNamingScheme.isQualifiedRole( getDn() );
-            
-        }catch (VOMSSyntaxException e) {
-            
-            return false;
-        }
-        return result;
-    }
+	public String toString() {
 
-    
-    /**
-     * @return the mappings
-     */
-    public Set <TagMapping> getTagMappings() {
-    
-        return tagMappings;
-    }
+		ToStringBuilder builder = new ToStringBuilder(this);
 
-    
-    /**
-     * @param mappings the mappings to set
-     */
-    public void setTagMappings( Set <TagMapping> mappings ) {
-    
-        this.tagMappings = mappings;
-    }
-    
-    
-    public Set<Tag> getTagsInContext(VOMSContext c){
-        
-        if (c.isGroupContext())
-            return getTagsInGroup( c.getGroup() );
-        else
-            return getTagsInRole( c.getGroup(), c.getRole() );
-            
-    }
-    
-    public Set<Tag> getTagsInGroup(VOMSGroup g){
-        
-        Set<Tag> result = new HashSet <Tag>();
-        
-        for (TagMapping m: tagMappings){
-            
-            if (m.getAdmin().equals( this ) && m.getGroup().equals( g ))
-                result.add( m.getTag() );
-        }
-        
-        return result;
-    }
-    
-    public Set<Tag> getTagsInRole(VOMSGroup g, VOMSRole r){
-        
-        Set<Tag> result = new HashSet <Tag>();
-        
-        for (TagMapping m: tagMappings){
-            
-            if (!m.isGroupMapping())
-                continue;
-            
-            if (m.getAdmin().equals( this ) && m.getGroup().equals( g ) && m.getRole().equals( r ))
-                result.add( m.getTag() );
-        }
-        
-        return result;
-    }
-    
-    
-    public void assignTagInGroup(VOMSGroup group, Tag tag){
-        
-        if ( group == null )
-            throw new NullArgumentException( "group cannot be null!" );
-        
-        if ( tag == null )
-            throw new NullArgumentException( "tag cannot be null!" );
-        
-        TagMapping m = new TagMapping(tag,group,null,this);
-        
-        if (!getTagMappings().add( m ))
-            throw new AlreadyExistsException("Admin '"+this+"' already has tag '"+tag+"' in group '"+group+"'");
-        
-    }
-    
-    public void assignTagInRole(VOMSGroup group, VOMSRole role, Tag tag){
-        
-        if ( group == null )
-            throw new NullArgumentException( "group cannot be null!" );
-        
-        if ( tag == null )
-            throw new NullArgumentException( "tag cannot be null!" );
-        
-        if ( role == null )
-            throw new NullArgumentException( "role cannot be null!" );
-        
-        TagMapping m = new TagMapping(tag,group, role, this);
-        
-        if (!getTagMappings().add( m ))
-            throw new AlreadyExistsException("Admin '"+this+"' already has tag '"+tag+"' in group '"+group+"'");
-        
-    }
+		return builder.append(dn).append(ca.getSubjectString()).toString();
 
-    
-    /**
-     * @return the tasks
-     */
-    public Set <Task> getTasks() {
-    
-        return tasks;
-    }
+	}
 
-    
-    /**
-     * @param tasks the tasks to set
-     */
-    public void setTasks( Set <Task> tasks ) {
-    
-        this.tasks = tasks;
-    }
-    
-    
+	public String getEmailAddress() {
+
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+
+		this.emailAddress = emailAddress;
+	}
+
+	public boolean isInternalAdmin() {
+		return getCa().getSubjectString().startsWith(
+				VOMSServiceConstants.INTERNAL_DN_PREFIX);
+	}
+
+	public boolean isGroupAdmin() {
+
+		boolean result;
+		try {
+
+			result = PathNamingScheme.isGroup(getDn());
+
+		} catch (VOMSSyntaxException e) {
+
+			return false;
+		}
+
+		return result;
+	}
+
+	public boolean isRoleAdmin() {
+		boolean result;
+
+		try {
+
+			result = PathNamingScheme.isQualifiedRole(getDn());
+
+		} catch (VOMSSyntaxException e) {
+
+			return false;
+		}
+		return result;
+	}
+
+	/**
+	 * @return the mappings
+	 */
+	public Set<TagMapping> getTagMappings() {
+
+		return tagMappings;
+	}
+
+	/**
+	 * @param mappings
+	 *            the mappings to set
+	 */
+	public void setTagMappings(Set<TagMapping> mappings) {
+
+		this.tagMappings = mappings;
+	}
+
+	public Set<Tag> getTagsInContext(VOMSContext c) {
+
+		if (c.isGroupContext())
+			return getTagsInGroup(c.getGroup());
+		else
+			return getTagsInRole(c.getGroup(), c.getRole());
+
+	}
+
+	public Set<Tag> getTagsInGroup(VOMSGroup g) {
+
+		Set<Tag> result = new HashSet<Tag>();
+
+		for (TagMapping m : tagMappings) {
+
+			if (m.getAdmin().equals(this) && m.getGroup().equals(g))
+				result.add(m.getTag());
+		}
+
+		return result;
+	}
+
+	public Set<Tag> getTagsInRole(VOMSGroup g, VOMSRole r) {
+
+		Set<Tag> result = new HashSet<Tag>();
+
+		for (TagMapping m : tagMappings) {
+
+			if (!m.isGroupMapping())
+				continue;
+
+			if (m.getAdmin().equals(this) && m.getGroup().equals(g)
+					&& m.getRole().equals(r))
+				result.add(m.getTag());
+		}
+
+		return result;
+	}
+
+	public void assignTagInGroup(VOMSGroup group, Tag tag) {
+
+		if (group == null)
+			throw new NullArgumentException("group cannot be null!");
+
+		if (tag == null)
+			throw new NullArgumentException("tag cannot be null!");
+
+		TagMapping m = new TagMapping(tag, group, null, this);
+
+		if (!getTagMappings().add(m))
+			throw new AlreadyExistsException("Admin '" + this
+					+ "' already has tag '" + tag + "' in group '" + group
+					+ "'");
+
+	}
+
+	public void assignTagInRole(VOMSGroup group, VOMSRole role, Tag tag) {
+
+		if (group == null)
+			throw new NullArgumentException("group cannot be null!");
+
+		if (tag == null)
+			throw new NullArgumentException("tag cannot be null!");
+
+		if (role == null)
+			throw new NullArgumentException("role cannot be null!");
+
+		TagMapping m = new TagMapping(tag, group, role, this);
+
+		if (!getTagMappings().add(m))
+			throw new AlreadyExistsException("Admin '" + this
+					+ "' already has tag '" + tag + "' in group '" + group
+					+ "'");
+
+	}
+
+	/**
+	 * @return the tasks
+	 */
+	public Set<Task> getTasks() {
+
+		return tasks;
+	}
+
+	/**
+	 * @param tasks
+	 *            the tasks to set
+	 */
+	public void setTasks(Set<Task> tasks) {
+
+		this.tasks = tasks;
+	}
+
 }

@@ -30,10 +30,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.InitSecurityContext;
 
-
 /**
- * This class is an AXIS handler that can be put in a <i>org.glite.security.voms.admin.request flow</i> in
- * front of an actual SOAP endpoint that it initializes the SecurityContext.
+ * This class is an AXIS handler that can be put in a
+ * <i>org.glite.security.voms.admin.request flow</i> in front of an actual SOAP
+ * endpoint that it initializes the SecurityContext.
  * <p>
  * Currently, only the case of SOAP over HTTPS with client authentication is
  * supported.
@@ -48,7 +48,8 @@ import org.glite.security.voms.admin.common.InitSecurityContext;
  *   &lt;/handler&gt;
  * </pre>
  * 
- * A org.glite.security.voms.admin.request flow also needs to be defined for the org.glite.security.voms.admin.servlets in question:
+ * A org.glite.security.voms.admin.request flow also needs to be defined for the
+ * org.glite.security.voms.admin.servlets in question:
  * 
  * <pre>
  *   &lt;org.glite.security.voms.admin.service name=&quot;TestService&quot; ...&gt;
@@ -63,37 +64,37 @@ import org.glite.security.voms.admin.common.InitSecurityContext;
  */
 public class SecurityContextHandler extends BasicHandler {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 5598719642627462697L;
+	private static final long serialVersionUID = 5598719642627462697L;
 
-    protected static Log log = LogFactory.getLog( SecurityContextHandler.class );
+	protected static Log log = LogFactory.getLog(SecurityContextHandler.class);
 
-    /**
-     * Initializes the SecurityContext from a {@link
-     * org.apache.axis.MessageContext}.
-     * 
-     * @see org.apache.axis.Handler#invoke(MessageContext)
-     */
-    public void invoke( final MessageContext mc ) throws AxisFault {
+	/**
+	 * Initializes the SecurityContext from a
+	 * {@link org.apache.axis.MessageContext}.
+	 * 
+	 * @see org.apache.axis.Handler#invoke(MessageContext)
+	 */
+	public void invoke(final MessageContext mc) throws AxisFault {
 
-        // Try to initialize the client's certificate chain from the org.glite.security.voms.admin.servlets
-        // container's (e.g. tomcat) context.
+		// Try to initialize the client's certificate chain from the
+		// org.glite.security.voms.admin.servlets
+		// container's (e.g. tomcat) context.
 
-        ServletRequest req = (ServletRequest) MessageContext
-                .getCurrentContext().getProperty(
-                        HTTPConstants.MC_HTTP_SERVLETREQUEST );
-        if ( req == null ) {
-            log.warn( "SOAP Authorization: MC_HTTP_SERVLETREQUEST is null" );
-            InitSecurityContext.setClearContext();
+		ServletRequest req = (ServletRequest) MessageContext
+				.getCurrentContext().getProperty(
+						HTTPConstants.MC_HTTP_SERVLETREQUEST);
+		if (req == null) {
+			log.warn("SOAP Authorization: MC_HTTP_SERVLETREQUEST is null");
+			InitSecurityContext.setClearContext();
 
-        } else {
-            InitSecurityContext.setContextFromRequest( req );
-        }
-    }
-    
-    
+		} else {
+			InitSecurityContext.setContextFromRequest(req);
+		}
+	}
+
 }
 
 // Please do not change this line.

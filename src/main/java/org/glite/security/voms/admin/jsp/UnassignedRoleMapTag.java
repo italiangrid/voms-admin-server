@@ -1,4 +1,5 @@
 package org.glite.security.voms.admin.jsp;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,38 +13,37 @@ import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.FindUnassignedRoles;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 
-
 public class UnassignedRoleMapTag extends TagSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	String userId;
 	String var;
-	
+
 	@Override
 	public int doStartTag() throws JspException {
-		
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(Long.parseLong(userId)).execute();
-		
+
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(
+				Long.parseLong(userId)).execute();
+
 		Map unassignedRoles = new HashMap();
 
-        Iterator<VOMSGroup> groups = u.getGroups().iterator();
+		Iterator<VOMSGroup> groups = u.getGroups().iterator();
 
-        while ( groups.hasNext() ) {
+		while (groups.hasNext()) {
 
-            VOMSGroup g = (VOMSGroup) groups.next();
-            List roles = (List) FindUnassignedRoles.instance( u.getId(),
-                    g.getId() ).execute();
-            
-            unassignedRoles.put( g.getId(), roles );
-        }
-		
-        pageContext.setAttribute(var, unassignedRoles);
-        
+			VOMSGroup g = (VOMSGroup) groups.next();
+			List roles = (List) FindUnassignedRoles.instance(u.getId(),
+					g.getId()).execute();
+
+			unassignedRoles.put(g.getId(), roles);
+		}
+
+		pageContext.setAttribute(var, unassignedRoles);
+
 		return SKIP_BODY;
 	}
 
@@ -62,5 +62,5 @@ public class UnassignedRoleMapTag extends TagSupport {
 	public void setVar(String var) {
 		this.var = var;
 	}
-	
+
 }

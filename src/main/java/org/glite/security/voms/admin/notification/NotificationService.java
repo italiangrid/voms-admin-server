@@ -40,12 +40,13 @@ public class NotificationService {
 
 	ExecutorService executorService;
 
-	int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt("voms.noification.max_delivery_attempt_count",5);
-	
-	long sleepTimeBeforeRetry = 30; 
-	
+	int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt(
+			"voms.noification.max_delivery_attempt_count", 5);
+
+	long sleepTimeBeforeRetry = 30;
+
 	private NotificationService() {
-		
+
 		executorService = Executors.newSingleThreadExecutor();
 		executorService.submit(new NotificationRunner(outgoingMessages));
 
@@ -59,13 +60,11 @@ public class NotificationService {
 		return singleton;
 	}
 
+	public void stop() {
 
-	
-	public void stop(){
-		
 		log.info("Shutting down notification service");
 		executorService.shutdownNow();
-		
+
 	}
 
 	public void send(EmailNotification n) {
@@ -74,61 +73,66 @@ public class NotificationService {
 		outgoingMessages.add(n);
 
 	}
-	
-	class NotificationRunner implements Runnable{
-		
+
+	class NotificationRunner implements Runnable {
+
 		final LinkedBlockingQueue<EmailNotification> outgoingQueue;
-		
-		public NotificationRunner(LinkedBlockingQueue<EmailNotification> outgoingQueue) {
+
+		public NotificationRunner(
+				LinkedBlockingQueue<EmailNotification> outgoingQueue) {
 			this.outgoingQueue = outgoingQueue;
 		}
-		
-		
+
 		public void run() {
-			for (;;){
-				
+			for (;;) {
+
 				boolean deliveryHadErrors = false;
-				
-				try{
-					
+
+				try {
+
 					EmailNotification n = outgoingQueue.take();
-					log.debug("Fetched outgoing message "+n);
-					
-					try{
+					log.debug("Fetched outgoing message " + n);
+
+					try {
 						n.send();
 						deliveryHadErrors = false;
-						log.info("Notification '"+n+"' delivered succesfully.");
-					
-					}catch(VOMSNotificationException e){
-					
+						log.info("Notification '" + n
+								+ "' delivered succesfully.");
+
+					} catch (VOMSNotificationException e) {
+
 						deliveryHadErrors = true;
-						log.error("Error dispatching email notification '"+n+"': "+e, e);
-						
-						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount){
+						log.error("Error dispatching email notification '" + n
+								+ "': " + e, e);
+
+						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount) {
 							outgoingQueue.put(n);
-						}
-						else
-							log.warn("Discarding notification '"+n+"' after "+n.getDeliveryAttemptCount()+" failed delivery attempts.");
-						
-					}catch(Throwable t){
-						
-						log.error("Error dispatching email notification '"+n+"': "+t.getMessage());
+						} else
+							log.warn("Discarding notification '" + n
+									+ "' after " + n.getDeliveryAttemptCount()
+									+ " failed delivery attempts.");
+
+					} catch (Throwable t) {
+
+						log.error("Error dispatching email notification '" + n
+								+ "': " + t.getMessage());
 						if (log.isDebugEnabled())
-							log.error("Error dispatching email notification '"+n+"': "+t.getMessage(),t);
-						
+							log.error("Error dispatching email notification '"
+									+ n + "': " + t.getMessage(), t);
+
 						deliveryHadErrors = true;
-						
+
 					}
-					
+
 					if (deliveryHadErrors && !outgoingQueue.isEmpty())
 						TimeUnit.SECONDS.sleep(sleepTimeBeforeRetry);
-						
-				}catch (InterruptedException e){
-					
+
+				} catch (InterruptedException e) {
+
 					return;
 				}
 			}
-			
+
 		}
 	}
 

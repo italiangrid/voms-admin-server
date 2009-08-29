@@ -21,7 +21,8 @@
 
 package org.glite.security.voms.admin.operations;
 
-public abstract class BaseAttributeRWOperation extends SingleContextVomsOperation {
+public abstract class BaseAttributeRWOperation extends
+		SingleContextVomsOperation {
 
 	protected BaseAttributeRWOperation(VOMSContext ctxt) {
 		super(ctxt);
@@ -29,6 +30,7 @@ public abstract class BaseAttributeRWOperation extends SingleContextVomsOperatio
 
 	protected void setupPermissions() {
 		// TODO Auto-generated method stub
-		addRequiredPermission(__context,VOMSPermission.getAttributesRWPermissions());
+		addRequiredPermission(__context, VOMSPermission
+				.getAttributesRWPermissions());
 	}
 }

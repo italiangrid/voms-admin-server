@@ -21,11 +21,11 @@
 
 package org.glite.security.voms.admin.operations;
 
-
 public abstract class BaseVoReadOperation extends BaseVomsOperation {
 
 	protected void setupPermissions() {
-		
-		addRequiredPermission(VOMSContext.getVoContext(),VOMSPermission.getContainerReadPermission().setMembershipReadPermission());
+
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+				.getContainerReadPermission().setMembershipReadPermission());
 	}
 }

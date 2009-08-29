@@ -27,135 +27,135 @@ import org.apache.log4j.PropertyConfigurator;
 
 public class StateMachine implements Flow {
 
-    private static final Log log = LogFactory.getLog( StateMachine.class );
+	private static final Log log = LogFactory.getLog(StateMachine.class);
 
-    TransitionMap map = new TransitionMap();
+	TransitionMap map = new TransitionMap();
 
-    TransitionLog tLog = new TransitionLog();
+	TransitionLog tLog = new TransitionLog();
 
-    State currentState;
+	State currentState;
 
-    State initialState;
+	State initialState;
 
-    ActionSequence preTransitionActions = new ActionSequence();
+	ActionSequence preTransitionActions = new ActionSequence();
 
-    ActionSequence postTransitionActions = new ActionSequence();
+	ActionSequence postTransitionActions = new ActionSequence();
 
-    public StateMachine( State s, TransitionMap m ) {
+	public StateMachine(State s, TransitionMap m) {
 
-        currentState = initialState = s;
-        map = m;
-    }
+		currentState = initialState = s;
+		map = m;
+	}
 
-    public State getCurrentState() {
+	public State getCurrentState() {
 
-        return currentState;
-    }
+		return currentState;
+	}
 
-    public State process( Event e ) {
+	public State process(Event e) {
 
-        log.debug( "Processing event: " + e );
+		log.debug("Processing event: " + e);
 
-        State targetState = map.getTargetState( currentState, e );
-        if ( targetState == null )
-            logAndThrowException( new NoSuchTransitionException( "("
-                    + currentState + "," + e + ")-->?" ) );
+		State targetState = map.getTargetState(currentState, e);
+		if (targetState == null)
+			logAndThrowException(new NoSuchTransitionException("("
+					+ currentState + "," + e + ")-->?"));
 
-        if ( !map.containsKey( targetState ) )
-            logAndThrowException( new IllegalTargetStateException( targetState
-                    .toString() ) );
+		if (!map.containsKey(targetState))
+			logAndThrowException(new IllegalTargetStateException(targetState
+					.toString()));
 
-        logTransition( targetState, e );
+		logTransition(targetState, e);
 
-        // Execute pre-transition actions
-        // TODO what to do with the return value? log it?
-        preTransitionActions.execute();
+		// Execute pre-transition actions
+		// TODO what to do with the return value? log it?
+		preTransitionActions.execute();
 
-        currentState = targetState;
+		currentState = targetState;
 
-        // TODO what to do with the return value?
-        currentState.executeActions();
+		// TODO what to do with the return value?
+		currentState.executeActions();
 
-        // Execute post-transition actions
-        // TODO what to do with the return value?
-        postTransitionActions.execute();
+		// Execute post-transition actions
+		// TODO what to do with the return value?
+		postTransitionActions.execute();
 
-        if ( inFinalState() )
-            log.debug( "Reached final state: " + currentState );
+		if (inFinalState())
+			log.debug("Reached final state: " + currentState);
 
-        return currentState;
-    }
+		return currentState;
+	}
 
-    public boolean inFinalState() {
+	public boolean inFinalState() {
 
-        return map.isFinalState( currentState );
-    }
+		return map.isFinalState(currentState);
+	}
 
-    private void logAndThrowException( StateMachineException e ) {
+	private void logAndThrowException(StateMachineException e) {
 
-        tLog.logException( currentState, e );
+		tLog.logException(currentState, e);
 
-        throw e;
-    }
+		throw e;
+	}
 
-    private void logTransition( State targetState, Event e ) {
+	private void logTransition(State targetState, Event e) {
 
-        log.debug( "Transition:(" + currentState + "," + e + ")-->"
-                + targetState );
-        tLog.logTransition( currentState, targetState, e );
-    }
+		log.debug("Transition:(" + currentState + "," + e + ")-->"
+				+ targetState);
+		tLog.logTransition(currentState, targetState, e);
+	}
 
-    public static void main( String[] args ) {
+	public static void main(String[] args) {
 
-        PropertyConfigurator.configure("./src/webapp/WEB-INF/classes/log4j.properties");
-        
-        BaseState initialState = new BaseState( "WAITING" );
-        BaseState finalState = new BaseState( "DONE" );
-        
-        BaseEvent signal = new BaseEvent( "signal" );
+		PropertyConfigurator
+				.configure("./src/webapp/WEB-INF/classes/log4j.properties");
 
-        TransitionMap map = new TransitionMap();
+		BaseState initialState = new BaseState("WAITING");
+		BaseState finalState = new BaseState("DONE");
 
-        map.addStates( new State[] { initialState, finalState } );
-        map.addTransition( initialState,
-                new BaseTransition( signal, finalState ) );
+		BaseEvent signal = new BaseEvent("signal");
 
-        StateMachine sm = new StateMachine( initialState, map );
-        sm.process( signal );
-        
-        log.info( sm.map );
-        log.info( sm.tLog );
-    }
+		TransitionMap map = new TransitionMap();
 
-    public void addStates( State[] states ) {
+		map.addStates(new State[] { initialState, finalState });
+		map.addTransition(initialState, new BaseTransition(signal, finalState));
 
-        map.addStates( states );
-    }
+		StateMachine sm = new StateMachine(initialState, map);
+		sm.process(signal);
 
-    public void addStates( String[] stateNames ) {
+		log.info(sm.map);
+		log.info(sm.tLog);
+	}
 
-        map.addStates( stateNames );
-    }
+	public void addStates(State[] states) {
 
-    public void addTransition( String initialStateName, Event e,
-            String finalStateName ) {
+		map.addStates(states);
+	}
 
-        map.addTransition( initialStateName, e, finalStateName );
-    }
+	public void addStates(String[] stateNames) {
 
-    public State getState( String name ) {
+		map.addStates(stateNames);
+	}
 
-        return map.getState( name );
-    }
+	public void addTransition(String initialStateName, Event e,
+			String finalStateName) {
 
-    public void addPreTransitionAction( Action a ) {
+		map.addTransition(initialStateName, e, finalStateName);
+	}
 
-        preTransitionActions.addAction( a );
-    }
+	public State getState(String name) {
 
-    public void addPostTransitionAction( Action a ) {
+		return map.getState(name);
+	}
 
-        postTransitionActions.addAction( a );
-    }
+	public void addPreTransitionAction(Action a) {
+
+		preTransitionActions.addAction(a);
+	}
+
+	public void addPostTransitionAction(Action a) {
+
+		postTransitionActions.addAction(a);
+	}
 
 }

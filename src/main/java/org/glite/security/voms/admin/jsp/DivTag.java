@@ -10,9 +10,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 
 public class DivTag extends TagSupport {
-	
+
 	String id;
-	
+
 	String cssClass;
 
 	public String getId() {
@@ -22,11 +22,11 @@ public class DivTag extends TagSupport {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	protected boolean isVisible() {
 		Map statusMap = (Map) pageContext
 				.findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
-		
+
 		if (statusMap == null)
 			return true;
 
@@ -45,37 +45,38 @@ public class DivTag extends TagSupport {
 	public void setCssClass(String cssClass) {
 		this.cssClass = cssClass;
 	}
-	
+
 	@Override
 	public int doStartTag() throws JspException {
-		
+
 		String styleContent = "";
-		
+
 		if (!isVisible())
 			styleContent = "display:none";
-		
-		
-		String startTag = String.format("<div id=\"%s\" class=\"%s\" style=\"%s\">", getId(), getCssClass(),styleContent);
-		
+
+		String startTag = String.format(
+				"<div id=\"%s\" class=\"%s\" style=\"%s\">", getId(),
+				getCssClass(), styleContent);
+
 		try {
 			pageContext.getOut().write(startTag);
-		
+
 		} catch (IOException e) {
-			throw new JspTagException( "Error writing to jsp writer!",e );
+			throw new JspTagException("Error writing to jsp writer!", e);
 		}
-		
+
 		return EVAL_BODY_INCLUDE;
 	}
-	
+
 	@Override
 	public int doEndTag() throws JspException {
 		try {
-			pageContext.getOut().write("\n</div><!-- "+getId()+"-->");
-		
+			pageContext.getOut().write("\n</div><!-- " + getId() + "-->");
+
 		} catch (IOException e) {
-			throw new JspTagException( "Error writing to jsp writer!",e );
+			throw new JspTagException("Error writing to jsp writer!", e);
 		}
-		
+
 		return EVAL_PAGE;
 	}
 

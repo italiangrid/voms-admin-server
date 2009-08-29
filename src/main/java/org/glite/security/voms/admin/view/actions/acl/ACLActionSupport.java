@@ -11,36 +11,34 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-public abstract class ACLActionSupport extends BaseAction implements Preparable, ModelDriven<ACL>{
+public abstract class ACLActionSupport extends BaseAction implements
+		Preparable, ModelDriven<ACL> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	Long aclId = -1L;
 	Long adminId = -1L;
-	
+
 	ACL model;
 	VOMSAdmin admin;
-	
-	
+
 	protected Boolean propagate;
-	
+
 	public void prepare() throws Exception {
-		
-		if (getModel()==null){
-			
-			if (getAclId()!= -1)
+
+		if (getModel() == null) {
+
+			if (getAclId() != -1)
 				model = ACLDAO.instance().getById(getAclId());
-			
+
 			if (getAdminId() != -1)
 				admin = VOMSAdminDAO.instance().getById(getAdminId());
-				
+
 		}
-		
-		
+
 	}
 
 	public ACL getModel() {
@@ -48,7 +46,6 @@ public abstract class ACLActionSupport extends BaseAction implements Preparable,
 		return model;
 	}
 
-	
 	public Long getAclId() {
 		return aclId;
 	}
@@ -65,7 +62,6 @@ public abstract class ACLActionSupport extends BaseAction implements Preparable,
 		this.adminId = adminId;
 	}
 
-	
 	public VOMSAdmin getAdmin() {
 		return admin;
 	}
@@ -73,7 +69,7 @@ public abstract class ACLActionSupport extends BaseAction implements Preparable,
 	public void setAdmin(VOMSAdmin admin) {
 		this.admin = admin;
 	}
-	
+
 	public Boolean getPropagate() {
 		return propagate;
 	}
@@ -81,5 +77,5 @@ public abstract class ACLActionSupport extends BaseAction implements Preparable,
 	public void setPropagate(Boolean propagate) {
 		this.propagate = propagate;
 	}
-	
+
 }

@@ -7,83 +7,76 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name="personal_info")
+@Table(name = "personal_info")
 public class PersonalInformationRecord {
 
-    
-    @Id
-    @GeneratedValue
-    Long id;
-    
-    @ManyToOne
-    @JoinColumn(name="personal_info_type_id", nullable=false)
-    PersonalInformationType type;
-    
-    String value;
-    
-    Boolean visible;
-    
-    
-    public PersonalInformationRecord() {
+	@Id
+	@GeneratedValue
+	Long id;
 
-        // TODO Auto-generated constructor stub
-    }
-    
-    /**
-     * @return the id
-     */
-    public Long getId() {
-    
-        return id;
-    }
+	@ManyToOne
+	@JoinColumn(name = "personal_info_type_id", nullable = false)
+	PersonalInformationType type;
 
-    
-    /**
-     * @return the type
-     */
-    public PersonalInformationType getType() {
-    
-        return type;
-    }
+	String value;
 
-    
-    /**
-     * @return the value
-     */
-    public String getValue() {
-    
-        return value;
-    }
+	Boolean visible;
 
-    
-    /**
-     * @param id the id to set
-     */
-    public void setId( Long id ) {
-    
-        this.id = id;
-    }
+	public PersonalInformationRecord() {
 
-    
-    /**
-     * @param type the type to set
-     */
-    public void setType( PersonalInformationType type ) {
-    
-        this.type = type;
-    }
+		// TODO Auto-generated constructor stub
+	}
 
-    
-    /**
-     * @param value the value to set
-     */
-    public void setValue( String value ) {
-    
-        this.value = value;
-    }
-    
-    
-    
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+
+		return id;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public PersonalInformationType getType() {
+
+		return type;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+
+		return value;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
+
+		this.id = id;
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(PersonalInformationType type) {
+
+		this.type = type;
+	}
+
+	/**
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(String value) {
+
+		this.value = value;
+	}
+
 }

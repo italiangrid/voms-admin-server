@@ -26,8 +26,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-public class AuthorizedTag extends TagSupport{
-	
+public class AuthorizedTag extends TagSupport {
+
 	String context;
 
 	String permission;

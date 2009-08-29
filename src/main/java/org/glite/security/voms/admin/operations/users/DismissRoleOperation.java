@@ -34,65 +34,73 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 
-
 public class DismissRoleOperation extends BaseVomsOperation {
 
-    VOMSUser user;
+	VOMSUser user;
 
-    VOMSGroup group;
+	VOMSGroup group;
 
-    VOMSRole role;
+	VOMSRole role;
 
-    private DismissRoleOperation( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	private DismissRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-        this.user = u;
-        this.group = g;
-        this.role = r;
-    }
+		this.user = u;
+		this.group = g;
+		this.role = r;
+	}
 
-    public VOMSContext getContext() {
+	public VOMSContext getContext() {
 
-        return VOMSContext.instance( group );
-    }
+		return VOMSContext.instance(group);
+	}
 
-    public VOMSPermission getRequiredPermission() {
+	public VOMSPermission getRequiredPermission() {
 
-        return VOMSPermission.getContainerRWPermissions();
-    }
+		return VOMSPermission.getContainerRWPermissions();
+	}
 
-    public Object doExecute() {
+	public Object doExecute() {
 
-        VOMSUserDAO.instance().dismissRole( user, group, role );
+		VOMSUserDAO.instance().dismissRole(user, group, role);
 
-        return null;
-    }
+		return null;
+	}
 
-    public static DismissRoleOperation instance(String groupName, String roleName, String userName, String caDn){
-		
-		VOMSUser u = (VOMSUser)FindUserOperation.instance(userName,caDn).execute();
-		VOMSGroup g = (VOMSGroup)FindGroupOperation.instance(groupName).execute();
-		VOMSRole r = (VOMSRole)FindRoleOperation.instance(roleName).execute();
-		
-        if (u == null)
-            throw new NoSuchUserException("User '"+userName+","+caDn+"' not found in this vo.");
-        
-        if (g == null)
-            throw new NoSuchGroupException("Group '"+groupName+"' does not exist in this vo.");
-        
-        if (r == null)
-            throw new NoSuchRoleException("Role '"+roleName+"' does not exists in this vo.");
-        
-		return new DismissRoleOperation(u,g,r);
-	
-}
-    public static DismissRoleOperation instance( VOMSUser u, VOMSGroup g, VOMSRole r ) {
+	public static DismissRoleOperation instance(String groupName,
+			String roleName, String userName, String caDn) {
 
-        return new DismissRoleOperation( u, g, r ) ;
-    }
+		VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
+				.execute();
+		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
+				.execute();
+		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+
+		if (u == null)
+			throw new NoSuchUserException("User '" + userName + "," + caDn
+					+ "' not found in this vo.");
+
+		if (g == null)
+			throw new NoSuchGroupException("Group '" + groupName
+					+ "' does not exist in this vo.");
+
+		if (r == null)
+			throw new NoSuchRoleException("Role '" + roleName
+					+ "' does not exists in this vo.");
+
+		return new DismissRoleOperation(u, g, r);
+
+	}
+
+	public static DismissRoleOperation instance(VOMSUser u, VOMSGroup g,
+			VOMSRole r) {
+
+		return new DismissRoleOperation(u, g, r);
+	}
 
 	protected void setupPermissions() {
-		
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission.getContainerReadPermission().setMembershipRWPermission());
-		
+
+		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+				.getContainerReadPermission().setMembershipRWPermission());
+
 	}
 }

@@ -10,12 +10,12 @@ import org.apache.tiles.preparer.ViewPreparer;
 public class ListUsersPreparer implements ViewPreparer {
 
 	private static Log log = LogFactory.getLog(ListUsersPreparer.class);
-	
-	public void execute(TilesRequestContext context, AttributeContext attributeContext)
-			throws PreparerException {
-		
+
+	public void execute(TilesRequestContext context,
+			AttributeContext attributeContext) throws PreparerException {
+
 		log.debug("preparing view!");
-		
+
 	}
 
 }

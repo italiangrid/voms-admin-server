@@ -20,104 +20,102 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.model;
 
+public class VOMSUserAttribute extends VOMSBaseAttribute {
 
-public class VOMSUserAttribute extends VOMSBaseAttribute{
-
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    public VOMSUser user;
-            
-    public VOMSUser getUser() {
-    
-        return user;
-    }
+	private static final long serialVersionUID = 1L;
+	public VOMSUser user;
 
-    
-    public void setUser( VOMSUser user ) {
-    
-        this.user = user;
-    }
+	public VOMSUser getUser() {
 
-    public VOMSUserAttribute() {
+		return user;
+	}
 
-    }
+	public void setUser(VOMSUser user) {
 
-    public VOMSUserAttribute( VOMSAttributeDescription desc, String attrValue ) {
+		this.user = user;
+	}
 
-        super(desc,attrValue);
-        
-    }
+	public VOMSUserAttribute() {
 
-    public VOMSUserAttribute( VOMSAttributeDescription desc, String value, VOMSUser u ) {
+	}
 
-        super(desc,value);
-        setUser( u );
-    }
+	public VOMSUserAttribute(VOMSAttributeDescription desc, String attrValue) {
 
+		super(desc, attrValue);
 
-    public boolean equals( Object other ) {
+	}
 
-        if ( this == other )
-            return true;
+	public VOMSUserAttribute(VOMSAttributeDescription desc, String value,
+			VOMSUser u) {
 
-        if ( !( other instanceof VOMSUserAttribute ) )
-            return false;
+		super(desc, value);
+		setUser(u);
+	}
 
-        if ( other == null )
-            return false;
+	public boolean equals(Object other) {
 
-        VOMSUserAttribute that = (VOMSUserAttribute) other;
-        
-        if (getUser().equals( that.getUser() ))
-            return getAttributeDescription()
-                .equals( that.getAttributeDescription() );
-        
-        return false;
-    }
+		if (this == other)
+			return true;
 
-    public int hashCode() {
-        int result = 14;
+		if (!(other instanceof VOMSUserAttribute))
+			return false;
 
-        result = 29 * result + getAttributeDescription().hashCode();
-        
-        if (getUser() != null)
-            result = 29 * result + getUser().hashCode();
-        
-        return result;
+		if (other == null)
+			return false;
 
-    }
+		VOMSUserAttribute that = (VOMSUserAttribute) other;
 
-    public static VOMSUserAttribute instance( VOMSAttributeDescription desc,
-            String value, VOMSUser u ) {
+		if (getUser().equals(that.getUser()))
+			return getAttributeDescription().equals(
+					that.getAttributeDescription());
 
-        return new VOMSUserAttribute( desc, value, u );
-    }
-    public static VOMSUserAttribute instance( VOMSAttributeDescription desc,
-            String value ) {
+		return false;
+	}
 
-        return new VOMSUserAttribute( desc, value );
-    }
+	public int hashCode() {
+		int result = 14;
 
-    public static VOMSUserAttribute instance( String attrName,
-            String attrDesc, String attrValue ) {
+		result = 29 * result + getAttributeDescription().hashCode();
 
-        VOMSAttributeDescription desc = new VOMSAttributeDescription( attrName,
-                attrDesc );
-        VOMSUserAttribute instance = new VOMSUserAttribute( desc, attrValue );
+		if (getUser() != null)
+			result = 29 * result + getUser().hashCode();
 
-        return instance;
-    }
+		return result;
 
-    public String toString() {
+	}
 
-        return "(" + getName() + "," + value + ")";
-    }
+	public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
+			String value, VOMSUser u) {
 
-    
-    public String getContext() {
+		return new VOMSUserAttribute(desc, value, u);
+	}
 
-        return null;
-    }
+	public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
+			String value) {
+
+		return new VOMSUserAttribute(desc, value);
+	}
+
+	public static VOMSUserAttribute instance(String attrName, String attrDesc,
+			String attrValue) {
+
+		VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
+				attrDesc);
+		VOMSUserAttribute instance = new VOMSUserAttribute(desc, attrValue);
+
+		return instance;
+	}
+
+	public String toString() {
+
+		return "(" + getName() + "," + value + ")";
+	}
+
+	public String getContext() {
+
+		return null;
+	}
 }

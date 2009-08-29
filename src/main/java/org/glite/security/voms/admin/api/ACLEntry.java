@@ -22,68 +22,82 @@
  *     
  *******************************************************************************/
 
-
 package org.glite.security.voms.admin.api;
 
 import org.glite.security.voms.admin.api.acl.VOMSACL;
 
 /**
  * Represents access control list entries within the VOMS database.
- *
- * <p>Access control lists (ACLs) provide authorization information within the
- * VOMS database.  They consists of a list of principal-operation-allow/deny
- * triplets called ACL entries.  An entry allows or denies an operation to a
- * client principal based on its third element.  A client is allowed to perform
- * an operation if she has no matching deny entry but at least one allow entry
- * in the relevant ACL.
- *
- * <p>The principal of an ACL entry may be a VO group or
- * role in this or in another VO, in which case that entry matches a set of
- * clients instead of a single individual client. 
- *
- * <p>The following operations are defined: <code>CREATE</code>,
+ * 
+ * <p>
+ * Access control lists (ACLs) provide authorization information within the VOMS
+ * database. They consists of a list of principal-operation-allow/deny triplets
+ * called ACL entries. An entry allows or denies an operation to a client
+ * principal based on its third element. A client is allowed to perform an
+ * operation if she has no matching deny entry but at least one allow entry in
+ * the relevant ACL.
+ * 
+ * <p>
+ * The principal of an ACL entry may be a VO group or role in this or in another
+ * VO, in which case that entry matches a set of clients instead of a single
+ * individual client.
+ * 
+ * <p>
+ * The following operations are defined: <code>CREATE</code>,
  * <code>DELETE</code>, <code>ADD</code>, <code>REMOVE</code>,
  * <code>SET_ACL</code>, <code>GET_ACL</code>, <code>SET_DEFAULT_ACL</code>,
  * <code>GET_DEFAULT_ACL</code>, <code>LIST</code>, plus a special wildcard
  * operation <code>ALL</code>, which is a shorthand for all operations.
- *
+ * 
  * @author <a href="mailto:Akos.Frohner@cern.ch">Akos Frohner</a>
  * @deprecated Starting from VOMS Admin 2, this interface for ACL management is
- * deprecated an no longer understood. Use the ACL management interface defined
- * in {@link VOMSACL}.
+ *             deprecated an no longer understood. Use the ACL management
+ *             interface defined in {@link VOMSACL}.
  */
 public class ACLEntry {
 
-    /** Empty public constructor. */
-    public ACLEntry () {}
-    
-    /** Returns the principal's DN for this ACL entry. */
-    public String getAdminDN () { return null; };
+	/** Empty public constructor. */
+	public ACLEntry() {
+	}
 
-    /** Returns the principal's CA for this ACL entry. */
-    public String getAdminCA () { return null; };
+	/** Returns the principal's DN for this ACL entry. */
+	public String getAdminDN() {
+		return null;
+	};
 
-    /** Sets the principal's DN for this ACL entry. */
-    public void setAdminDN (String dn) { }
+	/** Returns the principal's CA for this ACL entry. */
+	public String getAdminCA() {
+		return null;
+	};
 
-    /** Sets the principal's CA for this ACL entry. */
-    public void setAdminCA (String ca) { }
+	/** Sets the principal's DN for this ACL entry. */
+	public void setAdminDN(String dn) {
+	}
 
-    /** Returns the operation field of this ACL entry. */
-    public String getOperationName () { return null; };
-    
-    /** Sets the operation field of this ACL entry. */
-    public void setOperationName (String operation) { }
-    
-    /** Returns the allow field of this ACL entry. */
-    public boolean isAllow () { return false; }
-    
-    /** Sets the allow field of this ACL entry. */
-    public void setAllow (boolean allow) { }
+	/** Sets the principal's CA for this ACL entry. */
+	public void setAdminCA(String ca) {
+	}
+
+	/** Returns the operation field of this ACL entry. */
+	public String getOperationName() {
+		return null;
+	};
+
+	/** Sets the operation field of this ACL entry. */
+	public void setOperationName(String operation) {
+	}
+
+	/** Returns the allow field of this ACL entry. */
+	public boolean isAllow() {
+		return false;
+	}
+
+	/** Sets the allow field of this ACL entry. */
+	public void setAllow(boolean allow) {
+	}
 
 }
 
-
-// Please do not change this line. 
-// arch-tag: 6efdd02a-3936-4b69-9035-32b016dfb2ae 
+// Please do not change this line.
+// arch-tag: 6efdd02a-3936-4b69-9035-32b016dfb2ae
 

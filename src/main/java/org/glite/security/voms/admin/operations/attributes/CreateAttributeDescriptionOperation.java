@@ -31,39 +31,42 @@ public class CreateAttributeDescriptionOperation extends BaseVomsOperation {
 	String name;
 	String description;
 	Boolean unique;
-	
-	private CreateAttributeDescriptionOperation(String name, String description, Boolean unique){
+
+	private CreateAttributeDescriptionOperation(String name,
+			String description, Boolean unique) {
 		this.name = name;
 		this.description = description;
 		this.unique = unique;
 	}
-	
+
 	protected Object doExecute() {
 
 		if (unique == null)
 			unique = new Boolean(false);
-		
-		return VOMSAttributeDAO.instance().createAttributeDescription(name, description, unique.booleanValue());
+
+		return VOMSAttributeDAO.instance().createAttributeDescription(name,
+				description, unique.booleanValue());
 	}
 
-	
 	protected void setupPermissions() {
-		
+
 		VOMSContext voContext = VOMSContext.getVoContext();
-		
+
 		addRequiredPermission(voContext, VOMSPermission
 				.getContainerRWPermissions().setAttributesReadPermission()
 				.setAttributesWritePermission());
 	}
 
-	public static CreateAttributeDescriptionOperation instance(String name, String description, Boolean unique){
-		return new CreateAttributeDescriptionOperation(name,description, unique);
+	public static CreateAttributeDescriptionOperation instance(String name,
+			String description, Boolean unique) {
+		return new CreateAttributeDescriptionOperation(name, description,
+				unique);
 	}
-    
-    protected String logArgs() {
-    
-        return ToStringBuilder.reflectionToString( this );
-        
-    }
-    
+
+	protected String logArgs() {
+
+		return ToStringBuilder.reflectionToString(this);
+
+	}
+
 }

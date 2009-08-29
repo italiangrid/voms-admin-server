@@ -22,24 +22,21 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.dao.RequestDAO;
 
-
-
 public class ListProcessedRequestsOperation extends RequestReadOperation {
 
-    
-    private ListProcessedRequestsOperation() {
+	private ListProcessedRequestsOperation() {
 
-        // TODO Auto-generated constructor stub
-    }
-    
-    protected Object doExecute() {
+		// TODO Auto-generated constructor stub
+	}
 
-        return RequestDAO.instance().getProcessed();
-    }
-    
-    public static ListProcessedRequestsOperation instance() {
+	protected Object doExecute() {
 
-        return new ListProcessedRequestsOperation();
-    }
+		return RequestDAO.instance().getProcessed();
+	}
+
+	public static ListProcessedRequestsOperation instance() {
+
+		return new ListProcessedRequestsOperation();
+	}
 
 }
