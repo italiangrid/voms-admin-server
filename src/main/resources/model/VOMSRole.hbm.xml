@@ -18,7 +18,7 @@
 			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>
 		</set>
 
-		<set name="attributes" inverse="true" cascade="all-delete-orphan">
+		<set name="attributes" inverse="true" cascade="all-delete-orphan" lazy="false">
 			<key column="r_id" on-delete="cascade"/>
 			<one-to-many class="org.glite.security.voms.admin.model.VOMSRoleAttribute"/>
 		</set>

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
@@ -38,7 +39,7 @@ public class SetACLOperation extends BaseVomsOperation {
     protected Object doExecute() {
 
         if (permissions.isEmpty() && !theACL.isDefautlACL())
-            throw new VOMSAuthorizationException("Will not replace the current ACL with an empty one.");
+            throw new VOMSException("Will not replace the current ACL with an empty one.");
         
         // Drop old permissions
         theACL.getPermissions().clear();

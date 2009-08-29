@@ -60,7 +60,7 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
         if (timer != null){
             
             if (!registrationEnabled)
-                log.info( "Request purger not started since the registration service is disabled." );
+                log.info( "Request purger not started since the registration is DISABLED for this vo." );
             else if (requestLifetime > 0){
                 log.info( "Scheduling expired request reaper thread with period:" +period +" seconds.");
                 timer.schedule( this, period * 1000, period * 1000 );

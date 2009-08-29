@@ -26,6 +26,21 @@ public class TestUtils {
     static final String myCA = "/C=IT/O=INFN/CN=INFN CA";
     static final String myEmail = "andrea.ceccanti@cnaf.infn.it";
     
+    static final String BaseDn = "/C=IT/O=INFN/OU=Personal Certificate/L=CNAF/CN=Test user";
+    
+    public static VOMSUser createUserFromId(Long id){
+    	
+    	VOMSUserDAO dao =  VOMSUserDAO.instance();
+    	
+    	VOMSUser user = new VOMSUser();
+    	user.setDn(BaseDn+id);
+    	user.setEmailAddress(myEmail);
+    	
+    	dao.create(user, myCA);
+    	
+    	return user;
+    	
+    }
     public static void configureLogging(){
         
     	URL loggingConf = Object.class.getResource( "/test/log4j.properties" );

@@ -72,17 +72,11 @@
 	font-size: x-small;
 }
 
-.roleAssign {
-	font-size: x-small;
-	
-	margin-top: .5em;
-}
-
-.roleAssign .submitButton {
+.roleAssign .submitButton, .roleDismiss .submitButton, .subscribeGroups .submitButton, .removeFromGroup .submitButton{
 	font-size: xx-small;
 }
 
-.roleAssign .selectBox {
+.roleAssign .selectBox, .subscribeGroups .selectBox{
 	font-size: x-small;
 }
 
@@ -93,13 +87,6 @@
 	margin-top: .5em;
 }
 
-.subscribeGroups .submitButton {
-	font-size: x-small;
-}
-
-.subscribeGroups .selectBox {
-	font-size: x-small;
-}
 
 /** HEADERS **/
 .header {
@@ -123,7 +110,16 @@ h1, .header1{
 	margin-bottom: 1em;
 	
 }
+.permHeader{
+	display: block;
+	clear: both;
 
+	font-weight: bold;
+	color: #505050;
+	font-size: larger; 
+	margin-bottom: 2em;
+	
+}
 h2, .header2 {
 	display: block;
 	clear: both;
@@ -188,9 +184,7 @@ h3, .header3{
 
 .errorMessage{
 	font-weight: bold;
-	padding: .1em;
-	padding-left: 1ex;
-	padding-right: 1ex;
+	padding: .5em 0;
 
 }
 
@@ -381,18 +375,29 @@ h1 span{
 }
 
 dl{
-	font-size: smaller;	
+	line-height: 2em;
 }
 
-dd, dt{
-	padding: .2em 0;		
+dd{
+	font-weight: bold;	
 }
 
 dt{
-	margin-top: 1em;
-	color: #808080;	
-	font-weight: bold;
+		
+	margin-left: 2em;
 }
+
+.error{
+	color: #BF0B0B;
+	font-size: larger;
+	font-weight: bold;	
+}
+
+.stackTrace{
+	font-size: 11px;
+	width: 100%;	
+}
+
 
 .info-tab{
 	clear: both;
@@ -422,6 +427,10 @@ dt{
 	padding: 1em 0;
 	
 
+}
+
+.info-tab h2:hover{
+	cursor: pointer;	
 }
 
 .info-tab h2 span{	
@@ -477,4 +486,134 @@ a.info-tab-hide{
 }
 .cert-operations{
 	float: right;	
+}
+
+.hidden{
+	display: none;
+}
+
+h1 span.groupname, h1 span.rolename{
+	color: #006600;
+	font-size: inherit;
+}
+
+
+#loadDiv{
+	color: #7C7A7A;
+	font-size: smaller;
+}
+
+#membersSearchResults{
+	padding: 1em 0 1em 0;
+}
+
+#aclEntryTypeSelector{
+	font-size: inherit;
+}
+
+
+#aclPrincipalSelector{
+
+	padding-bottom: 1em;	
+}
+
+div.entryType select{
+	font-size: larger;
+}
+
+#caSelect{
+	font-size: small;
+}
+
+td.entryTypeSelectorRow{
+	vertical-align: bottom;
+}
+
+.clickable:hover{
+	cursor: pointer;
+}
+
+th.permissionName{
+	font-weight: normal;
+	font-family: monospace;
+	
+	font-size: 14px;
+	
+	color: #006600;
+	
+	
+}
+
+#aclShowPane{
+	margin-top: 3em;
+}
+
+#showACLHelpHandle{
+	
+	font-size: 11px;
+	clear: right;
+	float: right;
+	color: #456aac;
+	background-color: #DFEEFF;
+	padding : .5em;
+	-moz-border-radius-bottomleft:6px;
+	-moz-border-radius-bottomright:6px;
+	
+	-webkit-border-bottom-right-radius: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+}
+
+#showACLHelpHandle:hover{
+	cursor: pointer;
+}
+
+#aclHelpPane{
+	line-height: 1.45em;
+	text-align: left;
+	font-size: 11px;
+	background-color: #DFEEFF;
+	padding: .5em;
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+}
+
+#aclHelpPane p {
+	margin: 1em 0;
+}
+
+#aclHelpPane ul{
+	
+	margin: 1em 0;
+	list-style: disc;
+	list-style-position: outside;	
+}
+
+#aclHelpPane ul li{
+	margin-left: 2em;
+}
+
+#aclHelpBorder{
+	width: 100%;
+	border-bottom: 1px solid #DFEEFF;
+}
+
+#permissionShortcuts{
+	clear: both;
+	float: right;
+}
+#permissionShortcuts .label{
+	color: #505050;
+}
+
+#permissionShortcuts .clickable, #formattedDNControls .clickable{
+	margin: 0 .2em;
+	color: #456aac;
+}
+
+#formattedDNControls{
+	font-weight: normal; 
+	font-size: 10px;
 }

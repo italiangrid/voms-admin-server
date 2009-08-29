@@ -461,7 +461,7 @@ public class VOMSUserDAO{
     public VOMSUser create(VOMSUser usr, String caDN){
     	
     	checkNullFields( usr );
-    	populateNullFields(usr);
+    	// populateNullFields(usr);
     	
     	CertificateDAO certDAO = CertificateDAO.instance();
                
@@ -490,10 +490,10 @@ public class VOMSUserDAO{
         
 		// Add user to VO root group
 		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-		
-		usr.addToGroup(voGroup);
 
 		HibernateFactory.getSession().save(usr);
+		
+		usr.addToGroup(voGroup);
 		
 		EventManager.dispatch(new UserCreatedEvent(usr));
 		return usr;
@@ -787,31 +787,6 @@ public class VOMSUserDAO{
 
 		return result;
 	}
-	private void populateNullFields(VOMSUser usr){
-        
-        if (usr.getName() == null){
-        	
-        	usr.setName(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE);
-        }
-        
-        
-        if (usr.getSurname() == null){
-        	usr.setSurname(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE);
-        }
-            
-        if (usr.getInstitution() == null){
-        	usr.setInstitution(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE);
-        }
-        
-        if (usr.getAddress() == null){
-        	usr.setAddress(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE);
-        }
-        
-        if (usr.getPhoneNumber()==null){
-        	usr.setPhoneNumber(VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE);
-        }
-        
-    }
 	
 	public void removeFromGroup(VOMSUser u, VOMSGroup g) {
 

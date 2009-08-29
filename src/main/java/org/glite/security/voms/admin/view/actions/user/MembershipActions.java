@@ -16,9 +16,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="userDetail"),
+	@Result(name=BaseAction.SUCCESS,location="mappings.jsp"),
 	@Result(name=BaseAction.EDIT, location="userDetail"),
-	@Result(name=BaseAction.INPUT, location="userDetail")
+	@Result(name=BaseAction.INPUT, location="mappings.jsp")
 })
 public class MembershipActions extends UserActionSupport{
 	

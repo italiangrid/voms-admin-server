@@ -12,12 +12,12 @@
 		</id>
 	
 		<natural-id>
-			<many-to-one name="group" column="group_id" class="org.glite.security.voms.admin.model.VOMSGroup" not-null="true"/>
+			<many-to-one name="group" column="group_id" class="org.glite.security.voms.admin.model.VOMSGroup" not-null="true" lazy="false"/>
 			<property name="defaultACL" type="java.lang.Boolean" not-null="true"/>
-			<many-to-one name="role" column="role_id" class="org.glite.security.voms.admin.model.VOMSRole" not-null="false" />
+			<many-to-one name="role" column="role_id" class="org.glite.security.voms.admin.model.VOMSRole" not-null="false" lazy="false" />
 		</natural-id>
 		
-		<map name="permissions" cascade="all-delete-orphan" table="acl2_permissions">
+		<map name="permissions" cascade="all-delete-orphan" table="acl2_permissions" lazy="false">
 			<key column="acl_id"/>
 			<map-key-many-to-many class="org.glite.security.voms.admin.model.VOMSAdmin" column="admin_id"/>
 			<element type="org.glite.security.voms.admin.database.PermissionType" column="permissions"/>

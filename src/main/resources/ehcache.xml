@@ -104,7 +104,8 @@
         timeToIdleSeconds="1800"
         timeToLiveSeconds="3600"
         overflowToDisk="false"/>
-        
+      
+      <!--   
       <cache 
         name="org.glite.security.voms.admin.model.ACL"
         maxElementsInMemory="500"
@@ -112,7 +113,7 @@
         timeToIdleSeconds="1800"
         timeToLiveSeconds="5000"
         overflowToDisk="false"/>
-  
+      -->
     <!-- Place configuration for your caches following -->
 
 </ehcache>

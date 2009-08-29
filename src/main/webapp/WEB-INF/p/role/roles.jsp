@@ -46,7 +46,7 @@ No roles defined for this VO.
 
         <td width="95%">
           <div class="roleName">
-            <s:url action="edit" namespace="/role" var="editURL" method="load">
+            <s:url action="edit" namespace="/role" var="editURL">
               <s:param name="roleId" value="id"/>
             </s:url>
             <s:a href="%{editURL}">
@@ -65,7 +65,7 @@ No roles defined for this VO.
               <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="roleId" value="%{id}"/>
-              <s:submit src="%{deleteImg}" type="image"/>
+              <s:submit value="%{'delete'}"/>
             </s:form>
           </s:if>
          </td>

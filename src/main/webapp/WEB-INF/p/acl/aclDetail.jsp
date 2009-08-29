@@ -1,67 +1,118 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1><s:if test="defaultACL">Default</s:if>ACL for context 
+
+
+<s:if test="model == null">
+  <s:set value="vomsContext" var="theVomsContext"/>
+  <s:set value="showDefaultACL  == true" var="isDefaultACL"/>
+</s:if>
+<s:else>
+    <s:set value="model.context" var="theVomsContext"/>
+    <s:set value="model.defaultACL" var="isDefaultACL"/>
+</s:else>
+
+
+<h1><s:if test="#isDefaultACL">Default</s:if> ACL for context 
   <span class="aclContext">
-    <s:property value="context"/>
+    <s:property value="#theVomsContext"/>
   </span>
 </h1>
 
-<voms:hasPermissions permission="ACL_READ|ACL_WRITE" var="canEdit" context="${model.context}" />
+
+<s:if test="#isDefaultACL">
+  <voms:hasPermissions permission="ACL_READ|ACL_WRITE|ACL_DEFAULT" var="canEdit" context="${theVomsContext}" />
+</s:if>
+<s:else>
+  <voms:hasPermissions permission="ACL_READ|ACL_WRITE" var="canEdit" context="${theVomsContext}" />
+</s:else>
+
 <s:if test="#attr.canEdit">
   <div id="addACLEntryBox">
-    <s:url action="add-entry" namespace="/acl" var="addACLEntryURL" method="input">
-      <s:param name="aclId" value="id"/>
-    </s:url>
-    <s:a href="%{addACLEntryURL}" cssClass="vomsLink">Add entry</s:a>
+  
+    <s:if test="#isDefaultACL">
+      <s:url action="add-default-entry" namespace="/acl" var="addACLEntryURL" method="input">
+        <s:param name="aclGroupId" value="#theVomsContext.group.id"/>
+      </s:url>
+    
+    </s:if>
+    <s:else>
+    
+      <s:url action="add-entry" namespace="/acl" var="addACLEntryURL" method="input">
+        <s:param name="aclId" value="id"/>
+      </s:url>
+      
+    </s:else>
+    
+    
+    <s:a href="%{addACLEntryURL}" cssClass="actionLink">Add entry</s:a>
   </div>
 </s:if>
 
-<table class="table" cellpadding="0" cellspacing="0">
-  <tr class="tableHeaderRow">
-    <td>Admin DN &amp; CA</td>
-    <td>Container</td>
-    <td>Membership</td>
-    <td>ACL</td>
-    <td>Attributes</td>
-    <td>Requests</td>
-    <td>Personal info</td>
-    <td>Suspend</td>
-    <td colspan="2"/>
-  </tr>
-  <s:iterator value="externalPermissions" var="permission">
-    
-    <%-- This set is needed for the printPermission tag --%>
-    <s:set value="%{#permission}" scope="page" var="permission"/>
-    
-    <tr>
-      <td width="40%">
-        <div class="userDN">
-          <voms:formatDN dn="${permission.key.dn}" fields="CN"/>
-        </div>
-        <div class="userCA">
-          <voms:formatDN dn="${permission.key.ca.subjectString}" fields="CN"/>
-        </div>
-        </td>
-        <voms:printPermission var="permission" />
-        <td class="actions">
-          <s:url action="edit-entry" namespace="/acl" var="editACLEntryURL" method="input">
-            <s:param name="aclId" value="%{model.id}"/>
-            <s:param name="adminId" value="key.id"/>
-          </s:url>
-          <s:if test="#attr.canEdit">
-            <s:a href="%{editACLEntryURL}">edit</s:a>
-          </s:if>
-        </td>
-        <td class="actions">
-          <s:url action="delete-entry" namespace="/acl" var="deleteACLEntryURL" method="input">
-            <s:param name="aclId" value="%{model.id}"/>
-            <s:param name="adminId" value="key.id"/>
-          </s:url>
-          <s:if test="#attr.canEdit">
-            <s:a href="%{deleteACLEntryURL}">delete</s:a>
-          </s:if>
-        </td>
-    </tr>
-  </s:iterator>
-</table>
 
+<s:if test="model == null">
+  This ACL is not defined yet.  
+</s:if>
+<s:else>
+
+  <div class="reloadable">
+
+  <voms:hasPermissions permission="ACL_READ" var="canRead" context="${theVomsContext}" />
+
+  <s:if test="not #attr.canRead">
+    You don't have sufficient permissions to see the content of this ACL.
+  </s:if>
+  <s:else>
+    <table class="table" cellpadding="0" cellspacing="0">
+      <tr>
+        <th>Admin DN &amp; CA</th>
+        <th>Container</th>
+        <th>Membership</th>
+        <th>ACL</th>
+        <th>Attributes</th>
+        <th>Requests</th>
+        <th>Personal info</th>
+        <th>Suspend</th>
+        <th colspan="2"/>
+      </tr>
+      
+      
+      
+      <s:iterator value="externalPermissions" var="permission">
+        
+        <%-- This set is needed for the printPermission tag --%>
+        <s:set value="%{#permission}" scope="page" var="permission"/>
+        
+        <tr class="tableRow">
+          <td width="40%">
+            <div class="userDN">
+              <voms:formatDN dn="${permission.key.dn}" fields="CN"/>
+            </div>
+            <div class="userCA">
+              <voms:formatDN dn="${permission.key.ca.subjectString}" fields="CN"/>
+            </div>
+            </td>
+            <voms:printPermission var="permission" />
+            <td class="actions">
+              <s:url action="edit-entry" namespace="/acl" var="editACLEntryURL" method="input">
+                <s:param name="aclId" value="%{model.id}"/>
+                <s:param name="adminId" value="key.id"/>
+              </s:url>
+              <s:if test="#attr.canEdit">
+                <s:a href="%{editACLEntryURL}">edit</s:a>
+              </s:if>
+            </td>
+            <td class="actions">
+              <s:url action="delete-entry" namespace="/acl" var="deleteACLEntryURL" method="input">
+                <s:param name="aclId" value="%{model.id}"/>
+                <s:param name="adminId" value="key.id"/>
+              </s:url>
+              <s:if test="#attr.canEdit">
+                <s:a href="%{deleteACLEntryURL}">delete</s:a>
+              </s:if>
+            </td>
+        </tr>
+      </s:iterator>
+    </table>
+  </s:else>
+</div>
+</s:else>

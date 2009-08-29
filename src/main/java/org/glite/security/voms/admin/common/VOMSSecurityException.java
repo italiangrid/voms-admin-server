@@ -39,4 +39,7 @@ public class VOMSSecurityException extends VOMSException {
         // TODO Auto-generated constructor stub
     }
 
+    public VOMSSecurityException() {
+		super((String)null);
+	}
 }

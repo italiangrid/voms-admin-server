@@ -24,7 +24,7 @@
       
         <property name="restricted" type="boolean" column="restricted" not-null="false"/>
 
-		<set name="attributes" cascade="all-delete-orphan" inverse="true">
+		<set name="attributes" cascade="all-delete-orphan" inverse="true" lazy="false">
 			<key column="g_id" on-delete="cascade"/>
 			<one-to-many class="org.glite.security.voms.admin.model.VOMSGroupAttribute"/>
 		</set>

@@ -7,11 +7,31 @@
     version="2.0">
 
 	<tlib-version>1.2</tlib-version>
-	<!--   <jsp-version>1.1</jsp-version> -->
+	
 	
 	
 	<short-name>voms</short-name>
 	<uri>http://org.glite.security.voms.tags</uri>
+  
+    <tag>
+      <name>div</name>
+      <tag-class>org.glite.security.voms.admin.jsp.DivTag</tag-class>
+      <body-content>JSP</body-content>
+      
+      <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      
+      <attribute>
+            <name>cssClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+      </attribute>
+    </tag>
+    
+    
  	<tag>
         <name>pageCustomization</name>
         <tag-class>org.glite.security.voms.admin.jsp.PageCustomizationTag</tag-class>
@@ -303,6 +323,39 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>searchNavBarJS</name>
+        <tag-class>org.glite.security.voms.admin.jsp.JavaScriptSearchNavBarTag</tag-class>
+        <body-content>empty</body-content>
+
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+        </attribute>
+
+        <attribute>
+            <name>searchPanelId</name>
+            <required>true</required>
+        </attribute>
+        
+        <attribute>
+            <name>searchURL</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <attribute>
+            <name>styleClass</name>
+            <required>true</required>
+        </attribute>
+
+        <attribute>
+            <name>linkStyleClass</name>
+            <required>true</required>
+        </attribute>
+
+    </tag>
+    
     <tag>
         <name>searchNavBar</name>
         <tag-class>org.glite.security.voms.admin.jsp.SearchNavBarTag</tag-class>

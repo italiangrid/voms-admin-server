@@ -67,21 +67,19 @@ public class SearchNavBarTag extends TagSupport {
             throws MalformedURLException {
 
         StringBuilder url = new StringBuilder(searchURL);
-
-        url.append("?searchData.firstResult="+firstResult);
+        
+        String querySeparator = "?";
+        
+        if (url.indexOf(querySeparator) != -1)
+        	querySeparator = "&";
+        
+        url.append(querySeparator+"searchData.firstResult="+firstResult);
         
         if (text != null)
         	url.append("&searchData.text="+text);
         
         if (getSearchType() != null)
         	url.append("&searchData.type="+getSearchType());
-        else
-        	url.append("&searchData.type=user");
-        
-//        params.put( "firstResult", new Integer( firstResult ) );
-//        params.put( "text", text );
-        
-//        UrlHelper.buildParametersString(params, url);
        
         return url.toString();
     }
@@ -164,12 +162,14 @@ public class SearchNavBarTag extends TagSupport {
 
         SearchResults results = (SearchResults) pageContext.findAttribute( id );
 
-        if ( results == null )
-            throw new JspTagException(
-                    "SearchResults not found in pageContext. Key: " + id );
-        
+        if ( results == null ){
+            
+        	// Don't write anything...
+        	return SKIP_BODY;
+        }
         try{
-        pageContext.getOut().write("<div class=\"" + styleClass + "\">\n" );
+        
+        	pageContext.getOut().write("<div class=\"" + styleClass + "\">\n" );
 
         if ( results.getFirstResult() > 0 ) {
 

@@ -47,7 +47,7 @@ public class SaveACLEntryOperation extends BaseVomsOperation {
                 
             }catch (VOMSAuthorizationException e) {
                     
-                log.warn( "Authorization Error saving recursively ACL entry !" );
+                log.warn( "Authorization Error saving recursively ACL entry !", e );
                     
             }catch (RuntimeException e) {
                 

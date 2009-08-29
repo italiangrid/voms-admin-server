@@ -624,6 +624,10 @@ public class VOMSPermission implements Serializable, Cloneable {
     		VOMSPermission perm = new VOMSPermission();
     		
     		for ( int i = 0; i < perms.length; i++ ) {
+    			
+    			// Skip empty permissions
+    			if (perms[i].trim().equals(""))
+    				continue;
 
             if ( perms[i].equals( "CONTAINER_READ" ) )
                 perm.setContainerReadPermission();

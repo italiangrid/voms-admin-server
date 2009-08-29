@@ -1,31 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
-<h1 class="username">
-  <s:property value="fullName"/> 
-  <span class="institution">
-    <s:property value="institution"/>  
-  </span>
-</h1>
-
-<div id="tabs" style="clear: both">
-  <ul>
-    <li><a href="#pers-info">Personal information</a></li>
-    <li><a href="#cert-info">Certificates</a></li>
-  </ul>
-  <div id="pers-info">
-    <s:form>
-        <s:textfield name="name" disabled="true" label="Name" size="40" cssClass="text"/>
-        <s:textfield name="surname" disabled="true" label="Surname" size="40" cssClass="text"/>
-        <s:textfield name="institution" disabled="true" label="Institution" size="40" cssClass="text"/>
-        <s:textarea name="address" disabled="true" label="Address" rows="4" cols="30"   cssClass="text"/>
-        <s:textfield name="phoneNumber" disabled="true" label="Phone" size="40"   cssClass="text"/>
-        <s:textfield name="emailAddress" disabled="true" label="Email" size="40"   cssClass="text"/>
-        <s:submit value="%{'Change personal information'}" disabled="true"/>
-      </s:form>
-  </div>
-  <div id="cert-info">
-    
       
+      <tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/>
       <voms:authorized permission="CONTAINER_READ|CONTAINER_WRITE" context="vo">
         <div id="add-certificate-link">
           <s:url action="add-certificate" namespace="/user" var="addCertificateURL">
@@ -51,11 +26,13 @@
             <tr class="tableRow">
               <td >
                 <div class="userDN">
-                  <s:property value="subjectString"/>
+                  <s:set value="subjectString" var="thisCertDN"/>
+                  <voms:formatDN dn="${thisCertDN}" fields="CN"/>
                 </div>
                 
                 <div class="userCA">
-                  <s:property value="ca.subjectString"/>
+                  <s:set value="ca.subjectString" var="thisCertCA"/>
+                  <voms:formatDN dn="${thisCertCA}" fields="CN"/>
                 </div>
                 
                 <div class="cert-date-info">
@@ -76,16 +53,7 @@
                 
                 <div class="cert-operations">
                   <s:if test="#attr.canSuspend and not suspended">
-                    <%--
-                    <s:url action="suspend-certificate" method="input" namespace="/user" var="suspendCertURL">
-                      <s:param name="userId" value="%{model.id}"/>
-                      <s:param name="certificateId" value="%{#cert.id}"/>
-                    </s:url>
-              
-                    <s:a href="%{suspendCertURL}" cssClass="actionLink">
-                      suspend
-                    </s:a>
-                     --%>
+                    
                     <s:form action="suspend-certificate" namespace="/user" theme="simple" cssClass="cert-operation-forms">
                       <s:token/>
                       <s:hidden name="userId" value="%{model.id}"/>
@@ -119,10 +87,6 @@
                 
               </td>
            </tr>
-           
-           
-          </s:iterator>
+           </s:iterator>
         </table>
       </s:else>
-  </div>
-</div>

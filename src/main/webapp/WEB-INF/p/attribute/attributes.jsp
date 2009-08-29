@@ -24,7 +24,7 @@
 
 
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
-No attribute classes defined in this VO.
+No attribute mappings defined in this VO.
 </s:if>
 <s:elseif test="searchResults.results.size == 0">
   No attribute mappings found matching search string '<s:property value="searchResults.searchString"/>'.

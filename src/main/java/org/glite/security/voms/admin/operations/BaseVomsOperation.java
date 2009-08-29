@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.common.VOMSFatalException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.ACL;
@@ -106,7 +107,7 @@ public abstract class BaseVomsOperation implements VOMSOperation{
 		__requiredPermissions = new HashMap();
 	}
 	
-	boolean isAllowed(){
+	AuthorizationResponse isAllowed(){
 		
         CurrentAdmin admin = CurrentAdmin.instance();
         
@@ -114,7 +115,7 @@ public abstract class BaseVomsOperation implements VOMSOperation{
 			setupPermissions();
 		
 		if (__requiredPermissions.isEmpty())
-			throw new VOMSAuthorizationException("Required permissions not defined for "+getName()+" operation!");
+			throw new VOMSFatalException("Required permissions not defined for "+getName()+" operation!");
 		
 		Iterator contexts = __requiredPermissions.keySet().iterator();
 				
@@ -130,18 +131,20 @@ public abstract class BaseVomsOperation implements VOMSOperation{
                             "ACL not found for context \"" + ctxt+ "\"." );
             
 			if (!admin.hasPermissions(ctxt,requiredPerms))
-                return false;
+                return AuthorizationResponse.deny(ctxt, requiredPerms);
 			
 		}
-		return true;
+		return AuthorizationResponse.permit();
 	}
 	
 	public final Object execute(){
         
         logOperation();
         
-		if (!isAllowed())
-			throw new VOMSAuthorizationException(CurrentAdmin.instance().getAdmin(),this,"Insufficient privileges");
+        AuthorizationResponse response = isAllowed();
+		
+        if (!response.isAllowed())
+			throw new VOMSAuthorizationException(CurrentAdmin.instance().getAdmin(),this, response);
 			
 		return doExecute();
 			

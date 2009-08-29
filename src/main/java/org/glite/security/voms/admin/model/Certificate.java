@@ -24,7 +24,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="certificate")
-public class Certificate implements Serializable {
+public class Certificate implements Serializable, Comparable<Certificate>{
 
     /**
      * 
@@ -65,10 +65,6 @@ public class Certificate implements Serializable {
 	@JoinColumn(name = "usr_id", nullable = false)
     protected VOMSUser user;
     
-    // VOMS compatibility fields
-//    @Type(type="org.glite.security.voms.admin.database.X500PrincipalType")
-//    @Column(name="subject_der")
-//    X500Principal subjectDer;
     
     public Certificate() {
 
@@ -252,5 +248,16 @@ public class Certificate implements Serializable {
 			setSuspensionReason(null);
 			
 		}
+	}
+
+	public int compareTo(Certificate o) {
+		
+		if (o == null)
+			return -1;
+		
+		if (this.equals(o))
+			return 0;
+		
+		return getSubjectString().compareTo(o.getSubjectString());
 	}
 }

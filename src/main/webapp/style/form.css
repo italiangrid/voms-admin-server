@@ -15,7 +15,7 @@
 	border-color: #c3c3c3;
 	cursor:pointer;
 	font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
-	font-size:11px !important;
+	font-size:11px;
 	line-height:16px;
 	padding:2px 8px;
 	text-decoration:none;
@@ -23,10 +23,16 @@
 	background: #F2F2F2 url(../img/white-grad.png) repeat-x scroll left top;
 }
 
+
+.submitButton[disabled=disabled]:hover{
+	border-color:#c3c3c3;
+}
+
 .submitButton:hover{
 	border-color:#666666;
-	color:#000000;
 }
+
+
 
 .form tr{
 
@@ -43,13 +49,20 @@ table .form{
 
 .labels{
 	color: #505050;
-	padding-right: 1ex;
+	padding-right: 1em;
 }
 
 .fields{
 	
 }
 
+span.label{
+	margin: 0 .5em 0 0;	
+}
 .cert-operation-forms{
 	float: left;
+}
+
+#addACLEntrySubmit{
+	font-size: larger;
 }

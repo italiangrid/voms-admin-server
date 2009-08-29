@@ -3,7 +3,6 @@ package org.glite.security.voms.admin.view.actions.acl;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -16,7 +15,6 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.glite.security.voms.admin.operations.acls.DeleteACLEntryOperation;
 import org.glite.security.voms.admin.operations.acls.SaveACLEntryOperation;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
@@ -29,7 +27,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="aclDetail"),
+	@Result(name=BaseAction.SUCCESS,location="manage", type="chain"),
 	@Result(name=BaseAction.INPUT, location="addACLEntry")
 })
 public class AddEntryAction extends ACLActionSupport {
@@ -112,18 +110,9 @@ public class AddEntryAction extends ACLActionSupport {
 		
 		loadAdmin();
 		
-		String permString;
-		
-		if (selectedPermissions == null)
-			permString = "NONE";
-		else if (selectedPermissions.contains("ALL"))
-			permString = "ALL";
-		else
-			permString = StringUtils.join(selectedPermissions,"|");
-		
 		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(), 
                 admin, 
-                VOMSPermission.fromString( permString ),
+                VOMSPermission.fromStringArray(selectedPermissions.toArray(new String[selectedPermissions.size()])),
                 propagate == null? false: propagate);                
 		
 		op.execute();

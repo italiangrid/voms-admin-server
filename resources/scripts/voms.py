@@ -89,7 +89,26 @@ def vomses_file(vo):
 def set_default(dict,key,value):
     if not dict.has_key(key):
         dict[key]=value
-
+"""
+This methods returns a tuple containing host, port, database name 
+extracted from the mysql connection string"""
+def mysql_database_connection_properties(vo):
+    dbProps = vo_database_properties(vo)
+    if dbProps.has_key('jdbc.URL'):
+        ## voms 1.2.x property
+        url = dbProps['jdbc.URL']
+    else:
+        url = dbProps['hibernate.connection.url']
+    
+    matcher = re.compile("jdbc:mysql:\/\/([^:]+):(\d+)\/(.+)$")
+    
+    if not re.match(matcher,url):
+        raise VomsConfigureError, "'%s' found in configuration is not a mysql connection URL!" % url
+    
+    return re.search(matcher,url).groups()
+    
+    
+    
 def backup_dir_contents(dir):
     
     backup_filez = glob.glob(os.path.join(dir,"*_backup_*"))
@@ -360,9 +379,16 @@ class RemoveMySQLVO(RemoveVOAction):
         
         RemoveVOAction.__init__(self,user_options)
         
-        set_default(self.user_options,"dbname","voms_"+self.user_options['vo'])
-        set_default(self.user_options,'dbhost','localhost')
-        set_default(self.user_options,'dbport','3306')
+        (host,port,dbname) = mysql_database_connection_properties(self.user_options['vo'])
+        
+        # set_default(self.user_options,"dbname","voms_"+self.user_options['vo'])
+        set_default(self.user_options,"dbname",dbname)
+        
+        # set_default(self.user_options,'dbhost','localhost')
+        set_default(self.user_options,'dbhost',host)
+        
+        # set_default(self.user_options,'dbport','3306')
+        set_default(self.user_options,'dbport', port)
         
         self.name = "remove_mysql_vo"
         
@@ -387,12 +413,16 @@ class RemoveMySQLVO(RemoveVOAction):
             ## Support for mysql admin empty password (VDT request).
             if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
                 print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
-                mysql_cmd = "%s -u%s" % (self.user_options['mysql-command'],
-                                         self.user_options['dbauser'])
+                mysql_cmd = "%s -u%s --host %s --port %s" % (self.user_options['mysql-command'],
+                                         self.user_options['dbauser'],
+                                         self.user_options['dbhost'],
+                                         self.user_options['dbport'])
             else:
-                mysql_cmd = "%s -u%s -p%s" % (self.user_options['mysql-command'],
+                mysql_cmd = "%s -u%s -p%s --host %s --port %s" % (self.user_options['mysql-command'],
                                               self.user_options['dbauser'],
-                                              self.user_options['dbapwd'])
+                                              self.user_options['dbapwd'],
+                                              self.user_options['dbhost'],
+                                              self.user_options['dbport'])
                 
                 
             mysql_proc = popen2.Popen4(mysql_cmd)
@@ -446,10 +476,18 @@ class InstallVOAction(ConfigureAction):
         self.create_configuration()
         
         if self.user_options.has_key("deploy-database"):
-            self.deploy_db()
+            ## Don't assume the user knows what he does
+            if self.user_options.has_key("skip-database"):
+                print """Will not deploy the database (even if the --deploy-database option was set)
+                since the --skip-database option is set!"""
+            else:
+                self.deploy_db()
         
         if self.user_options.has_key("admincert"):
-            self.add_default_admin()
+            if self.user_options.has_key("skip-database"):
+                print "Will not add the admin since the --skip-database option is set"
+            else: 
+                self.add_default_admin()
 
         
     def create_configuration(self):    
@@ -712,20 +750,28 @@ class InstallMySqlVO(InstallVOAction):
             if self.user_options.has_key('dbapwdfile'):
                 dbapwd = open(self.user_options['dbapwdfile']).read()
                 self.user_options['dbapwd'] = dbapwd
+             
             
             ## Support for mysql admin empty password (VDT request).
             if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
                 print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
-                mysql_cmd = "%s -u%s" % (self.user_options['mysql-command'],
-                                         self.user_options['dbauser'])
+                mysql_cmd = "%s -u%s --host %s --port %s" % (self.user_options['mysql-command'],
+                                         self.user_options['dbauser'],
+                                         ## Fix for http://savannah.cern.ch/bugs/?54613
+                                         self.user_options['dbhost'],
+                                         self.user_options['dbport'])
             else:
-                mysql_cmd = "%s -u%s -p%s" % (self.user_options['mysql-command'],
+                mysql_cmd = "%s -u%s -p%s --host %s --port %s" % (self.user_options['mysql-command'],
                                               self.user_options['dbauser'],
-                                              self.user_options['dbapwd'])
+                                              self.user_options['dbapwd'],
+                                              ## Fix for http://savannah.cern.ch/bugs/?54613
+                                              self.user_options['dbhost'],
+                                              self.user_options['dbport'])
             
             
             if len(self.user_options['dbusername']) > 16:
                 raise VomsConfigureError, "MYSQL usernames can be up to 16 characters long! Choose a shorter username"
+            
             
             mysql_proc = popen2.Popen4(mysql_cmd)
             
@@ -773,7 +819,7 @@ class InstallMySqlVO(InstallVOAction):
                 else:
                     
                     ## We received an unexpected error from mysql, just report it and fail
-                    raise VomsConfigureError, "Error checking mysql database existence!" + err_msg
+                    raise VomsConfigureError, "Error checking mysql database existence!\nMysql error:\n" + err_msg
                     
                                 
                 

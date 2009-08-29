@@ -339,7 +339,6 @@ def parse_options():
         
         if len(opts)==0:
             print "No options specified!"
-            usage()
             sys.exit(2)
             
         if options.has_key('help'):
@@ -352,19 +351,16 @@ def parse_options():
         if command is None:
             if len(args) == 0:
                 print "No command specified!"
-                usage()
                 sys.exit(2)
             
             command = args[0]
             
             if not command in supported_commands:
                 print "Unknown command specified!"
-                usage()
                 sys.exit(2)
         
     except getopt.GetoptError, e:
         print e
-        usage()
         sys.exit(2)
 
 def check_install_options():

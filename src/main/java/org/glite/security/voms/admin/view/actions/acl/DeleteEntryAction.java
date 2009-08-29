@@ -10,7 +10,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="aclDetail"),
+	@Result(name=BaseAction.SUCCESS,location="manage", type="chain"),
 	@Result(name=BaseAction.INPUT, location="deleteACLEntry")
 })
 public class DeleteEntryAction extends ACLActionSupport {
@@ -32,6 +32,11 @@ public class DeleteEntryAction extends ACLActionSupport {
         	if (!dao.hasActivePermissions(admin))
         		VOMSAdminDAO.instance().delete( admin );	
         }
+        
+        // Delete default ACL if it's empty
+        if (model.isDefautlACL() && model.getPermissions().isEmpty())
+        	dao.delete(model);
+        	
 		return SUCCESS;
 	}
 

@@ -28,9 +28,9 @@
 }
 
 **/
-.errorLabel {color:red; }
-.errorMessage {font-weight:bold; color:red; }
+.errorLabel {color:#BF2F2F; font-weight: bold; }
+.errorMessage {font-weight:bold; color:#BF2F2F; }
 .checkboxLabel {}
-.checkboxErrorLabel {color:red; }
-.required {color:red;}
+.checkboxErrorLabel {color:#BF2F2F; }
+.required {color:#BF2F2F;}
 .wwgrp{ margin-top: 1em}

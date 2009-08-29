@@ -91,7 +91,7 @@
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
 	</servlet-mapping>
-
+    
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
 		<welcome-file>/WEB-INF/p/welcome.jsp</welcome-file>

@@ -47,9 +47,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.User;
+import org.glite.security.voms.admin.common.IllegalStateException;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
@@ -59,6 +61,7 @@ import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchMappingException;
+import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
@@ -119,22 +122,22 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
     Long id;
         
     // Base membership information (JSPG requirements)
-    @Column(nullable=false)
+    
     String name;
     
-    @Column(nullable=false)
+    
     String surname;
     
-    @Column(nullable=false)
+    
     String institution;
     
-    @Column(nullable=false)
+    
     String address;
     
-    @Column(nullable=false, name="phone_number")
+    @Column(name="phone_number")
     String phoneNumber;
     
-    @Column(nullable=false, unique=false, name="email_address")
+    @Column(nullable=false, name="email_address")
     String emailAddress;
     
     // Compatibility fields 
@@ -351,7 +354,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         if ( !getMappings().add( m ) )
             throw new AlreadyExistsException( "User \"" + this
                     + "\" is already a member of group \"" + g + "\"." );
-
+        
         // Add this user to parent groups
         if ( !g.isRootGroup() ) {
             if ( !isMember( g.parent ) )
@@ -368,9 +371,11 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
         VOMSMapping m = new VOMSMapping( this, g, null );
 
-        if ( getMappings().contains( m ) )
+        if ( getMappings().contains( m ) ){
             getMappings().remove( m );
-
+            g.getMappings().remove(m);
+            
+        }
         else
             throw new NoSuchMappingException( "User \"" + this
                     + "\" is not a member of group \"" + g + "\"." );
@@ -654,23 +659,68 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
         
         VOMSUser that = (VOMSUser)other;
         
-        if (this.getId().equals( that.getId() ))
-            return true;
+        // If name and surname are defined for both parties,
+        // users are considered equal if they have the same:
         
-        return false;
+        // 1. name
+        // 2. surname
+        // 3. emailAddress
+        
+        //  If name or surname aren't defined for a user
+        //  the equality check is done on the first certificate.
+        
+        //  If no certificate is available, the check is done on the
+        //  id
+        
+        if (getName()!=null && getSurname()!= null){
+        	
+        	if (that.getName()!=null && that.getSurname()!= null){
+        		
+        		if (getName().equals(that.getName()))
+        			if (getSurname().equals(that.getSurname()))
+        				return getEmailAddress().equals(that.getEmailAddress());
+        		
+        		return false;
+        	
+        	}else
+        		getDefaultCertificate().equals(that.getDefaultCertificate());
+        	
+        }
+        
+        if (getDefaultCertificate() == null){
+        
+        	if (getId() == null)
+        		throw new IllegalStateException("No information available to compare two users: this="+this+" , that="+that);
+        	
+        	return getId().equals(that.getId());
+        	
+        }
+        
+        return getDefaultCertificate().equals(that.getDefaultCertificate());
 
     }
 
     public int hashCode() {
 
-        if (this == null)
-            return 0;
+        HashCodeBuilder builder = new HashCodeBuilder(11,59);
         
-        if (this.getId() != null)
-            this.getId().hashCode();
+        if (getName()!= null && getSurname()!= null)
+        	builder.append(name).append(surname).append(emailAddress);
+        else {
         
-        return super.hashCode();
-        
+        	if (getDefaultCertificate() == null){
+        		
+        		if (dn == null)
+        			builder.append(id);
+        		else
+        			builder.append(dn);
+
+        	}
+        	else
+        		builder.append(getDefaultCertificate().getSubjectString());
+        }
+        	
+        return builder.toHashCode();
     }
 
     public int compareTo( Object o ) {
@@ -682,14 +732,29 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
             return 1;
         
         VOMSUser that = (VOMSUser) o;
-        // Sort by surname, and then by name
-        
-        if (getSurname().equals( that.getSurname() )){
-            
-            return getName().compareTo( that.getName() );
+
+        if (getName() != null && getSurname() != null){
+        	
+        	if (that.getName()!=null && that.getSurname()!= null){
+        		
+        		// Both users have name and surname defined,
+        		// order by surname and then by name
+        		if (getSurname().equals( that.getSurname() ))
+                    return getName().compareTo( that.getName() );
+                else
+                	return getSurname().compareTo(that.getSurname());
+        		
+        	}else
+        		// One user has name or surname undefined, compare certificates
+        		return getDefaultCertificate().compareTo(that.getDefaultCertificate());
         }
         
-        return getSurname().compareTo( that.getSurname() );
+        if (getDefaultCertificate() != null)
+        // Both users have name and surname undefined, compare certificates
+        	return getDefaultCertificate().compareTo(that.getDefaultCertificate());
+        
+        return -1;
+        
     }
 
     public String getShortName(){

@@ -26,6 +26,7 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseMemberhipReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.view.actions.SearchData;
 
 
 
@@ -34,6 +35,14 @@ public class SearchMembersOperation extends BaseMemberhipReadOperation {
     int firstResult = 0, maxResults = 0;
     String searchString;
        
+    private SearchMembersOperation(VOMSContext c, String searchString, int firstResult, int maxResults){
+    	super(c);
+    	
+    	this.firstResult = firstResult;
+    	this.maxResults = maxResults;
+    	this.searchString = searchString;
+    }
+    
     private SearchMembersOperation(VOMSGroup g, VOMSRole r, String searchString, int firstResult, int maxResults){
      
         super(VOMSContext.instance(g,r));
@@ -62,5 +71,12 @@ public class SearchMembersOperation extends BaseMemberhipReadOperation {
     public static SearchMembersOperation instance(VOMSGroup g, String searchString, int firstResult, int maxResults){
         
         return new SearchMembersOperation(g,null, searchString,firstResult,maxResults);
+    }
+    
+    public static SearchMembersOperation instance(SearchData sd){
+    	
+    	VOMSContext ctxt = VOMSContext.instance(sd.getGroupId(),sd.getRoleId());
+    	
+    	return new SearchMembersOperation(ctxt, sd.getText(), sd.getFirstResult(), sd.getMaxResults());
     }
 }

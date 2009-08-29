@@ -229,7 +229,7 @@ public abstract class Task {
     @Override
     public int hashCode() {
     	
-    	HashCodeBuilder builder = new HashCodeBuilder(11,63);
+    	HashCodeBuilder builder = new HashCodeBuilder(11,67);
     	
     	builder.append(getType()).
     	append(creationDate).

@@ -1,5 +1,9 @@
 package org.glite.security.voms.admin.view.actions.group;
 
+import java.util.List;
+
+import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -16,6 +20,8 @@ public class GroupActionSupport extends BaseAction implements ModelDriven<VOMSGr
 	Long groupId = -1L;
 	VOMSGroup group;
 	
+	List<VOMSAttributeDescription> attributeClasses;
+	
 	
 	public VOMSGroup getModel() {
 		return group;
@@ -27,6 +33,7 @@ public class GroupActionSupport extends BaseAction implements ModelDriven<VOMSGr
 			if (getGroupId()!= -1)
 				group = groupById(getGroupId());
 		
+		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO.instance().getAllAttributeDescriptions();
 	}
 
 	public Long getGroupId() {
@@ -36,7 +43,15 @@ public class GroupActionSupport extends BaseAction implements ModelDriven<VOMSGr
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
 	}
-	
-	
 
+	public List<VOMSAttributeDescription> getAttributeClasses() {
+		return attributeClasses;
+	}
+
+	public void setAttributeClasses(List<VOMSAttributeDescription> attributeClasses) {
+		this.attributeClasses = attributeClasses;
+	}
+	
+	
+	
 }

@@ -1,5 +1,8 @@
 package org.glite.security.voms.admin.view.actions;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 public class SearchData {
 
 	String text;
@@ -9,10 +12,15 @@ public class SearchData {
 	int firstResult;
 	int maxResults;
 	
+	Long groupId;
+	
+	Long roleId;
+	
 	public SearchData() {
 		// TODO Auto-generated constructor stub
 	}
 
+	@RegexFieldValidator(type=ValidatorType.FIELD, message="the search text field contains illegal characters!", expression="^[^<>&=;]*$")
 	public String getText() {
 		return text;
 	}
@@ -43,6 +51,22 @@ public class SearchData {
 
 	public void setMaxResults(int maxResults) {
 		this.maxResults = maxResults;
+	}
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
 	}
 	
 }

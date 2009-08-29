@@ -14,7 +14,7 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 	VOMSUser authorizedUser;
 	
 	@Override
-	final boolean isAllowed() {
+	final AuthorizationResponse isAllowed() {
 		
 		CurrentAdmin admin = CurrentAdmin.instance();
 		
@@ -25,7 +25,7 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 		
 		boolean usersMatch = admin.getVoUser().equals(authorizedUser);
 		log.debug("Admin's user match with authorized user: "+usersMatch);
-		return usersMatch;
+		return AuthorizationResponse.permit();
 		
 	}
 

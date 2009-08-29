@@ -7,6 +7,7 @@
     <s:textfield name="searchData.text" size="20"/>
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
   </s:form>
+  <s:fielderror fieldName="searchData.text"/>
 </div>
 
 <div id="createPane">
@@ -21,7 +22,18 @@
   <s:elseif test="searchResults.results.size == 0">
     No users found matching search string '<s:property value="searchResults.searchString"/>'.
   </s:elseif>
-  <s:else>
+  <s:elseif test="searchResults != null">
+  
+  <div class="resultsFooter">
+    <voms:searchNavBar context="vo" 
+        permission="r" 
+        disabledLinkStyleClass="disabledLink"
+        id="searchResults"
+        linkStyleClass="navBarLink"
+        searchURL="${searchURL}"
+        styleClass="resultsCount"
+        />
+   </div>
   
   <table
     cellpadding="0"
@@ -30,8 +42,11 @@
   
     <tr>
       <th>User information</th>
-      <th>Certificates</th>
-      <th></th>
+      <th>Certificates<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/>
+      </th>
+      <th>
+         
+      </th>
     </tr>
     <s:iterator
       value="searchResults.results"
@@ -40,7 +55,7 @@
     >
       <tr class="tableRow">
         
-        <td> <!-- Personal info -->
+        <td style="width: 25%"> <!-- Personal info -->
           <div class="personal-info">
             
             <s:if test="name != null and name != ''">
@@ -90,14 +105,14 @@
           <ol class="certificate-info">
           
           <s:iterator value="certificates" var="cert">
-            <li>
-            
-              
+            <li> 
               <div class="certSubject <s:if test="suspended">suspended-cert</s:if>">
-                <s:property value="subjectString"/>
+                <s:set value="subjectString" var="thisCertDN"/>
+                <voms:formatDN dn="${thisCertDN}" fields="CN"/>
               </div>
               <div class="certIssuer <s:if test="suspended">suspended-cert</s:if>">
-                <s:property value="ca.subjectString"/>
+                <s:set value="ca.subjectString" var="thisCertCA"/>
+                <voms:formatDN dn="${thisCertCA}" fields="CN"/>
               </div>
             </li>
           </s:iterator>
@@ -179,5 +194,5 @@
         styleClass="resultsCount"
         />
    </div>
-  </s:else>
+  </s:elseif>
 </div>

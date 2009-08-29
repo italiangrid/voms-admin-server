@@ -9,8 +9,6 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.roles.CreateRoleOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
@@ -23,7 +21,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 })
 
 @Action(value="create", interceptorRefs={@InterceptorRef(value="authenticatedStack", params={"tokenSession.includeMethods", "execute"})})
-public class CreateAction extends BaseAction implements ModelDriven<VOMSRole>, Preparable{
+public class CreateAction extends RoleActionSupport{
 
 	/**
 	 * 

@@ -13,7 +13,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @ParentPackage("base")
 
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="aclDetail"),
+	@Result(name=BaseAction.SUCCESS,location="manage", type="chain"),
 	@Result(name=BaseAction.INPUT, location="editACLEntry")
 })
 public class EditEntryAction extends ACLActionSupport {

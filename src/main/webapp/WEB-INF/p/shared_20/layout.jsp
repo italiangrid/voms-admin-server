@@ -26,6 +26,14 @@
       
     </script>
     
+    <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>">
+      
+    </script>
+    
+    <script type="text/javascript">
+      ajaxBaseURL = '<s:url value="/ajax/"/>';
+      memberSearchURL =  '<s:url  value="/search/member.action"/>';
+    </script>
     
     <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
     </script>
@@ -34,7 +42,7 @@
   </head>
 
   <body>
-    <%-- <voms:currentAdmin var="currentAdmin"/> --%>
+  
     
   <div id="header">
     <tiles2:insertAttribute name="header"/>

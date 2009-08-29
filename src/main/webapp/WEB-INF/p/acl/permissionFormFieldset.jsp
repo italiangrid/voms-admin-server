@@ -1,112 +1,155 @@
     <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
     <tr>
-      <td>All permissions: <s:checkbox name="selectedPermissions"
-        id="allPermsCheckbox" fieldValue="%{'ALL'}" /></td>
+      <td colspan="4">
+        <div id="permissionShortcuts">
+          <span class="label">Select:</span>
+            <span class="clickable" id="allPermissionHandle">all</span>|<span class="clickable" id="browsePermissionHandle">browse</span>|<span class="clickable" href="" id="noPermissionHandle">none</span>
+        </div>
+      </td>
     </tr>
-
-    <tr>
-      <td />
-      <td>Read</td>
-      <td>Write</td>
-      <td />
-    </tr>
-
-    <tr>
-      <td>Container rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="tableRowOdd borderTop">
+      <td id="containerHandle" class="permHeader clickable">Container rights:</td>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'CONTAINER_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('CONTAINER_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('CONTAINER_READ')}" theme="simple"/>
+        CONTAINER_READ
+      </th>
+      
+      <th class="permissionName">
+        <s:checkbox name="selectedPermissions"
         fieldValue="%{'CONTAINER_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('CONTAINER_WRITE')}" /></td>
+        value="%{permission.has('CONTAINER_WRITE')}" theme="simple"/>
+        CONTAINER_WRITE</th>
+      <th />
+    </tr>
+
+    <tr class="tableRowOdd">
+      <td colspan="4">
+        <div class="permissionHelp">
+          These flags are used to control access to the operations 
+          that list/alter the VO internal structure (groups and roles list/creations/deletions, 
+          user creations/deletions).
+        </div>
+      </td>
+      
     </tr>
 
     <tr>
-      <td />
-      <td>Read</td>
-      <td>Write</td>
-      <td />
-    </tr>
-    <tr>
-      <td>Membership rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+      <th id="membershipHandle" class="permHeader clickable">Membership rights</th>  
+      <th class="permissionName">
+        <s:checkbox name="selectedPermissions"
         fieldValue="%{'MEMBERSHIP_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('MEMBERSHIP_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('MEMBERSHIP_READ')}" theme="simple"/>
+      MEMBERSHIP_READ</th>
+      <th class="permissionName">
+        <s:checkbox name="selectedPermissions"
         fieldValue="%{'MEMBERSHIP_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('MEMBERSHIP_WRITE')}" /></td>
+        value="%{permission.has('MEMBERSHIP_WRITE')}" theme="simple" />
+      MEMBERSHIP_WRITE</th>
+      <th />
     </tr>
     <tr>
-      <td />
-      <td>List</td>
-      <td>Set</td>
-      <td>Default</td>
+      <td colspan=41">
+        <div class="permissionHelp">
+          These flags are used to control access to operations that manage/list membership in group and roles.
+        </div>
+      </td>
     </tr>
-    <tr>
-      <td>ACL management rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="tableRowOdd">
+      <th id="aclHandle" class="permHeader  clickable">ACL management rights:</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'ACL_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('ACL_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('ACL_READ')}" theme="simple"/>
+      ACL_READ</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'ACL_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('ACL_WRITE')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('ACL_WRITE')}" theme="simple"/>
+      ACL_WRITE</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'ACL_DEFAULT'}" cssClass="permissionCheckbox"
-        value="%{permission.has('ACL_DEFAULT')}" /></td>
+        value="%{permission.has('ACL_DEFAULT')}" theme="simple"/>
+        ACL_DEFAULT</th>
     </tr>
-    <tr>
-      <td />
-      <td>List</td>
-      <td>Define</td>
-      <td />
+    <tr class="tableRowOdd">
+      <td colspan="4">
+        <div class="permissionHelp">
+          These flags are used to control access to operations that manage VO Access Control Lists (ACLs).
+        </div>
+      </td>
     </tr>
-    <tr>
-      <td>Generic Attributes rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="clickable">
+      <th id="gaHandle" class="permHeader  clickable">Generic Attributes rights:</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'ATTRIBUTES_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('ATTRIBUTES_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('ATTRIBUTES_READ')}" theme="simple"/>
+      ATTRIBUTES_READ</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'ATTRIBUTES_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('ATTRIBUTES_WRITE')}" /></td>
+        value="%{permission.has('ATTRIBUTES_WRITE')}" theme="simple"/>
+      ATTRIBUTES_WRITE</th>
+      <th />
     </tr>
     <tr>
-      <td />
-      <td>List</td>
-      <td>Manage</td>
-      <td />
+      <td colspan="4">
+        <div class="permissionHelp">
+          These flags are used to control access to operations that manage generic attributes 
+          (at the user, group, or role level).
+        </div>
+      </td>
     </tr>
-    <tr>
-      <td>User request management rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="tableRowOdd clickable">
+      <th id="reqHandle" class="permHeader  clickable">User request management rights:</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'REQUESTS_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('REQUESTS_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('REQUESTS_READ')}" theme="simple"/>
+      REQUESTS_READ</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'REQUESTS_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('REQUESTS_WRITE')}" /></td>
+        value="%{permission.has('REQUESTS_WRITE')}" theme="simple"/>
+      REQUESTS_WRITE</th>
+      <th />
     </tr>
-    <tr>
-      <td />
-      <td>Read</td>
-      <td>Write</td>
-      <td />
+    <tr class="tableRowOdd">
+      <td colspan=41">
+        <div class="permissionHelp">
+          These flags are used to control access to operations that manage user requests regarding the vo, 
+          group membership, role assignment, generic attribute assignment, renewal of the membership etc...
+        </div>
+      </td>
     </tr>
-    <tr>
-      <td>User personal information access rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="clickable">
+      <th id="piHandle" class="permHeader  clickable">User personal information access rights:</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'PERSONAL_INFO_READ'}" cssClass="permissionCheckbox"
-        value="%{permission.has('PERSONAL_INFO_READ')}" /></td>
-      <td><s:checkbox name="selectedPermissions"
+        value="%{permission.has('PERSONAL_INFO_READ')}" theme="simple"/>
+      PERSONAL_INFO_READ</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'PERSONAL_INFO_WRITE'}" cssClass="permissionCheckbox"
-        value="%{permission.has('PERSONAL_INFO_WRITE')}" /></td>
+        value="%{permission.has('PERSONAL_INFO_WRITE')}" theme="simple"/>
+        PERSONAL_INFO_WRITE</th>
+      <th />
     </tr>
     <tr>
-      <td />
-      <td>Suspend</td>
-      <td colspan="2" />
+      <td colspan="4">
+        <div class="permissionHelp">
+          These flags regulate access to user personal information stored in VOMS Admin. (currently not used).
+        </div>  
+      </td>
     </tr>
-    <tr>
-      <td>User suspension rights:</td>
-      <td><s:checkbox name="selectedPermissions"
+    <tr class="tableRowOdd clickable">
+      <th id="suspendHandle" class="permHeader  clickable">User suspension rights:</th>
+      <th class="permissionName"><s:checkbox name="selectedPermissions"
         fieldValue="%{'SUSPEND'}" cssClass="permissionCheckbox"
-        value="%{permission.has('SUSPEND')}" /></td>
+        value="%{permission.has('SUSPEND')}" theme="simple"/>
+      SUSPEND</th>
+      <th colspan="2" />
     </tr>
+    <tr class="tableRowOdd borderBottom">
+      <td colspan="4">
+        <div class="permissionHelp">
+          This flag state regulate access to user suspension opearation.
+        </div>
+      </td>
+    </tr>
+    
+    

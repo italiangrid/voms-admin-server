@@ -96,6 +96,10 @@
       <put-attribute name="content" value="/WEB-INF/p/role/create.jsp"/>
     </definition>
     
+    <definition name="roleDetail" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.role.RoleDetailPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/role/roleDetail.jsp"/>
+    </definition>
+    
     <definition name="aups" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/aup/aups.jsp"/>
     </definition>
@@ -140,6 +144,14 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmed.jsp"/>
     </definition>
     
+    <definition name="aclManage" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.acl.ManagePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/acl/aclManage.jsp"/>
+    </definition>
+    
+    <definition name="aclHelp" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/acl/aclHelp.jsp"/>
+    </definition>
+    
     <definition name="aclDetail" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/acl/aclDetail.jsp"/>
     </definition>
@@ -155,5 +167,15 @@
     <definition name="editACLEntry" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/acl/editEntry.jsp"/>
     </definition>
+    
+    <definition name="exception" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/exception/exception.jsp"/>
+    </definition>
+    
+    <definition name="authzException" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/exception/authzException.jsp"/>
+    </definition>
+    
+    <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
     
 </tiles-definitions>

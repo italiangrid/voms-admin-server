@@ -46,6 +46,7 @@ public class BaseAction extends ActionSupport {
 	public static final String CREATE = "create";
 	public static final String SAVE = "save";
 	
+	public static final String AUTHZ_ERROR = "authorizationError";
 	
 	protected VOMSUser userById(Long id){
 		if (id == null)

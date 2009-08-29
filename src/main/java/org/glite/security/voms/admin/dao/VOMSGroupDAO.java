@@ -23,6 +23,7 @@ package org.glite.security.voms.admin.dao;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +39,7 @@ import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
+import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSGroupAttribute;
@@ -159,7 +161,10 @@ public class VOMSGroupDAO {
     public SearchResults getMembers( VOMSGroup g, int firstResult,
             int maxResults ) {
 
-        int count  = g.getMembers().size(); // Maybe the HQL query is more efficient
+    	Set groupMembers = g.getMembers();
+        // int count  = g.getMembers().size(); // Maybe the HQL query is more efficient
+    	
+    	int count = groupMembers.size();
         
         SearchResults results = SearchResults.instance();
         
@@ -188,8 +193,17 @@ public class VOMSGroupDAO {
         
         String sString = "%" + searchString + "%";
 
-        String queryString = "select count(m.user) from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
-            "and m.user.dn like :searchString";
+        String queryString = "select count(m.user) as u from VOMSMapping m join m.user.certificates as cert where " +
+		"m.group = :group and m.role is null and "+
+		"(cert.subjectString like :searchString "+ 
+		"or cert.ca.subjectString like :searchString "+
+		"or m.user.name like :searchString "+
+		"or m.user.surname like :searchString "+
+		"or m.user.emailAddress like :searchString " +
+		"or m.user.institution like :searchString)";
+        
+        //String queryString = "select count(m.user) from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
+        //    "and m.user.dn like :searchString";
 
         Query q = HibernateFactory.getSession().createQuery( queryString )
         .setString( "searchString", sString );
@@ -213,9 +227,18 @@ public class VOMSGroupDAO {
 
         SearchResults results = SearchResults.instance();
         String sString = "%" + searchString + "%";
+        
+        String queryString = "select m.user as u from VOMSMapping m join m.user.certificates as cert where " +
+        		"m.group = :group and m.role is null and "+
+        		"(cert.subjectString like :searchString "+ 
+        		"or cert.ca.subjectString like :searchString "+
+        		"or m.user.name like :searchString "+
+        		"or m.user.surname like :searchString "+
+        		"or m.user.emailAddress like :searchString " +
+        		"or m.user.institution like :searchString)";
 
-        String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
-            "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
+//        String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
+//            "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
         
         Query q = HibernateFactory.getSession().createQuery( queryString )
         .setString( "searchString", sString );
@@ -398,6 +421,17 @@ public class VOMSGroupDAO {
         
         g.getAcls().clear();
 
+        // Delete admins and ACL permissions that are related to this group
+        VOMSAdminDAO adminDAO = VOMSAdminDAO.instance(); 
+        VOMSAdmin groupAdmin = adminDAO.getByFQAN(g.getName());
+        
+        if (groupAdmin != null){
+        	
+        	ACLDAO.instance().deletePermissionsForAdmin(groupAdmin);
+        	adminDAO.delete(groupAdmin);
+        }
+        
+        
         HibernateFactory.getSession().delete( g );
         HibernateFactory.getSession().flush();
         

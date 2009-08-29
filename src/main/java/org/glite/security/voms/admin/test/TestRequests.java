@@ -3,7 +3,6 @@ package org.glite.security.voms.admin.test;
 import java.util.Date;
 
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.dao.generic.RequesterInfoDAO;
 import org.glite.security.voms.admin.dao.hibernate.HibernateDAOFactory;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.request.RequesterInfo;

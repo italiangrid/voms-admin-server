@@ -22,26 +22,36 @@
 		<interceptors>
 			<interceptor name="authnInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.AuthenticatedAccessInterceptor" />
+        
+          
 			<interceptor name="hibernateInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
+        
+            <interceptor name="authzExceptionMappingInterceptor"
+                class="org.glite.security.voms.admin.view.interceptors.AuthzExceptionInterceptor"/>
 			
         <interceptor-stack name="authenticatedStack">
                 
-                <interceptor-ref name="logger"/>
+                <interceptor-ref name="exception">
+                  <param name="logEnabled">true</param>
+                  <param name="logLevel">debug</param>
+                </interceptor-ref>
                 
-                <interceptor-ref name="authnInterceptor" />
+                <interceptor-ref name="logger"/>
                 
                 <interceptor-ref name="tokenSession">
                   <param name="excludeMethods">*</param>
                 </interceptor-ref>
-                <interceptor-ref name="exception"/>
+                <interceptor-ref name="authnInterceptor" />
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>
                 <interceptor-ref name="params">
                     <param name="excludeParams">dojo\..*,^struts\..*</param>
                 </interceptor-ref>
                 
+                <interceptor-ref name="checkbox"/>
                 <interceptor-ref name="servletConfig"/>
+                
                 
                 <interceptor-ref name="prepare"/>
                 <interceptor-ref name="chain"/>
@@ -50,7 +60,7 @@
                 <interceptor-ref name="modelDriven"/>
                 <interceptor-ref name="fileUpload"/>
                 
-                <interceptor-ref name="checkbox"/>
+                
                 
                 <interceptor-ref name="staticParams"/>
                 <interceptor-ref name="actionMappingParams"/>
@@ -70,8 +80,9 @@
                 </interceptor-ref>
                 
                 <interceptor-ref name="hibernateInterceptor" />
+                
+                <interceptor-ref name="authzExceptionMappingInterceptor"/>
             </interceptor-stack>
-      
       </interceptors>
     
         
@@ -79,13 +90,28 @@
         
         <global-results>
           <result name="invalid.token">tokenError</result>
+          <result name="exception">exception</result>
+          <result name="authzException">authzException</result>
         </global-results>
         
-        <action name="debug">
-          <result>
-            debug-template
-          </result>
-        </action>
+        
+        <global-exception-mappings>
+          <exception-mapping result="exception" exception="java.lang.Throwable"/>
+          <exception-mapping result="authzException" exception="org.glite.security.voms.admin.common.VOMSAuthorizationException"/>
+        </global-exception-mappings>
+    </package>
+    
+    <package name="json" extends="base">
+        <result-types>
+            <result-type name="json" class="com.googlecode.jsonplugin.JSONResult" default="true"/>
+        </result-types>
+        <interceptors>
+            <interceptor name="json" class="com.googlecode.jsonplugin.JSONInterceptor"/>
+        </interceptors>
+        
+        <global-results>
+          <result name="exception">ajaxException</result>
+        </global-results>
     </package>
 	
 </struts>

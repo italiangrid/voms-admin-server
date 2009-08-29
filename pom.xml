@@ -345,6 +345,16 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+    <id>Struts Maven Plugins Repository</id> 
+    <url>http://struts2plugin-maven-repo.googlecode.com/svn/trunk/</url> 
+    <snapshots> 
+      <enabled>false</enabled> 
+    </snapshots> 
+    <releases> 
+      <enabled>true</enabled> 
+    </releases> 
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -491,5 +501,11 @@
       <artifactId>struts2-tiles-plugin</artifactId>
       <version>2.1.6</version>
     </dependency>
+    
+    <dependency> 
+       <groupId>com.googlecode</groupId> 
+       <artifactId>jsonplugin</artifactId> 
+       <version>0.34</version> 
+   </dependency>
   </dependencies>
 </project>

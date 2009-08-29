@@ -38,6 +38,7 @@ public class VOMSContext {
     VOMSGroup group;
 
     VOMSRole role;
+    
 
     protected VOMSContext( VOMSGroup g, VOMSRole r ) {
 
@@ -117,6 +118,23 @@ public class VOMSContext {
                 "incorrect context string passed as argument to constructor!" );
 
     }
+    
+    public static VOMSContext instance(Long groupId, Long roleId){
+    	
+    	VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
+    	
+    	if (g == null)
+    		throw new NoSuchGroupException("Group identified by id '"+groupId+"' not found!");
+    	
+    	VOMSRole r = null;
+    	
+    	if (roleId != null)
+    		r = VOMSRoleDAO.instance().findById(roleId);
+    	
+    	return instance(g, r);
+    }
+    
+    
 
     public boolean isGroupContext() {
 

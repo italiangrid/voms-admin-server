@@ -8,9 +8,9 @@ Delete <s:if test="defaultACL">default</s:if> ACL entry:
   <s:hidden name="aclId" value="%{model.id}" />
   <s:hidden name="adminId" value="%{admin.id}" />
   
-  <table class="table" cellpadding="0" cellspacing="0">   
+  <table class="form noborder">   
     <tr>
-      <td class="header">Admin:</td>
+      <td><h1>Admin:</h1></td>
       <td class="admin">
         <div class="userDN">
           <voms:formatDN dn="${admin.dn}" fields="CN"/>
@@ -24,25 +24,30 @@ Delete <s:if test="defaultACL">default</s:if> ACL entry:
         <td colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td class="header">Context:</td>
+        <td><h1>Context:</h1></td>
         <td class="highlight"><s:property value="context"/></td>
       </tr>
       <tr>
       <td colspan="2">&nbsp;</td>
     </tr>
     <tr>
-      <td class="header" >Permission:</td>
+      <td><h1>Permission:</h1></td>
       <td style="font-weight:bold;"><s:property value="permissions[admin].compactRepresentation"/></td>
     </tr>
     <tr>
       <td colspan="2">&nbsp;</td>
     </tr>
+    <s:if test="not defaultACL and context.groupContext">
     <tr>
-      <td><div class="header">Remove also from children contexts?</div></td>
+      <td><h1>Remove also from children contexts?</h1></td>
       <td>
-        <s:checkbox name="propagate"/>  
+        <s:checkbox name="propagate" theme="simple"/>  
       </td>
     </tr>
+    </s:if>
+    <s:else>
+      <s:hidden name="propagate" value="%{false}"/>  
+    </s:else>
     <tr>
       <td colspan="2">&nbsp;</td>
     </tr>

@@ -106,8 +106,15 @@ public class FormatDNTag extends TagSupport {
 
         if ( fields == null || VOMSConfiguration.instance().getBoolean( "voms.webapp.always-show-full-dns", false ))
             write( dn );
-        else
-            write( formatDN() );
+        else{
+            
+        	StringBuilder element = new StringBuilder();
+        	
+        	element.append("<div class=\"clickable formattedDN \" style=\"display:inline;\"><span title=\""+dn+"\">"+formatDN()+"</span>");
+        	element.append("<span style=\"display:none\">"+dn+"</span></div>");
+        	write (element.toString());
+            
+        }
 
         return SKIP_BODY;
     }

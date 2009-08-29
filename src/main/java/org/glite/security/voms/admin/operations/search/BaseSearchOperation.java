@@ -4,6 +4,7 @@ import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 import org.glite.security.voms.admin.operations.groups.SearchGroupsOperation;
+import org.glite.security.voms.admin.operations.groups.SearchMembersOperation;
 import org.glite.security.voms.admin.operations.roles.SearchRolesOperation;
 import org.glite.security.voms.admin.operations.users.SearchUserAttributesOperation;
 import org.glite.security.voms.admin.operations.users.SearchUsersOperation;
@@ -36,6 +37,9 @@ public class BaseSearchOperation extends BaseVoReadOperation implements SearchOp
 			if (searchData.getText()!= null && searchData.getText().trim().equals(""))
 				searchData.setText(null);
 			
+			if (searchData.getMaxResults() == 0)
+				searchData.setMaxResults(userMaxResults);
+			
 			if (searchType.equals("user"))
 				return SearchUsersOperation.instance(searchData.getText(), searchData.getFirstResult(), userMaxResults).execute();
 			else if (searchType.equals("group"))
@@ -44,6 +48,8 @@ public class BaseSearchOperation extends BaseVoReadOperation implements SearchOp
 				return SearchRolesOperation.instance(searchData.getText(), searchData.getFirstResult(), groupMaxResults).execute();
 			else if (searchType.equals("attribute"))
 				return SearchUserAttributesOperation.instance(searchData.getText(), searchData.getFirstResult(), groupMaxResults).execute();
+			else if (searchType.equals("group-member") || searchType.equals("role-member"))
+				return SearchMembersOperation.instance(searchData).execute();
 			else
 				throw new VOMSException("Unsupported search type '"+searchData.getType()+"'");
 				

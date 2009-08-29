@@ -42,6 +42,9 @@
   <li>
     <a href="<s:url action="search" namespace="/attribute"/>" class="vomsLink">Attributes</a>
   </li>
+  <li>
+    <a href="<s:url action="manage" namespace="/acl"/>" class="vomsLink">ACLs</a>
+  </li>
   
   <li>
     <a href="<s:url action="load" namespace="/aup"/>"class="vomsLink">AUPs</a>

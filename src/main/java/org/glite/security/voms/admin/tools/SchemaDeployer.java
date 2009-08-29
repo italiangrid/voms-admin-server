@@ -380,12 +380,14 @@ public class SchemaDeployer {
             System.exit( -1 );
         }
     }
+    
+    
     private void doAddAdmin() {
 
         if ( adminDN == null || adminCA == null || adminEmailAddress == null)
             throw new VOMSException( "adminDN or adminCA or adminEmailAddress is not set!" );
 
-        
+        HibernateFactory.beginTransaction();
 
         try{
             
@@ -394,26 +396,34 @@ public class SchemaDeployer {
             if (a != null){
                 
                 log.info( "Admin '"+a.getDn()+","+a.getCa().getDn()+"' already exists in database..." );
-                return;
+                log.warn("This admin will be granted full privileges on the VOMS database.");
+            }else{
+            	
+            	log.info("Admin '"+adminDN+","+adminCA+"' not found. It will be created...");
+            	// Admin does not exist, create it!
+            	a = VOMSAdminDAO.instance().create( adminDN, adminCA, adminEmailAddress );
             }
             
-            // Admin does not exist, create it!
-            a = VOMSAdminDAO.instance().create( adminDN, adminCA, adminEmailAddress );
+            
             Iterator i = VOMSGroupDAO.instance().findAll().iterator();
-            Iterator rolesIter = VOMSRoleDAO.instance().findAll().iterator();
+            
         
         
         while (i.hasNext()){
             
             VOMSGroup g = (VOMSGroup)i.next();
             g.getACL().setPermissions( a, VOMSPermission.getAllPermissions() );
+            log.info("Adding ALL permissions on '"+g+"'");
+            
+            Iterator rolesIter = VOMSRoleDAO.instance().findAll().iterator();
             while(rolesIter.hasNext()){
                 
                 VOMSRole r = (VOMSRole) rolesIter.next();
-                VOMSContext.instance( g, r ).getACL().setPermissions( a, VOMSPermission.getAllPermissions() );
-                HibernateFactory.getSession().update( r );
+                r.getACL(g).setPermissions( a, VOMSPermission.getAllPermissions() );
+                log.info("Adding ALL permissions on role '"+g+"/"+r+"'");
+                HibernateFactory.getSession().save( r );
             }
-            HibernateFactory.getSession().update( g );
+            HibernateFactory.getSession().save( g );
             
         }
 

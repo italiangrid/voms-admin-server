@@ -7,6 +7,7 @@
     <s:textfield name="searchData.text" size="20" cssClass="text"/>
     <s:submit value="%{'Search groups'}" cssClass="submitButton"/>
   </s:form>
+  <s:fielderror fieldName="searchData.text"/>
 </div>
 
 
@@ -42,7 +43,7 @@ No groups found in this VO.
     >
       <tr class="tableRow">
 
-        <td width="95%">
+        <td>
           <div class="groupName">
             <s:url action="edit" namespace="/group" var="editURL">
               <s:param name="groupId" value="id"/>
@@ -62,7 +63,7 @@ No groups found in this VO.
               <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="groupId" value="%{id}"/>
-              <s:submit src="%{deleteImg}" type="image"/>
+              <s:submit value="%{'delete'}"/>
             </s:form>
           </s:if>
           

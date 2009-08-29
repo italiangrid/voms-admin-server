@@ -21,6 +21,7 @@
 package org.glite.security.voms.admin.common;
 
 import org.glite.security.voms.admin.model.VOMSAdmin;
+import org.glite.security.voms.admin.operations.AuthorizationResponse;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 
 
@@ -31,6 +32,8 @@ public class VOMSAuthorizationException extends VOMSSecurityException {
     private VOMSAdmin admin;
 
     private VOMSOperation operation;
+    
+    private AuthorizationResponse authorizationResponse;
 
     public VOMSAdmin getAdmin() {
 
@@ -52,32 +55,32 @@ public class VOMSAuthorizationException extends VOMSSecurityException {
         this.operation = operation;
     }
 
-    public VOMSAuthorizationException( VOMSAdmin a, VOMSOperation o,
-            String message ) {
-
-        super( message );
+    public VOMSAuthorizationException( VOMSAdmin a, VOMSOperation o, AuthorizationResponse response) {
 
         this.admin = a;
         this.operation = o;
+        this.authorizationResponse = response;
 
     }
 
-    public VOMSAuthorizationException( String message ) {
+    
+	@Override
+	public String getMessage() {
+		
+		return String.format("Insufficient privileges to execute '%s'.", operation.getName());
+	}
 
-        super( message );
-        
-    }
+	public AuthorizationResponse getAuthorizationResponse() {
+		return authorizationResponse;
+	}
 
-    public VOMSAuthorizationException( String message, Throwable t ) {
-
-        super( message, t );
-     
-    }
-
-    public String getMessage() {
-
-    		return "Insufficient privileges to perform \""+operation.getName()+"\"";
-       
-    }
-
+	public void setAuthorizationResponse(AuthorizationResponse authorizationResponse) {
+		this.authorizationResponse = authorizationResponse;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getName()+":"+getMessage();
+	}
+    
 }

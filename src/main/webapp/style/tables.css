@@ -15,6 +15,7 @@ th {
 tr td{
 	padding: 0.5em;	
 	border-bottom: 1px solid rgb(200,200,200);
+	vertical-align: top;
 }
 
 .tableRowOdd{
@@ -31,19 +32,41 @@ td.actions{
 }
 
 
+table.membership-management tr td{
+	border:0;
+	padding: .2em 0;
+	
+} 
+
 table.noborder tr td, table.noborder tr th{
 	border: 0;
 	padding: .5em 0;
+	
 }
 
 td.dismissRoleBox{
 	text-align: right;
-	vertical-align: top;
+	
 }
 
 td.roleAssign{
 	text-align: right;
-	vertical-align: top;
+	
+}
+
+td.roleDismiss{
+	text-align: right;
+	
+}
+
+td.userRoleName{
+	color: #6F0D0D;
+	font-weight: bold;
+	
+}
+	
+td.removeFromGroup{
+	vertical-align: bottom;
 }
 
 tr.suspended-cert-row{
@@ -53,3 +76,13 @@ tr.suspended-cert-row{
 tr.suspended-cert-row td{
 	border-color: #FF0000;
 }
+
+div.permissionHelp{
+	padding: 0 .5em ;
+	text-align: left;
+	color: #505050;
+	line-height: 1.45em;
+	font-size: 11px;
+		
+}
+

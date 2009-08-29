@@ -30,7 +30,7 @@ public class HibernateInterceptor extends AbstractInterceptor implements
 
             HibernateFactory.commitTransaction();
 
-        } finally {
+        }finally {
 
             HibernateFactory.closeSession();
 

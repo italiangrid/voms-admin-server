@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<h2>Create a new VO group</h2>
+<h1>Create a new group:</h1>
 
 <div class="createTab">
   <voms:hasPermissions var="canCreate" 
