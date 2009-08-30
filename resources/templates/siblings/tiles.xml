@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+  
+  
+    <definition name="layout" template="/WEB-INF/p/shared_20/layout.jsp">
+      <put-attribute name="header" value="/WEB-INF/p/shared_20/header.jsp"/>
+      <put-attribute name="menu" value="/WEB-INF/p/shared_20/menu.jsp"/>
+      <put-attribute name="messages" value="/WEB-INF/p/shared_20/messages.jsp"/>
+      <put-attribute name="leftBar" value=""/>
+      <put-attribute name="content" value=""/>
+      <put-attribute name="footer" value="/WEB-INF/p/shared_20/footer.jsp"/>
+    </definition>
+    
+    <definition name="empty-layout" extends="layout">
+      <put-attribute name="menu" value=""/>
+      <put-attribute name="leftBar" value=""/>
+    </definition>
+    
+    <definition name="user-layout" extends="layout">
+      <put-attribute name="menu" value="/WEB-INF/p/shared_20/user-menu.jsp"/>
+    </definition>
+    
+    <definition name="admin-layout" extends="layout">
+      <put-attribute name="menu" value="/WEB-INF/p/shared_20/admin-menu.jsp"/>
+      
+      <!--  
+      <put-attribute name="leftBar" value="/WEB-INF/p/shared_20/admin-left-bar.jsp"/>
+        -->
+    </definition>
+    
+    <definition name="guest-layout" extends="layout">
+      <put-attribute name="menu" value="/WEB-INF/p/shared_20/user-menu.jsp"/>
+      <put-attribute name="leftBar" value=""/>
+    </definition>
+  
+    
+    
+    
+    
+    
+    <definition name="userHome" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/home.jsp"/>
+    </definition>
+    
+    <definition name="adminHome" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/admin/home.jsp"/>
+    </definition>
+    
+    <definition name="requestDetails" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/admin/requestDetails.jsp"/>
+    </definition>
+    
+    <definition name="users" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/users.jsp"/>
+    </definition>
+    
+    <definition name="userDetail" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/newUserDetail.jsp"/>
+    </definition>
+    
+    <definition name="userSuspend" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/suspend.jsp"/>
+    </definition>
+    
+    <definition name="addCertificate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/addCertificate.jsp"/>
+    </definition>
+    
+    <definition name="suspendCertificate" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/suspendCertificate.jsp"/>
+    </definition>
+    
+    
+    
+    <definition name="groups" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/group/groups.jsp"/>
+    </definition>
+    
+    <definition name="groupDetail" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/group/groupDetail.jsp"/>
+    </definition>
+    
+    <definition name="groupCreate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.group.ListGroupPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/group/create.jsp"/>
+    </definition>
+    
+    <definition name="roles" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/role/roles.jsp"/>
+    </definition>
+    
+    <definition name="roleCreate" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/role/create.jsp"/>
+    </definition>
+    
+    <definition name="roleDetail" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.role.RoleDetailPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/role/roleDetail.jsp"/>
+    </definition>
+    
+    <definition name="aups" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/aup/aups.jsp"/>
+    </definition>
+    
+    <definition name="aupVersionDetail" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/aup/aupVersionDetail.jsp"/>
+    </definition>
+    
+    <definition name="addAupVersion" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/aup/addAupVersion.jsp"/>
+    </definition>
+    
+    <definition name="signAup" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/aup/signAup.jsp"/>
+    </definition>
+    
+    <definition name="attributes" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/attribute/attributes.jsp"/>
+    </definition>
+    
+    <definition name="attributeManage" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.attribute.ListAttributeClassesPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/attribute/manage.jsp"/>
+    </definition>
+    
+    <definition name="register" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registration.jsp"/>
+    </definition>
+    
+    <definition name="registerConfirmation" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
+    </definition>
+    
+    <definition name="registerLimbo" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationLimbo.jsp"/>
+    </definition>
+    
+    <definition name="registerWaitsConfirmation" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationWaitsConfirmation.jsp"/>
+    </definition>
+    
+    <definition name="registrationConfirmed" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmed.jsp"/>
+    </definition>
+    
+    <definition name="aclManage" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.acl.ManagePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/acl/aclManage.jsp"/>
+    </definition>
+    
+    <definition name="aclHelp" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/acl/aclHelp.jsp"/>
+    </definition>
+    
+    <definition name="aclDetail" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/acl/aclDetail.jsp"/>
+    </definition>
+    
+    <definition name="addACLEntry" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.acl.AddEntryPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/acl/addEntry.jsp"/>
+    </definition>
+    
+    <definition name="deleteACLEntry" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/acl/deleteEntry.jsp"/>
+    </definition>
+    
+    <definition name="editACLEntry" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/acl/editEntry.jsp"/>
+    </definition>
+    
+    <definition name="exception" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/exception/exception.jsp"/>
+    </definition>
+    
+    <definition name="authzException" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/exception/authzException.jsp"/>
+    </definition>
+    
+    <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
+    
+</tiles-definitions>

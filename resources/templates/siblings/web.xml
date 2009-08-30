@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!--<!DOCTYPE web-app-->
+<!--  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"-->
+<!--  "http://java.sun.com/dtd/web-app_2_3.dtd">-->
+
 <!--
  Copyright (c) Members of the EGEE Collaboration. 2006.
  See http://www.eu-egee.org/partners/ for details on the copyright
@@ -25,43 +29,74 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>VOMS-ADMIN 2.0 siblings</display-name>
+	<display-name>VOMS-ADMIN 2.5</display-name>
+    
+    <!-- Struts 2 filter -->
+    <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+        
+        <init-param>
+            <param-name>actionPackages</param-name>
+            <param-value>org.glite.security.voms.admin.view.actions.siblings</param-value>
+        </init-param>
+        
+    </filter>
 	
-
-	<listener>
+    <!-- Struts 2 filter mapping -->
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>*.action</url-pattern>
+    </filter-mapping>
+    	
+	<!--  Struts 2 listeners -->
+     
+    <listener>
+        <listener-class>
+            org.apache.struts2.tiles.StrutsTilesListener
+        </listener-class>
+    </listener>
+      
+    <listener>
 		<display-name>siblings-context-listener</display-name>
 		<listener-class>org.glite.security.voms.admin.servlets.SiblingsContextListener</listener-class>
 	</listener>
 
-	<!-- Standard Action Servlet Configuration (with debugging) -->
 	<servlet>
-		<servlet-name>action</servlet-name>
+		<servlet-name>axis</servlet-name>
 		<servlet-class>
-			org.apache.struts.action.ActionServlet
+			org.apache.axis.transport.http.AxisServlet
 		</servlet-class>
-		<init-param>
-			<param-name>config</param-name>
-			<param-value>/WEB-INF/struts-config.xml</param-value>
-		</init-param>
-		<init-param>
-			<param-name>debug</param-name>
-			<param-value>2</param-value>
-		</init-param>
-		<init-param>
-			<param-name>detail</param-name>
-			<param-value>2</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
 	</servlet>
 
-	<!-- Standard Action Servlet Mapping -->
+	<!-- Axis servlet mapping -->
 	<servlet-mapping>
-		<servlet-name>action</servlet-name>
-		<url-pattern>*.do</url-pattern>
+		<servlet-name>axis</servlet-name>
+		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>axis</servlet-name>
+		<url-pattern>/servlet/axis</url-pattern>
+	</servlet-mapping>
+    
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
-		<welcome-file>/pages/index.jsp</welcome-file>
+		<welcome-file>/WEB-INF/p/welcome.jsp</welcome-file>
 	</welcome-file-list>
+
+	<!-- Tiles definitions configuration -->
+    <context-param>
+        <param-name>
+            org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
+        </param-name>
+        <param-value>/WEB-INF/tiles.xml</param-value>
+    </context-param>
+    
+    <context-param>
+      <param-name>
+        org.apache.tiles.definition.dao.LocaleUrlDefinitionDAO.CHECK_REFRESH
+      </param-name>
+      <param-value>true</param-value>
+    </context-param>
 </web-app>
