@@ -42,5 +42,5 @@ public class UserActionSupport extends BaseAction implements
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-
+	
 }

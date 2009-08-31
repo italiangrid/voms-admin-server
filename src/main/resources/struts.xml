@@ -37,6 +37,8 @@
                   <param name="logLevel">debug</param>
                 </interceptor-ref>
                 
+                <interceptor-ref name="authzExceptionMappingInterceptor"/>
+                
                 <interceptor-ref name="logger"/>
                 
                 <interceptor-ref name="tokenSession">
@@ -81,7 +83,7 @@
                 
                 <interceptor-ref name="hibernateInterceptor" />
                 
-                <interceptor-ref name="authzExceptionMappingInterceptor"/>
+                
             </interceptor-stack>
       </interceptors>
     

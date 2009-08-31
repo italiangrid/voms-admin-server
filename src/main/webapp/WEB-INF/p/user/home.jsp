@@ -1,20 +1,45 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <h1>
-  Welcome to the ${voName} Virtual Organization, <s:property value="model"/>.
+  Welcome to the <span class="voName">${voName}</span> VO,
 </h1>
 
-<s:if test="suspended">
-  <h1 class="warning">
-    Your membership is currently suspended for the following reason:
-  </h1>
-  <div class="suspension reason">
-    <s:property value="suspensionReason"/>
-  </div>
-</s:if>
-<h2>
-Your membership information:
-</h2>
+<div id="welcomeUserName">
+  	<s:if test="name != null and surname != null">
+		<s:property value="name+ ' ' +surname"/>
+			<span class="institution">
+    			(<s:property value="institution"/>)  
+  			</span>
+	</s:if>
+	<s:else>
+		<s:property value="dn"/>
+	</s:else>
+</div>
+
+
+<div class="membershipInfo">
+	<dl>
+		<s:if test="suspended">		
+			<dt>Your membership is currently <span class="suspensionWarning">suspended</span> for the following reason:</dt>
+			<dd class="suspensionReason"><s:property value="suspensionReason"/></dd>
+		</s:if>
+		<s:else>
+			<dt>Your membership will expire on:</dt>
+			<dd class="userMembershipEndTime">
+				<s:property value="endTime"/>
+			</dd>
+		</s:else>
+	</dl>
+		
+</div>
+
+<tiles2:insertTemplate template="mappingsRequestPane.jsp"/>
+
+<%-- 
+
+<h1>
+Groups and roles you're in:
+</h1>
 
 <div class="voMembershipInfo">
 <table class="table" cellpadding="0" cellspacing="0">   
@@ -43,7 +68,6 @@ Your membership information:
     </s:iterator>
 </table>
 </div>
-
 
 <s:if test="not attributes.empty">
 <h2>
@@ -75,4 +99,9 @@ Your generic attributes:
    </table>
 </div>
 </s:if>
+--%>
+
+
+
+
  

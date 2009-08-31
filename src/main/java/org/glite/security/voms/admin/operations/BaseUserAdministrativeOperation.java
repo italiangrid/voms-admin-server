@@ -40,7 +40,7 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 	protected void setupPermissions() {
 
 		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getAllPermissions());
+				.getEmptyPermissions());
 
 	}
 }

@@ -41,4 +41,9 @@ public class RoleMembershipRequest extends GroupMembershipRequest {
 
 		return "Role membership request";
 	}
+	
+	public String getFQAN(){
+		return getGroupName()+"/Role="+getRoleName();
+	}
+	
 }

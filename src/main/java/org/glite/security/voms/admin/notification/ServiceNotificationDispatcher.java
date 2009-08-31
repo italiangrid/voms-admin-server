@@ -11,6 +11,8 @@ import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventMask;
+import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
+import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
@@ -19,6 +21,7 @@ import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSMapping;
+import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
@@ -77,6 +80,7 @@ public class ServiceNotificationDispatcher implements EventListener {
 			msg.addRecipients(getVoAdminEmailList());
 
 			NotificationService.instance().send(msg);
+		
 		} else if (e instanceof VOMembershipRequestApprovedEvent) {
 
 			RequestApproved msg = new RequestApproved(
@@ -84,12 +88,32 @@ public class ServiceNotificationDispatcher implements EventListener {
 							.getRequesterInfo().getEmailAddress());
 
 			NotificationService.instance().send(msg);
+		
+		} else if (e instanceof GroupMembershipRequestEvent){
+			
+			handle((GroupMembershipRequestEvent)e);		
+			
 		}
 
 	}
 
 	public EventMask getMask() {
 		return null;
+	}
+	
+	protected void handle(GroupMembershipRequestEvent e){
+		GroupMembershipRequest req = e.getRequest();
+		
+		if (e instanceof GroupMembershipSubmittedEvent){
+			
+			HandleGroupRequest msg = new HandleGroupRequest(req, ((GroupMembershipSubmittedEvent)e).getManagementURL());
+			
+			msg.addRecipients(getVoAdminEmailList());
+			
+			NotificationService.instance().send(msg);
+			
+		}
+		
 	}
 
 	protected void handle(UserSuspendedEvent e) {

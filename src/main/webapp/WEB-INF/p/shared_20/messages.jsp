@@ -5,7 +5,9 @@
   <img src="${ajaxLoaderURL}"/>
 </div>
 
+<%--
 <s:actionerror cssClass="actionErrors"/>
 <s:actionmessage cssClass="message"/>
 
 <s:property value="#authorizationException"/>
+ --%>

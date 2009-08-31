@@ -17,7 +17,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
-		@Result(name = BaseAction.INPUT, location = "attributes.jsp") })
+		@Result(name = BaseAction.INPUT, location ="attributes.jsp") })
 public class AttributeActions extends UserActionSupport {
 
 	/**

@@ -92,24 +92,14 @@ function ajaxLoad(id, url){
 	
 	$('#'+id).load(url, null, function(responseText,textStatus,req){
 		if (textStatus == 'error'){
-			$('#loadDiv').hide("slow");
-			eyeCandy();
+			alert("Error executing ajax request!");
+			$(this).html(responseText);
 		}
-		else{
+		
+		$('#loadDiv').hide();
 			
-			$('#loadDiv').hide();
-			var msg = $.cookie('error');
-			if (msg != null){
-				// Remove trailing quotes
-				
-				vomsErrorMessage(this,msg.substring(1,msg.length-1));
-				$.cookie('error', null);
-			}
-			
-			$('#'+id+' div.reloadable').fadeTo("fast",1.00);
-			
-			eyeCandy();
-		}
+		$('#'+id+' div.reloadable').fadeTo("fast",1.00);
+		eyeCandy();
 	});
 }
 
@@ -146,6 +136,9 @@ function eyeCandy(){
 	});
 	
 	$('input[type="submit"]').addClass('submitButton');
+	
+	$('*[readonly="readonly"]').addClass('readOnly');
+	
 	
 	$('select').addClass('selectBox');
 	

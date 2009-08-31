@@ -84,6 +84,12 @@ public class BaseAction extends ActionSupport {
 
 		return (VOMSRole) FindRoleOperation.instance(name).execute();
 	}
+	
+	protected String getHomeURL(){
+		
+		// FIXME: should actually look into the action mapping configuration
+		return getBaseURL()+"/home/home.action";
+	}
 
 	protected String getBaseURL() {
 
@@ -96,6 +102,16 @@ public class BaseAction extends ActionSupport {
 		return result;
 	}
 
+	protected String getAllVOsBaseURL() {
+
+		HttpServletRequest req = ServletActionContext.getRequest();
+
+		String result = req.getScheme() + "://" + req.getServerName() + ":"
+				+ req.getServerPort() + "/voms/";
+
+		return result;
+	}
+	
 	protected Date getFutureDate(Date initialDate, int field, int increment) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(initialDate);

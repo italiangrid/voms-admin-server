@@ -9,19 +9,15 @@
   </li>
   
   <li>
-    <a href="<s:url action="search" namespace="/user"/>">VO Management</a>
-  </li>
-  
-  <li>  
-    <a href="<s:url action="search" namespace="/group"/>">User requests</a>
+    <a href="<s:url action="search" namespace="/user"/>">Browse VO</a>
   </li>
   
   <li>
-    <a href="<s:url action="search" namespace="/role"/>">Configuration</a>
+    <a href="<s:url action="configuration" namespace="/configuration"/>">Configuration Info</a>
   </li>
   
   <li class="last-menu-item">
-    <a href="<s:url action="search" namespace="/attribute"/>">Other VOs on this server</a>
+    <a href="<s:url action="siblings" namespace="/sibling"/>">Other VOs on this server</a>
   </li>
 
 

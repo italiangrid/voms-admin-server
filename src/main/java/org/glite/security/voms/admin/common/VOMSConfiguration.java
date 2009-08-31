@@ -972,6 +972,7 @@ public final class VOMSConfiguration {
 
 	}
 
+	
 	public String getVomsesConfigurationString() {
 
 		if (getString("vomses.configuration") == null) {

@@ -1,7 +1,8 @@
 table{
 	width: 100%;
 	padding: 0px;
-	border-collapse: collapse;	
+	border-collapse: collapse;
+	margin-bottom: .5em;
 }
 
 th {

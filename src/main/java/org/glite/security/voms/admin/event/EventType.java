@@ -3,7 +3,7 @@ package org.glite.security.voms.admin.event;
 public enum EventType {
 
 	UserMembershipEvent(0), UserAUPEvent(1), UserSuspensionEvent(2), VOMembershipRequestEvent(
-			3);
+			3), GroupMembershipRequestEvent(4);
 
 	int bitNo;
 

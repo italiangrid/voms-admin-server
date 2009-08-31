@@ -359,32 +359,47 @@ ol.certificate-info li{
 	font-style: italic;	
 }
 
-h1.username{
-	font-size: 16pt;
-	font-variant: small-caps;
-	border-bottom: 1px dotted #CCCCCC;
-	float: right;
-	margin-bottom: 1em;	
+div.username{
+	font-weight: bold;
+}
+
+div.usernameHeader{
+	font-weight: bold;
+	font-size: larger;
+	margin-bottom: 1em;
 }
 h1.username span.institution{
 	font-size: 9pt;	
 }
 
-h1 span{
-	font-size: 9pt;
-}
 
 dl{
-	line-height: 2em;
+	line-height: 1.45em;
+	position: relative;
+	float: left;
+	clear: both;
+	margin-bottom: 2em;
+	
 }
 
-dd{
-	font-weight: bold;	
+dl dd{
+	float: left;
+	padding-left: 1em;
 }
 
-dt{
-		
-	margin-left: 2em;
+dl dt{
+	font-weight: bold;
+	color: #505050;
+	float: left;
+	clear: both;	
+}
+
+#detailedExceptionMessage dl{
+	line-height: 2em;	
+}
+
+#detailedExceptionMessage dl dd,#detailedExceptionMessage dl dt{
+	float: none;	
 }
 
 .error{
@@ -616,4 +631,15 @@ th.permissionName{
 #formattedDNControls{
 	font-weight: normal; 
 	font-size: 10px;
+}
+
+#welcomeUserName{
+	margin-bottom: 1em;
+	font-weight: bold;
+	font-size: larger;
+			
+}
+
+.suspensionWarning{
+	color: #cc0000;
 }

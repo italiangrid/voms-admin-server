@@ -7,6 +7,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    
     <%@include file="/WEB-INF/p/shared/meta.jsp"%>
     
     <title>VOMS Admin &gt; ${voName}</title>

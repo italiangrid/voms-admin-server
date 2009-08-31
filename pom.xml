@@ -46,8 +46,6 @@
       in its configuration.
     -->
     <filters>
-      <filter>resources/templates/style/colors.properties
-      </filter>
       <filter>resources/debug/test.properties
       </filter>
     </filters>

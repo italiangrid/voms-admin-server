@@ -176,6 +176,16 @@
       <put-attribute name="content" value="/WEB-INF/p/exception/authzException.jsp"/>
     </definition>
     
+    <definition name="siblings" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/sibling/siblings.jsp"/>
+    </definition>
+    
+    <definition name="configuration" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/configuration/configuration.jsp"/>
+    </definition>
+    
     <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
+    
+    
     
 </tiles-definitions>

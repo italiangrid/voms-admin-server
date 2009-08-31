@@ -401,9 +401,12 @@ public class VOMSUserDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String countString = "select count(distinct u) from VOMSUser u where u.surname like :searchString "
-				+ "or u.name like :searchString or u.emailAddress like :searchString";
-
+		String countString = "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+			+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "+
+			" or lower(u.institution) like lower(:searchString) "+
+			" or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "+
+			" order by u.surname asc";
+		
 		Query q = HibernateFactory.getSession().createQuery(countString);
 		q.setString("searchString", sString);
 
@@ -825,8 +828,11 @@ public class VOMSUserDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String queryString = "select distinct u from VOMSUser u where lower(u.surname) like lower(:searchString) "
-				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString order by u.surname asc";
+		String queryString = "select distinct u from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "+
+				" or lower(u.institution) like lower(:searchString) "+
+				" or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "+
+				" order by u.surname asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 
@@ -877,7 +883,7 @@ public class VOMSUserDAO {
 						+ "' have been already assigned to another user in this vo! Choose a different value.");
 
 	}
-
+	
 	public VOMSUser update(VOMSUser u) {
 
 		HibernateFactory.getSession().update(u);

@@ -10,6 +10,7 @@ import org.glite.security.voms.admin.view.actions.AuthorizationErrorAware;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
 
 public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
@@ -36,13 +37,14 @@ public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 			if (e instanceof VOMSAuthorizationException) {
 
 				log.debug("Caught VOMS authorization exception: " + e);
-
-				VOMSAuthorizationException ae = (VOMSAuthorizationException) e;
-				ai.getInvocationContext().getValueStack().push(ae);
-
-				ServletActionContext.getResponse().addCookie(
-						new Cookie("error", e.getMessage()));
-
+				
+				if (ai.getAction() instanceof ValidationAware){
+					
+					ValidationAware vaAction = (ValidationAware)ai.getAction();
+					vaAction.addActionError(e.getMessage());
+					
+				}
+				
 				if (ai.getAction() instanceof AuthorizationErrorAware) {
 
 					AuthorizationErrorAware aeaAction = (AuthorizationErrorAware) ai
