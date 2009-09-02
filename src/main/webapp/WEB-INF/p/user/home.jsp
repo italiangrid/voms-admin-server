@@ -26,14 +26,43 @@
 		<s:else>
 			<dt>Your membership will expire on:</dt>
 			<dd class="userMembershipEndTime">
-				<s:property value="endTime"/>
+                <s:text name="format.datetime">
+                  <s:param value="endTime"/>
+                </s:text>
 			</dd>
 		</s:else>
-	</dl>
-		
+      
+        <s:if test="hasPendingSignAUPTasks()">
+          <dt>You have pending sign AUP tasks for:</dt>
+          <dd>
+            <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.model.task.SignAUPTask 
+            and #this.status.toString() != 'COMPLETED')}">
+              <div>
+                <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">
+                  <s:param name="aupId" value="aup.id"/>
+                </s:url>
+                <span class="aupVersionName"><s:property value="aup.name"/> version <s:property value="aup.activeVersion.version"/></span>.
+                Click <a href="${signAUPURL}">here</a> to sign the AUP.
+              </div>
+            </s:iterator>
+          </dd>
+        </s:if>
+	</dl>		
 </div>
+<tiles2:insertTemplate template="personalInfoPane.jsp">
+  <tiles2:putAttribute name="panelName" value="Your personal information"/>
+</tiles2:insertTemplate>
+
+<tiles2:insertTemplate template="certificatePane.jsp">
+  <tiles2:putAttribute name="panelName" value="Your certificates"/>
+</tiles2:insertTemplate>
 
 <tiles2:insertTemplate template="mappingsRequestPane.jsp"/>
+<tiles2:insertTemplate template="requestHistoryPane.jsp"/>
+<tiles2:insertTemplate template="aupHistoryPane.jsp">
+  <tiles2:putAttribute name="panelName" value="Your AUP acceptance history"/>
+</tiles2:insertTemplate>
+
 
 <%-- 
 

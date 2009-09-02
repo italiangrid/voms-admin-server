@@ -5,5 +5,5 @@ VO membership request cancelled.
 </h1>
 
 <p>
-Your VO membership request has been canceled.
+You have succesfully cancelled your VO membership request.
 </p>

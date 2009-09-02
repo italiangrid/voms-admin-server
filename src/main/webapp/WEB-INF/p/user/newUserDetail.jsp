@@ -23,9 +23,13 @@
 </dl>
 --%>
 
-<tiles2:insertTemplate template="personalInfoPane.jsp"/>
+<tiles2:insertTemplate template="personalInfoPane.jsp">
+  <tiles2:putAttribute name="panelName" value="Personal information"/>
+</tiles2:insertTemplate>
 
-<tiles2:insertTemplate template="certificatePane.jsp"/>
+<tiles2:insertTemplate template="certificatePane.jsp">
+  <tiles2:putAttribute name="panelName" value="Certficates"/>
+</tiles2:insertTemplate>
   
 <tiles2:insertTemplate template="mappingsPane.jsp"/>
 

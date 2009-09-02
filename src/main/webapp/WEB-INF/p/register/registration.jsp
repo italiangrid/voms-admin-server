@@ -5,17 +5,20 @@ Welcome to voms-admin registration for the <span class="voName"> ${voName}</span
 </h1>
 
 <p>
-To access the VO resources, you must agree to the VO's Usage Rules. 
+To access the VO resources, you must agree to the VO's Acceptable Usage Policy (AUP) rules.
+<br/>
 Please fill out all fields in the form below and click on the submit
 button at the bottom of the page.
 </p>
 <p>
 After you submit this request, you will receive an email with instructions on how to proceed. 
+<br/>
+<span style="font-weight: bold">
 Your request will not be forwarded to the VO managers until you confirm that you have a valid email 
-address by following those instructions.
+address by following those instructions.</span>
 </p>
 
-<p>IMPORTANT:</p>
+<p><span style="font-weight: bold">IMPORTANT</span>:</p>
 <p>
 By submitting this information you agree that it may be distributed to and stored by 
 VO and site administrators. You also agree that action may be taken to confirm the information you provide 
@@ -24,11 +27,11 @@ used to contact you in relation to this activity.
 </p>
 
 <s:form action="submit-request" validate="true">
-  <h2>Your distinguished name (DN):</h2>
+  <h2 style="color: black">Your distinguished name (DN):</h2>
   <div class="highlight">
       <s:property value="requester.certificateSubject"/>
   </div>
-  <h2>Your CA:</h2>
+  <h2 style="color: black">Your CA:</h2>
   <div class="regDN">
       <s:property value="requester.certificateIssuer"/>
   </div>
@@ -52,11 +55,12 @@ used to contact you in relation to this activity.
       <s:textfield name="requester.emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}"/>
     </li>
     <li>
-      <s:label for="aupAccepted">
-      I confirm I have read and agree with the terms expressed in the <a href="#">VO Acceptable Usage Policy
-      document</a>
-      </s:label>
-      <s:checkbox name="aupAccepted"/>
+     <h2 style="color: black">The VO AUP:</h2>
+      <s:textarea rows="20" cols="80" value="%{currentAUPVersion.URLContent}" readonly="true"/>
+    </li>
+    <li class="aupAcceptance">
+      <s:checkbox name="aupAccepted" label="I confirm I have read and agree with the terms expressed in the VO Acceptable Usage Policy
+      document displayed above." labelposition="right"/>
     </li>
     <li>
      <s:submit/>

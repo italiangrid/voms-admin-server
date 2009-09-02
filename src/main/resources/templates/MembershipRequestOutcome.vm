@@ -1,5 +1,0 @@
-Dear $recipient, your $req.typeName request for $context
-has been approved.
-
-Your sincerely,
-Voms-Admin registration service for VO $voName

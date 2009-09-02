@@ -80,3 +80,9 @@ span.label{
 	border: none;	
 }
 
+.checkboxValidationError{
+	padding: 2px;
+	margin: 0;
+	border: 1px solid #BF2F2F;
+	background-color: #FFBFBF;
+}

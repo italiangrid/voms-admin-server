@@ -643,3 +643,47 @@ th.permissionName{
 .suspensionWarning{
 	color: #cc0000;
 }
+
+div.requestType{
+	font-weight: bold;
+	margin-bottom: .5em;
+}
+
+div.requestType span.reqId{
+	font-size: smaller;	
+	color: #505050;	
+}
+
+dl.requestDateInfo{
+	font-size: x-small;
+	margin-bottom: 0;
+}
+
+div.rejectedReq, div.approvedReq{
+	font-weight: bold;
+}
+
+div.rejectedReq{
+	color: #cc0000;
+}
+
+div.approvedReq{
+	color: #006600;
+}
+
+.personalInfo dl{
+	font-size: smaller;
+}
+
+div.roleName{
+	font-weight: bold;
+}
+
+li.aupAcceptance{
+	margin-top: 2em;
+}
+
+p{
+	line-height: 1.46em;
+	margin-top: 1em;
+}

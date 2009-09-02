@@ -1,27 +1,46 @@
 Dear $recipient,
 
-as VO administrator of VO $voName, your authorization is requested for the 
-VO membership request issued by the following user:
+as VO administrator of VO $voName, your authorization is requested for the
+following $request.typeName.toLowerCase() issued by the following user:
 
 Certificate information:
 
-	Subject: $req.requesterInfo.certificateSubject
-	Issuer:  $req.requesterInfo.certificateIssuer
+	Subject: $request.requesterInfo.certificateSubject
+	Issuer:  $request.requesterInfo.certificateIssuer
 	
 Personal information:
 
-	Name: $req.requesterInfo.name
-	Surname: $req.requesterInfo.surname
-	Institution: $req.requesterInfo.institution
-	Address: $req.requesterInfo.address
-	Phone number: $req.requesterInfo.phoneNumber
+	Name: $request.requesterInfo.name
+	Surname: $request.requesterInfo.surname
+	Institution: $request.requesterInfo.institution
+	Address: $request.requesterInfo.address
+	Phone number: $request.requesterInfo.phoneNumber
 	
-	Email: $req.requesterInfo.emailAddress
+	Email: $request.requesterInfo.emailAddress
 
-In order to handle this membership request, point your browser
+
+#if ($request.class.simpleName == 'GroupMembershipRequest')
+
+The above user has requested membership for group:
+	
+	$request.groupName
+
+#elseif ($request.class.simpleName == 'RoleMembershipRequest')
+
+The above user has requested the assignment of role: 
+	
+	$request.roleName
+
+in the context of group:
+	
+	$request.groupName
+	
+#end
+
+In order to handle this request, point your browser
 to the following URL:
 
 $requestManagementURL
 
 Your sincerely,
-Voms-Admin registration service for VO $voName
+The Voms-Admin registration service for VO $voName

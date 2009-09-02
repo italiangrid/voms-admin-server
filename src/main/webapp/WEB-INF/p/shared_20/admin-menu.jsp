@@ -8,7 +8,7 @@
 <ul>
 
   <li>
-    Manage:
+    Browse:
   </li>
   <li class="first-menu-item">
     <a href="<s:url action="search" namespace="/user"/>" class="vomsLink">Users</a> 

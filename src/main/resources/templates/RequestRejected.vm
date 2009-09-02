@@ -1,7 +1,38 @@
-Dear $recipient, your membership request for VO $voName
-has been rejected, due to the following reasons:
+Dear $recipient, 
 
-$rejectReasons
+#if ( $request.class.simpleName == 'NewVOMembershipRequest')
+
+your $request.typeName.toLowerCase() for VO $voName has been REJECTED.
+
+#elseif ( $request.class.simpleName == 'GroupMembershipRequest')
+
+your $request.typeName.toLowerCase() for group:
+
+	$request.groupName
+
+has been REJECTED by the VO administrators.
+
+#elseif ( $request.class.simpleName == 'RoleMembershipRequest' )
+
+your $request.typeName.toLowerCase() for role:
+	
+	$request.roleName
+	
+in group:
+	
+	$request.groupName
+
+has been REJECTED by the VO administrators.
+
+#end 
+
+#if ( $rejectReasons )
+
+The reason behind the rejection is the following:
+	
+	$rejectReasons
+	
+#end
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

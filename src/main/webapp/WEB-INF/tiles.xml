@@ -132,6 +132,10 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
     </definition>
     
+    <definition name="registrationConfirmationError" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
+    </definition>
+    
     <definition name="registerLimbo" extends="empty-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationLimbo.jsp"/>
     </definition>
@@ -142,6 +146,14 @@
     
     <definition name="registrationConfirmed" extends="empty-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmed.jsp"/>
+    </definition>
+    
+    <definition name="registrationCancelled" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationCancelled.jsp"/>
+    </definition>
+    
+    <definition name="registrationConfirmationError" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
     </definition>
     
     <definition name="aclManage" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.acl.ManagePreparer">

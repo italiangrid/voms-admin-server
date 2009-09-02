@@ -32,8 +32,11 @@
 					var="thisCertCA" /> <voms:formatDN dn="${thisCertCA}" fields="CN" />
 				</div>
 
-				<div class="cert-date-info">Added on: <span><s:property
-					value="creationTime" /></span></div>
+				<div class="cert-date-info">Added on: <span>
+                  <s:text name="format.datetime">
+                    <s:param
+                      value="creationTime" />
+                  </s:text></span></div>
 
 				<div class="cert-status-info"><s:if test="suspended">
 					<span> Suspended: </span>

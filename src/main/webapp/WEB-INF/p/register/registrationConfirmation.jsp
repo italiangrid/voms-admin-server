@@ -5,16 +5,16 @@
 <p>An email has been sent to you with instructions on how to proceed
 with the registration for the ${voName} VO.</p>
 
-<div>
+<p>
 Please follow the instructions before the following date:
-<ul>
-  <li> 
-    <span style="font-weight: bold">
-    
-      <s:property value="model.expirationDate"/>
-
+</p>
+<ul style="width: 100%; margin: 1em 0 1em 0;">
+  <li style="text-align: center;"> 
+    <span style="font-weight: bold; font-size: 20px;">
+      <s:text name="format.datetime">
+        <s:param value="model.expirationDate"/>
+      </s:text>
     </span>
 </li>
 </ul>
 or your request will be discarded by voms-admin.
-</div>

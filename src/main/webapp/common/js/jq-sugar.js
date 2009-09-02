@@ -75,9 +75,10 @@ function ajaxSubmit(formNode, outputPanelId){
 	var url = $(formNode).attr('action');
 	var params = $(formNode).serialize();
 	
-	if (url == undefined)
+	if (url == undefined){
+		// Should log something to the javascript console
 		return;
-	
+	}
 	if (params != "" && params != null)
 		url += "?"+params;
 	
@@ -150,6 +151,8 @@ function eyeCandy(){
 	});
 	
 	formattedDNMagic();
+	
+	$('input.checkboxError').wrap("<span class='checkboxValidationError'></span>");
 	
 }
 

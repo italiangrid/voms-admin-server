@@ -1,5 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<h1>Welcome to ${voName}, <voms:formatDN dn="${currentAdmin.realSubject}" fields="CN"/>.</h1>
+
+<tiles2:insertTemplate template="welcomeHeader.jsp"/>
 
 <s:if test="status == 'SUBMITTED'">
 <p>

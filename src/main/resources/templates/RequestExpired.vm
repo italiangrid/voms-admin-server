@@ -1,5 +1,8 @@
-Dear $recipient, your membership request for VO $voName
-has expired since you didn't confirm it in time.
+Dear $recipient, 
+
+your membership request for VO $voName has expired since you didn't confirm it in time
+As such, will not be considered by VO administrators, so if you want be member of the
+VO, please consider resubmitting a request. 
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

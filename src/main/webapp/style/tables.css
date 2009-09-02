@@ -65,6 +65,14 @@ td.userRoleName{
 	font-weight: bold;
 	
 }
+
+div.userRoleName{
+	color: #6F0D0D;
+	font-weight: bold;
+	margin-top: .5em;
+}
+
+
 	
 td.removeFromGroup{
 	vertical-align: bottom;
@@ -87,3 +95,18 @@ div.permissionHelp{
 		
 }
 
+td.requestedGroupName{
+	color: #BF5F5F;
+	/* color: #6F1B1B; */
+	font-weight: bold;
+	
+}
+
+div.requestedRoleName{
+	color: #BF5F5F;
+	font-weight: bold;
+}
+
+td.requestedGroupName span, div.requestedRoleName span{
+	font-size: smaller;	
+}

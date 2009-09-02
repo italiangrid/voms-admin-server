@@ -1,5 +1,17 @@
-Dear $recipient, your membership request for VO $voName
+Dear $recipient, 
+
+your $request.typeName.toLowerCase() for VO $voName
 has been approved.
 
+#if ( $request.class.simpleName == 'GroupMembershipRequest')
+
+You are now a member of group '$request.groupName'. 
+
+#elseif ( $request.class.simpleName == 'RoleMembershipRequest')
+	
+You now have role '$request.roleName' in group '$request.groupName'. 
+	
+#end
+
 Your sincerely,
-Voms-Admin registration service for VO $voName
+The Voms-Admin registration service for VO $voName
