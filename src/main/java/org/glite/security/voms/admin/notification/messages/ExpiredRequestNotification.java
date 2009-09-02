@@ -18,35 +18,32 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
 
 import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 
-public class ConfirmRequest extends AbstractVelocityNotification {
+public class ExpiredRequestNotification extends VelocityEmailNotification {
 
-	private String confirmURL;
-	private String cancelURL;
+	static String templateFilename = "RequestExpired.vm";
 
-	public ConfirmRequest(String recipient, String confirmURL, String cancelURL) {
+	public ExpiredRequestNotification(String recipient) {
 
+		setTemplateFile(templateFilename);
 		addRecipient(recipient);
-		this.confirmURL = confirmURL;
-		this.cancelURL = cancelURL;
+
 	}
 
 	protected void buildMessage() {
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
-		setSubject("Your membership request for VO " + voName);
+		setSubject("You vo membership request has expired!");
 
-		context.put("voName", voName);
+		VelocityContext context = new VelocityContext();
 		context.put("recipient", getRecipientList().get(0));
-		context.put("confirmURL", confirmURL);
-		context.put("cancelURL", cancelURL);
+		context.put("voName", VOMSConfiguration.instance().getVOName());
 
-		super.buildMessage();
+		buildMessageFromTemplate(context);
 
 	}
+
 }

@@ -18,7 +18,7 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +35,7 @@ import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.request.VOMSNotificationException;
+import org.glite.security.voms.admin.notification.VOMSNotificationException;
 
 public abstract class EmailNotification {
 

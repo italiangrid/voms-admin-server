@@ -18,32 +18,43 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
+
+import java.io.StringWriter;
 
 import org.apache.velocity.VelocityContext;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.apache.velocity.app.Velocity;
+import org.glite.security.voms.admin.common.VOMSException;
 
-public class ExpiredRequestNotification extends VelocityEmailNotification {
+public abstract class VelocityEmailNotification extends EmailNotification {
 
-	static String templateFilename = "RequestExpired.vm";
+	private String templateFile;
 
-	public ExpiredRequestNotification(String recipient) {
+	protected String subjectPrefix = "[VOMS Admin]";
 
-		setTemplateFile(templateFilename);
-		addRecipient(recipient);
+	public String getTemplateFile() {
 
+		return templateFile;
 	}
 
-	protected void buildMessage() {
+	public void setTemplateFile(String templateFile) {
 
-		setSubject("You vo membership request has expired!");
+		this.templateFile = templateFile;
+	}
 
-		VelocityContext context = new VelocityContext();
-		context.put("recipient", getRecipientList().get(0));
-		context.put("voName", VOMSConfiguration.instance().getVOName());
+	protected void buildMessageFromTemplate(VelocityContext context) {
 
-		buildMessageFromTemplate(context);
+		StringWriter w = new StringWriter();
 
+		try {
+
+			Velocity.mergeTemplate(templateFile, "UTF-8", context, w);
+
+		} catch (Exception e) {
+			throw new VOMSException(e);
+		}
+
+		setMessage(w.toString());
 	}
 
 }

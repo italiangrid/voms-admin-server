@@ -18,32 +18,38 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.model.request.Request;
 
-public class RequestRejected extends AbstractVelocityNotification {
+public class HandleRequest extends AbstractVelocityNotification {
 
-	String rejectReasons;
+	Request request;
 
-	public RequestRejected(String recipient, String rejectReasons) {
+	String requestManagementURL;
 
-		addRecipient(recipient);
-		this.rejectReasons = rejectReasons;
+	public HandleRequest(Request request,
+			String requestManagementURL) {
+
+		this.request = request;
+		this.requestManagementURL = requestManagementURL;
 	}
 
 	protected void buildMessage() {
-		String voName = VOMSConfiguration.instance().getVOName();
 
-		setSubject("Your membership request for VO " + voName
-				+ " has been rejected.");
+		String voName = VOMSConfiguration.instance().getVOName();
+		
+		
+		setSubject("A "+request.getTypeName().toLowerCase()+" for VO " + voName
+				+ " requires your approval.");
 
 		context.put("voName", voName);
-		context.put("recipient", getRecipientList().get(0));
-		context.put("rejectReasons", rejectReasons);
+		context.put("recipient", "VO Admin");
+		context.put("request", request);
+		context.put("requestManagementURL", requestManagementURL);
 
 		super.buildMessage();
 
 	}
-
 }

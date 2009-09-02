@@ -1,4 +1,4 @@
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;

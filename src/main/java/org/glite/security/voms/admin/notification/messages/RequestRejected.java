@@ -18,36 +18,39 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.model.request.Request;
 
-public class HandleRequest extends AbstractVelocityNotification {
+public class RequestRejected extends AbstractVelocityNotification {
 
-	NewVOMembershipRequest request;
+	Request request;
+	
+	String rejectReasons;
 
-	String requestManagementURL;
+	public RequestRejected(Request request, String rejectReasons) {
 
-	public HandleRequest(NewVOMembershipRequest request,
-			String requestManagementURL) {
-
+		addRecipient(request.getRequesterInfo().getEmailAddress());
 		this.request = request;
-		this.requestManagementURL = requestManagementURL;
+		this.rejectReasons = rejectReasons;
 	}
 
 	protected void buildMessage() {
-
 		String voName = VOMSConfiguration.instance().getVOName();
-		setSubject("A membership request for VO " + voName
-				+ " requires your approval.");
+
+		String requestType = request.getTypeName().toLowerCase();
+		
+		setSubject("Your "+requestType+" for VO " + voName
+				+ " has been rejected.");
 
 		context.put("voName", voName);
-		context.put("recipient", "VO Admin");
-		context.put("req", request);
-		context.put("requestManagementURL", requestManagementURL);
+		context.put("request", request);
+		context.put("recipient", getRecipientList().get(0));
+		context.put("rejectReasons", rejectReasons);
 
 		super.buildMessage();
 
 	}
+
 }

@@ -11,34 +11,48 @@ import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventMask;
+import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
 import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
 import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.registration.RoleMembershipRequestEvent;
+import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
+import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSMapping;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.notification.messages.AdminTargetedUserSuspensionMessage;
+import org.glite.security.voms.admin.notification.messages.ConfirmRequest;
+import org.glite.security.voms.admin.notification.messages.HandleRequest;
+import org.glite.security.voms.admin.notification.messages.RequestApproved;
+import org.glite.security.voms.admin.notification.messages.RequestRejected;
+import org.glite.security.voms.admin.notification.messages.SignAUPMessage;
+import org.glite.security.voms.admin.notification.messages.UserMembershipExpiredMessage;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-public class ServiceNotificationDispatcher implements EventListener {
+public class NotificationDispatcher implements EventListener {
 
 	public static final Log log = LogFactory
-			.getLog(ServiceNotificationDispatcher.class);
+			.getLog(NotificationDispatcher.class);
 
-	private static ServiceNotificationDispatcher instance = null;
+	private static NotificationDispatcher instance = null;
 
-	private ServiceNotificationDispatcher() {
+	private NotificationDispatcher() {
 		EventManager.instance().register(this);
 	}
 
-	public static final ServiceNotificationDispatcher instance() {
+	public static final NotificationDispatcher instance() {
 		if (instance == null)
-			instance = new ServiceNotificationDispatcher();
+			instance = new NotificationDispatcher();
 
 		return instance;
 
@@ -84,15 +98,22 @@ public class ServiceNotificationDispatcher implements EventListener {
 		} else if (e instanceof VOMembershipRequestApprovedEvent) {
 
 			RequestApproved msg = new RequestApproved(
-					((VOMembershipRequestApprovedEvent) e).getRequest()
-							.getRequesterInfo().getEmailAddress());
+					((VOMembershipRequestApprovedEvent) e).getRequest());
 
 			NotificationService.instance().send(msg);
 		
-		} else if (e instanceof GroupMembershipRequestEvent){
+		} else if (e instanceof VOMembershipRequestRejectedEvent) {
+			
+			RequestRejected msg = new RequestRejected(((VOMembershipRequestRejectedEvent) e).getRequest(), null);
+			NotificationService.instance().send(msg);
+			
+		}	else if (e instanceof GroupMembershipRequestEvent){
 			
 			handle((GroupMembershipRequestEvent)e);		
 			
+		} else if (e instanceof RoleMembershipRequestEvent){
+			
+			handle((RoleMembershipRequestEvent)e);
 		}
 
 	}
@@ -101,17 +122,61 @@ public class ServiceNotificationDispatcher implements EventListener {
 		return null;
 	}
 	
+	
+	protected void handle(RoleMembershipRequestEvent e){
+		
+		RoleMembershipRequest req = e.getRequest();
+		
+		if (e instanceof RoleMembershipSubmittedEvent){
+			
+			HandleRequest msg = new HandleRequest(req, ((RoleMembershipSubmittedEvent) e).getManagementURL());
+			msg.addRecipients(getVoAdminEmailList());
+			
+			NotificationService.instance().send(msg);
+			
+		}
+		
+		if (e instanceof RoleMembershipApprovedEvent){
+			
+			NotificationService.instance().send(new RequestApproved(req));
+			
+		}
+		
+		if (e instanceof RoleMembershipRejectedEvent){
+			
+			NotificationService.instance().send(new RequestRejected(req, null));
+			
+		}
+		
+	}
 	protected void handle(GroupMembershipRequestEvent e){
+		
 		GroupMembershipRequest req = e.getRequest();
 		
 		if (e instanceof GroupMembershipSubmittedEvent){
 			
-			HandleGroupRequest msg = new HandleGroupRequest(req, ((GroupMembershipSubmittedEvent)e).getManagementURL());
+			GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent)e;
+			
+			HandleRequest msg = new HandleRequest(req,ee.getManagementURL());
 			
 			msg.addRecipients(getVoAdminEmailList());
 			
 			NotificationService.instance().send(msg);
 			
+		}
+		
+		if (e instanceof GroupMembershipApprovedEvent){
+			
+			RequestApproved msg = new RequestApproved(req);
+			NotificationService.instance().send(msg);
+		
+		}
+		
+		if (e instanceof GroupMembershipRejectedEvent){
+		
+			RequestRejected msg = new RequestRejected(req, null);
+			
+			NotificationService.instance().send(msg);
 		}
 		
 	}

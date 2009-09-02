@@ -18,43 +18,29 @@
  * Authors:
  *     Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it
  *******************************************************************************/
+
 package org.glite.security.voms.admin.notification;
 
-import java.io.StringWriter;
-
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.common.VOMSException;
 
-public abstract class VelocityEmailNotification extends EmailNotification {
+public class VOMSNotificationException extends VOMSException {
 
-	private String templateFile;
+	public VOMSNotificationException(String message) {
 
-	protected String subjectPrefix = "[VOMS Admin]";
-
-	public String getTemplateFile() {
-
-		return templateFile;
+		super(message);
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setTemplateFile(String templateFile) {
+	public VOMSNotificationException(String message, Throwable t) {
 
-		this.templateFile = templateFile;
+		super(message, t);
+		// TODO Auto-generated constructor stub
 	}
 
-	protected void buildMessageFromTemplate(VelocityContext context) {
+	public VOMSNotificationException(Throwable t) {
 
-		StringWriter w = new StringWriter();
-
-		try {
-
-			Velocity.mergeTemplate(templateFile, "UTF-8", context, w);
-
-		} catch (Exception e) {
-			throw new VOMSException(e);
-		}
-
-		setMessage(w.toString());
+		super(t);
+		// TODO Auto-generated constructor stub
 	}
 
 }
