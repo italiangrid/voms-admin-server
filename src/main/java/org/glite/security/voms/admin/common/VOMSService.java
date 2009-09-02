@@ -37,7 +37,7 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventLogListener;
 import org.glite.security.voms.admin.notification.NotificationService;
-import org.glite.security.voms.admin.notification.ServiceNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationDispatcher;
 
 public final class VOMSService {
 
@@ -77,7 +77,7 @@ public final class VOMSService {
 
 		EventManager.instance().register(new EventLogListener());
 
-		ServiceNotificationDispatcher.instance();
+		NotificationDispatcher.instance();
 	}
 
 	protected static void startBackgroundTasks() {

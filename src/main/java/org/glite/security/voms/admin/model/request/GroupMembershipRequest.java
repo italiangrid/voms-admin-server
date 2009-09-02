@@ -7,6 +7,7 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "group_membership_req")
@@ -72,6 +73,13 @@ public class GroupMembershipRequest extends Request {
 		
 	}
 	
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.appendSuper(super.toString()).append("groupName",groupName);
+		return builder.toString();
+	}
 	
 
 }

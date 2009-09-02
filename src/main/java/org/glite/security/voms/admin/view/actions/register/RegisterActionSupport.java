@@ -3,9 +3,12 @@ package org.glite.security.voms.admin.view.actions.register;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.views.freemarker.tags.SetModel;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
+import org.glite.security.voms.admin.model.AUPVersion;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.request.Request.StatusFlag;
@@ -37,6 +40,8 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	RequesterInfo requester;
 
+	AUPVersion currentAUPVersion;
+	
 	protected String checkExistingPendingRequests() {
 
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
@@ -46,6 +51,7 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 		if (req != null) {
 
+			request = req;
 			if (req.getStatus().equals(StatusFlag.SUBMITTED))
 				return CONFIRMATION_NEEDED;
 
@@ -72,7 +78,11 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public void prepare() throws Exception {
 
 		requester = requesterInfoFromCurrentAdmin();
+		
+		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
+		currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
+		
 		if (getModel() == null) {
 
 			if (requestId != -1L) {
@@ -110,4 +120,8 @@ public abstract class RegisterActionSupport extends BaseAction implements
 				VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true);
 	}
 
+	public AUPVersion getCurrentAUPVersion() {
+		return currentAUPVersion;
+	}
+	
 }

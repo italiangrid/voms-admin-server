@@ -17,8 +17,11 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation") })
+@Results( { 
+		@Result(name = BaseAction.INPUT, location = "register"),
+		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
+		@Result(name = "needToConfirm", location = "registerConfirmation")
+})
 public class SubmitRequestAction extends RegisterActionSupport {
 
 	/**
@@ -48,8 +51,12 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		if (result != null)
 			return result;
 
-		// FIXME: Change timespan for request expirations
-		Date expirationDate = getFutureDate(new Date(), Calendar.MINUTE, 5);
+		
+		long requestLifetime = VOMSConfiguration.instance().getLong("voms.request.vo_membership.lifetime",
+				300);
+		
+		
+		Date expirationDate = getFutureDate(new Date(), Calendar.SECOND, (int)requestLifetime);
 
 		requester.setName(name);
 		requester.setSurname(surname);
@@ -62,6 +69,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 		String confirmURL = buildConfirmURL();
 		String cancelURL = buildCancelURL();
+		
 
 		EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
 				confirmURL, cancelURL));
@@ -72,7 +80,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	private String buildCancelURL() {
 
 		return getBaseURL() + "/register/cancel-request.action?requestId="
-				+ getModel().getId() + "&confirmId="
+				+ getModel().getId() + "&confirmationId="
 				+ getModel().getConfirmId();
 
 	}
@@ -80,7 +88,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	private String buildConfirmURL() {
 
 		return getBaseURL() + "/register/confirm-request.action?requestId="
-				+ getModel().getId() + "&confirmId="
+				+ getModel().getId() + "&confirmationId="
 				+ getModel().getConfirmId();
 
 	}

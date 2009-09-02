@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.common.IllegalRequestStateException;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;

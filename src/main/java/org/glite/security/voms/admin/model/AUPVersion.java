@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -155,9 +156,11 @@ public class AUPVersion implements Serializable, Comparable<AUPVersion> {
 
 	@Override
 	public String toString() {
-
-		return String.format("[version:%s, url:%s, creationTime:%s]", version,
-				url, creationTime.toString());
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("version", version).append("url", url).append("creationTime", creationTime).append("lastForceReacceptanceTime",lastForcedReacceptanceTime).append("active", active);
+		
+		return builder.toString();
+		
 
 	}
 

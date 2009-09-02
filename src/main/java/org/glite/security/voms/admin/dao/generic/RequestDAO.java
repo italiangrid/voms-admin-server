@@ -29,9 +29,22 @@ public interface RequestDAO extends GenericDAO<Request, Long> {
 
 	public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests();
 	
+	public List<Request> findPendingRequests();
+	
+	public List<GroupMembershipRequest> findPendingGroupMembershipRequests();
+	public List<RoleMembershipRequest> findPendingRoleMembershipRequests();
+	
 	public List<GroupMembershipRequest> findPendingUserGroupMembershipRequests(VOMSUser u);
 	
 	public List<RoleMembershipRequest> findPendingUserRoleMembershipRequests(VOMSUser u);
-
+	
+	public List<Request> findRequestsFromUser(VOMSUser u);
+	public void deleteRequestFromUser(VOMSUser u);
+	
 	public boolean userHasPendingGroupMembershipRequest(VOMSUser u, VOMSGroup g);
+	
+	public boolean userHasPendingRoleMembershipRequest(VOMSUser u, VOMSGroup g, VOMSRole r);
+	
+	public List<NewVOMembershipRequest> findExpiredVOMembershipRequests();
+	
 }

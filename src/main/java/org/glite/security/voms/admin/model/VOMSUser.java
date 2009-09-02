@@ -48,6 +48,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.User;
@@ -626,14 +627,11 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	public String toString() {
 
-		if (getName() == null
-				|| getName()
-						.equals(
-								VOMSServiceConstants.USER_INFO_COMPATIBILITY_NULL_VALUE)) {
-			return getDn() + " (" + getId() + ")";
-		}
-
-		return name + " " + surname + " (" + id + ")";
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.append("id", id).append("defaultCertficate", getDefaultCertificate()).append("name",name).append("surname", surname).append("emailAddress",emailAddress).append("suspended",suspended).append("endTime", endTime);
+		
+		return builder.toString();
 	}
 
 	public boolean equals(Object other) {
@@ -751,7 +749,14 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	}
 
 	public String getShortName() {
-		return String.format("%s %s", name, surname);
+		
+		if (name == null){
+			if (getDefaultCertificate() == null)
+				return getDn();
+			else
+				return getDefaultCertificate().subjectString + "("+getId()+")";
+		}
+		return String.format("%s %s (%d)", name, surname, id);
 	}
 
 	public Set<Certificate> getCertificates() {
@@ -1025,7 +1030,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 			if (t instanceof SignAUPTask) {
 				SignAUPTask aupTask = (SignAUPTask) t;
 
-				if (aupTask.getStatus().equals(TaskStatus.COMPLETED))
+				if (!aupTask.getStatus().equals(TaskStatus.COMPLETED))
 					return true;
 			}
 

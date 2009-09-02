@@ -1,8 +1,11 @@
-package org.glite.security.voms.admin.view.actions.request;
+package org.glite.security.voms.admin.view.actions.admin;
+
+import java.util.List;
 
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -17,12 +20,19 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 	Long requestId = -1L;
 
 	Request request;
+	
+	List<Request> pendingRequests;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	protected void refreshPendingRequests(){
+		RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+		pendingRequests = rDAO.findPendingRequests();
+	}
+	
 	public void prepare() throws Exception {
 		if (request == null) {
 
@@ -30,7 +40,8 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 				request = DAOFactory.instance().getRequestDAO().findById(
 						requestId, true);
 		}
-
+		
+		refreshPendingRequests();
 	}
 
 	public Request getModel() {
@@ -46,4 +57,8 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 		this.requestId = requestId;
 	}
 
+	public List<Request> getPendingRequests() {
+		return pendingRequests;
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
@@ -193,8 +194,11 @@ public class AUP implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("[id:%d, name:%s, desc:%s, versions:%s]", id,
-				name, description, versions);
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.append("id",id).append("name",name).append("description", description).append("reacceptancePeriod", reacceptancePeriod).append("versions",versions);
+		
+		return builder.toString();
 
 	}
 

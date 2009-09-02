@@ -1,5 +1,6 @@
 package org.glite.security.voms.admin.jsp;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.FindUnassignedRoles;
@@ -26,9 +29,8 @@ public class UnassignedRoleMapTag extends TagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(
-				Long.parseLong(userId)).execute();
-
+		VOMSUser u = VOMSUserDAO.instance().findById(Long.parseLong(userId));
+		
 		Map unassignedRoles = new HashMap();
 
 		Iterator<VOMSGroup> groups = u.getGroups().iterator();
@@ -36,8 +38,16 @@ public class UnassignedRoleMapTag extends TagSupport {
 		while (groups.hasNext()) {
 
 			VOMSGroup g = (VOMSGroup) groups.next();
-			List roles = (List) FindUnassignedRoles.instance(u.getId(),
-					g.getId()).execute();
+			List roles;
+			
+			try{
+				
+				roles = (List) FindUnassignedRoles.instance(u.getId(),
+						g.getId()).execute();
+			
+			}catch(VOMSAuthorizationException e){
+				roles= Collections.EMPTY_LIST;
+			}
 
 			unassignedRoles.put(g.getId(), roles);
 		}

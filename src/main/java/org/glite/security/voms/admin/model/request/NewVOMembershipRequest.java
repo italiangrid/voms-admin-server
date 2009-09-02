@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Entity
 @Table(name = "vo_membership_req")
 public class NewVOMembershipRequest extends Request {
@@ -40,7 +42,15 @@ public class NewVOMembershipRequest extends Request {
 
 	public String getTypeName() {
 
-		return "VO Membership request";
+		return "VO membership request";
+	}
+	
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.appendSuper(super.toString()).append("confirmId", confirmId);
+		return builder.toString();
 	}
 
 }

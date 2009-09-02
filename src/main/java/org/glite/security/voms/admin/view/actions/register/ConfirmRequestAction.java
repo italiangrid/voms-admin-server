@@ -13,7 +13,9 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed") })
+		@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
+		@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")
+})
 public class ConfirmRequestAction extends RegisterActionSupport {
 
 	/**
@@ -21,7 +23,7 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	String confirmId;
+	String confirmationId;
 
 	@Override
 	public String execute() throws Exception {
@@ -29,12 +31,14 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 
-		if (!request.getStatus().equals(StatusFlag.SUBMITTED))
+		if (!getModel().getStatus().equals(StatusFlag.SUBMITTED))
 			throw new IllegalArgumentException(
 					"Cannot confirm an already confirmed request!");
 
-		if (request.getConfirmId().equals(confirmId))
+		if (getModel().getConfirmId().equals(confirmationId))
 			request.setStatus(StatusFlag.CONFIRMED);
+		else
+			return ERROR;
 
 		String manageURL = getBaseURL() + "/home/login.action";
 
@@ -43,13 +47,14 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		return SUCCESS;
 	}
 
+	
 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "A confirmation id is required!")
-	public String getConfirmId() {
-		return confirmId;
+	public String getConfirmationId() {
+		return confirmationId;
 	}
 
-	public void setConfirmId(String confirmId) {
-		this.confirmId = confirmId;
+	public void setConfirmationId(String confirmationId) {
+		this.confirmationId = confirmationId;
 	}
 
 }

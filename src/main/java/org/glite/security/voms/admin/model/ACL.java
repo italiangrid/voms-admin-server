@@ -273,8 +273,11 @@ public class ACL implements Serializable {
 	}
 
 	public String toString() {
+		
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("id",id).append("defaultACL", defaultACL).append("group", group).append("role", role).append("permissions",permissions);
 
-		return ToStringBuilder.reflectionToString(this);
+		return builder.toString();
 
 	}
 }

@@ -41,7 +41,7 @@ public class MembershipActions extends UserActionSupport {
 		AddMemberOperation.instance(getModel(), g).execute();
 
 		addActionMessage(getText("confirm.user.add_to_group", new String[] {
-				model.toString(), g.toString() }));
+				model.getShortName(), g.toString() }));
 
 		return SUCCESS;
 	}
@@ -57,7 +57,7 @@ public class MembershipActions extends UserActionSupport {
 		RemoveMemberOperation.instance(getModel(), g).execute();
 
 		addActionMessage(getText("confirm.user.remove_from_group",
-				new String[] { model.toString(), g.toString() }));
+				new String[] { model.getShortName(), g.toString() }));
 
 		return SUCCESS;
 
@@ -75,7 +75,7 @@ public class MembershipActions extends UserActionSupport {
 		AssignRoleOperation.instance(getModel(), g, r).execute();
 
 		addActionMessage(getText("confirm.user.assign_role", new String[] {
-				getModel().toString(), g.toString(), r.toString() }));
+				getModel().getShortName(),r.toString(),g.toString() }));
 
 		return SUCCESS;
 
@@ -89,7 +89,7 @@ public class MembershipActions extends UserActionSupport {
 
 		DismissRoleOperation.instance(getModel(), g, r).execute();
 		addActionMessage(getText("confirm.user.dismiss_role", new String[] {
-				getModel().toString(), g.toString(), r.toString() }));
+				getModel().getShortName(), r.toString(), g.toString() }));
 
 		return SUCCESS;
 

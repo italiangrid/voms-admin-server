@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.admin.model.NamedType;
 
 @Entity
@@ -198,5 +199,17 @@ public abstract class Request implements Serializable, NamedType {
 		setStatus(StatusFlag.REJECTED);
 		setCompletionDate(new Date());
 
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.append("id",id).
+			append("status", status).
+			append("requesterInfo", requesterInfo).
+			append("creationDate",creationDate).append("expirationDate",expirationDate).append("completionDate",completionDate);
+		
+		return builder.toString();
 	}
 }

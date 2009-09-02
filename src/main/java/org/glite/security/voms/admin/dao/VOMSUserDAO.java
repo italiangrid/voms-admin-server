@@ -196,12 +196,14 @@ public class VOMSUserDAO {
 		log.debug("Users that signed the AUP before it was last updated:"
 				+ expiredDueToAUPUpdateUsers);
 
-		// Add users that have an expired aup acceptance record
+		// Add users that have a valid aup acceptance record that needs to be checked against 
+		// the reacceptance period
 		Query q3 = HibernateFactory
 				.getSession()
 				.createQuery(
 						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion = :aupVersion "
 								+ "and r.lastAcceptanceDate > :lastUpdateTime ");
+		
 		q3.setEntity("aupVersion", activeVersion);
 		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 
@@ -211,34 +213,22 @@ public class VOMSUserDAO {
 		log
 				.debug("Users that needs checking since their aup acceptance record could be expired:"
 						+ potentiallyExpiredUsers);
-		Date now = new Date();
-
+		
 		for (VOMSUser u : potentiallyExpiredUsers) {
 
 			AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup
 					.getActiveVersion());
-
-			log.debug("Checking user '" + u + "'");
-			Calendar c = Calendar.getInstance();
-			c.setTime(r.getLastAcceptanceDate());
-			log.debug("Last acceptance date calendar time:" + c.getTime());
-			c.add(Calendar.MINUTE, aup.getReacceptancePeriod());
-			log.debug("Last acceptance date after adding "
-					+ aup.getReacceptancePeriod() + ": " + c.getTime());
-
-			log.debug("Last aup acceptance date: " + r.getLastAcceptanceDate()
-					+ ", aup acceptance validity deadline: " + c.getTime()
-					+ ", now: " + now);
-
-			if (c.getTime().before(now)) {
-
+			
+			if (r.hasExpired()){
 				log
-						.debug(String
-								.format(
-										"Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
-										u.toString()));
+				.debug(String
+						.format(
+								"Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
+								u.toString()));
 				result.add(u);
+				
 			}
+			
 		}
 
 		return result;
@@ -573,6 +563,9 @@ public class VOMSUserDAO {
 		u.getPersonalInformations().clear();
 		u.getTasks().clear();
 
+		
+		DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
+		
 		HibernateFactory.getSession().delete(u);
 
 		EventManager.dispatch(new UserDeletedEvent(u));

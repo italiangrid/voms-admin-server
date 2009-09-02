@@ -1,6 +1,7 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AUPAcceptanceRecord implements Serializable {
@@ -126,10 +127,36 @@ public class AUPAcceptanceRecord implements Serializable {
 
 	@Override
 	public String toString() {
-
+		
 		return String.format(
 				"[user: %s, aupVersion: %s, lastAcceptanceDate: %s]", user,
 				aupVersion, lastAcceptanceDate);
 	}
+	
+	
+	public boolean hasExpired(){
+		
+		if (lastAcceptanceDate.before(aupVersion.getLastUpdateTime()))
+			return true;
+					
+		Date now = new Date();
+		if (getExpirationDate().before(now))
+			return true;
+		
+		return false;
+	}
+	
+	
+	public Date getExpirationDate(){
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(lastAcceptanceDate);
+		
+		// FIME: change minute to dates before release
+		c.add(Calendar.MINUTE, aupVersion.getAup().getReacceptancePeriod());
+		
+		return c.getTime();
+	}
+	
 
 }

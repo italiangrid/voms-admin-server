@@ -20,10 +20,14 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.jsp;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
+import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.users.FindUnsubscribedGroupsOperation;
 
 public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
@@ -40,8 +44,17 @@ public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
 	public int doStartTag() throws JspException {
 
 		// FIXME: add some exception handling here!
-		List groups = (List) FindUnsubscribedGroupsOperation.instance(
+		List groups;
+		
+		try{
+			
+			groups = (List) FindUnsubscribedGroupsOperation.instance(
 				new Long(userId)).execute();
+		
+		}catch(VOMSAuthorizationException e){
+			
+			groups = Collections.EMPTY_LIST;
+		}
 
 		pageContext.setAttribute(var, groups);
 

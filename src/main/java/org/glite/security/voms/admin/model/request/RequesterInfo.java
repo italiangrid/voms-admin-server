@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.admin.model.VOMSUser;
 
 @Entity
@@ -247,7 +248,15 @@ public class RequesterInfo implements Serializable {
 	@Override
 	public String toString() {
 
-		return certificateSubject;
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.append("certificateSubject", certificateSubject).
+			append("certificateIssuer", certificateIssuer).
+			append("emailAddress", emailAddress).
+			append("name", name).append("surname",surname).append("voMember", voMember);
+		
+		return builder.toString();
+			
 	}
 
 	public static RequesterInfo fromVOUser(VOMSUser user){
