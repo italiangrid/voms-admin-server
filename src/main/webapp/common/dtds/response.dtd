@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<!ELEMENT response (panel+) >
-<!ELEMENT panel EMPTY >
-<!ATTLIST panel 
-        id      ID      #REQUIRED
-        status  CDATA   #REQUIRED >
