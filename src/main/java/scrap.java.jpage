@@ -1,4 +1,0 @@
-java.util.Properties p = new java.util.Properties();
-
-p.put("Nome", "Valerio");
-System.out.println(p);
