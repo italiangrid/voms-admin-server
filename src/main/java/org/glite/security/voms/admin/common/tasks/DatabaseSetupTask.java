@@ -40,6 +40,7 @@ import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.model.VOMSCA;
@@ -79,33 +80,49 @@ public class DatabaseSetupTask extends TimerTask {
 		this.timer = timer;
 	}
 
-	public void run() {
+	private void setupRootGroup() {
+
+		try{
+			
+			VOMSGroupDAO.instance().getVOGroup();
+		
+		}catch(VOMSInconsistentDatabaseException ex){
+			log.info("Setting up VO root group...");
+			VOMSGroupDAO.instance().createVOGroup();
+			
+		}
+	}
+
+	private void setupInternalCAs() {
+
+		log.info("Setting up voms-admin internal CAs..");
+
+		VOMSCADAO caDAO = VOMSCADAO.instance();
+
+		caDAO
+				.createIfMissing(VOMSServiceConstants.VIRTUAL_CA,
+						"A dummy CA for local org.glite.security.voms.admin.database mainteneance");
+		caDAO.createIfMissing(VOMSServiceConstants.GROUP_CA,
+				"A virtual CA for VOMS groups.");
+		caDAO.createIfMissing(VOMSServiceConstants.ROLE_CA,
+				"A virtual CA for VOMS roles.");
+		caDAO.createIfMissing(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
+				"A virtual CA for authz manager attributes");
+
+	}
+
+	private void setupInternalAdmins() {
 
 		List admins = VOMSAdminDAO.instance().getAll();
-		List cas = VOMSCADAO.instance().getAll();
 
-		if (admins.isEmpty() || cas.isEmpty()) {
+		if (admins.isEmpty()) {
 
-			// Add internal CAs
-			VOMSCADAO caDAO = VOMSCADAO.instance();
+			log.info("Setting up voms-admin internal administrators...");
+			
+			VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
+			if (voGroup == null)
+				setupRootGroup();
 
-			caDAO
-					.createCA(VOMSServiceConstants.VIRTUAL_CA,
-							"A dummy CA for local org.glite.security.voms.admin.database mainteneance");
-			caDAO.createCA(VOMSServiceConstants.GROUP_CA,
-					"A virtual CA for VOMS groups.");
-			caDAO.createCA(VOMSServiceConstants.ROLE_CA,
-					"A virtual CA for VOMS roles.");
-			caDAO.createCA(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
-					"A virtual CA for authz manager attributes");
-
-			// Create vo root group
-			VOMSGroup voGroup = VOMSGroupDAO.instance().createVOGroup();
-
-			// Set correct db version
-			VOMSVersionDAO.instance().setupVersion();
-
-			// Add internal admins
 			VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
 
 			VOMSAdmin internalAdmin = adminDAO.create(
@@ -215,10 +232,18 @@ public class DatabaseSetupTask extends TimerTask {
 
 			// Import ACL *after* trusted and anyuser admins have been created!
 			voAdminRole.importACL(voGroup);
+		}
+	}
 
-			// Create task types
-			TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
-					.getTaskTypeDAO();
+	public void setupTasks() {
+
+		TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
+				.getTaskTypeDAO();
+
+		if (ttDAO.findAll().isEmpty()) {
+			
+			log.info("Setting up voms-admin 2.5 task infrastructure...");
+
 			TaskType signAupTaskType = new TaskType();
 
 			signAupTaskType.setName("SignAUPTask");
@@ -233,6 +258,17 @@ public class DatabaseSetupTask extends TimerTask {
 			ttDAO.makePersistent(signAupTaskType);
 			ttDAO.makePersistent(approveUserRequestTaskType);
 
+		}
+
+	}
+
+	public void setupAUP() {
+
+		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
+		if (dao.findAll().isEmpty()) {
+
+			log.info("Setting up voms-admin 2.5 aup infrastructure...");
 			// Setup VO AUP
 			String voAUPUrlString = VOMSConfiguration.instance().getString(
 					VOMSConfiguration.VO_AUP_URL,
@@ -256,10 +292,23 @@ public class DatabaseSetupTask extends TimerTask {
 				log.error("Error parsing AUP url: " + e.getMessage());
 				log.error("Skipping creation of AUPs");
 			}
-
-			HibernateFactory.commitTransaction();
-
 		}
+
+	}
+
+	public void run() {
+
+		setupRootGroup();
+		setupInternalCAs();
+		setupInternalAdmins();
+		
+			
+		VOMSVersionDAO.instance().setupVersion();
+
+		setupTasks();
+		setupAUP();
+
+		HibernateFactory.commitTransaction();
 
 	}
 

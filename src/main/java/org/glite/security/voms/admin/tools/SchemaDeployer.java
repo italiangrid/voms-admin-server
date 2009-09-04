@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -41,23 +44,28 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
 import org.glite.security.voms.admin.dao.ACLDAO;
+import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.ACL;
+import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAdmin;
+import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -66,9 +74,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
 
+@SuppressWarnings("deprecation")
 public class SchemaDeployer {
 
 	public static final String ORACLE_PRODUCT_NAME = "Oracle";
@@ -106,6 +116,7 @@ public class SchemaDeployer {
 
 	}
 
+	
 	private void execute() {
 
 		System.setProperty(VOMSConfiguration.VO_NAME, vo);
@@ -163,6 +174,33 @@ public class SchemaDeployer {
 
 	}
 
+	private void printException(Throwable t){
+		
+		if (t.getMessage() != null)
+			log.fatal(t.getMessage());
+		else
+			log.fatal(t);
+		
+		if (log.isDebugEnabled()){
+			
+			if (t.getMessage() != null)
+				log.fatal(t.getMessage(),t);
+			else
+				log.fatal(t,t);
+			
+		}
+	}
+	private void printAllException(Throwable t){
+		
+		if (t != null)
+			printException(t);
+		
+		if (t.getCause()!= null){
+			log.fatal("caused by:");
+			printAllException(t.getCause());
+			
+		}
+	}
 	private void printExceptions(List l) {
 
 		Iterator i = l.iterator();
@@ -173,9 +211,29 @@ public class SchemaDeployer {
 			log.fatal(t.getMessage());
 
 			if (log.isDebugEnabled())
-				log.fatal(t, t);
+				printAllException(t);
 		}
 
+	}
+	
+	private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md, String pattern){
+		
+		String[] names = { "TABLE" };
+
+		ResultSet tableNames = null;
+
+		try {
+
+			tableNames = md.getTables(null, "%", pattern, names);	
+
+		} catch (SQLException e) {
+			log.error(
+					"Error reading table names from database metadata object!",
+					e);
+			System.exit(-1);
+		}
+		
+		return tableNames;
 	}
 
 	private int checkDatabaseExistence() {
@@ -208,21 +266,8 @@ public class SchemaDeployer {
 
 		}
 
-		String[] names = { "TABLE" };
-
-		ResultSet tableNames = null;
-
-		try {
-
-			tableNames = dbMetadata.getTables(null, "%", "%", names);
-
-		} catch (SQLException e) {
-			log.error(
-					"Error reading table names from database metadata object!",
-					e);
-			System.exit(-1);
-		}
-
+		ResultSet tableNames = getTableNamesMatchingPattern(dbMetadata, "%");
+		
 		boolean foundACL2 = false;
 		boolean foundACL = false;
 		boolean foundAUP = false;
@@ -278,7 +323,7 @@ public class SchemaDeployer {
 
 		try {
 
-			renameOldTables();
+			renameTables_1_2_19();
 
 			HibernateFactory.commitTransaction();
 
@@ -307,7 +352,7 @@ public class SchemaDeployer {
 			migrateDbContents();
 			migrateMappings();
 			migrateACLs();
-			dropOldTables();
+			dropOldTables_1_2_19();
 
 			if (isOracleBackend())
 				dropOldSequences();
@@ -318,18 +363,74 @@ public class SchemaDeployer {
 		} catch (Throwable t) {
 
 			log.error("Database upgrade failed!");
-			log.error(t, t);
 			HibernateFactory.rollbackTransaction();
 			HibernateFactory.closeSession();
 			System.exit(2);
 		}
 
 	}
+	
+	private void implicitAUPSignup(){
+		
+		log.info("Adding implicit AUP sign records for vo users");
+		
+	List<VOMSUser> users  = VOMSUserDAO.instance().getAll();
+		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+		
+		for (VOMSUser u: users)
+			VOMSUserDAO.instance().signAUP(u,aup);
+		
+	}
 
 	private void doUpgrade2_0_x(Configuration hibernateConfig) {
+		
+		HibernateFactory.beginTransaction();
+		try{
+			
+			
+			HibernateFactory.beginTransaction();
+			
+			SchemaUpdate updater = new SchemaUpdate(hibernateConfig);
+			
+			log.info("Upgrading voms 2.5 database...");
+			
+			updater.execute(true,true);
 
-		log.info("To be implemented :) !");
-		System.exit(-1);
+			List l = updater.getExceptions();
+
+			if (!l.isEmpty()) {
+				log.fatal("Error upgrading voms 2.5 database!");
+				printExceptions(l);
+				System.exit(2);
+
+			}
+			
+			
+			dropUnusedTables_2_0_x();
+			fixCaTable();
+			migrateUsrTable();
+			HibernateFactory.commitTransaction();
+			
+			HibernateFactory.beginTransaction();
+			fixUsrTable();
+			updateACLPerms();
+			
+			DatabaseSetupTask.instance().run();
+			
+			// Make users accept implicitly the AUP, if you don't want to flood them 
+			// with emails
+			implicitAUPSignup();
+			HibernateFactory.commitTransaction();
+			log.info("Database upgrade successfull!");
+		
+		}catch (Throwable t) {
+
+			log.error("Database upgrade failed!",t);
+			HibernateFactory.rollbackTransaction();
+			HibernateFactory.closeSession();
+			System.exit(2);
+		}
+		System.exit(0);
 
 	}
 
@@ -682,7 +783,48 @@ public class SchemaDeployer {
 		return s.createSQLQuery(command).executeUpdate();
 	}
 
-	private void dropOldTables() {
+	
+	private void dropUnusedTables_2_0_x(){
+		
+		String[] tableNames = {"admins_history","history"};
+		
+		for (String table: tableNames)
+			dropTable(table);
+		
+	}
+	private void dropOldTables_2_0_x(){
+		
+		DatabaseMetaData md = null;
+		
+		try {
+			
+			md = HibernateFactory.getSession().connection().getMetaData();
+		
+		} catch (Throwable t) {
+			log.fatal("Error accessing database metadata!",t);
+			System.exit(-1);
+		}
+		
+		ResultSet oldTables = getTableNamesMatchingPattern(md, "%_old");
+		ArrayList<String> toBeDropped = new ArrayList<String>();
+		
+		try {
+
+			while (oldTables.next())
+				toBeDropped.add(oldTables.getString("TABLE_NAME"));				
+		
+		}catch (SQLException e) {
+			log.fatal("Error reading table names from database metadata!",e);
+			System.exit(2);
+		}
+		
+		for (String tableName: toBeDropped){
+			log.debug("Dropping '"+tableName+"'...");
+			dropTable(tableName);
+		}
+		
+	}
+	private void dropOldTables_1_2_19() {
 		String[] dTables = new String[] { "acl_old", "acld", "admins_old",
 				"attributes_old", "ca_old", "capabilities_old",
 				"capabilitiesd", "group_attrs_old", "groups_old", "groupsd",
@@ -728,15 +870,16 @@ public class SchemaDeployer {
 
 	}
 
-	private int renameTable(String oldName) {
+	private int renameTable(String tableName) {
 
 		Session s = HibernateFactory.getSession();
-		String command = "alter table " + oldName + " rename to " + oldName
+		String command = "alter table " + tableName + " rename to " + tableName
 				+ "_old";
 		return s.createSQLQuery(command).executeUpdate();
 	}
-
-	private void renameOldTables() {
+	
+	
+	private void renameTables_1_2_19() {
 
 		String[] oldTables = new String[] { "ca", "acl", "admins",
 				"attributes", "capabilities", "group_attrs", "groups",
@@ -769,7 +912,198 @@ public class SchemaDeployer {
 		s.createSQLQuery(createHibSeqStatement).executeUpdate();
 		log.info("Sequences migration complete.");
 	}
+	
+	private void renameTables_2_0_x(){
+		
+		String[] tables20x = {
+				"acl2",
+				"acl2_permissions",
+				"admins",
+				"admins_history",
+				"attributes",
+				"ca",
+				"capabilities",
+				"group_attrs",
+				"groups",
+				"history",
+				"m",
+				"memb_req",
+				"role_attrs",
+				"roles",
+				"seqnumber",
+				"usr",
+				"usr_attrs",
+				"version"};
+		
+		
+		for (String tableName: tables20x)
+			renameTable(tableName);
+		
+	}
+	
+	private void executeAndLog(String command){
+		
+		log.info("Executing '"+command+"'");
+		HibernateFactory.getSession().createSQLQuery(command).executeUpdate();
+		
+	}
+	
+	private void fixCaTable() throws HibernateException, SQLException{
+		
+		executeAndLog("update ca set subject_string = ca");
+		
+		// set creation time
+		HibernateFactory.getSession().createSQLQuery("update ca set creation_time = :creationTime").setTimestamp("creationTime", new Date()).executeUpdate();
+		
+		dropColumn("ca", "ca");
+		setColumnNotNullable("ca", "subject_string");
+		setColumnNotNullable("ca", "creation_time");
+				
+	}
+	
+	private String getColumnType(String tableName, String columnName) throws HibernateException, SQLException{
+		
+		DatabaseMetaData md = HibernateFactory.getSession().connection().getMetaData();
+		
+		ResultSet columnData = md.getColumns(null, null, tableName, columnName);
+		
+		int matches = 0;
+		
+		while (columnData.next()){
+			matches++;
+			String typeName = columnData.getString("TYPE_NAME");
+			int colSize = columnData.getInt("COLUMN_SIZE");
+			
+			if (colSize > 0)
+				typeName = typeName+"("+colSize+")";
+			
+			log.debug( String.format("%s.%s type:%s colSize:%s", tableName, columnName, typeName, colSize));
+			return typeName;
+			
+		}
+		
+		return null;
+		
+	}
+	
+	
+	private void setColumnNullable(String tableName, String columnName) throws HibernateException, SQLException{
+		String typeName = getColumnType(tableName, columnName);
+		String command = String.format("alter table %s modify %s %s null", tableName, columnName, typeName);
+		executeAndLog(command);	
+	}
+	
+	private void setColumnNotNullable(String tableName, String columnName) throws HibernateException, SQLException{
+		
+		String typeName = getColumnType(tableName, columnName);
+		String command = String.format("alter table %s modify %s %s not null", tableName, columnName, typeName);
+		executeAndLog(command);
+	}
+	
+	private void dropColumn(String tableName, String columnName){
+		
+		executeAndLog(String.format("alter table %s drop column %s", tableName, columnName));
+		
+	}
+	
+	private List<String> getForeignKeyContraintNamesOnColumn(String tableName, String columnName) throws SQLException{
+		DatabaseMetaData md = HibernateFactory.getSession().connection().getMetaData();
+		
+		ResultSet rs = md.getImportedKeys(null, null, tableName);
+		ArrayList<String> res = new ArrayList<String>();
+		
+		while(rs.next()){
+			
+			String importedPkTableName = rs.getString("PKTABLE_NAME");
+			String importedPkColumnName = rs.getString("PKCOLUMN_NAME");
+			
+			String fkName = rs.getString("FK_NAME");
+			String pkName = rs.getString("PK_NAME");
+			res.add(fkName);
+			
+		}
+		
+		return res;
+	}
+	private void dropForeignKeysOnColumn(String tableName, String columnName){
+		
+		
+	}
+	
+	private void updateACLPerms(){
+		// Grant all permissions to those that had all permissions in 2.0.x!
+		executeAndLog("update acl2_permissions set permissions = 16383 where permissions = 4095");
+	}
+	
+	private void fixUsrTable() throws HibernateException, SQLException{
+		
+		// Move email addresses in new column
+		executeAndLog("update usr set email_address = mail");
+			
+		// Drop old email field
+		dropColumn("usr", "mail");
+		dropColumn("usr", "cn");
+		dropColumn("usr", "cauri");
+		
+		
+		// Fix missing null checks
+		setColumnNotNullable("usr", "creation_time");
+		setColumnNotNullable("usr", "end_time");
+		
+		// Drop nullability from old dn and ca fields
+		setColumnNullable("usr", "dn");
+		setColumnNullable("usr", "ca");
+		
+		// Drop foreign key created by 2.0.x installation,
+		// otherwise an undeploy would not perform cleanly
+		executeAndLog("alter table usr drop foreign key fk_usr_ca");
+		
+		// Set dn null for usr
+		executeAndLog("update usr set dn = null");
+	}
+	
+	
+	private void migrateUsrTable(){
+		
+		CertificateDAO certDAO = CertificateDAO.instance();
+		
+		Iterator userIterator = HibernateFactory.getSession().createQuery("select u, u.dn, u.ca from VOMSUser u").iterate();
+		
+		while(userIterator.hasNext()){
+			
+			Object[] result = (Object[])userIterator.next();
+			VOMSUser u = (VOMSUser) result[0];
+			String dn = (String) result[1];
+			VOMSCA ca  = (VOMSCA) result[2];
+		
+			Certificate candidateCert = certDAO.findByDNCA(dn, ca.getSubjectString());
+			if (candidateCert != null){
+				log.warn("Found two users with the same dn, ca in this database! Will ignore this one...");
+				continue;
+			}
+			
+			candidateCert = certDAO.create(u, ca.getSubjectString());
+			u.addCertificate(candidateCert);
+			
+			u.setEmailAddress("temporary_value");
+			u.setCreationTime(new Date());
 
+			Calendar c = Calendar.getInstance();
+			c.setTime(u.getCreationTime());
+
+			// Default lifetime for membership is 12 months if not specified
+			int lifetime = VOMSConfiguration.instance().getInt(
+					VOMSConfiguration.DEFAULT_MEMBERSHIP_LIFETIME, 12);
+
+			c.add(Calendar.MONTH, lifetime);
+			u.setEndTime(c.getTime());
+			
+			HibernateFactory.getSession().save(u);
+		}
+		
+	}
+	
+	
 	private void migrateDbContents() {
 
 		log.info("Migrating db contents...");
@@ -969,6 +1303,7 @@ public class SchemaDeployer {
 
 	}
 
+	
 	private MultiHashMap buildACLEntries(List acl) {
 
 		if (acl.isEmpty())

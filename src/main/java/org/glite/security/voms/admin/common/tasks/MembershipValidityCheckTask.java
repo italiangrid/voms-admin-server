@@ -129,7 +129,7 @@ public class MembershipValidityCheckTask extends TimerTask {
 							&& tt.getStatus().equals(TaskStatus.EXPIRED)
 							&& !u.getSuspended()) {
 						log.info("Suspeding user '" + u
-								+ "' that failed to sign GRID AUP in time");
+								+ "' that failed to sign AUP in time");
 
 						u.suspend(SuspensionReason.FAILED_TO_SIGN_AUP);
 						EventManager.dispatch(new UserSuspendedEvent(u,

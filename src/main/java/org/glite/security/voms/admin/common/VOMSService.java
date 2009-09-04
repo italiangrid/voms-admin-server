@@ -33,9 +33,12 @@ import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.common.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.common.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.common.tasks.UpdateCATask;
+import org.glite.security.voms.admin.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventLogListener;
+import org.glite.security.voms.admin.model.VOMSDBVersion;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationDispatcher;
 
@@ -45,6 +48,23 @@ public final class VOMSService {
 
 	static final Timer vomsTimer = new Timer(true);
 
+	protected static void checkDatabaseVersion(){
+		
+		int version = VOMSVersionDAO.instance().getVersion();
+		
+		if (version != VOMSServiceConstants.VOMS_DB_VERSION){
+			
+			if (version < VOMSServiceConstants.VOMS_DB_VERSION){
+				log.fatal("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "+version);
+				log.fatal("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
+				throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"+version+"', while it should be '"+VOMSServiceConstants.VOMS_DB_VERSION+"'");
+			}else{
+				
+				log.fatal("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "+version);
+				throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"+version+"', while it should be '"+VOMSServiceConstants.VOMS_DB_VERSION+"'");
+			}
+		}
+	}
 	protected static void configureVelocity() {
 
 		try {
@@ -110,6 +130,8 @@ public final class VOMSService {
 
 		log.info("VOMS-Admin starting for vo:" + conf.getVOName());
 
+		checkDatabaseVersion();
+		
 		configureVelocity();
 
 		configureEventManager();

@@ -29,74 +29,15 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>VOMS-ADMIN 2.5</display-name>
-    
-    <!-- Struts 2 filter -->
-    <filter>
-        <filter-name>struts2</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
-        
-        <init-param>
-            <param-name>actionPackages</param-name>
-            <param-value>org.glite.security.voms.admin.view.actions.siblings</param-value>
-        </init-param>
-        
-    </filter>
-	
-    <!-- Struts 2 filter mapping -->
-    <filter-mapping>
-        <filter-name>struts2</filter-name>
-        <url-pattern>*.action</url-pattern>
-    </filter-mapping>
-    	
-	<!--  Struts 2 listeners -->
-     
-    <listener>
-        <listener-class>
-            org.apache.struts2.tiles.StrutsTilesListener
-        </listener-class>
-    </listener>
-      
+	<display-name>VOMS-ADMIN 2.5 Siblings Application</display-name>
+        	    
     <listener>
 		<display-name>siblings-context-listener</display-name>
 		<listener-class>org.glite.security.voms.admin.servlets.SiblingsContextListener</listener-class>
 	</listener>
-
-	<servlet>
-		<servlet-name>axis</servlet-name>
-		<servlet-class>
-			org.apache.axis.transport.http.AxisServlet
-		</servlet-class>
-	</servlet>
-
-	<!-- Axis servlet mapping -->
-	<servlet-mapping>
-		<servlet-name>axis</servlet-name>
-		<url-pattern>/services/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>axis</servlet-name>
-		<url-pattern>/servlet/axis</url-pattern>
-	</servlet-mapping>
-    
-	<!-- The Usual Welcome File List -->
+  
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/p/welcome.jsp</welcome-file>
+		<welcome-file>/WEB-INF/p/sibling/welcome.jsp</welcome-file>
 	</welcome-file-list>
 
-	<!-- Tiles definitions configuration -->
-    <context-param>
-        <param-name>
-            org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
-        </param-name>
-        <param-value>/WEB-INF/tiles.xml</param-value>
-    </context-param>
-    
-    <context-param>
-      <param-name>
-        org.apache.tiles.definition.dao.LocaleUrlDefinitionDAO.CHECK_REFRESH
-      </param-name>
-      <param-value>true</param-value>
-    </context-param>
 </web-app>

@@ -137,7 +137,6 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	String emailAddress;
 
 	// Compatibility fields
-
 	String dn;
 
 	/** This field is here for compatibility reasons **/
@@ -970,7 +969,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 			return getDefaultCertificate().getCa();
 		}
 
-		return null;
+		return ca;
 	}
 
 	/**

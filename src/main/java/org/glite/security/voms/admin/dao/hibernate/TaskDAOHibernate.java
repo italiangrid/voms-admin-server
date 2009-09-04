@@ -88,8 +88,7 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
 				VOMSConfiguration.SIGN_AUP_TASK_LIFETIME, 1);
 		Calendar cal = Calendar.getInstance();
 
-		// FIXME: change from MINUTE to DAYS when releasing
-		cal.add(Calendar.MINUTE, lifetime);
+		cal.add(Calendar.DAY_OF_YEAR, lifetime);
 
 		return createSignAUPTask(aup, cal.getTime());
 

@@ -44,6 +44,15 @@ public class VOMSCADAO implements Searchable {
 		HibernateFactory.beginTransaction();
 	}
 
+	public VOMSCA createIfMissing(String caDN, String description){
+		
+		VOMSCA ca = getByName(caDN);
+		if (ca == null)
+			return createCA(caDN, description);
+		
+		return ca;
+		
+	}
 	public VOMSCA createCA(String caDN, String description) {
 
 		if (caDN == null)

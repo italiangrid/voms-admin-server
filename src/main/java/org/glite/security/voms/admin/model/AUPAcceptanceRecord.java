@@ -152,8 +152,7 @@ public class AUPAcceptanceRecord implements Serializable {
 		Calendar c = Calendar.getInstance();
 		c.setTime(lastAcceptanceDate);
 		
-		// FIME: change minute to dates before release
-		c.add(Calendar.MINUTE, aupVersion.getAup().getReacceptancePeriod());
+		c.add(Calendar.DAY_OF_YEAR, aupVersion.getAup().getReacceptancePeriod());
 		
 		return c.getTime();
 	}

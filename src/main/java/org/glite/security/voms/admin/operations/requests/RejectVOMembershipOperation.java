@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.common.IllegalRequestStateException;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.database.NoSuchRequestException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
@@ -49,6 +50,9 @@ public class RejectVOMembershipOperation extends RequestRWOperation {
 				.dispatch(new VOMembershipRequestRejectedEvent(
 						req,
 						"The VO administrator didn't find appropriate to approve your membership request."));
+		
+		// Remove rejected membership requests from database
+		DAOFactory.instance().getRequestDAO().makeTransient(req);
 
 		return req;
 	}

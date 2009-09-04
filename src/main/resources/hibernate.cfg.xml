@@ -21,10 +21,7 @@
     	<mapping resource="model/VOMSSeqNumber.hbm.xml" />
         <mapping resource="model/VOMSAdmin.hbm.xml" />
         <mapping resource="model/VOMSCA.hbm.xml" />
-        <!--
-        <mapping resource="model/Certificate.hbm.xml" />
-        <mapping resource="model/VOMSUser.hbm.xml" />
-        -->
+        
         <mapping resource="model/VOMSUserAttribute.hbm.xml" />
         <mapping resource="model/VOMSGroup.hbm.xml" />
         <mapping resource="model/VOMSGroupAttribute.hbm.xml" />

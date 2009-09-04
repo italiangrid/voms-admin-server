@@ -463,6 +463,7 @@ public class VOMSUserDAO {
 		return u;
 	}
 
+	
 	public VOMSUser create(VOMSUser usr, String caDN) {
 
 		checkNullFields(usr);
@@ -715,8 +716,7 @@ public class VOMSUserDAO {
 
 	public List getAllNames() {
 
-		// FIXME: implement with multiple certificate support
-		String query = "select dn, ca.subjectString from org.glite.security.voms.admin.model.VOMSUser";
+		String query = "select subjectString, ca.subjectString from Certificate";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 

@@ -85,7 +85,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
 		VOMSGroup g = groupById(groupId);
 		VOMSRole r = roleById(roleId);
 		
-		RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model, g, r, getFutureDate(new Date(), Calendar.MINUTE, 5));
+		RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model, g, r, getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 5));
 		EventManager.dispatch(new RoleMembershipSubmittedEvent(request, getHomeURL()));
 		
 		refreshPendingRequests();

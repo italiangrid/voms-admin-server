@@ -54,5 +54,12 @@ public class VOMSVersionDAO {
 		HibernateFactory.commitTransaction();
 
 	}
+	
+	public Integer getVersion(){
+		
+		return (Integer) HibernateFactory.getSession().createQuery("select version from VOMSDBVersion" ).uniqueResult();
+		
+		
+	}
 
 }

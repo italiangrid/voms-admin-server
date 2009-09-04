@@ -57,7 +57,7 @@ public class EventManager {
 	public static void dispatch(Event e) {
 		if (instance == null)
 			log
-					.error("Event manager has not been initialized! The event will be lost...");
+					.debug("Event manager has not been initialized! The event will be lost...");
 		else
 			instance.fireEvent(e);
 	}

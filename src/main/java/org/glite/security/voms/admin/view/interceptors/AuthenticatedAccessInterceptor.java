@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.InitSecurityContext;
@@ -23,7 +24,8 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 
 	private static final Log log = LogFactory
 			.getLog(AuthenticatedAccessInterceptor.class);
-
+	
+	
 	public void destroy() {
 
 		// TODO Auto-generated method stub
@@ -32,20 +34,33 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 
 	public void init() {
 
-		// TODO Auto-generated method stub
+		
+		
 
 	}
 
 	public String intercept(ActionInvocation ai) throws Exception {
+		
+		
 
-		HttpServletRequest req = (HttpServletRequest) ai.getInvocationContext()
-				.get(HTTP_REQUEST);
+		
+		HttpServletRequest req = ServletActionContext.getRequest(); 
+		
 		InitSecurityContext.setContextFromRequest(req);
-		req.setAttribute("voName", VOMSConfiguration.instance().getVOName());
-		req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
+		
+		if (!VOMSConfiguration.instance().getVOName().equals("siblings")){
+			req.setAttribute("voName", VOMSConfiguration.instance().getVOName());
+			req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
 				.instance());
+		}
+		
 
 		return ai.invoke();
 	}
 
+	
+
+	
+	
+	
 }

@@ -93,6 +93,40 @@
         <version>2.1-beta-1</version>
         <executions>
 
+          <!-- Siblings WAR -->
+          <execution>
+            <id>VOMS-Admin siblings war creation</id>
+            <goals>
+              <goal>war</goal>
+            </goals>
+            <configuration>
+              <warName>glite-security-voms-siblings
+              </warName>
+              <webappDirectory>
+                ${project.build.directory}/glite-security-voms-siblings
+              </webappDirectory>
+              <webXml>resources/templates/siblings/web.xml
+              </webXml>
+              <warSourceIncludes>
+                style/*,
+                common/**,
+                img/**,
+                WEB-INF/p/sibling/welcome.jsp,
+                WEB-INF/lib/jstl*.jar
+              </warSourceIncludes>
+              <webResources>
+                <resource>
+                  <directory>resources/templates/siblings
+                  </directory>
+                  <includes>
+                    <include>web.xml</include>
+                  </includes>
+                  <targetPath>WEB-INF</targetPath>
+                </resource>
+              </webResources>
+            </configuration>
+          </execution>
+          
           <!-- Main VOMS-Admin server war -->
           <execution>
             <id>VOMS-Admin server war creation</id>
@@ -100,20 +134,7 @@
               <goal>war</goal>
             </goals>
             <configuration>
-
               <webResources>
-              	<!-- 
-                <resource>
-                 
-                  <directory>resources/templates/style
-                  </directory>
-                  <filtering>true</filtering>
-                  <excludes>
-                    <exclude>colors.properties</exclude>
-                  </excludes>
-                  <targetPath>style</targetPath>
-                </resource>
-                 -->
                 <resource>
                   <directory>src/main/resources</directory>
                   <includes>
@@ -137,59 +158,9 @@
               </webResources>
             </configuration>
           </execution>
-
-          <!-- Siblings WAR -->
-          <execution>
-            <id>VOMS-Admin siblings war creation</id>
-            <goals>
-              <goal>war</goal>
-            </goals>
-            <configuration>
-              <warName>glite-security-voms-siblings
-              </warName>
-              <webappDirectory>
-                ${project.build.directory}/glite-security-voms-siblings
-              </webappDirectory>
-              <webXml>resources/templates/siblings/web.xml
-              </webXml>
-              <warSourceExcludes>WEB-INF/web.xml
-              </warSourceExcludes>
-              <webResources>
-              	<!-- 
-                <resource>
-                  <directory>resources/templates/style
-                  </directory>
-                  <filtering>true</filtering>
-                  <excludes>
-                    <exclude>colors.properties</exclude>
-                  </excludes>
-                  <targetPath>style</targetPath>
-                </resource>
-                -->
-                <resource>
-                  <!-- this is relative to the pom.xml directory -->
-                  <directory>resources/templates/siblings
-                  </directory>
-                  <includes>
-                    <include>struts-config.xml</include>
-                    <include>tiles-defs.xml</include>
-                  </includes>
-                  <targetPath>WEB-INF</targetPath>
-                </resource>
-                <resource>
-                  <directory>src/main/resources</directory>
-                  <includes>
-                    <include>voms-admin.tld</include>
-                  </includes>
-                  <targetPath>
-                    WEB-INF/classes/org/glite/security/voms/admin/jsp
-                  </targetPath>
-                </resource>
-              </webResources>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
+      
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>axistools-maven-plugin
@@ -283,6 +254,7 @@
           </descriptors>
         </configuration>
         <version>2.2-beta-4</version>
+        
         <executions> 
           <execution>
           <phase>package</phase> 
@@ -291,6 +263,7 @@
            </goals>
           </execution> 
         </executions>
+        
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

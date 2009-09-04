@@ -80,6 +80,14 @@
 			org.apache.axis.transport.http.AxisServlet
 		</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>SiblingsServlet</display-name>
+		<servlet-name>SiblingsServlet</servlet-name>
+		<servlet-class>
+		org.glite.security.voms.admin.servlets.SiblingsServlet</servlet-class>
+	</servlet>
 
 	<!-- Axis servlet mapping -->
 	<servlet-mapping>
@@ -90,6 +98,10 @@
 	<servlet-mapping>
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SiblingsServlet</servlet-name>
+		<url-pattern>/SiblingsServlet</url-pattern>
 	</servlet-mapping>
     
 	<!-- The Usual Welcome File List -->

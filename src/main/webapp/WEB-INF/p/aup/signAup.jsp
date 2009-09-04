@@ -4,7 +4,7 @@
 <s:form validate="true">
   
   <s:hidden name="aupId" value="%{model.id}"/>
-  <s:textarea rows="20" cols="80" value="%{model.activeVersion.URLContent}"/>
+  <s:textarea rows="20" cols="80" value="%{model.activeVersion.URLContent}" readonly="true"/>
   <s:checkbox name="aupAccepted" label="I declare I have read and agree with the AUP terms displayed above" labelposition="right"/>
   <s:submit value="%{'Submit'}"/>
   

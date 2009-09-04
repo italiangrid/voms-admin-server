@@ -60,10 +60,6 @@ public class CertificateDAO {
 		return (dbCert != null);
 	}
 
-	public Certificate save(X509Certificate cert) {
-
-		return null;
-	}
 
 	public Certificate create(VOMSUser u, String ca) {
 

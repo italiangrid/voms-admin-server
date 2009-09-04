@@ -52,7 +52,6 @@ public class ACL implements Serializable {
 
 	VOMSRole role = null;
 
-	// FIXME: Make permissions a sorted collection!
 	Map<VOMSAdmin, VOMSPermission> permissions = new HashMap<VOMSAdmin, VOMSPermission>();
 
 	public ACL() {

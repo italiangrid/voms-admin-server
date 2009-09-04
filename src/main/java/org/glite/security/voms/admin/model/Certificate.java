@@ -16,10 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "certificate")
@@ -34,11 +36,13 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
-	@Column(name = "subject_string", nullable = false, unique = true)
+	@Column(name = "subject_string", nullable = false)
+	@NaturalId
 	protected String subjectString;
 
 	@ManyToOne(targetEntity = VOMSCA.class, optional = false)
 	@JoinColumn(name = "ca_id", nullable = false)
+	@NaturalId
 	protected VOMSCA ca;
 
 	@Transient
@@ -137,17 +141,20 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 			return false;
 
 		Certificate that = (Certificate) other;
+		
+		EqualsBuilder builder = new EqualsBuilder();
+		builder.append(getSubjectString(), that.getSubjectString()).append(getCa(),that.getCa());
 
-		return getSubjectString().equals(that.getSubjectString());
+		return builder.isEquals();
 
 	}
 
 	public int hashCode() {
 
-		if (getSubjectString() == null)
-			return -1;
+		HashCodeBuilder builder = new HashCodeBuilder(7, 37);
+		builder.append(getSubjectString()).append(getCa());
 
-		return getSubjectString().hashCode();
+		return builder.toHashCode();
 	}
 
 	public VOMSUser getUser() {
@@ -161,8 +168,11 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 	@Override
 	public String toString() {
 
-		return "(" + id + ":" + subjectString + ","
-				+ getCa().getSubjectString() + ")";
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("subject_string",subjectString).append("ca",ca);
+		
+		return builder.toString();
+		
 	}
 
 	private List dnAsList(String dn) {

@@ -49,9 +49,6 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 		subject = certSubject;
 		issuer = certIssuer;
 
-		// FIXME: Implement me!
-		// notAfter = certNotAfter;
-
 	}
 
 	public static AddUserCertificateOperation instance(VOMSUser u,

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
@@ -14,6 +16,9 @@ import com.opensymphony.xwork2.Preparable;
 @ParentPackage("base")
 @Result(name=BaseAction.SUCCESS, location="siblings")
 public class SiblingsAction extends BaseAction implements Preparable{
+	
+	
+	public static Log log = LogFactory.getLog(SiblingsAction.class);
 	
 	class VONameTransformer implements Transformer{
         String prefix;
@@ -43,6 +48,7 @@ public class SiblingsAction extends BaseAction implements Preparable{
 
 	public void prepare() throws Exception {
 		configuredVOs = VOMSConfiguration.instance().getLocallyConfiguredVOs();
+		log.info("Locally configured vos: " + configuredVOs);
 		CollectionUtils.transform(configuredVOs, new VONameTransformer(getAllVOsBaseURL())); 		
 	}
 	
