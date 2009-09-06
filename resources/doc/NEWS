@@ -1,6 +1,10 @@
 Changes
 -------------
 
+---+ voms-admin-server v.2.5.0
+
+	 
+
 ---+ voms-admin-server v.2.0.15-1, voms-admin-client v. 2.0.8-1, voms-admin-interface v. 2.0.2-1
 
    Fixes for the following bugs:
