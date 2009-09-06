@@ -6,6 +6,8 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.operations.attributes.CreateAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.attributes.DeleteAttributeDescriptionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -35,6 +37,13 @@ public class AttributeActions extends BaseAction {
 	String attributeName;
 	String attributeDescription;
 	Boolean checkUniqueness;
+	
+	public void validateCreate(){
+		
+		VOMSAttributeDescription desc = VOMSAttributeDAO.instance().getAttributeDescriptionByName(attributeName);
+		if (desc!=null)
+			addFieldError("attributeName", "Attribute class '"+attributeName+"' already exists!");
+	}
 
 	@Action(value = "create", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
 			"tokenSession.includeMethods", "create, delete" }) })

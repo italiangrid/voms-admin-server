@@ -11,7 +11,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 		@Result(name = BaseAction.SUCCESS, location = "register"),
 		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerWaitsConfirmation"),
 		@Result(name = RegisterActionSupport.PLEASE_WAIT, location = "registerLimbo"),
-		@Result(name = RegisterActionSupport.ALREADY_MEMBER, location = "/user/home.action", type = "redirect") })
+		@Result(name = RegisterActionSupport.ALREADY_MEMBER, location = "/user/home.action", type = "redirect"),
+		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled")
+})
 public class StartAction extends RegisterActionSupport {
 
 	/**

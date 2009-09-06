@@ -44,6 +44,7 @@
 
   <body>
   
+  <tiles2:insertTemplate template="dialogs.jsp"/>
     
   <div id="header">
     <tiles2:insertAttribute name="header"/>

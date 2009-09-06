@@ -52,7 +52,7 @@ used to contact you in relation to this activity.
       <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40"/>
     </li>
     <li>
-      <s:textfield name="requester.emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}"/>
+      <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}"/>
     </li>
     <li>
      <h2 style="color: black">The VO AUP:</h2>

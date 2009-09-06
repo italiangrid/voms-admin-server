@@ -5,6 +5,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.roles.CreateRoleOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -56,6 +57,15 @@ public class CreateAction extends RoleActionSupport {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+	
+	@Override
+	public void validate() {
+		
+		VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+		if (r != null)
+			addFieldError("roleName", "Role '"+roleName+"' already exists!");
+		
 	}
 
 }

@@ -198,6 +198,14 @@ class UpgradeVO(ConfigureAction):
         ConfigureAction.__init__(self, "upgrade_vo", ["vo"],user_options)
     
     def upgrade_vo(self):
+#        set_default(self.user_options,"code",self.user_options['port'])
+#                         
+#        set_default(self.user_options,"uri","%s:%s" % (socket.gethostname(),self.user_options['port']))
+#        
+#        set_default(self.user_options,"timeout", "86400")
+        
+        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (os.environ['GLITE_LOCATION_VAR'],
+                                                                                                  self.user_options['vo']))
         print "Upgrading vo ",self.user_options['vo']
         
         self.upgrade_configuration()
@@ -206,16 +214,10 @@ class UpgradeVO(ConfigureAction):
             print "Skipping database upgrade as requested by user (--skip-database option)."
         else:
             self.upgrade_database()
-        
-    def upgrade_configuration(self):
-        if not vo_config_dir(self.user_options['vo']):
-            raise VomsConfigureError, "Configuration directory not found for vo ", self.user_options['vo']
-        
+    
+    def upgrade_configuration_1_2_19(self):
         db_props = vo_database_properties(self.user_options['vo'])
         self.jdbc_url = db_props['jdbc.URL']
-        
-        if self.jdbc_url is None:
-            raise VomsConfigureError, "jdbc.URL not found for vo %s. Upgrade failed"
         
         if re.match("^jdbc:oracle",db_props['jdbc.URL']):
             ## Oracle vo
@@ -253,6 +255,38 @@ class UpgradeVO(ConfigureAction):
         
         self.write_context_file()
         self.write_siblings_context()
+        
+        pass
+    
+    def upgrade_configuration_2_0_x(self):
+        
+        vo_conf_dir = vo_config_dir(self.user_options['vo'])
+        
+        ## Deploy AUP template
+        shutil.copy(VomsConstants.vo_aup_template, vo_conf_dir)
+        
+        setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
+        
+    
+    def upgrade_configuration(self):
+        if not vo_config_dir(self.user_options['vo']):
+            raise VomsConfigureError, "Configuration directory not found for vo ", self.user_options['vo']
+        
+        db_props = vo_database_properties(self.user_options['vo'])
+        
+        if db_props.has_key('jdbc.URL'):
+        
+            self.upgrade_configuration_1_2_19()
+        
+        elif db_props.has_key('hibernate.dialect'):
+            
+            self.upgrade_configuration_2_0_x()
+        
+        else:
+            raise VomsConfigureError, "Unrecognized voms database configuration, upgrade failed!"
+        
         
         
     def write_database_properties(self):
@@ -537,7 +571,6 @@ class InstallVOAction(ConfigureAction):
         else:
             print "Skipping voms core configuration creation"
             
-        
         
     
     def write_database_properties(self):

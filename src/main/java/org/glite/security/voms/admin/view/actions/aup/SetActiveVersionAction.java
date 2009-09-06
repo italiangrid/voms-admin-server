@@ -3,8 +3,7 @@ package org.glite.security.voms.admin.view.actions.aup;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.dao.generic.AUPDAO;
-import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.operations.aup.SetActiveVersionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -21,10 +20,8 @@ public class SetActiveVersionAction extends AUPVersionActions {
 	@Override
 	public String execute() throws Exception {
 
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
-
-		dao.setActiveVersion(getModel(), getVersion());
-
+		SetActiveVersionOperation op = new SetActiveVersionOperation(getModel(), getVersion());
+		op.execute();
 		return SUCCESS;
 	}
 

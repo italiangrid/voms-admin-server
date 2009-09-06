@@ -52,3 +52,6 @@
   </table>
 
 </s:if>
+<s:else>
+	No requests found.
+</s:else>

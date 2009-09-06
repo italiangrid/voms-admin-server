@@ -42,7 +42,7 @@
     
     
     
-    <definition name="userHome" extends="user-layout">
+    <definition name="userHome" extends="user-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/home.jsp"/>
     </definition>
     
@@ -64,6 +64,10 @@
     
     <definition name="userSuspend" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/suspend.jsp"/>
+    </definition>
+    
+    <definition name="userCreate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/create.jsp"/>
     </definition>
     
     <definition name="addCertificate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
@@ -146,6 +150,10 @@
     
     <definition name="registrationConfirmed" extends="empty-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmed.jsp"/>
+    </definition>
+    
+    <definition name="registrationDisabled" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/registrationDisabled.jsp"/>
     </definition>
     
     <definition name="registrationCancelled" extends="empty-layout">

@@ -623,9 +623,13 @@ th.permissionName{
 	color: #505050;
 }
 
-#permissionShortcuts .clickable, #formattedDNControls .clickable{
+#permissionShortcuts .clickable, #formattedDNControls .clickable, #showAUPContent.clickable{
 	margin: 0 .2em;
 	color: #456aac;
+}
+
+#showAUPContent.clickable{
+	font-size: smaller;	
 }
 
 #formattedDNControls{
@@ -686,4 +690,34 @@ li.aupAcceptance{
 p{
 	line-height: 1.46em;
 	margin-top: 1em;
+}
+
+.userAdminActions{
+	float: right;
+}
+
+.dialog{
+	text-align: left;
+	line-height: 1.6em;
+	
+}
+
+.dialog .dialogMessage{
+	text-align: center;
+	font-weight: bolder;
+	font-size: larger;
+	
+}
+td.actionCell{
+	text-align: right;
+	vertical-align: bottom;
+}
+
+td.aupVersion{
+	font-weight: bold;
+}
+
+#addAUPVersionPane{
+	float: right;
+	font-size: smaller;
 }

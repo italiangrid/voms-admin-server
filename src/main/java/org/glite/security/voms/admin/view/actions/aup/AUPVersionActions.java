@@ -7,6 +7,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
@@ -28,7 +29,7 @@ public abstract class AUPVersionActions extends BaseAction implements
 		if (aup == null) {
 
 			AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			aup = dao.findById(aupId, true);
+			aup = dao.findById(aupId, false);
 		}
 
 	}
@@ -39,6 +40,7 @@ public abstract class AUPVersionActions extends BaseAction implements
 	}
 
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The version string is required")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getVersion() {
 		return version;
 	}

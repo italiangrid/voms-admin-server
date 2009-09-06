@@ -14,6 +14,7 @@ public class X509Certificate implements Serializable {
 	String subject;
 	String issuer;
 	String notAfter;
+	
 	byte[] bytes;
 
 	public byte[] getBytes() {

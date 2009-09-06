@@ -12,6 +12,7 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
@@ -20,7 +21,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @Results( { 
 		@Result(name = BaseAction.INPUT, location = "register"),
 		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
-		@Result(name = "needToConfirm", location = "registerConfirmation")
+		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerConfirmation"),
+		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled")
 })
 public class SubmitRequestAction extends RegisterActionSupport {
 
@@ -37,6 +39,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 	String phoneNumber;
 
+	String emailAddress;
+	
 	String aupAccepted;
 
 	@Override
@@ -44,7 +48,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 		if (!VOMSConfiguration.instance().getBoolean(
 				VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true))
-			return "registrationDisabled";
+			return REGISTRATION_DISABLED;
 
 		String result = checkExistingPendingRequests();
 
@@ -63,6 +67,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		requester.setInstitution(institution);
 		requester.setAddress(address);
 		requester.setPhoneNumber(phoneNumber);
+		requester.setEmailAddress(emailAddress);
 
 		request = DAOFactory.instance().getRequestDAO()
 				.createVOMembershipRequest(requester, expirationDate);
@@ -147,5 +152,17 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	public void setAupAccepted(String aupAccepted) {
 		this.aupAccepted = aupAccepted;
 	}
+
+	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
+	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+	
+	
 
 }

@@ -5,6 +5,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.operations.aup.RemoveVersionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -20,9 +21,8 @@ public class RemoveVersionAction extends AUPVersionActions {
 
 	@Override
 	public String execute() throws Exception {
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
-
-		dao.removeVersion(getModel(), getVersion());
+		RemoveVersionOperation op = new RemoveVersionOperation(getModel(), getVersion());
+		op.execute();
 		return SUCCESS;
 
 	}

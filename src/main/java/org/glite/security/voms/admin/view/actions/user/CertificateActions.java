@@ -12,8 +12,9 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.common.CertUtil;
 import org.glite.security.voms.admin.dao.CertificateDAO;
-import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.Certificate;
+import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
+import org.glite.security.voms.admin.operations.users.RemoveUserCertificateOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -39,10 +40,12 @@ public class CertificateActions extends UserActionSupport {
 	@Action("delete-certificate")
 	public String deleteCertificate() throws Exception {
 
-		// FIXME: do this with an operation!
+		
 		Certificate cert = CertificateDAO.instance().findById(
 				getCertificateId());
-		VOMSUserDAO.instance().deleteCertificate(getModel(), cert);
+		
+		// FIXME: create constructor that accepts a certificate
+		RemoveUserCertificateOperation.instance(cert.getSubjectString(), cert.getCa().getSubjectString()).execute();
 
 		return SUCCESS;
 
@@ -56,17 +59,18 @@ public class CertificateActions extends UserActionSupport {
 	@Action("save-certificate")
 	public String saveCertificate() throws Exception {
 
-		// FIXME: do this with an operation!
 		if (certificateFile != null) {
 
 			X509Certificate cert = CertUtil
 					.parseCertficate(new FileInputStream(certificateFile));
-			VOMSUserDAO.instance().addCertificate(getModel(), cert);
+			
+			AddUserCertificateOperation.instance(getModel(), cert).execute();
+			
 
 		} else {
-
-			VOMSUserDAO.instance().addCertificate(getModel(), subject,
-					caSubject);
+			
+			AddUserCertificateOperation.instance(getModel(), subject, caSubject, null).execute();
+			
 
 		}
 

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
@@ -19,6 +20,8 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 	String issuer;
 
 	Date notAfter;
+	
+
 
 	private AddUserCertificateOperation(VOMSUser u, X509Certificate cert) {
 
@@ -64,6 +67,8 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 				certNotAfter);
 	}
 
+	
+	
 	protected Object doExecute() {
 
 		if (theCert != null)

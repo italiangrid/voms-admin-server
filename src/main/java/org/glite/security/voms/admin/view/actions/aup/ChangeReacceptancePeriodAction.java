@@ -6,6 +6,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.operations.aup.ChangeReacceptancePeriodOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -17,7 +18,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.INPUT, location = "/aup/load.action", type = "redirect"),
+		@Result(name = BaseAction.INPUT, location = "aups"),
 		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
 public class ChangeReacceptancePeriodAction extends BaseAction implements
 		Preparable, ModelDriven<AUP> {
@@ -35,7 +36,9 @@ public class ChangeReacceptancePeriodAction extends BaseAction implements
 	@Override
 	public String execute() throws Exception {
 
-		getModel().setReacceptancePeriod(getPeriod());
+		ChangeReacceptancePeriodOperation op = new ChangeReacceptancePeriodOperation(aup, period);
+		op.execute();
+		
 		return SUCCESS;
 	}
 

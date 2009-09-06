@@ -210,7 +210,7 @@ public class AUPVersion implements Serializable, Comparable<AUPVersion> {
 
 			}
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("Error in opening AUP version url: " + e.getMessage());
 			if (log.isDebugEnabled())
 				log.error(

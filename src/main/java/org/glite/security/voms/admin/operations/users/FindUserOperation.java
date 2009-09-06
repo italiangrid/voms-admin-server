@@ -22,9 +22,12 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.operations.BaseUserAdministrativeOperation;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 
-public class FindUserOperation extends BaseVoReadOperation {
+public class FindUserOperation extends BaseUserAdministrativeOperation {
 
 	Long id;
 
@@ -37,12 +40,18 @@ public class FindUserOperation extends BaseVoReadOperation {
 	private FindUserOperation(Long userId) {
 
 		id = userId;
+		setAuthorizedUser(VOMSUserDAO.instance().findById(userId));
+		
+		
 	}
 
 	private FindUserOperation(String dn, String ca) {
 
 		this.dn = dn;
 		this.caDN = ca;
+		
+		setAuthorizedUser(VOMSUserDAO.instance().findByDNandCA(dn, caDN));
+		
 	}
 
 	private FindUserOperation(String emailAddress) {
@@ -78,6 +87,12 @@ public class FindUserOperation extends BaseVoReadOperation {
 	public static FindUserOperation instance(String emailAddress) {
 
 		return new FindUserOperation(emailAddress);
+	}
+
+	@Override
+	protected void setupPermissions() {
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerReadPermission().setMembershipReadPermission());
+		
 	}
 
 }

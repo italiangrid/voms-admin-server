@@ -174,7 +174,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	/** User certificates **/
 
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", fetch=FetchType.EAGER)
 	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	Set<Certificate> certificates = new HashSet<Certificate>();
 
@@ -590,7 +590,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		if (u == null)
 			throw new NullArgumentException("User passed as argument is null!");
 
-		// setCn( u.getCN() );
+		
 		setEmailAddress(u.getMail());
 	}
 
@@ -781,7 +781,13 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	public boolean hasCertificate(Certificate cert) {
 
-		return getCertificates().contains(cert);
+		for (Certificate c: certificates){
+			
+			if (c.equals(cert))
+				return true;
+		}
+		
+		return false;
 	}
 
 	public void removeCertificate(Certificate cert) {

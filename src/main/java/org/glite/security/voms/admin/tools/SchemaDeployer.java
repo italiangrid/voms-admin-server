@@ -20,11 +20,15 @@
  *******************************************************************************/
 package org.glite.security.voms.admin.tools;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,10 +77,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.dialect.Dialect;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
+import org.hibernate.type.Type;
 
 @SuppressWarnings("deprecation")
 public class SchemaDeployer {
@@ -107,6 +113,8 @@ public class SchemaDeployer {
 	String adminEmailAddress = null;
 
 	SessionFactory sf;
+	
+	protected Dialect dialect;
 
 	public SchemaDeployer(String[] args) {
 
@@ -116,6 +124,13 @@ public class SchemaDeployer {
 
 	}
 
+	private void printUpgradeScript(){
+		
+		
+		SchemaUpdate updater = new SchemaUpdate(loadHibernateConfiguration());
+		updater.execute(true, false);
+		
+	}
 	
 	private void execute() {
 
@@ -132,10 +147,14 @@ public class SchemaDeployer {
 			doAddAdmin();
 		else if (command.equals("remove-admin"))
 			doRemoveAdmin();
-		else
-			throw new VOMSException("Unknown command: " + command);
-
-		System.exit(0);
+		else if (command.equals("upgrade-script"))
+			printUpgradeScript();
+		else{
+			
+			System.err.println("Unkown command specified: "+command);
+			System.exit(2);
+		}
+				
 	}
 
 	private boolean isOracleBackend() {
@@ -216,6 +235,22 @@ public class SchemaDeployer {
 
 	}
 	
+	private String getVarcharType(){
+		
+		if (isOracleBackend())
+			return "varchar2";
+		else 
+			return "varchar";
+	}
+	
+	private String getTimestampType(){
+		
+		if (isOracleBackend())
+			return "timestamp";
+		else
+			return "datetime";
+		
+	}
 	private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md, String pattern){
 		
 		String[] names = { "TABLE" };
@@ -382,29 +417,65 @@ public class SchemaDeployer {
 		
 	}
 
+	private List<String> loadUpgradeScript() throws IOException{
+			
+		String upgradeScriptFileName = "/upgrade-scripts/mysql-upgrade_20_25.sql"; 
+		
+		if (isOracleBackend())
+			upgradeScriptFileName = "/upgrade-scripts/oracle-upgrade_20_25.sql";
+			
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(upgradeScriptFileName)));
+		
+		ArrayList<String> commands = new ArrayList<String>();
+		
+		String line;
+		
+		do{
+			line = reader.readLine();
+			if (line != null)
+				commands.add(line);
+			
+		}while (line != null);
+		
+		return commands;
+		
+	}
+	
+		
 	private void doUpgrade2_0_x(Configuration hibernateConfig) {
 		
-		HibernateFactory.beginTransaction();
 		try{
 			
-			
 			HibernateFactory.beginTransaction();
+						
+			List<String> upgradeScript = loadUpgradeScript();
 			
-			SchemaUpdate updater = new SchemaUpdate(hibernateConfig);
+			ArrayList<Exception> exceptions = new ArrayList<Exception>();
 			
 			log.info("Upgrading voms 2.5 database...");
 			
-			updater.execute(true,true);
-
-			List l = updater.getExceptions();
-
-			if (!l.isEmpty()) {
-				log.fatal("Error upgrading voms 2.5 database!");
-				printExceptions(l);
-				System.exit(2);
-
+			
+			Statement statement = HibernateFactory.getSession().connection().createStatement();
+			
+			for (String command: upgradeScript){
+				try{
+					
+					log.info(command);
+					statement.executeUpdate(command);
+					
+				}catch (SQLException e) {
+					log.error("Error while executing: "+command);
+					exceptions.add(e);
+				}
+				
 			}
 			
+			if (!exceptions.isEmpty()){
+				log.fatal("Error upgrading voms 2.5 database!");
+				printExceptions(exceptions);
+				System.exit(2);
+			}	
 			
 			dropUnusedTables_2_0_x();
 			fixCaTable();
@@ -437,7 +508,7 @@ public class SchemaDeployer {
 	private void doUpgrade() {
 
 		Configuration hibernateConfig = loadHibernateConfiguration();
-
+		
 		int existingDB = checkDatabaseExistence();
 
 		if (existingDB == -1) {
@@ -579,8 +650,11 @@ public class SchemaDeployer {
 
 		}
 
-		return new AnnotationConfiguration().addProperties(dbProperties)
-				.configure();
+		Configuration cfg = new AnnotationConfiguration().addProperties(dbProperties)
+			.configure(); 
+		
+		dialect = Dialect.getDialect(cfg.getProperties());
+		return cfg;
 	}
 
 	private void doUndeploy() {
@@ -740,8 +814,14 @@ public class SchemaDeployer {
 			if (!command.equals("deploy") && !command.equals("upgrade")
 					&& !command.equals("add-admin")
 					&& !command.equals("remove-admin")
-					&& !command.equals("undeploy"))
-				throw new VOMSException("Unknown command specified!");
+					&& !command.equals("undeploy")
+					&& !command.equals("upgrade-script")
+				){
+				
+				System.err.println("Unknown command specified: "+command);
+				printHelpMessageAndExit(2);
+			}
+				
 
 			vo = line.getOptionValue("vo");
 
@@ -944,6 +1024,7 @@ public class SchemaDeployer {
 	private void executeAndLog(String command){
 		
 		log.info("Executing '"+command+"'");
+		
 		HibernateFactory.getSession().createSQLQuery(command).executeUpdate();
 		
 	}
@@ -953,19 +1034,21 @@ public class SchemaDeployer {
 		executeAndLog("update ca set subject_string = ca");
 		
 		// set creation time
-		HibernateFactory.getSession().createSQLQuery("update ca set creation_time = :creationTime").setTimestamp("creationTime", new Date()).executeUpdate();
+		HibernateFactory.getSession().createSQLQuery("update ca set creation_time = :creationTime").setTimestamp("creationTime", new Date()).executeUpdate();		
 		
 		dropColumn("ca", "ca");
-		setColumnNotNullable("ca", "subject_string");
-		setColumnNotNullable("ca", "creation_time");
+		setColumnNullability(false,"ca", "subject_string",getVarcharType()+"(255)");
+		setColumnNullability(false,"ca", "creation_time", getTimestampType());
 				
 	}
+	
+	
 	
 	private String getColumnType(String tableName, String columnName) throws HibernateException, SQLException{
 		
 		DatabaseMetaData md = HibernateFactory.getSession().connection().getMetaData();
 		
-		ResultSet columnData = md.getColumns(null, null, tableName, columnName);
+		ResultSet columnData = md.getColumns("%", "%", tableName, columnName);
 		
 		int matches = 0;
 		
@@ -987,18 +1070,15 @@ public class SchemaDeployer {
 	}
 	
 	
-	private void setColumnNullable(String tableName, String columnName) throws HibernateException, SQLException{
-		String typeName = getColumnType(tableName, columnName);
-		String command = String.format("alter table %s modify %s %s null", tableName, columnName, typeName);
-		executeAndLog(command);	
-	}
 	
-	private void setColumnNotNullable(String tableName, String columnName) throws HibernateException, SQLException{
+	private void setColumnNullability(boolean nullable,String tableName, String columnName, String typeName){ 
 		
-		String typeName = getColumnType(tableName, columnName);
-		String command = String.format("alter table %s modify %s %s not null", tableName, columnName, typeName);
+		String nullString = (nullable?"":"not");
+		
+		String command = String.format("alter table %s modify %s %s %s null", tableName, columnName, typeName, nullString);
 		executeAndLog(command);
 	}
+	
 	
 	private void dropColumn(String tableName, String columnName){
 		
@@ -1025,14 +1105,29 @@ public class SchemaDeployer {
 		
 		return res;
 	}
-	private void dropForeignKeysOnColumn(String tableName, String columnName){
-		
-		
-	}
 	
 	private void updateACLPerms(){
 		// Grant all permissions to those that had all permissions in 2.0.x!
 		executeAndLog("update acl2_permissions set permissions = 16383 where permissions = 4095");
+	}
+	
+	private void dropFKConstraintsForTable(String tableName) throws SQLException{
+		DatabaseMetaData md = (DatabaseMetaData) HibernateFactory.getSession().connection().getMetaData();
+		
+		ResultSet rs = md.getImportedKeys(null, null, tableName);
+		
+		while(rs.next()){
+			
+			String importedPkTableName = rs.getString("PKTABLE_NAME");
+			String importedPkColumnName = rs.getString("PKCOLUMN_NAME");
+			String fkTableName = rs.getString("FKTABLE_NAME");
+			
+			String fkName = rs.getString("FK_NAME");
+			String logMessage = String.format("Dropping foreign key constraint '%s' on table '%s' referencing '%s.%s'",fkName,tableName,importedPkTableName, importedPkColumnName);
+			log.debug(logMessage);
+			
+			executeAndLog(String.format("alter table %s drop constraint %s", fkTableName, fkName));
+		}
 	}
 	
 	private void fixUsrTable() throws HibernateException, SQLException{
@@ -1045,21 +1140,27 @@ public class SchemaDeployer {
 		dropColumn("usr", "cn");
 		dropColumn("usr", "cauri");
 		
-		
 		// Fix missing null checks
-		setColumnNotNullable("usr", "creation_time");
-		setColumnNotNullable("usr", "end_time");
+		setColumnNullability(false,"usr", "creation_time", getTimestampType());
+		setColumnNullability(false, "usr", "end_time", getTimestampType());
 		
 		// Drop nullability from old dn and ca fields
-		setColumnNullable("usr", "dn");
-		setColumnNullable("usr", "ca");
 		
+		setColumnNullability(true,"usr", "dn", getVarcharType()+"(255)");
+		
+		if (!isOracleBackend())
+			setColumnNullability(true,"usr", "ca", "smallint");
+			
 		// Drop foreign key created by 2.0.x installation,
 		// otherwise an undeploy would not perform cleanly
-		executeAndLog("alter table usr drop foreign key fk_usr_ca");
+		String dropForeignKeyString = dialect.getDropForeignKeyString();
+		
+		executeAndLog("alter table usr "+dropForeignKeyString+" fk_usr_ca");
+		
 		
 		// Set dn null for usr
 		executeAndLog("update usr set dn = null");
+		executeAndLog("update usr set ca = null");
 	}
 	
 	
@@ -1425,4 +1526,12 @@ public class SchemaDeployer {
 		}
 	}
 
+	private void testDialect(){
+		
+		System.out.println(dialect.getCreateTableString());
+		System.out.println(dialect.getDropForeignKeyString());
+		System.out.println(dialect.dropConstraints());
+		
+		
+	}
 }

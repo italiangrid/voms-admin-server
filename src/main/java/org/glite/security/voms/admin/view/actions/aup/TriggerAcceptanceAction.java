@@ -1,11 +1,9 @@
 package org.glite.security.voms.admin.view.actions.aup;
 
-import java.util.Date;
-
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.operations.aup.TriggerReacceptanceOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -20,8 +18,8 @@ public class TriggerAcceptanceAction extends AUPActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		getModel().getActiveVersion().setLastForcedReacceptanceTime(new Date());
-		HibernateFactory.getSession().update(getModel());
+		TriggerReacceptanceOperation op = new TriggerReacceptanceOperation(getModel());
+		op.execute();
 		return SUCCESS;
 	}
 

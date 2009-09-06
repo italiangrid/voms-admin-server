@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
+<%--
 
 <div id="aclHelp" style="display: none">
   <tiles2:insertTemplate template="aclHelp.jsp"/>
@@ -10,13 +10,17 @@
     Show help
   </div>
 </div>
+ --%>
 
+
+
+<s:if test="! #attr.voGroups.empty">
 <h1>Manage ACL for</h1>
 
 
 
 <div>
-  
+    
   <s:form id="aclSelectionForm" action="ajax-load" namespace="/acl" theme="simple">
     <s:label for="groupId" cssClass="label" value="%{'Group:'}" theme="simple"/>
     <s:select 
@@ -47,8 +51,14 @@
           />
   </s:form>
 </div>
+<div id="aclShowPane"></div>
 
-<div id="aclShowPane">
+</s:if>
+<s:else>
+	You don't have the rights to list the groups structure (and their ACL in this VO).
+</s:else>
+
+
 
   
 

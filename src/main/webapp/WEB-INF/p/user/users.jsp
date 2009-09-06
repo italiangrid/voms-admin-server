@@ -1,4 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
+
 <h1>Users:</h1>
 
 <div id="searchPane">
@@ -11,7 +13,12 @@
 </div>
 
 <div id="createPane">
-  <a href="#">Add a new user</a>
+	<voms:hasPermissions var="canCreate"
+		context="vo"
+		permission="rw"/>
+	<s:if test="#attr.canCreate">
+		<a href="<s:url action="create" method="input"/>">Add a new user</a>
+	</s:if>
 </div>
 
 <div class="searchResultsPane">
@@ -163,10 +170,9 @@
             <s:url action="delete" namespace="/user" var="deleteURL">
               <s:param name="userId" value="id"/>
             </s:url>
-            <s:a href="%{deleteURL}" cssClass="actionLink">
-                delete
-            </s:a>
-            
+            <a href="${deleteURL}" class="actionLink" onclick="openConfirmDialog(this, 'deleteUserDialog','${shortName}'); return false;">
+            	delete
+            </a>
             
             <%--
             <s:form action="delete" namespace="/user">

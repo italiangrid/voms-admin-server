@@ -28,22 +28,64 @@ import org.glite.security.voms.admin.operations.BaseVoRWOperation;
 public class UpdateUserOperation extends BaseVoRWOperation {
 
 	VOMSUser user;
+	String name;
+	String surname;
+	String institution;
+	String address;
+	String phoneNumber;
+	String emailAddress;
 
-	private UpdateUserOperation(VOMSUser u) {
+	private UpdateUserOperation(VOMSUser u){
+		this.user = u;
+	}
+	private UpdateUserOperation(VOMSUser u, String name,
+			String surname, String institution, String address,
+			String phoneNumber, String emailAddress) {
 
 		user = u;
+		this.name = name;
+		this.surname = surname;
+		this.institution = institution;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+		this.emailAddress = emailAddress;
 
 	}
 
+	
 	public Object doExecute() {
 
+		if (name!= null)
+			user.setName(name);
+		
+		if (surname != null)
+			user.setSurname(surname);
+		
+		if (institution != null)
+			user.setInstitution(institution);
+		
+		if (address != null)
+			user.setAddress(address);
+		
+		if (phoneNumber != null)
+			user.setPhoneNumber(phoneNumber);
+		
+		if (emailAddress != null)
+			user.setEmailAddress(emailAddress);
+		
 		VOMSUserDAO.instance().update(user);
 		return null;
 	}
 
-	public static UpdateUserOperation instance(VOMSUser usr) {
+	public static UpdateUserOperation instance(VOMSUser usr, String name,
+			String surname, String institution, String address,
+			String phoneNumber, String emailAddress) {
 
-		return new UpdateUserOperation(usr);
+		return new UpdateUserOperation(usr,name, surname, institution,address, phoneNumber, emailAddress);
+	}
+	
+	public static UpdateUserOperation instance(VOMSUser u){
+		return new UpdateUserOperation(u);
 	}
 
 }

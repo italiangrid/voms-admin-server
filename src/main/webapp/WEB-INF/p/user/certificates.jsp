@@ -49,7 +49,7 @@
 					test="#attr.canSuspend and not suspended">
 
 					<s:form action="suspend-certificate" namespace="/user"
-						theme="simple" cssClass="cert-operation-forms">
+						theme="simple" cssClass="cert-operation-forms" method="input">
 						<s:token />
 						<s:hidden name="userId" value="%{model.id}" />
 						<s:hidden name="certificateId" value="%{#cert.id}" />
@@ -67,15 +67,24 @@
 						</s:form>
 					</s:if>
 
-				</s:if> <s:if test="model.certificates.size > 1">
-					<s:form action="delete-certificate" namespace="/user"
-						theme="simple" cssClass="cert-operation-forms">
-						<s:token />
-						<s:hidden name="userId" value="%{model.id}" />
-						<s:hidden name="certificateId" value="%{#cert.id}" />
-						<s:submit value="%{'Delete'}" />
-					</s:form>
-				</s:if></div>
+				</s:if> 
+				
+				<s:if test="model.certificates.size > 1">
+				
+					<voms:hasPermissions var="canDelete" context="/${voName}"
+						permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE" />
+					<s:if test="#attr.canDelete">
+						<s:form action="delete-certificate" namespace="/user"
+							theme="simple" cssClass="cert-operation-forms">
+							<s:token />
+							<s:hidden name="userId" value="%{model.id}" />
+							<s:hidden name="certificateId" value="%{#cert.id}" />
+							<s:submit value="%{'Delete'}" />
+						</s:form>
+					</s:if>
+				</s:if>
+				
+				</div>
 
 				</td>
 			</tr>

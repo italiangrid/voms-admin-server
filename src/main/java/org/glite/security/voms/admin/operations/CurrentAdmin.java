@@ -91,6 +91,14 @@ public class CurrentAdmin {
 
 	}
 
+	public boolean is(VOMSUser u){
+		
+		if (getVoUser() == null)
+			return false;
+		
+		return getVoUser().equals(u);
+		
+	}
 	public VOMSUser getVoUser() {
 
 		if (!isAuthorizedAdmin()) {

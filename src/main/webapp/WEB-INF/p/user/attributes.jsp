@@ -35,11 +35,11 @@
 </s:if>
 <s:else>
       No attribute classes defined for this vo.
-    </s:else>
+</s:else>
 
+<voms:hasPermissions var="canReadAttrs" context="vo" permission="ATTRIBUTES_READ"/>
 
-<voms:authorized
-	permission="ATTRIBUTES_READ" context="vo">
+<s:if test="#attr.canReadAttrs or #attr.currentAdmin.is(model)">
 	<s:if test="attributes.isEmpty">
 		<s:if test="not #request.attributeClasses.empty">
           No attributes defined for this user.
@@ -74,4 +74,8 @@
 			</s:iterator>
 		</table>
 	</s:else>
-</voms:authorized></div>
+</s:if>
+<s:else>
+	You do not have enough permissions to see the attribute mappings for this user.
+</s:else>
+</div>

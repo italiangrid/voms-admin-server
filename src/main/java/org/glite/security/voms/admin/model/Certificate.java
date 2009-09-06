@@ -134,6 +134,9 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
 	public boolean equals(Object other) {
 
+		if (this == other)
+			return true;
+		
 		if (other == null)
 			return false;
 

@@ -65,7 +65,7 @@ No roles defined for this VO.
               <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="roleId" value="%{id}"/>
-              <s:submit value="%{'delete'}"/>
+              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteRoleDialog','%{name}'); return false"/>
             </s:form>
           </s:if>
          </td>

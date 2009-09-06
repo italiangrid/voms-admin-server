@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
@@ -601,9 +602,7 @@ public class VOMSUserDAO {
 		assert cert != null : "Certificate must be non-null!";
 
 		VOMSUser u = cert.getUser();
-		u.getCertificates().remove(cert);
-		HibernateFactory.getSession().saveOrUpdate(u);
-
+		deleteCertificate(u, cert);
 	}
 
 	public void deleteCertificate(VOMSUser u, Certificate cert) {
@@ -611,6 +610,9 @@ public class VOMSUserDAO {
 		assert u != null : "User must be non-null!";
 		assert cert != null : "Certificate must be non-null!";
 
+		if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
+			throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
+		
 		u.getCertificates().remove(cert);
 		HibernateFactory.getSession().saveOrUpdate(u);
 

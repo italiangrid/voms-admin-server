@@ -9,7 +9,7 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 	public static final Log log = LogFactory
 			.getLog(BaseUserAdministrativeOperation.class);
 
-	VOMSUser authorizedUser;
+	protected VOMSUser authorizedUser;
 
 	@Override
 	final AuthorizationResponse isAllowed() {
@@ -24,7 +24,11 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 
 		boolean usersMatch = admin.getVoUser().equals(authorizedUser);
 		log.debug("Admin's user match with authorized user: " + usersMatch);
-		return AuthorizationResponse.permit();
+		
+		if (usersMatch)
+			return AuthorizationResponse.permit();
+		
+		return super.isAllowed();
 
 	}
 
@@ -36,11 +40,5 @@ public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation 
 		this.authorizedUser = authorizedUser;
 	}
 
-	@Override
-	protected void setupPermissions() {
-
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getEmptyPermissions());
-
-	}
+	
 }

@@ -1,7 +1,8 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<h2>Manage Attribute classes</h2>
+<h1>Generic Attribute classes:</h1>
 
 <div class="createTab">
+
 <s:form
       action="create"
       namespace="/attribute"
@@ -12,12 +13,12 @@
       <s:token/>
       <s:textfield name="attributeName" size="20" value="" label="Name"/>
       <s:textarea name="attributeDescription" cols="20" rows="3" value="" label="Description"/>
-      <s:checkbox name="checkUniqueness" label="Check uniqueness" value="false"/>
+      <s:checkbox name="checkUniqueness" label="Check uniqueness" value="false" labelposition="right" />
       <s:submit value="%{'Create'}"/>
 </s:form>
 </div>
 
-<div class="attributeListTab">
+<div class="attributeListTab" style="margin-top: 2em">
   <s:if test="#request.attributeClasses.size == 0">
     No attribute classes defined for this VO
   </s:if>
@@ -30,7 +31,7 @@
         
       </tr>
       <s:iterator var="attributeClass" value="#request.attributeClasses">
-        <tr>
+        <tr class="tableRow">
           <td><s:property value="name"/></td>
           <td><s:property value="unique"/></td>
           <td>
@@ -43,7 +44,7 @@
               <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="attributeName" value="%{name}"/>
-              <s:submit src="%{deleteImg}" type="image"/>
+              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteAttributeClassDialog','%{name}'); return false"/>
             </s:form>
           </s:if>
           </td>

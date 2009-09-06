@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #############################################################################
 # Copyright (c) Members of the EGEE Collaboration. 2006.
@@ -456,7 +456,6 @@ def do_upgrade():
             for v in vos:
                 options['vo'] = v
                 
-                ## FIXME; Do a recursive call?
                 action = check_upgrade_options()
                 action.upgrade_vo()
                 print "Vo %s succesfully upgraded" % options['vo']

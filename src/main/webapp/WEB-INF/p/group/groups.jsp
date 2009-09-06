@@ -63,7 +63,8 @@ No groups found in this VO.
               <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="groupId" value="%{id}"/>
-              <s:submit value="%{'delete'}"/>
+              
+              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteGroupDialog','%{name}'); return false"/>
             </s:form>
           </s:if>
           

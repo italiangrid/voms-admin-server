@@ -156,6 +156,12 @@ function eyeCandy(){
 	
 }
 
+function showAUPContent(node){
+	
+	var aupText = $(node).next().text();
+	$('#aclShowTextArea').val(aupText);
+}
+
 function colorTableRows(){
 	
 	$('.tableRow:odd').addClass('tableRowOdd');
@@ -318,8 +324,52 @@ function pageSetup(){
 	aclEntryStuff();
 	
 	
+	
+	
 }
 
+
+function openConfirmDialog(node,dialogId,text){
+	
+	
+	if ($(node).is(':submit')){
+		
+		confirmFunc = function(){
+			$(node).closest('form').submit();
+			return true;	
+		};
+		
+	}else{
+		
+		var dest = $(node).attr('href');
+		
+		confirmFunc  = function(){
+			window.location = dest;
+		};
+	}
+	
+	
+	$('#'+dialogId+" .dialogMessage").text(text);
+	
+	$('#'+dialogId).dialog({resizable: false,
+		width: 600,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			Confirm: confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	
+}
 
 	
 

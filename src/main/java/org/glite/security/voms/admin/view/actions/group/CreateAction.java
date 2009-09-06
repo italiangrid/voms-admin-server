@@ -4,6 +4,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -29,6 +30,19 @@ public class CreateAction extends GroupActionSupport {
 	String groupName;
 	String parentGroupName;
 
+	@Override
+	public void validate() {
+		
+		String candidateName = getParentGroupName()+"/"+getGroupName();
+		
+		VOMSGroup target = VOMSGroupDAO.instance().findByName(candidateName);
+		
+		if (target != null){
+			
+			addFieldError("groupName", "Group '"+candidateName+"' already exists!");
+		}
+			
+	}
 	@Override
 	public String execute() throws Exception {
 

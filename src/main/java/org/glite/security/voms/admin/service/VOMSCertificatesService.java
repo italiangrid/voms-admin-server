@@ -2,100 +2,169 @@ package org.glite.security.voms.admin.service;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.UnimplementedFeatureException;
+import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.operations.users.RemoveUserCertificateOperation;
+import org.glite.security.voms.admin.operations.users.SuspendUserCertificateOperation;
 import org.glite.security.voms.service.certificates.VOMSCertificates;
 import org.glite.security.voms.service.certificates.X509Certificate;
 
 public class VOMSCertificatesService implements VOMSCertificates {
 
+	private static final Log log = LogFactory
+			.getLog(VOMSCertificatesService.class);
+
 	public void addCertificate(long userId, X509Certificate cert)
 			throws RemoteException {
 
-		if (cert == null)
-			throw new NullArgumentException("X509Certificate cannot be null!");
+		try {
+			if (cert == null)
+				throw new NullArgumentException(
+						"X509Certificate cannot be null!");
 
-		if (userId < 0)
-			throw new IllegalArgumentException(
-					"the userId must be a positive integer!");
+			if (userId < 0)
+				throw new IllegalArgumentException(
+						"the userId must be a positive integer!");
 
-		VOMSUser user = (VOMSUser) FindUserOperation.instance(userId).execute();
+			VOMSUser user = (VOMSUser) FindUserOperation.instance(userId)
+					.execute();
 
-		if (cert.getBytes() != null) {
+			if (cert.getBytes() != null) {
 
-			java.security.cert.X509Certificate x509Cert = ServiceUtils
-					.certificateFromBytes(cert.getBytes());
-			AddUserCertificateOperation.instance(user, x509Cert).execute();
+				java.security.cert.X509Certificate x509Cert = ServiceUtils
+						.certificateFromBytes(cert.getBytes());
+				AddUserCertificateOperation.instance(user, x509Cert).execute();
 
-		} else
-			AddUserCertificateOperation.instance(user, cert.getSubject(),
-					cert.getIssuer(), cert.getNotAfter()).execute();
+			} else
+				AddUserCertificateOperation.instance(user, cert.getSubject(),
+						cert.getIssuer(), cert.getNotAfter()).execute();
 
+		} catch (RuntimeException e) {
+
+			ServiceExceptionHelper.handleServiceException(log, e);
+
+			throw e;
+
+		}
 	}
 
 	public X509Certificate[] getCertificates(long userId)
 			throws RemoteException {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(userId).execute();
-		return ServiceUtils.toX509CertificateArray(u.getCertificates());
+		try {
+
+			VOMSUser u = (VOMSUser) FindUserOperation.instance(userId)
+					.execute();
+			return ServiceUtils.toX509CertificateArray(u.getCertificates());
+
+		} catch (RuntimeException e) {
+
+			ServiceExceptionHelper.handleServiceException(log, e);
+
+			throw e;
+
+		}
 	}
 
 	public X509Certificate[] getCertificates(String subject, String issuer)
 			throws RemoteException {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(subject, issuer)
-				.execute();
-		return ServiceUtils.toX509CertificateArray(u.getCertificates());
+		try {
+
+			VOMSUser u = (VOMSUser) FindUserOperation.instance(subject, issuer)
+					.execute();
+
+			if (u == null)
+				throw new NoSuchUserException(String.format("No '%s,%s' user found in this VO", subject,issuer));
+			
+			return ServiceUtils.toX509CertificateArray(u.getCertificates());
+
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+
+			throw e;
+		}
+
 	}
 
 	public long getUserIdFromDn(String subject, String issuer)
 			throws RemoteException {
 
-		if (subject == null)
-			throw new NullArgumentException("User's subject cannot be null!");
+		try {
+			if (subject == null)
+				throw new NullArgumentException(
+						"User's subject cannot be null!");
 
-		if (issuer == null)
-			throw new NullArgumentException("User's issuer cannot be null!");
+			if (issuer == null)
+				throw new NullArgumentException("User's issuer cannot be null!");
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(subject, issuer)
-				.execute();
+			VOMSUser u = (VOMSUser) FindUserOperation.instance(subject, issuer)
+					.execute();
 
-		if (u == null)
-			return -1;
+			if (u == null)
+				return -1;
 
-		return u.getId().longValue();
+			return u.getId().longValue();
+
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+
+			throw e;
+
+		}
 	}
 
 	public void addCertificate(String registeredCertSubject,
 			String registeredCertIssuer, X509Certificate cert)
 			throws RemoteException {
 
-		long userId = getUserIdFromDn(registeredCertSubject,
-				registeredCertIssuer);
-		addCertificate(userId, cert);
+		try {
+			long userId = getUserIdFromDn(registeredCertSubject,
+					registeredCertIssuer);
+
+			addCertificate(userId, cert);
+
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+
+			throw e;
+
+		}
 	}
 
 	public void removeCertificate(X509Certificate cert) throws RemoteException {
 
-		if (cert.getBytes() != null) {
+		try {
+			if (cert.getBytes() != null) {
 
-			java.security.cert.X509Certificate x509Cert = ServiceUtils
-					.certificateFromBytes(cert.getBytes());
-			RemoveUserCertificateOperation.instance(x509Cert).execute();
+				java.security.cert.X509Certificate x509Cert = ServiceUtils
+						.certificateFromBytes(cert.getBytes());
+				RemoveUserCertificateOperation.instance(x509Cert).execute();
 
-		} else
-			RemoveUserCertificateOperation.instance(cert.getSubject(),
-					cert.getIssuer()).execute();
+			} else
+				RemoveUserCertificateOperation.instance(cert.getSubject(),
+						cert.getIssuer()).execute();
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+
 	}
 
 	public void suspendCertificate(X509Certificate cert, String reason)
 			throws RemoteException {
-
-		throw new UnimplementedFeatureException("suspendCertificate(...)");
+		try {
+			SuspendUserCertificateOperation.instance(cert.getSubject(),
+					cert.getIssuer(), reason).execute();
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
 
 	}
 

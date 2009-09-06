@@ -2,6 +2,7 @@ package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
@@ -29,6 +30,14 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
 		return new SuspendUserCertificateOperation(u, c, r);
 	}
 
+	
+	public static SuspendUserCertificateOperation instance(String dn, String ca, String suspensionReason){
+		
+		Certificate c = CertificateDAO.instance().findByDNCA(dn, ca);
+		SuspensionReason reason = SuspensionReason.OTHER;
+		reason.setMessage(suspensionReason);
+		return new SuspendUserCertificateOperation(c.getUser(), c, reason);
+	}
 	@Override
 	protected Object doExecute() {
 
