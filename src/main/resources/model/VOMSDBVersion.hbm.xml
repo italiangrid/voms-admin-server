@@ -9,6 +9,7 @@
     		<class name="org.glite.security.voms.admin.model.VOMSDBVersion" table="version">
     			
     			<id name="version" column="version" type="integer"/>
+                <property name="adminVersion" column="admin_version" type="string"/>
     			
     		</class>
     

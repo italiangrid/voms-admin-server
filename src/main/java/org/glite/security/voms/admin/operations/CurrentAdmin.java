@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.common.DNUtil;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;

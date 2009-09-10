@@ -1,8 +1,9 @@
 package org.glite.security.voms.admin.view.actions.search;
 
+import java.util.Map;
+
 import org.apache.struts2.convention.annotation.ParentPackage;
-import org.apache.struts2.convention.annotation.Result;
-import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.dao.SearchResults;
 import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -11,7 +12,7 @@ import org.glite.security.voms.admin.view.actions.SearchData;
 import com.opensymphony.xwork2.validator.annotations.VisitorFieldValidator;
 
 @ParentPackage("base")
-public abstract class BaseSearchAction extends BaseAction {
+public abstract class BaseSearchAction extends BaseAction implements SessionAware{
 
 	/**
 	 * 
@@ -32,6 +33,8 @@ public abstract class BaseSearchAction extends BaseAction {
 
 	protected SearchResults searchResults;
 
+	protected Map<String, Object> session;
+	
 	@VisitorFieldValidator(appendPrefix = true, message = "Invalid input:  ")
 	public SearchData getSearchData() {
 		return searchData;
@@ -47,6 +50,9 @@ public abstract class BaseSearchAction extends BaseAction {
 		searchResults = (SearchResults) BaseSearchOperation.instance(
 				getSearchData()).execute();
 
+		session.put("searchData", getSearchData());
+		session.put("searchResults", searchResults);
+		
 		return SUCCESS;
 
 	}
@@ -68,6 +74,10 @@ public abstract class BaseSearchAction extends BaseAction {
 
 		} else
 			getSearchData().setType(searchType);
+	}
+	
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
 	}
 
 }

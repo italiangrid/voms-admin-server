@@ -42,6 +42,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 		
 		op.execute();
 		
+		addActionMessage("Personal information updated.");
 		return SUCCESS;
 	}
 

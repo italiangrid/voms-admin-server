@@ -41,6 +41,16 @@ public class AssignRoleOperation extends BaseVomsOperation {
 
 	VOMSRole role;
 
+	private AssignRoleOperation(Long userId, String roleFqan){
+		user = (VOMSUser) FindUserOperation.instance(userId).execute();
+		
+		VOMSContext context = VOMSContext.instance(roleFqan);
+		
+		group = context.getGroup();
+		role = context.getRole();
+		
+		
+	}
 	private AssignRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
 		user = u;
@@ -54,6 +64,10 @@ public class AssignRoleOperation extends BaseVomsOperation {
 		return null;
 	}
 
+	public static AssignRoleOperation instance(Long userId, String roleFqan){
+		return new AssignRoleOperation(userId, roleFqan);
+	}
+	
 	public static AssignRoleOperation instance(VOMSUser u, VOMSGroup g,
 			VOMSRole r) {
 

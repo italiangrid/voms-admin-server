@@ -287,7 +287,13 @@ class UpgradeVO(ConfigureAction):
         else:
             raise VomsConfigureError, "Unrecognized voms database configuration, upgrade failed!"
         
+        ## common upgrade configuration behaviour
         
+        ## Put logging configuration in place
+        shutil.copy(VomsConstants.logging_conf_template, vo_config_dir(self.user_options['vo']))
+        setup_permissions(os.path.join(vo_config_dir(self.user_options['vo']), os.path.basename(VomsConstants.logging_conf_template)), 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
         
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -571,7 +577,11 @@ class InstallVOAction(ConfigureAction):
         else:
             print "Skipping voms core configuration creation"
             
-        
+        ## Put logging configuration in place
+        shutil.copy(VomsConstants.logging_conf_template, vo_conf_dir)
+        setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.logging_conf_template)), 
+                          0644, 
+                          self.user_options['tomcat-group-id'])
     
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -970,6 +980,7 @@ class VomsConstants:
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
     
     vo_aup_template = os.path.join(glite_loc,"etc","voms-admin","templates", "aup", "vo-aup.txt")
+    logging_conf_template = os.path.join(glite_loc,"etc","voms-admin","templates", "log4j.runtime.properties")
     
     voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
     voms_siblings_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-siblings.war")

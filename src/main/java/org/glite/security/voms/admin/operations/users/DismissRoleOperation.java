@@ -41,6 +41,16 @@ public class DismissRoleOperation extends BaseVomsOperation {
 	VOMSGroup group;
 
 	VOMSRole role;
+	
+	private DismissRoleOperation(Long userId, String roleFqan){
+		
+		user = (VOMSUser) FindUserOperation.instance(userId).execute();
+		
+		VOMSContext context = VOMSContext.instance(roleFqan);
+		
+		group = context.getGroup();
+		role = context.getRole();
+	}
 
 	private DismissRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
@@ -97,6 +107,11 @@ public class DismissRoleOperation extends BaseVomsOperation {
 		return new DismissRoleOperation(u, g, r);
 	}
 
+	public static DismissRoleOperation instance(Long userId, String roleFqan){
+		
+		return new DismissRoleOperation(userId, roleFqan);
+	}
+	
 	protected void setupPermissions() {
 
 		addRequiredPermission(VOMSContext.instance(group), VOMSPermission

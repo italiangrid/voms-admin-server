@@ -15,7 +15,7 @@
 
 
 <s:if test="! #attr.voGroups.empty">
-<h1>Manage ACL for</h1>
+<h1>Manage the Access Control List for</h1>
 
 
 

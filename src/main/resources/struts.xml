@@ -29,6 +29,9 @@
         
             <interceptor name="authzExceptionMappingInterceptor"
                 class="org.glite.security.voms.admin.view.interceptors.AuthzExceptionInterceptor"/>
+            
+            <interceptor name="searchAwareInterceptor"
+                class="org.glite.security.voms.admin.view.interceptors.SearchAwareInterceptor"/>
 			
         <interceptor-stack name="authenticatedStack">
                 <interceptor-ref name="createSession"/>
@@ -39,7 +42,7 @@
                 </interceptor-ref>
                 
                 <interceptor-ref name="authzExceptionMappingInterceptor"/>
-                
+                <interceptor-ref name="searchAwareInterceptor"/>
                 <interceptor-ref name="logger"/>
                 
                 <interceptor-ref name="tokenSession">

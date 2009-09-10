@@ -2,6 +2,8 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.logging.Log;
@@ -77,6 +79,42 @@ public class CertificateActions extends UserActionSupport {
 		return SUCCESS;
 	}
 
+	public void validateSaveCertificate() {
+		
+		CertificateDAO dao = CertificateDAO.instance();
+		
+		if (certificateFile != null){
+			
+			X509Certificate cert = null;
+			
+			try {
+				cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
+			} catch (Throwable e) {
+				
+				addFieldError("certificateFile","Error parsing certificate passed as argument: "+e.getMessage()+". Please upload a valid X509, PEM encoded certificate.");
+				return;
+			}
+			
+			if (cert == null){
+				addFieldError("certificateFile", "Error parsing certificate passed as argument!");
+				return;
+			}
+			
+			if (dao.find(cert) != null)
+				addFieldError("certificateFile","Certificate already bound!");
+			
+		}else if (subject!= null && !"".equals(subject)){
+			
+			if (dao.findByDNCA(subject, caSubject) != null){
+				addFieldError("subject", "Certificate already bound!");
+				addFieldError("caSubject", "Certificate already bound!");
+			}
+		}else{
+			
+			addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+		}
+	}
+	
 	public File getCertificateFile() {
 		return certificateFile;
 	}

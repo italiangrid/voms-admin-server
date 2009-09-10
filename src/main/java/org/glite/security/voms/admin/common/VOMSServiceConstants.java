@@ -122,6 +122,8 @@ final public class VOMSServiceConstants {
 	public static final String CONFIRM = "confirm";
 
 	public static final Integer VOMS_DB_VERSION = new Integer(3);
+	
+	public static final String ADMIN_DB_VERSION = "2.5.0";
 
 	public static final String VO_NAME_KEY = "voName";
 

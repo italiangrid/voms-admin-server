@@ -6,7 +6,7 @@
 <div id="searchPane">
   <s:form validate="true" theme="simple">
     <s:hidden name="searchData.type" value="%{'user'}"/>
-    <s:textfield name="searchData.text" size="20"/>
+    <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
   </s:form>
   <s:fielderror fieldName="searchData.text"/>
@@ -23,13 +23,13 @@
 
 <div class="searchResultsPane">
   
-  <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
+  <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
     No users found in this VO.
   </s:if>
-  <s:elseif test="searchResults.results.size == 0">
-    No users found matching search string '<s:property value="searchResults.searchString"/>'.
+  <s:elseif test="#session.searchResults.results.size == 0">
+    No users found matching search string '<s:property value="#session.searchResults.searchString"/>'.
   </s:elseif>
-  <s:elseif test="searchResults != null">
+  <s:elseif test="#session.searchResults != null">
   
   <div class="resultsFooter">
     <voms:searchNavBar context="vo" 
@@ -42,11 +42,25 @@
         />
    </div>
   
+  <div style="clear: both"></div>
+  
+    
+      
+  <s:form>
   <table
     cellpadding="0"
     cellspacing="0"
   >
-  
+    <tr>
+      <td colspan="2" style="text-align: left">
+        <s:submit value="%{'Suspend'}" align="right" action="suspend" theme="simple"/>
+        <s:submit value="%{'Delete'}" align="right" action="delete" theme="simple"/>
+          
+      </td>
+      <td style="text-align: right">
+        <s:submit value="%{'Add to group'}" align="right" action="add-to-group" theme="simple"/>
+      </td>
+    </tr>
     <tr>
       <th>User information</th>
       <th>Certificates<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/>
@@ -56,7 +70,7 @@
       </th>
     </tr>
     <s:iterator
-      value="searchResults.results"
+      value="#session.searchResults.results"
       var="user"
       status="rowStatus"
     >
@@ -187,7 +201,7 @@
       </tr>
     </s:iterator>
   </table>
-  
+  </s:form>
   <s:url action="search" namespace="/user" var="searchURL"/>
   
   <div class="resultsFooter">

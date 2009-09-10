@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.common;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -141,6 +142,20 @@ public final class VOMSConfiguration {
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
+	
+	private InputStream getExternalLoggingConfiguration() throws FileNotFoundException{
+		
+		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/log4j.runtime.properties";
+		
+		File f = new File(path);
+		if (!f.exists())
+			log.warn("External logging configuration not found at path '"+path+"'... ");
+		if (!f.canRead())
+			log.warn("External logging configuration is not readable: '"+path+"'... ");
+		
+		return new FileInputStream(f);
+		
+	}
 	private void configureLogging() {
 
 		if (context != null) {
@@ -148,8 +163,20 @@ public final class VOMSConfiguration {
 			try {
 
 				Properties log4jProps = new Properties();
-
-				InputStream is = context
+				
+				InputStream is= null;
+				
+				try{
+					
+					is = getExternalLoggingConfiguration();
+					
+				}catch(FileNotFoundException f){
+					log.warn(f.getMessage());
+					log.warn("External logging configuration not found, will use internal configuration instead.");
+				}
+				
+				if (is == null)
+					is = context
 						.getResourceAsStream("/WEB-INF/classes/log4j.runtime.properties");
 
 				if (is == null)
@@ -984,10 +1011,6 @@ public final class VOMSConfiguration {
 
 	}
 
-	public String getTemplatePath() {
-
-		return getString("GLITE_LOCATION") + "/etc/voms-admin/templates/email";
-	}
 
 	private String getCustomizedContentPath() {
 

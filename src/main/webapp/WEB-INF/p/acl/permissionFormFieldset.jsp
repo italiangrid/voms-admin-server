@@ -132,7 +132,7 @@
     <tr>
       <td colspan="4">
         <div class="permissionHelp">
-          These flags regulate access to user personal information stored in VOMS Admin. (currently not used).
+          These flags regulate access to user personal information stored in VOMS Admin.
         </div>  
       </td>
     </tr>

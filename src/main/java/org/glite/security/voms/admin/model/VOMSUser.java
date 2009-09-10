@@ -1158,6 +1158,11 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 		return false;
 	}
+	
+	public boolean hasExpired(){
+		
+		return endTime.before(new Date());
+	}
 
 	public static VOMSUser fromRequesterInfo(RequesterInfo ri) {
 

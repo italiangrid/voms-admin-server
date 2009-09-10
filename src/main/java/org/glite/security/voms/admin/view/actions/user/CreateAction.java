@@ -6,6 +6,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
 
@@ -53,6 +54,9 @@ public class CreateAction extends UserActionSupport{
 		
 		CreateUserOperation op = CreateUserOperation.instance(newUser, caSubject);
 		model= (VOMSUser) op.execute();
+		
+		// Add a Sign AUP record for this user
+		VOMSUserDAO.instance().signAUP(model, DAOFactory.instance().getAUPDAO().getVOAUP());
 		
 		theSession.put(LOAD_THIS_USER_KEY, model.getId());
 		

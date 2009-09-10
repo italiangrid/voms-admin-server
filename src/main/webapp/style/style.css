@@ -471,7 +471,7 @@ a.info-tab-hide{
 	
 }
 
-.groupName{
+.groupName, .aclContext{
 	color: #006600;
 	font-weight: bold;
 }
@@ -721,3 +721,48 @@ td.aupVersion{
 	float: right;
 	font-size: smaller;
 }
+
+div.errorAndMessage{
+	position: relative;	
+	min-height: 1em;
+	margin-bottom: 1em;
+	width: 100%;
+}
+
+ul.actionError li{
+	/**
+	background-color: #FFBFCE;
+	border: 1px solid #BF0D00; **/
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	z-index: 500;
+	
+	color: #BF0D00;
+	padding: .5em 0 .5em 0;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+ul.message li{
+	text-align: center;
+	color: #006600;
+	
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	z-index: 500;
+	
+	font-weight: bold;
+	padding: .5em 0 .5em 0;
+	cursor: pointer;
+	
+}
+
+input.membershipExpiration{
+	font-weight: bold;
+}
+

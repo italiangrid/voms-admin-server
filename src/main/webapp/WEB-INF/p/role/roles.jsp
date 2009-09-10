@@ -1,11 +1,13 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+
 <h1>Roles:</h1>
 <div id="searchPane">
 <s:form validate="true" theme="simple">
   <s:hidden name="searchData.type" value="%{'role'}"/>
-  <s:textfield name="searchData.text" size="20"/>
+  <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
   <s:submit value="%{'Search roles'}" cssClass="submitButton"/>
+  <s:fielderror name="searchData.text"/>
 </s:form>
 </div>
 
@@ -25,53 +27,59 @@
 </div>
 
 <div class="searchResultsPane">
-<s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
+<s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
 No roles defined for this VO.
 </s:if>
-<s:elseif test="searchResults.results.size == 0">
-  No roles found matching search string '<s:property value="searchResults.searchString"/>'.
+<s:elseif test="#session.searchResults.results.size == 0">
+  No roles found matching search string '<s:property value="#session.searchResults.searchString"/>'.
 </s:elseif> 
 <s:else>
-  <table
-    class="table"
-    cellpadding="0"
-    cellspacing="0"
-  >
-    <s:iterator
-      value="searchResults.results"
-      var="role"
-      status="rowStatus"
+    <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>       
+    <table
+      class="table"
+      cellpadding="0"
+      cellspacing="0"
     >
-      <tr class="tableRow">
-
-        <td width="95%">
-          <div class="roleName">
-            <s:url action="edit" namespace="/role" var="editURL">
-              <s:param name="roleId" value="id"/>
-            </s:url>
-            <s:a href="%{editURL}">
-              <s:property value="name" />
-            </s:a>
-          </div>
-         </td>
-         <td>
-                    
-          <voms:hasPermissions var="canDelete" 
-            context="/${voName}" 
-            permission="CONTAINER_READ|CONTAINER_WRITE"/>
+      <s:iterator
+        value="#session.searchResults.results"
+        var="role"
+        status="rowStatus"
+      >
+        <tr class="tableRow">
+  
           
-          <s:if test="#attr['canDelete']">
-            <s:form action="delete" namespace="/role">
-              <s:url value="/img/delete_16.png" var="deleteImg"/>
-              <s:token/>
-              <s:hidden name="roleId" value="%{id}"/>
-              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteRoleDialog','%{name}'); return false"/>
-            </s:form>
-          </s:if>
-         </td>
-      </tr>
-    </s:iterator>
-  </table>
+          <td width="95%">
+            
+            <div class="roleName">
+              <s:url action="edit" namespace="/role" var="editURL">
+                <s:param name="roleId" value="id"/>
+              </s:url>
+              <s:a href="%{editURL}">
+                <s:property value="name" />
+              </s:a>
+            </div>
+           </td>
+           <td>
+            
+            
+            <voms:hasPermissions var="canDelete" 
+              context="/${voName}" 
+              permission="CONTAINER_READ|CONTAINER_WRITE"/>
+            
+            <s:if test="#attr['canDelete']">
+              <s:form action="delete" namespace="/role">
+                <s:url value="/img/delete_16.png" var="deleteImg"/>
+                <s:token/>
+                <s:hidden name="roleId" value="%{id}"/>
+                <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteRoleDialog','%{name}'); return false"/>
+              </s:form>
+            </s:if>
+            
+           </td>
+        </tr>
+      </s:iterator>
+    </table>
+  
   
   <s:url action="search" namespace="/role" var="searchURL"/>
   

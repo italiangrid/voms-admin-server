@@ -21,6 +21,7 @@
 
 package org.glite.security.voms.admin.dao;
 
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.VOMSDBVersion;
@@ -41,7 +42,8 @@ public class VOMSVersionDAO {
 
 		VOMSDBVersion v = new VOMSDBVersion();
 		v.setVersion(VOMSServiceConstants.VOMS_DB_VERSION);
-
+		v.setAdminVersion(VOMSConfiguration.instance().getString(VOMSConfiguration.VOMS_ADMIN_SERVER_VERSION));
+		
 		HibernateFactory.beginTransaction();
 		HibernateFactory
 				.getSession()

@@ -28,7 +28,12 @@ public class AddVersionAction extends AUPVersionActions {
 		for (AUPVersion existingVersion: getModel().getVersions())
 			if (existingVersion.getVersion().equals(getVersion()))
 				addFieldError("version", "Version '"+getVersion()+"' already exists for this aup!");
-		super.validate();
+		
+		AUPVersion candidateVersion = new AUPVersion();
+		candidateVersion.setUrl(url);
+		if (candidateVersion.getURLContent() == null){
+			addFieldError("url", "Error fetching the content of the specified URL! Please provide a valid URL pointing to a text file!");
+		}
 		
 	}
 	@Override

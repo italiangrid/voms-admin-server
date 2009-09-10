@@ -34,6 +34,8 @@ public class VOMSDBVersion implements Serializable, Auditable {
 
 	Integer version;
 
+	String adminVersion;
+	
 	public VOMSDBVersion() {
 
 	}
@@ -55,4 +57,12 @@ public class VOMSDBVersion implements Serializable, Auditable {
 		this.version = version;
 	}
 
+	public String getAdminVersion() {
+		return adminVersion;
+	}
+
+	public void setAdminVersion(String adminVersion) {
+		this.adminVersion = adminVersion;
+	}
+	
 }

@@ -59,6 +59,7 @@
         <mapping class="org.glite.security.voms.admin.model.request.GroupMembershipRequest"/>
         <mapping class="org.glite.security.voms.admin.model.request.RoleMembershipRequest"/>
         <mapping class="org.glite.security.voms.admin.model.request.CertificateRequest"/>
+        <mapping class="org.glite.security.voms.admin.model.request.MembershipRemovalRequest"/>
         
         <!-- PERSONAL INFO -->
         <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationType"/>

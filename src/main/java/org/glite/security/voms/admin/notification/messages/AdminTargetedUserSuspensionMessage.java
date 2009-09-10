@@ -25,7 +25,7 @@ public class AdminTargetedUserSuspensionMessage extends
 
 		setSubject("User suspension notification");
 		context.put("voName", voName);
-		context.put("user", user);
+		context.put("user", user.getShortName());
 		context.put("recipient", getRecipientList().get(0));
 		context.put("suspensionReason", suspensionReason);
 		super.buildMessage();

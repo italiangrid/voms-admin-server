@@ -154,6 +154,21 @@ function eyeCandy(){
 	
 	$('input.checkboxError').wrap("<span class='checkboxValidationError'></span>");
 	
+	$('ul.message li').each(function(){
+		var el = this;
+		setTimeout(function(){
+			$(el).fadeOut('normal');
+		}, 3000);
+		
+		return el;
+	});
+	
+	$('ul.actionError li').click(function(){
+		$(this).fadeOut('normal');
+	});
+	
+	$('#membershipExpirationField').datepicker();
+	
 }
 
 function showAUPContent(node){
@@ -279,8 +294,10 @@ function aclEntryStuff(){
 	$('#aclRoleSelector').change(function(){
 			var val = $(this).val();
 			
-			if (val != -1)
+			if (val != -1){
 				$('#defaultACLSelector').attr('disabled','disabled');
+				$('#defaultACLSelector').attr('checked','');
+			}
 			else
 				$('#defaultACLSelector').attr('disabled','');
 	});

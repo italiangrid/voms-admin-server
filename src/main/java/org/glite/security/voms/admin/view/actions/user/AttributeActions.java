@@ -37,6 +37,7 @@ public class AttributeActions extends UserActionSupport {
 		SetUserAttributeOperation.instance(getModel(), attributeName,
 				attributeValue).execute();
 
+		addActionMessage(getText("confirm.user.attribute_set", new String[]{attributeName, getModel().getShortName()}));
 		return SUCCESS;
 	}
 
@@ -45,7 +46,7 @@ public class AttributeActions extends UserActionSupport {
 
 		DeleteUserAttributeOperation.instance(getModel(), attributeName)
 				.execute();
-
+		addActionMessage(getText("confirm.user.attribute_delete", new String[]{attributeName, getModel().getShortName()}));
 		return SUCCESS;
 	}
 

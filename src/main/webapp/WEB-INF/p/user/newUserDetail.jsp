@@ -17,14 +17,7 @@
 </div>
 
 
-<dl>
-    <dt>Membership will expire on:</dt>
-    <dd class="userMembershipEndTime">
-    	   <s:text name="format.datetime">
-              <s:param value="endTime"/>
-             </s:text>
-	</dd>
-</dl>
+<tiles2:insertTemplate template="membershipExpiration.jsp"/>
 
 <voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
 <voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
