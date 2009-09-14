@@ -25,6 +25,12 @@
     </s:if>
    
   </div>
+  
+  <voms:hasPermissions var="canRead"
+    context="vo"
+    permission="CONTAINER_READ"/>
+    
+  <s:if test="#attr.canRead">
   <h2>Currently available aup versions:</h2>
   
   <div id="addAUPVersionPane">
@@ -89,4 +95,6 @@
       </tr>
     </s:iterator>
   </table> 
+  </s:if>
 </s:else>
+

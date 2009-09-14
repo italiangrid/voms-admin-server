@@ -16,6 +16,9 @@
 	</s:else>
 </div>
 
+<s:url action="request-membership-removal" method="input" var="requestMembershipRemovalURL">
+  <s:param name="userId" value="id"/>
+</s:url>
 
 <div class="membershipInfo">
 	<dl>
@@ -28,10 +31,10 @@
 			<dd class="userMembershipEndTime">
                 <s:text name="format.datetime">
                   <s:param value="endTime"/>
-                </s:text>
+                </s:text>.
 			</dd>
 		</s:else>
-      
+        
         <s:if test="hasPendingSignAUPTasks()">
           <dt>You have pending sign AUP tasks for:</dt>
           <dd>
@@ -52,6 +55,13 @@
         </s:if>
 	</dl>		
 </div>
+
+<s:if test="#request.registrationEnabled">
+  <div style="clear: both; float: right; margin-bottom: .5em">
+    <a href="${requestMembershipRemovalURL}" class="actionLink">Apply for membership removal</a> 
+  </div>
+</s:if>
+
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute name="panelName" value="Your personal information"/>
 </tiles2:insertTemplate>

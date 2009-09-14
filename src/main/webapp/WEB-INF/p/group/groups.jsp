@@ -1,10 +1,14 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
+<voms:hasPermissions var="canRead"
+    context="vo"
+    permission="CONTAINER_READ"/>
+    
+<s:if test="#attr.canRead">
 <h1>Groups:</h1>
 <div id="searchPane">
   <s:form validate="true" theme="simple">
     <s:hidden name="searchData.type" value="%{'group'}"/>
-    <s:textfield name="searchData.text" size="20" cssClass="text"/>
+    <s:textfield name="searchData.text" size="20" cssClass="text" value="%{#session.searchData.text}"/>
     <s:submit value="%{'Search groups'}" cssClass="submitButton"/>
   </s:form>
   <s:fielderror fieldName="searchData.text"/>
@@ -23,12 +27,13 @@
 </div>
 
 <div class="searchResultsPane">
+<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 
-<s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
+<s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
 No groups found in this VO.
 </s:if>
-<s:elseif test="searchResults.results.size == 0">
-  No groups found matching search string '<s:property value="searchResults.searchString"/>'.
+<s:elseif test="#session.searchResults.results.size == 0">
+  No groups found matching search string '<s:property value="#session.searchResults.searchString"/>'.
 </s:elseif> 
 <s:else>
   <table
@@ -37,7 +42,7 @@ No groups found in this VO.
     cellspacing="0"
   >
     <s:iterator
-      value="searchResults.results"
+      value="#session.searchResults.results"
       var="group"
       status="rowStatus"
     >
@@ -86,5 +91,8 @@ No groups found in this VO.
   </div>
 </s:else>
 </div>
- 
+</s:if>
+<s:else>
+  You do not have enough permissions to browse this VO groups.
+</s:else>
 

@@ -16,6 +16,7 @@ th {
 tr td{
 	padding: 0.5em;	
 	border-bottom: 1px solid rgb(200,200,200);
+	/** border-top: 1px solid rgb(200,200,200); **/ 
 	vertical-align: top;
 }
 

@@ -15,6 +15,7 @@
 
 <s:if test="not #unrequestedGroups.empty">
 
+    <s:if test="#request.registrationEnabled">
 	<div class="subscribeGroups"><s:form
 		action="request-group-membership" namespace="/user" theme="simple"
 		onsubmit="ajaxSubmit(this,'req-content'); return false;">
@@ -23,6 +24,7 @@
 			listValue="name" name="groupId" />
 		<s:submit value="%{'Request membership'}" />
 	</s:form></div>
+    </s:if>
 </s:if>
 
 
@@ -63,7 +65,7 @@
               
               
               <s:if
-				test="%{not #daRoles.empty}">
+				test="%{not #daRoles.empty and #request.registrationEnabled}">
 				
 				<s:form action="request-role-membership" namespace="/user"
 					theme="simple"

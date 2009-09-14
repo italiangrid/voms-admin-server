@@ -28,42 +28,47 @@ used to contact you in relation to this activity.
 
 <s:form action="submit-request" validate="true">
   <h2 style="color: black">Your distinguished name (DN):</h2>
-  <div class="highlight">
+  <div class="highlight" style="font-size: 14px">
       <s:property value="requester.certificateSubject"/>
   </div>
   <h2 style="color: black">Your CA:</h2>
-  <div class="regDN">
+  <div class="regDN" style="font-size: 14px">
       <s:property value="requester.certificateIssuer"/>
   </div>
   <ul class="form">
     <li>
-      <s:textfield name="name" label="%{'Your name'}" size="40"/>
+      <s:textfield name="name" label="%{'Your name'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="surname" label="%{'Your surname'}" size="40" />
+      <s:textfield name="surname" label="%{'Your surname'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="institution" label="%{'Your institution'}" size="40" />
+      <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="phoneNumber" label="%{'Your phoneNumber'}" size="40" />
+      <s:textfield name="phoneNumber" label="%{'Your phoneNumber'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" />
+      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}" />
+      <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}" cssClass="registrationField"/>
     </li>
     <li>
      <h2 style="color: black">The VO AUP:</h2>
       <s:textarea rows="20" cols="80" value="%{currentAUPVersion.URLContent}" readonly="true"/>
     </li>
     <li class="aupAcceptance">
-      <s:checkbox name="aupAccepted" label="I confirm I have read and agree with the terms expressed in the VO Acceptable Usage Policy
-      document displayed above." labelposition="right"/>
+      <s:checkbox 
+        name="aupAccepted"
+        label="I confirm I have read and agree with the terms expressed in the VO Acceptable Usage Policy
+      document displayed above."
+        labelposition="right" 
+        
+      />
     </li>
     <li>
-     <s:submit/>
+     <s:submit align="left"/>
     </li>
   </ul>     
 </s:form>

@@ -1,30 +1,18 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<s:if test="#request.voUsers.empty">
-        <s:set var="entryTypeList" value="%{#{'anyone':'any authenticated user', 
-          'role-admin':'VO members with a specific role', 
-          'group-admin':'VO members in a specific group',
-          'non-vo-user':'a non VO member' 
-          }"/>
-</s:if>
-<s:else>
-        <s:set var="entryTypeList" value="%{#{'anyone':'any authenticated user','vo-user':'a VO member certificate', 
-          'role-admin':'VO members with a specific role', 
-          'group-admin':'VO members in a specific group',
-          'non-vo-user':'a non VO member'}}"/>
-</s:else>
-
-<s:form action="add-entry" namespace="/acl" validate="true">
+ 
+ <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<s:form>
 <h1>
 Add an entry to the 
 <s:if test="defaultACL">default</s:if> ACL of context: <span class="groupname">
   <s:property value="context"/></span> for 
   <s:select 
         name="entryType" 
-        list="#entryTypeList" 
+        list="entryTypeMap" 
         cssClass="aclEntrySelector" 
         id="aclEntryTypeSelector" theme="simple"
+        value="%{entryType}"
         />
-  <s:fielderror cssErrorClass="error" name="entryType"/>
 
 </h1>
 

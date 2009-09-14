@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp" />
+
 
 <voms:authorized permission="CONTAINER_READ|CONTAINER_WRITE"
 	context="vo">

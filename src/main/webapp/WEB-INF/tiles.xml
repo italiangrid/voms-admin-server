@@ -54,7 +54,7 @@
       <put-attribute name="content" value="/WEB-INF/p/admin/requestDetails.jsp"/>
     </definition>
     
-    <definition name="users" extends="admin-layout">
+    <definition name="users" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/users.jsp"/>
     </definition>
     
@@ -128,27 +128,27 @@
       <put-attribute name="content" value="/WEB-INF/p/attribute/manage.jsp"/>
     </definition>
     
-    <definition name="register" extends="empty-layout">
+    <definition name="register" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registration.jsp"/>
     </definition>
     
-    <definition name="registerConfirmation" extends="empty-layout">
+    <definition name="registerConfirmation" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
     </definition>
     
-    <definition name="registrationConfirmationError" extends="empty-layout">
+    <definition name="registrationConfirmationError" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
     </definition>
     
-    <definition name="registerLimbo" extends="empty-layout">
+    <definition name="registerLimbo" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationLimbo.jsp"/>
     </definition>
     
-    <definition name="registerWaitsConfirmation" extends="empty-layout">
+    <definition name="registerWaitsConfirmation" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationWaitsConfirmation.jsp"/>
     </definition>
     
-    <definition name="registrationConfirmed" extends="empty-layout">
+    <definition name="registrationConfirmed" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmed.jsp"/>
     </definition>
     
@@ -156,11 +156,11 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registrationDisabled.jsp"/>
     </definition>
     
-    <definition name="registrationCancelled" extends="empty-layout">
+    <definition name="registrationCancelled" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationCancelled.jsp"/>
     </definition>
     
-    <definition name="registrationConfirmationError" extends="empty-layout">
+    <definition name="registrationConfirmationError" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
     </definition>
     
@@ -206,6 +206,8 @@
     
     <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
     
-    
+    <definition name="requestMembershipRemoval" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>
+    </definition>
     
 </tiles-definitions>

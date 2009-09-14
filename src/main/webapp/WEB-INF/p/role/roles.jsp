@@ -1,6 +1,9 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
-
+<voms:hasPermissions var="canRead"
+    context="vo"
+    permission="CONTAINER_READ"/>
+    
+<s:if test="#attr.canRead">
 <h1>Roles:</h1>
 <div id="searchPane">
 <s:form validate="true" theme="simple">
@@ -27,6 +30,7 @@
 </div>
 
 <div class="searchResultsPane">
+<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
 No roles defined for this VO.
 </s:if>
@@ -34,7 +38,7 @@ No roles defined for this VO.
   No roles found matching search string '<s:property value="#session.searchResults.searchString"/>'.
 </s:elseif> 
 <s:else>
-    <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>       
+           
     <table
       class="table"
       cellpadding="0"
@@ -95,5 +99,8 @@ No roles defined for this VO.
       />
    </div>
 </s:else>
-
 </div>
+</s:if>
+<s:else>
+  You do not have enough permissions to browse this VO roles.
+</s:else>

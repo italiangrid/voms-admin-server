@@ -1,5 +1,20 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<div id="suspendMultiUserDialog" title="Suspend multiple users?" style="display: none" class="dialog">
+  <p>
+  Do you really want to suspend selected users?
+  </p>
+  <label for="suspensionReason">Suspension reason:</label>
+  <input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspensionReasonDialogField"/>
+</div>
+
+<div id="deleteMultiUserDialog" title="Delete multiple users?" style="display: none" class="dialog">
+  <p>
+  Do you really want to delete selected users? This operation cannot be undone!
+  </p>
+  <div class="dialogMessage"></div>
+</div>
+
 <div id="deleteUserDialog" title="Delete user?" style="display: none" class="dialog">
 	<p>
 	Delete user:

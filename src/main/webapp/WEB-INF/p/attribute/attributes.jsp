@@ -1,4 +1,11 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+<voms:hasPermissions var="canRead"
+    context="vo"
+    permission="ATTRIBUTES_READ"/>
+    
+
+<s:if test="#attr.canRead">
+
 <h1>Generic attributes:</h1>
 
 <div id="searchPane">
@@ -21,7 +28,7 @@
 </div>
 
 <div class="searchResultsPane">
-
+<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
 No attribute mappings defined in this VO.
@@ -70,3 +77,7 @@ No attribute mappings defined in this VO.
 </s:else>
 
 </div>
+</s:if>
+<s:else>
+  You do not have enough permissions to browse this VO generic attributes.
+</s:else>

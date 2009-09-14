@@ -123,17 +123,21 @@ function blinkBackground(node){
 function eyeCandy(){
 	
 	colorTableRows();
-	/** wufoo eye candy **/
-	$('.field').focus(function(){
-		$(this).parent().addClass("focused");
-	});
 
-	$('.field').blur(function(){
-		$(this).parent().removeClass("focused");
+	
+	$('input:text.registrationField, textarea[readonly!=readonly].registrationField').focus(function(){
+		
+		$(this).addClass("activeTextField");
 	});
 	
+	$('input:text.registrationField, textarea[readonly!=readonly].registrationField').blur(function(){
+		
+		$(this).removeClass("activeTextField");
+	});
+	
+	
 	$('.panelButton').click( function(){
-		$(this).parent().find('.panelContent').toggle()
+		$(this).parent().find('.panelContent').toggle();
 	});
 	
 	$('input[type="submit"]').addClass('submitButton');
@@ -167,10 +171,30 @@ function eyeCandy(){
 		$(this).fadeOut('normal');
 	});
 	
-	$('#membershipExpirationField').datepicker();
+	$('#membershipExpirationField[readonly!=readonly]').datepicker();
 	
+	$('#userSelectorTrigger').change(function(){
+		
+		var checked = $(this).attr("checked");
+		$('.userCheckbox').attr("checked", checked);
+		
+		$('.userCheckbox').change();
+		
+	});
+	
+	$('.userCheckbox').change(function(){
+		
+		var checked = $(this).attr("checked");
+		if (checked)
+			$(this).closest('tr').addClass('userSelected');
+		else
+			$(this).closest('tr').removeClass('userSelected');
+	});
 }
 
+function countSelectedUsers(){
+	return $('.userCheckbox:checked').size();
+}
 function showAUPContent(node){
 	
 	var aupText = $(node).next().text();
@@ -206,7 +230,7 @@ function aclEntryStuff(){
 	
 	/** ACL entry selection code **/
 	$('.entryType').hide();
-	$('#'+$('.aclEntrySelector:checked').val()).show();
+	$('#'+$('.aclEntrySelector').val()).show();
 	
 	$('.aclEntrySelector').change( function(){
 		
@@ -346,14 +370,81 @@ function pageSetup(){
 }
 
 
-function openConfirmDialog(node,dialogId,text){
-	
+
+function openSuspendDialog(node, dialogId, text){
 	
 	if ($(node).is(':submit')){
 		
 		confirmFunc = function(){
-			$(node).closest('form').submit();
-			return true;	
+			
+			var suspensionReason = $('#suspensionReasonDialogField').val();
+			
+			var form = $(node).closest('form');
+			
+			setFormActionFromSubmitButton(form, node);
+			
+			form.append("<input type='hidden' name='suspensionReason' value='"+suspensionReason+"'/>");
+			
+			form.submit();
+				
+		};
+		
+	}else{
+		
+		var dest = $(node).attr('href');
+		
+		confirmFunc  = function(){
+			window.location = dest;
+		};
+	}
+	
+	$('#'+dialogId+" .dialogMessage").text(text);
+	
+	$('#'+dialogId).dialog({resizable: false,
+		width: 600,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			'Confirm suspension?': confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	
+	return false;
+	
+}
+
+function setFormActionFromSubmitButton(formNode, submitButtonNode){
+	
+	var action = $(submitButtonNode).attr('name');
+	
+	if (action != undefined && action != ""){
+		var actionName = action.substring(action.lastIndexOf(':')+1)+".action";
+		var formAction = formNode.attr('action');
+		var newActionStr = formAction.slice(0,formAction.lastIndexOf('/')+1)+actionName;
+		formNode.attr('action', newActionStr);
+	}
+}
+
+
+function openConfirmDialog(node,dialogId,text){
+	
+	if ($(node).is(':submit')){
+		
+		confirmFunc = function(){
+			
+			var form = $(node).closest('form');
+			setFormActionFromSubmitButton(form, node);
+			form.submit();
 		};
 		
 	}else{

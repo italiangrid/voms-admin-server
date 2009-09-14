@@ -1,10 +1,18 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+  <voms:hasPermissions var="canRead"
+    context="vo"
+    permission="r"/>
+    
+  <voms:hasPermissions var="canSuspend"
+    context="vo"
+    permission="SUSPEND"/>
 
+<s:if test="#attr.canRead">
 <h1>Users:</h1>
 
 <div id="searchPane">
-  <s:form validate="true" theme="simple">
+  <s:form validate="true" theme="simple" action="search">
     <s:hidden name="searchData.type" value="%{'user'}"/>
     <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
@@ -22,7 +30,7 @@
 </div>
 
 <div class="searchResultsPane">
-  
+  <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
   <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
     No users found in this VO.
   </s:if>
@@ -31,42 +39,62 @@
   </s:elseif>
   <s:elseif test="#session.searchResults != null">
   
-  <div class="resultsFooter">
-    <voms:searchNavBar context="vo" 
-        permission="r" 
-        disabledLinkStyleClass="disabledLink"
-        id="searchResults"
-        linkStyleClass="navBarLink"
-        searchURL="${searchURL}"
-        styleClass="resultsCount"
-        />
-   </div>
   
-  <div style="clear: both"></div>
   
-    
-      
-  <s:form>
+  <s:form id="multiUserOpsForm">
   <table
     cellpadding="0"
     cellspacing="0"
+    class="table"
   >
-    <tr>
-      <td colspan="2" style="text-align: left">
-        <s:submit value="%{'Suspend'}" align="right" action="suspend" theme="simple"/>
-        <s:submit value="%{'Delete'}" align="right" action="delete" theme="simple"/>
+    
+    <tr class="userBulkOperations">
+      <td style="border: none">
+        <s:checkbox 
+          name="notSet" 
+          id="userSelectorTrigger"
+          disabled="%{(not #attr.canCreate and not #attr.CanSuspend)}"
+          theme="simple"
+          />
+          
+        
+          
           
       </td>
-      <td style="text-align: right">
-        <s:submit value="%{'Add to group'}" align="right" action="add-to-group" theme="simple"/>
+      <td colspan="2" style="border: none;">
+        
+        <s:submit value="%{'Suspend'}" align="right" action="bulk-suspend" theme="simple" 
+        cssClass="userActionButton"
+        onclick=" return openSuspendDialog(this, 'suspendMultiUserDialog','');"
+        disabled="%{#attr.canSuspend == false}"
+        />
+        <s:submit value="%{'Restore'}" align="right" action="bulk-restore" theme="simple" 
+          cssClass="userActionButton"
+          disabled="%{#attr.canSuspend == false}"
+        />
+        
+        
+        <s:submit value="%{'Delete'}" align="right" action="bulk-delete" theme="simple" 
+          cssClass="userActionButton"
+          disabled="%{#attr.canCreate == false}"
+          onclick="openConfirmDialog(this, 'deleteMultiUserDialog', ''); return false"
+        
+          />
+        
+          <s:url value="/user/search.action" var="searchURL"/>
+          <div class="resultsNav">
+            <tiles2:insertTemplate template="../shared_20/searchNavBar.jsp"/>
+          </div>
       </td>
     </tr>
-    <tr>
-      <th>User information</th>
-      <th>Certificates<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/>
-      </th>
+    <tr style="border-bottom: 1px solid #c8c8c8;">
+      <th/>
+        
       <th>
-         
+        User information
+      </th>
+        
+      <th>Certificates<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/>
       </th>
     </tr>
     <s:iterator
@@ -75,8 +103,16 @@
       status="rowStatus"
     >
       <tr class="tableRow">
-        
-        <td style="width: 25%"> <!-- Personal info -->
+        <td style="width: 1%; vertical-align: top; padding-top: .8em;">
+          <s:checkbox 
+            name="userIds" 
+            fieldValue="%{id}" 
+            cssClass="userCheckbox" 
+            theme="simple" 
+            value="%{'false'}"
+            disabled="%{#attr.canCreate == false and #attr.canSuspend == false}"/>
+        </td>
+        <td style="width: 20%"> <!-- Personal info -->
           <div class="personal-info">
             
             <s:if test="name != null and name != ''">
@@ -117,7 +153,7 @@
           </div>
         </td>
 
-        <td> <!-- Certificate information -->
+        <td style="width:88%;"> <!-- Certificate information -->
           <s:if test="#user.suspended">
                 <div class="warning">
                   Certificates listed below are suspended due to membership suspension:
@@ -138,16 +174,14 @@
             </li>
           </s:iterator>
           </ol>
-         </td>
-         
-         <td class="actions">
-         
+          
+          
+          <div class="actions" style="float: right; margin-top: 2em;">
             <s:url action="edit" namespace="/user" var="editURL">
               <s:param name="userId" value="id"/>
             </s:url>
             <s:a href="%{editURL}" cssClass="actionLink">
-              more info
-              
+              more info     
             </s:a>
          
             <voms:hasPermissions var="canSuspend" 
@@ -185,34 +219,27 @@
               <s:param name="userId" value="id"/>
             </s:url>
             <a href="${deleteURL}" class="actionLink" onclick="openConfirmDialog(this, 'deleteUserDialog','${shortName}'); return false;">
-            	delete
+              delete
             </a>
-            
-            <%--
-            <s:form action="delete" namespace="/user">
-              <s:url value="/img/delete_16.png" var="deleteImg" />
-              <s:token/>
-              <s:hidden name="userId" value="%{#user.id}"/>
-              <s:submit src="%{deleteImg}" type="image" cssClass="actionLink"/>
-            </s:form>
-            --%>
+          
           </s:if>
-          </td>
+          </div>
+          
+         </td>
+        
       </tr>
     </s:iterator>
   </table>
   </s:form>
-  <s:url action="search" namespace="/user" var="searchURL"/>
   
-  <div class="resultsFooter">
-    <voms:searchNavBar context="vo" 
-        permission="r" 
-        disabledLinkStyleClass="disabledLink"
-        id="searchResults"
-        linkStyleClass="navBarLink"
-        searchURL="${searchURL}"
-        styleClass="resultsCount"
-        />
-   </div>
+  <s:url value="/user/search.action" var="searchURL"/>
+  
+    <div class="resultsFooter">
+      <tiles2:insertTemplate template="../shared_20/searchNavBar.jsp"/>
+    </div>
   </s:elseif>
 </div>
+</s:if>
+<s:else>
+  You do not have enough permissions to browse this VO users.
+</s:else>

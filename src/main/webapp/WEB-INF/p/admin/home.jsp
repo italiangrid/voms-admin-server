@@ -5,7 +5,7 @@
 </h1>
 
 <s:if test="#attr.currentAdmin.voUser">
-	<div style="float: right">
+	<div style="float: right; margin-bottom: .5em">
 		<s:url action="home" namespace="/user" var="userHomeURL"/>
 		<s:a href="%{#userHomeURL}" cssClass="actionLink">Your vo user home</s:a>
 	</div>

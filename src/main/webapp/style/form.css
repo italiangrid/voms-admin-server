@@ -1,13 +1,30 @@
-input[type=text],input[type=file],textarea, select {
-	background: #FFFFFF url(../img/fieldbg.gif) repeat-x scroll center
-		top;
-	border-color: #7C7C7C #C3C3C3 #DDDDDD;
-	border-style: solid;
-	border-width: 1px;
+textarea{
+	font-family: inherit;
+	font-size: 14px;	
 }
+
+input[type=text],input[type=file],textarea, select {
+	/** background: #FFFFFF url(../img/fieldbg.gif) repeat-x scroll center
+		top; **/
+	/** border-color: #7C7C7C #C3C3C3 #DDDDDD; **/
+	border-color: #DDDDDD;
+	border-style: solid;
+	border-width: 2px;
+	padding: .2em;
+	
+}
+
+input[type=text].registrationField, textarea.registrationField{
+	
+	font-size: 14px;	
+	padding: .5em;
+}
+
+
 
 .inputField, .selectBox, .searchField {
 	border: 1px solid rgb(200,200,200);
+
 }
 
 .submitButton{
@@ -85,4 +102,37 @@ span.label{
 	margin: 0;
 	border: 1px solid #BF2F2F;
 	background-color: #FFBFBF;
+}
+
+input.activeTextField, textarea.activeTextField{
+	
+	background-color: #FFFCDF;
+	border: 2px solid #FFE900;
+}
+
+#wwgrp_submit_request_aupAccepted, #wwgrp_sign_aupAccepted{
+	margin-top: 1em;
+	margin-bottom: 2em;	
+}
+#wwlbl_submit_request_aupAccepted, #wwlbl_sign_aupAccepted{
+	font-size: 14px;
+	font-weight: bold;
+	
+}
+
+#aclSelectionForm{
+	padding: .8em .5em;
+	background-color: #F5F5F5;
+	
+	-moz-border-radius-topleft:6px;
+	-moz-border-radius-topright:6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	
+	-moz-border-radius-bottomleft:6px;
+	-moz-border-radius-bottomright:6px;
+	
+	-webkit-border-bottom-right-radius: 6px;
+	-webkit-border-bottom-left-radius: 6px;
 }
