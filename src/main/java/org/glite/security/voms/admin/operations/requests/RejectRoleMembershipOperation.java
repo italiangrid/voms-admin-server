@@ -1,5 +1,6 @@
 package org.glite.security.voms.admin.operations.requests;
 
+import org.glite.security.voms.admin.common.IllegalRequestStateException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.event.EventManager;
@@ -7,6 +8,7 @@ import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEv
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.model.request.Request.StatusFlag;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -26,6 +28,10 @@ public class RejectRoleMembershipOperation extends BaseVomsOperation {
 	
 	@Override
 	protected Object doExecute() {
+		if (!request.getStatus().equals(StatusFlag.SUBMITTED))
+			throw new IllegalRequestStateException(
+					"Illegal state for request: " + request.getStatus());
+		
 		request.reject();
 		EventManager.dispatch(new RoleMembershipRejectedEvent(request));
 		

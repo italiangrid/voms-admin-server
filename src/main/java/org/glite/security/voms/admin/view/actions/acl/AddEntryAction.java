@@ -1,13 +1,15 @@
 package org.glite.security.voms.admin.view.actions.acl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
@@ -23,6 +25,8 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+import com.opensymphony.xwork2.validator.validators.EmailValidator;
+
 
 @ParentPackage("base")
 @Results( {
@@ -54,7 +58,29 @@ public class AddEntryAction extends ACLActionSupport {
 	Long roleGroupId;
 
 	Long groupId;
+	
+	Map<String, String> entryTypeMap;
 
+	@Override
+	public void validate() {
+		if (selectedPermissions == null)
+			addActionError("No permissions selected!");
+		else if (selectedPermissions.isEmpty())
+			addActionError("No permissions selected!");
+		
+		if (hasActionErrors())
+			buildEntryTypeMap();
+		
+		if (entryType.equals("non-vo-user")){
+			
+			if (dn == null || "".equals(dn))
+				addFieldError("dn", "Please specify a subject!");
+			
+			if (emailAddress == null || "".equals(emailAddress))
+				addFieldError("emailAddress", "Please specify a valid email address!");
+			
+		}
+	}
 	private void loadAdmin() throws Exception {
 
 		if (entryType.equals("vo-user")) {
@@ -74,7 +100,7 @@ public class AddEntryAction extends ACLActionSupport {
 					.getByName(dn, ca.getSubjectString());
 
 			if (admin == null)
-				VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
+				admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
 
 		} else if (entryType.equals("role-admin")) {
 
@@ -212,6 +238,27 @@ public class AddEntryAction extends ACLActionSupport {
 
 		if (permission == null)
 			permission = VOMSPermission.getEmptyPermissions();
+		
+		buildEntryTypeMap();
+		
 	}
 
+	protected void buildEntryTypeMap(){
+		
+		entryTypeMap = new LinkedHashMap<String, String>();
+		
+		entryTypeMap.put("anyone", "any authenticated user");
+		
+		if (!VOMSUserDAO.instance().getAll().isEmpty())
+			entryTypeMap.put("vo-user", "a VO member certificate");
+		
+		entryTypeMap.put("role-admin","VO members with a specific role");
+		entryTypeMap.put("group-admin", "VO members in a specific group");
+		entryTypeMap.put("non-vo-user", "a non VO member");
+	}
+	
+	public Map<String, String> getEntryTypeMap() {
+		return entryTypeMap;
+	}
+	
 }

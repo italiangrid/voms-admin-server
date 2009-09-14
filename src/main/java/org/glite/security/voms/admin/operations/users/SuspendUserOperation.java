@@ -1,6 +1,7 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
@@ -13,12 +14,24 @@ public class SuspendUserOperation extends BaseVomsOperation {
 
 	SuspensionReason reason;
 
+	private SuspendUserOperation(Long userId, String r){
+		
+		this.user = VOMSUserDAO.instance().findById(userId);
+		
+		this.reason = SuspensionReason.OTHER;
+		this.reason.setMessage(r);
+		
+	}
 	private SuspendUserOperation(VOMSUser u, SuspensionReason r) {
 		this.user = u;
 		reason = r;
 
 	}
 
+	public static SuspendUserOperation instance(Long userId, String r){
+		return new SuspendUserOperation(userId, r);
+	}
+	
 	public static SuspendUserOperation instance(VOMSUser u, SuspensionReason r) {
 		return new SuspendUserOperation(u, r);
 	}

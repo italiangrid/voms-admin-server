@@ -16,6 +16,7 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.request.CertificateRequest;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
@@ -33,6 +34,12 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
 	public CertificateRequest createCertificateRequest() {
 
+		return null;
+	}
+
+	public CertificateRequest createCertificateRequest(VOMSUser u,
+			String certificateSubject, String certificateIssuer,
+			Date expirationDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -59,6 +66,21 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return req;
 	}
 
+	public MembershipRemovalRequest createMembershipRemovalRequest(
+			VOMSUser usr, String reason, Date expirationDate) {
+		
+		MembershipRemovalRequest req = new MembershipRemovalRequest();
+		req.setStatus(StatusFlag.SUBMITTED);
+		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
+		req.setCreationDate(new Date());
+		req.setExpirationDate(expirationDate);
+		req.setReason(reason);
+		
+		makePersistent(req);
+		
+		return req;
+	}
+
 	public RoleMembershipRequest createRoleMembershipRequest(VOMSUser usr,
 			VOMSGroup group, VOMSRole r, Date expirationDate) {
 		
@@ -78,7 +100,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		return req;
 	}
-
+	
 	public NewVOMembershipRequest createVOMembershipRequest(
 			RequesterInfo requester, Date expirationDate) {
 
@@ -121,7 +143,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return (NewVOMembershipRequest) crit.uniqueResult();
 
 	}
-
+	
+	
 	public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests() {
 
 		Criteria crit = getSession().createCriteria(
@@ -132,7 +155,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return crit.list();
 
 	}
-	
+
 	public List<NewVOMembershipRequest> findExpiredVOMembershipRequests() {
 		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
 		
@@ -142,7 +165,14 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return crit.list();
 	}
 	
-	
+	public List<CertificateRequest> findPendingCertificateRequests(){
+		Criteria crit = getSession().createCriteria(CertificateRequest.class);
+		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		
+		return crit.list();
+		
+	}
+
 	public List<GroupMembershipRequest> findPendingGroupMembershipRequests() {
 		
 		Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
@@ -152,12 +182,23 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return crit.list();
 	}
 
+	
+	public List<MembershipRemovalRequest> findPendingMembershipRemovalRequests() {
+		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+		
+		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		
+		return crit.list();
+	}
+	
 	public List<Request> findPendingRequests() {
 		List<Request> result = new ArrayList<Request>();
 		
 		result.addAll(findConfirmedVOMembershipRequests());
 		result.addAll(findPendingGroupMembershipRequests());
 		result.addAll(findPendingRoleMembershipRequests());
+		result.addAll(findPendingCertificateRequests());
+		result.addAll(findPendingMembershipRemovalRequests());
 		
 		return result;
 	}
@@ -168,7 +209,20 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
 		return crit.list();
 	}
+	
 
+	public List<CertificateRequest> findPendingUserCertificateRequests(VOMSUser u){
+		
+		Criteria crit = getSession().createCriteria(CertificateRequest.class);
+		
+		crit.add(Restrictions.disjunction().
+				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
+				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				.add(getDnEqualityCheckConstraints(u));
+		
+		return crit.list();
+	}
+	
 	public List<GroupMembershipRequest> findPendingUserGroupMembershipRequests(VOMSUser u){
 		
 		Criteria crit = getSession().createCriteria(
@@ -184,6 +238,19 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return crit.list();
 	}
 
+	public List<MembershipRemovalRequest> findPendingUserMembershipRemovalRequests(
+			VOMSUser u) {
+		
+		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+		
+		crit.add(Restrictions.disjunction().
+				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
+				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				.add(getDnEqualityCheckConstraints(u));
+		
+		return crit.list();
+	}
+
 	public List<RoleMembershipRequest> findPendingUserRoleMembershipRequests(VOMSUser u){
 		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
 		crit.add(Restrictions.disjunction().
@@ -193,7 +260,13 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		return crit.list();
 	}
-	
+
+	public List<NewVOMembershipRequest> findRejectedVOMembershipRequests() {
+		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
+		crit.add(Restrictions.eq("status", StatusFlag.REJECTED));
+		 
+		return crit.list();
+	}
 
 	public List<Request> findRequestsFromUser(VOMSUser u) {
 		
@@ -203,7 +276,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		return crit.list();
 	}
-	
+
 	protected Disjunction getDnEqualityCheckConstraints(VOMSUser u){
 		
 		Disjunction dnEqualityChecks = Restrictions.disjunction();
@@ -213,6 +286,12 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		return dnEqualityChecks;
 		
+	}
+
+	public boolean userHasPendingCertificateRequest(VOMSUser u,
+			String certificateSubject, String certificateIssuer) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	public boolean userHasPendingGroupMembershipRequest(VOMSUser u, VOMSGroup g){
@@ -233,6 +312,21 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		if (reqs ==  null || reqs.isEmpty())
 			return false;
 		
+		
+		return true;
+	}
+
+	public boolean userHasPendingMembershipRemovalRequest(VOMSUser u) {
+		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+		
+		crit.add(Restrictions.disjunction().
+				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
+				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+		
+		List<MembershipRemovalRequest> reqs = crit.list();
+		
+		if (reqs ==  null || reqs.isEmpty())
+			return false;
 		
 		return true;
 	}

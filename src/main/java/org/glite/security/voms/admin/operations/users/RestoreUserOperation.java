@@ -1,5 +1,6 @@
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
@@ -9,10 +10,20 @@ public class RestoreUserOperation extends BaseVomsOperation {
 
 	VOMSUser user;
 
+	private RestoreUserOperation(Long userId){
+		
+		user = VOMSUserDAO.instance().findById(userId);
+	}
+	
 	private RestoreUserOperation(VOMSUser u) {
 		user = u;
 	}
 
+	public static RestoreUserOperation instance(Long id){
+		
+		return new RestoreUserOperation(id);
+	}
+	
 	public static RestoreUserOperation instance(VOMSUser u) {
 
 		return new RestoreUserOperation(u);

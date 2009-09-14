@@ -5,12 +5,15 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.operations.requests.ApproveGroupMembershipOperation;
+import org.glite.security.voms.admin.operations.requests.ApproveMembershipRemovalRequestOperation;
 import org.glite.security.voms.admin.operations.requests.ApproveRoleMembershipOperation;
 import org.glite.security.voms.admin.operations.requests.ApproveVOMembershipOperation;
 import org.glite.security.voms.admin.operations.requests.RejectGroupMembershipOperation;
+import org.glite.security.voms.admin.operations.requests.RejectMembershipRemovalRequestOperation;
 import org.glite.security.voms.admin.operations.requests.RejectRoleMembershipOperation;
 import org.glite.security.voms.admin.operations.requests.RejectVOMembershipOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -56,6 +59,14 @@ public class DecisionAction extends RequestActionSupport {
 			else
 				RejectRoleMembershipOperation.instance((RoleMembershipRequest)request).execute();
 				
+		}
+		
+		if (request instanceof MembershipRemovalRequest){
+			if (decision.equals("approve"))
+				ApproveMembershipRemovalRequestOperation.instance((MembershipRemovalRequest)request).execute();
+			else
+				RejectMembershipRemovalRequestOperation.instance((MembershipRemovalRequest)request).execute();
+			
 		}
 		
 		refreshPendingRequests();

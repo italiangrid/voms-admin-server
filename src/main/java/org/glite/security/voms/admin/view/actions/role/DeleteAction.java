@@ -9,7 +9,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "/role/search.action", type = "redirect"),
+		@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
 		@Result(name = BaseAction.INPUT, location = "roles") })
 public class DeleteAction extends RoleActionSupport {
 
@@ -19,7 +19,7 @@ public class DeleteAction extends RoleActionSupport {
 		VOMSRole r = (VOMSRole) DeleteRoleOperation.instance(getModel())
 				.execute();
 		if (r != null)
-			addActionMessage(getText("confirm.role.deletion", r.getName()));
+			addActionMessage(getText("confirm.role.deletion", new String[]{r.getName()}));
 		return SUCCESS;
 	}
 

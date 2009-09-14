@@ -97,6 +97,8 @@ public class UserActionSupport extends BaseAction implements
 		pendingGroupMembershipRequests = rDAO.findPendingUserGroupMembershipRequests(model);
 		
 		pendingRoleMembershipRequests = rDAO.findPendingUserRoleMembershipRequests(model);
+		
+		
 	}
 
 	public static long getSerialversionuid() {
@@ -109,7 +111,7 @@ public class UserActionSupport extends BaseAction implements
 
 	public void setSession(Map<String, Object> session) {
 		
-		log.info("Setting session: "+session);
+		log.debug("Setting session: "+session);
 		this.theSession = session;
 		
 		

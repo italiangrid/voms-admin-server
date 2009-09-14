@@ -8,7 +8,7 @@ import org.glite.security.voms.admin.operations.groups.DeleteGroupOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.SUCCESS, location = "/group/search.action", type = "redirect") })
+@Results( { @Result(name = BaseAction.SUCCESS, location = "search", type = "chain") })
 public class DeleteAction extends GroupActionSupport {
 
 	/**
@@ -23,7 +23,7 @@ public class DeleteAction extends GroupActionSupport {
 				.execute();
 
 		if (g != null)
-			addActionMessage(getText("confirm.group.deletion", g.getName()));
+			addActionMessage(getText("confirm.group.deletion", new String[]{g.getName()}));
 
 		return SUCCESS;
 	}

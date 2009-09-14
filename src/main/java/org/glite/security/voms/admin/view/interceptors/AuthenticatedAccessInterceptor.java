@@ -52,6 +52,9 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 			req.setAttribute("voName", VOMSConfiguration.instance().getVOName());
 			req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
 				.instance());
+			req.setAttribute("registrationEnabled", VOMSConfiguration.instance().getBoolean(
+					VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true));
+			
 		}
 		
 
