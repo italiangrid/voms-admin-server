@@ -256,15 +256,21 @@ public class VOMSUserDAO {
 		cert.setSubjectString(dn);
 		cert.setCa(ca);
 		cert.setCreationTime(new Date());
+		cert.setSuspended(false);
 
 		cert.setUser(u);
 		u.addCertificate(cert);
+		if (u.isSuspended()) {
+			cert.setSuspended(true);
+			cert.setSuspensionReason(u.getSuspensionReason());
+		}
 
 		HibernateFactory.getSession().saveOrUpdate(cert);
 		HibernateFactory.getSession().saveOrUpdate(u);
 
 	}
 
+	
 	public void addCertificate(VOMSUser u, X509Certificate x509Cert) {
 
 		assert u != null : "User must be non-null!";
@@ -302,9 +308,6 @@ public class VOMSUserDAO {
 
 		u.addCertificate(cert);
 
-		// FIXME: Find a way to extract email address from certificate in a
-		// meaningful
-		// way.
 		HibernateFactory.getSession().saveOrUpdate(cert);
 		HibernateFactory.getSession().saveOrUpdate(u);
 

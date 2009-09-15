@@ -5,11 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.bouncycastle.ocsp.Req;
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
-import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
@@ -22,9 +20,7 @@ import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request.StatusFlag;
-import org.glite.security.voms.admin.model.task.Task.TaskStatus;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -32,15 +28,18 @@ import org.hibernate.criterion.Restrictions;
 public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		implements RequestDAO {
 
-	public CertificateRequest createCertificateRequest() {
-
-		return null;
-	}
+	
 
 	public CertificateRequest createCertificateRequest(VOMSUser u,
 			String certificateSubject, String certificateIssuer,
 			Date expirationDate) {
-		// TODO Auto-generated method stub
+		
+		
+				
+		
+		
+		
+		
 		return null;
 	}
 

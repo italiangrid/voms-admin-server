@@ -1,5 +1,10 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<s:if test="model == null">
+	You're not a VO user. You'll see nothing around here.
+</s:if>
+<s:else>
+
 <h1>
   Welcome to the <span class="voName">${voName}</span> VO,
 </h1>
@@ -83,3 +88,4 @@
 <tiles2:insertTemplate template="requestHistoryPane.jsp">
 	  <tiles2:putAttribute name="panelName" value="Your request history"/>
 </tiles2:insertTemplate>
+</s:else>
