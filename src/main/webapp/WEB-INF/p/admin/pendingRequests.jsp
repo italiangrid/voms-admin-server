@@ -92,7 +92,7 @@
 
   <s:if
     test="not pendingRequests.{? #this.typeName == 'Role membership request'}.empty">
-    <h3>Role membership requests:</h3>
+    <h1 style="margin-top: 2em">Role membership requests:</h1>
     <table>
       <tr>
         <th>Requester</th>
@@ -107,7 +107,7 @@
             template="userInfo.jsp"
             flush="true" /></td>
           <td>
-          <div class="userRoleName"><s:property value="groupName" />/<s:property
+          <div class="userRoleName"><s:property value="groupName" />/Role=<s:property
             value="roleName" /></div>
 
           </td>
@@ -128,7 +128,7 @@
   </s:if>
   <s:if
     test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.MembershipRemovalRequest }.empty">
-    <h3>Membership removal requests:</h3>
+    <h1 style="margin-top: 2em">Membership removal requests:</h1>
     <table>
       <tr>
         <th>Requester</th>
