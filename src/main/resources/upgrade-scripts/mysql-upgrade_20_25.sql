@@ -9,6 +9,7 @@ create table certificate_request (certificate tinyblob, certificateIssuer varcha
 create table group_membership_req (groupName varchar(255) not null, request_id bigint not null, primary key (request_id)) type=InnoDB
 alter table groups add column description varchar(255)
 alter table groups add column restricted bit
+create table membership_rem_req (reason varchar(255) not null, request_id bigint not null, primary key (request_id)) type=InnoDB
 create table personal_info (id bigint not null auto_increment, value varchar(255), visible bit, personal_info_type_id bigint not null, primary key (id)) type=InnoDB
 create table personal_info_type (id bigint not null auto_increment, description varchar(255), type varchar(255) not null unique, primary key (id)) type=InnoDB
 create table req (request_id bigint not null auto_increment, completionDate datetime, creationDate datetime, expirationDate datetime, status varchar(255) not null, requester_info_id bigint not null, primary key (request_id), unique (requester_info_id)) type=InnoDB
@@ -33,6 +34,7 @@ alter table usr add column surname varchar(255)
 alter table usr add column suspended bit
 alter table usr add column suspension_reason varchar(255)
 alter table usr add column suspension_reason_code varchar(255)
+alter table version add column admin_version varchar(255)
 create table vo_membership_req (confirmId varchar(255) not null, request_id bigint not null, primary key (request_id)) type=InnoDB
 alter table aup_acc_record add index FKB1979B325208DD8 (usr_id), add constraint FKB1979B325208DD8 foreign key (usr_id) references usr (userid)
 alter table aup_acc_record add index FKB1979B32A8A54F89 (aup_version_id), add constraint FKB1979B32A8A54F89 foreign key (aup_version_id) references aup_version (id)
@@ -41,6 +43,7 @@ alter table certificate add index FK745F41975208DD8 (usr_id), add constraint FK7
 alter table certificate add index FK745F4197C537E901 (ca_id), add constraint FK745F4197C537E901 foreign key (ca_id) references ca (cid)
 alter table certificate_request add index FK47CA53E7AD152A33 (request_id), add constraint FK47CA53E7AD152A33 foreign key (request_id) references req (request_id)
 alter table group_membership_req add index FKBD145E75AD152A33 (request_id), add constraint FKBD145E75AD152A33 foreign key (request_id) references req (request_id)
+alter table membership_rem_req add index FK1877BC10AD152A33 (request_id), add constraint FK1877BC10AD152A33 foreign key (request_id) references req (request_id)
 alter table personal_info add index FK229FDF4DAE536B0B (personal_info_type_id), add constraint FK229FDF4DAE536B0B foreign key (personal_info_type_id) references personal_info_type (id)
 alter table req add index FK1B89E8516AAEC (requester_info_id), add constraint FK1B89E8516AAEC foreign key (requester_info_id) references requester_info (id)
 alter table requester_personal_info add index FK7E3D7FCA9698DB21 (requester_id), add constraint FK7E3D7FCA9698DB21 foreign key (requester_id) references requester_info (id)

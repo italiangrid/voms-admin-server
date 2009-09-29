@@ -9,6 +9,7 @@ create table certificate_request (certificate raw(255), certificateIssuer varcha
 create table group_membership_req (groupName varchar2(255 char) not null, request_id number(19,0) not null, primary key (request_id))
 alter table groups add description varchar2(255 char)
 alter table groups add restricted number(1,0)
+create table membership_rem_req (reason varchar2(255 char) not null, request_id number(19,0) not null, primary key (request_id))
 create table personal_info (id number(19,0) not null, value varchar2(255 char), visible number(1,0), personal_info_type_id number(19,0) not null, primary key (id))
 create table personal_info_type (id number(19,0) not null, description varchar2(255 char), type varchar2(255 char) not null unique, primary key (id))
 create table req (request_id number(19,0) not null, completionDate timestamp, creationDate timestamp, expirationDate timestamp, status varchar2(255 char) not null, requester_info_id number(19,0) not null, primary key (request_id), unique (requester_info_id))
@@ -33,6 +34,7 @@ alter table usr add surname varchar2(255 char)
 alter table usr add suspended number(1,0)
 alter table usr add suspension_reason varchar2(255 char)
 alter table usr add suspension_reason_code varchar2(255 char)
+alter table version add admin_version varchar2(255 char)
 create table vo_membership_req (confirmId varchar2(255 char) not null, request_id number(19,0) not null, primary key (request_id))
 alter table aup_acc_record add constraint FKB1979B325208DD8 foreign key (usr_id) references usr
 alter table aup_acc_record add constraint FKB1979B32A8A54F89 foreign key (aup_version_id) references aup_version
@@ -41,6 +43,7 @@ alter table certificate add constraint FK745F41975208DD8 foreign key (usr_id) re
 alter table certificate add constraint FK745F4197C537E901 foreign key (ca_id) references ca
 alter table certificate_request add constraint FK47CA53E7AD152A33 foreign key (request_id) references req
 alter table group_membership_req add constraint FKBD145E75AD152A33 foreign key (request_id) references req
+alter table membership_rem_req add constraint FK1877BC10AD152A33 foreign key (request_id) references req
 alter table personal_info add constraint FK229FDF4DAE536B0B foreign key (personal_info_type_id) references personal_info_type
 alter table req add constraint FK1B89E8516AAEC foreign key (requester_info_id) references requester_info
 alter table requester_personal_info add constraint FK7E3D7FCA9698DB21 foreign key (requester_id) references requester_info
@@ -57,3 +60,4 @@ alter table task add constraint FK3635856C2379D3 foreign key (admin_id) referenc
 alter table task_log_record add constraint FK77673CA6FA2EA7DB foreign key (task_id) references task
 alter table user_request_task add constraint FKACB7D29FA2EA7DB foreign key (task_id) references task
 alter table user_request_task add constraint FKACB7D29732B75C4 foreign key (req_id) references req
+alter table vo_membership_req add constraint FK28EE8AFBAD152A33 foreign key (request_id) references req
