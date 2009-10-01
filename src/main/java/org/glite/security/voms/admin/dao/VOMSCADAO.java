@@ -220,7 +220,7 @@ public class VOMSCADAO implements Searchable {
 
 	public List getValid() {
 
-		String query = "from VOMSCA where subjectString not like '/O=VOMS%'";
+		String query = "from VOMSCA where subjectString not like '/O=VOMS%' order by subjectString";
 
 		List res = HibernateFactory.getSession().createQuery(query).list();
 

@@ -88,7 +88,7 @@ public class BaseAction extends ActionSupport {
 	protected String getHomeURL(){
 		
 		// FIXME: should actually look into the action mapping configuration
-		return getBaseURL()+"/home/home.action";
+		return getBaseURL()+"/admin/home.action";
 	}
 
 	protected String getBaseURL() {

@@ -84,6 +84,8 @@ public final class VOMSConfiguration {
 	public static final String SERVICE_EMAIL_ACCOUNT_PASSWORD = "voms.notification.password";
 
 	public static final String SERVICE_EMAIL_USE_TLS = "voms.notification.use_tls";
+	
+	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify"; 
 
 	/**
 	 * VO Membership requests expiration time (in minutes).

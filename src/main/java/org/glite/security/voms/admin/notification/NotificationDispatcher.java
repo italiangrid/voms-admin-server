@@ -1,6 +1,8 @@
 package org.glite.security.voms.admin.notification;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +38,11 @@ import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.notification.messages.SignAUPMessage;
 import org.glite.security.voms.admin.notification.messages.UserMembershipExpiredMessage;
+import org.glite.security.voms.admin.notification.messages.UserTargetedUserSuspensionMessage;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class NotificationDispatcher implements EventListener {
 
@@ -72,7 +77,7 @@ public class NotificationDispatcher implements EventListener {
 
 			UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
 					((UserMembershipExpired) e).getUser());
-			msg.addRecipients(getVoAdminEmailList());
+			msg.addRecipients(getAdministratorsEmailList());
 			NotificationService.instance().send(msg);
 
 			// Also inform user she has been suspended ?
@@ -91,7 +96,7 @@ public class NotificationDispatcher implements EventListener {
 			VOMembershipRequestConfirmedEvent ee = (VOMembershipRequestConfirmedEvent) e;
 			HandleRequest msg = new HandleRequest(ee.getRequest(), ee.getUrl());
 
-			msg.addRecipients(getVoAdminEmailList());
+			msg.addRecipients(getAdministratorsEmailList());
 
 			NotificationService.instance().send(msg);
 		
@@ -130,7 +135,7 @@ public class NotificationDispatcher implements EventListener {
 		if (e instanceof RoleMembershipSubmittedEvent){
 			
 			HandleRequest msg = new HandleRequest(req, ((RoleMembershipSubmittedEvent) e).getManagementURL());
-			msg.addRecipients(getVoAdminEmailList());
+			msg.addRecipients(getAdministratorsEmailList());
 			
 			NotificationService.instance().send(msg);
 			
@@ -159,7 +164,7 @@ public class NotificationDispatcher implements EventListener {
 			
 			HandleRequest msg = new HandleRequest(req,ee.getManagementURL());
 			
-			msg.addRecipients(getVoAdminEmailList());
+			msg.addRecipients(getAdministratorsEmailList());
 			
 			NotificationService.instance().send(msg);
 			
@@ -186,8 +191,15 @@ public class NotificationDispatcher implements EventListener {
 		// Notify admins
 		AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(
 				e.getUser(), e.getReason().getMessage());
-		msg.addRecipients(getVoAdminEmailList());
+		
+		UserTargetedUserSuspensionMessage usrMsg = new UserTargetedUserSuspensionMessage(e.getUser(),
+				e.getReason().getMessage());
+		
+		msg.addRecipients(getAdministratorsEmailList());
+		usrMsg.addRecipient(e.getUser().getEmailAddress());
+		
 		NotificationService.instance().send(msg);
+		NotificationService.instance().send(usrMsg);
 
 	}
 
@@ -199,24 +211,63 @@ public class NotificationDispatcher implements EventListener {
 
 	}
 
-	protected List<String> getVoAdminEmailList() {
-
-		ArrayList<String> adminEmails = new ArrayList<String>();
-		VOMSContext voContext = VOMSContext.getVoContext();
-		Set<VOMSAdmin> admins = voContext.getACL().getAdminsWithPermissions(
-				VOMSPermission.getAllPermissions());
-
-		for (VOMSAdmin a : admins) {
-
-			if (a.getEmailAddress() != null)
-				adminEmails.add(a.getEmailAddress());
+	
+	protected List<String> getAdministratorsEmailList() {
+		
+		final String[] possibleBehaviours = {"admins","service","all"};
+		
+		String notificationBehaviour = VOMSConfiguration.instance().getString(VOMSConfiguration.NOTIFICATION_NOTIFY_BEHAVIOUR,"admins");
+		
+		
+		// Check user values for configuration behaviour, and if unknown value is set, restore the default
+		
+		boolean notificationBehaviourValueOK = false;
+		
+		for (String b: possibleBehaviours)
+			if (notificationBehaviour.trim().equals(b)){
+				notificationBehaviourValueOK = true;
+				break;
+			}
+			
+		if (!notificationBehaviourValueOK){
+			
+			notificationBehaviour = "admins";
+			log.warn("Unrecognized value for configuration option: "+VOMSConfiguration.NOTIFICATION_NOTIFY_BEHAVIOUR+
+				". Possible values are: 'admins','service', 'all'. Setting the default value to 'admins'. Fix your configuration file!");
 		}
-
+		
+		
 		String serviceEmailAddress = VOMSConfiguration.instance().getString(
 				VOMSConfiguration.SERVICE_EMAIL_ADDRESS);
-
-		if (adminEmails.isEmpty())
+		
+		ArrayList<String> adminEmails = new ArrayList<String>();
+		
+		VOMSContext voContext = VOMSContext.getVoContext();
+		
+		Set<VOMSAdmin> admins = voContext.getACL().getAdminsWithPermissions(
+				VOMSPermission.getAllPermissions());
+		
+		if ("admins".equals(notificationBehaviour) || "all".equals(notificationBehaviour)){
+			
+			for (VOMSAdmin a : admins) {
+				
+				if (a.getEmailAddress() != null){
+					if (!adminEmails.contains(a.getEmailAddress()))
+						adminEmails.add(a.getEmailAddress());
+				}
+			}			
+		}
+		
+		
+		if ("service".equals(notificationBehaviour) || "all".equals(notificationBehaviour))	
 			adminEmails.add(serviceEmailAddress);
+		
+		
+		if (adminEmails.isEmpty()){
+			log.warn("No valid administrator email address found, falling back to service email address.");
+			adminEmails.add(serviceEmailAddress);
+			
+		}
 
 		return adminEmails;
 	}

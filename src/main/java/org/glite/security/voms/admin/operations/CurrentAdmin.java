@@ -204,7 +204,7 @@ public class CurrentAdmin {
 
 		if (!rolePermissions.isEmpty()) {
 
-			for (Map.Entry<VOMSAdmin, VOMSPermission> entry : groupPermissions
+			for (Map.Entry<VOMSAdmin, VOMSPermission> entry : rolePermissions
 					.entrySet()) {
 				String roleName = entry.getKey().getDn();
 

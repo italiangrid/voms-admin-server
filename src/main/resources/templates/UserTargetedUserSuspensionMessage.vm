@@ -1,0 +1,9 @@
+Dear $recipient,
+
+this mail is to inform that your membership in VO $voName has been suspended for 
+the following reason:
+
+$suspensionReason
+
+Your sincerely,
+Voms-Admin registration service for VO $voName
