@@ -1,8 +1,6 @@
 package org.glite.security.voms.admin.notification;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +39,6 @@ import org.glite.security.voms.admin.notification.messages.UserMembershipExpired
 import org.glite.security.voms.admin.notification.messages.UserTargetedUserSuspensionMessage;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class NotificationDispatcher implements EventListener {
 
