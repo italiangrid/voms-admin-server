@@ -1,129 +1,21 @@
 Changes
 -------------
 
----+ voms-admin-server v.2.5.0
+---+ voms-admin-server v. 2.5.1, voms-admin-client v. 2.0.11
 
-	 
+First VOMS Admin 2.5 release.
+This release provides many new features, like:
 
----+ voms-admin-server v.2.0.15-1, voms-admin-client v. 2.0.8-1, voms-admin-interface v. 2.0.2-1
+* support for multiple certificate per user
+* support for versioned Acceptable Usage Policies management 
+* membership suspension/expiration/renewal
+* support for user requests for group membership, role assignment, membership removal
+* support for one click operations (delete, suspend, restore)
 
-   Fixes for the following bugs:
-   
-   https://savannah.cern.ch/bugs/?37754
-   https://savannah.cern.ch/bugs/?37753
-   https://savannah.cern.ch/bugs/?37498
-   https://savannah.cern.ch/bugs/?38254
-   https://savannah.cern.ch/bugs/?36291
-   https://savannah.cern.ch/bugs/?33146
-   https://savannah.cern.ch/bugs/?33409
-   https://savannah.cern.ch/bugs/?36490
-   
-   
----+ voms-admin-server v.2.0.14-1, voms-admin-client v. 2.0.7-1, voms-admin-interface v. 2.0.2-1
+VOMS Admin client now implements certificate management commands.
+ 
+Check the updated user guide on https://twiki.cern.ch/twiki/bin/view/EGEE/VomsAdminUserGuide.
 
-   Updated voms-admin interface documentation.
-   
-   Deprecated old ACL interface methods.
-   
-   Added VOMS-Admin User's guide
-   
-   Improved voms-admin client online documentation
-   
-   Fixes for the following bugs:
-   
-   https://savannah.cern.ch/bugs/?34612
-   https://savannah.cern.ch/bugs/?34201
-   https://savannah.cern.ch/bugs/?34200
-   https://savannah.cern.ch/bugs/?34112
-   
-   
-   
----+ voms-admin-server v.2.0.13-1
-   
-   Real fix for https://savannah.cern.ch/bugs/?31791 : the 2.0.12 fix introduced
-   a deployment problem on mysql installations.
-   
-   The disable-webui-requests option is now again supported in the voms-admin-configure
-   script.
-
----+ voms-admin-server v.2.0.12-1
-   
-   Fixes for the following bugs:
-   
-   https://savannah.cern.ch/bugs/?32527 (tentative, since I wasn't able to reproduce it)
-   https://savannah.cern.ch/bugs/?31791
    
 
----+ voms-admin-server v.2.0.11-1
-   
-   Fix for bug http://savannah.cern.ch/bugs/?33029
-   
-   
----+ voms-admin-server v.2.0.10-1, voms-admin-client v. 2.0.6-1, voms-admin-interface v. 2.0.1-1
-
-   Refactored voms-admin-ping script included in the voms-admin-server rpm.
-   
-   Added ACL support to command-line client.
-   Added ACL management web service (compatible with client >= 2.0.6-1)
-   
-   Added Registration web service.
-   
-   Fixes for the following bugs:
-   
-     https://savannah.cern.ch/bugs/?12168
-     https://savannah.cern.ch/bugs/?30726
-     https://savannah.cern.ch/bugs/?32147
-     https://savannah.cern.ch/bugs/?32148
-     https://savannah.cern.ch/bugs/?31790
-     https://savannah.cern.ch/bugs/?31787
-     https://savannah.cern.ch/bugs/?31667
-
----+ voms-admin-server v.2.0.9-1
-
-   Fix for bug https://savannah.cern.ch/bugs/?31068.
-   
-   Fix for bug https://savannah.cern.ch/bugs/?30728.
-
-   Introduction of the configuration page.
-   
-   Introduction of a flag that allows to generate grid-mapfile with
-   DNs email component encoded also in the /emailAddress= format
-   (in addition to the the /Email= format).This configuration flag 
-   is contained in the voms.service.properties configuration file 
-   and is turned off by default.
-
----+ voms-admin-server v.2.0.8-1, voms-admin-client v. 2.0.5-1
-   
-   voms-admin client list-group typo fix, https://savannah.cern.ch/bugs/?29566 .
-   Fixed packaging of the "full" voms admin rpm (containing server, client and
-   interface files).
-
-
----+ voms-admin-server v.2.0.7-1, voms-admin-client v.2.0.4-1
-   
-   Fixed packaging as requested after the dependency challenge.
-   
-   Now four rpms are produced for each voms-admin build:
-   * the full voms-admin rpm (containing server, client and interface)
-   * the server rpm
-   * the client rpm
-   * the interface rpm
-   
-   Other rpm packaging issues have been fixed in this release.
-   
-   
----+ voms-admin-server v.2.0.6-1, voms-admin-client v.2.0.3-1
-   
-   Fixes for the following savannah bugs:
-
-   * https://savannah.cern.ch/bugs/?29567
-   * https://savannah.cern.ch/bugs/?29566
-   * https://savannah.cern.ch/bugs/?29440
-   * https://savannah.cern.ch/bugs/?29439
-   
-   Removed ZSI library from the cvs source (dependency challenge refactoring).
-
-
-
-
-
+ 
