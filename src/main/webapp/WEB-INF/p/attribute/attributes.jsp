@@ -42,23 +42,44 @@ No attribute mappings defined in this VO.
     cellpadding="0"
     cellspacing="0"
   >
+    <tr>
+      <th>Attribute name</th>
+      <th>Attribute value</th>
+      <th>User</th>
+    </tr>
     <s:iterator
       value="searchResults.results"
       var="userAttribute"
       status="rowStatus"
     >
       <tr class="tableRow">
-        <td>
+        <td style="width: 20%">
           <s:property value="%{#userAttribute[0]}"/>
          </td>
-         <td>
-          <s:property value="%{#userAttribute[2]}"/>
+         <td style="width: 20%">
+          <span class="highlight">
+            <s:property value="%{#userAttribute[2]}"/>
+          </span>
          </td>
          <td>
-          <s:set var="userDn" value="%{#userAttribute[1].dn}"/>
-          <voms:formatDN dn="${userDn}" fields="CN"/>
+            <s:if test="%{#userAttribute[1].name != null}">
+              <div class="username">
+                <s:property value="%{#userAttribute[1].name + ' ' + #userAttribute[1].surname}"/>
+              </div>
+            </s:if>
+            <s:iterator value="%{#userAttribute[1].certificates}" var="cert">
+            <div style="margin: 1em 0;">
+              <div class="userDN"><s:set value="subjectString"
+                var="thisCertDN" /> <voms:formatDN dn="${thisCertDN}" fields="CN" />
+              </div>
+
+              <div class="userCA"><s:set value="ca.subjectString"
+                var="thisCertCA" /> <voms:formatDN dn="${thisCertCA}" fields="CN" />
+              </div>
+            </div>
+          </s:iterator>
          </td>
-      </tr>
+        </tr>
     </s:iterator>
   </table>
   

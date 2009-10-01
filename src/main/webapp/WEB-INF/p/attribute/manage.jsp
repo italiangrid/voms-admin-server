@@ -14,7 +14,7 @@
       <s:textfield name="attributeName" size="20" value="" label="Name"/>
       <s:textarea name="attributeDescription" cols="20" rows="3" value="" label="Description"/>
       <s:checkbox name="checkUniqueness" label="Check uniqueness" value="false" labelposition="right" />
-      <s:submit value="%{'Create'}"/>
+      <s:submit value="%{'Create'}" align="left" cssStyle="margin-top: 1em"/>
 </s:form>
 </div>
 
@@ -26,13 +26,15 @@
     <table cellpadding="0" cellspacing="0">
       <tr>
         <th>Attribute name</th>
+        <th>Description</th>
         <th>Uniqueness check</th>
         <th/>
         
       </tr>
       <s:iterator var="attributeClass" value="#request.attributeClasses">
         <tr class="tableRow">
-          <td><s:property value="name"/></td>
+          <td style="width: 20%"><s:property value="name"/></td>
+          <td style="width: 40%"><s:property value="description"/></td>
           <td><s:property value="unique"/></td>
           <td>
             <voms:hasPermissions var="canDelete" 
