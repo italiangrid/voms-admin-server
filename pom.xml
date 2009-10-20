@@ -9,13 +9,13 @@
   <url>https://twiki.cnaf.infn.it/cgi-bin/twiki/view/VOMS/
   </url>
   <properties>
-    <age>2</age>
+    <age>3</age>
     <server-version>2.5.1</server-version>
-    
+
     <interface-version>2.0.2</interface-version>
     <glite-services-namespace> http://glite.org/wsdl/services
     </glite-services-namespace>
-  
+
 
     <project.build.sourceEncoding>
       UTF-8
@@ -25,8 +25,8 @@
       UTF-8
     </project.reporting.outputEncoding>
 
-  
-    
+
+
   </properties>
   <developers>
     <developer>
@@ -126,7 +126,7 @@
               </webResources>
             </configuration>
           </execution>
-          
+
           <!-- Main VOMS-Admin server war -->
           <execution>
             <id>VOMS-Admin server war creation</id>
@@ -160,7 +160,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>axistools-maven-plugin
@@ -234,8 +234,8 @@
           </execution>
         </executions>
       </plugin>
-      
-      
+
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -244,7 +244,7 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -254,16 +254,16 @@
           </descriptors>
         </configuration>
         <version>2.2-beta-4</version>
-        
-        <executions> 
+
+        <executions>
           <execution>
-          <phase>package</phase> 
-           <goals> 
-            <goal>assembly</goal> 
-           </goals>
-          </execution> 
+            <phase>package</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
         </executions>
-        
+
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -272,7 +272,7 @@
           <server>tomcat</server>
           <contextFile>
             target/glite-security-voms-admin/META-INF/context.xml
-					</contextFile>
+          </contextFile>
           <failOnError>false</failOnError>
           <update>true</update>
           <mode>both</mode>
@@ -284,19 +284,13 @@
 		</finalName>
   </build>
   <repositories>
-    <repository>
-      <id>internal</id>
-      <name>Cnaf Archiva Managed Internal Repository</name>
-      <url>
-        http://pcceccanti.cnaf.infn.it:11250/archiva/repository/internal/
-			</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
+    <!--
+      <repository> <id>internal</id> <name>Cnaf Archiva Managed Internal
+      Repository</name> <url>
+      http://pcceccanti.cnaf.infn.it:11250/archiva/repository/internal/ </url>
+      <releases> <enabled>true</enabled> </releases> <snapshots>
+      <enabled>false</enabled> </snapshots> </repository>
+    -->
     <repository>
       <id>maven2-repository.dev.java.net</id>
       <name>Java.net Repository for Maven</name>
@@ -304,15 +298,22 @@
       </url>
       <layout>default</layout>
     </repository>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>shibboleth.internet2.edu</id>
-      <name>Internet2</name>
-      <url>http://shibboleth.internet2.edu/downloads/maven2
-      </url>
-    </repository>
+     <repository>
+            <id>internet2</id>
+            <name>Internet2 Releases</name>
+            <url>http://shibboleth.internet2.edu/downloads/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>switch</id>
+            <name>SWITCH Releases</name>
+            <url>http://www.switch.ch/grid/authz/docs/maven2/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     <repository>
       <id>jboss</id>
       <url>http://repository.jboss.com/maven2
@@ -335,14 +336,14 @@
       </snapshots>
     </repository>
     <repository>
-    <id>Struts Maven Plugins Repository</id> 
-    <url>http://struts2plugin-maven-repo.googlecode.com/svn/trunk/</url> 
-    <snapshots> 
-      <enabled>false</enabled> 
-    </snapshots> 
-    <releases> 
-      <enabled>true</enabled> 
-    </releases> 
+      <id>Struts Maven Plugins Repository</id>
+      <url>http://struts2plugin-maven-repo.googlecode.com/svn/trunk/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
     </repository>
   </repositories>
   <dependencies>
@@ -350,6 +351,24 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.15</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -460,17 +479,17 @@
       <version>1.1.2</version>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.glite</groupId>
-      <artifactId>glite-security-util-java
-      </artifactId>
-      <version>1.4.0</version>
+      <groupId>org.glite.security</groupId>
+      <artifactId>trustmanager</artifactId>
+      <version>2.0.5</version>
     </dependency>
+    
     <dependency>
-      <groupId>org.glite</groupId>
-      <artifactId>glite-security-trustmanager
-      </artifactId>
-      <version>1.8.10-1</version>
+      <groupId>org.glite.security</groupId>
+      <artifactId>util-java</artifactId>
+      <version>2.0.1</version>
     </dependency>
 
     <!-- Struts 2.x dependencies -->
@@ -490,11 +509,11 @@
       <artifactId>struts2-tiles-plugin</artifactId>
       <version>2.1.6</version>
     </dependency>
-    
-    <dependency> 
-       <groupId>com.googlecode</groupId> 
-       <artifactId>jsonplugin</artifactId> 
-       <version>0.34</version> 
-   </dependency>
+
+    <dependency>
+      <groupId>com.googlecode</groupId>
+      <artifactId>jsonplugin</artifactId>
+      <version>0.34</version>
+    </dependency>
   </dependencies>
 </project>
