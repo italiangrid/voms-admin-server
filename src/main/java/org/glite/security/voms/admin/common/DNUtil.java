@@ -137,6 +137,18 @@ public class DNUtil {
 
 		return null;
 	}
+	
+	public static boolean isRFC2253Conformant(String subjectNameIDValue) {
+		
+		// TODO: Migrate this method from old VOMS SAML codebase
+		return true;
+	}
+	
+	public static String getBCasX500( String principalString){
+        
+        return getBCasX500( new X500Principal(principalString ));
+        
+    }
 }
 
 // Please do not change this line.

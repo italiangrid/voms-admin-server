@@ -17,13 +17,9 @@
     </glite-services-namespace>
 
 
-    <project.build.sourceEncoding>
-      UTF-8
-    </project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <project.reporting.outputEncoding>
-      UTF-8
-    </project.reporting.outputEncoding>
+    <project.reporting.outputEncoding>UTF-8   </project.reporting.outputEncoding>
 
 
 
@@ -447,8 +443,8 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk14</artifactId>
-      <version>1.39</version>
+      <artifactId>bcprov-ext-jdk15</artifactId>
+      <version>1.44</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
@@ -517,5 +513,42 @@
       <artifactId>jsonplugin</artifactId>
       <version>0.34</version>
     </dependency>
+    
+    <!-- OpenSAML dependencies -->
+    <dependency>
+      <groupId>org.opensaml</groupId>
+      <artifactId>opensaml</artifactId>
+      <version>2.2.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl104-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-ext-jdk15</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <!-- SLF4J stuff -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+    </dependency>
   </dependencies>
+  
 </project>

@@ -293,4 +293,18 @@ public class ServiceUtils {
 
 		return x509Cert;
 	}
+	
+	public static List<String> toStringList(String[] array){
+        
+        // TODO: return null or empty list? 
+        if (array == null || array.length == 0)
+            return null;
+        
+        List<String> l = new ArrayList <String>();
+        
+        for (String s: array)
+            l.add( s );
+        
+        return l;
+    }
 }

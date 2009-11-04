@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.glite.security.voms.admin.common.DNUtil;
+import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.model.Certificate;
@@ -36,6 +37,24 @@ public class CertificateDAO {
 		HibernateFactory.beginTransaction();
 	}
 
+	public Certificate findByDN(String dn){
+		
+		assert dn != null : "Null DN passed as argument!";
+		
+		String query = "From Certificate where subjectString = :subjectString";
+		
+		List<Certificate> dbCerts = (List<Certificate>) HibernateFactory.getSession()
+		.createQuery(query).setString("subjectString", dn).list();
+		
+		if (dbCerts.size() > 1)
+			throw new VOMSException("Multiple certificates found for the following dn '"+dn+"'. Please specify the CA dn!");
+		
+		if (dbCerts.size() == 0)
+			return null;
+
+		return dbCerts.get(0);
+		
+	}
 	public Certificate findByDNCA(String dn, String ca) {
 
 		assert dn != null : "Null DN passed as argument!";

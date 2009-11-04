@@ -43,6 +43,19 @@
 		<filter-name>axis-hibernate-session-filter</filter-name>
 		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
 	</filter>
+  
+    <filter>
+        <filter-name>rest-hibernate-session-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>rest-security-context-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
+    </filter>
+
+    
+    
 	
     <!-- Struts 2 filter mapping -->
     <filter-mapping>
@@ -56,6 +69,16 @@
 		<url-pattern>/services/*</url-pattern>
 	</filter-mapping>
 	
+    <filter-mapping>
+        <filter-name>rest-security-context-filter</filter-name>
+        <url-pattern>/rest/*</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>rest-hibernate-session-filter</filter-name>
+        <url-pattern>/rest/*</url-pattern>
+    </filter-mapping>
+  
 	<!--  Struts 2 listeners -->
      
     <listener>
@@ -84,6 +107,15 @@
 		<servlet-class>
 		org.glite.security.voms.admin.servlets.SiblingsServlet</servlet-class>
 	</servlet>
+  
+    <!-- VOMS X509 Restful AC servlet -->
+    <servlet>
+        <servlet-name>voms-ac-servlet</servlet-name>
+        <servlet-class>
+            it.infn.cnaf.voms.x509.ACServlet
+        </servlet-class>
+    </servlet>
+    
 
 	<!-- Axis servlet mapping -->
 	<servlet-mapping>
@@ -95,10 +127,17 @@
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+	
+  <servlet-mapping>
 		<servlet-name>SiblingsServlet</servlet-name>
 		<url-pattern>/SiblingsServlet</url-pattern>
 	</servlet-mapping>
+  
+    <servlet-mapping>
+        <servlet-name>voms-ac-servlet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+  
     
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>

@@ -333,6 +333,72 @@
 						</responseFlow> 
 				-->
 		</service>
+    
+        <!-- VOMS SAML -->
+    
+        <service
+            name="VOMSSaml"
+            provider="java:RPC"
+            style="document"
+            use="literal">
+    
+            <parameter
+                name="className"
+                value="it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthoritySoapBindingSkeleton" />
+    
+            <parameter 
+                name="wsdlTargetNamespace" 
+                value="http://voms.cnaf.infn.it"/>
+                
+            <parameter 
+                name="wsdlServiceElement" 
+                value="AttributeAuthorityService"/>
+                
+            <parameter 
+                name="schemaQualified" 
+                value="http://www.w3.org/2000/09/xmldsig#,http://www.w3.org/2001/04/xmlenc#"/>
+            
+            <parameter 
+                name="schemaUnqualified" 
+                value="urn:oasis:names:tc:SAML:2.0:assertion,urn:oasis:names:tc:SAML:2.0:protocol"/>
+                
+            <parameter 
+                name="wsdlServicePort" 
+                value="AttributeAuthorityPortType"/>
+            
+            <parameter 
+                name="wsdlPortType" 
+                value="AttributeAuthorityPortType"/>
+                
+            <parameter
+                name="typeMappingVersion"
+                value="1.2" />
+    
+            <parameter
+                name="allowedMethods"
+                value="attributeQuery" />
+    
+            <parameter
+                name="scope"
+                value="Application" />
+    
+            <typeMapping
+                xmlns:ns="urn:oasis:names:tc:SAML:2.0:protocol"
+                qname="ns:AttributeQueryType"
+                type="java:org.opensaml.saml2.core.AttributeQuery"
+                serializer="it.infn.cnaf.voms.saml.axis_serializers.SerializerFactory"
+                deserializer="it.infn.cnaf.voms.saml.axis_serializers.DeserializerFactory"
+                encodingStyle="" />
+    
+            <typeMapping
+                xmlns:ns="urn:oasis:names:tc:SAML:2.0:protocol"
+                qname="ns:ResponseType"
+                type="java:org.opensaml.saml2.core.Response"
+                serializer="it.infn.cnaf.voms.saml.axis_serializers.SerializerFactory"
+                deserializer="it.infn.cnaf.voms.saml.axis_serializers.DeserializerFactory"
+                encodingStyle="" />
+    
+        </service>
 		
 		<transport name="http">
 				<requestFlow>

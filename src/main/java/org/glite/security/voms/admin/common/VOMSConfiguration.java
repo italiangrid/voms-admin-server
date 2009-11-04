@@ -28,6 +28,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +52,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.ssl.PKCS8Key;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -126,36 +133,138 @@ public final class VOMSConfiguration {
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
+	
+	/**
+	 * Attribute Authority Properties
+	 */
+	public static final String VOMS_AA_CERT_FILE = "voms.aa.certificate";
 
-	// Test property
+    public static final String VOMS_AA_KEY_FILE = "voms.aa.key";
+    
+    public static final String VOMS_SAML_MAX_ASSERTION_LIFETIME = "voms.saml.max_assertion_lifetime";
+    
+    public static final String VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP = "voms.aa.compulsory_group_membership";
+	
+    public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
+    
+    // public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
+    
+    
+	public static VOMSConfiguration instance() {
 
-	public static final String TEST_VO_NAME = "test_vo_mysql";
+		return instance(true, null);
+
+	}
+
+	public static VOMSConfiguration instance(boolean useJNDI,
+			ServletContext context) {
+
+		if (instance == null)
+			instance = new VOMSConfiguration(useJNDI, context);
+
+		return instance;
+
+	}
+
+	public static VOMSConfiguration instance(ServletContext context) {
+
+		return instance(true, context);
+
+	}
 
 	Log log = LogFactory.getLog(VOMSConfiguration.class);
-
+	
 	private static VOMSConfiguration instance = null;
-
+	
 	private ServletContext context;
+	
 
 	private CompositeConfiguration config;
+
+	
+	private X509Certificate serviceCertificate;
+	
+	private PrivateKey servicePrivateKey;
 
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
-	
-	private InputStream getExternalLoggingConfiguration() throws FileNotFoundException{
-		
-		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/log4j.runtime.properties";
-		
-		File f = new File(path);
-		if (!f.exists())
-			log.warn("External logging configuration not found at path '"+path+"'... ");
-		if (!f.canRead())
-			log.warn("External logging configuration is not readable: '"+path+"'... ");
-		
-		return new FileInputStream(f);
-		
+	private VOMSConfiguration(boolean useJNDI, ServletContext context) {
+
+		this.context = context;
+
+		config = new CompositeConfiguration();
+
+		if (useJNDI)
+			loadVORuntimeProperties();
+		else
+			config.addConfiguration(new SystemConfiguration());
+
+		configureLogging();
+
+		if (!getVOName().equals("siblings")){
+			loadServiceProperties();
+			
+			if (getBoolean(VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+				loadServiceCredentials();
+				
+		}
+		loadVersionProperties();
+
+		log.info("VOMS-Admin configuration loaded!");
+
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#addProperty(java.lang.
+	 * String, java.lang.Object)
+	 */
+	public void addProperty(String arg0, Object arg1) {
+
+		config.addProperty(arg0, arg1);
+	}
+
+	public Map asMap() {
+
+		HashMap returnValue = new HashMap();
+		Iterator keys = config.getKeys();
+		while (keys.hasNext()) {
+			Object key = keys.next();
+			Object property = config.getProperty((String) key);
+			returnValue.put(key, property);
+
+		}
+
+		return returnValue;
+	}
+	
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.commons.configuration.Configuration#clear()
+	 */
+	public void clear() {
+
+		config.clear();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#clearProperty(java.lang
+	 * .String)
+	 */
+	public void clearProperty(String arg0) {
+
+		config.clearProperty(arg0);
+	}
+
 	private void configureLogging() {
 
 		if (context != null) {
@@ -205,30 +314,680 @@ public final class VOMSConfiguration {
 
 	}
 
-	private void loadDatabaseProperties() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#containsKey(java.lang.
+	 * String)
+	 */
+	public boolean containsKey(String arg0) {
 
-		PropertiesConfiguration vomsDatabaseProperties;
+		return config.containsKey(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
+	 * .String)
+	 */
+	public BigDecimal getBigDecimal(String arg0) {
+
+		return config.getBigDecimal(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
+	 * .String, java.math.BigDecimal)
+	 */
+	public BigDecimal getBigDecimal(String arg0, BigDecimal arg1) {
+
+		return config.getBigDecimal(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBigInteger(java.lang
+	 * .String)
+	 */
+	public BigInteger getBigInteger(String arg0) {
+
+		return config.getBigInteger(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBigInteger(java.lang
+	 * .String, java.math.BigInteger)
+	 */
+	public BigInteger getBigInteger(String arg0, BigInteger arg1) {
+
+		return config.getBigInteger(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
+	 * )
+	 */
+	public boolean getBoolean(String arg0) {
+
+		return config.getBoolean(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
+	 * , boolean)
+	 */
+	public boolean getBoolean(String arg0, boolean arg1) {
+
+		return config.getBoolean(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
+	 * , java.lang.Boolean)
+	 */
+	public Boolean getBoolean(String arg0, Boolean arg1) {
+
+		return config.getBoolean(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String)
+	 */
+	public byte getByte(String arg0) {
+
+		return config.getByte(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
+	 * byte)
+	 */
+	public byte getByte(String arg0, byte arg1) {
+
+		return config.getByte(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
+	 * java.lang.Byte)
+	 */
+	public Byte getByte(String arg0, Byte arg1) {
+
+		return config.getByte(arg0, arg1);
+	}
+
+	public String getCustomizationPageAbsolutePath(String pageName) {
+		String basePath = getCustomizedContentPath() + "/" + pageName;
+		File f = new File(basePath);
+
+		if (f.exists() && f.canRead())
+			return f.getAbsolutePath();
+
+		return null;
+
+	}
+
+	private String getCustomizedContentPath() {
+
+		String pathName = config.getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName() + "/customized-content/";
+		return pathName;
+	}
+
+	public Properties getDatabaseProperties() {
+
+		String propFileName = getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName()
+				+ "/voms.database.properties";
+
+		Properties props = new Properties();
+
 		try {
-			vomsDatabaseProperties = new PropertiesConfiguration(
-					getVomsDatabasePropertiesFileName());
+			props.load(new FileInputStream(propFileName));
 
-			config.addConfiguration(vomsDatabaseProperties);
+		} catch (IOException e) {
 
-		} catch (ConfigurationException e) {
-			log.fatal("Error loading voms.database.properties: "
-					+ e.getMessage());
-
-			if (log.isDebugEnabled())
-				log.fatal(e.getMessage(), e);
-
-			throw new VOMSConfigurationException(
-					"Error loading voms.database.properties: " + e.getMessage(),
-					e);
-
+			log
+					.fatal("Error loading database properties: "
+							+ e.getMessage(), e);
+			throw new VOMSException("Error loading database properties: "
+					+ e.getMessage(), e);
 		}
 
-		log.debug("VOMS Admin database properties loaded!");
+		return props;
+
 	}
+
+	public String getDefaultGridAUPURL() {
+		return String.format("file://%s/etc/voms-admin/%s/grid-aup.txt",
+				getString("GLITE_LOCATION_VAR"), getVOName());
+	}
+
+	public String getDefaultVOAUPURL() {
+		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt",
+				getString("GLITE_LOCATION_VAR"), getVOName());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
+	 * )
+	 */
+	public double getDouble(String arg0) {
+
+		return config.getDouble(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
+	 * , double)
+	 */
+	public double getDouble(String arg0, double arg1) {
+
+		return config.getDouble(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
+	 * , java.lang.Double)
+	 */
+	public Double getDouble(String arg0, Double arg1) {
+
+		return config.getDouble(arg0, arg1);
+	}
+
+	private InputStream getExternalLoggingConfiguration() throws FileNotFoundException{
+		
+		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/log4j.runtime.properties";
+		
+		File f = new File(path);
+		if (!f.exists())
+			log.warn("External logging configuration not found at path '"+path+"'... ");
+		if (!f.canRead())
+			log.warn("External logging configuration is not readable: '"+path+"'... ");
+		
+		return new FileInputStream(f);
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String)
+	 */
+	public float getFloat(String arg0) {
+
+		return config.getFloat(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
+	 * float)
+	 */
+	public float getFloat(String arg0, float arg1) {
+
+		return config.getFloat(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
+	 * java.lang.Float)
+	 */
+	public Float getFloat(String arg0, Float arg1) {
+
+		return config.getFloat(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getInt(java.lang.String)
+	 */
+	public int getInt(String arg0) {
+
+		return config.getInt(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getInt(java.lang.String,
+	 * int)
+	 */
+	public int getInt(String arg0, int arg1) {
+
+		return config.getInt(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getInteger(java.lang.String
+	 * , java.lang.Integer)
+	 */
+	public Integer getInteger(String arg0, Integer arg1) {
+
+		return config.getInteger(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.commons.configuration.Configuration#getKeys()
+	 */
+	public Iterator getKeys() {
+
+		return config.getKeys();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getKeys(java.lang.String)
+	 */
+	public Iterator getKeys(String arg0) {
+
+		return config.getKeys(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getList(java.lang.String)
+	 */
+	public List getList(String arg0) {
+
+		return config.getList(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getList(java.lang.String,
+	 * java.util.List)
+	 */
+	public List getList(String arg0, List arg1) {
+
+		return config.getList(arg0, arg1);
+	}
+
+	public List getLocallyConfiguredVOs() {
+
+		String configDirPath = getString("GLITE_LOCATION_VAR");
+
+		if (configDirPath == null)
+			throw new VOMSConfigurationException(
+					"No value found for GLITE_LOCATION_VAR!");
+
+		List voList = new ArrayList();
+
+		File configDir = new File(configDirPath + File.separator + "etc"
+				+ File.separator + "voms-admin");
+
+		if (!configDir.exists())
+			throw new VOMSConfigurationException(
+					"Voms configuration directory does not exist");
+
+		File[] filez = configDir.listFiles();
+
+		if (filez != null)
+			for (int i = 0; i < filez.length; i++) {
+
+				if (filez[i].isDirectory()) {
+					log.debug("Found vo: " + filez[i].getName());
+					voList.add(filez[i].getName());
+				}
+
+			}
+
+		return voList;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String)
+	 */
+	public long getLong(String arg0) {
+
+		return config.getLong(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
+	 * long)
+	 */
+	public long getLong(String arg0, long arg1) {
+
+		return config.getLong(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
+	 * java.lang.Long)
+	 */
+	public Long getLong(String arg0, Long arg1) {
+
+		return config.getLong(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getProperties(java.lang
+	 * .String)
+	 */
+	public Properties getProperties(String arg0) {
+
+		return config.getProperties(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getProperty(java.lang.
+	 * String)
+	 */
+	public Object getProperty(String arg0) {
+
+		return config.getProperty(arg0);
+	}
+
+	public X509Certificate getServiceCertificate(){
+		return serviceCertificate;
+	}
+
+	public PrivateKey getServicePrivateKey(){
+		
+		return servicePrivateKey;
+	}
+
+	public ServletContext getServletContext() {
+		return context;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String)
+	 */
+	public short getShort(String arg0) {
+
+		return config.getShort(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
+	 * short)
+	 */
+	public short getShort(String arg0, short arg1) {
+
+		return config.getShort(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
+	 * java.lang.Short)
+	 */
+	public Short getShort(String arg0, Short arg1) {
+
+		return config.getShort(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getString(java.lang.String
+	 * )
+	 */
+	public String getString(String arg0) {
+
+		return config.getString(arg0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getString(java.lang.String
+	 * , java.lang.String)
+	 */
+	public String getString(String arg0, String arg1) {
+
+		return config.getString(arg0, arg1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.configuration.Configuration#getStringArray(java.lang
+	 * .String)
+	 */
+	public String[] getStringArray(String arg0) {
+
+		return config.getStringArray(arg0);
+	}
+
+	private String getVomsDatabasePropertiesFileName() {
+
+		String fileName = config.getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName()
+				+ "/voms.database.properties";
+
+		log.debug("voms.database.properties=" + fileName);
+
+		return fileName;
+
+	}
+
+	public String getVomsesConfigurationString() {
+
+		if (getString("vomses.configuration") == null) {
+			String vomsesConfString = loadVomsesConfigurationString();
+			setProperty("vomses.configuration", vomsesConfString);
+		}
+
+		return getString("vomses.configuration");
+
+	}
+
+	private String getVomsServicePropertiesFileName() {
+
+		String fileName = config.getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName() + "/voms.service.properties";
+
+		return fileName;
+
+	}
+	
+	public String getVOName() {
+
+		return getString(VO_NAME);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.commons.configuration.Configuration#isEmpty()
+	 */
+	public boolean isEmpty() {
+
+		return config.isEmpty();
+	}
+
+	private void loadServiceCredentials() {
+
+        String certificateFileName = getString( VOMS_AA_CERT_FILE,
+                "/etc/grid-security/hostcert.pem" );
+        
+        String privateKeyFileName = getString( VOMS_AA_KEY_FILE,
+                "/etc/grid-security/hostkey.pem" );
+
+        /* load certificate */
+        log.info( "Loading credentials for VOMS Attribute authority from:"
+                + certificateFileName + "," + privateKeyFileName );
+
+        InputStream certificateInputStream;
+        try {
+
+            certificateInputStream = new FileInputStream( certificateFileName );
+
+        } catch ( FileNotFoundException e ) {
+
+            log.fatal( "Error loading service credentials: " + e.getMessage(),
+                    e );
+            throw new VOMSException( "Error loading service credentials: "
+                    + e.getMessage(), e );
+
+        }
+
+        CertificateFactory certificateFactory;
+
+        try {
+            certificateFactory = CertificateFactory.getInstance( "X509", "BC" );
+
+        } catch ( CertificateException e ) {
+            log.fatal( "Error instantiating X509 certificate factory: "
+                    + e.getMessage(), e );
+            throw new VOMSException(
+                    "Error instantiating X509 certificate factory: "
+                            + e.getMessage(), e );
+        } catch ( NoSuchProviderException e ) {
+            throw new VOMSException(
+                    "Error instantiating X509 certificate factory: "
+                            + e.getMessage(), e );
+        }
+
+        try {
+            serviceCertificate = (X509Certificate) certificateFactory
+                    .generateCertificate( certificateInputStream );
+        } catch ( CertificateException e ) {
+            log.fatal( "Error generating X509 certificate from input stream: "
+                    + e.getMessage(), e );
+            throw new VOMSException(
+                    "Error generating X509 certificate from input stream: "
+                            + e.getMessage(), e );
+        }
+
+        try {
+
+            certificateInputStream.close();
+
+        } catch ( IOException e ) {
+            log.fatal( "Error closing certificate input stream:"
+                    + e.getMessage(), e );
+            throw new VOMSException( "Error closing certificate input stream:"
+                    + e.getMessage(), e );
+        }
+
+        log
+                .info( "SAML service credential's DN: "
+                        + DNUtil.getBCasX500( serviceCertificate
+                                .getSubjectX500Principal() ) );
+
+        /* load private key */
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = new FileInputStream( privateKeyFileName );
+
+        } catch ( FileNotFoundException e ) {
+         
+            log.fatal( "Error opening private key file:"+e.getMessage(),e );
+            throw new VOMSException("Error opening private key file:"+e.getMessage(),e );
+        }
+
+        PKCS8Key pkcs8 = null;
+
+        try {
+            pkcs8 = new PKCS8Key( fileInputStream, "".toCharArray() );
+        
+        } catch ( GeneralSecurityException e ) {
+            
+            log.fatal("Error parsing private key from input stream:"+e.getMessage(),e);
+            throw new VOMSException("Error parsing private key from input stream:"+e.getMessage(),e);
+            
+            
+        } catch ( IOException e ) {
+            
+            log.fatal( "Error opening private key file:"+e.getMessage(),e  );
+            throw new VOMSException("Error opening private key file:"+e.getMessage(),e);
+            
+        }
+
+        servicePrivateKey = pkcs8.getPrivateKey();
+
+    }
 
 	private void loadServiceProperties() {
 
@@ -252,6 +1011,53 @@ public final class VOMSConfiguration {
 		}
 
 		log.debug("VOMS Admin service properties loaded!");
+
+	}
+
+	private void loadVersionProperties() {
+
+		InputStream versionPropStream = this.getClass().getClassLoader()
+				.getResourceAsStream("version.properties");
+		PropertiesConfiguration versionProperties = new PropertiesConfiguration();
+
+		try {
+			versionProperties.load(versionPropStream);
+
+			config.addConfiguration(versionProperties);
+
+		} catch (ConfigurationException e) {
+
+			log.error("Error configuring version properties:" + e.getMessage(),
+					e);
+			throw new VOMSConfigurationException(
+					"Error configuring version properties!", e);
+
+		}
+	}
+
+	private String loadVomsesConfigurationString() {
+
+		String vomsesConfFileName = getString("GLITE_LOCATION_VAR")
+				+ "/etc/voms-admin/" + getVOName() + "/vomses";
+
+		try {
+
+			StringBuffer vomsesContent = new StringBuffer();
+			FileReader vomsesFileReader = new FileReader(vomsesConfFileName);
+
+			int c;
+			while ((c = vomsesFileReader.read()) != -1)
+				vomsesContent.append((char) c);
+
+			return vomsesContent.toString();
+
+		} catch (IOException e) {
+
+			log.fatal("Error loading vomses configuration file:"
+					+ e.getMessage(), e);
+			throw new VOMSException("Error loading vomses configuration file:"
+					+ e.getMessage(), e);
+		}
 
 	}
 
@@ -332,598 +1138,17 @@ public final class VOMSConfiguration {
 		config.setProperty(VO_NAME, config.getString("VO_NAME"));
 
 	}
+	
+	public boolean pageHasCustomization(String pageName) {
 
-	private void loadVersionProperties() {
+		String basePath = getCustomizedContentPath() + "/" + pageName;
+		File f = new File(basePath);
 
-		InputStream versionPropStream = this.getClass().getClassLoader()
-				.getResourceAsStream("version.properties");
-		PropertiesConfiguration versionProperties = new PropertiesConfiguration();
-
-		try {
-			versionProperties.load(versionPropStream);
-
-			config.addConfiguration(versionProperties);
-
-		} catch (ConfigurationException e) {
-
-			log.error("Error configuring version properties:" + e.getMessage(),
-					e);
-			throw new VOMSConfigurationException(
-					"Error configuring version properties!", e);
-
-		}
-	}
-
-	private VOMSConfiguration(boolean useJNDI, ServletContext context) {
-
-		this.context = context;
-
-		config = new CompositeConfiguration();
-
-		if (useJNDI)
-			loadVORuntimeProperties();
-		else
-			config.addConfiguration(new SystemConfiguration());
-
-		configureLogging();
-
-		if (!getVOName().equals("siblings"))
-			loadServiceProperties();
-
-		loadVersionProperties();
-
-		log.info("VOMS-Admin configuration loaded!");
+		return (f.exists() && f.canRead());
 
 	}
-
-	private String getVomsServicePropertiesFileName() {
-
-		String fileName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/voms.service.properties";
-
-		return fileName;
-
-	}
-
-	private String getVomsDatabasePropertiesFileName() {
-
-		String fileName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName()
-				+ "/voms.database.properties";
-
-		log.debug("voms.database.properties=" + fileName);
-
-		return fileName;
-
-	}
-
-	public Properties getDatabaseProperties() {
-
-		String propFileName = getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName()
-				+ "/voms.database.properties";
-
-		Properties props = new Properties();
-
-		try {
-			props.load(new FileInputStream(propFileName));
-
-		} catch (IOException e) {
-
-			log
-					.fatal("Error loading database properties: "
-							+ e.getMessage(), e);
-			throw new VOMSException("Error loading database properties: "
-					+ e.getMessage(), e);
-		}
-
-		return props;
-
-	}
-
-	private String loadVomsesConfigurationString() {
-
-		String vomsesConfFileName = getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/vomses";
-
-		try {
-
-			StringBuffer vomsesContent = new StringBuffer();
-			FileReader vomsesFileReader = new FileReader(vomsesConfFileName);
-
-			int c;
-			while ((c = vomsesFileReader.read()) != -1)
-				vomsesContent.append((char) c);
-
-			return vomsesContent.toString();
-
-		} catch (IOException e) {
-
-			log.fatal("Error loading vomses configuration file:"
-					+ e.getMessage(), e);
-			throw new VOMSException("Error loading vomses configuration file:"
-					+ e.getMessage(), e);
-		}
-
-	}
-
-	public static VOMSConfiguration instance() {
-
-		return instance(true, null);
-
-	}
-
-	public static VOMSConfiguration instance(ServletContext context) {
-
-		return instance(true, context);
-
-	}
-
-	public static VOMSConfiguration instance(boolean useJNDI,
-			ServletContext context) {
-
-		if (instance == null)
-			instance = new VOMSConfiguration(useJNDI, context);
-
-		return instance;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#addProperty(java.lang.
-	 * String, java.lang.Object)
-	 */
-	public void addProperty(String arg0, Object arg1) {
-
-		config.addProperty(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.commons.configuration.Configuration#clear()
-	 */
-	public void clear() {
-
-		config.clear();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#clearProperty(java.lang
-	 * .String)
-	 */
-	public void clearProperty(String arg0) {
-
-		config.clearProperty(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#containsKey(java.lang.
-	 * String)
-	 */
-	public boolean containsKey(String arg0) {
-
-		return config.containsKey(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
-	 * .String, java.math.BigDecimal)
-	 */
-	public BigDecimal getBigDecimal(String arg0, BigDecimal arg1) {
-
-		return config.getBigDecimal(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
-	 * .String)
-	 */
-	public BigDecimal getBigDecimal(String arg0) {
-
-		return config.getBigDecimal(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBigInteger(java.lang
-	 * .String, java.math.BigInteger)
-	 */
-	public BigInteger getBigInteger(String arg0, BigInteger arg1) {
-
-		return config.getBigInteger(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBigInteger(java.lang
-	 * .String)
-	 */
-	public BigInteger getBigInteger(String arg0) {
-
-		return config.getBigInteger(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-	 * , boolean)
-	 */
-	public boolean getBoolean(String arg0, boolean arg1) {
-
-		return config.getBoolean(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-	 * , java.lang.Boolean)
-	 */
-	public Boolean getBoolean(String arg0, Boolean arg1) {
-
-		return config.getBoolean(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-	 * )
-	 */
-	public boolean getBoolean(String arg0) {
-
-		return config.getBoolean(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
-	 * byte)
-	 */
-	public byte getByte(String arg0, byte arg1) {
-
-		return config.getByte(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
-	 * java.lang.Byte)
-	 */
-	public Byte getByte(String arg0, Byte arg1) {
-
-		return config.getByte(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getByte(java.lang.String)
-	 */
-	public byte getByte(String arg0) {
-
-		return config.getByte(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
-	 * , double)
-	 */
-	public double getDouble(String arg0, double arg1) {
-
-		return config.getDouble(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
-	 * , java.lang.Double)
-	 */
-	public Double getDouble(String arg0, Double arg1) {
-
-		return config.getDouble(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getDouble(java.lang.String
-	 * )
-	 */
-	public double getDouble(String arg0) {
-
-		return config.getDouble(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
-	 * float)
-	 */
-	public float getFloat(String arg0, float arg1) {
-
-		return config.getFloat(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
-	 * java.lang.Float)
-	 */
-	public Float getFloat(String arg0, Float arg1) {
-
-		return config.getFloat(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getFloat(java.lang.String)
-	 */
-	public float getFloat(String arg0) {
-
-		return config.getFloat(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getInt(java.lang.String,
-	 * int)
-	 */
-	public int getInt(String arg0, int arg1) {
-
-		return config.getInt(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getInt(java.lang.String)
-	 */
-	public int getInt(String arg0) {
-
-		return config.getInt(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getInteger(java.lang.String
-	 * , java.lang.Integer)
-	 */
-	public Integer getInteger(String arg0, Integer arg1) {
-
-		return config.getInteger(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.commons.configuration.Configuration#getKeys()
-	 */
-	public Iterator getKeys() {
-
-		return config.getKeys();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getKeys(java.lang.String)
-	 */
-	public Iterator getKeys(String arg0) {
-
-		return config.getKeys(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getList(java.lang.String,
-	 * java.util.List)
-	 */
-	public List getList(String arg0, List arg1) {
-
-		return config.getList(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getList(java.lang.String)
-	 */
-	public List getList(String arg0) {
-
-		return config.getList(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
-	 * long)
-	 */
-	public long getLong(String arg0, long arg1) {
-
-		return config.getLong(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
-	 * java.lang.Long)
-	 */
-	public Long getLong(String arg0, Long arg1) {
-
-		return config.getLong(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getLong(java.lang.String)
-	 */
-	public long getLong(String arg0) {
-
-		return config.getLong(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getProperties(java.lang
-	 * .String)
-	 */
-	public Properties getProperties(String arg0) {
-
-		return config.getProperties(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getProperty(java.lang.
-	 * String)
-	 */
-	public Object getProperty(String arg0) {
-
-		return config.getProperty(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
-	 * short)
-	 */
-	public short getShort(String arg0, short arg1) {
-
-		return config.getShort(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
-	 * java.lang.Short)
-	 */
-	public Short getShort(String arg0, Short arg1) {
-
-		return config.getShort(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getShort(java.lang.String)
-	 */
-	public short getShort(String arg0) {
-
-		return config.getShort(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getString(java.lang.String
-	 * , java.lang.String)
-	 */
-	public String getString(String arg0, String arg1) {
-
-		return config.getString(arg0, arg1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getString(java.lang.String
-	 * )
-	 */
-	public String getString(String arg0) {
-
-		return config.getString(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#getStringArray(java.lang
-	 * .String)
-	 */
-	public String[] getStringArray(String arg0) {
-
-		return config.getStringArray(arg0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.commons.configuration.Configuration#isEmpty()
-	 */
-	public boolean isEmpty() {
-
-		return config.isEmpty();
-	}
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -935,7 +1160,7 @@ public final class VOMSConfiguration {
 
 		config.setProperty(arg0, arg1);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -945,111 +1170,5 @@ public final class VOMSConfiguration {
 	public Configuration subset(String arg0) {
 
 		return config.subset(arg0);
-	}
-
-	public Map asMap() {
-
-		HashMap returnValue = new HashMap();
-		Iterator keys = config.getKeys();
-		while (keys.hasNext()) {
-			Object key = keys.next();
-			Object property = config.getProperty((String) key);
-			returnValue.put(key, property);
-
-		}
-
-		return returnValue;
-	}
-
-	public String getVOName() {
-
-		return getString(VO_NAME);
-	}
-
-	public List getLocallyConfiguredVOs() {
-
-		String configDirPath = getString("GLITE_LOCATION_VAR");
-
-		if (configDirPath == null)
-			throw new VOMSConfigurationException(
-					"No value found for GLITE_LOCATION_VAR!");
-
-		List voList = new ArrayList();
-
-		File configDir = new File(configDirPath + File.separator + "etc"
-				+ File.separator + "voms-admin");
-
-		if (!configDir.exists())
-			throw new VOMSConfigurationException(
-					"Voms configuration directory does not exist");
-
-		File[] filez = configDir.listFiles();
-
-		if (filez != null)
-			for (int i = 0; i < filez.length; i++) {
-
-				if (filez[i].isDirectory()) {
-					log.debug("Found vo: " + filez[i].getName());
-					voList.add(filez[i].getName());
-				}
-
-			}
-
-		return voList;
-
-	}
-
-	
-	public String getVomsesConfigurationString() {
-
-		if (getString("vomses.configuration") == null) {
-			String vomsesConfString = loadVomsesConfigurationString();
-			setProperty("vomses.configuration", vomsesConfString);
-		}
-
-		return getString("vomses.configuration");
-
-	}
-
-
-	private String getCustomizedContentPath() {
-
-		String pathName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/customized-content/";
-		return pathName;
-	}
-
-	public boolean pageHasCustomization(String pageName) {
-
-		String basePath = getCustomizedContentPath() + "/" + pageName;
-		File f = new File(basePath);
-
-		return (f.exists() && f.canRead());
-
-	}
-
-	public String getCustomizationPageAbsolutePath(String pageName) {
-		String basePath = getCustomizedContentPath() + "/" + pageName;
-		File f = new File(basePath);
-
-		if (f.exists() && f.canRead())
-			return f.getAbsolutePath();
-
-		return null;
-
-	}
-
-	public String getDefaultGridAUPURL() {
-		return String.format("file://%s/etc/voms-admin/%s/grid-aup.txt",
-				getString("GLITE_LOCATION_VAR"), getVOName());
-	}
-
-	public String getDefaultVOAUPURL() {
-		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt",
-				getString("GLITE_LOCATION_VAR"), getVOName());
-	}
-
-	public ServletContext getServletContext() {
-		return context;
 	}
 }

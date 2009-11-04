@@ -26,7 +26,7 @@
 </s:if>
 <s:else>
 	<h1>
-	  Welcome to the <span class="voName">${voName}</span> VO, <voms:formatDN dn="${dn}" fields="CN"/>
+	  Welcome to the <span class="voName">${voName}</span> VO, <voms:formatDN dn="${realSubject}" fields="CN"/>
 	</h1>
 	
 	<s:if test="#attr.currentAdmin.voUser">

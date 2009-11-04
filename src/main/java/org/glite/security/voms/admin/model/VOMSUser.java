@@ -20,11 +20,13 @@
 package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -789,6 +791,19 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		return false;
 	}
 
+	public List<Certificate> getCertificatesBySubject(String subject){
+		
+		List<Certificate> result = new ArrayList<Certificate>();
+		
+		for (Certificate c: certificates){
+			
+			if (c.getSubjectString().equals(subject))
+				result.add(c);
+		}
+		
+		return result;
+	}
+	
 	public void removeCertificate(Certificate cert) {
 
 		if (!hasCertificate(cert))

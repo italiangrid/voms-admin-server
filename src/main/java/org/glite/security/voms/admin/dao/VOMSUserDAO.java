@@ -637,6 +637,22 @@ public class VOMSUserDAO {
 
 	}
 
+	public VOMSUser findBySubject(String subject){
+		if (subject == null)
+			throw new NullArgumentException("subject cannot be null!");
+		
+		String query = "select u from org.glite.security.voms.admin.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
+		
+		Query q = HibernateFactory.getSession().createQuery(query);
+
+		q.setString("subjectString", subject);
+		
+		VOMSUser u = (VOMSUser) q.uniqueResult();
+
+		return u;
+		
+	}
+	
 	public VOMSUser findByCertificate(String subject, String issuer) {
 
 		if (subject == null)

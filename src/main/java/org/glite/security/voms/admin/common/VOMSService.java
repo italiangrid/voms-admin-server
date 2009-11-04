@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.common;
 
+import it.infn.cnaf.voms.x509.X509ACGenerator;
+
 import java.util.Properties;
 import java.util.Timer;
 
@@ -40,6 +42,7 @@ import org.glite.security.voms.admin.event.EventLogListener;
 import org.glite.security.voms.admin.model.VOMSDBVersion;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationDispatcher;
+import org.opensaml.xml.ConfigurationException;
 
 public final class VOMSService {
 
@@ -47,23 +50,35 @@ public final class VOMSService {
 
 	static final Timer vomsTimer = new Timer(true);
 
-	protected static void checkDatabaseVersion(){
-		
+	protected static void checkDatabaseVersion() {
+
 		int version = VOMSVersionDAO.instance().getVersion();
-		
-		if (version != VOMSServiceConstants.VOMS_DB_VERSION){
-			
-			if (version < VOMSServiceConstants.VOMS_DB_VERSION){
-				log.fatal("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "+version);
-				log.fatal("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
-				throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"+version+"', while it should be '"+VOMSServiceConstants.VOMS_DB_VERSION+"'");
-			}else{
-				
-				log.fatal("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "+version);
-				throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"+version+"', while it should be '"+VOMSServiceConstants.VOMS_DB_VERSION+"'");
+
+		if (version != VOMSServiceConstants.VOMS_DB_VERSION) {
+
+			if (version < VOMSServiceConstants.VOMS_DB_VERSION) {
+				log
+						.fatal("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
+								+ version);
+				log
+						.fatal("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
+				throw new VOMSFatalException(
+						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
+								+ "', while it should be '"
+								+ VOMSServiceConstants.VOMS_DB_VERSION + "'");
+			} else {
+
+				log
+						.fatal("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
+								+ version);
+				throw new VOMSFatalException(
+						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
+								+ "', while it should be '"
+								+ VOMSServiceConstants.VOMS_DB_VERSION + "'");
 			}
 		}
 	}
+
 	protected static void configureVelocity() {
 
 		try {
@@ -111,6 +126,31 @@ public final class VOMSService {
 
 	}
 
+	protected static void bootstrapAttributeAuthorityServices() {
+
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+
+		// Bootstrap VOMS SAML attribute authority
+
+		try {
+			org.opensaml.DefaultBootstrap.bootstrap();
+
+		} catch (ConfigurationException e) {
+
+			log.error("Error initializing OpenSAML:" + e.getMessage());
+
+			if (log.isDebugEnabled())
+				log.error("Error initializing OpenSAML:" + e.getMessage(), e);
+
+			log.info("SAML endpoint will not be activated.");
+			conf.setProperty(VOMSConfiguration.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
+					false);
+		}
+		
+		X509ACGenerator.instance(conf.getServiceCertificate(), conf.getServicePrivateKey());
+
+	}
+
 	public static void start(ServletContext ctxt) {
 
 		Thread
@@ -130,12 +170,14 @@ public final class VOMSService {
 		log.info("VOMS-Admin starting for vo:" + conf.getVOName());
 
 		checkDatabaseVersion();
-		
+
 		configureVelocity();
 
 		configureEventManager();
 
 		startBackgroundTasks();
+
+		bootstrapAttributeAuthorityServices();
 
 		log.info("VOMS-Admin started succesfully.");
 	}

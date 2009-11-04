@@ -49,4 +49,8 @@ public class AdminActionSupport extends BaseAction implements
 
 	}
 
+	public String getRealSubject(){
+		
+		return CurrentAdmin.instance().getRealSubject();
+	}
 }
