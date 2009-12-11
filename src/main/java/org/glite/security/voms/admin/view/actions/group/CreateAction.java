@@ -23,6 +23,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.common.PathNamingScheme;
+import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
@@ -53,6 +55,23 @@ public class CreateAction extends GroupActionSupport {
 	public void validate() {
 		
 		String candidateName = getParentGroupName()+"/"+getGroupName();
+		
+		
+		if (getGroupName().contains("/")){
+			
+			addFieldError("groupName", "The group name '"+getGroupName()+"' is invalid. It should not contain the '/' character.");
+			return;
+		}
+		
+		try{
+			PathNamingScheme.isGroup(candidateName);
+		
+		}catch (VOMSSyntaxException e) {
+			
+			addFieldError("groupName", "'"+getGroupName()+"' is not a valid group name!");
+			return;
+		}
+		
 		
 		VOMSGroup target = VOMSGroupDAO.instance().findByName(candidateName);
 		

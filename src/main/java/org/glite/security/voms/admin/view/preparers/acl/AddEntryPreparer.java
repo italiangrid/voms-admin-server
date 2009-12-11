@@ -25,7 +25,9 @@ import org.apache.tiles.AttributeContext;
 import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
+import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
@@ -48,6 +50,8 @@ public class AddEntryPreparer extends ViewPreparerSupport {
 				.execute();
 		List<VOMSCA> cas = (List<VOMSCA>) VOMSCADAO.instance().getValid();
 
+	
+		tilesContext.getRequestScope().put("voCertificates", CertificateDAO.instance().getAll());
 		tilesContext.getRequestScope().put("voUsers", users);
 		tilesContext.getRequestScope().put("voGroups", groups);
 		tilesContext.getRequestScope().put("voRoles", roles);

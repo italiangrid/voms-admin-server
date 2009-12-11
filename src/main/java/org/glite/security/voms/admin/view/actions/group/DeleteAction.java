@@ -19,21 +19,38 @@
  */
 package org.glite.security.voms.admin.view.actions.group;
 
+import java.util.List;
+
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.DeleteGroupOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.SUCCESS, location = "search", type = "chain") })
+@Results( { 
+	@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"), 
+	@Result(name = BaseAction.INPUT, location = "search", type = "chain")
+})
 public class DeleteAction extends GroupActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+	public void validate() {
+		
+		VOMSGroupDAO dao = VOMSGroupDAO.instance();
+		
+		List<VOMSGroup> childrenGroups = dao.getChildren(getModel());
+		
+		if (!childrenGroups.isEmpty())
+			addActionError("The group '"+getModel().getName()+"' cannot be deleted since it contains subgroups. Delete subgroups first.");
+	}
 
 	@Override
 	public String execute() throws Exception {

@@ -263,6 +263,11 @@ public class VOMSAttributeDAO {
 
 	}
 
+	public boolean isAttributeValueAlreadyAssigned(VOMSUser u, String attributeName, String attributeValue){
+		
+		return isAttributeValueAlreadyAssigned(u, getAttributeDescriptionByName(attributeName), attributeValue);
+	}
+	
 	public boolean isAttributeValueAlreadyAssigned(VOMSUser u,
 			VOMSAttributeDescription desc, String attrValue) {
 		if (!desc.isUnique())

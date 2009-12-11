@@ -23,7 +23,7 @@
 <h1>Generic Attribute classes:</h1>
 
 <div class="createTab">
-
+<s:actionerror/>
 <s:form
       action="create"
       namespace="/attribute"

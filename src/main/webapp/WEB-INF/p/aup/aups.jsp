@@ -21,6 +21,11 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<s:if test="not #request.registrationEnabled">
+  The registration service and AUP management is currently disabled for this VO.
+</s:if>
+<s:else>
+
 <h1>VO Acceptable Usage Policy:</h1>
 
 <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
@@ -118,4 +123,4 @@
   </table> 
   </s:if>
 </s:else>
-
+</s:else>

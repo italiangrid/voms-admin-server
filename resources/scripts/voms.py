@@ -349,9 +349,14 @@ class UpgradeVO(ConfigureAction):
         
     def write_context_file(self):
         set_default(os.environ, 'VOMS_LOCATION',os.environ['GLITE_LOCATION'])
-
+        
+        war_file = VomsConstants.voms_admin_war
+        
+        if self.user_options.has_key('use-skinny-war'):
+            war_file = VomsConstants.voms_admin_war_nodeps
+        
         m = {'VO_NAME': self.user_options['vo'],
-             'WAR_FILE': VomsConstants.voms_admin_war,
+             'WAR_FILE': war_file,
              'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
              'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
              'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
@@ -661,9 +666,13 @@ class InstallVOAction(ConfigureAction):
         
     def write_context(self):
         
+        war_file = VomsConstants.voms_admin_war
+        
+        if self.user_options.has_key('use-skinny-war'):
+            war_file = VomsConstants.voms_admin_war_nodeps
 
         m = {'VO_NAME': self.user_options['vo'],
-             'WAR_FILE': VomsConstants.voms_admin_war,
+             'WAR_FILE': war_file,
              'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
              'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
              'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
@@ -1002,6 +1011,8 @@ class VomsConstants:
     logging_conf_template = os.path.join(glite_loc,"etc","voms-admin","templates", "log4j.runtime.properties")
     
     voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
+    voms_admin_war_nodeps = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin-nodeps.war")
+    
     voms_siblings_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-siblings.war")
     
     voms_admin_libs = glob.glob(os.path.join(glite_loc,"share","voms-admin","tools","lib")+"/*.jar")
@@ -1063,7 +1074,8 @@ class VomsConstants:
               "shortfqans",
               "read-access-for-authenticated-clients",
               "skip-voms-core",
-              "vo-aup-url="]
+              "vo-aup-url=",
+              "use-skinny-war"]
 
     short_options = "hvV";
 

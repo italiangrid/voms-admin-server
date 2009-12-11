@@ -67,13 +67,13 @@ public class VOMSResponseFactory {
         return response;
     }
     
-    public Document buildErrorResponse(String errorMessage){
+    public Document buildErrorResponse(String vomsErrorCode, String errorMessage){
         
         assert errorMessage != null: "Cannot build a response for a null errorMessage!";
         Document response = docBuilder.newDocument();
         VOMSResponseFragment frag = new VOMSResponseFragment(response);
         
-        frag.buildErrorElement( errorMessage );
+        frag.buildErrorElement( vomsErrorCode, errorMessage );
         response.appendChild( frag.getFragment() );
         
         return response;
@@ -87,33 +87,38 @@ class VOMSResponseFragment{
     private Document doc;
     DocumentFragment fragment;
     
-    Element root;
-    Element ac;
-    Element error;
-    
     
     public VOMSResponseFragment(Document document) {
 
         this.doc = document;
         fragment = doc.createDocumentFragment();
-        root = doc.createElement( "voms" );
-        fragment.appendChild( root );
-        
+      
     }
     
     public void buildACElement(String base64EncodedACString){
-        
-        ac = doc.createElement( "ac" );
+    
+    	Element root = doc.createElement( "voms" );
+    	fragment.appendChild( root );
+    	
+        Element ac = doc.createElement( "ac" );
         appendTextChild( ac, base64EncodedACString );
         root.appendChild( ac );
         
     }
     
     
-    public void buildErrorElement(String errorMessage){
-        error = doc.createElement( "error" );
-        appendTextChild( error, errorMessage);
-        root.appendChild( error );   
+    public void buildErrorElement(String errorCode, String errorMessage){
+    	 
+        Element error = doc.createElement( "error" );
+        Element errorCodeElement = doc.createElement("code");
+        Element errorMessageElement = doc.createElement("message");
+        
+        appendTextChild( errorMessageElement, errorMessage);
+        appendTextChild(errorCodeElement, errorCode);
+        error.appendChild(errorCodeElement);
+        error.appendChild(errorMessageElement);
+        
+        fragment.appendChild(error);
     }
     
     public DocumentFragment getFragment() {

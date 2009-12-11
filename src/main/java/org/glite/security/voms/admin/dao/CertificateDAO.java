@@ -131,7 +131,7 @@ public class CertificateDAO {
 
 	public List<Certificate> getAll() {
 
-		String query = "from Certificate";
+		String query = "from Certificate order by subjectString";
 		return HibernateFactory.getSession().createQuery(query).list();
 
 	}

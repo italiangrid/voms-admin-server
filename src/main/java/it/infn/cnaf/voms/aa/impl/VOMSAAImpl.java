@@ -10,6 +10,7 @@ import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.NoSuchCertificateException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.SuspendedCertificateException;
+import org.glite.security.voms.admin.database.SuspendedUserException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 
@@ -33,10 +34,17 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
 			cert = dao.findByDNCA(dn, ca);
 
 		if (cert == null)
-			throw new NoSuchCertificateException("Certificate identified by '"
+			throw new NoSuchCertificateException("User identified by '"
 					+ dn + "' " + ((ca != null) ? ",'" + ca + "' " : "")
 					+ "not found!");
 
+		VOMSUser user = cert.getUser();
+		
+		if (user.isSuspended())
+			throw new SuspendedUserException("User identified by '"
+					+ dn + "' " + ((ca != null) ? ",'" + ca + "' " : "")
+					+ "is currently suspended!");
+		
 		if (cert.isSuspended())
 			throw new SuspendedCertificateException("Certificate '"
 					+ cert.getSubjectString() + ", "

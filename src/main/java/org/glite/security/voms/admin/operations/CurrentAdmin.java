@@ -250,6 +250,9 @@ public class CurrentAdmin {
 	public String getRealCN() {
 
 		SecurityContext theContext = SecurityContext.getCurrentContext();
+		if (theContext.getClientCert() ==  null)
+			return null;
+		
 		String name = DNUtil.getBCasX500(theContext.getClientCert()
 				.getSubjectX500Principal());
 
@@ -262,6 +265,10 @@ public class CurrentAdmin {
 
 	public String getRealEmailAddress() {
 		SecurityContext theContext = SecurityContext.getCurrentContext();
+		
+		if (theContext.getClientCert() ==  null)
+			return null;
+		
 		String name = DNUtil.getBCasX500(theContext.getClientCert()
 				.getSubjectX500Principal());
 

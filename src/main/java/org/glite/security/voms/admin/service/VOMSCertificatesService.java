@@ -29,6 +29,7 @@ import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.operations.users.RemoveUserCertificateOperation;
+import org.glite.security.voms.admin.operations.users.RestoreUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.SuspendUserCertificateOperation;
 import org.glite.security.voms.service.certificates.VOMSCertificates;
 import org.glite.security.voms.service.certificates.X509Certificate;
@@ -185,6 +186,20 @@ public class VOMSCertificatesService implements VOMSCertificates {
 			throw e;
 		}
 
+	}
+
+	public void restoreCertificate(X509Certificate cert) 
+			throws RemoteException {
+		
+		try{
+			RestoreUserCertificateOperation.instance(cert.getSubject(), cert.getIssuer()).execute();
+			
+		} catch (RuntimeException e) {
+			ServiceExceptionHelper.handleServiceException(log, e);
+			throw e;
+		}
+		
+		
 	}
 
 }

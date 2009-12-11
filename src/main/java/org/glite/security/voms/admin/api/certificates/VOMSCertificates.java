@@ -34,6 +34,8 @@ public interface VOMSCertificates {
 			String registeredCertIssuer);
 
 	public void suspendCertificate(X509Certificate cert, String reason);
+	
+	public void restoreCertificate(X509Certificate cert);
 
 	public void removeCertificate(X509Certificate cert);
 

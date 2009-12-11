@@ -33,8 +33,6 @@ import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSException;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
-import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
@@ -175,19 +173,21 @@ public class VOMSUserDAO {
 		AUPVersion activeVersion = aup.getActiveVersion();
 
 		// Get users First that do not have any acceptance records
-		String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty";
+		// String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty";
+		String noAcceptanceRecordForActiveAUPVersionQuery = "from VOMSUser where not exists (from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+		Query q = HibernateFactory.getSession().createQuery(noAcceptanceRecordForActiveAUPVersionQuery);
 		result.addAll(q.list());
 
-		log.debug("Users with no acceptance records for aup:" + result);
+		log.debug("Users without acceptance records for currently active aup:" + result);
+		
 
 		// Add users that have an expired aup acceptance record due to aup
 		// update or acceptance retriggering.
-		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion = :aupVersion and r.lastAcceptanceDate < :lastUpdateTime ";
+		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime ";
 
 		Query q2 = HibernateFactory.getSession().createQuery(qString);
-		q2.setEntity("aupVersion", activeVersion);
+		
 		q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 		List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
 		result.addAll(expiredDueToAUPUpdateUsers);
@@ -200,10 +200,9 @@ public class VOMSUserDAO {
 		Query q3 = HibernateFactory
 				.getSession()
 				.createQuery(
-						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion = :aupVersion "
+						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
 								+ "and r.lastAcceptanceDate > :lastUpdateTime ");
 		
-		q3.setEntity("aupVersion", activeVersion);
 		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 
 		List<VOMSUser> potentiallyExpiredUsers = q3.list();
@@ -446,11 +445,6 @@ public class VOMSUserDAO {
 
 		dn = DNUtil.normalizeDN(dn);
 
-		// u.setDn(dn);
-		// u.setCa(ca);
-		// u.setCn(cn);
-		// u.setCertURI(certURI);
-
 		u.setEmailAddress(emailAddress);
 
 		log.debug("Creating user \"" + u + "\".");
@@ -469,7 +463,6 @@ public class VOMSUserDAO {
 	public VOMSUser create(VOMSUser usr, String caDN) {
 
 		checkNullFields(usr);
-		// populateNullFields(usr);
 
 		CertificateDAO certDAO = CertificateDAO.instance();
 
@@ -489,7 +482,7 @@ public class VOMSUserDAO {
 		Calendar c = Calendar.getInstance();
 		c.setTime(usr.getCreationTime());
 
-		// Default lifetime for membership is 12 months if not specified
+		// Default lifetime for membership is 12 months
 		int lifetime = VOMSConfiguration.instance().getInt(
 				VOMSConfiguration.DEFAULT_MEMBERSHIP_LIFETIME, 12);
 
@@ -892,7 +885,7 @@ public class VOMSUserDAO {
 						+ attrValue
 						+ "' for attribute '"
 						+ attrName
-						+ "' have been already assigned to another user in this vo! Choose a different value.");
+						+ "' has been already assigned to another user in this vo! Choose a different value.");
 
 	}
 	

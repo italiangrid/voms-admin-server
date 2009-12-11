@@ -29,6 +29,7 @@
             />
   
   <s:if test="#attr.canCreate">
+    <s:actionerror/>
     
     <s:form 
       action="create"

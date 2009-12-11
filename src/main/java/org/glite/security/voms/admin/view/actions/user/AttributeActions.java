@@ -28,7 +28,6 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.operations.users.DeleteUserAttributeOperation;
-import org.glite.security.voms.admin.operations.users.SetUserAttributeOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
@@ -50,15 +49,6 @@ public class AttributeActions extends UserActionSupport {
 
 	List<VOMSAttributeDescription> attributeClasses;
 
-	@Action("set-attribute")
-	public String setAttribute() throws Exception {
-
-		SetUserAttributeOperation.instance(getModel(), attributeName,
-				attributeValue).execute();
-
-		addActionMessage(getText("confirm.user.attribute_set", new String[]{attributeName, getModel().getShortName()}));
-		return SUCCESS;
-	}
 
 	@Action("delete-attribute")
 	public String deleteAttribute() throws Exception {

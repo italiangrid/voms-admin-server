@@ -102,11 +102,16 @@
 
 <tiles2:insertTemplate template="mappingsRequestPane.jsp"/>
 
-<tiles2:insertTemplate template="aupHistoryPane.jsp">
-  <tiles2:putAttribute name="panelName" value="Your AUP acceptance history"/>
-</tiles2:insertTemplate>
+<s:if test="#request.registrationEnabled">
+  <tiles2:insertTemplate template="aupHistoryPane.jsp">
+    <tiles2:putAttribute name="panelName" value="Your AUP acceptance history"/>
+  </tiles2:insertTemplate>
+</s:if>
 
-<tiles2:insertTemplate template="requestHistoryPane.jsp">
-	  <tiles2:putAttribute name="panelName" value="Your request history"/>
-</tiles2:insertTemplate>
+<s:if test="#request.registrationEnabled">
+  <tiles2:insertTemplate template="requestHistoryPane.jsp">
+	   <tiles2:putAttribute name="panelName" value="Your request history"/>
+  </tiles2:insertTemplate>
+</s:if>
+
 </s:else>

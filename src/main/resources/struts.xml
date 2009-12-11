@@ -107,8 +107,9 @@
                     <param name="excludeMethods">input,back,cancel</param>
                 </interceptor-ref>
                 
+                <!--  
                 <interceptor-ref name="hibernateInterceptor" />
-                
+                 -->
                 
             </interceptor-stack>
       </interceptors>

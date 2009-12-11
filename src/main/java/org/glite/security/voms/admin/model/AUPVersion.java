@@ -184,8 +184,11 @@ public class AUPVersion implements Serializable, Comparable<AUPVersion> {
 	}
 
 	public int compareTo(AUPVersion o) {
-
-		return getCreationTime().compareTo(o.getCreationTime());
+		
+		if (this.equals(o))
+			return 0;
+		else
+			return getVersion().compareTo(o.getVersion());
 	}
 
 	public String getText() {

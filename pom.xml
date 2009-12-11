@@ -122,7 +122,51 @@
               </webResources>
             </configuration>
           </execution>
+          
+          <!-- VOMS-Admin server skinny war -->
+          <execution>
+            <id>VOMS-Admin server Skinny War creation</id>
+            <goals>
+              <goal>war</goal>
+            </goals>
+            <configuration>
+            <webappDirectory>
+                ${project.build.directory}/glite-security-voms-admin-server-skinny-war
+              </webappDirectory>
+              <warName>
+                glite-security-voms-admin-nodeps
+              </warName>
+              <webResources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <includes>
+                    <include>voms-admin.tld</include>
+                  </includes>
+                  <targetPath>
+                    WEB-INF/classes/org/glite/security/voms/admin/jsp
+                  </targetPath>
+                </resource>
 
+                <resource>
+                  <directory>resources/debug</directory>
+                  <filtering>true</filtering>
+
+                  <excludes>
+                    <exclude>test.properties</exclude>
+                    <exclude>conf/**</exclude>
+                  </excludes>
+                  <targetPath>META-INF</targetPath>
+                </resource>
+              </webResources>
+              <packagingExcludes>
+                WEB-INF/lib/*.jar
+              </packagingExcludes>
+              <packagingIncludes>
+                
+              </packagingIncludes>
+            </configuration>
+          </execution>
+          
           <!-- Main VOMS-Admin server war -->
           <execution>
             <id>VOMS-Admin server war creation</id>

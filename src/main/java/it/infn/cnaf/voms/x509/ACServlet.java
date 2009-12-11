@@ -7,6 +7,8 @@ import it.infn.cnaf.voms.aa.VOMSAttributes;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,13 +26,16 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.common.VOMSSyntaxException;
+import org.glite.security.voms.admin.database.NoSuchCertificateException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
+import org.glite.security.voms.admin.database.SuspendedCertificateException;
+import org.glite.security.voms.admin.database.SuspendedUserException;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
-import org.glite.security.voms.admin.service.ServiceUtils;
 import org.w3c.dom.Document;
 
 
-public class ACServlet extends BaseServlet {
+public class ACServlet extends BaseServlet implements VOMSErrorCodes {
     
     /**
      * 
@@ -118,11 +123,13 @@ public class ACServlet extends BaseServlet {
         return writer.toString();
     }
 
-    protected void writeErrorResponse(HttpServletResponse response, int httpErrorCode, String message)
+    protected void writeErrorResponse(HttpServletResponse response, int httpErrorCode, String vomsErrorCode, String message)
         throws ServletException, IOException{
         
         VOMSResponseFactory responseFactory = VOMSResponseFactory.instance();
-        Document xmlResponse = responseFactory.buildErrorResponse( message);
+        
+        
+        Document xmlResponse = responseFactory.buildErrorResponse( vomsErrorCode, message);
         
         response.setContentType( "text/xml" );
         response.setCharacterEncoding( "UTF-8" );
@@ -146,6 +153,28 @@ public class ACServlet extends BaseServlet {
         
     }
     
+    
+    protected List<String> parseRequestedFQANs(HttpServletRequest request){
+    	
+    	String fqansString = request.getParameter("fqans");
+    	
+    	if (fqansString == null)
+    		return null;
+    	
+    	List<String> requestedFQANs = new ArrayList<String>();
+    	
+    	
+    	if (fqansString.contains(",")){
+    		
+    		for (String s: StringUtils.split(fqansString,","))
+    			requestedFQANs.add(s);
+    	}else
+    		requestedFQANs.add(fqansString);
+    	
+    	return requestedFQANs;
+    	
+    }
+    
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
             throws ServletException , IOException {
     
@@ -153,25 +182,45 @@ public class ACServlet extends BaseServlet {
         VOMSAttributes attrs;
         
         String clientDN = CurrentAdmin.instance().getRealSubject();
-        String[] requestedFQANs = request.getParameterValues( "fqan" );
+        
+        List<String> requestedFQANs = parseRequestedFQANs(request);
         
         try{
             
-            if (requestedFQANs == null || requestedFQANs.length == 0)
+            if (requestedFQANs == null || requestedFQANs.size() == 0)
                 attrs = vomsAA.getVOMSAttributes(clientDN);
             else
-                attrs = vomsAA.getVOMSAttributes( clientDN, ServiceUtils.toStringList( requestedFQANs ));
+                attrs = vomsAA.getVOMSAttributes( clientDN, requestedFQANs );
         
         }catch(VOMSException e){
-            int errorCode;
+            
+        	int httpErrorCode;
+            String vomsErrorCode;
             
             log.error("Error getting VOMS attributes for user '"+clientDN+"':"+e.getMessage());
             
-            if (e instanceof NoSuchUserException)
-                errorCode = 404;
-            else
-                errorCode = 500;
-            writeErrorResponse( response, errorCode, e.getMessage() );
+            
+            if (e instanceof NoSuchUserException || e instanceof NoSuchCertificateException){            
+            	httpErrorCode = 403;
+                vomsErrorCode = VOMS_ERROR_NO_SUCH_USER;
+            }
+            else if (e instanceof SuspendedUserException){
+            	httpErrorCode = 403;
+            	vomsErrorCode = VOMS_ERROR_SUSPENDED_USER;
+            }
+            else if (e instanceof SuspendedCertificateException){
+            	httpErrorCode = 403;
+            	vomsErrorCode = VOMS_ERROR_SUSPENDED_CERTIFICATE;
+            	
+            }else if (e instanceof VOMSSyntaxException){
+            	httpErrorCode = 400;
+            	vomsErrorCode = VOMS_ERROR_BAD_REQUEST;
+            }
+            else{
+            	httpErrorCode = 500;
+            	vomsErrorCode = VOMS_ERROR_INTERNAL_ERROR;
+            }
+            writeErrorResponse( response, httpErrorCode,vomsErrorCode, e.getMessage() );
             return;
         }
         
@@ -190,6 +239,11 @@ public class ACServlet extends BaseServlet {
         }
         
         SecurityContext ctxt = SecurityContext.getCurrentContext();
+        
+        // Handle unauthenticated clients here
+        if (ctxt.getClientCert() == null)
+        	throw new VOMSException("No client certificate found in the request!");
+        
         X509ACGenerator acGen = X509ACGenerator.instance();
         
         if (lifetime > 0)
@@ -205,7 +259,7 @@ public class ACServlet extends BaseServlet {
                     
         } catch ( IOException e ) {
             log.error("Error encoding user attribute certificate: "+e.getMessage());
-            writeErrorResponse( response, 500, e.getMessage() );
+            writeErrorResponse( response, 500, VOMS_ERROR_INTERNAL_ERROR, e.getMessage() );
             return;
         }
         

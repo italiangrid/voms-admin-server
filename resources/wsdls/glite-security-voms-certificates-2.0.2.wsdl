@@ -83,7 +83,18 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
    </wsdl:message>
+   
+   <wsdl:message name="restoreCertificateRequest">
 
+      <wsdl:part name="in0" type="impl:X509Certificate"/>
+
+   </wsdl:message>
+   
+   <wsdl:message name="restoreCertificateResponse">
+
+   </wsdl:message>
+   
+   
    <wsdl:message name="getCertificatesResponse1">
 
       <wsdl:part name="getCertificatesReturn" type="impl:ArrayOfX509Certificate"/>
@@ -159,6 +170,14 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
          <wsdl:input message="impl:suspendCertificateRequest" name="suspendCertificateRequest"/>
 
          <wsdl:output message="impl:suspendCertificateResponse" name="suspendCertificateResponse"/>
+
+      </wsdl:operation>
+      
+      <wsdl:operation name="restoreCertificate" parameterOrder="in0">
+
+         <wsdl:input message="impl:restoreCertificateRequest" name="restoreCertificateRequest"/>
+
+         <wsdl:output message="impl:restoreCertificateResponse" name="restoreCertificateResponse"/>
 
       </wsdl:operation>
 
@@ -277,6 +296,24 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
          </wsdl:input>
 
          <wsdl:output name="suspendCertificateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+      
+      <wsdl:operation name="restoreCertificate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="restoreCertificateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="restoreCertificateResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.certificates" use="encoded"/>
 

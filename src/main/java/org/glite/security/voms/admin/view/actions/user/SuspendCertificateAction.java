@@ -61,7 +61,7 @@ public class SuspendCertificateAction extends UserActionSupport {
 	@Action("restore-certificate")
 	public String restore() throws Exception {
 
-		RestoreUserCertificateOperation.instance(getModel(), certificate)
+		RestoreUserCertificateOperation.instance(certificate)
 				.execute();
 		return SUCCESS;
 	}

@@ -24,6 +24,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.common.PathNamingScheme;
+import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.roles.CreateRoleOperation;
@@ -80,6 +82,14 @@ public class CreateAction extends RoleActionSupport {
 	
 	@Override
 	public void validate() {
+		
+		
+		if (getRoleName().contains("/")){
+			
+			addFieldError("roleName", "'"+getRoleName()+"' is not a valid VOMS role name.");
+			return;
+		}
+		
 		
 		VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
 		if (r != null)

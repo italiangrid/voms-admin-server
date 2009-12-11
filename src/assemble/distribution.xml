@@ -101,6 +101,11 @@
             <source>target/glite-security-voms-admin.war</source>
             <outputDirectory>/share/webapps</outputDirectory>
         </file>
+        
+        <file>
+            <source>target/glite-security-voms-admin-nodeps.war</source>
+            <outputDirectory>/share/webapps</outputDirectory>
+        </file>
 
         <file>
             <source>target/glite-security-voms-siblings.war</source>

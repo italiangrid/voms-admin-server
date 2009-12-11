@@ -19,7 +19,10 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.api.certificates.X509Certificate;
 import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.dao.CertificateDAO;
+import org.glite.security.voms.admin.database.NoSuchCertificateException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
@@ -28,23 +31,32 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class RestoreUserCertificateOperation extends BaseVomsOperation {
 
-	VOMSUser user;
 	Certificate certificate;
 
-	private RestoreUserCertificateOperation(VOMSUser u, Certificate c) {
-		user = u;
+	private RestoreUserCertificateOperation(Certificate c) {
+		
 		certificate = c;
 	}
+	
+	private RestoreUserCertificateOperation(String subject, String issuerSubject){
+		
+		certificate = CertificateDAO.instance().findByDNCA(subject, issuerSubject);
+		if (certificate ==  null)
+			throw new NoSuchCertificateException("Certificate identified by '"+subject+"', '"+issuerSubject+"' not found!");
+		
+	}
 
-	public static RestoreUserCertificateOperation instance(VOMSUser u,
-			Certificate c) {
-		return new RestoreUserCertificateOperation(u, c);
+	public static RestoreUserCertificateOperation instance(String subject, String issuerSubject){
+		
+		return new RestoreUserCertificateOperation(subject, issuerSubject);
+		
+	}
+	public static RestoreUserCertificateOperation instance(Certificate c) {
+		return new RestoreUserCertificateOperation(c);
 	}
 
 	@Override
 	protected Object doExecute() {
-		if (user == null)
-			throw new NullArgumentException("user cannot be null");
 
 		if (certificate == null)
 			throw new NullArgumentException("certificate cannot be null");

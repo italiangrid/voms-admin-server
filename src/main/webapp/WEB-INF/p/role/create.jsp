@@ -35,7 +35,7 @@
     >
       <s:token/>
       <s:textfield name="roleName" size="20" value="" label="Role name"/>
-      <s:submit value="%{'Create!'}"/>
+      <s:submit value="%{'Create!'}" align="left"/>
     </s:form>
   </s:if>
 </div>
