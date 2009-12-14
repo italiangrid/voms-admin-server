@@ -50,14 +50,18 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 
-		if (!getModel().getStatus().equals(StatusFlag.SUBMITTED))
-			throw new IllegalArgumentException(
-					"Cannot confirm an already confirmed request!");
+		if (!getModel().getStatus().equals(StatusFlag.SUBMITTED)){
+			addActionError("You cannot confirm an already confirmed request!");
+			return ERROR;
+		}
+			
 
 		if (getModel().getConfirmId().equals(confirmationId))
 			request.setStatus(StatusFlag.CONFIRMED);
-		else
+		else{
+			addActionError("Wrong confirmation id!");
 			return ERROR;
+		}
 
 		String manageURL = getBaseURL() + "/home/login.action";
 

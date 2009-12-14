@@ -245,6 +245,15 @@ public class ACL implements Serializable {
 		return permissions.get(anyAuthenticatedUserAdmin);
 	}
 
+	public VOMSPermission getUnauthenticatedClientPermissions() {
+		
+		VOMSAdmin unauthenticatedClient = VOMSAdminDAO.instance().getUnauthenticatedClientAdmin();
+		
+		if (unauthenticatedClient == null)
+			return null;
+		
+		return permissions.get(unauthenticatedClient);
+	}
 	public Map<VOMSAdmin, VOMSPermission> getExternalPermissions() {
 
 		Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();

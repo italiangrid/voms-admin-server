@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.view.actions.admin;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.database.UserAlreadyExistsException;
 import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
@@ -50,17 +51,28 @@ public class DecisionAction extends RequestActionSupport {
 
 	String decision;
 
+	
 	@Override
 	public String execute() throws Exception {
 
 		if (request instanceof NewVOMembershipRequest) {
 
-			if (decision.equals("approve"))
-				ApproveVOMembershipOperation.instance(
-						(NewVOMembershipRequest) request).execute();
-			else
-				RejectVOMembershipOperation.instance(
-						(NewVOMembershipRequest) request).execute();
+			try{
+			
+				if (decision.equals("approve"))
+					ApproveVOMembershipOperation.instance(
+							(NewVOMembershipRequest) request).execute();
+				else
+					RejectVOMembershipOperation.instance(
+							(NewVOMembershipRequest) request).execute();
+			
+			}catch(UserAlreadyExistsException e){
+				
+				//FIXME: should be implemented in the validate method!
+				addActionError("A user with such certificate already exists. Please reject such request.");
+				return INPUT;
+			}
+			
 		}
 		
 		if (request instanceof GroupMembershipRequest){

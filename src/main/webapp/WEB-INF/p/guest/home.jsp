@@ -21,8 +21,7 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request Confirmation/Cancellation error.</h1>
+<h1>
+  Welcome to the <span class="voName">${voName}</span> VO.
+</h1>
 
-<p>
-	<s:actionerror/>
-</p>

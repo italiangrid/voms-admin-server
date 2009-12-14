@@ -91,6 +91,20 @@ public class VOMSAdminDAO {
 		return a;
 
 	}
+	
+	public VOMSAdmin getUnauthenticatedClientAdmin() {
+		
+		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		Query q = HibernateFactory.getSession().createQuery(query);
+
+		q.setString("dn", VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
+		q.setString("caDN", VOMSServiceConstants.VIRTUAL_CA);
+
+		VOMSAdmin a = (VOMSAdmin) q.uniqueResult();
+
+		return a;
+		
+	}
 
 	public VOMSAdmin getById(Long id) {
 

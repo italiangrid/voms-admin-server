@@ -201,7 +201,7 @@ public class VOMSUserDAO {
 				.getSession()
 				.createQuery(
 						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
-								+ "and r.lastAcceptanceDate > :lastUpdateTime ");
+								+ " and r.lastAcceptanceDate > :lastUpdateTime ");
 		
 		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 

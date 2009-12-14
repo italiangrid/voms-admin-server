@@ -137,6 +137,9 @@ public class DatabaseSetupTask extends TimerTask {
 
 			adminDAO.create(VOMSServiceConstants.ANYUSER_ADMIN,
 					VOMSServiceConstants.VIRTUAL_CA);
+			
+			adminDAO.create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
+					VOMSServiceConstants.VIRTUAL_CA);
 
 			VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
 			VOMSPermission readVoPermissions = VOMSPermission

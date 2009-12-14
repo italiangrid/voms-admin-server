@@ -107,9 +107,9 @@
                     <param name="excludeMethods">input,back,cancel</param>
                 </interceptor-ref>
                 
-                <!--  
+                
                 <interceptor-ref name="hibernateInterceptor" />
-                 -->
+                
                 
             </interceptor-stack>
       </interceptors>
@@ -121,12 +121,14 @@
           <result name="invalid.token">tokenError</result>
           <result name="exception">exception</result>
           <result name="authzException">authzException</result>
+          <result name="notFoundException">notFoundException</result>
         </global-results>
         
         
         <global-exception-mappings>
           <exception-mapping result="exception" exception="java.lang.Throwable"/>
           <exception-mapping result="authzException" exception="org.glite.security.voms.admin.common.VOMSAuthorizationException"/>
+          <exception-mapping result="notFoundException" exception="org.hibernate.ObjectNotFoundException"/>
         </global-exception-mappings>
     </package>
     

@@ -57,10 +57,10 @@
       <put-attribute name="menu" value="/WEB-INF/p/shared_20/user-menu.jsp"/>
       <put-attribute name="leftBar" value=""/>
     </definition>
-  
     
-    
-    
+    <definition name="guest" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/guest/home.jsp"/>
+    </definition>
     
     
     <definition name="userHome" extends="user-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
@@ -215,6 +215,10 @@
     
     <definition name="authzException" extends="empty-layout">
       <put-attribute name="content" value="/WEB-INF/p/exception/authzException.jsp"/>
+    </definition>
+    
+    <definition name="notFoundException" extends="empty-layout">
+      <put-attribute name="content" value="/WEB-INF/p/exception/notFoundException.jsp"/>
     </definition>
     
     <definition name="siblings" extends="user-layout">

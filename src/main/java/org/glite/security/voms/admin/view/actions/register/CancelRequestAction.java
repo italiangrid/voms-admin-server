@@ -50,9 +50,12 @@ public class CancelRequestAction extends RegisterActionSupport {
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 		
-		if (!request.getStatus().equals(StatusFlag.SUBMITTED))
-			throw new IllegalArgumentException(
-					"Cannot cancel an already confirmed request!");
+		if (!request.getStatus().equals(StatusFlag.SUBMITTED)){
+			
+			addActionError("You cannot cancel an already canceled request!");
+			return ERROR;
+		}
+			
 		
 		if (request.getConfirmId().equals(confirmationId)){
 			
@@ -63,6 +66,7 @@ public class CancelRequestAction extends RegisterActionSupport {
 			return SUCCESS;
 		}
 			
+		addActionError("Wrong confirmation id!");
 		return ERROR;
 	}
 

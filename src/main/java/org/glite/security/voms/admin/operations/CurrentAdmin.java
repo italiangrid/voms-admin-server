@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.common.DNUtil;
+import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.model.ACL;
@@ -134,7 +135,7 @@ public class CurrentAdmin {
 	}
 
 	public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
-
+		
 		ACL acl = c.getACL();
 
 		log.debug("Checking if admin " + getAdmin() + " has permission " + p
@@ -142,6 +143,16 @@ public class CurrentAdmin {
 
 		log.debug("ACL for this context: ");
 		log.debug(acl);
+		
+		if (isUnauthenticated()){
+			
+			VOMSPermission unauthPerms = acl.getUnauthenticatedClientPermissions();
+			if (unauthPerms == null)
+				return false;
+			
+			return unauthPerms.satisfies(p);
+			
+		}
 
 		VOMSUser adminUser = getVoUser();
 
@@ -288,4 +299,10 @@ public class CurrentAdmin {
 		return admin.toString();
 	}
 
+	public boolean isUnauthenticated(){
+		
+		
+		return (getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT) && getCa().getSubjectString().equals(VOMSServiceConstants.VIRTUAL_CA));
+		
+	}
 }
