@@ -36,6 +36,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -275,12 +276,10 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
 	public int compareTo(Certificate o) {
 
-		if (o == null)
-			return -1;
+		CompareToBuilder builder = new CompareToBuilder();
+		
+		builder.append(subjectString, o.subjectString).append(ca, o.ca);
 
-		if (this.equals(o))
-			return 0;
-
-		return getSubjectString().compareTo(o.getSubjectString());
+		return builder.toComparison();
 	}
 }

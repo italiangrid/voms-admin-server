@@ -71,7 +71,7 @@ public class CreateAction extends RoleActionSupport {
 	}
 
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the role is required!")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", expression = "^[\\w.-]+$")
 	public String getRoleName() {
 		return roleName;
 	}

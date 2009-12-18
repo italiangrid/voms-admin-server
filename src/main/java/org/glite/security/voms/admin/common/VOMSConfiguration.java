@@ -147,7 +147,9 @@ public final class VOMSConfiguration {
 	
     public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
     
-    // public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
+    public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
+    
+    public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
     
     
 	public static VOMSConfiguration instance() {

@@ -265,7 +265,10 @@ public class ACL implements Serializable {
 			VOMSAdmin admin = admins.next();
 
 			if ((admin.getDn().equals(VOMSServiceConstants.ANYUSER_ADMIN))
-					|| (!admin.getDn().startsWith(
+					|| 
+					(admin.getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT))
+					||
+					(!admin.getDn().startsWith(
 							VOMSServiceConstants.INTERNAL_DN_PREFIX)))
 				result.put(admin, permissions.get(admin));
 

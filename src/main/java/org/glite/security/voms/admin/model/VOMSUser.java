@@ -174,8 +174,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
 	/** User certificates **/
-
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", fetch=FetchType.EAGER)
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
 	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	Set<Certificate> certificates = new HashSet<Certificate>();
 

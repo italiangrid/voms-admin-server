@@ -75,11 +75,7 @@ public class InitSecurityContext {
 	 * <p>
 	 * If the certificate is invalid, or there is some other problem with the
 	 * client's credentials, then the distinguished name and CA will be set to
-	 * <code>null</code>, unless the client is from localhost and the
-	 * configuration option <code>voms.localhost.defaults.to.local.admin</code>
-	 * is true. In this latter case, the credentials will be set to that of the
-	 * {@linkplain VOMSServiceConstants#LOCAL_ADMIN Local Database
-	 * Administrator}.
+	 * <code>null</code>.
 	 * 
 	 * @see org.glite.security.SecurityContext
 	 */
@@ -108,20 +104,9 @@ public class InitSecurityContext {
 			// No certificate.
 			log.info("Unauthenticated connection from \"" + remote + "\"");
 
-			if (VOMSConfiguration.instance().getBoolean(
-					VOMSConfiguration.LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN, false)
-					&& remote != null
-					&& ("127.0.0.1".equals(remote) || "0:0:0:0:0:0:0:1"
-							.equals(remote))) {
-
-				log
-						.warn("*** Overriding null credentials from localhost with Local Database Admin ***");
-				sc.setClientName(VOMSServiceConstants.LOCAL_ADMIN);
-				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-			} else {
-				sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
-				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-			}
+			sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
+			sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
+			
 
 		} else {
 			// Client certificate found.
@@ -231,7 +216,7 @@ public class InitSecurityContext {
 		log.debug("Initializing the local admin's security context");
 		SecurityContext sc = new SecurityContext();
 		SecurityContext.setCurrentContext(sc);
-		// sc.setAuthorizedAttributes(Arrays.asList(new String[] { }));
+		
 		sc.setClientName(VOMSServiceConstants.LOCAL_ADMIN);
 		sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 		if (host != null)
@@ -247,7 +232,7 @@ public class InitSecurityContext {
 		log.debug("Initializing the internal admin's security context");
 		SecurityContext sc = new SecurityContext();
 		SecurityContext.setCurrentContext(sc);
-		// sc.setAuthorizedAttributes(Arrays.asList(new String[] { }));
+		
 		sc.setClientName(VOMSServiceConstants.INTERNAL_ADMIN);
 		sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 	}

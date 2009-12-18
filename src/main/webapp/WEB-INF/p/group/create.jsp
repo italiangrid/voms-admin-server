@@ -40,7 +40,7 @@
       <s:select list="#request['voGroups']" name="parentGroupName" label="Parent group"/>
       <s:textfield name="groupName" size="20" value="" label="Group name"/>
       <s:token/>
-      <s:submit value="%{'Create!'}"/>
+      <s:submit value="%{'Create!'}" align="left"/>
     </s:form>
   </s:if>
 </div>

@@ -181,6 +181,12 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
 				VOMSServiceConstants.INTERNAL_DN_PREFIX);
 	}
 
+	public boolean isUnauthenticated(){
+		
+		return (getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT)
+				&& 
+				getCa().getSubjectString().equals(VOMSServiceConstants.VIRTUAL_CA));
+	}
 	public boolean isGroupAdmin() {
 
 		boolean result;

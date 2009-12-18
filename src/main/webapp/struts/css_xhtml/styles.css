@@ -33,4 +33,9 @@
 .checkboxLabel {}
 .checkboxErrorLabel {color:#BF2F2F; }
 .required {color:#BF2F2F;}
-.wwgrp{ margin-top: 1em}
+.wwgrp{ 
+	
+	margin-top: 1em;
+	margin-bottom: 1em;
+
+}

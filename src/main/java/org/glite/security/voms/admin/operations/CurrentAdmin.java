@@ -147,6 +147,7 @@ public class CurrentAdmin {
 		if (isUnauthenticated()){
 			
 			VOMSPermission unauthPerms = acl.getUnauthenticatedClientPermissions();
+			
 			if (unauthPerms == null)
 				return false;
 			
@@ -301,8 +302,7 @@ public class CurrentAdmin {
 
 	public boolean isUnauthenticated(){
 		
-		
-		return (getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT) && getCa().getSubjectString().equals(VOMSServiceConstants.VIRTUAL_CA));
+		return admin.isUnauthenticated();
 		
 	}
 }

@@ -35,7 +35,7 @@
 		<property name="dn" type="string" column="dn" not-null="true" unique-key="true"/>
 		<property name="emailAddress" type="string" column="email_address"/>
 		
-		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.model.VOMSCA" not-null="true"/>
+		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.model.VOMSCA" not-null="true" unique-key="true"/>
     
         <set name="tagMappings" inverse="true" cascade="all-delete-orphan">
           <key column="admin_id" on-delete="cascade"/>

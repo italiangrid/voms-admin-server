@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -52,6 +54,8 @@ import com.opensymphony.xwork2.validator.validators.EmailValidator;
 		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
 		@Result(name = BaseAction.INPUT, location = "addACLEntry") })
 public class AddEntryAction extends ACLActionSupport {
+	
+	public static final Log log = LogFactory.getLog(AddEntryAction.class);
 
 	/**
 	 * 
@@ -100,6 +104,7 @@ public class AddEntryAction extends ACLActionSupport {
 			
 		}
 	}
+	
 	private void loadAdmin() throws Exception {
 
 		if (entryType.equals("vo-user")) {
@@ -149,7 +154,15 @@ public class AddEntryAction extends ACLActionSupport {
 
 			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
 
-		} else
+		} else if (entryType.equals("unauthenticated")){
+			
+			admin = VOMSAdminDAO.instance().getUnauthenticatedClientAdmin();
+			
+			if (admin == null)
+				admin = VOMSAdminDAO.instance().createUnauthenticateClientAdmin();
+		}
+		
+		else
 			throw new IllegalArgumentException("Unsupported entryType value: "
 					+ entryType);
 	}
@@ -159,10 +172,12 @@ public class AddEntryAction extends ACLActionSupport {
 
 		loadAdmin();
 
+		VOMSPermission perms = VOMSPermission.fromStringArray(selectedPermissions.toArray(new String[selectedPermissions.size()]));
+		
+		limitUnauthenticatedClientPermissions(perms);
+		
 		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
-				admin, VOMSPermission.fromStringArray(selectedPermissions
-						.toArray(new String[selectedPermissions.size()])),
-				propagate == null ? false : propagate);
+				admin, perms, propagate == null ? false : propagate);
 
 		op.execute();
 
@@ -267,6 +282,7 @@ public class AddEntryAction extends ACLActionSupport {
 		entryTypeMap = new LinkedHashMap<String, String>();
 		
 		entryTypeMap.put("anyone", "any authenticated user");
+		entryTypeMap.put("unauthenticated", "unauthenticated clients");
 		
 		if (!VOMSUserDAO.instance().getAll().isEmpty())
 			entryTypeMap.put("vo-user", "a VO member certificate");

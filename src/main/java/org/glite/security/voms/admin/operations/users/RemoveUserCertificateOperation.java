@@ -21,8 +21,10 @@ package org.glite.security.voms.admin.operations.users;
 
 import java.security.cert.X509Certificate;
 
+
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.database.NoSuchCertificateException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
@@ -71,6 +73,9 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
 			Certificate cert = CertificateDAO.instance().findByDNCA(subject,
 					issuer);
+			if (cert == null)
+				throw new NoSuchCertificateException("No certificate found matching subject '"+subject+", "+issuer+"'.");
+			
 			VOMSUserDAO.instance().deleteCertificate(cert);
 		}
 

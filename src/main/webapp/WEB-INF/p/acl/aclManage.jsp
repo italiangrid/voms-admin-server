@@ -34,7 +34,6 @@
  --%>
 
 
-
 <s:if test="! #attr.voGroups.empty">
 <h1>Manage the Access Control List for</h1>
 
@@ -72,6 +71,8 @@
           />
   </s:form>
 </div>
+
+<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 <div id="aclShowPane"></div>
 
 </s:if>

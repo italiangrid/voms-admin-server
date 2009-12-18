@@ -92,6 +92,12 @@ public class VOMSAdminDAO {
 
 	}
 	
+	
+	public VOMSAdmin createUnauthenticateClientAdmin(){
+		
+		return create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT, 
+				VOMSServiceConstants.VIRTUAL_CA);
+	}
 	public VOMSAdmin getUnauthenticatedClientAdmin() {
 		
 		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";

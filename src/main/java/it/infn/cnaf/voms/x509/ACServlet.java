@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.glite.security.SecurityContext;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.database.NoSuchCertificateException;
@@ -180,6 +181,20 @@ public class ACServlet extends BaseServlet implements VOMSErrorCodes {
     
         VOMSAttributeAuthority vomsAA = VOMSAA.getVOMSAttributeAuthority();
         VOMSAttributes attrs;
+        
+        if (!VOMSConfiguration.instance().getBoolean(VOMSConfiguration.VOMS_AA_REST_ACTIVATE_ENDPOINT, false)){
+        	writeErrorResponse(response, 500, 
+        			VOMS_ERROR_INTERNAL_ERROR, 
+        			"REST endpoint is disabled for this VO");
+        	return;
+        }
+        
+        if (CurrentAdmin.instance().isUnauthenticated()){
+        	writeErrorResponse(response, 400, 
+        			VOMS_ERROR_BAD_REQUEST, 
+        			"Please authenticated with an X509 certificate to obtain a VOMS attribute certificate");
+        	return;
+        }
         
         String clientDN = CurrentAdmin.instance().getRealSubject();
         

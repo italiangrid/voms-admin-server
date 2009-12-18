@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +45,7 @@ import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
+import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.UserCreatedEvent;
 import org.glite.security.voms.admin.event.user.UserDeletedEvent;
@@ -607,21 +609,13 @@ public class VOMSUserDAO {
 		if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
 			throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
 		
-		u.getCertificates().remove(cert);
-		HibernateFactory.getSession().saveOrUpdate(u);
-
+		if (!u.getCertificates().remove(cert)){
+			// This should never happen
+			throw new VOMSDatabaseException("Inconsistent database! It was not possible to remove certificate '"+cert+"' from user '"+u+"', even if it seemed user actually possessed such certificate.");
+		}
+		
 	}
 
-	public void deleteCertificate(VOMSUser u, String subject, String issuer) {
-
-		assert u != null : "User must be non-null!";
-		assert subject != null : "Subject must be non-null!";
-		assert issuer != null : "Issuer must be non-null!";
-
-		Certificate cert = CertificateDAO.instance()
-				.findByDNCA(subject, issuer);
-		deleteCertificate(u, cert);
-	}
 
 	public void dismissRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 

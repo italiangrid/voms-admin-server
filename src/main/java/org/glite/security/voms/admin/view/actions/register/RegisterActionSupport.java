@@ -48,6 +48,7 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public static final String PLEASE_WAIT = "pleaseWait";
 	public static final String ALREADY_MEMBER = "alreadyAMember";
 	public static final String REGISTRATION_DISABLED = "registrationDisabled";
+	public static final String UNAUTHENTICATED_CLIENT = "unauthenticatedClient";
 	/**
 	 * 
 	 */

@@ -55,8 +55,13 @@ public class EditEntryAction extends ACLActionSupport {
 		else
 			permString = StringUtils.join(selectedPermissions, "|");
 
+		
+		VOMSPermission perm = VOMSPermission.fromString(permString);
+		
+		limitUnauthenticatedClientPermissions(perm);
+			
 		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
-				admin, VOMSPermission.fromString(permString), propagate);
+				admin, perm, propagate);
 
 		op.execute();
 

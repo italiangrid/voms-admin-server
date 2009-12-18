@@ -60,561 +60,40 @@ public class VOMSPermission implements Serializable, Cloneable {
 
 	private static final int ALL_PERMISSION_MASK = ~0 >>> (32 - NUM_PERMISSIONS);
 
-	private int bits = 0;
-
-	public VOMSPermission() {
-
-	}
-
-	public VOMSPermission(int bits) {
-
-		this.bits = bits;
-	}
-
-	protected boolean test(int permission) {
-
-		if (permission <= 0)
-			throw new IllegalArgumentException(
-					"Permission must be a positive integer.");
-		return ((bits & permission) == permission);
-	}
-
-	protected VOMSPermission set(int permission) {
-
-		if (permission <= 0)
-			throw new IllegalArgumentException(
-					"Permission must be a positive integer.");
-		bits |= permission;
-		return this;
-	}
-
-	protected VOMSPermission unset(int permission) {
-
-		if (permission <= 0)
-			throw new IllegalArgumentException(
-					"Permission must be a positive integer.");
-		bits &= ~permission;
-		return this;
-	}
-
-	public int getBits() {
-
-		return bits;
-	}
-
-	private List buildPermList() {
-
-		ArrayList permList = new ArrayList();
-
-		if (test(CONTAINER_READ))
-			permList.add("CONTAINER_READ");
-
-		if (test(CONTAINER_WRITE))
-			permList.add("CONTAINER_WRITE");
-
-		if (test(MEMBERSHIP_READ))
-			permList.add("MEMBERSHIP_READ");
-
-		if (test(MEMBERSHIP_WRITE))
-			permList.add("MEMBERSHIP_WRITE");
-
-		if (test(ACL_READ))
-			permList.add("ACL_READ");
-
-		if (test(ACL_WRITE))
-			permList.add("ACL_WRITE");
-
-		if (test(ACL_DEFAULT))
-			permList.add("ACL_DEFAULT");
-
-		if (test(REQUESTS_READ))
-			permList.add("REQUESTS_READ");
-
-		if (test(REQUESTS_WRITE))
-			permList.add("REQUESTS_WRITE");
-
-		if (test(ATTRIBUTES_READ))
-			permList.add("ATTRIBUTES_READ");
-
-		if (test(ATTRIBUTES_WRITE))
-			permList.add("ATTRIBUTES_WRITE");
-
-		if (test(PERSONAL_INFO_READ))
-			permList.add("PERSONAL_INFO_READ");
-
-		if (test(PERSONAL_INFO_WRITE))
-			permList.add("PERSONAL_INFO_WRITE");
-
-		if (test(SUSPEND))
-			permList.add("SUSPEND");
-
-		return permList;
-
-	}
-
-	public String[] toStringArray() {
-
-		if (bits == 0)
-			return null;
-
-		List permList = buildPermList();
-		String[] result = new String[permList.size()];
-
-		permList.toArray(result);
-
-		permList.clear();
-		permList = null;
-
-		return result;
-
-	}
-
-	public List<String> toStringList() {
-		List<String> result = new ArrayList<String>();
-		if (bits == 0)
-			return result;
-
-		return buildPermList();
-
-	}
-
-	public String getCompactRepresentation() {
-
-		StringBuffer buf = new StringBuffer();
-
-		if (bits == 0)
-			return "NONE";
-
-		if (test(ALL_PERMISSION_MASK))
-			return "ALL";
-
-		// Container perms
-		buf.append("C:");
-		buf.append(test(CONTAINER_READ) ? "r" : "-");
-		buf.append(test(CONTAINER_WRITE) ? "w" : "-");
-
-		buf.append(" M:");
-		buf.append(test(MEMBERSHIP_READ) ? "r" : "-");
-		buf.append(test(MEMBERSHIP_WRITE) ? "w" : "-");
-
-		buf.append(" Acl:");
-		buf.append(test(ACL_READ) ? "r" : "-");
-		buf.append(test(ACL_WRITE) ? "w" : "-");
-		if (test(ACL_DEFAULT))
-			buf.append("d");
-
-		buf.append(" Attrs:");
-		buf.append(test(ATTRIBUTES_READ) ? "r" : "-");
-		buf.append(test(ATTRIBUTES_WRITE) ? "w" : "-");
-
-		buf.append(" Req:");
-		buf.append(test(REQUESTS_READ) ? "r" : "-");
-		buf.append(test(REQUESTS_WRITE) ? "w" : "-");
-
-		buf.append(" Info:");
-		buf.append(test(PERSONAL_INFO_READ) ? "r" : "-");
-		buf.append(test(PERSONAL_INFO_WRITE) ? "w" : "-");
-
-		buf.append(" Susp:");
-		buf.append(test(SUSPEND) ? "y" : "-");
-
-		return buf.toString();
-
-	}
-
-	public String toString() {
-
-		if (test(ALL_PERMISSION_MASK))
-			return "ALL";
-
-		if (bits == 0)
-			return "NONE";
-
-		List permList = buildPermList();
-
-		String result = StringUtils.join(permList.iterator(), ",");
-
-		permList.clear();
-		permList = null;
-
-		return result;
-	}
-
-	public boolean equals(Object other) {
-
-		if (this == other)
-			return true;
-
-		if (!(other instanceof VOMSPermission))
-			return false;
-
-		VOMSPermission that = (VOMSPermission) other;
-		return (this.bits == that.bits);
-
-	}
-
-	public int hashCode() {
-
-		return new Integer(bits).hashCode();
-
-	}
-
-	public Object clone() throws CloneNotSupportedException {
-
-		VOMSPermission clone = (VOMSPermission) super.clone();
-		clone.bits = this.bits;
-		return clone;
-	}
-
-	public boolean hasContainerReadPermission() {
-
-		return test(CONTAINER_READ);
-	}
-
-	public boolean hasContainerWritePermission() {
-
-		return test(CONTAINER_WRITE);
-	}
-
-	public boolean hasMembershipReadPermission() {
-
-		return test(MEMBERSHIP_READ);
-	}
-
-	public boolean hasMembershipWritePermission() {
-
-		return test(MEMBERSHIP_WRITE);
-	}
-
-	public boolean hasACLReadPermission() {
-
-		return test(ACL_READ);
-	}
-
-	public boolean hasACLWritePermission() {
-
-		return test(ACL_WRITE);
-	}
-
-	public boolean hasACLDefaultPermission() {
-
-		return test(ACL_DEFAULT);
-	}
-
-	public boolean hasRequestReadPermission() {
-
-		return test(REQUESTS_READ);
-	}
-
-	public boolean hasRequestWritePermission() {
-
-		return test(REQUESTS_WRITE);
-	}
-
-	public boolean hasAttributeReadPermission() {
-
-		return test(ATTRIBUTES_READ);
-	}
-
-	public boolean hasAttributeWritePermission() {
-
-		return test(ATTRIBUTES_WRITE);
-	}
-
-	public boolean hasSuspendPermission() {
-
-		return test(SUSPEND);
-	}
-
-	public boolean hasPersonalInfoReadPermission() {
-		return test(PERSONAL_INFO_READ);
-	}
-
-	public boolean hasPersonalInfoWritePermission() {
-		return test(PERSONAL_INFO_WRITE);
-	}
-
-	public VOMSPermission setContainerReadPermission() {
-
-		set(CONTAINER_READ);
-		return this;
-	}
-
-	public VOMSPermission setContainerWritePermission() {
-
-		set(CONTAINER_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setMembershipReadPermission() {
-
-		set(MEMBERSHIP_READ);
-		return this;
-	}
-
-	public VOMSPermission setMembershipWritePermission() {
-
-		set(MEMBERSHIP_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setMembershipRWPermission() {
-
-		set(MEMBERSHIP_READ);
-		set(MEMBERSHIP_WRITE);
-		return this;
-
-	}
-
-	public VOMSPermission setACLReadPermission() {
-
-		set(ACL_READ);
-		return this;
-	}
-
-	public VOMSPermission setACLWritePermission() {
-
-		set(ACL_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setACLDefaultPermission() {
-
-		set(ACL_DEFAULT);
-		return this;
-	}
-
-	public VOMSPermission setRequestsReadPermission() {
-
-		set(REQUESTS_READ);
-		return this;
-	}
-
-	public VOMSPermission setRequestsWritePermission() {
-
-		set(REQUESTS_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setAttributesReadPermission() {
-
-		set(ATTRIBUTES_READ);
-		return this;
-	}
-
-	public VOMSPermission setAttributesWritePermission() {
-
-		set(ATTRIBUTES_WRITE);
-		return this;
-	}
-
-	public VOMSPermission unsetContainerReadPermission() {
-
-		unset(CONTAINER_READ);
-		return this;
-	}
-
-	public VOMSPermission unsetContainerWritePermission() {
-
-		unset(CONTAINER_WRITE);
-		return this;
-	}
-
-	public VOMSPermission unsetMembershipReadPermission() {
-
-		unset(MEMBERSHIP_READ);
-		return this;
-	}
-
-	public VOMSPermission unsetMembershipWritePermission() {
-
-		unset(MEMBERSHIP_WRITE);
-		return this;
-	}
-
-	public VOMSPermission unsetACLReadPermission() {
-
-		unset(ACL_READ);
-		return this;
-	}
-
-	public VOMSPermission unsetACLWritePermission() {
-
-		unset(ACL_WRITE);
-		return this;
-	}
-
-	public VOMSPermission unsetACLDefaultPermission() {
-
-		unset(ACL_DEFAULT);
-		return this;
-	}
-
-	public VOMSPermission unsetRequestsReadPermission() {
-
-		unset(REQUESTS_READ);
-		return this;
-	}
-
-	public VOMSPermission unsetRequestsWritePermission() {
-
-		unset(REQUESTS_WRITE);
-		return this;
-	}
-
-	public VOMSPermission unsetAttributesReadPermission() {
-
-		unset(ATTRIBUTES_READ);
-		return this;
-	}
-
-	public VOMSPermission unsetAttributesWritePermission() {
-
-		unset(ATTRIBUTES_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setPersonalInfoReadPermission() {
-
-		set(PERSONAL_INFO_READ);
-		return this;
-	}
-
-	public VOMSPermission setPersonalInfoWritePermission() {
-
-		set(PERSONAL_INFO_WRITE);
-		return this;
-	}
-
-	public VOMSPermission setSuspendPermission() {
-
-		set(SUSPEND);
-		return this;
-	}
-
-	public VOMSPermission setAllPermissions() {
-
-		set(ALL_PERMISSION_MASK);
-		return this;
-	}
-
-	public VOMSPermission setEmptyPermissions() {
-
-		bits = 0;
-		return this;
-	}
-
-	public VOMSPermission setPermissions(int bits) {
-
-		set(bits);
-		return this;
-	}
-
-	public boolean satisfies(VOMSPermission other) {
-
-		int perms = bits & other.getBits();
-		return (perms == other.getBits());
-	}
-
 	public static String asString(int bits) {
 
 		VOMSPermission p = new VOMSPermission(bits);
 		return p.toString();
 	}
 
-	public static VOMSPermission getContainerRWPermissions() {
+	public static VOMSPermission fromBits(int bits) {
 
-		return new VOMSPermission().setContainerReadPermission()
-				.setContainerWritePermission();
-	}
-
-	public static VOMSPermission getMembershipRWPermissions() {
-
-		return new VOMSPermission().setMembershipReadPermission()
-				.setMembershipWritePermission();
-	}
-
-	public static VOMSPermission getContainerReadPermission() {
-
-		return new VOMSPermission().setContainerReadPermission();
-	}
-
-	public static VOMSPermission getAllPermissions() {
-
-		return new VOMSPermission().setAllPermissions();
-	}
-
-	public static VOMSPermission getEmptyPermissions() {
-
-		return new VOMSPermission().setEmptyPermissions();
-	}
-
-	public static VOMSPermission getSuspendPermissions() {
-		return new VOMSPermission().setSuspendPermission();
-	}
-
-	public static VOMSPermission getAttributesRWPermissions() {
-
-		return new VOMSPermission().setAttributesReadPermission()
-				.setAttributesWritePermission();
-	}
-
-	public static VOMSPermission getRequestsRWPermissions() {
-
-		return new VOMSPermission().setRequestsReadPermission()
-				.setRequestsWritePermission();
-	}
-
-	public String toBinaryString() {
-
-		return Integer.toBinaryString(bits);
-	}
-
-	public boolean has(String permString) {
-
-		if (permString == null)
-			return false;
-
-		if (permString.equals("CONTAINER_READ"))
-			return test(CONTAINER_READ);
-		else if (permString.equals("CONTAINER_WRITE"))
-			return test(CONTAINER_WRITE);
-		else if (permString.equals("MEMBERSHIP_READ"))
-			return test(MEMBERSHIP_READ);
-		else if (permString.equals("MEMBERSHIP_WRITE"))
-			return test(MEMBERSHIP_WRITE);
-		else if (permString.equals("ACL_READ"))
-			return test(ACL_READ);
-
-		else if (permString.equals("ACL_WRITE"))
-			return test(ACL_WRITE);
-
-		else if (permString.equals("ACL_DEFAULT"))
-			return test(ACL_DEFAULT);
-
-		else if (permString.equals("REQUESTS_READ"))
-			return test(REQUESTS_READ);
-
-		else if (permString.equals("REQUESTS_WRITE"))
-			return test(REQUESTS_WRITE);
-
-		else if (permString.equals("ATTRIBUTES_READ"))
-			return test(ATTRIBUTES_READ);
-
-		else if (permString.equals("ATTRIBUTES_WRITE"))
-			return test(ATTRIBUTES_WRITE);
-
-		else if (permString.equals("PERSONAL_INFO_READ"))
-			return test(PERSONAL_INFO_READ);
-
-		else if (permString.equals("PERSONAL_INFO_WRITE"))
-			return test(PERSONAL_INFO_WRITE);
-
-		else if (permString.equals("SUSPEND"))
-			return test(SUSPEND);
-		else
+		if (bits <= 0)
 			throw new IllegalArgumentException(
-					"Unknown permission passed as argument: " + permString);
+					"Permission must be a positive integer.");
+
+		VOMSPermission perm = new VOMSPermission();
+
+		for (int i = 0; i < NUM_PERMISSIONS; i++) {
+			int PERM_MASK = 1 << i;
+			if ((bits & PERM_MASK) == PERM_MASK)
+				perm.set(PERM_MASK);
+		}
+
+		return perm;
+	}
+
+	public static VOMSPermission fromString(String permString) {
+
+		VOMSPermission perm = new VOMSPermission();
+
+		String[] perms = StringUtils.split(permString, '|');
+
+		if (perms.length == 1 && perms[0].equals(""))
+			return perm;
+
+		return fromStringArray(perms);
+
 	}
 
 	public static VOMSPermission fromStringArray(String[] perms) {
@@ -668,33 +147,562 @@ public class VOMSPermission implements Serializable, Cloneable {
 
 	}
 
-	public static VOMSPermission fromString(String permString) {
+	public static VOMSPermission getAllPermissions() {
 
-		VOMSPermission perm = new VOMSPermission();
+		return new VOMSPermission().setAllPermissions();
+	}
 
-		String[] perms = StringUtils.split(permString, '|');
+	public static VOMSPermission getAttributesRWPermissions() {
 
-		if (perms.length == 1 && perms[0].equals(""))
-			return perm;
+		return new VOMSPermission().setAttributesReadPermission()
+				.setAttributesWritePermission();
+	}
 
-		return fromStringArray(perms);
+	public static VOMSPermission getContainerReadPermission() {
+
+		return new VOMSPermission().setContainerReadPermission();
+	}
+
+	public static VOMSPermission getContainerRWPermissions() {
+
+		return new VOMSPermission().setContainerReadPermission()
+				.setContainerWritePermission();
+	}
+
+	public static VOMSPermission getEmptyPermissions() {
+
+		return new VOMSPermission().setEmptyPermissions();
+	}
+
+	public static VOMSPermission getMembershipRWPermissions() {
+
+		return new VOMSPermission().setMembershipReadPermission()
+				.setMembershipWritePermission();
+	}
+
+	public static VOMSPermission getRequestsRWPermissions() {
+
+		return new VOMSPermission().setRequestsReadPermission()
+				.setRequestsWritePermission();
+	}
+
+	public static VOMSPermission getSuspendPermissions() {
+		return new VOMSPermission().setSuspendPermission();
+	}
+
+	private int bits = 0;
+
+	public VOMSPermission() {
 
 	}
 
-	public static VOMSPermission fromBits(int bits) {
+	public VOMSPermission(int bits) {
 
-		if (bits <= 0)
+		this.bits = bits;
+	}
+
+	private List buildPermList() {
+
+		ArrayList permList = new ArrayList();
+
+		if (test(CONTAINER_READ))
+			permList.add("CONTAINER_READ");
+
+		if (test(CONTAINER_WRITE))
+			permList.add("CONTAINER_WRITE");
+
+		if (test(MEMBERSHIP_READ))
+			permList.add("MEMBERSHIP_READ");
+
+		if (test(MEMBERSHIP_WRITE))
+			permList.add("MEMBERSHIP_WRITE");
+
+		if (test(ACL_READ))
+			permList.add("ACL_READ");
+
+		if (test(ACL_WRITE))
+			permList.add("ACL_WRITE");
+
+		if (test(ACL_DEFAULT))
+			permList.add("ACL_DEFAULT");
+
+		if (test(REQUESTS_READ))
+			permList.add("REQUESTS_READ");
+
+		if (test(REQUESTS_WRITE))
+			permList.add("REQUESTS_WRITE");
+
+		if (test(ATTRIBUTES_READ))
+			permList.add("ATTRIBUTES_READ");
+
+		if (test(ATTRIBUTES_WRITE))
+			permList.add("ATTRIBUTES_WRITE");
+
+		if (test(PERSONAL_INFO_READ))
+			permList.add("PERSONAL_INFO_READ");
+
+		if (test(PERSONAL_INFO_WRITE))
+			permList.add("PERSONAL_INFO_WRITE");
+
+		if (test(SUSPEND))
+			permList.add("SUSPEND");
+
+		return permList;
+
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+
+		VOMSPermission clone = (VOMSPermission) super.clone();
+		clone.bits = this.bits;
+		return clone;
+	}
+
+	public boolean equals(Object other) {
+
+		if (this == other)
+			return true;
+
+		if (!(other instanceof VOMSPermission))
+			return false;
+
+		VOMSPermission that = (VOMSPermission) other;
+		return (this.bits == that.bits);
+
+	}
+
+	public int getBits() {
+
+		return bits;
+	}
+
+	public String getCompactRepresentation() {
+
+		StringBuffer buf = new StringBuffer();
+
+		if (bits == 0)
+			return "NONE";
+
+		if (test(ALL_PERMISSION_MASK))
+			return "ALL";
+
+		// Container perms
+		buf.append("C:");
+		buf.append(test(CONTAINER_READ) ? "r" : "-");
+		buf.append(test(CONTAINER_WRITE) ? "w" : "-");
+
+		buf.append(" M:");
+		buf.append(test(MEMBERSHIP_READ) ? "r" : "-");
+		buf.append(test(MEMBERSHIP_WRITE) ? "w" : "-");
+
+		buf.append(" Acl:");
+		buf.append(test(ACL_READ) ? "r" : "-");
+		buf.append(test(ACL_WRITE) ? "w" : "-");
+		if (test(ACL_DEFAULT))
+			buf.append("d");
+
+		buf.append(" Attrs:");
+		buf.append(test(ATTRIBUTES_READ) ? "r" : "-");
+		buf.append(test(ATTRIBUTES_WRITE) ? "w" : "-");
+
+		buf.append(" Req:");
+		buf.append(test(REQUESTS_READ) ? "r" : "-");
+		buf.append(test(REQUESTS_WRITE) ? "w" : "-");
+
+		buf.append(" Info:");
+		buf.append(test(PERSONAL_INFO_READ) ? "r" : "-");
+		buf.append(test(PERSONAL_INFO_WRITE) ? "w" : "-");
+
+		buf.append(" Susp:");
+		buf.append(test(SUSPEND) ? "y" : "-");
+
+		return buf.toString();
+
+	}
+
+	public boolean has(String permString) {
+
+		if (permString == null)
+			return false;
+
+		if (permString.equals("CONTAINER_READ"))
+			return test(CONTAINER_READ);
+		else if (permString.equals("CONTAINER_WRITE"))
+			return test(CONTAINER_WRITE);
+		else if (permString.equals("MEMBERSHIP_READ"))
+			return test(MEMBERSHIP_READ);
+		else if (permString.equals("MEMBERSHIP_WRITE"))
+			return test(MEMBERSHIP_WRITE);
+		else if (permString.equals("ACL_READ"))
+			return test(ACL_READ);
+
+		else if (permString.equals("ACL_WRITE"))
+			return test(ACL_WRITE);
+
+		else if (permString.equals("ACL_DEFAULT"))
+			return test(ACL_DEFAULT);
+
+		else if (permString.equals("REQUESTS_READ"))
+			return test(REQUESTS_READ);
+
+		else if (permString.equals("REQUESTS_WRITE"))
+			return test(REQUESTS_WRITE);
+
+		else if (permString.equals("ATTRIBUTES_READ"))
+			return test(ATTRIBUTES_READ);
+
+		else if (permString.equals("ATTRIBUTES_WRITE"))
+			return test(ATTRIBUTES_WRITE);
+
+		else if (permString.equals("PERSONAL_INFO_READ"))
+			return test(PERSONAL_INFO_READ);
+
+		else if (permString.equals("PERSONAL_INFO_WRITE"))
+			return test(PERSONAL_INFO_WRITE);
+
+		else if (permString.equals("SUSPEND"))
+			return test(SUSPEND);
+		else
+			throw new IllegalArgumentException(
+					"Unknown permission passed as argument: " + permString);
+	}
+
+	public boolean hasACLDefaultPermission() {
+
+		return test(ACL_DEFAULT);
+	}
+
+	public boolean hasACLReadPermission() {
+
+		return test(ACL_READ);
+	}
+
+	public boolean hasACLWritePermission() {
+
+		return test(ACL_WRITE);
+	}
+
+	public boolean hasAttributeReadPermission() {
+
+		return test(ATTRIBUTES_READ);
+	}
+
+	public boolean hasAttributeWritePermission() {
+
+		return test(ATTRIBUTES_WRITE);
+	}
+
+	public boolean hasContainerReadPermission() {
+
+		return test(CONTAINER_READ);
+	}
+
+	public boolean hasContainerWritePermission() {
+
+		return test(CONTAINER_WRITE);
+	}
+
+	public int hashCode() {
+
+		return new Integer(bits).hashCode();
+
+	}
+
+	public boolean hasMembershipReadPermission() {
+
+		return test(MEMBERSHIP_READ);
+	}
+
+	public boolean hasMembershipWritePermission() {
+
+		return test(MEMBERSHIP_WRITE);
+	}
+
+	public boolean hasPersonalInfoReadPermission() {
+		return test(PERSONAL_INFO_READ);
+	}
+
+	public boolean hasPersonalInfoWritePermission() {
+		return test(PERSONAL_INFO_WRITE);
+	}
+
+	public boolean hasRequestReadPermission() {
+
+		return test(REQUESTS_READ);
+	}
+
+	public boolean hasRequestWritePermission() {
+
+		return test(REQUESTS_WRITE);
+	}
+
+	public boolean hasSuspendPermission() {
+
+		return test(SUSPEND);
+	}
+
+	public boolean satisfies(VOMSPermission other) {
+
+		int perms = bits & other.getBits();
+		return (perms == other.getBits());
+	}
+
+	protected VOMSPermission set(int permission) {
+
+		if (permission <= 0)
 			throw new IllegalArgumentException(
 					"Permission must be a positive integer.");
-
-		VOMSPermission perm = new VOMSPermission();
-
-		for (int i = 0; i < NUM_PERMISSIONS; i++) {
-			int PERM_MASK = 1 << i;
-			if ((bits & PERM_MASK) == PERM_MASK)
-				perm.set(PERM_MASK);
-		}
-
-		return perm;
+		bits |= permission;
+		return this;
 	}
+
+	public VOMSPermission setACLDefaultPermission() {
+
+		set(ACL_DEFAULT);
+		return this;
+	}
+
+	public VOMSPermission setACLReadPermission() {
+
+		set(ACL_READ);
+		return this;
+	}
+
+	public VOMSPermission setACLWritePermission() {
+
+		set(ACL_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setAllPermissions() {
+
+		set(ALL_PERMISSION_MASK);
+		return this;
+	}
+
+	public VOMSPermission setAttributesReadPermission() {
+
+		set(ATTRIBUTES_READ);
+		return this;
+	}
+
+	public VOMSPermission setAttributesWritePermission() {
+
+		set(ATTRIBUTES_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setContainerReadPermission() {
+
+		set(CONTAINER_READ);
+		return this;
+	}
+
+	public VOMSPermission setContainerWritePermission() {
+
+		set(CONTAINER_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setEmptyPermissions() {
+
+		bits = 0;
+		return this;
+	}
+
+	public VOMSPermission setMembershipReadPermission() {
+
+		set(MEMBERSHIP_READ);
+		return this;
+	}
+
+	public VOMSPermission setMembershipRWPermission() {
+
+		set(MEMBERSHIP_READ);
+		set(MEMBERSHIP_WRITE);
+		return this;
+
+	}
+
+	public VOMSPermission setMembershipWritePermission() {
+
+		set(MEMBERSHIP_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setPermissions(int bits) {
+
+		set(bits);
+		return this;
+	}
+
+	public VOMSPermission setPersonalInfoReadPermission() {
+
+		set(PERSONAL_INFO_READ);
+		return this;
+	}
+
+	public VOMSPermission setPersonalInfoWritePermission() {
+
+		set(PERSONAL_INFO_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setRequestsReadPermission() {
+
+		set(REQUESTS_READ);
+		return this;
+	}
+
+	public VOMSPermission setRequestsWritePermission() {
+
+		set(REQUESTS_WRITE);
+		return this;
+	}
+
+	public VOMSPermission setSuspendPermission() {
+
+		set(SUSPEND);
+		return this;
+	}
+
+	protected boolean test(int permission) {
+
+		if (permission <= 0)
+			throw new IllegalArgumentException(
+					"Permission must be a positive integer.");
+		return ((bits & permission) == permission);
+	}
+
+	public String toBinaryString() {
+
+		return Integer.toBinaryString(bits);
+	}
+
+	public String toString() {
+
+		if (test(ALL_PERMISSION_MASK))
+			return "ALL";
+
+		if (bits == 0)
+			return "NONE";
+
+		List permList = buildPermList();
+
+		String result = StringUtils.join(permList.iterator(), ",");
+
+		permList.clear();
+		permList = null;
+
+		return result;
+	}
+
+	public String[] toStringArray() {
+
+		if (bits == 0)
+			return null;
+
+		List permList = buildPermList();
+		String[] result = new String[permList.size()];
+
+		permList.toArray(result);
+
+		permList.clear();
+		permList = null;
+
+		return result;
+
+	}
+
+	public List<String> toStringList() {
+		List<String> result = new ArrayList<String>();
+		if (bits == 0)
+			return result;
+
+		return buildPermList();
+
+	}
+
+	protected VOMSPermission unset(int permission) {
+
+		if (permission <= 0)
+			throw new IllegalArgumentException(
+					"Permission must be a positive integer.");
+		bits &= ~permission;
+		return this;
+	}
+
+	public VOMSPermission unsetACLDefaultPermission() {
+
+		unset(ACL_DEFAULT);
+		return this;
+	}
+
+	public VOMSPermission unsetACLReadPermission() {
+
+		unset(ACL_READ);
+		return this;
+	}
+
+	public VOMSPermission unsetACLWritePermission() {
+
+		unset(ACL_WRITE);
+		return this;
+	}
+
+	public VOMSPermission unsetAttributesReadPermission() {
+
+		unset(ATTRIBUTES_READ);
+		return this;
+	}
+
+	public VOMSPermission unsetAttributesWritePermission() {
+
+		unset(ATTRIBUTES_WRITE);
+		return this;
+	}
+
+	public VOMSPermission unsetContainerReadPermission() {
+
+		unset(CONTAINER_READ);
+		return this;
+	}
+
+	public VOMSPermission unsetContainerWritePermission() {
+
+		unset(CONTAINER_WRITE);
+		return this;
+	}
+
+	public VOMSPermission unsetMembershipReadPermission() {
+
+		unset(MEMBERSHIP_READ);
+		return this;
+	}
+
+	public VOMSPermission unsetMembershipWritePermission() {
+
+		unset(MEMBERSHIP_WRITE);
+		return this;
+	}
+
+	public VOMSPermission unsetRequestsReadPermission() {
+
+		unset(REQUESTS_READ);
+		return this;
+	}
+
+	public VOMSPermission unsetRequestsWritePermission() {
+
+		unset(REQUESTS_WRITE);
+		return this;
+	}
+	
+	public void limitToPermissions(VOMSPermission limit){
+		if (limit == null)
+			return;
+		
+		bits &= limit.getBits();
+	}
+	
 }

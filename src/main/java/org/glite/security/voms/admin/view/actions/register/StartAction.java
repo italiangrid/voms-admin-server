@@ -31,7 +31,8 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerWaitsConfirmation"),
 		@Result(name = RegisterActionSupport.PLEASE_WAIT, location = "registerLimbo"),
 		@Result(name = RegisterActionSupport.ALREADY_MEMBER, location = "/user/home.action", type = "redirect"),
-		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled")
+		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
+		@Result(name = RegisterActionSupport.UNAUTHENTICATED_CLIENT, location = "guest")
 })
 public class StartAction extends RegisterActionSupport {
 
@@ -45,6 +46,9 @@ public class StartAction extends RegisterActionSupport {
 
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
+		
+		if (CurrentAdmin.instance().isUnauthenticated())
+			return UNAUTHENTICATED_CLIENT;
 
 		if (CurrentAdmin.instance().getVoUser() != null)
 			return ALREADY_MEMBER;

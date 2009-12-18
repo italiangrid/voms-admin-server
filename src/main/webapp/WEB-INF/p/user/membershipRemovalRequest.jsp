@@ -28,5 +28,5 @@
 <s:form validate="true">
   <s:hidden name="userId" value="%{id}"/>
   <s:textfield name="reason" label="Please provide a reason for your removal request"/>
-  <s:submit value="%{'Submit'}"/>
+  <s:submit value="%{'Submit'}" align="left"/>
 </s:form>

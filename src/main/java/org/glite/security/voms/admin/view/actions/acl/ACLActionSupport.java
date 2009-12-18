@@ -19,11 +19,15 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
+import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.ACLDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSAdmin;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -32,6 +36,8 @@ import com.opensymphony.xwork2.Preparable;
 @ParentPackage("base")
 public abstract class ACLActionSupport extends BaseAction implements
 		Preparable, ModelDriven<ACL> {
+	
+	public static final Log log = LogFactory.getLog(ACLActionSupport.class);
 
 	/**
 	 * 
@@ -95,6 +101,35 @@ public abstract class ACLActionSupport extends BaseAction implements
 
 	public void setPropagate(Boolean propagate) {
 		this.propagate = propagate;
+	}
+
+	protected void limitUnauthenticatedClientPermissions(VOMSPermission perms){
+		// Implement limiting on permissions for unauthenticated clients
+		if (admin.isUnauthenticated()){
+			addActionMessage("Unauthenticated client permissions limited to: '"+getUnauthenticatedClientPermissionMask()+"' for this context!");
+			perms.limitToPermissions(getUnauthenticatedClientPermissionMask());
+			
+		}
+	}
+	protected VOMSPermission getUnauthenticatedClientPermissionMask() {
+		String unauthenticatedClientPermMask = VOMSConfiguration.instance().getString(VOMSConfiguration.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
+			"CONTAINER_READ|MEMBERSHIP_READ");
+		VOMSPermission permMask = null;
+		
+		try{
+			
+			permMask = VOMSPermission.fromString(unauthenticatedClientPermMask);
+			
+		}catch(IllegalArgumentException e){
+			// Parse error on user set permission mask
+			log.error("Error parsing user set permission mask for unauthenticated client: '"+unauthenticatedClientPermMask+"'");
+			log.error(e.getMessage());
+			permMask = VOMSPermission.getContainerReadPermission().setMembershipReadPermission();
+			
+		}
+		
+		return permMask;
+		
 	}
 
 }
