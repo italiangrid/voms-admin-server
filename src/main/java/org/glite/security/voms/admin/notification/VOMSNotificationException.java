@@ -23,6 +23,11 @@ import org.glite.security.voms.admin.common.VOMSException;
 
 public class VOMSNotificationException extends VOMSException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public VOMSNotificationException(String message) {
 
 		super(message);
