@@ -133,11 +133,12 @@
     </package>
     
     <package name="json" extends="base">
+    	
         <result-types>
-            <result-type name="json" class="com.googlecode.jsonplugin.JSONResult" default="true"/>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult" default="true"/>
         </result-types>
         <interceptors>
-            <interceptor name="json" class="com.googlecode.jsonplugin.JSONInterceptor"/>
+            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor"/>
         </interceptors>
         
         <global-results>

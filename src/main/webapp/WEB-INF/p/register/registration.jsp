@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <h1>
-Welcome to voms-admin registration for the <span class="voName"> ${voName}</span> VO.
+Welcome to the registration page for the <span class="voName">${voName}</span> VO.
 </h1>
 
 <p>
@@ -40,7 +40,7 @@ address by following those instructions.</span>
 </p>
 
 <p><span style="font-weight: bold">IMPORTANT</span>:</p>
-<p>
+<p style="margin-bottom: 2em">
 By submitting this information you agree that it may be distributed to and stored by 
 VO and site administrators. You also agree that action may be taken to confirm the information you provide 
 is correct, that it may be used for the purpose of controlling access to VO resources and that it may be 
@@ -48,11 +48,12 @@ used to contact you in relation to this activity.
 </p>
 
 <s:form action="submit-request" validate="true">
-  <h2 style="color: black">Your distinguished name (DN):</h2>
+  
+  <h2 style="color: black">Your certificate subject (DN):</h2>
   <div class="highlight" style="font-size: 14px">
       <s:property value="requester.certificateSubject"/>
   </div>
-  <h2 style="color: black">Your CA:</h2>
+  <h2 style="color: black">The CA that issuer your certificate:</h2>
   <div class="regDN" style="font-size: 14px">
       <s:property value="requester.certificateIssuer"/>
   </div>
@@ -67,7 +68,7 @@ used to contact you in relation to this activity.
       <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="phoneNumber" label="%{'Your phoneNumber'}" size="40" cssClass="registrationField"/>
+      <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
       <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField"/>
