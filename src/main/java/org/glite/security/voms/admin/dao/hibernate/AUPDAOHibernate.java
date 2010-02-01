@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.dao.hibernate;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.VOMSException;
@@ -28,7 +29,10 @@ import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
 import org.glite.security.voms.admin.model.AUP;
+import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.model.AUPVersion;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
 		implements AUPDAO {
@@ -152,9 +156,13 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
 			throw new VOMSException(
 					"The currently active aup version cannot be removed!");
 
+		
+		dropAcceptanceRecordsForAUPVersion(aupVersion);
 		aup.getVersions().remove(aupVersion);
+				
 		return aupVersion;
 	}
+	
 
 	public AUP getGridAUP() {
 		return findByName(AUP.GRID_AUP_NAME);
@@ -201,4 +209,19 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
 		aup.setActiveVersion(v);
 	}
 
+	private void dropAcceptanceRecordsForAUPVersion(AUPVersion aupVersion){
+		
+		Criteria crit = getSession().createCriteria(AUPAcceptanceRecord.class).add(Restrictions.eq("aupVersion", aupVersion));
+		List<AUPAcceptanceRecord> records = crit.list();
+		
+		for (AUPAcceptanceRecord r: records){
+			
+			r.getUser().getAupAcceptanceRecords().remove(r);
+			r.setUser(null);
+			r.setAupVersion(null);
+			
+			getSession().delete(r);
+		}
+		
+	}
 }

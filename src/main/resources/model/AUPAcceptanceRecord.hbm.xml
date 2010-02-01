@@ -37,7 +37,8 @@
               name="aupVersion"
               class="org.glite.security.voms.admin.model.AUPVersion"
               column="aup_version_id"
-              not-null="true"/>
+              not-null="true"
+              />
             
             <many-to-one 
               name="user"
@@ -52,6 +53,12 @@
           column="last_acceptance_date"
           type="timestamp"
           not-null="true"/>
+          
+      	<property 
+      		name="valid"
+      		column="valid"
+      		type="boolean"     		
+      		/>
 		
 	</class>
 

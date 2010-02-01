@@ -41,16 +41,17 @@ public class AddDefaultEntryAction extends AddEntryAction {
 	public void prepare() throws Exception {
 
 		if (getModel() == null) {
-
-			VOMSGroup g = groupById(aclGroupId);
-			if (g.getDefaultACL() == null)
-				// FIXME: do it with an operation
-				model = ACLDAO.instance().create(g, true);
-			else
-				model = g.getDefaultACL();
+			
+			if (aclGroupId != -1){
+				VOMSGroup g = groupById(aclGroupId);
+				if (g.getDefaultACL() == null)
+					// FIXME: do it with an operation
+					model = ACLDAO.instance().create(g, true);
+				else
+					model = g.getDefaultACL();
+			}else
+				super.prepare();
 		}
-
-		super.prepare();
 
 	}
 

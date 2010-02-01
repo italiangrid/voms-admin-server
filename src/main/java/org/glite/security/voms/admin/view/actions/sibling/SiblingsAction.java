@@ -66,9 +66,11 @@ public class SiblingsAction extends BaseAction implements Preparable{
 	}
 
 	public void prepare() throws Exception {
-		configuredVOs = VOMSConfiguration.instance().getLocallyConfiguredVOs();
+		List<String> vos = VOMSConfiguration.instance().getLocallyConfiguredVOs();
 		log.info("Locally configured vos: " + configuredVOs);
-		CollectionUtils.transform(configuredVOs, new VONameTransformer(getAllVOsBaseURL())); 		
+		CollectionUtils.transform(vos, new VONameTransformer(getAllVOsBaseURL()));
+		setConfiguredVOs(vos);
+		
 	}
 	
 	

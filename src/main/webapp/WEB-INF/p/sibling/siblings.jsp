@@ -28,7 +28,7 @@
 	</h1>
 	
 	<table class="table">
-		<s:iterator value="configuredVOs" var="voURL"/>
+		<s:iterator value="configuredVOs" var="voURL">
 			<tr class="tableRow">
 				<td>
 					<a href="<s:property value='#voURL'/>">
@@ -36,7 +36,7 @@
 					</a>
 				</td>
 			</tr>
-	
-		</table>
+		</s:iterator>
+	</table>
 	
 </div>

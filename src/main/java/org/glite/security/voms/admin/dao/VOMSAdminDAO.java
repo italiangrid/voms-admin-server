@@ -38,7 +38,9 @@ import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 
 public class VOMSAdminDAO {
 
@@ -122,6 +124,21 @@ public class VOMSAdminDAO {
 
 	}
 
+	
+	public VOMSAdmin getBySubject(String subject) {
+		
+		if (subject == null)
+			throw new NullArgumentException("subject must be non-null!");
+		
+		subject = DNUtil.normalizeDN(subject);
+		
+		Criteria crit = HibernateFactory.getSession().createCriteria(VOMSAdmin.class);
+		
+		return (VOMSAdmin) crit.add(Restrictions.eq("dn", subject)).uniqueResult();	
+			
+	}
+	
+	
 	public VOMSAdmin getByName(String dn, String caDN) {
 
 		if (dn == null)

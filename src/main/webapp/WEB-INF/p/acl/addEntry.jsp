@@ -36,9 +36,8 @@ Add an entry to the
         />
 
 </h1>
-
-
-  <s:hidden name="aclId" value="%{model.id}"/>
+  
+  	<s:hidden name="aclId" value="%{model.id}"/>
     
     <table class="form noborder" cellspacing="0" cellpadding="0">
       <tr>

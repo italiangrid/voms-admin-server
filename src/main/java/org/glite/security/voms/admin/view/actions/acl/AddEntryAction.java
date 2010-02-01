@@ -91,8 +91,7 @@ public class AddEntryAction extends ACLActionSupport {
 		else if (selectedPermissions.isEmpty())
 			addActionError("No permissions selected!");
 		
-		if (hasActionErrors())
-			buildEntryTypeMap();
+		
 		
 		if (entryType.equals("non-vo-user")){
 			
@@ -102,7 +101,14 @@ public class AddEntryAction extends ACLActionSupport {
 			if (emailAddress == null || "".equals(emailAddress))
 				addFieldError("emailAddress", "Please specify a valid email address!");
 			
+			if (VOMSAdminDAO.instance().getBySubject(dn) != null){
+				
+				addFieldError("dn", "An administrator with the given subject already exists. Choose a different subject!");
+			}
 		}
+		
+		if (hasActionErrors() || hasFieldErrors())
+			buildEntryTypeMap();
 	}
 	
 	private void loadAdmin() throws Exception {
@@ -123,8 +129,10 @@ public class AddEntryAction extends ACLActionSupport {
 			admin = VOMSAdminDAO.instance()
 					.getByName(dn, ca.getSubjectString());
 
-			if (admin == null)
+			if (admin == null){
 				admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
+				admin.setEmailAddress(getEmailAddress());
+			}
 
 		} else if (entryType.equals("role-admin")) {
 

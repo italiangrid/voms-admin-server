@@ -37,10 +37,13 @@ public class AUPAcceptanceRecord implements Serializable {
 	VOMSUser user;
 
 	Date lastAcceptanceDate;
+	
+	Boolean valid;
 
 	public AUPAcceptanceRecord(VOMSUser u, AUPVersion aup) {
 		this.user = u;
 		this.aupVersion = aup;
+		this.valid = true;
 	}
 
 	public AUPAcceptanceRecord() {
@@ -148,12 +151,15 @@ public class AUPAcceptanceRecord implements Serializable {
 	public String toString() {
 		
 		return String.format(
-				"[user: %s, aupVersion: %s, lastAcceptanceDate: %s]", user,
-				aupVersion, lastAcceptanceDate);
+				"[user: %s, aupVersion: %s, lastAcceptanceDate: %s, valid: %s]", user,
+				aupVersion, lastAcceptanceDate, valid);
 	}
 	
 	
 	public boolean hasExpired(){
+		
+		if (!valid)
+			return true;
 		
 		if (lastAcceptanceDate.before(aupVersion.getLastUpdateTime()))
 			return true;
@@ -166,15 +172,27 @@ public class AUPAcceptanceRecord implements Serializable {
 	}
 	
 	
-	public Date getExpirationDate(){
-		
+	public Date getExpirationDate(){	
+			
 		Calendar c = Calendar.getInstance();
+		
+		// If the record has been invalidated the expiration date is now.
+		if (!valid)
+			return c.getTime();
+			
 		c.setTime(lastAcceptanceDate);
 		
 		c.add(Calendar.DAY_OF_YEAR, aupVersion.getAup().getReacceptancePeriod());
 		
 		return c.getTime();
 	}
-	
 
+	public Boolean getValid() {
+		return valid;
+	}
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+	
 }

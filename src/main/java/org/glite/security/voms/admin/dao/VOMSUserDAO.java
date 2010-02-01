@@ -80,6 +80,36 @@ public class VOMSUserDAO {
 
 	}
 
+	
+	public void requestAUPReacceptance(VOMSUser user, AUP aup){
+		if (user == null)
+			throw new NullArgumentException("user cannot be null!");
+
+		if (aup == null)
+			throw new NullArgumentException("aup cannot be null!");
+		
+		AUPVersion aupVersion = aup.getActiveVersion();
+
+		if (aupVersion == null)
+			throw new NotFoundException("No registered version found for AUP '"
+					+ aup.getName() + "'.");
+		
+		log.debug("User '" + user + "' is request to reaccept aup version '" + aupVersion
+				+ "'");
+		
+		AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
+
+		if (r != null) {
+			
+			if (r.getValid())
+				r.setValid(false);
+			else
+				log.debug("Ignoring invalidation of already invalid record.");
+		}
+		
+	}
+	
+	
 	public void signAUP(VOMSUser user, AUP aup) {
 
 		if (user == null)
@@ -186,7 +216,7 @@ public class VOMSUserDAO {
 
 		// Add users that have an expired aup acceptance record due to aup
 		// update or acceptance retriggering.
-		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime ";
+		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
 
 		Query q2 = HibernateFactory.getSession().createQuery(qString);
 		
