@@ -23,19 +23,17 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.database.UserAlreadyExistsException;
-import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
+import org.glite.security.voms.admin.model.request.CertificateRequest;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
-import org.glite.security.voms.admin.operations.requests.ApproveGroupMembershipOperation;
-import org.glite.security.voms.admin.operations.requests.ApproveMembershipRemovalRequestOperation;
-import org.glite.security.voms.admin.operations.requests.ApproveRoleMembershipOperation;
-import org.glite.security.voms.admin.operations.requests.ApproveVOMembershipOperation;
-import org.glite.security.voms.admin.operations.requests.RejectGroupMembershipOperation;
-import org.glite.security.voms.admin.operations.requests.RejectMembershipRemovalRequestOperation;
-import org.glite.security.voms.admin.operations.requests.RejectRoleMembershipOperation;
-import org.glite.security.voms.admin.operations.requests.RejectVOMembershipOperation;
+import org.glite.security.voms.admin.operations.requests.DECISION;
+import org.glite.security.voms.admin.operations.requests.HandleCertificateRequestOperation;
+import org.glite.security.voms.admin.operations.requests.HandleGroupRequestOperation;
+import org.glite.security.voms.admin.operations.requests.HandleMembershipRemovalRequest;
+import org.glite.security.voms.admin.operations.requests.HandleRoleMembershipRequestOperation;
+import org.glite.security.voms.admin.operations.requests.HandleVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -54,17 +52,13 @@ public class DecisionAction extends RequestActionSupport {
 	
 	@Override
 	public String execute() throws Exception {
+		
+		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
 
 		if (request instanceof NewVOMembershipRequest) {
 
 			try{
-			
-				if (decision.equals("approve"))
-					ApproveVOMembershipOperation.instance(
-							(NewVOMembershipRequest) request).execute();
-				else
-					RejectVOMembershipOperation.instance(
-							(NewVOMembershipRequest) request).execute();
+				new HandleVOMembershipRequest((NewVOMembershipRequest)request, theDecision).execute();
 			
 			}catch(UserAlreadyExistsException e){
 				
@@ -75,34 +69,26 @@ public class DecisionAction extends RequestActionSupport {
 			
 		}
 		
-		if (request instanceof GroupMembershipRequest){
+		if (request instanceof GroupMembershipRequest)
+			new HandleGroupRequestOperation((GroupMembershipRequest)request, theDecision).execute();
 			
-			if (decision.equals("approve"))
-				ApproveGroupMembershipOperation.instance((GroupMembershipRequest)request).execute();
-			else
-				RejectGroupMembershipOperation.instance((GroupMembershipRequest)request).execute();
-		}
 		
-		if (request instanceof RoleMembershipRequest){
+		if (request instanceof RoleMembershipRequest)
+			new HandleRoleMembershipRequestOperation((RoleMembershipRequest)request, theDecision).execute();
+
+		
+		if (request instanceof MembershipRemovalRequest)
+			new HandleMembershipRemovalRequest((MembershipRemovalRequest)request,theDecision).execute();
+		
+		if (request instanceof CertificateRequest)
+			new HandleCertificateRequestOperation((CertificateRequest)request, theDecision).execute();
+		
+		
 			
-			if (decision.equals("approve"))
-				ApproveRoleMembershipOperation.instance((RoleMembershipRequest)request).execute();
-			else
-				RejectRoleMembershipOperation.instance((RoleMembershipRequest)request).execute();
-				
-		}
-		
-		if (request instanceof MembershipRemovalRequest){
-			if (decision.equals("approve"))
-				ApproveMembershipRemovalRequestOperation.instance((MembershipRemovalRequest)request).execute();
-			else
-				RejectMembershipRemovalRequestOperation.instance((MembershipRemovalRequest)request).execute();
-			
-		}
-		
 		refreshPendingRequests();
 		
 		setDecision(null);
+		
 		return SUCCESS;
 	}
 

@@ -22,39 +22,32 @@ package org.glite.security.voms.admin.event;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TestEvents implements EventGenerator {
+public class DebugEventLogListener implements EventListener {
 
-	private static Log log = LogFactory.getLog(TestEvents.class);
+	public static final Log log = LogFactory.getLog(DebugEventLogListener.class);
 
-	private EventManager manager;
-
-	public TestEvents() {
-
-		manager = EventManager.instance();
-
-		register(new EventLogListener());
-		register(new EventLogListener());
-
+	private static DebugEventLogListener instance;
+	
+	public static DebugEventLogListener instance(){
+		
+		if (instance == null)
+			instance = new DebugEventLogListener();
+		
+		return instance;
+		
+	}
+	
+	private DebugEventLogListener() {
+		EventManager.instance().register(this);
 	}
 
-	public static void main(String[] args) {
-
-		new TestEvents();
+	public void fire(Event e) {
+		log.debug("Event received: " + e);
 	}
 
-	public void register(EventListener listener) {
-		manager.register(listener);
+	public EventMask getMask() {
 
-	}
-
-	public void setEventManager(EventManager manager) {
-		this.manager = manager;
-
-	}
-
-	public void unRegister(EventListener listener) {
-		manager.unRegister(listener);
-
+		return null;
 	}
 
 }

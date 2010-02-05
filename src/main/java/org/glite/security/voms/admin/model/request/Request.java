@@ -46,7 +46,7 @@ import org.glite.security.voms.admin.model.NamedType;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Request implements Serializable, NamedType {
 
-	public enum StatusFlag {
+	public enum STATUS {
 		SUBMITTED, CONFIRMED, PENDING, APPROVED, REJECTED
 	}
 
@@ -70,7 +70,7 @@ public abstract class Request implements Serializable, NamedType {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	StatusFlag status;
+	STATUS status;
 
 	/**
 	 * @return the id
@@ -115,7 +115,7 @@ public abstract class Request implements Serializable, NamedType {
 	/**
 	 * @return the status
 	 */
-	public StatusFlag getStatus() {
+	public STATUS getStatus() {
 
 		return status;
 	}
@@ -169,7 +169,7 @@ public abstract class Request implements Serializable, NamedType {
 	 * @param status
 	 *            the status to set
 	 */
-	public void setStatus(StatusFlag status) {
+	public void setStatus(STATUS status) {
 
 		this.status = status;
 	}
@@ -209,13 +209,13 @@ public abstract class Request implements Serializable, NamedType {
 
 	public void approve() {
 
-		setStatus(StatusFlag.APPROVED);
+		setStatus(STATUS.APPROVED);
 		setCompletionDate(new Date());
 	}
 
 	public void reject() {
 
-		setStatus(StatusFlag.REJECTED);
+		setStatus(STATUS.REJECTED);
 		setCompletionDate(new Date());
 
 	}

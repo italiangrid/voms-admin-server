@@ -21,8 +21,6 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.logging.Log;

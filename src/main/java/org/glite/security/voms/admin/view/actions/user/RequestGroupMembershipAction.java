@@ -83,7 +83,7 @@ public class RequestGroupMembershipAction extends UserActionSupport {
 		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
 		VOMSGroup g = groupById(groupId);
 
-		GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(getModel(), g, getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 5));
+		GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(getModel(), g, getDefaultFutureDate());
 		EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
 		
 		refreshPendingRequests();

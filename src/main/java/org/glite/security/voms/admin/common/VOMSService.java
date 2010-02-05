@@ -38,10 +38,13 @@ import org.glite.security.voms.admin.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.EventLogListener;
+import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.model.VOMSDBVersion;
+import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
-import org.glite.security.voms.admin.notification.NotificationDispatcher;
+import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
+import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
 import org.opensaml.xml.ConfigurationException;
 
 public final class VOMSService {
@@ -106,12 +109,18 @@ public final class VOMSService {
 
 	protected static void configureEventManager() {
 
-		// Starts event manager
 		EventManager.instance();
+		
 
-		EventManager.instance().register(new EventLogListener());
-
-		NotificationDispatcher.instance();
+		DebugEventLogListener.instance();
+		
+		DefaultNotificationDispatcher.instance();
+		
+		GroupMembershipNotificationDispatcher.instance();
+		
+		RoleMembershipNotificationDispatcher.instance();
+		
+		VOMembershipNotificationDispatcher.instance();
 	}
 
 	protected static void startBackgroundTasks() {

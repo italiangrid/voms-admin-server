@@ -27,7 +27,8 @@ public enum EventType {
 	VOMembershipRequestEvent(3), 
 	GroupMembershipRequestEvent(4), 
 	RoleMembershipRequestEvent(5), 
-	MembershipRemovalRequestEvent(6);
+	MembershipRemovalRequestEvent(6),
+	CertificateRequestEvent(7);
 
 	int bitNo;
 

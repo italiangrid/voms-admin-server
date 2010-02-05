@@ -27,6 +27,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "certificate_request")
@@ -144,6 +145,19 @@ public class CertificateRequest extends Request {
 		
 		builder.appendSuper(super.hashCode()).append(certificateSubject.hashCode()).append(certificateIssuer.hashCode());
 		return builder.toHashCode();
+	}
+	
+	@Override
+	public String toString() {
+		
+		ToStringBuilder builder = new ToStringBuilder(this);
+		
+		builder.appendSuper(super.toString())
+			.append("certificateSubject", certificateSubject)
+			.append("certificateIssuer", certificateIssuer)
+			.append("certificate", certificate);
+		
+		return builder.toString();
 	}
 
 }

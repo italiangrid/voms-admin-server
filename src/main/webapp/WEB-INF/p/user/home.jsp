@@ -92,7 +92,7 @@
   <tiles2:putAttribute name="panelName" value="Your personal information"/>
 </tiles2:insertTemplate>
 
-<tiles2:insertTemplate template="certificatePane.jsp">
+<tiles2:insertTemplate template="certificateRequestPane.jsp">
   <tiles2:putAttribute name="panelName" value="Your certificates"/>
 </tiles2:insertTemplate>
 

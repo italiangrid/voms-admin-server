@@ -21,21 +21,10 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<div class="reloadable"><s:if test="pendingRequests.empty">
-  No pending requests found.
-</s:if> <s:else>
-	<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp" />
+<div class="info-tab">
+  <h2><span>Certificates</span></h2>
+  <voms:div cssClass="content" id="certificate-request-content">
+	<tiles2:insertTemplate template="certificateRequest.jsp"/>  
+  </voms:div>
+</div>
 
-	<!-- Membership requests -->
-
-	<tiles2:insertTemplate template="voMembershipRequests.jsp" />
-
-	<tiles2:insertTemplate template="groupMembershipRequests.jsp" />
-
-	<tiles2:insertTemplate template="roleMembershipRequests.jsp" />
-
-	<tiles2:insertTemplate template="membershipRemovalRequests.jsp" />
-
-	<tiles2:insertTemplate template="certificateRequests.jsp" flush="true" />
-
-</s:else></div>

@@ -338,7 +338,10 @@ class UpgradeVO(ConfigureAction):
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
              'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
-             'VO_AUP_URL': self.user_options['vo-aup-url']
+             'VO_AUP_URL': self.user_options['vo-aup-url'],
+             'AA.CERT' : self.user_options['aa-cert'],
+             'AA.KEY' : self.user_options['aa-key'],
+             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -635,7 +638,10 @@ class InstallVOAction(ConfigureAction):
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
              'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
-             'VO_AUP_URL': self.user_options['vo-aup-url']
+             'VO_AUP_URL': self.user_options['vo-aup-url'],
+             'AA.CERT' : self.user_options['aa-cert'],
+             'AA.KEY' : self.user_options['aa-key'],
+             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -981,7 +987,9 @@ class X509Helper:
         # Check that only first email address is taken from the certificate, the openssl -email command
         # returns one address per line
         emails = email.splitlines(False)
-        self.email = emails[0]
+        if len(emails) > 0:
+            self.email = emails[0]
+        
     
     def __repr__(self):
         return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
@@ -1075,7 +1083,10 @@ class VomsConstants:
               "read-access-for-authenticated-clients",
               "skip-voms-core",
               "vo-aup-url=",
-              "use-skinny-war"]
+              "use-skinny-war",
+              "aa-cert=",
+              "aa-key=",
+              "saml-max-assertion-lifetime="]              
 
     short_options = "hvV";
 

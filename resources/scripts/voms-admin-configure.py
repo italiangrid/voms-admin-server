@@ -40,6 +40,31 @@ def vlog(msg):
     if options.has_key("verbose"):
         print msg
 
+def setup_aa_defaults():
+    global certificate, options
+    
+    vlog("Setting defaults for the VOMS AA credentials")
+    ## AA Certificate defaults
+    if os.environ.has_key("CATALINA_HOME"): 
+        
+        glite_tomcat_cert = os.path.join(os.environ['CATALINA_HOME'],".certs", "hostcert.pem")
+        glite_tomcat_key = os.path.join(os.environ['CATALINA_HOME'],".certs", "hostkey.pem")
+        
+        if os.path.exists(glite_tomcat_cert) and os.path.exists(glite_tomcat_key):
+            
+            vlog("Using gLite CATALINA_HOME certificates...")
+            
+            set_default(options,"aa-cert",glite_tomcat_cert)
+            set_default(options,"aa-key",glite_tomcat_key)
+            
+            return
+              
+    vlog("Setting host credentials defaults for VOMS AA.")
+    set_default(options, "aa-cert", "/etc/grid-security/hostcert.pem")
+    set_default(options, "aa-key", "/etc/grid-security/hostkey.pem")
+    
+    set_default(options, "saml-max-assertion-lifetime", "720")
+
 ## FIXME: move this into Voms::ConfigureAction
 def setup_defaults():
     global options
@@ -306,6 +331,20 @@ def usage():
                            text file. If this option is not set a template vo-aup file will
                            be created in vo runtime configuration directory 
                            ($GLITE_LOCATION_VAR/etc/voms-admin/<vo-name>/vo-aup.txt).
+VOMS SAML options:
+     --aa-cert
+                          The certificate that will be used by the VOMS SAML attribute 
+                          authority
+     
+     --aa-key             
+                          The private key that will be used by the VOMS SAML attribute
+                          authority
+     
+     --saml-max-assertion-lifetime
+                          
+                          The lifetime (expressed in minutes) of SAML attribute assertions
+                          issued by the VOMS SAML attribute authority
+                          (default value: 720 minutes = 12 hours) 
     """
     
     print usage_str
@@ -494,6 +533,7 @@ def main():
         
         setup_defaults()
         setup_identity()
+        setup_aa_defaults()
         
         do_command()
     

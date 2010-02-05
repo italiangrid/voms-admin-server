@@ -139,4 +139,7 @@ public class BaseAction extends ActionSupport {
 		return c.getTime();
 	}
 
+	protected Date getDefaultFutureDate(){
+		return getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 7);
+	}
 }

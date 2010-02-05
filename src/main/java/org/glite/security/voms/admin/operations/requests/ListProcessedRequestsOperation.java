@@ -23,6 +23,11 @@ import org.glite.security.voms.admin.dao.RequestDAO;
 
 public class ListProcessedRequestsOperation extends RequestReadOperation {
 
+	public static ListProcessedRequestsOperation instance() {
+
+		return new ListProcessedRequestsOperation();
+	}
+
 	private ListProcessedRequestsOperation() {
 
 		// TODO Auto-generated constructor stub
@@ -31,11 +36,6 @@ public class ListProcessedRequestsOperation extends RequestReadOperation {
 	protected Object doExecute() {
 
 		return RequestDAO.instance().getProcessed();
-	}
-
-	public static ListProcessedRequestsOperation instance() {
-
-		return new ListProcessedRequestsOperation();
 	}
 
 }

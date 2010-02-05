@@ -23,6 +23,11 @@ import org.glite.security.voms.admin.dao.RequestDAO;
 
 public class LoadVOMembershipRequestOperation extends RequestReadOperation {
 
+	public static LoadVOMembershipRequestOperation instance(Long reqId) {
+
+		return new LoadVOMembershipRequestOperation(reqId);
+	}
+
 	Long requestId;
 
 	private LoadVOMembershipRequestOperation(Long reqId) {
@@ -33,10 +38,5 @@ public class LoadVOMembershipRequestOperation extends RequestReadOperation {
 	protected Object doExecute() {
 
 		return RequestDAO.instance().findById(requestId);
-	}
-
-	public static LoadVOMembershipRequestOperation instance(Long reqId) {
-
-		return new LoadVOMembershipRequestOperation(reqId);
 	}
 }

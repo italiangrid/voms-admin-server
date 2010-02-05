@@ -23,6 +23,11 @@ import org.glite.security.voms.admin.dao.RequestDAO;
 
 public class ListPendingRequestOperation extends RequestReadOperation {
 
+	public static ListPendingRequestOperation instance() {
+
+		return new ListPendingRequestOperation();
+	}
+
 	private ListPendingRequestOperation() {
 
 	}
@@ -30,10 +35,5 @@ public class ListPendingRequestOperation extends RequestReadOperation {
 	protected Object doExecute() {
 
 		return RequestDAO.instance().getPending();
-	}
-
-	public static ListPendingRequestOperation instance() {
-
-		return new ListPendingRequestOperation();
 	}
 }

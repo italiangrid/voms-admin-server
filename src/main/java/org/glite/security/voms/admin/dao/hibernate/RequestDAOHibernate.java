@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
+import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.AlreadyMemberException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSGroup;
@@ -38,7 +39,7 @@ import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
-import org.glite.security.voms.admin.model.request.Request.StatusFlag;
+import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
@@ -54,12 +55,21 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 			Date expirationDate) {
 		
 		
-				
+			if (userHasPendingCertificateRequest(u, certificateSubject, certificateIssuer))
+				throw new AlreadyExistsException("User '"+u+"' has a pending certificate request for '"+certificateSubject+","+certificateIssuer+"',");
+			
+		CertificateRequest req = new CertificateRequest();
+		req.setStatus(STATUS.SUBMITTED);
+		req.setRequesterInfo(RequesterInfo.fromVOUser(u));
+		req.setCreationDate(new Date());
+		req.setExpirationDate(expirationDate);
 		
+		req.setCertificateSubject(certificateSubject);
+		req.setCertificateIssuer(certificateIssuer);
 		
+		makePersistent(req);
 		
-		
-		return null;
+		return req;
 	}
 
 	public GroupMembershipRequest createGroupMembershipRequest(VOMSUser usr,
@@ -72,7 +82,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 			throw new AlreadyMemberException("User '"+usr+"' has a pending group membership request for group '"+group+"'!");
 		
 		GroupMembershipRequest req = new GroupMembershipRequest();
-		req.setStatus(StatusFlag.SUBMITTED);
+		req.setStatus(STATUS.SUBMITTED);
 		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
 		req.setCreationDate(new Date());
 		req.setExpirationDate(expirationDate);
@@ -88,7 +98,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 			VOMSUser usr, String reason, Date expirationDate) {
 		
 		MembershipRemovalRequest req = new MembershipRemovalRequest();
-		req.setStatus(StatusFlag.SUBMITTED);
+		req.setStatus(STATUS.SUBMITTED);
 		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
 		req.setCreationDate(new Date());
 		req.setExpirationDate(expirationDate);
@@ -106,7 +116,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 			throw new AlreadyMemberException("User '"+usr+"' already has role '"+r.getName()+"' in group '"+group+"'!");
 		
 		RoleMembershipRequest req = new RoleMembershipRequest();
-		req.setStatus(StatusFlag.SUBMITTED);
+		req.setStatus(STATUS.SUBMITTED);
 		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
 		req.setCreationDate(new Date());
 		req.setExpirationDate(expirationDate);
@@ -124,7 +134,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
 		NewVOMembershipRequest req = new NewVOMembershipRequest();
 
-		req.setStatus(StatusFlag.SUBMITTED);
+		req.setStatus(STATUS.SUBMITTED);
 		req.setRequesterInfo(requester);
 		req.setCreationDate(new Date());
 		req.setExpirationDate(expirationDate);
@@ -149,8 +159,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(
 				NewVOMembershipRequest.class);
 
-		crit.add(Restrictions.ne("status", StatusFlag.APPROVED)).add(
-				Restrictions.ne("status", StatusFlag.REJECTED)).createCriteria(
+		crit.add(Restrictions.ne("status", STATUS.APPROVED)).add(
+				Restrictions.ne("status", STATUS.REJECTED)).createCriteria(
 				"requesterInfo").add(
 				Restrictions.eq("certificateSubject", requester
 						.getCertificateSubject())).add(
@@ -168,7 +178,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(
 				NewVOMembershipRequest.class);
 
-		crit.add(Restrictions.eq("status", StatusFlag.CONFIRMED));
+		crit.add(Restrictions.eq("status", STATUS.CONFIRMED));
 
 		return crit.list();
 
@@ -185,7 +195,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	
 	public List<CertificateRequest> findPendingCertificateRequests(){
 		Criteria crit = getSession().createCriteria(CertificateRequest.class);
-		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
 		
 		return crit.list();
 		
@@ -195,7 +205,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
 		
-		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
 		
 		return crit.list();
 	}
@@ -204,7 +214,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	public List<MembershipRemovalRequest> findPendingMembershipRemovalRequests() {
 		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
 		
-		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
 		
 		return crit.list();
 	}
@@ -224,7 +234,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	public List<RoleMembershipRequest> findPendingRoleMembershipRequests() {
 		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
 		
-		crit.add(Restrictions.eq("status", StatusFlag.SUBMITTED));
+		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
 		return crit.list();
 	}
 	
@@ -234,8 +244,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(CertificateRequest.class);
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
 				.add(getDnEqualityCheckConstraints(u));
 		
 		return crit.list();
@@ -248,8 +258,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
 				.add(getDnEqualityCheckConstraints(u));
 				
 		
@@ -262,8 +272,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
 				.add(getDnEqualityCheckConstraints(u));
 		
 		return crit.list();
@@ -272,8 +282,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	public List<RoleMembershipRequest> findPendingUserRoleMembershipRequests(VOMSUser u){
 		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo")
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
 				.add(getDnEqualityCheckConstraints(u));
 		
 		return crit.list();
@@ -281,7 +291,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
 	public List<NewVOMembershipRequest> findRejectedVOMembershipRequests() {
 		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
-		crit.add(Restrictions.eq("status", StatusFlag.REJECTED));
+		crit.add(Restrictions.eq("status", STATUS.REJECTED));
 		 
 		return crit.list();
 	}
@@ -308,8 +318,23 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
 	public boolean userHasPendingCertificateRequest(VOMSUser u,
 			String certificateSubject, String certificateIssuer) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		
+		Criteria crit = getSession().createCriteria(CertificateRequest.class);
+		
+		crit.add(Restrictions.eq("certificateSubject", certificateSubject));
+		crit.add(Restrictions.eq("certificateIssuer", certificateIssuer));
+		
+		crit.add(Restrictions.disjunction().
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));		
+		
+		List<CertificateRequest> reqs = crit.list();
+		
+		if (reqs ==  null || reqs.isEmpty())
+			return false;
+		
+		return true;
 	}
 
 	public boolean userHasPendingGroupMembershipRequest(VOMSUser u, VOMSGroup g){
@@ -322,8 +347,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		crit.add(Restrictions.eq("groupName", g.getName()));
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
 				
 		List<GroupMembershipRequest> reqs= crit.list();
 		
@@ -338,8 +363,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
 		
 		List<MembershipRemovalRequest> reqs = crit.list();
 		
@@ -359,8 +384,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		crit.add(Restrictions.eq("roleName", r.getName()));
 		
 		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", StatusFlag.SUBMITTED)).
-				add(Restrictions.eq("status", StatusFlag.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+				add(Restrictions.eq("status", STATUS.SUBMITTED)).
+				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
 		
 		List<RoleMembershipRequest> reqs = crit.list();
 		

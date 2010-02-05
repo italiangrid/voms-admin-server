@@ -24,7 +24,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
-import org.glite.security.voms.admin.model.request.Request.StatusFlag;
+import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
@@ -50,14 +50,14 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 
-		if (!getModel().getStatus().equals(StatusFlag.SUBMITTED)){
-			addActionError("You cannot confirm an already confirmed request!");
+		if (!getModel().getStatus().equals(STATUS.SUBMITTED)){
+			addActionError("You request has already been confirmed!");
 			return ERROR;
 		}
 			
 
 		if (getModel().getConfirmId().equals(confirmationId))
-			request.setStatus(StatusFlag.CONFIRMED);
+			request.setStatus(STATUS.CONFIRMED);
 		else{
 			addActionError("Wrong confirmation id!");
 			return ERROR;

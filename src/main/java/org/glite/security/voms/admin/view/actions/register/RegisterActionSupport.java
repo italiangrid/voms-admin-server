@@ -30,7 +30,7 @@ import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.model.AUPVersion;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
-import org.glite.security.voms.admin.model.request.Request.StatusFlag;
+import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.user.UserPersonalInfo;
@@ -72,11 +72,11 @@ public abstract class RegisterActionSupport extends BaseAction implements
 		if (req != null) {
 
 			request = req;
-			if (req.getStatus().equals(StatusFlag.SUBMITTED))
+			if (req.getStatus().equals(STATUS.SUBMITTED))
 				return CONFIRMATION_NEEDED;
 
-			if (req.getStatus().equals(StatusFlag.CONFIRMED)
-					|| req.getStatus().equals(StatusFlag.PENDING))
+			if (req.getStatus().equals(STATUS.CONFIRMED)
+					|| req.getStatus().equals(STATUS.PENDING))
 				return PLEASE_WAIT;
 
 		}

@@ -26,7 +26,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.model.request.Request.StatusFlag;
+import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -50,9 +50,9 @@ public class CancelRequestAction extends RegisterActionSupport {
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 		
-		if (!request.getStatus().equals(StatusFlag.SUBMITTED)){
+		if (!request.getStatus().equals(STATUS.SUBMITTED)){
 			
-			addActionError("You cannot cancel an already canceled request!");
+			addActionError("Your request has already been canceled!");
 			return ERROR;
 		}
 			

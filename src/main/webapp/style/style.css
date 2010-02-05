@@ -333,11 +333,20 @@ h3, .header3{
 	padding: .5em 0 0 0;
 }
 
-.certSubject{
+.certSubject, .requestedCertSubject{
 	font-size: x-small;
 }
 
-.certIssuer{
+.requestedCertSubject{
+	font-size: x-small;
+}
+
+.requestedCertIssuer {
+	font-size: xx-small;
+	color: #505050;
+}
+
+.certIssuer {
 	font-size: xx-small;
 	color: #505050;
 }

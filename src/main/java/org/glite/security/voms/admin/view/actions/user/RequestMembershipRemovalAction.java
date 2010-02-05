@@ -72,7 +72,7 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
 		
 		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
 		
-		MembershipRemovalRequest req = reqDAO.createMembershipRemovalRequest(getModel(), reason, getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 5));
+		MembershipRemovalRequest req = reqDAO.createMembershipRemovalRequest(getModel(), reason, getDefaultFutureDate());
 		
 		EventManager.dispatch(new MembershipRemovalSubmittedEvent(req, getHomeURL()));
 		

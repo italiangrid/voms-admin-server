@@ -21,11 +21,13 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Add a certificate for user <span class="userName">${shortName}</span></h1>
+<h1>Request that a new certificate is added to your membership</h1>
 <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 
-
-<s:form action="save-certificate" enctype="multipart/form-data" namespace="/user" method="POST">
+<s:form action="request-certificate" 
+	enctype="multipart/form-data" 
+	namespace="/user" 
+	method="POST">
   <s:token/>
   <s:hidden name="userId" value="%{model.id}"/>
   <h2>Enter a DN, CA couple:</h2>
@@ -36,7 +38,7 @@
   <h2>Or choose a PEM encoded X509 certificate from your file system:</h2>
   <div style="padding: 1em 2em 1em 2em; background-color: #f5f5f5">
     <s:file name="certificateFile" label="Certificate file"/>
-    <s:submit value="%{'Add certificate'}"/>
+    <s:submit value="%{'Request certificate'}"/>
   </div>
       
 </s:form>

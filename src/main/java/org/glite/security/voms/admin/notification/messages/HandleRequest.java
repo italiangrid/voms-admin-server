@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.common.VOMSConfiguration;
 import org.glite.security.voms.admin.model.request.Request;
+import org.glite.security.voms.admin.notification.NotificationUtil;
 
 public class HandleRequest extends AbstractVelocityNotification {
 
@@ -33,10 +34,12 @@ public class HandleRequest extends AbstractVelocityNotification {
 
 		this.request = request;
 		this.requestManagementURL = requestManagementURL;
+		
+		addRecipients(NotificationUtil.getAdministratorsEmailList());
 	}
 
 	protected void buildMessage() {
-
+		
 		String voName = VOMSConfiguration.instance().getVOName();
 		
 		
