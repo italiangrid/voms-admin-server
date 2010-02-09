@@ -213,7 +213,7 @@ public final class VOMSConfiguration {
 		}
 		loadVersionProperties();
 
-		log.info("VOMS-Admin configuration loaded!");
+		log.debug("VOMS-Admin configuration loaded!");
 
 	}
 

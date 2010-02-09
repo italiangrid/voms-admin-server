@@ -26,8 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
+import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;
@@ -135,6 +137,11 @@ public class UserActionSupport extends BaseAction implements
 		
 	}
 	
-	
-	
+	public boolean hasValidAUPAcceptanceRecord(){
+		
+		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+		
+		return (getModel().getAUPAccceptanceRecord(aup.getActiveVersion()).getValid() == true);
+		
+	}
 }

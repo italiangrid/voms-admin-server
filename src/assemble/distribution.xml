@@ -93,6 +93,11 @@
         </file>
         
         <file>
+            <source>src/main/resources/c3p0.properties</source>
+            <outputDirectory>/share/voms-admin/tools/classes</outputDirectory>
+        </file>
+        
+        <file>
             <source>target/glite-security-voms-admin.jar</source>
             <outputDirectory>/share/java</outputDirectory>
         </file>

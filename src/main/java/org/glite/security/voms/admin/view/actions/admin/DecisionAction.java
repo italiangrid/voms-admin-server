@@ -22,7 +22,7 @@ package org.glite.security.voms.admin.view.actions.admin;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.database.UserAlreadyExistsException;
+import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.model.request.CertificateRequest;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.operations.requests.HandleGroupRequestOpera
 import org.glite.security.voms.admin.operations.requests.HandleMembershipRemovalRequest;
 import org.glite.security.voms.admin.operations.requests.HandleRoleMembershipRequestOperation;
 import org.glite.security.voms.admin.operations.requests.HandleVOMembershipRequest;
+import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
@@ -49,46 +50,55 @@ public class DecisionAction extends RequestActionSupport {
 
 	String decision;
 
-	
+	protected void validateVOMembershipRequest() {
+
+		NewVOMembershipRequest r = (NewVOMembershipRequest) getModel();
+
+		VOMSUser sameDnUser = (VOMSUser) FindUserOperation.instance(
+				r.getRequesterInfo().getCertificateSubject(),
+				r.getRequesterInfo().getCertificateIssuer()).execute();
+
+		if (sameDnUser != null && decision.equals("approve")){
+			addActionError("A user with such certificate already exists. Please reject such request.");
+			decision = null;
+		}
+	}
+
 	@Override
-	public String execute() throws Exception {
+	public void validate() {
 		
+		if (request instanceof NewVOMembershipRequest)
+			validateVOMembershipRequest();
+		
+	}	@Override
+	public String execute() throws Exception {
+
 		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
 
-		if (request instanceof NewVOMembershipRequest) {
+		if (request instanceof NewVOMembershipRequest)
+				new HandleVOMembershipRequest((NewVOMembershipRequest) request,
+						theDecision).execute();
 
-			try{
-				new HandleVOMembershipRequest((NewVOMembershipRequest)request, theDecision).execute();
-			
-			}catch(UserAlreadyExistsException e){
-				
-				//FIXME: should be implemented in the validate method!
-				addActionError("A user with such certificate already exists. Please reject such request.");
-				return INPUT;
-			}
-			
-		}
-		
 		if (request instanceof GroupMembershipRequest)
-			new HandleGroupRequestOperation((GroupMembershipRequest)request, theDecision).execute();
-			
-		
-		if (request instanceof RoleMembershipRequest)
-			new HandleRoleMembershipRequestOperation((RoleMembershipRequest)request, theDecision).execute();
+			new HandleGroupRequestOperation((GroupMembershipRequest) request,
+					theDecision).execute();
 
-		
+		if (request instanceof RoleMembershipRequest)
+			new HandleRoleMembershipRequestOperation(
+					(RoleMembershipRequest) request, theDecision).execute();
+
 		if (request instanceof MembershipRemovalRequest)
-			new HandleMembershipRemovalRequest((MembershipRemovalRequest)request,theDecision).execute();
-		
+			new HandleMembershipRemovalRequest(
+					(MembershipRemovalRequest) request, theDecision).execute();
+
 		if (request instanceof CertificateRequest)
-			new HandleCertificateRequestOperation((CertificateRequest)request, theDecision).execute();
-		
-		
-			
+			new HandleCertificateRequestOperation((CertificateRequest) request,
+					theDecision).execute();
+
 		refreshPendingRequests();
-		
+
 		setDecision(null);
-		
+
 		return SUCCESS;
 	}
 

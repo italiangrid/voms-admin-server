@@ -41,20 +41,27 @@ No AUP acceptance records found.
             <dd>${rec.aupVersion.aup.name}</dd>
             <dt>version:</dt>
             <dd><a href="${saURL}">${rec.aupVersion.version}</a></dd>
-            <dt>expiration date:</dt>
-            <dd>
-                <s:text name="format.datetime">
-                  <s:param value="expirationDate"/>
-                </s:text>
-             </dd>
-          </dl>
+            <s:if test="not valid">
+             	<dt>Warning:</dt>
+             	<dd>
+					This user has been requested to sign again the AUP.
+             	</dd>
+             </s:if>
+             <s:else>
+            	<dt>expiration date:</dt>
+            	<dd>
+                	<s:text name="format.datetime">
+                  		<s:param value="expirationDate"/>
+                	</s:text>
+             	</dd>
+             </s:else>                      	
+          	</dl>
           
         </td>
         <td>
           <s:text name="format.datetime">
             <s:param value="lastAcceptanceDate"/>
           </s:text>
-          
         </td>
       </tr>
     </s:iterator>

@@ -145,6 +145,7 @@ public class VOMSUserDAO {
 			AUPAcceptanceRecord aupRecord = user
 					.getAUPAccceptanceRecord(aupVersion);
 			aupRecord.setLastAcceptanceDate(new Date());
+			aupRecord.setValid(true);
 
 		}
 

@@ -23,7 +23,7 @@ public class HandleCertificateRequestOperation extends BaseHandleRequestOperatio
 		checkRequestStatus(STATUS.SUBMITTED);
 		VOMSUser u = getRequesterAsVomsUser();
 		
-		AddUserCertificateOperation.instance(u, request.getCertificateSubject(), request.getCertificateIssuer(), null);
+		AddUserCertificateOperation.instance(u, request.getCertificateSubject(), request.getCertificateIssuer(), null).execute();
 		request.approve();
 		EventManager.dispatch(new CertificateRequestApprovedEvent(request));
 		

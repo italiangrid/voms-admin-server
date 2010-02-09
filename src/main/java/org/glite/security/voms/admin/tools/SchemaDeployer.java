@@ -61,6 +61,7 @@ import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.Certificate;
@@ -77,6 +78,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.type.LongType;
@@ -131,6 +133,77 @@ public class SchemaDeployer {
 		
 	}
 	
+	
+	private void checkDatabaseConnectivity(){
+		
+		log.info("Checking database connectivity...");
+		
+		Session s = null;
+		
+		
+		try{
+			
+			s = HibernateFactory.getFactory().openSession();
+			s.beginTransaction();
+		
+		}catch(GenericJDBCException e){
+			log.fatal("");
+			
+			log.fatal("===========================================================================================================================");
+			log.fatal("Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
+			log.fatal("============================================================================================================================");
+			
+			if (log.isDebugEnabled())
+				log.fatal(e.getMessage(),e);
+			
+			System.exit(-1);
+			
+			
+		}finally{
+			
+			if (s != null)
+				s.close();
+		}
+		
+	}
+	
+	private void checkDatabaseWritable(){
+		
+		log.info("Checking that the database is writable...");
+		
+		Session s = null;
+		
+		
+		try{
+			
+			s = HibernateFactory.getFactory().openSession();
+			Transaction t = s.beginTransaction();
+			
+			s.createSQLQuery("create table writetest(integer a)");
+			t.commit();
+			
+			t = s.beginTransaction();
+			s.createSQLQuery("drop table writetest");
+			t.commit();
+			
+		
+		}catch(Throwable t){
+			
+			log.fatal("Error writing to the voms database. Check your database settings and that the database backend is up and running.");
+			
+			if (log.isDebugEnabled())
+				log.fatal("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"+t.getMessage(),t);
+			
+			throw new VOMSDatabaseException("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running", t);
+			
+			
+		}finally{
+			
+			if (s != null)
+				s.close();
+		}
+		
+	}
 	private void execute() {
 
 		System.setProperty(VOMSConfiguration.VO_NAME, vo);
@@ -272,9 +345,10 @@ public class SchemaDeployer {
 
 	private int checkDatabaseExistence() {
 
+		checkDatabaseConnectivity();
 		log.info("Checking database existence...");
 		Session s = HibernateFactory.getSession();
-		Transaction t = s.beginTransaction();
+
 
 		DatabaseMetaData dbMetadata = null;
 
@@ -683,6 +757,8 @@ public class SchemaDeployer {
 			System.exit(-1);
 		}
 
+		checkDatabaseWritable();
+		
 		SchemaExport export = new SchemaExport(hibernateConfig);
 
 		export.drop(false, true);
@@ -711,6 +787,8 @@ public class SchemaDeployer {
 			System.exit(0);
 		}
 
+		checkDatabaseWritable();
+		
 		SchemaExport exporter = new SchemaExport(hibernateConfig);
 
 		exporter.execute(true, true, false, true);
