@@ -31,6 +31,7 @@ import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.model.request.CertificateRequest;
 import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
@@ -60,6 +61,9 @@ public class UserActionSupport extends BaseAction implements
 	protected List<GroupMembershipRequest> pendingGroupMembershipRequests;
 
 	protected List<RoleMembershipRequest> pendingRoleMembershipRequests;
+	
+	protected List<CertificateRequest> pendingCertificateRequests;
+	
 	
 	protected Map<String, Object> theSession;
 	
@@ -108,6 +112,11 @@ public class UserActionSupport extends BaseAction implements
 		return pendingRoleMembershipRequests;
 	}
 	
+	
+	public List<CertificateRequest> getPendingCertificateRequests() {
+		return pendingCertificateRequests;
+	}
+
 	protected void refreshPendingRequests(){
 		
 		RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
@@ -118,6 +127,7 @@ public class UserActionSupport extends BaseAction implements
 		
 		pendingRoleMembershipRequests = rDAO.findPendingUserRoleMembershipRequests(model);
 		
+		pendingCertificateRequests =rDAO.findPendingUserCertificateRequests(getModel());
 		
 	}
 

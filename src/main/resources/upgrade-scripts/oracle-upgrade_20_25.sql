@@ -1,24 +1,5 @@
---
--- Copyright (c) Members of the EGEE Collaboration. 2006-2009.
--- See http://www.eu-egee.org/partners/ for details on the copyright holders.
---
--- Licensed under the Apache License, Version 2.0 (the "License");
--- you may not use this file except in compliance with the License.
--- You may obtain a copy of the License at
---
---     http://www.apache.org/licenses/LICENSE-2.0
---
--- Unless required by applicable law or agreed to in writing, software
--- distributed under the License is distributed on an "AS IS" BASIS,
--- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
--- See the License for the specific language governing permissions and
--- limitations under the License.
---
--- Authors:
--- 	Andrea Ceccanti (INFN)
---
 create table aup (id number(19,0) not null, name varchar2(255 char) not null unique, description varchar2(255 char), reacceptancePeriod number(10,0) not null, primary key (id))
-create table aup_acc_record (id number(19,0) not null, aup_version_id number(19,0) not null, usr_id number(19,0) not null, last_acceptance_date timestamp not null, primary key (id), unique (aup_version_id, usr_id))
+create table aup_acc_record (id number(19,0) not null, aup_version_id number(19,0) not null, usr_id number(19,0) not null, last_acceptance_date timestamp not null, valid number(1,0), primary key (id), unique (aup_version_id, usr_id))
 create table aup_version (id number(19,0) not null, aup_id number(19,0) not null, version varchar2(255 char) not null, url varchar2(255 char), text varchar2(255 char), creationTime timestamp not null, lastForcedReacceptanceTime timestamp, active number(1,0) not null, primary key (id), unique (aup_id, version))
 alter table ca add subject_string varchar2(255 char) unique
 alter table ca add description varchar2(255 char)

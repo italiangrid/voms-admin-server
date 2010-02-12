@@ -99,6 +99,30 @@
 				</td>
 			</tr>
 		</s:iterator>
+		
+		
+		
+		<s:iterator var="req" value="pendingCertificateRequests">
+			<tr class="tableRow">
+				<td>
+				<div class="waitingForApproval" style="float: right">(Waiting for approval)</div>
+				<div class="requestedDN"><voms:formatDN dn="${req.certificateSubject}" fields="CN" />
+				</div>
+
+				<div class="requestedCA"><voms:formatDN dn="${req.certificateIssuer}" fields="CN" />
+					
+				</div>
+
+				<div class="cert-date-info">Requested on: <span>
+                  <s:text name="format.datetime">
+                    <s:param
+                      value="creationDate" />
+                  </s:text></span>
+                 </div>
+                 </td>
+             </tr>
+		</s:iterator>
+		
 	</table>
 	<s:if test="#request.registrationEnabled">
 	

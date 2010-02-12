@@ -11,8 +11,8 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.INPUT, location = "usersDetail") })
+		@Result(name = BaseAction.SUCCESS, location = "aupHistory.jsp"),
+		@Result(name = BaseAction.INPUT, location = "aupHistory.jsp") })
 
 public class TriggerReacceptanceAction extends UserActionSupport {
 
@@ -21,6 +21,16 @@ public class TriggerReacceptanceAction extends UserActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	
+	@Override
+	public void validate() {
+		
+		if (getModel().hasPendingSignAUPTasks()){
+			addActionError("User has already pending requests for signing the AUP.");
+			refreshPendingRequests();
+		}
+		
+	}
 	@Override
 	public String execute() throws Exception {
 		
@@ -28,6 +38,8 @@ public class TriggerReacceptanceAction extends UserActionSupport {
 		
 		new TriggerReacceptanceOperation(aupDAO.getVOAUP(), getModel()).execute();
 		
+		addActionMessage("AUP reacceptance requested.");
+				
 		return SUCCESS;
 	}
 

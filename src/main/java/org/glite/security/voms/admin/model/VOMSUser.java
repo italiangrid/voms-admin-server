@@ -57,13 +57,11 @@ import org.glite.security.voms.admin.common.IllegalStateException;
 import org.glite.security.voms.admin.common.NotFoundException;
 import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
 import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.Auditable;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchMappingException;
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord;
 import org.glite.security.voms.admin.model.request.RequesterInfo;
@@ -1038,6 +1036,19 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 		return null;
 
+	}
+	
+	
+	public boolean hasInvalidAUPAcceptanceRecord(){
+		
+		if (getAupAcceptanceRecords().isEmpty())
+			return false;
+		
+		for (AUPAcceptanceRecord r: getAupAcceptanceRecords())
+			if (!r.getValid())
+				return true;
+		
+		return false;
 	}
 
 	public boolean hasPendingSignAUPTasks() {

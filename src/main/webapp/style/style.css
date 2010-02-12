@@ -351,6 +351,14 @@ h3, .header3{
 	color: #505050;
 }
 
+.requestedDN, .requestedCA, .waitingForApproval{
+	color: #BF5F5F;
+	font-size: smaller;
+	font-weight: bold;	
+}
+
+
+
 .suspended-cert{
 	
 }
@@ -377,10 +385,14 @@ ol.certificate-info li{
 }
 
 .warning {
-	color: #cc0000;
-	
+	color: #cc0000;	
 	font-size: smaller;
 }
+
+.aupWarning{
+	color: #cc0000;
+}
+
 .suspensionReason{
 	
 	

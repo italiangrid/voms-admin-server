@@ -134,7 +134,9 @@ def backup_dir_contents(dir):
     
     ## Remove backup filez
     for f in backup_filez:
-        os.remove(f)
+        ## Don't remove backup directories potentially created by the user
+        if not os.path.isdir(f):
+            os.remove(f)
     
     filez = glob.glob(os.path.join(dir,"*"))
     backup_date = time.strftime("%d-%m-%Y_%H-%M-%S",time.gmtime())

@@ -74,16 +74,6 @@
 		<a href="${deleteUsrURL}" class="actionLink" onclick="openConfirmDialog(this, 'deleteUserDialog','${shortName}'); return false">Delete this user</a>
 	
 	</s:if>
-	
-	<s:if test="#attr.canSuspend">
-		<s:url action="trigger-reacceptance" var="triggerURL">
-      		<s:param name="userId" value="id"/>
-    	</s:url>
-    	
-    	
-    	<a href="${triggerURL}" class="actionLink">Trigger AUP reacceptance</a>
-    	
-	</s:if>
 </div>
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute name="panelName" value="Personal information"/>

@@ -20,7 +20,8 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
+<div class="reloadable">
+<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
 <s:if test="aupAcceptanceRecords.empty">
 No AUP acceptance records found.
 </s:if>
@@ -43,7 +44,7 @@ No AUP acceptance records found.
             <dd><a href="${saURL}">${rec.aupVersion.version}</a></dd>
             <s:if test="not valid">
              	<dt>Warning:</dt>
-             	<dd>
+             	<dd class="aupWarning">
 					This user has been requested to sign again the AUP.
              	</dd>
              </s:if>
@@ -66,4 +67,23 @@ No AUP acceptance records found.
       </tr>
     </s:iterator>
   </table>
+  
+  <s:if test="#request.registrationEnabled">
+  	<voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
+  	<s:if test="#attr.canSuspend">
+		
+		<s:if test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
+			
+			<s:form action="trigger-reacceptance" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;">
+				<s:hidden name="userId" value="%{model.id}" />
+				<s:submit 
+					value="%{'Request AUP reacceptance'}" 
+					align="right"/>
+			</s:form>
+		</s:if>
+    	
+	</s:if>
+	</s:if>	
 </s:else>
+</div>
+
