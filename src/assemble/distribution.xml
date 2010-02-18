@@ -70,6 +70,16 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>/share/voms-admin/tools/lib</outputDirectory>
         </dependencySet>
+        
+        <dependencySet>
+          <outputDirectory>share/voms-admin/endorsed</outputDirectory>
+          <includes>
+            <include>org.apache.xerces:xml-apis</include>
+            <include>org.apache.xerces:xercesImpl</include>
+            <include>org.apache.xerces:serializer</include>
+            <include>org.apache.xerces:resolver</include>
+          </includes>
+        </dependencySet>
     </dependencySets>
 
     <files>
