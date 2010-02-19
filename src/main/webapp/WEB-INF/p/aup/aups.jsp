@@ -28,7 +28,7 @@
 
 <h1>VO Acceptable Usage Policy:</h1>
 
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
   
 <voms:hasPermissions var="canModify" context="vo" permission="rw"/>
 

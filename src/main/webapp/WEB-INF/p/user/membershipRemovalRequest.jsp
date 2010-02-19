@@ -23,7 +23,7 @@
 
 <h1>Request membership removal</h1>
 
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:form validate="true">
   <s:hidden name="userId" value="%{id}"/>

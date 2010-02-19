@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <h1>Add a certificate for user <span class="userName">${shortName}</span></h1>
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 
 <s:form action="save-certificate" enctype="multipart/form-data" namespace="/user" method="POST">

@@ -23,7 +23,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <div class="reloadable">
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:set var="userId" scope="page"
 	value="id" /> <voms:unsubscribedGroups var="unsubscribedGroups"

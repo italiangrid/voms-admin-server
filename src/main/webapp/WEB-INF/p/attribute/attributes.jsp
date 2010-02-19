@@ -49,7 +49,7 @@
 </div>
 
 <div class="searchResultsPane">
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:if test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
 No attribute mappings defined in this VO.

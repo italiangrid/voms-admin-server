@@ -61,7 +61,7 @@
       
           <tr>
             <th style="width: 25%">User information</th>
-            <th>Certificates<tiles2:insertTemplate template="../shared_20/formattedDNControls.jsp"/></th>
+            <th>Certificates<tiles2:insertTemplate template="../shared/formattedDNControls.jsp"/></th>
             <th/>
           </tr>
           

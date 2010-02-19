@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <h1>Request that a new certificate is added to your membership</h1>
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:form action="request-certificate" 
 	enctype="multipart/form-data" 

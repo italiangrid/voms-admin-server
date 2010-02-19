@@ -48,7 +48,7 @@
 </div>
 
 <div class="searchResultsPane">
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
 No groups found in this VO.

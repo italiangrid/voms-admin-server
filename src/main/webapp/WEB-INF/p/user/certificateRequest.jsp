@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <div class="reloadable">
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:if test="certificates.empty">
 	No certificates defined for this user.

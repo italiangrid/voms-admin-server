@@ -56,7 +56,7 @@
                 
               </s:form>
               <s:fielderror fieldName="expirationDate"/>
-              <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+              <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
           </dd>
         </dl>
     </div>

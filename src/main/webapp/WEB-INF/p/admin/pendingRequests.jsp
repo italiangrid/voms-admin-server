@@ -24,7 +24,7 @@
 <div class="reloadable"><s:if test="pendingRequests.empty">
   No pending requests found.
 </s:if> <s:else>
-	<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp" />
+	<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
 
 	<!-- Membership requests -->
 

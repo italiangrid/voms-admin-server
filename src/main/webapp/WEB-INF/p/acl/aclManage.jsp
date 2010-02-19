@@ -72,7 +72,7 @@
   </s:form>
 </div>
 
-<tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 <div id="aclShowPane"></div>
 
 </s:if>

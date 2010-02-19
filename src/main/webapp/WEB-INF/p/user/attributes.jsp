@@ -30,7 +30,7 @@
 
 <s:if test="not #request.attributeClasses.empty">
 	<voms:authorized permission="ATTRIBUTES_WRITE" context="vo">
-        <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+        <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 		<div class="attributeCreationTab"><s:form action="set-attribute"
 			namespace="/user"
 			onsubmit="ajaxSubmit(this,'generic-attrs-content'); return false;">

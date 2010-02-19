@@ -24,7 +24,7 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<%@include file="/WEB-INF/p/shared_20/global-page-variables.jsp"%>
+<%@include file="/WEB-INF/p/shared/global-page-variables.jsp"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>

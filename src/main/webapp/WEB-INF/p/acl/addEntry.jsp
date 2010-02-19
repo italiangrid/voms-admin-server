@@ -21,7 +21,7 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
  
- <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+ <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 <s:form>
 <h1>
 Add an entry to the 

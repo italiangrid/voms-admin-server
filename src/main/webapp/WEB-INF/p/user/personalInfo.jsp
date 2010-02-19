@@ -26,7 +26,7 @@
 	 
 	
 	<s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
-	 <tiles2:insertTemplate template="../shared_20/errorsAndMessages.jsp"/>
+	 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 	<s:form action="save-personal-information"
 		onsubmit="ajaxSubmit(this,'pers-info-content'); return false;">
 		<s:token/>
