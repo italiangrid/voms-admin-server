@@ -28,15 +28,6 @@
     </developer>
   </developers>
   <build>
-    <!--
-      This filter is needed for the WAR creation. Unfortunately, the
-      maven-war-plugin has a bug and does not support a nested filters element
-      in its configuration.
-    -->
-    <filters>
-      <filter>resources/debug/test.properties
-      </filter>
-    </filters>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -163,16 +154,6 @@
                   </targetPath>
                 </resource>
 
-                <resource>
-                  <directory>resources/debug</directory>
-                  <filtering>true</filtering>
-
-                  <excludes>
-                    <exclude>test.properties</exclude>
-                    <exclude>conf/**</exclude>
-                  </excludes>
-                  <targetPath>META-INF</targetPath>
-                </resource>
               </webResources>
               <packagingExcludes>
                 WEB-INF/lib/*.jar
@@ -199,17 +180,6 @@
                   <targetPath>
                     WEB-INF/classes/org/glite/security/voms/admin/jsp
                   </targetPath>
-                </resource>
-
-                <resource>
-                  <directory>resources/debug</directory>
-                  <filtering>true</filtering>
-
-                  <excludes>
-                    <exclude>test.properties</exclude>
-                    <exclude>conf/**</exclude>
-                  </excludes>
-                  <targetPath>META-INF</targetPath>
                 </resource>
               </webResources>
             </configuration>
