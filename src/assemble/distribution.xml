@@ -36,6 +36,7 @@
             <directory>resources/scripts</directory>
             <excludes>
                 <exclude>*.pyc</exclude>
+                <exclude>*.pyo</exclude>
             </excludes>
             <outputDirectory>/sbin</outputDirectory>
             <fileMode>0755</fileMode>
