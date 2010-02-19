@@ -30,14 +30,20 @@ This package contains the VOMS-Admin server application and configuration tools.
 %files
 %defattr(-,root,root)
 %dir %{prefix}/etc
-%attr(0755,root,root) %{prefix}/etc/init.d/*
-%attr(0755,root,root) %{prefix}/sbin/*
-%dir %{prefix}/share/webapps
-%dir %{prefix}/share/java
-%dir %{prefix}/share/voms-admin/tools
-%dir %{prefix}/share/doc/glite-security-voms-admin-server
-%dir %{prefix}/share/interface
-%dir %{prefix}/share/voms-admin/endorsed
+%attr(0755,root,root) %{prefix}/etc/init.d/init-voms-admin.py
+%attr(0755,root,root) %{prefix}/sbin/voms-admin-configure
+%attr(0755,root,root) %{prefix}/sbin/voms-admin-ping
+%attr(0755,root,root) %{prefix}/sbin/*.py
+
+%{prefix}/share/webapps/*.war
+%{prefix}/share/java/*.jar
+%{prefix}/share/voms-admin/tools/classes/*.properties
+%{prefix}/share/voms-admin/tools/lib/*.jar
+%{prefix}/share/doc/glite-security-voms-admin-server/*
+%{prefix}/share/interface/*.wsdl
+%{prefix}/share/voms-admin/endorsed/*.jar
+%{prefix}/etc/voms-admin/templates/*
+%{prefix}/etc/voms-admin/templates/aup/*
 
 %pre
 
