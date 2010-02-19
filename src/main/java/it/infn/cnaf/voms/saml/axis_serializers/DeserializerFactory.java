@@ -1,6 +1,6 @@
 /**
- *
- * Copyright [2006-2007] Istituto Nazionale di Fisica Nucleare (INFN)
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * File : DeserializerFactory.java
- *
- * Authors: Valerio Venturi <valerio.venturi@cnaf.infn.it>
- * 
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
  */
 
 package it.infn.cnaf.voms.saml.axis_serializers;

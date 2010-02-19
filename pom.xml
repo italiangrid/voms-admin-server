@@ -2,10 +2,10 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glite.voms</groupId>
-  <artifactId>voms-admin</artifactId>
+  <artifactId>voms-admin-server</artifactId>
   <packaging>war</packaging>
   <name>glite-security-voms-admin</name>
-  <version>0.1</version>
+  <version>2.5</version>
   <url>https://twiki.cnaf.infn.it/cgi-bin/twiki/view/VOMS/
   </url>
   <properties>
@@ -322,21 +322,40 @@
 
       </plugin>
       <plugin>
-            <groupId>com.google.code.maven-license-plugin</groupId>
+            <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.1</version>
             <configuration>
                 <header>resources/doc/license.txt</header>
                 <excludes>
+                    <exclude>**/*.jpage</exclude>
+                    <exclude>**/*.template</exclude>
+                    <exclude>**/*.wsdl</exclude>
+                    <exclude>**/*.tld</exclude>
+                    <exclude>**/*.wsdd</exclude>
+                    <exclude>**/*.spec</exclude>
+                    <exclude>**/*.pydevproject</exclude>
                     <exclude>target/**</exclude>
                     <exclude>.clover/**</exclude>
-                    <exclude>jquery*.js</exclude>
+                    <exclude>**/jquery*.js</exclude>
                     <exclude>src/main/webapp/common/struts/**</exclude>
-                    <exclude>resources/doc/old-license.txt</exclude>
-                    <exclude>src/main/resources/upgrade-scripts/**</exclude>
+                    <exclude>src/main/resources/upgrade-scripts/*.sql</exclude>
+                    <exclude>src/main/webapp/struts/**</exclude>
+                    <exclude>resources/doc/**</exclude>
+                    <exclude>resources/scripts/voms-admin-ping</exclude>
+                    <exclude>resources/templates/aup/*</exclude>
                 </excludes>
                 <useDefaultExcludes>true</useDefaultExcludes>
             </configuration>
+            <executions>
+            <execution>
+              <id>check-headers</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+    </executions>
        </plugin>
       </plugins>
 
