@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.persistence.dao.generic;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * An interface shared by all business data access objects.

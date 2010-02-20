@@ -20,7 +20,6 @@
 
 package it.infn.cnaf.voms.saml.exceptions;
 
-import org.opensaml.saml2.core.NameID;
 
 public class X509SubjectWrongNameIDFormatException extends Exception
 {

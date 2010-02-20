@@ -21,7 +21,6 @@ package org.glite.security.voms.admin.operations.users;
 
 import java.security.cert.X509Certificate;
 
-
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;

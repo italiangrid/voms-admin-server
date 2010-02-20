@@ -21,6 +21,7 @@
 package it.infn.cnaf.voms.saml.axis_serializers;
 
 import java.util.Iterator;
+
 import javax.xml.rpc.encoding.Serializer;
 
 /**

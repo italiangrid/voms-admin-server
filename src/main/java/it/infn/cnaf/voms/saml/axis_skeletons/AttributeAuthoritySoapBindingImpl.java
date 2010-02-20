@@ -27,11 +27,11 @@
 
 package it.infn.cnaf.voms.saml.axis_skeletons;
 
-import java.rmi.RemoteException;
-
 import it.infn.cnaf.voms.saml.SAMLAssertionFactory;
 import it.infn.cnaf.voms.saml.SAMLResponseFactory;
 import it.infn.cnaf.voms.saml.VOMSSAMLService;
+
+import java.rmi.RemoteException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,7 +39,6 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 

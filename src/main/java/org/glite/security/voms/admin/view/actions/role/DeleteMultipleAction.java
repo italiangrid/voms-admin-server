@@ -28,9 +28,6 @@ import org.glite.security.voms.admin.operations.SingleArgumentOperationCollectio
 import org.glite.security.voms.admin.operations.roles.DeleteRoleOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.validator.annotations.ConversionErrorFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-
 @ParentPackage("base")
 @Results({
 	

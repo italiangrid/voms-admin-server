@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.persistence.model.AUP;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 @Entity
 @Table(name = "sign_aup_task")

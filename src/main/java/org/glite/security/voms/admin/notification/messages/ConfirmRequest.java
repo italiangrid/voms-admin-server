@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.notification.messages;
 
-import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class ConfirmRequest extends AbstractVelocityNotification {

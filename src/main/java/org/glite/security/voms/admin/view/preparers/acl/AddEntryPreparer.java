@@ -30,7 +30,6 @@ import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 import org.glite.security.voms.admin.operations.users.ListUsersOperation;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;

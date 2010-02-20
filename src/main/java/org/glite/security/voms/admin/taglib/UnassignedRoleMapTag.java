@@ -30,7 +30,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.operations.users.FindUnassignedRoles;
-import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;

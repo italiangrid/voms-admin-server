@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.event;
 
-import java.util.Map;
 
 public interface Event {
 

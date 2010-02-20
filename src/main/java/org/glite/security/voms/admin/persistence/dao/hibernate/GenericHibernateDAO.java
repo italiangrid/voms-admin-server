@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.dao.generic.GenericDAO;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.hibernate.Criteria;
@@ -31,7 +30,6 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Implements the generic CRUD data access operations using Hibernate APIs.

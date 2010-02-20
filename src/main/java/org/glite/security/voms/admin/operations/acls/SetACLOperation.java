@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.operations.acls;
 import java.util.Map;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;

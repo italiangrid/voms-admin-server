@@ -20,10 +20,7 @@
 
 package it.infn.cnaf.voms.saml.axis_serializers;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -40,7 +37,6 @@ import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.Signer;
-import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 

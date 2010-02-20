@@ -26,8 +26,6 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.Preparable;
-
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail.jsp"),
 		@Result(name = BaseAction.INPUT, location = "aclManage.jsp") })

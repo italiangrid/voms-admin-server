@@ -46,7 +46,6 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-import com.opensymphony.xwork2.validator.validators.EmailValidator;
 
 
 @ParentPackage("base")

@@ -19,8 +19,6 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import java.util.Map;
-
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;

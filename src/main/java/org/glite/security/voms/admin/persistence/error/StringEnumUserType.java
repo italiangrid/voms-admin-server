@@ -25,10 +25,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.hibernate.*;
-import org.hibernate.util.ReflectHelper;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.ParameterizedType;
+import org.hibernate.util.ReflectHelper;
 
 /**
  * A generic UserType that handles String-based JDK 5.0 Enums.

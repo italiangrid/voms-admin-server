@@ -20,7 +20,6 @@
 package org.glite.security.voms.admin.event;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class AbstractEvent implements Event {
 

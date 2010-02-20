@@ -25,10 +25,7 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import ognl.OgnlContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

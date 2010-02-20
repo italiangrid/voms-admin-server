@@ -19,13 +19,8 @@
  */
 package org.glite.security.voms.admin.taglib;
 
-import java.util.List;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 
 public class UnassignedTagsTag extends TagSupport {
 

@@ -21,7 +21,6 @@
 package org.glite.security.voms.admin.notification;
 
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.EventMask;
 import org.glite.security.voms.admin.event.EventType;
 import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;

@@ -35,10 +35,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.NamingException;
@@ -141,20 +139,6 @@ public final class VOMSConfiguration {
 		config.addProperty(arg0, arg1);
 	}
 
-	public Map asMap() {
-
-		HashMap returnValue = new HashMap();
-		Iterator keys = config.getKeys();
-		while (keys.hasNext()) {
-			Object key = keys.next();
-			Object property = config.getProperty((String) key);
-			returnValue.put(key, property);
-
-		}
-
-		return returnValue;
-	}
-	
 	
 
 	/*
