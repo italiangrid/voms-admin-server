@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.version;
+package org.glite.security.voms.admin.util.version;
 
 public interface EndpointVersion {
 
