@@ -26,6 +26,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -74,7 +75,7 @@ public class RequestGroupMembershipAction extends UserActionSupport {
 	public String execute() throws Exception {
 		
 		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true))
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
 			return "registrationDisabled";
 		
 		if (hasActionErrors())

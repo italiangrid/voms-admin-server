@@ -48,6 +48,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.core.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
@@ -206,7 +207,7 @@ public class SchemaDeployer {
 	}
 	private void execute() {
 
-		System.setProperty(VOMSConfiguration.VO_NAME, vo);
+		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
 		VOMSConfiguration.instance(false, null);
 
 		if (command.equals("deploy"))
@@ -1271,7 +1272,7 @@ public class SchemaDeployer {
 
 			// Default lifetime for membership is 12 months if not specified
 			int lifetime = VOMSConfiguration.instance().getInt(
-					VOMSConfiguration.DEFAULT_MEMBERSHIP_LIFETIME, 12);
+					VOMSConfigurationConstants.DEFAULT_MEMBERSHIP_LIFETIME, 12);
 
 			c.add(Calendar.MONTH, lifetime);
 			u.setEndTime(c.getTime());

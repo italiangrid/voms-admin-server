@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
@@ -517,7 +518,7 @@ public class VOMSUserDAO {
 
 		// Default lifetime for membership is 12 months
 		int lifetime = VOMSConfiguration.instance().getInt(
-				VOMSConfiguration.DEFAULT_MEMBERSHIP_LIFETIME, 12);
+				VOMSConfigurationConstants.DEFAULT_MEMBERSHIP_LIFETIME, 12);
 
 		c.add(Calendar.MONTH, lifetime);
 		usr.setEndTime(c.getTime());

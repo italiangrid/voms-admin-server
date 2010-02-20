@@ -28,6 +28,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
@@ -219,7 +220,7 @@ public class DatabaseSetupTask extends TimerTask {
 			log.info("Trusted admin created.");
 
 			if (VOMSConfiguration.instance().getBoolean(
-					VOMSConfiguration.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS,
+					VOMSConfigurationConstants.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS,
 					false)) {
 
 				// Grant read-only access to authenticated clients
@@ -273,7 +274,7 @@ public class DatabaseSetupTask extends TimerTask {
 			log.info("Setting up voms-admin 2.5 aup infrastructure...");
 			// Setup VO AUP
 			String voAUPUrlString = VOMSConfiguration.instance().getString(
-					VOMSConfiguration.VO_AUP_URL,
+					VOMSConfigurationConstants.VO_AUP_URL,
 					VOMSConfiguration.instance().getDefaultVOAUPURL());
 
 			if (voAUPUrlString.trim().equals("")) {

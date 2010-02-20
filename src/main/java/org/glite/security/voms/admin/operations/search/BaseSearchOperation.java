@@ -20,6 +20,7 @@
 package org.glite.security.voms.admin.operations.search;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 import org.glite.security.voms.admin.operations.groups.SearchGroupsOperation;
@@ -35,13 +36,13 @@ public class BaseSearchOperation extends BaseVoReadOperation implements
 	SearchData searchData;
 
 	int userMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfiguration.USER_MAX_RESULTS_PER_PAGE, 15);
+			VOMSConfigurationConstants.USER_MAX_RESULTS_PER_PAGE, 15);
 	int groupMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfiguration.GROUP_MAX_RESULTS_PER_PAGE, 15);
+			VOMSConfigurationConstants.GROUP_MAX_RESULTS_PER_PAGE, 15);
 	int roleMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfiguration.ROLE_MAX_RESULTS_PER_PAGE, 15);
+			VOMSConfigurationConstants.ROLE_MAX_RESULTS_PER_PAGE, 15);
 	int attributeMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfiguration.ATTRIBUTES_MAX_RESULTS_PER_PAGE, 15);
+			VOMSConfigurationConstants.ATTRIBUTES_MAX_RESULTS_PER_PAGE, 15);
 
 	protected BaseSearchOperation(SearchData sd) {
 		setSearchData(sd);

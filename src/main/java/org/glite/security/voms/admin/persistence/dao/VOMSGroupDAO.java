@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
@@ -289,10 +290,10 @@ public class VOMSGroupDAO {
 
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		String voName = conf.getString(VOMSConfiguration.VO_NAME);
+		String voName = conf.getString(VOMSConfigurationConstants.VO_NAME);
 
 		if (voName == null)
-			throw new VOMSConfigurationException(VOMSConfiguration.VO_NAME
+			throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
 					+ "undefined in configuration!");
 
 		VOMSGroup g = findByName("/" + voName);
@@ -444,7 +445,7 @@ public class VOMSGroupDAO {
 		String voName = conf.getVOName();
 
 		if (voName == null)
-			throw new VOMSConfigurationException(VOMSConfiguration.VO_NAME
+			throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
 					+ " undefined in configuration!");
 
 		VOMSGroup g = findByName("/" + voName);

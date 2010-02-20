@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 
 public class AttributeAuthoritySoapBindingImpl implements
 		it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType {
@@ -64,7 +65,7 @@ public class AttributeAuthoritySoapBindingImpl implements
 
 		/* instantiate the VomsSamlService object, if the service is active */
 
-		if (conf.getBoolean(VOMSConfiguration.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
+		if (conf.getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
 				false)) {
 			SAMLAssertionFactory sAMLAssertionFactory = new SAMLAssertionFactory(
 					conf.getServiceCertificate(), conf.getServicePrivateKey());
@@ -74,7 +75,7 @@ public class AttributeAuthoritySoapBindingImpl implements
 
 			this.vOMSSAMLService = new VOMSSAMLService(sAMLAssertionFactory,
 					sAMLResponseFactory, conf.getInt(
-							VOMSConfiguration.VOMS_SAML_MAX_ASSERTION_LIFETIME,
+							VOMSConfigurationConstants.VOMS_SAML_MAX_ASSERTION_LIFETIME,
 							720));
 		}
 
@@ -85,7 +86,7 @@ public class AttributeAuthoritySoapBindingImpl implements
 			throws java.rmi.RemoteException {
 		
 		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfiguration.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+				VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
 			throw new RemoteException(
 					"SAML attribute authority is currently disabled on this VOMS Admin instance.");
 

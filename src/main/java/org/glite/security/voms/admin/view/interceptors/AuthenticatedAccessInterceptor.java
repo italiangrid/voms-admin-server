@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.servlets.InitSecurityContext;
@@ -75,7 +76,7 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 				.instance());
 			
 			req.setAttribute("registrationEnabled", VOMSConfiguration.instance().getBoolean(
-					VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true));
+					VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
 			
 		}
 		

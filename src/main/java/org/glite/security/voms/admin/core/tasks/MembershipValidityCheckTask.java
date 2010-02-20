@@ -26,6 +26,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
@@ -75,7 +76,7 @@ public class MembershipValidityCheckTask extends TimerTask {
 		if (timer != null) {
 
 			long period = VOMSConfiguration.instance().getLong(
-					VOMSConfiguration.MEMBERSHIP_CHECK_PERIOD, 30L);
+					VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 30L);
 
 			log.info("Scheduling MembershipValidityCheckTask with period: "
 					+ period + " seconds.");

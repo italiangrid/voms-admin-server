@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.core.tasks.MembershipValidityCheckTask;
@@ -155,7 +156,7 @@ public final class VOMSService {
 				log.error("Error initializing OpenSAML:" + e.getMessage(), e);
 
 			log.info("SAML endpoint will not be activated.");
-			conf.setProperty(VOMSConfiguration.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
+			conf.setProperty(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
 					false);
 		}
 		

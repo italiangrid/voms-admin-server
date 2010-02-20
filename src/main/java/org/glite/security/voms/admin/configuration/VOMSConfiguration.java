@@ -60,100 +60,6 @@ import org.glite.security.voms.admin.util.DNUtil;
 
 public final class VOMSConfiguration {
 
-	public static final String LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN = "voms.localhost.defaults.to.local.admin";
-
-	public static final String READONLY = "voms.readonly";
-
-	public static final String CAFILES = "voms.cafiles";
-
-	public static final String CAFILES_PERIOD = "voms.cafiles.period";
-
-	public static final String CREATE_EXPIRED_CAS = "voms.ca.create-when-expired";
-
-	public static final String DROP_EXPIRED_CAS = "voms.ca.drop-when-expired";
-
-	public static final String AUDITING = "voms.auditing";
-
-	public static final String AUDITING_INSERTS = "voms.auditing.inserts";
-
-	public static final String AUDITING_UPDATES = "voms.auditing.updates";
-
-	public static final String AUDITING_DELETIONS = "voms.auditing.deletions";
-
-	public static final String SERVICE_EMAIL_ADDRESS = "voms.notification.email-address";
-
-	public static final String SERVICE_SMTP_SERVER = "voms.notification.smtp-server";
-
-	public static final String SERVICE_SMTP_SERVER_PORT = "voms.notification.smtp-server.port";
-
-	public static final String SERVICE_EMAIL_ACCOUNT_USERNAME = "voms.notification.username";
-
-	public static final String SERVICE_EMAIL_ACCOUNT_PASSWORD = "voms.notification.password";
-
-	public static final String SERVICE_EMAIL_USE_TLS = "voms.notification.use_tls";
-	
-	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify"; 
-
-	/**
-	 * VO Membership requests expiration time (in minutes).
-	 */
-	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo-membership-expiration-time";
-
-	public static final String VO_NAME = "voms.vo.name";
-
-	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
-
-	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
-
-	public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
-
-	public static final String ROLE_MAX_RESULTS_PER_PAGE = "voms.pagination.role.max.results.per.page";
-
-	public static final String REGISTRATION_SERVICE_ENABLED = "voms.request.webui.enabled";
-
-	public static final String READ_ACCESS_FOR_AUTHENTICATED_CLIENTS = "voms.read-access-for-authenticated-clients";
-
-	/**
-	 * VERSION Properties
-	 */
-
-	public static final String VOMS_ADMIN_SERVER_VERSION = "voms-admin.server.version";
-	public static final String VOMS_ADMIN_INTERFACE_VERSION = "voms-admin.interface.version";
-
-	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
-
-	/**
-	 * AUP Properties
-	 */
-	public static final String GRID_AUP_URL = "voms.aup.grid_aup.initial_url";
-	public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
-	public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
-
-	/**
-	 * Membership Properties
-	 */
-	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
-
-	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
-	
-	/**
-	 * Attribute Authority Properties
-	 */
-	public static final String VOMS_AA_CERT_FILE = "voms.aa.certificate";
-
-    public static final String VOMS_AA_KEY_FILE = "voms.aa.key";
-    
-    public static final String VOMS_SAML_MAX_ASSERTION_LIFETIME = "voms.saml.max_assertion_lifetime";
-    
-    public static final String VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP = "voms.aa.compulsory_group_membership";
-	
-    public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
-    
-    public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
-    
-    public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
-    
-    
 	public static VOMSConfiguration instance() {
 
 		return instance(true, null);
@@ -211,7 +117,7 @@ public final class VOMSConfiguration {
 		if (!getVOName().equals("siblings") && context != null){
 			loadServiceProperties();
 			
-			if (getBoolean(VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+			if (getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
 				loadServiceCredentials();
 			
 			loadVersionProperties();
@@ -879,7 +785,7 @@ public final class VOMSConfiguration {
 	
 	public String getVOName() {
 
-		return getString(VO_NAME);
+		return getString(VOMSConfigurationConstants.VO_NAME);
 	}
 
 
@@ -895,10 +801,10 @@ public final class VOMSConfiguration {
 
 	private void loadServiceCredentials() {
 
-        String certificateFileName = getString( VOMS_AA_CERT_FILE,
+        String certificateFileName = getString( VOMSConfigurationConstants.VOMS_AA_CERT_FILE,
                 "/etc/grid-security/hostcert.pem" );
         
-        String privateKeyFileName = getString( VOMS_AA_KEY_FILE,
+        String privateKeyFileName = getString( VOMSConfigurationConstants.VOMS_AA_KEY_FILE,
                 "/etc/grid-security/hostkey.pem" );
 
         /* load certificate */
@@ -1143,7 +1049,7 @@ public final class VOMSConfiguration {
 
 		// Rename the VO_NAME property for internal use
 		// FIXME: is this really needed?
-		config.setProperty(VO_NAME, config.getString("VO_NAME"));
+		config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getString("VO_NAME"));
 
 	}
 	

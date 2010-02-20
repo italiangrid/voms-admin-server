@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.mail.SimpleEmail;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.notification.VOMSNotificationException;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
@@ -150,18 +151,18 @@ public abstract class EmailNotification {
 		SimpleEmail e = new SimpleEmail();
 
 		String sender = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.SERVICE_EMAIL_ADDRESS);
+				VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
 		String smtpServer = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.SERVICE_SMTP_SERVER);
+				VOMSConfigurationConstants.SERVICE_SMTP_SERVER);
 		int smtpServerPort = VOMSConfiguration.instance().getInt(
-				VOMSConfiguration.SERVICE_SMTP_SERVER_PORT, 25);
+				VOMSConfigurationConstants.SERVICE_SMTP_SERVER_PORT, 25);
 
 		String userName = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.SERVICE_EMAIL_ACCOUNT_USERNAME, null);
+				VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_USERNAME, null);
 		String userPassword = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.SERVICE_EMAIL_ACCOUNT_PASSWORD, null);
+				VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_PASSWORD, null);
 		boolean useTLS = VOMSConfiguration.instance().getBoolean(
-				VOMSConfiguration.SERVICE_EMAIL_USE_TLS, false);
+				VOMSConfigurationConstants.SERVICE_EMAIL_USE_TLS, false);
 
 		deliveryAttemptCount++;
 		try {

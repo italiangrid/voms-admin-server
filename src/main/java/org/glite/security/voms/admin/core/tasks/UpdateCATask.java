@@ -33,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.util.FileCertReader;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
@@ -70,14 +71,14 @@ public final class UpdateCATask extends TimerTask {
 		// Configure UpdateCATask
 		VOMSConfiguration config = VOMSConfiguration.instance();
 
-		if (config.getBoolean(VOMSConfiguration.READONLY, false)) {
+		if (config.getBoolean(VOMSConfigurationConstants.READONLY, false)) {
 			log
 					.info("CA update thread not started.  This is a read-only VOMS Admin instance");
 			return;
 		}
 
 		if (timer != null) {
-			long period = config.getLong(VOMSConfiguration.CAFILES_PERIOD, -1);
+			long period = config.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, -1);
 
 			if (period > 0) {
 
@@ -110,7 +111,7 @@ public final class UpdateCATask extends TimerTask {
 	public synchronized static void updateCAs() {
 
 		String caFiles = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.CAFILES,
+				VOMSConfigurationConstants.CAFILES,
 				"/etc/grid-security/certificates/*.0");
 
 		log.info("Updating CAs from: " + caFiles);

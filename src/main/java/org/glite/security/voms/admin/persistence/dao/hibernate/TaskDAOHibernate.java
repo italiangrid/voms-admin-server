@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
@@ -104,7 +105,7 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
 	public SignAUPTask createSignAUPTask(AUP aup) {
 
 		int lifetime = VOMSConfiguration.instance().getInt(
-				VOMSConfiguration.SIGN_AUP_TASK_LIFETIME, 1);
+				VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME, 1);
 		Calendar cal = Calendar.getInstance();
 
 		cal.add(Calendar.DAY_OF_YEAR, lifetime);

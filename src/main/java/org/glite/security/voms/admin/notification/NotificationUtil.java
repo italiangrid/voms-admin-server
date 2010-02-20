@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
@@ -40,7 +41,7 @@ public class NotificationUtil {
 		final String[] possibleBehaviours = { "admins", "service", "all" };
 
 		String notificationBehaviour = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.NOTIFICATION_NOTIFY_BEHAVIOUR, "admins");
+				VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR, "admins");
 
 		// Check user values for configuration behaviour, and if unknown value
 		// is set, restore the default
@@ -58,12 +59,12 @@ public class NotificationUtil {
 			notificationBehaviour = "admins";
 			log
 					.warn("Unrecognized value for configuration option: "
-							+ VOMSConfiguration.NOTIFICATION_NOTIFY_BEHAVIOUR
+							+ VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR
 							+ ". Possible values are: 'admins','service', 'all'. Setting the default value to 'admins'. Fix your configuration file!");
 		}
 
 		String serviceEmailAddress = VOMSConfiguration.instance().getString(
-				VOMSConfiguration.SERVICE_EMAIL_ADDRESS);
+				VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
 
 		ArrayList<String> adminEmails = new ArrayList<String>();
 

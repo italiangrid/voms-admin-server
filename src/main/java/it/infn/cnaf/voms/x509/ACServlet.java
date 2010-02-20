@@ -46,6 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
@@ -202,7 +203,7 @@ public class ACServlet extends BaseServlet implements VOMSErrorCodes {
         VOMSAttributeAuthority vomsAA = VOMSAA.getVOMSAttributeAuthority();
         VOMSAttributes attrs;
         
-        if (!VOMSConfiguration.instance().getBoolean(VOMSConfiguration.VOMS_AA_REST_ACTIVATE_ENDPOINT, false)){
+        if (!VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_AA_REST_ACTIVATE_ENDPOINT, false)){
         	writeErrorResponse(response, 500, 
         			VOMS_ERROR_INTERNAL_ERROR, 
         			"REST endpoint is disabled for this VO");

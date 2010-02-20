@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 
@@ -143,7 +144,7 @@ public class PathNamingScheme {
 
 		String voName = "/"
 				+ VOMSConfiguration.instance().getString(
-						VOMSConfiguration.VO_NAME);
+						VOMSConfigurationConstants.VO_NAME);
 
 		if (!groupName.startsWith(voName)) {
 			log.error("Group name : " + groupName

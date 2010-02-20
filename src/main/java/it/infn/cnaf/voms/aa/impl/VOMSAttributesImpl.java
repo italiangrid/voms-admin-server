@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
@@ -241,7 +242,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
             boolean compulsoryGroupMembership = VOMSConfiguration
                     .instance()
                     .getBoolean(
-                            VOMSConfiguration.VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP,
+                            VOMSConfigurationConstants.VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP,
                             new Boolean( true ) );
 
             if ( compulsoryGroupMembership )

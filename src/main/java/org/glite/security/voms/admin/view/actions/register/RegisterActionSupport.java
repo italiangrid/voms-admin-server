@@ -24,6 +24,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.views.freemarker.tags.SetModel;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -137,7 +138,7 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	public boolean registrationEnabled() {
 		return VOMSConfiguration.instance().getBoolean(
-				VOMSConfiguration.REGISTRATION_SERVICE_ENABLED, true);
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
 	}
 
 	public AUPVersion getCurrentAUPVersion() {

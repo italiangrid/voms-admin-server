@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
@@ -73,7 +74,7 @@ public class VOMSCADAO implements Searchable {
 
 		if (now.after(caCert.getNotAfter())
 				&& (!VOMSConfiguration.instance().getBoolean(
-						VOMSConfiguration.CREATE_EXPIRED_CAS, false))) {
+						VOMSConfigurationConstants.CREATE_EXPIRED_CAS, false))) {
 
 			log.warn("CA '"
 					+ DNUtil.getBCasX500(caCert.getSubjectX500Principal())

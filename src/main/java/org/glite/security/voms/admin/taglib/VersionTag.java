@@ -26,6 +26,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 
 public class VersionTag extends TagSupport {
 
@@ -45,7 +46,7 @@ public class VersionTag extends TagSupport {
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
 		String version = conf
-				.getString(VOMSConfiguration.VOMS_ADMIN_SERVER_VERSION);
+				.getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION);
 
 		try {
 

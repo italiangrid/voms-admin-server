@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
@@ -112,7 +113,7 @@ public abstract class ACLActionSupport extends BaseAction implements
 		}
 	}
 	protected VOMSPermission getUnauthenticatedClientPermissionMask() {
-		String unauthenticatedClientPermMask = VOMSConfiguration.instance().getString(VOMSConfiguration.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
+		String unauthenticatedClientPermMask = VOMSConfiguration.instance().getString(VOMSConfigurationConstants.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
 			"CONTAINER_READ|MEMBERSHIP_READ");
 		VOMSPermission permMask = null;
 		
