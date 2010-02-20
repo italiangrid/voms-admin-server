@@ -1031,7 +1031,7 @@ class VomsConstants:
        
     voms_db_deploy = os.path.join(glite_loc,"sbin","voms-db-deploy.py")
     
-    schema_deployer_class = "org.glite.security.voms.admin.tools.SchemaDeployer"
+    schema_deployer_class = "org.glite.security.voms.admin.persistence.deployer.SchemaDeployer"
     
     oracle_driver_class = "oracle.jdbc.driver.OracleDriver"
     oracle_dialect = "org.hibernate.dialect.Oracle9Dialect"
