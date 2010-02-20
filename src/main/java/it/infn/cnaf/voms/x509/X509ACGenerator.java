@@ -57,9 +57,9 @@ import org.bouncycastle.x509.AttributeCertificateIssuer;
 import org.bouncycastle.x509.X509Attribute;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.bouncycastle.x509.X509V2AttributeCertificateGenerator;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSException;
-import org.glite.security.voms.admin.common.VOMSFatalException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 /**
  * 
  * @author Andrea Ceccanti - andrea.ceccanti@cnaf.infn.it

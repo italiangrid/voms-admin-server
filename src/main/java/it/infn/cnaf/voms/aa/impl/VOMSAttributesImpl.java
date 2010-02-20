@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.database.SuspendedUserException;
@@ -40,6 +39,7 @@ import org.glite.security.voms.admin.model.VOMSMapping;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSRoleAttribute;
 import org.glite.security.voms.admin.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 
 /**
  * 

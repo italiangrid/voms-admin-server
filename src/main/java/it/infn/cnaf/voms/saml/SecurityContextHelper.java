@@ -50,7 +50,7 @@ import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-import org.glite.security.voms.admin.common.DNUtil;
+import org.glite.security.voms.admin.util.DNUtil;
 
 
 /**

@@ -127,7 +127,7 @@
         
         <global-exception-mappings>
           <exception-mapping result="exception" exception="java.lang.Throwable"/>
-          <exception-mapping result="authzException" exception="org.glite.security.voms.admin.common.VOMSAuthorizationException"/>
+          <exception-mapping result="authzException" exception="org.glite.security.voms.admin.error.VOMSAuthorizationException"/>
           <exception-mapping result="notFoundException" exception="org.hibernate.ObjectNotFoundException"/>
         </global-exception-mappings>
     </package>

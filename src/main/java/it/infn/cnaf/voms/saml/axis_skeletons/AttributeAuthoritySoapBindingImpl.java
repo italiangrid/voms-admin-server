@@ -40,7 +40,7 @@ import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class AttributeAuthoritySoapBindingImpl implements
 		it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType {

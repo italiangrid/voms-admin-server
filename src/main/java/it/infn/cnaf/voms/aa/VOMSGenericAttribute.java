@@ -20,9 +20,9 @@
 
 package it.infn.cnaf.voms.aa;
 
-import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.model.VOMSBaseAttribute;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 
 
 public class VOMSGenericAttribute {
