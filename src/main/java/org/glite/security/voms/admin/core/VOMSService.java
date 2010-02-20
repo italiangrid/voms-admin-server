@@ -37,8 +37,6 @@ import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.dao.VOMSVersionDAO;
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
@@ -47,6 +45,8 @@ import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.opensaml.xml.ConfigurationException;
 

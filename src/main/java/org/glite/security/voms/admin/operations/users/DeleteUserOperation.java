@@ -20,8 +20,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
+import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DeleteUserOperation extends BaseVoRWOperation {
@@ -66,7 +66,7 @@ public class DeleteUserOperation extends BaseVoRWOperation {
 				.execute();
 		if (u == null)
 			throw new NoSuchUserException("User '" + username + "," + userCa
-					+ "' not found in org.glite.security.voms.admin.database!");
+					+ "' not found in org.glite.security.voms.admin.persistence.error!");
 		return new DeleteUserOperation(u);
 	}
 }

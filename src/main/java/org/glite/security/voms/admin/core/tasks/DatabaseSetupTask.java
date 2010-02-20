@@ -37,9 +37,9 @@ import org.glite.security.voms.admin.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
@@ -100,7 +100,7 @@ public class DatabaseSetupTask extends TimerTask {
 
 		caDAO
 				.createIfMissing(VOMSServiceConstants.VIRTUAL_CA,
-						"A dummy CA for local org.glite.security.voms.admin.database mainteneance");
+						"A dummy CA for local org.glite.security.voms.admin.persistence.error mainteneance");
 		caDAO.createIfMissing(VOMSServiceConstants.GROUP_CA,
 				"A virtual CA for VOMS groups.");
 		caDAO.createIfMissing(VOMSServiceConstants.ROLE_CA,
@@ -192,7 +192,7 @@ public class DatabaseSetupTask extends TimerTask {
 				log
 						.error("Trusted admin ca \""
 								+ trustedAdminCa
-								+ "\" not found in org.glite.security.voms.admin.database. Skipping creation of the trusted admin...");
+								+ "\" not found in org.glite.security.voms.admin.persistence.error. Skipping creation of the trusted admin...");
 				return;
 			}
 

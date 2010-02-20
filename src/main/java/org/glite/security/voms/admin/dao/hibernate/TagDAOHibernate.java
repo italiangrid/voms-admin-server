@@ -22,9 +22,9 @@ package org.glite.security.voms.admin.dao.hibernate;
 import java.util.List;
 
 import org.glite.security.voms.admin.dao.generic.TagDAO;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.model.Tag;
 import org.hibernate.criterion.Restrictions;
 

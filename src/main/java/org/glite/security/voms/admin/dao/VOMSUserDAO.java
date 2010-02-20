@@ -31,17 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.AlreadyMemberException;
-import org.glite.security.voms.admin.database.AttributeAlreadyExistsException;
-import org.glite.security.voms.admin.database.AttributeValueAlreadyAssignedException;
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.NoSuchAttributeException;
-import org.glite.security.voms.admin.database.NoSuchCAException;
-import org.glite.security.voms.admin.database.NoSuchGroupException;
-import org.glite.security.voms.admin.database.NoSuchUserException;
-import org.glite.security.voms.admin.database.UserAlreadyExistsException;
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
@@ -49,6 +38,17 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.UserCreatedEvent;
 import org.glite.security.voms.admin.event.user.UserDeletedEvent;
 import org.glite.security.voms.admin.event.user.UserSignedAUPEvent;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.AlreadyMemberException;
+import org.glite.security.voms.admin.persistence.error.AttributeAlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.AttributeValueAlreadyAssignedException;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
+import org.glite.security.voms.admin.persistence.error.NoSuchCAException;
+import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
+import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
+import org.glite.security.voms.admin.persistence.error.UserAlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
@@ -466,7 +466,7 @@ public class VOMSUserDAO {
 
 		if (u != null)
 			throw new UserAlreadyExistsException("User " + u
-					+ " already in org.glite.security.voms.admin.database!");
+					+ " already in org.glite.security.voms.admin.persistence.error!");
 
 		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 

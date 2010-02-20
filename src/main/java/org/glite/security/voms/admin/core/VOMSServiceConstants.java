@@ -37,7 +37,7 @@ final public class VOMSServiceConstants {
 
 	/**
 	 * The DN of the virtual administrator for bootstrap rows and local
-	 * org.glite.security.voms.admin.database maintanence.
+	 * org.glite.security.voms.admin.persistence.error maintanence.
 	 */
 	static public final String LOCAL_ADMIN = "/O=VOMS/O=System/CN=Local Database Administrator";
 
@@ -93,20 +93,20 @@ final public class VOMSServiceConstants {
 	static public final String TAG_CA = "/O=VOMS/O=System/CN=VOMS Admin Tag";
 
 	/**
-	 * Limit on the length of DNs in the org.glite.security.voms.admin.database.
+	 * Limit on the length of DNs in the org.glite.security.voms.admin.persistence.error.
 	 */
 	static public final int SIZE_LIMIT = 255;
 
 	/**
 	 * Limit on the length of class names of requests and
 	 * org.glite.security.voms.admin.actions in the
-	 * org.glite.security.voms.admin.database.
+	 * org.glite.security.voms.admin.persistence.error.
 	 */
 	static public final int REQUEST_CLASSNAME_LIMIT = 128;
 
 	/**
 	 * Limit on the length of short state names of requests in the
-	 * org.glite.security.voms.admin.database.
+	 * org.glite.security.voms.admin.persistence.error.
 	 */
 	static public final int REQUEST_STATENAME_LIMIT = 32;
 

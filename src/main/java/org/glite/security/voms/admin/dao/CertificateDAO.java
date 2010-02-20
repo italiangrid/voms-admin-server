@@ -23,9 +23,9 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.NoSuchCAException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;

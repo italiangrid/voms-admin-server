@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.NoSuchAUPVersionException;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;

@@ -58,8 +58,8 @@ import java.util.UUID;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.log4j.Logger;
-import org.glite.security.voms.admin.database.SuspendedCertificateException;
-import org.glite.security.voms.admin.database.SuspendedUserException;
+import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;
+import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Assertion;

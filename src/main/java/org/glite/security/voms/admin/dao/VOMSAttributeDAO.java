@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.NoSuchAttributeException;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.hibernate.Query;

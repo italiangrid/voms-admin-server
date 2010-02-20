@@ -117,7 +117,7 @@ public class InitSecurityContext {
 			sc.setClientCertChain(cert);
 
 			// Convert the DNs to the old format that we use in the
-			// org.glite.security.voms.admin.database.
+			// org.glite.security.voms.admin.persistence.error.
 			if (sc.getClientName() != null)
 				sc.setClientName(DNUtil.getBCasX500(sc.getClientCert()
 						.getSubjectX500Principal()));
@@ -166,7 +166,7 @@ public class InitSecurityContext {
 	 * <code>voms.fully.trusted.client.for.delegation.ca</code> values to enable
 	 * this functionality for one trusted org.glite.security.voms.admin.service. <br>
 	 * <b>Enabling this feature is the equivalent of giving the
-	 * org.glite.security.voms.admin.database password and link to the remote
+	 * org.glite.security.voms.admin.persistence.error password and link to the remote
 	 * org.glite.security.voms.admin.service. Use with care, and only if you
 	 * really know what you are doing!</b>
 	 */

@@ -27,11 +27,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.Auditable;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.Auditable;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 

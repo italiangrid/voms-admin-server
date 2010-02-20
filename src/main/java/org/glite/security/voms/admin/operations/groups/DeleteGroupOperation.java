@@ -20,11 +20,11 @@
 package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
-import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
@@ -68,11 +68,11 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 			if (groupName == null)
 				msg = "Group having id '"
 						+ groupId
-						+ "' not found in org.glite.security.voms.admin.database";
+						+ "' not found in org.glite.security.voms.admin.persistence.error";
 			else
 				msg = "Group '"
 						+ groupName
-						+ "' not found in org.glite.security.voms.admin.database.";
+						+ "' not found in org.glite.security.voms.admin.persistence.error.";
 
 			throw new NoSuchGroupException(msg);
 
@@ -115,7 +115,7 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 					throw new NoSuchGroupException(
 							"Group '"
 									+ parentGroupName
-									+ "' not found in org.glite.security.voms.admin.database!");
+									+ "' not found in org.glite.security.voms.admin.persistence.error!");
 
 				ctxt = VOMSContext.instance(parentGroup);
 
@@ -127,7 +127,7 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 					throw new NoSuchGroupException(
 							"Group having id '"
 									+ groupId
-									+ "' not found in org.glite.security.voms.admin.database!");
+									+ "' not found in org.glite.security.voms.admin.persistence.error!");
 
 				ctxt = VOMSContext.instance(g.getParent());
 			}

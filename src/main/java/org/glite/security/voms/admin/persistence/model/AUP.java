@@ -27,7 +27,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
+import org.glite.security.voms.admin.persistence.error.NoSuchAUPVersionException;
 
 public class AUP implements Serializable {
 

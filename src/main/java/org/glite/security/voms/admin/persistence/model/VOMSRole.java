@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.glite.security.voms.admin.database.Auditable;
-import org.glite.security.voms.admin.database.NoSuchAttributeException;
+import org.glite.security.voms.admin.persistence.error.Auditable;
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 
 /**
  * 

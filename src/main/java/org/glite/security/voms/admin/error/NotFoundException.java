@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.error;
 
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 
 public class NotFoundException extends VOMSDatabaseException {
 

@@ -23,8 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.VOMembershipRequest;
 import org.hibernate.Query;
 

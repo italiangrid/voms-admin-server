@@ -27,16 +27,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.database.IllegalOperationException;
-import org.glite.security.voms.admin.database.NoSuchAttributeException;
-import org.glite.security.voms.admin.database.NoSuchGroupException;
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
-import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.IllegalOperationException;
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
+import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
+import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -299,7 +299,7 @@ public class VOMSGroupDAO {
 
 		if (g == null)
 			throw new VOMSInconsistentDatabaseException(
-					"VO root group undefined in org.glite.security.voms.admin.database!");
+					"VO root group undefined in org.glite.security.voms.admin.persistence.error!");
 
 		return g;
 
@@ -345,7 +345,7 @@ public class VOMSGroupDAO {
 			throw new NoSuchGroupException(
 					"Parent group \""
 							+ parentGroupName
-							+ "\" not defined in org.glite.security.voms.admin.database!");
+							+ "\" not defined in org.glite.security.voms.admin.persistence.error!");
 
 		VOMSGroup newGroup = new VOMSGroup();
 		newGroup.setName(groupName);

@@ -22,7 +22,7 @@ package org.glite.security.voms.admin.view.interceptors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.StrutsStatics;
-import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;

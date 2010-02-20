@@ -27,10 +27,10 @@ import java.util.List;
 
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.database.NoSuchCertificateException;
-import org.glite.security.voms.admin.database.NoSuchUserException;
-import org.glite.security.voms.admin.database.SuspendedCertificateException;
-import org.glite.security.voms.admin.database.SuspendedUserException;
+import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
+import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
+import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;
+import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 

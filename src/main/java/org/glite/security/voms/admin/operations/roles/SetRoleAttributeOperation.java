@@ -20,12 +20,12 @@
 package org.glite.security.voms.admin.operations.roles;
 
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.database.NoSuchGroupException;
-import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
+import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
+import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.service.attributes.AttributeValue;

@@ -32,7 +32,7 @@ import java.util.List;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.database.SuspendedUserException;
+import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSMapping;

@@ -46,13 +46,13 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.database.NoSuchCertificateException;
-import org.glite.security.voms.admin.database.NoSuchUserException;
-import org.glite.security.voms.admin.database.SuspendedCertificateException;
-import org.glite.security.voms.admin.database.SuspendedUserException;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
+import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
+import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;
+import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.w3c.dom.Document;
 
 

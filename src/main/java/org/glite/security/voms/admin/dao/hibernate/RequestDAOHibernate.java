@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.database.AlreadyExistsException;
-import org.glite.security.voms.admin.database.AlreadyMemberException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
+import org.glite.security.voms.admin.persistence.error.AlreadyMemberException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;

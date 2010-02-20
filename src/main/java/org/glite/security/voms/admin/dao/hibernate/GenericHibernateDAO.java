@@ -24,8 +24,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.glite.security.voms.admin.dao.generic.GenericDAO;
-import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Session;

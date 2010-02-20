@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class ListUserRolesOperation extends BaseVoReadOperation {
@@ -40,7 +40,7 @@ public class ListUserRolesOperation extends BaseVoReadOperation {
 
 		if (u == null)
 			throw new NoSuchUserException("No user '" + username + "," + caDN
-					+ "' found in org.glite.security.voms.admin.database.");
+					+ "' found in org.glite.security.voms.admin.persistence.error.");
 
 		return u.getRoleMappings();
 	}
