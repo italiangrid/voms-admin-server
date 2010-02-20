@@ -22,7 +22,7 @@ package org.glite.security.voms.admin.view.actions.acl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.ACLDAO;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.model.ACL;

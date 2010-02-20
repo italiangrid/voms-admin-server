@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.database;
 
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSDatabaseException extends VOMSException {
 

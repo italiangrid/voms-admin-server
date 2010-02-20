@@ -19,10 +19,10 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;

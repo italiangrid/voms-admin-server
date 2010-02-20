@@ -24,8 +24,8 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSException;
-import org.glite.security.voms.admin.common.VOMSService;
+import org.glite.security.voms.admin.core.VOMSService;
+import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSContextListener implements ServletContextListener {
 

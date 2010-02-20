@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.notification.messages;
 
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.model.request.Request;
 
 public class RequestApproved extends AbstractVelocityNotification {

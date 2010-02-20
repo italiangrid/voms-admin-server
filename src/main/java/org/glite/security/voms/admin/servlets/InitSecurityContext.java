@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.servlets;
 
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
@@ -27,6 +27,10 @@ import javax.servlet.ServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.SecurityContext;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
+import org.glite.security.voms.admin.error.VOMSSecurityException;
+import org.glite.security.voms.admin.util.DNUtil;
 
 /**
  * The InitSecurityContext is and AXIS handler that can be put in a

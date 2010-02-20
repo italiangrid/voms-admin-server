@@ -22,11 +22,11 @@ package org.glite.security.voms.admin.dao;
 import java.util.Iterator;
 import java.util.List;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.model.VOMSGroup;

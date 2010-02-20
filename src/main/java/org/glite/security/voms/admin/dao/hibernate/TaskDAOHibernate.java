@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.model.request.Request;

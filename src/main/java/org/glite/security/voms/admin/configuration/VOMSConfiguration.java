@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,6 +55,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.ssl.PKCS8Key;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.util.DNUtil;
 
 public final class VOMSConfiguration {
 

@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.search;
 
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 import org.glite.security.voms.admin.operations.groups.SearchGroupsOperation;
 import org.glite.security.voms.admin.operations.groups.SearchMembersOperation;

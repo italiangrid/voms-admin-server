@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.model;
 
 import java.io.Serializable;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 
 public class TagMapping implements Serializable {
 

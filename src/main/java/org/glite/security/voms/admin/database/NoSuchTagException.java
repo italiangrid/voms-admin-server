@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.database;
 
-import org.glite.security.voms.admin.common.NotFoundException;
+import org.glite.security.voms.admin.error.NotFoundException;
 
 public class NoSuchTagException extends NotFoundException {
 

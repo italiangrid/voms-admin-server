@@ -31,9 +31,8 @@ import javax.servlet.ServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.SecurityContext;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
-import org.glite.security.voms.admin.common.InitSecurityContext;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 
 /**

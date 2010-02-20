@@ -28,14 +28,14 @@ import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.VOMSException;
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.RequestDAO;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.notification.VOMSNotificationException;
 import org.glite.security.voms.admin.notification.messages.ConfirmRequest;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.util.DNUtil;
 import org.glite.security.voms.service.registration.RegistrationRequest;
 import org.glite.security.voms.service.registration.VOMSRegistration;
 

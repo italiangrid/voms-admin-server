@@ -25,13 +25,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.database.HibernateFactory;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSCA;
+import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.Session;
 
 public class VOMSCADAO implements Searchable {

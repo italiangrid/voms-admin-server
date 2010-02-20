@@ -28,8 +28,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;

@@ -27,7 +27,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 
 public class UnassignedRolesTag extends javax.servlet.jsp.tagext.TagSupport {
 

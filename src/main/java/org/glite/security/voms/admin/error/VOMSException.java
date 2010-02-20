@@ -17,26 +17,28 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
-public class VOMSFatalException extends VOMSException {
+public class VOMSException extends RuntimeException {
 
-	public VOMSFatalException(String message) {
+	/**
+     * 
+     */
+	private static final long serialVersionUID = 1L;
+
+	public VOMSException(String message) {
 
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
-	public VOMSFatalException(String message, Throwable t) {
+	public VOMSException(String message, Throwable t) {
 
 		super(message, t);
-		// TODO Auto-generated constructor stub
 	}
 
-	public VOMSFatalException(Throwable t) {
+	public VOMSException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
+		super(t.getMessage(), t);
 	}
 
 }

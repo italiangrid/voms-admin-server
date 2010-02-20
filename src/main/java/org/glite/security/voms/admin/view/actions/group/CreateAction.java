@@ -23,11 +23,11 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.common.VOMSSyntaxException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;

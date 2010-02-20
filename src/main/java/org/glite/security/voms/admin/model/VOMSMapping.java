@@ -23,8 +23,8 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.IllegalStateException;
 import org.glite.security.voms.admin.database.Auditable;
+import org.glite.security.voms.admin.error.IllegalStateException;
 
 /**
  * 

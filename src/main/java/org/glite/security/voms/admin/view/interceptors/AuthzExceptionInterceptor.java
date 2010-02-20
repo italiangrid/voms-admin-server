@@ -24,7 +24,7 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
-import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.view.actions.AuthorizationErrorAware;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 

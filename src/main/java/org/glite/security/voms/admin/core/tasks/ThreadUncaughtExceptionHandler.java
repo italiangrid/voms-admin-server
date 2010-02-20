@@ -17,31 +17,26 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.core.tasks;
 
-public class NullArgumentException extends VOMSException {
+import java.lang.Thread.UncaughtExceptionHandler;
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 1L;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-	public NullArgumentException(String message) {
+public class ThreadUncaughtExceptionHandler implements UncaughtExceptionHandler {
+	public static final Log log = LogFactory
+			.getLog(ThreadUncaughtExceptionHandler.class);
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+	public void uncaughtException(Thread t, Throwable e) {
 
-	public NullArgumentException(String message, Throwable t) {
+		String errorMessage = String.format(
+				"Thread (%d - '%s') uncaught exception: %s at line %d pf %s%n",
+				t.getId(), t.getName(), e.toString(), e.getStackTrace()[0]
+						.getLineNumber(), e.getStackTrace()[0].getFileName());
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+		log.error(errorMessage, e);
 
-	public NullArgumentException(Throwable t) {
-
-		super(t);
-		// TODO Auto-generated constructor stub
 	}
 
 }

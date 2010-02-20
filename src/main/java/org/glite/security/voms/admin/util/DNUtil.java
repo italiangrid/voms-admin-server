@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.util;
 
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -27,6 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.security.auth.x500.X500Principal;
+
+import org.glite.security.voms.admin.error.VOMSException;
 
 /**
  * Utility class to convert principal names to convenient format.

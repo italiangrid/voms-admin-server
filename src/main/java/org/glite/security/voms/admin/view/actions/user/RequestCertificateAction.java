@@ -27,15 +27,15 @@ import java.security.cert.X509Certificate;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.common.CertUtil;
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
 import org.glite.security.voms.admin.model.request.CertificateRequest;
+import org.glite.security.voms.admin.util.CertUtil;
+import org.glite.security.voms.admin.util.DNUtil;
 
 @ParentPackage("base")
 

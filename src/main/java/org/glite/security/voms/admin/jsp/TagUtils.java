@@ -27,7 +27,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.glite.security.voms.admin.common.VOMSSyntaxException;
+import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;

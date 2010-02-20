@@ -29,7 +29,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.SessionAware;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("json")

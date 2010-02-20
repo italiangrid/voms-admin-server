@@ -20,9 +20,9 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.api.certificates.X509Certificate;
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.database.NoSuchCertificateException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;

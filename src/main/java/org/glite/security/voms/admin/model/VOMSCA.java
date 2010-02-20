@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import org.glite.security.voms.admin.common.DNUtil;
+import org.glite.security.voms.admin.util.DNUtil;
 
 public class VOMSCA implements Serializable {
 

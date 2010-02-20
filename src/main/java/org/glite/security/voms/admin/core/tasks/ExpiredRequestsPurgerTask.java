@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common.tasks;
+package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
 import java.util.Timer;
@@ -25,7 +25,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;

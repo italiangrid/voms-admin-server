@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.core;
 
 import it.infn.cnaf.voms.x509.X509ACGenerator;
 
@@ -29,14 +29,17 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.Velocity;
-import org.glite.security.voms.admin.common.tasks.MembershipValidityCheckTask;
-import org.glite.security.voms.admin.common.tasks.ExpiredRequestsPurgerTask;
-import org.glite.security.voms.admin.common.tasks.TaskStatusUpdater;
-import org.glite.security.voms.admin.common.tasks.ThreadUncaughtExceptionHandler;
-import org.glite.security.voms.admin.common.tasks.UpdateCATask;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
+import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
+import org.glite.security.voms.admin.core.tasks.MembershipValidityCheckTask;
+import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
+import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
+import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.model.VOMSDBVersion;

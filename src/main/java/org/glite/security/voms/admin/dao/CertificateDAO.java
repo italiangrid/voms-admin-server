@@ -23,13 +23,13 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.VOMSException;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchCAException;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSCA;
 import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.util.DNUtil;
 
 public class CertificateDAO {
 

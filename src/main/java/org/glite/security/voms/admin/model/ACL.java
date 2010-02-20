@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;

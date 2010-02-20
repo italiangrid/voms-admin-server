@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.operations.AuthorizationResponse;

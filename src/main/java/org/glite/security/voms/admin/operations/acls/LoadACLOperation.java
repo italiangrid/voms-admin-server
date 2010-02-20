@@ -19,12 +19,12 @@
  */
 package org.glite.security.voms.admin.operations.acls;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.PathNamingScheme;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.FindContextOperation;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class LoadACLOperation extends BaseVomsOperation {
 

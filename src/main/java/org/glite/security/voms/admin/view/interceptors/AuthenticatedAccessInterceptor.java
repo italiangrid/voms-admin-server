@@ -25,10 +25,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
-import org.glite.security.voms.admin.common.InitSecurityContext;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.servlets.InitSecurityContext;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;

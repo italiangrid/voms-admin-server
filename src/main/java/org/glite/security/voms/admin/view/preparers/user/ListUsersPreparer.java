@@ -28,7 +28,7 @@ import org.apache.tiles.AttributeContext;
 import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparer;
-import org.glite.security.voms.admin.common.VOMSAuthorizationException;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;

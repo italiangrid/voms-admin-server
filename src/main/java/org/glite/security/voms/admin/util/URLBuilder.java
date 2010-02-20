@@ -17,41 +17,41 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.notification.messages;
+package org.glite.security.voms.admin.util;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.request.Request;
-import org.glite.security.voms.admin.notification.NotificationUtil;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 
-public class HandleRequest extends AbstractVelocityNotification {
+public class URLBuilder {
 
-	Request request;
+	public static String baseVOMSURL() {
 
-	String requestManagementURL;
+		InetAddress addr;
+		try {
 
-	public HandleRequest(Request request,
-			String requestManagementURL) {
+			addr = InetAddress.getLocalHost();
 
-		this.request = request;
-		this.requestManagementURL = requestManagementURL;
-		
-		addRecipients(NotificationUtil.getAdministratorsEmailList());
-	}
+		} catch (UnknownHostException e) {
+			throw new VOMSFatalException(
+					"Error getting local host inet address!", e);
+		}
 
-	protected void buildMessage() {
-		
 		String voName = VOMSConfiguration.instance().getVOName();
-		
-		
-		setSubject("A "+request.getTypeName().toLowerCase()+" for VO " + voName
-				+ " requires your approval.");
+		String hostName;
 
-		context.put("voName", voName);
-		context.put("recipient", "VO Admin");
-		context.put("request", request);
-		context.put("requestManagementURL", requestManagementURL);
+		if (addr.getCanonicalHostName().startsWith("localhost"))
+			hostName = addr.getHostAddress();
+		else
+			hostName = addr.getCanonicalHostName();
 
-		super.buildMessage();
+		String portNumber = "8443";
+
+		return String.format("https://%s:%s/voms/%s", hostName, portNumber,
+				voName);
 
 	}
+
 }

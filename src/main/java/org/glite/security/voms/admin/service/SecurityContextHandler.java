@@ -27,7 +27,7 @@ import org.apache.axis.handlers.BasicHandler;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.InitSecurityContext;
+import org.glite.security.voms.admin.servlets.InitSecurityContext;
 
 /**
  * This class is an AXIS handler that can be put in a

@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.glite.security.voms.admin.common.VOMSAuthorizationException;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.FindUnassignedRoles;

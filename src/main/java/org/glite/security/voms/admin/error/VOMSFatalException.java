@@ -17,38 +17,26 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+public class VOMSFatalException extends VOMSException {
 
-public class URLBuilder {
+	public VOMSFatalException(String message) {
 
-	public static String baseVOMSURL() {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-		InetAddress addr;
-		try {
+	public VOMSFatalException(String message, Throwable t) {
 
-			addr = InetAddress.getLocalHost();
+		super(message, t);
+		// TODO Auto-generated constructor stub
+	}
 
-		} catch (UnknownHostException e) {
-			throw new VOMSFatalException(
-					"Error getting local host inet address!", e);
-		}
+	public VOMSFatalException(Throwable t) {
 
-		String voName = VOMSConfiguration.instance().getVOName();
-		String hostName;
-
-		if (addr.getCanonicalHostName().startsWith("localhost"))
-			hostName = addr.getHostAddress();
-		else
-			hostName = addr.getCanonicalHostName();
-
-		String portNumber = "8443";
-
-		return String.format("https://%s:%s/voms/%s", hostName, portNumber,
-				voName);
-
+		super(t);
+		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -36,7 +36,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.DOM2Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

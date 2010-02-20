@@ -20,12 +20,12 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
-import org.glite.security.voms.admin.common.IllegalRequestStateException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
+import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSUser;

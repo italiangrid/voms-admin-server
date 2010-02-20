@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.notification;
 
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSNotificationException extends VOMSException {
 

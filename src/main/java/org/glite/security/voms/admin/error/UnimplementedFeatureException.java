@@ -17,28 +17,29 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
-public class IllegalStateException extends VOMSException {
+
+public class UnimplementedFeatureException extends IllegalStateException {
 
 	/**
      * 
      */
 	private static final long serialVersionUID = 1L;
 
-	public IllegalStateException(String message) {
+	public UnimplementedFeatureException(String message) {
 
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public IllegalStateException(String message, Throwable t) {
+	public UnimplementedFeatureException(String message, Throwable t) {
 
 		super(message, t);
 		// TODO Auto-generated constructor stub
 	}
 
-	public IllegalStateException(Throwable t) {
+	public UnimplementedFeatureException(Throwable t) {
 
 		super(t);
 		// TODO Auto-generated constructor stub

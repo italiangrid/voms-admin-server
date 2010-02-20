@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.dao;
 
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.model.VOMSDBVersion;
 

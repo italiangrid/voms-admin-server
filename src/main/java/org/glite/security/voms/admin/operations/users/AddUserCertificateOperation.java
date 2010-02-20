@@ -22,8 +22,8 @@ package org.glite.security.voms.admin.operations.users;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;

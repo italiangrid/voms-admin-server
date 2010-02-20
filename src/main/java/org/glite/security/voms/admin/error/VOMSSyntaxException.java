@@ -17,28 +17,27 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
-public class VOMSSecurityException extends VOMSException {
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 1L;
+public class VOMSSyntaxException extends VOMSException {
 
-	public VOMSSecurityException(String message) {
+	public VOMSSyntaxException(String message) {
 
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public VOMSSecurityException(String message, Throwable t) {
+	public VOMSSyntaxException(String message, Throwable t) {
 
 		super(message, t);
 		// TODO Auto-generated constructor stub
 	}
 
-	public VOMSSecurityException() {
-		super((String) null);
+	public VOMSSyntaxException(Throwable t) {
+
+		super(t);
+		// TODO Auto-generated constructor stub
 	}
+
 }

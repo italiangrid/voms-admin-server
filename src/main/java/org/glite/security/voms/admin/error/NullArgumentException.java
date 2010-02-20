@@ -17,25 +17,29 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.error;
 
-import org.glite.security.voms.admin.database.VOMSDatabaseException;
 
-public class NotFoundException extends VOMSDatabaseException {
+public class NullArgumentException extends VOMSException {
 
-	public NotFoundException(String message) {
+	/**
+     * 
+     */
+	private static final long serialVersionUID = 1L;
+
+	public NullArgumentException(String message) {
 
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public NotFoundException(String message, Throwable t) {
+	public NullArgumentException(String message, Throwable t) {
 
 		super(message, t);
 		// TODO Auto-generated constructor stub
 	}
 
-	public NotFoundException(Throwable t) {
+	public NullArgumentException(Throwable t) {
 
 		super(t);
 		// TODO Auto-generated constructor stub

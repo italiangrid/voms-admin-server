@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common.tasks;
+package org.glite.security.voms.admin.core.tasks;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,9 +27,8 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSServiceConstants;
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
@@ -48,6 +47,7 @@ import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.model.VOMSSeqNumber;
 import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.util.DNUtil;
 
 /**
  * 

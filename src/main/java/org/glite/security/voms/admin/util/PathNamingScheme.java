@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common;
+package org.glite.security.voms.admin.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +26,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.error.VOMSSyntaxException;
 
 /**
  * 

@@ -22,9 +22,9 @@ package org.glite.security.voms.admin.dao.hibernate;
 import java.io.Serializable;
 import java.util.List;
 
-import org.glite.security.voms.admin.common.NotFoundException;
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.dao.generic.NamedEntityDAO;
+import org.glite.security.voms.admin.error.NotFoundException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.hibernate.criterion.Restrictions;
 
 public class NamedEntityHibernateDAO<T, ID extends Serializable> extends

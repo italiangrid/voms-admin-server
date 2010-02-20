@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.database;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSFatalException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

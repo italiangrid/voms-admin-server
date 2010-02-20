@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.operations;
 
-import org.glite.security.voms.admin.common.PathNamingScheme;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
@@ -27,6 +26,7 @@ import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSRole;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class VOMSContext {
 

@@ -27,11 +27,11 @@ import org.apache.commons.lang.builder.StandardToStringStyle;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.VOMSAuthorizationException;
-import org.glite.security.voms.admin.common.VOMSFatalException;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
+import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.VOMSGroup;
 

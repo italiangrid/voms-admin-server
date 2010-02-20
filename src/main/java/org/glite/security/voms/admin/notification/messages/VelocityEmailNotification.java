@@ -23,7 +23,7 @@ import java.io.StringWriter;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.error.VOMSException;
 
 public abstract class VelocityEmailNotification extends EmailNotification {
 

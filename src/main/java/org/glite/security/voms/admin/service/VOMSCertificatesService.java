@@ -23,8 +23,8 @@ import java.rmi.RemoteException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.common.NullArgumentException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;

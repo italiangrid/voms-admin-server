@@ -33,11 +33,10 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.glite.security.voms.admin.common.NullArgumentException;
-import org.glite.security.voms.admin.common.PathNamingScheme;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
+import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.model.ACL;
 import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.model.VOMSAdmin;
@@ -48,6 +47,7 @@ import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;

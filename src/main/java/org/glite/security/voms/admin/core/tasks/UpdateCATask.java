@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.common.tasks;
+package org.glite.security.voms.admin.core.tasks;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
@@ -32,13 +32,13 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.util.FileCertReader;
-import org.glite.security.voms.admin.common.DNUtil;
-import org.glite.security.voms.admin.common.VOMSConfiguration;
-import org.glite.security.voms.admin.common.VOMSException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.model.VOMSCA;
+import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.JDBCException;
 
 /**
