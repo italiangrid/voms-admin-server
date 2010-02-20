@@ -230,7 +230,7 @@ public class SchemaDeployer {
 	private boolean isOracleBackend() {
 
 		Session s = HibernateFactory.getSession();
-		Transaction t = s.beginTransaction();
+		s.beginTransaction();
 
 		DatabaseMetaData dbMetadata = null;
 		String dbProductName = null;

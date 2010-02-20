@@ -58,10 +58,6 @@ public class SecurityContextFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 
 		InitSecurityContext.setContextFromRequest(req);
-		SecurityContext theContext = SecurityContext.getCurrentContext();
-
-		String clientDN = theContext.getClientName();
-		String issuer = theContext.getIssuerName();
 
 		String voName = VOMSConfiguration.instance().getVOName();
 		req.setAttribute("voName", voName);

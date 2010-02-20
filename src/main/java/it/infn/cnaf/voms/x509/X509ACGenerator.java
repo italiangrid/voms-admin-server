@@ -227,9 +227,6 @@ public class X509ACGenerator {
 
         UUID r = UUID.randomUUID();
 
-        long lsb = r.getLeastSignificantBits();
-        long msb = r.getMostSignificantBits();
-
         buf.putLong( r.getMostSignificantBits() );
         buf.putLong( r.getLeastSignificantBits() );
 
@@ -271,9 +268,6 @@ public class X509ACGenerator {
         Date now = new Date();
         Date end = new Date( now.getTime() + thisLifetime );
         
-        // Reset lifetime to the default value for future calls
-        thisLifetime = defaultACLifetime;
-
         acGenerator.setNotBefore( now );
         acGenerator.setNotAfter( end );
 

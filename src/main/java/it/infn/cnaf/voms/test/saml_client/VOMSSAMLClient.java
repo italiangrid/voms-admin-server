@@ -102,7 +102,7 @@ public class VOMSSAMLClient {
             ServiceException, RemoteException {
 
         initializeOpenSAML();
-        List<String> fqanList = Collections.emptyList(); 
+        
         AttributeQuery query = buildAttributeQuery( MY_OTHER_DN, null );
         
 

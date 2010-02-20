@@ -1028,7 +1028,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	public Task removeTask(Task t) {
 
 		if (getTasks().contains(t)) {
-			boolean b = getTasks().remove(t);
+			getTasks().remove(t);
 			t.setUser(null);
 
 			return t;

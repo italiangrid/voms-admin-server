@@ -143,8 +143,7 @@ public class DatabaseSetupTask extends TimerTask {
 					VOMSServiceConstants.VIRTUAL_CA);
 
 			VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
-			VOMSPermission readVoPermissions = VOMSPermission
-					.getContainerReadPermission().setMembershipReadPermission();
+			
 
 			ACL voGroupACL = new ACL(voGroup, false);
 			voGroup.getAcls().add(voGroupACL);
