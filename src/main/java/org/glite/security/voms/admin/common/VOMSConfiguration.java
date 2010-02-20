@@ -191,27 +191,31 @@ public final class VOMSConfiguration {
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
-	private VOMSConfiguration(boolean useJNDI, ServletContext context) {
+	private VOMSConfiguration(boolean useJNDI, ServletContext ctxt) {
 
-		this.context = context;
+		if (ctxt != null)
+			context = ctxt;
 
 		config = new CompositeConfiguration();
 
-		if (useJNDI)
+		if (useJNDI && context != null)
 			loadVORuntimeProperties();
 		else
 			config.addConfiguration(new SystemConfiguration());
 
-		configureLogging();
+		if (context != null)
+			configureLogging();
 
-		if (!getVOName().equals("siblings")){
+		if (!getVOName().equals("siblings") && context != null){
 			loadServiceProperties();
 			
 			if (getBoolean(VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
 				loadServiceCredentials();
+			
+			loadVersionProperties();
 				
 		}
-		loadVersionProperties();
+		
 
 		log.debug("VOMS-Admin configuration loaded!");
 
