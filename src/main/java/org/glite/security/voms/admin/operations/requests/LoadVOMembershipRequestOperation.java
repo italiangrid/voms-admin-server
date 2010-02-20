@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.operations.requests;
 
-import org.glite.security.voms.admin.dao.RequestDAO;
+import org.glite.security.voms.admin.persistence.dao.RequestDAO;
 
 public class LoadVOMembershipRequestOperation extends RequestReadOperation {
 

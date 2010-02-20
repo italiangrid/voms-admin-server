@@ -30,9 +30,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
-import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 
 public class ACL implements Serializable {
 

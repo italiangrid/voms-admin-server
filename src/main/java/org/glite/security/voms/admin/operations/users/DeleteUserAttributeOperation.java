@@ -20,9 +20,9 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.User;
-import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 

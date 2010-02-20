@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.view.actions.role;
 
 import java.util.List;
 
-import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;

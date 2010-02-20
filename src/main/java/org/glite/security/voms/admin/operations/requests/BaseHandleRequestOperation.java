@@ -20,11 +20,11 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
-import org.glite.security.voms.admin.dao.VOMSGroupDAO;
-import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;

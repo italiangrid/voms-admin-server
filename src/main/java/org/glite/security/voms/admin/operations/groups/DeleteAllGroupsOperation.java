@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
-import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 
 public class DeleteAllGroupsOperation extends BaseVoRWOperation {
 

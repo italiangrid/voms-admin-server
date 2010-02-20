@@ -19,9 +19,9 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
-import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 
 public class ListGroupAttributes extends BaseVomsOperation {
 

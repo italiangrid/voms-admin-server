@@ -23,8 +23,8 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.dao.generic.AUPDAO;
-import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 

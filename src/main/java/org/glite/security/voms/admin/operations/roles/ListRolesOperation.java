@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 
 public class ListRolesOperation extends BaseVoReadOperation {
 

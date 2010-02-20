@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class ListUsersOperation extends BaseVoReadOperation {
 

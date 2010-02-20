@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.operations.ca;
 
 import java.util.List;
 
-import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 
 public class ListCaOperation extends BaseVoReadOperation {
 

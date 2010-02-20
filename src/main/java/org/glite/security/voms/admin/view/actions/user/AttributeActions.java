@@ -25,8 +25,8 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.operations.users.DeleteUserAttributeOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 

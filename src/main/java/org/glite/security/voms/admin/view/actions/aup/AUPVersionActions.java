@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.view.actions.aup;
 
-import org.glite.security.voms.admin.dao.generic.AUPDAO;
-import org.glite.security.voms.admin.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 

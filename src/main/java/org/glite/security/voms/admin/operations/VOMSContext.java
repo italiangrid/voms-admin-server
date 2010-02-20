@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.operations;
 
-import org.glite.security.voms.admin.dao.VOMSGroupDAO;
-import org.glite.security.voms.admin.dao.VOMSRoleDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.ACL;

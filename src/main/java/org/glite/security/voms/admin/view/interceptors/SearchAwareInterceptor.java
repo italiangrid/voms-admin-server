@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.view.interceptors;
 
 import java.util.Map;
 
-import org.glite.security.voms.admin.dao.SearchResults;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.view.actions.SearchAware;
 import org.glite.security.voms.admin.view.actions.SearchData;
 

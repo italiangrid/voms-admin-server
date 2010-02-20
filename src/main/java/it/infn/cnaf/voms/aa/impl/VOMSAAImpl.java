@@ -25,8 +25,8 @@ import it.infn.cnaf.voms.aa.VOMSAttributes;
 
 import java.util.List;
 
-import org.glite.security.voms.admin.dao.CertificateDAO;
-import org.glite.security.voms.admin.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;

@@ -25,7 +25,7 @@ import org.apache.tiles.AttributeContext;
 import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparerSupport;
-import org.glite.security.voms.admin.dao.VOMSCADAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 
 public class AddCertificatePreparer extends ViewPreparerSupport {

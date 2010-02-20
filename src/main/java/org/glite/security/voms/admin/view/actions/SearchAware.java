@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions;
 
-import org.glite.security.voms.admin.dao.SearchResults;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 
 public interface SearchAware {
 	

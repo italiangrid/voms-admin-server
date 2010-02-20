@@ -20,11 +20,11 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.api.certificates.X509Certificate;
-import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;

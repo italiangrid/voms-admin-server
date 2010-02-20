@@ -25,7 +25,7 @@ import java.net.MalformedURLException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 
-import org.glite.security.voms.admin.dao.SearchResults;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 
 public class JavaScriptSearchNavBarTag extends SearchNavBarTag {
 

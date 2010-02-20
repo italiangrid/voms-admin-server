@@ -28,7 +28,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.dao.SearchResults;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 
 public class SearchNavBarTag extends TagSupport {
 

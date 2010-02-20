@@ -24,9 +24,9 @@ import java.util.Map;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;

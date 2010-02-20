@@ -22,11 +22,11 @@ package org.glite.security.voms.admin.operations.roles;
 import java.util.Iterator;
 import java.util.List;
 
-import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;

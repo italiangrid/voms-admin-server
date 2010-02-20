@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.view.actions.group;
 
 import java.util.List;
 
-import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
