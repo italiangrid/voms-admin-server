@@ -25,7 +25,7 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSCapability" table="capabilities">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSCapability" table="capabilities">
 		<id name="id" column="cid" type="long">
 			<generator class="native"/>
 		</id>

@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 public class GroupMembershipApprovedEvent extends GroupMembershipRequestEvent {
 

@@ -31,8 +31,8 @@ import org.glite.security.voms.admin.database.NoSuchCertificateException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.database.SuspendedCertificateException;
 import org.glite.security.voms.admin.database.SuspendedUserException;
-import org.glite.security.voms.admin.model.Certificate;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 /**
  * 

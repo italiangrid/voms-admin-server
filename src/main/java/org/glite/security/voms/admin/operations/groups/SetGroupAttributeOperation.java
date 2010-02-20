@@ -21,10 +21,10 @@ package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
-import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetGroupAttributeOperation extends BaseAttributeRWOperation {

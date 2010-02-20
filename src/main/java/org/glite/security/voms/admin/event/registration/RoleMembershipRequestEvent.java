@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.event.registration;
 
 import org.glite.security.voms.admin.event.EventType;
 import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class RoleMembershipRequestEvent extends GenericEvent {
 

@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMembershipRequest" table="memb_req">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMembershipRequest" table="memb_req">
 
 		<id name="id" column="id" type="java.lang.Long">
 			<generator class="native" />

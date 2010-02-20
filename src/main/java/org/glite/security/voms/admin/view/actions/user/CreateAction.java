@@ -26,8 +26,8 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;

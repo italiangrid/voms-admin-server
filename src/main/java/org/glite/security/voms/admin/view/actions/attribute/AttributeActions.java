@@ -26,9 +26,9 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.operations.attributes.CreateAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.attributes.DeleteAttributeDescriptionOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;

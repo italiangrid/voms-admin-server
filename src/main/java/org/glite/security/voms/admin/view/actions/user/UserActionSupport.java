@@ -29,12 +29,12 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.CertificateRequest;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
-import org.glite.security.voms.admin.model.request.Request;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;

@@ -33,12 +33,12 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.database.SuspendedUserException;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSGroupAttribute;
-import org.glite.security.voms.admin.model.VOMSMapping;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSRoleAttribute;
-import org.glite.security.voms.admin.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
+import org.glite.security.voms.admin.persistence.model.VOMSMapping;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 /**
@@ -81,7 +81,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
         this.user = user;
     }
 
-    void getGroupsFromUser( org.glite.security.voms.admin.model.VOMSUser user ) {
+    void getGroupsFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
 
         assert user != null : "Cannot get groups from a NULL user!";
 
@@ -96,7 +96,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
 
     }
 
-    void getRolesFromUser( org.glite.security.voms.admin.model.VOMSUser user ) {
+    void getRolesFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
 
         assert user != null : "Cannot get roles from a NULL user!";
 
@@ -112,7 +112,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
     }
 
     private void addMissingFQANsForUser(
-            org.glite.security.voms.admin.model.VOMSUser user ) {
+            org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
 
         assert user != null : "Cannot add missing FQANs for a NULL user!";
 
@@ -135,7 +135,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
         }
     }
 
-    void getFQANsFromUser( org.glite.security.voms.admin.model.VOMSUser user,
+    void getFQANsFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user,
             List <String> requestedFQANs ) {
 
         assert user != null : "Cannot get FQANs from a NULL user!";
@@ -158,7 +158,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
     }
 
     void getGenericAttributesFromUser(
-            org.glite.security.voms.admin.model.VOMSUser user ) {
+            org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
 
         assert user != null : "Cannot get Generic Attributes from a NULL user!";
 
@@ -209,14 +209,14 @@ class VOMSAttributesImpl implements VOMSAttributes {
 
     
     public static VOMSAttributesImpl fromUser(
-            org.glite.security.voms.admin.model.VOMSUser user){
+            org.glite.security.voms.admin.persistence.model.VOMSUser user){
         
         return fromUser( user, null );
         
     }
     
     public static VOMSAttributesImpl fromUser(
-            org.glite.security.voms.admin.model.VOMSUser user,
+            org.glite.security.voms.admin.persistence.model.VOMSUser user,
             List <String> requestedFQANs ) {
 
         assert user != null : "Cannot get VOMS attributes for a NULL user!";
@@ -253,7 +253,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
 
     }
     
-    public static VOMSAttributes getAllFromUser(org.glite.security.voms.admin.model.VOMSUser user){
+    public static VOMSAttributes getAllFromUser(org.glite.security.voms.admin.persistence.model.VOMSUser user){
     	
     	assert user != null: "Cannot get all VOMS attributes for a NULL user!";
     	

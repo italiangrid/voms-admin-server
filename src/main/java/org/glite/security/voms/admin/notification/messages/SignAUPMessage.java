@@ -22,9 +22,9 @@ package org.glite.security.voms.admin.notification.messages;
 import java.util.Date;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.task.SignAUPTask;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.URLBuilder;
 
 public class SignAUPMessage extends AbstractVelocityNotification {

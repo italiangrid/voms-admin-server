@@ -20,8 +20,8 @@
 package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.request.Request;
 import org.glite.security.voms.admin.notification.NotificationUtil;
+import org.glite.security.voms.admin.persistence.model.request.Request;
 
 public class HandleRequest extends AbstractVelocityNotification {
 

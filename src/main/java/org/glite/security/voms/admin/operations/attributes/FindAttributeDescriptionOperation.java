@@ -20,10 +20,10 @@
 package org.glite.security.voms.admin.operations.attributes;
 
 import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class FindAttributeDescriptionOperation extends BaseVomsOperation {
 

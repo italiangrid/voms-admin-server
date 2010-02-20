@@ -29,10 +29,10 @@ import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparer;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListUsersPreparer implements ViewPreparer {
 

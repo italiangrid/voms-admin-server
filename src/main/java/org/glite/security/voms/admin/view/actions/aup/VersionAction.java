@@ -24,7 +24,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;

@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSGroup" table="groups">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSGroup" table="groups">
 
 		<id name="id" column="gid" type="long">
 			<generator class="native" />
@@ -39,7 +39,7 @@
           column="description"/>
 			
 		<many-to-one name="parent" column="parent"
-			class="org.glite.security.voms.admin.model.VOMSGroup" not-null="false" />
+			class="org.glite.security.voms.admin.persistence.model.VOMSGroup" not-null="false" />
 			
 		<property name="must" type="boolean" column="must" not-null="true"/>
       
@@ -47,23 +47,23 @@
 
 		<set name="attributes" cascade="all-delete-orphan" inverse="true" lazy="false">
 			<key column="g_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSGroupAttribute"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute"/>
 		</set>
 		
 		<!--  was cascade="delete,delete-orphan" -->
 		<set name="mappings" sort="natural" inverse="true">
 			<key column="gid" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
 		</set>
 		
 		<set name="acls" cascade="all-delete-orphan" inverse="true">
 			<key column="group_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.ACL"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.ACL"/>
 		</set>
 		
         <set name="tagMappings" inverse="true">
           <key column="gid" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.TagMapping"/>
         </set>
 	</class>
 

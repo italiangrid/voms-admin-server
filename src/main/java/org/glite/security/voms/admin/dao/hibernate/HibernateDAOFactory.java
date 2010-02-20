@@ -34,13 +34,13 @@ import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.dao.generic.TaskLogRecordDAO;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.dao.generic.UserDAO;
-import org.glite.security.voms.admin.model.AUPVersion;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.RequesterInfo;
-import org.glite.security.voms.admin.model.task.LogRecord;
-import org.glite.security.voms.admin.model.task.Task;
-import org.glite.security.voms.admin.model.task.TaskType;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
+import org.glite.security.voms.admin.persistence.model.task.LogRecord;
+import org.glite.security.voms.admin.persistence.model.task.Task;
+import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.hibernate.criterion.Restrictions;
 
 /**

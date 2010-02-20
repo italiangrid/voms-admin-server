@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ACLDAO {
 
@@ -84,7 +84,7 @@ public class ACLDAO {
 
 	public void deletePermissionsForAdmin(VOMSAdmin a) {
 
-		String query = "select a from org.glite.security.voms.admin.model.ACL a join a.permissions where admin_id = :adminId";
+		String query = "select a from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
 		Iterator i = HibernateFactory.getSession().createQuery(query).setLong(
 				"adminId", a.getId().longValue()).iterate();
 
@@ -99,7 +99,7 @@ public class ACLDAO {
 
 	public boolean hasActivePermissions(VOMSAdmin a) {
 
-		String query = "select count(*) from org.glite.security.voms.admin.model.ACL a join a.permissions where admin_id = :adminId";
+		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
 		Long count = (Long) HibernateFactory.getSession().createQuery(query)
 				.setLong("adminId", a.getId().longValue()).uniqueResult();
 

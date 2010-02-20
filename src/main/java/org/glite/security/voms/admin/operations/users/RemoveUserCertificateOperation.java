@@ -25,10 +25,10 @@ import java.security.cert.X509Certificate;
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.database.NoSuchCertificateException;
-import org.glite.security.voms.admin.model.Certificate;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 
 public class RemoveUserCertificateOperation extends BaseVomsOperation {
 

@@ -27,11 +27,11 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.model.AUPVersion;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
-import org.glite.security.voms.admin.model.request.RequesterInfo;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.user.UserPersonalInfo;
 

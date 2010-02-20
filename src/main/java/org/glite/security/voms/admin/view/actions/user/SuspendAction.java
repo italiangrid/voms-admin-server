@@ -26,9 +26,9 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.UserRestoredEvent;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
-import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")

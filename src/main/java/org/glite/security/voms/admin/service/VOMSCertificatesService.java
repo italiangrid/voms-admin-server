@@ -25,12 +25,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.operations.users.RemoveUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.RestoreUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.SuspendUserCertificateOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.service.certificates.VOMSCertificates;
 import org.glite.security.voms.service.certificates.X509Certificate;
 

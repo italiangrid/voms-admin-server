@@ -37,7 +37,7 @@ import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.error.VOMSException;
-import org.glite.security.voms.admin.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.JDBCException;
 

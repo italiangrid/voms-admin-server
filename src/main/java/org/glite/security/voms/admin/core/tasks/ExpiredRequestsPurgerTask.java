@@ -31,7 +31,7 @@ import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestExpiredEvent;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
 public class ExpiredRequestsPurgerTask extends TimerTask {
 

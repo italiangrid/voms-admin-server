@@ -21,10 +21,10 @@ package org.glite.security.voms.admin.operations.aup;
 
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.AUP;
 
 public class RemoveVersionOperation extends BaseVomsOperation {
 

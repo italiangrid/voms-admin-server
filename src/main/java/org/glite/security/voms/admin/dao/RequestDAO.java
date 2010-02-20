@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.model.VOMembershipRequest;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMembershipRequest;
 import org.hibernate.Query;
 
 public class RequestDAO {
@@ -91,7 +91,7 @@ public class RequestDAO {
 
 	public VOMembershipRequest findById(Long id) {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where id = :id";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where id = :id";
 		Query q = HibernateFactory.getSession().createQuery(query).setLong(
 				"id", id.longValue());
 
@@ -99,7 +99,7 @@ public class RequestDAO {
 	}
 
 	public VOMembershipRequest findPendingForUser(String dn, String caDN) {
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status <= 1";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where dn = :dn and ca = :ca and status <= 1";
 		Query q = HibernateFactory.getSession().createQuery(query).setString(
 				"dn", dn).setString("ca", caDN);
 
@@ -109,7 +109,7 @@ public class RequestDAO {
 
 	public VOMembershipRequest findByDNCA(String dn, String caDN) {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where dn = :dn and ca = :ca and status = 0";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where dn = :dn and ca = :ca and status = 0";
 		Query q = HibernateFactory.getSession().createQuery(query).setString(
 				"dn", dn).setString("ca", caDN);
 
@@ -118,7 +118,7 @@ public class RequestDAO {
 
 	public List getUnconfirmed() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = 0";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where status = 0";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		return q.list();
@@ -127,7 +127,7 @@ public class RequestDAO {
 
 	public List getPending() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :status";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where status = :status";
 
 		Query q = HibernateFactory.getSession().createQuery(query).setInteger(
 				"status", VOMembershipRequest.CONFIRMED.intValue());
@@ -138,7 +138,7 @@ public class RequestDAO {
 
 	public List getProcessed() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest where status = :approved or status = :rejected";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest where status = :approved or status = :rejected";
 
 		Query q = HibernateFactory
 				.getSession()
@@ -152,7 +152,7 @@ public class RequestDAO {
 
 	public List getAll() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMembershipRequest";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMembershipRequest";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 

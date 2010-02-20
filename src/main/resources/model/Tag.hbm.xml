@@ -27,7 +27,7 @@
 
 <hibernate-mapping>
 
-	<class name="org.glite.security.voms.admin.model.Tag" table="tags">
+	<class name="org.glite.security.voms.admin.persistence.model.Tag" table="tags">
 	
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
@@ -52,7 +52,7 @@
 	
       <set name="mappings" cascade="all-delete-orphan" inverse="true">
         <key column="tag_id" on-delete="cascade"/>
-        <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>      
+        <one-to-many class="org.glite.security.voms.admin.persistence.model.TagMapping"/>      
       </set>
       
       	

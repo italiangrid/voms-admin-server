@@ -20,8 +20,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UpdateUserOperation extends BaseVoRWOperation {
 

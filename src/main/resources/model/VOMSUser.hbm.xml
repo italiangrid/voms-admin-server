@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSUser" table="usr">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSUser" table="usr">
 
 		<id name="id" column="userid" type="java.lang.Long">
 			<generator class="native" />
@@ -38,7 +38,7 @@
 		<many-to-one
 			name="ca"
 			column="ca"
-			class="org.glite.security.voms.admin.model.VOMSCA" foreign-key="fk_usr_ca"/>
+			class="org.glite.security.voms.admin.persistence.model.VOMSCA" foreign-key="fk_usr_ca"/>
 			
 		<!-- Compatibility: old fields -->
         <!-- 
@@ -63,34 +63,34 @@
 		
 		<set name="mappings" sort="natural"  cascade="all-delete-orphan" inverse="true">
 			<key column="userid" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>			
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>			
 		</set>
 		
 		<set name="attributes" cascade="all-delete-orphan" inverse="true">
 			<key column="u_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSUserAttribute"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSUserAttribute"/>
 		</set>
 	
 		<!-- Multiple certificates support -->
 		<set name="certificates" cascade="all-delete-orphan" inverse="true">
 			<key column="usr_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.Certificate"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.Certificate"/>
 		</set>
     
         <!-- AUP acceptance records -->
         <set name="aupAcceptanceRecords" cascade="all-delete-orphan" inverse="true">
           <key column="usr_id" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.model.AUPAcceptanceRecord"/>
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord"/>
         </set>
         
         <set name="tasks" lazy="false" inverse="true" cascade="all-delete-orphan">
           <key column="usr_id" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.model.task.Task"/>        
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.task.Task"/>        
         </set>
         
         <set name="personalInformations" cascade="all-delete-orphan" lazy="false">
           <key column="usr_id"/>
-          <one-to-many class="org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord"/>        
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>        
         </set>
 	</class>
 

@@ -27,7 +27,7 @@
     
     <hibernate-mapping>
     	
-    		<class name="org.glite.security.voms.admin.model.VOMSSeqNumber" table="seqnumber">
+    		<class name="org.glite.security.voms.admin.persistence.model.VOMSSeqNumber" table="seqnumber">
     			
     			<id name="seq" column="seq" type="string"/>
     			

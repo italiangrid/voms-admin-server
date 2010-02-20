@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.model.task.Task;
-import org.glite.security.voms.admin.model.task.Task.TaskStatus;
+import org.glite.security.voms.admin.persistence.model.task.Task;
+import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
 public class TaskStatusUpdater extends TimerTask {
 

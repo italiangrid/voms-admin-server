@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.dao.generic;
 
 import java.net.URL;
 
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 
 public interface AUPDAO extends NamedEntityDAO<AUP, Long> {
 

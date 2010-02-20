@@ -26,23 +26,23 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSRoleAttribute" table="role_attrs">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute" table="role_attrs">
 		<composite-id>
 		
 			<key-many-to-one 
 				name="attributeDescription"
 				column="a_id"
-				class="org.glite.security.voms.admin.model.VOMSAttributeDescription"/>
+				class="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription"/>
 
 			<key-many-to-one 
 				name="group"
 				column="g_id"
-				class="org.glite.security.voms.admin.model.VOMSGroup"/>
+				class="org.glite.security.voms.admin.persistence.model.VOMSGroup"/>
 				
 			<key-many-to-one 
 				name="role"
 				column="r_id"
-				class="org.glite.security.voms.admin.model.VOMSRole"/>
+				class="org.glite.security.voms.admin.persistence.model.VOMSRole"/>
 				
 		</composite-id>
 			

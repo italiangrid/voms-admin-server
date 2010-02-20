@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSAttributeDescription" table="attributes">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription" table="attributes">
 		<id name="id" column="a_id">
 			<generator class="native" />
 		</id>

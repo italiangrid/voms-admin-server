@@ -25,12 +25,12 @@ import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleVOMembershipRequest extends
 		BaseHandleRequestOperation<NewVOMembershipRequest> {

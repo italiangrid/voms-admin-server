@@ -19,11 +19,11 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListRoleAttributesOperation extends BaseVomsOperation {
 

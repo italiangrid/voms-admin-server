@@ -22,12 +22,6 @@ package org.glite.security.voms.admin.view.actions.admin;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.CertificateRequest;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
-import org.glite.security.voms.admin.model.request.MembershipRemovalRequest;
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.operations.requests.DECISION;
 import org.glite.security.voms.admin.operations.requests.HandleCertificateRequestOperation;
 import org.glite.security.voms.admin.operations.requests.HandleGroupRequestOperation;
@@ -35,6 +29,12 @@ import org.glite.security.voms.admin.operations.requests.HandleMembershipRemoval
 import org.glite.security.voms.admin.operations.requests.HandleRoleMembershipRequestOperation;
 import org.glite.security.voms.admin.operations.requests.HandleVOMembershipRequest;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")

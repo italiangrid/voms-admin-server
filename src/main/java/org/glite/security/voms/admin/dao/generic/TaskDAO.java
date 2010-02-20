@@ -22,11 +22,11 @@ package org.glite.security.voms.admin.dao.generic;
 import java.util.Date;
 import java.util.List;
 
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.request.Request;
-import org.glite.security.voms.admin.model.task.ApproveUserRequestTask;
-import org.glite.security.voms.admin.model.task.SignAUPTask;
-import org.glite.security.voms.admin.model.task.Task;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.request.Request;
+import org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask;
+import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
+import org.glite.security.voms.admin.persistence.model.task.Task;
 
 public interface TaskDAO extends GenericDAO<Task, Long> {
 

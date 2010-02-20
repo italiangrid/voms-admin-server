@@ -23,13 +23,13 @@ package org.glite.security.voms.admin.operations.requests;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
 import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.AddMemberOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleGroupRequestOperation extends BaseHandleRequestOperation<GroupMembershipRequest> {
 

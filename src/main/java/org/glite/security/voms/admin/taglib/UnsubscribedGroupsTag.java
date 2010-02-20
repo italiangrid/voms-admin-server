@@ -26,8 +26,8 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
-import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.users.FindUnsubscribedGroupsOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
 

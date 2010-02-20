@@ -79,7 +79,7 @@
         
         
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSUser"
+        name="org.glite.security.voms.admin.persistence.model.VOMSUser"
         maxElementsInMemory="3000"
         eternal="false"
         timeToIdleSeconds="1800"
@@ -87,7 +87,7 @@
         overflowToDisk="false"/>
         
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSMapping"
+        name="org.glite.security.voms.admin.persistence.model.VOMSMapping"
         maxElementsInMemory="3000"
         eternal="false"
         timeToIdleSeconds="1800"
@@ -95,7 +95,7 @@
         overflowToDisk="false"/>
         
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSCA"
+        name="org.glite.security.voms.admin.persistence.model.VOMSCA"
         maxElementsInMemory="200"
         eternal="true"
         timeToIdleSeconds="0"
@@ -103,7 +103,7 @@
         overflowToDisk="false"/>
       
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSGroup"
+        name="org.glite.security.voms.admin.persistence.model.VOMSGroup"
         maxElementsInMemory="500"
         eternal="true"
         timeToIdleSeconds="0"
@@ -111,7 +111,7 @@
         overflowToDisk="true"/>
         
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSRole"
+        name="org.glite.security.voms.admin.persistence.model.VOMSRole"
         maxElementsInMemory="500"
         eternal="true"
         timeToIdleSeconds="0"
@@ -119,7 +119,7 @@
         overflowToDisk="true"/>
         
       <cache 
-        name="org.glite.security.voms.admin.model.VOMSAdmin"
+        name="org.glite.security.voms.admin.persistence.model.VOMSAdmin"
         maxElementsInMemory="500"
         eternal="false"
         timeToIdleSeconds="1800"
@@ -128,7 +128,7 @@
       
       <!--   
       <cache 
-        name="org.glite.security.voms.admin.model.ACL"
+        name="org.glite.security.voms.admin.persistence.model.ACL"
         maxElementsInMemory="500"
         eternal="false"
         timeToIdleSeconds="1800"

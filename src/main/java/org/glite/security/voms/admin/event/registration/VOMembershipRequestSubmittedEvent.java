@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
 public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent {
 

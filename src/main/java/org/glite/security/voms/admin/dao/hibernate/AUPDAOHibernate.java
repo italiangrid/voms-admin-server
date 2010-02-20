@@ -28,9 +28,9 @@ import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.NoSuchAUPVersionException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
-import org.glite.security.voms.admin.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 

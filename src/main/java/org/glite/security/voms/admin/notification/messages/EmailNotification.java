@@ -30,10 +30,10 @@ import org.apache.commons.mail.SimpleEmail;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.notification.VOMSNotificationException;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public abstract class EmailNotification {

@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.glite.security.voms.admin.database.AlreadyExistsException;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.hibernate.Query;
 
 public class VOMSAttributeDAO {
@@ -47,7 +47,7 @@ public class VOMSAttributeDAO {
 
 	public List getAllAttributeDescriptions() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSAttributeDescription order by name";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription order by name";
 		return HibernateFactory.getSession().createQuery(query).list();
 	}
 
@@ -84,7 +84,7 @@ public class VOMSAttributeDAO {
 
 		// Delete attribute value mappings!
 		for (int i = 0; i < attributeValueEntities.length; i++) {
-			String query = "delete from org.glite.security.voms.admin.model."
+			String query = "delete from org.glite.security.voms.admin.persistence.model."
 					+ attributeValueEntities[i]
 					+ " where attributeDescription = :desc";
 			HibernateFactory.getSession().createQuery(query).setEntity("desc",
@@ -100,7 +100,7 @@ public class VOMSAttributeDAO {
 
 	public VOMSAttributeDescription getAttributeDescriptionByName(String name) {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSAttributeDescription where name = :name";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription where name = :name";
 
 		VOMSAttributeDescription retVal = (VOMSAttributeDescription) HibernateFactory
 				.getSession().createQuery(query).setString("name", name)
@@ -112,19 +112,19 @@ public class VOMSAttributeDAO {
 
 	public List getUserAttributes() {
 
-		String query = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a";
+		String query = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 	}
 
 	public List getGroupAttributes() {
-		String query = "select a.attributeDescription.name, g, a.value from org.glite.security.voms.admin.model.VOMSGroup g join g.attributes a";
+		String query = "select a.attributeDescription.name, g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 	}
 
 	public List getRoleAttributes() {
-		String query = "select a.attributeDescription.name, r, a.value from org.glite.security.voms.admin.model.VOMSRole r join r.attributes a";
+		String query = "select a.attributeDescription.name, r, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 	}
@@ -165,7 +165,7 @@ public class VOMSAttributeDAO {
 	}
 
 	public List getGroupAttributes(VOMSAttributeDescription desc) {
-		String query = "select g, a.value from org.glite.security.voms.admin.model.VOMSGroup g join g.attributes a"
+		String query = "select g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a"
 				+ " where a.attributeDescription = :desc";
 
 		return HibernateFactory.getSession().createQuery(query).setEntity(
@@ -174,7 +174,7 @@ public class VOMSAttributeDAO {
 
 	public List getRoleAttributes(VOMSAttributeDescription desc) {
 
-		String query = "select r, a.group, a.value from org.glite.security.voms.admin.model.VOMSRole r join r.attributes a"
+		String query = "select r, a.group, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a"
 				+ " where a.attributeDescription = :desc";
 
 		return HibernateFactory.getSession().createQuery(query).setEntity(
@@ -182,7 +182,7 @@ public class VOMSAttributeDAO {
 	}
 
 	public List getUserAttributes(VOMSAttributeDescription desc) {
-		String query = "select u, a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a"
+		String query = "select u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a"
 				+ " where a.attributeDescription = :desc";
 
 		return HibernateFactory.getSession().createQuery(query).setEntity(
@@ -193,7 +193,7 @@ public class VOMSAttributeDAO {
 
 		SearchResults results = SearchResults.instance();
 
-		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a "
+		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
 				+ "order by a.attributeDescription.name,u.dn";
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 
@@ -210,7 +210,7 @@ public class VOMSAttributeDAO {
 
 	public int countUserAttributes() {
 
-		String queryString = "select count(*) from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a";
+		String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
 
 		Long count = (Long) HibernateFactory.getSession().createQuery(
 				queryString).uniqueResult();
@@ -221,7 +221,7 @@ public class VOMSAttributeDAO {
 
 	public int countUserAttributesMatches(String searchString) {
 
-		String queryString = "select count(*) from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a "
+		String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
 				+ "where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or "
 				+ "(a.value like :searchString)";
 
@@ -243,7 +243,7 @@ public class VOMSAttributeDAO {
 
 		SearchResults results = SearchResults.instance();
 		String sString = "%" + searchString + "%";
-		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a "
+		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
 				+ "where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or "
 				+ "(a.value like :searchString) order by a.attributeDescription.name,u.dn";
 
@@ -273,7 +273,7 @@ public class VOMSAttributeDAO {
 		if (!desc.isUnique())
 			return false;
 
-		String queryString = "select a.value from org.glite.security.voms.admin.model.VOMSUser u join u.attributes a where a.attributeDescription = :desc "
+		String queryString = "select a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a where a.attributeDescription = :desc "
 				+ "and u != :user";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);

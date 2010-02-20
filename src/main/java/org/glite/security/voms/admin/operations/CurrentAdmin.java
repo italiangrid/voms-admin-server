@@ -29,11 +29,11 @@ import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.Tag;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSCA;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.Tag;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 
 public class CurrentAdmin {

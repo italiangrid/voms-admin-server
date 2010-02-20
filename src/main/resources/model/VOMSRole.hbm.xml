@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSRole" table="roles">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSRole" table="roles">
 		<id name="id" column="rid" type="long">
 			<generator class="native" />
 		</id>
@@ -36,22 +36,22 @@
 
 		<set name="mappings" sort="natural" inverse="true">
 			<key column="rid" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSMapping"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
 		</set>
 
 		<set name="attributes" inverse="true" cascade="all-delete-orphan" lazy="false">
 			<key column="r_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.model.VOMSRoleAttribute"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute"/>
 		</set>
 				
 		<set name="acls" inverse="true" cascade="all-delete-orphan">
 			<key column="role_id" on-delete="cascade"/>			
-			<one-to-many class="org.glite.security.voms.admin.model.ACL"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.ACL"/>
 		</set>
     
         <set name="tagMappings" inverse="true">
           <key column="rid" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.model.TagMapping"/>
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.TagMapping"/>
         </set>
 
 	</class>

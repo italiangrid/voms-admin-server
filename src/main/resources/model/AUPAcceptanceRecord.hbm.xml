@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.AUPAcceptanceRecord" table="aup_acc_record">	
+	<class name="org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord" table="aup_acc_record">	
 		
 		<id name="id" type="long">
 			<generator class="native"/>
@@ -35,14 +35,14 @@
         <natural-id>
             <many-to-one 
               name="aupVersion"
-              class="org.glite.security.voms.admin.model.AUPVersion"
+              class="org.glite.security.voms.admin.persistence.model.AUPVersion"
               column="aup_version_id"
               not-null="true"
               />
             
             <many-to-one 
               name="user"
-              class="org.glite.security.voms.admin.model.VOMSUser"
+              class="org.glite.security.voms.admin.persistence.model.VOMSUser"
               column="usr_id"
               not-null="true"/>
         

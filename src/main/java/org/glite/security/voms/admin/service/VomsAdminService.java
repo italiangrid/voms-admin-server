@@ -34,7 +34,6 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.UnimplementedFeatureException;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.ca.ListCaOperation;
 import org.glite.security.voms.admin.operations.groups.AddMemberOperation;
@@ -54,6 +53,7 @@ import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.operations.users.ListUserGroupsOperation;
 import org.glite.security.voms.admin.operations.users.ListUserRolesOperation;
 import org.glite.security.voms.admin.operations.users.UpdateUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.glite.security.voms.service.admin.VOMSAdmin;
 

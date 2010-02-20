@@ -22,10 +22,10 @@ package org.glite.security.voms.admin.view.actions.role;
 import java.util.List;
 
 import org.glite.security.voms.admin.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;

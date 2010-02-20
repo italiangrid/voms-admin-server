@@ -33,7 +33,7 @@ import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
-import org.glite.security.voms.admin.model.request.CertificateRequest;
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.util.CertUtil;
 import org.glite.security.voms.admin.util.DNUtil;
 

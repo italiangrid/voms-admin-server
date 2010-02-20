@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.AUP" table="aup">	
+	<class name="org.glite.security.voms.admin.persistence.model.AUP" table="aup">	
 		
 		<id name="id" type="long">
 			<generator class="native"/>
@@ -56,7 +56,7 @@
 		
         <set name="versions" sort="natural" cascade="all-delete-orphan" inverse="true">
           <key column="aup_id" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.model.AUPVersion"/>
+          <one-to-many class="org.glite.security.voms.admin.persistence.model.AUPVersion"/>
         </set>
 		
 	</class>

@@ -26,7 +26,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.AUPVersion" table="aup_version">	
+	<class name="org.glite.security.voms.admin.persistence.model.AUPVersion" table="aup_version">	
 		
 		<id name="id" type="long">
 			<generator class="native"/>
@@ -35,7 +35,7 @@
         <natural-id>
             <many-to-one 
               name="aup"
-              class="org.glite.security.voms.admin.model.AUP"
+              class="org.glite.security.voms.admin.persistence.model.AUP"
               column="aup_id"
               foreign-key="fk_aup_version_aup"
               not-null="true"/>

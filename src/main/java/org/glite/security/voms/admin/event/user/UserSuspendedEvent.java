@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.event.user;
 
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 public class UserSuspendedEvent extends UserMembershipEvent {
 

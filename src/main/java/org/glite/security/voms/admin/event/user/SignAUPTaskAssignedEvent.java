@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.event.user;
 
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class SignAUPTaskAssignedEvent extends UserAUPEvent {
 

@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <s:if
-	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.CertificateRequest }.empty">
+	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.CertificateRequest }.empty">
 	<h1 style="margin-top: 2em">Certificate requests:</h1>
 	<table>
 		<tr>
@@ -31,7 +31,7 @@
 			<th />
 		</tr>
 		<s:iterator
-			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.CertificateRequest}"
+			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.CertificateRequest}"
 			var="certificateReq">
 			<tr class="tableRow">
 				<td style="width: 40%"><tiles2:insertTemplate

@@ -20,8 +20,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.database.NoSuchUserException;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class ListUserRolesOperation extends BaseVoReadOperation {
 

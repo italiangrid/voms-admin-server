@@ -32,9 +32,9 @@ import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 @ParentPackage("base")
 @Results({

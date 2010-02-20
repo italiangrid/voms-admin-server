@@ -23,12 +23,12 @@ package org.glite.security.voms.admin.operations.requests;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.CertificateRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.CertificateRequestRejectedEvent;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.CertificateRequest;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleCertificateRequestOperation extends BaseHandleRequestOperation<CertificateRequest> {
 	

@@ -25,8 +25,8 @@ import org.apache.tiles.AttributeContext;
 import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparerSupport;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.operations.attributes.ListAttributeDescriptionsOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class ListAttributeClassesPreparer extends ViewPreparerSupport {
 

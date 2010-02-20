@@ -35,12 +35,12 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
-import org.glite.security.voms.admin.model.task.SignAUPTask;
-import org.glite.security.voms.admin.model.task.Task;
-import org.glite.security.voms.admin.model.task.Task.TaskStatus;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
+import org.glite.security.voms.admin.persistence.model.task.Task;
+import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
 public class MembershipValidityCheckTask extends TimerTask {
 

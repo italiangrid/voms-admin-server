@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.operations;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation {
 

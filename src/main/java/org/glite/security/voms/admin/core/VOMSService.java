@@ -42,12 +42,12 @@ import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
-import org.glite.security.voms.admin.model.VOMSDBVersion;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.opensaml.xml.ConfigurationException;
 
 public final class VOMSService {

@@ -21,10 +21,10 @@ package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.BaseMemberhipReadOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListMemberNamesOperation extends BaseMemberhipReadOperation {
 

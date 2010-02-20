@@ -26,18 +26,18 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.VOMSGroupAttribute" table="group_attrs">
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute" table="group_attrs">
 		<composite-id>
 		
 			<key-many-to-one 
 				name="attributeDescription"
 				column="a_id"
-				class="org.glite.security.voms.admin.model.VOMSAttributeDescription"/>
+				class="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription"/>
 
 			<key-many-to-one 
 				name="group"
 				column="g_id"
-				class="org.glite.security.voms.admin.model.VOMSGroup"/>
+				class="org.glite.security.voms.admin.persistence.model.VOMSGroup"/>
 				
 		</composite-id>
 			

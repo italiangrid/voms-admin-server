@@ -28,10 +28,10 @@ import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedE
 import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
 import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
 import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 public class GroupMembershipNotificationDispatcher extends BaseNotificationDispatcher{
 

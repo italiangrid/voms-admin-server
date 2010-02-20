@@ -22,7 +22,7 @@ package org.glite.security.voms.admin.dao;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.database.HibernateFactory;
-import org.glite.security.voms.admin.model.VOMSDBVersion;
+import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 
 public class VOMSVersionDAO {
 
@@ -46,7 +46,7 @@ public class VOMSVersionDAO {
 		HibernateFactory
 				.getSession()
 				.createQuery(
-						"delete from org.glite.security.voms.admin.model.VOMSDBVersion")
+						"delete from org.glite.security.voms.admin.persistence.model.VOMSDBVersion")
 				.executeUpdate();
 		HibernateFactory.commitTransaction();
 		HibernateFactory.beginTransaction();

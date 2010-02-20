@@ -64,7 +64,7 @@
         <s:if test="hasPendingSignAUPTasks()">
           <dt>You have pending sign AUP tasks for:</dt>
           <dd>
-            <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.model.task.SignAUPTask 
+            <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.persistence.model.task.SignAUPTask 
             and #this.status.toString() != 'COMPLETED')}">
               <div>
                 <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">

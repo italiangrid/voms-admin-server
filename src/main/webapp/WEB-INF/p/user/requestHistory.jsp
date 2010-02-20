@@ -51,12 +51,12 @@
           </dl>
       </td>
       <td>
-        <s:if test="#req instanceof org.glite.security.voms.admin.model.request.GroupMembershipRequest">
+        <s:if test="#req instanceof org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest">
           <div class="groupName">
             ${groupName}
           </div>
         </s:if>
-        <s:if test="#req instanceof org.glite.security.voms.admin.model.request.RoleMembershipRequest">
+        <s:if test="#req instanceof org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest">
           <div class="userRoleName">
             ${roleName}
           </div>

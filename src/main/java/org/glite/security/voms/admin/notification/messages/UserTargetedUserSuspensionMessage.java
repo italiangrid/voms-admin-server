@@ -20,7 +20,7 @@
 package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserTargetedUserSuspensionMessage extends
 		AbstractVelocityNotification {

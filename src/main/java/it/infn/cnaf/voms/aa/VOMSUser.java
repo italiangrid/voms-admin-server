@@ -52,7 +52,7 @@ public class VOMSUser {
     }
     
 
-    public static VOMSUser fromModel(org.glite.security.voms.admin.model.VOMSUser user){
+    public static VOMSUser fromModel(org.glite.security.voms.admin.persistence.model.VOMSUser user){
         
         VOMSUser u = new VOMSUser();
         

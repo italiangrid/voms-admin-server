@@ -25,14 +25,14 @@ package org.glite.security.voms.admin.operations.requests;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
 import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleRoleMembershipRequestOperation extends
 		BaseHandleRequestOperation<RoleMembershipRequest> {

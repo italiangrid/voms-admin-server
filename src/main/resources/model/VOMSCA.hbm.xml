@@ -27,7 +27,7 @@
     
     <hibernate-mapping>
     	
-    		<class name="org.glite.security.voms.admin.model.VOMSCA" table="ca">
+    		<class name="org.glite.security.voms.admin.persistence.model.VOMSCA" table="ca">
     			<id name="id" type="short" column="cid">
     				<generator class="native"/>
     			</id>

@@ -22,7 +22,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <s:if
-	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.NewVOMembershipRequest}.empty">
+	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest}.empty">
 	<h1>VO membership requests:</h1>
 	<table>
 		<tr>
@@ -32,7 +32,7 @@
 		</tr>
 
 		<s:iterator
-			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.NewVOMembershipRequest}">
+			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest}">
 			<tr>
 				<td><tiles2:insertTemplate template="userInfo.jsp" flush="true" />
 				</td>

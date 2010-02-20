@@ -30,12 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 import com.opensymphony.xwork2.ActionSupport;
 

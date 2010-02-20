@@ -23,9 +23,9 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.model.VOMSGroup;
 import org.glite.security.voms.admin.operations.roles.DeleteRoleAttributeOperation;
 import org.glite.security.voms.admin.operations.roles.SetRoleAttributeOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;

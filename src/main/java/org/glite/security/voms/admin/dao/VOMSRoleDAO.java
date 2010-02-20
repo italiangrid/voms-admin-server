@@ -27,11 +27,11 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchAttributeException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 import org.hibernate.Query;
 
 public class VOMSRoleDAO {
@@ -48,7 +48,7 @@ public class VOMSRoleDAO {
 
 	public List getAll() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSRole";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
 		return HibernateFactory.getSession().createQuery(query).list();
 
@@ -56,7 +56,7 @@ public class VOMSRoleDAO {
 
 	public int countRoles() {
 
-		String query = "select count(*) from org.glite.security.voms.admin.model.VOMSRole";
+		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
 		Long count = (Long) HibernateFactory.getSession().createQuery(query)
 				.uniqueResult();
@@ -67,7 +67,7 @@ public class VOMSRoleDAO {
 	public int countMatches(String searchString) {
 
 		String sString = "%" + searchString + "%";
-		String query = "select count(*) from org.glite.security.voms.admin.model.VOMSRole where name like :searchString";
+		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
 
 		Long count = (Long) HibernateFactory.getSession().createQuery(query)
 				.setString("searchString", sString).uniqueResult();
@@ -79,7 +79,7 @@ public class VOMSRoleDAO {
 
 		SearchResults results = SearchResults.instance();
 
-		String query = "from org.glite.security.voms.admin.model.VOMSRole";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setFirstResult(firstResult);
@@ -105,7 +105,7 @@ public class VOMSRoleDAO {
 		SearchResults results = SearchResults.instance();
 
 		String sString = "%" + searchString + "%";
-		String query = "from org.glite.security.voms.admin.model.VOMSRole where name like :searchString";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
 
 		Query q = HibernateFactory.getSession().createQuery(query).setString(
 				"searchString", sString);
@@ -142,7 +142,7 @@ public class VOMSRoleDAO {
 		SearchResults results = SearchResults.instance();
 		String sString = "%" + searchString + "%";
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is :role "
+		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
 				+ "and m.user.dn like :searchString order by m.user.dn asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString)
@@ -184,7 +184,7 @@ public class VOMSRoleDAO {
 		else
 			sString = "%" + searchString + "%";
 
-		String queryString = "select count(m.user) from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is :role "
+		String queryString = "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
 				+ "and m.user.dn like :searchString order by m.user.dn asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
@@ -210,7 +210,7 @@ public class VOMSRoleDAO {
 
 		SearchResults results = SearchResults.instance();
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is :role "
+		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
 				+ "order by m.user.dn asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
@@ -235,14 +235,14 @@ public class VOMSRoleDAO {
 
 	public List getAllNames() {
 
-		String query = "select name from org.glite.security.voms.admin.model.VOMSRole";
+		String query = "select name from org.glite.security.voms.admin.persistence.model.VOMSRole";
 		return HibernateFactory.getSession().createQuery(query).list();
 
 	}
 
 	public VOMSRole findByName(String roleName) {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSRole where name = :name";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name = :name";
 
 		return (VOMSRole) HibernateFactory.getSession().createQuery(query)
 				.setString("name", roleName).uniqueResult();
@@ -271,7 +271,7 @@ public class VOMSRoleDAO {
 	public void deleteAll() {
 
 		HibernateFactory.getSession().createQuery(
-				"delete from org.glite.security.voms.admin.model.VOMSRole")
+				"delete from org.glite.security.voms.admin.persistence.model.VOMSRole")
 				.executeUpdate();
 
 	}
@@ -418,7 +418,7 @@ public class VOMSRoleDAO {
 			throw new IllegalArgumentException(
 					"role parameter must be non-null!");
 
-		String query = "select m.user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role = :role";
+		String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role = :role";
 		return HibernateFactory.getSession().createQuery(query).setEntity(
 				"group", g).setEntity("role", r).list();
 

@@ -39,14 +39,14 @@ import org.glite.security.voms.admin.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSCA;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSSeqNumber;
-import org.glite.security.voms.admin.model.task.TaskType;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSSeqNumber;
+import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.glite.security.voms.admin.util.DNUtil;
 
 /**

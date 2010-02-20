@@ -27,10 +27,10 @@ import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEv
 import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
 import org.glite.security.voms.admin.event.registration.RoleMembershipRequestEvent;
 import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
-import org.glite.security.voms.admin.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class RoleMembershipNotificationDispatcher extends BaseNotificationDispatcher{
 

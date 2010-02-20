@@ -26,13 +26,13 @@ import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.database.NoSuchRoleException;
 import org.glite.security.voms.admin.database.NoSuchUserException;
 import org.glite.security.voms.admin.error.IllegalRequestStateException;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.request.Request;
-import org.glite.security.voms.admin.model.request.Request.STATUS;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.request.Request;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public abstract class BaseHandleRequestOperation<T extends Request> extends BaseVomsOperation {
 

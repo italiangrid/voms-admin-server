@@ -21,12 +21,12 @@ package org.glite.security.voms.admin.operations.aup;
 
 import java.util.Date;
 
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class TriggerReacceptanceOperation extends BaseVomsOperation {
 	

@@ -19,9 +19,9 @@
  */
 package org.glite.security.voms.admin.error;
 
-import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.operations.AuthorizationResponse;
 import org.glite.security.voms.admin.operations.VOMSOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 
 public class VOMSAuthorizationException extends VOMSSecurityException {
 

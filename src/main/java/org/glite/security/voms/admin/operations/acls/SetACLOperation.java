@@ -24,10 +24,10 @@ import java.util.Map;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.error.VOMSException;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.VOMSAdmin;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 
 public class SetACLOperation extends BaseVomsOperation {
 

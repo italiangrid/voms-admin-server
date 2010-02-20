@@ -21,9 +21,9 @@ package org.glite.security.voms.admin.event.user;
 
 import org.glite.security.voms.admin.event.EventType;
 import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public abstract class UserMembershipEvent extends GenericEvent {
 

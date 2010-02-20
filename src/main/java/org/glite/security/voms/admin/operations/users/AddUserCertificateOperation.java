@@ -24,11 +24,11 @@ import java.util.Date;
 
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.Certificate;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddUserCertificateOperation extends BaseVomsOperation {
 

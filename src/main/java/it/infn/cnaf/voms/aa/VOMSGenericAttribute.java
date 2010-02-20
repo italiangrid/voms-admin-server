@@ -21,7 +21,7 @@
 package it.infn.cnaf.voms.aa;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.VOMSBaseAttribute;
+import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 

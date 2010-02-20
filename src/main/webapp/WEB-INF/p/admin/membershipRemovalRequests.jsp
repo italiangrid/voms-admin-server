@@ -23,7 +23,7 @@
 
 
 <s:if
-	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.MembershipRemovalRequest }.empty">
+	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest }.empty">
 	<h1 style="margin-top: 2em">Membership removal requests:</h1>
 	<table>
 		<tr>
@@ -32,7 +32,7 @@
 			<th />
 		</tr>
 		<s:iterator
-			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.model.request.MembershipRemovalRequest}"
+			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest}"
 			var="membershipRemovalReq">
 			<tr class="tableRow">
 				<td style="width: 40%"><tiles2:insertTemplate

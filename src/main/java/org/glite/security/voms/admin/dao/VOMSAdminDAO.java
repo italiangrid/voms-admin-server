@@ -29,13 +29,13 @@ import org.glite.security.voms.admin.database.HibernateFactory;
 import org.glite.security.voms.admin.database.NoSuchCAException;
 import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.model.Certificate;
-import org.glite.security.voms.admin.model.Tag;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSCA;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.Tag;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.Criteria;
@@ -59,7 +59,7 @@ public class VOMSAdminDAO {
 
 	public List getAll() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin";
 		List result = HibernateFactory.getSession().createQuery(query).list();
 		return result;
 	}
@@ -67,7 +67,7 @@ public class VOMSAdminDAO {
 	public List<VOMSAdmin> getNonInternalAdmins() {
 
 		String caDN = "/O=VOMS/O=System%";
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where ca.subjectString not like :caDN";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where ca.subjectString not like :caDN";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 		q.setString("caDN", caDN);
@@ -78,7 +78,7 @@ public class VOMSAdminDAO {
 
 	public VOMSAdmin getAnyAuthenticatedUserAdmin() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("dn", VOMSServiceConstants.ANYUSER_ADMIN);
@@ -102,7 +102,7 @@ public class VOMSAdminDAO {
 	}
 	public VOMSAdmin getUnauthenticatedClientAdmin() {
 		
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("dn", VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
@@ -151,7 +151,7 @@ public class VOMSAdminDAO {
 		dn = DNUtil.normalizeDN(dn);
 		caDN = DNUtil.normalizeDN(caDN);
 
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("dn", dn);
@@ -203,7 +203,7 @@ public class VOMSAdminDAO {
 
 	public List getRoleAdmins(VOMSRole r) {
 		String searchString = "%Role=" + r.getName();
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn like :searchString";
 
 		return HibernateFactory.getSession().createQuery(query).setString(
 				"searchString", searchString).list();
@@ -213,7 +213,7 @@ public class VOMSAdminDAO {
 	public void deleteRoleAdmins(VOMSRole r) {
 
 		String searchString = "%Role=" + r.getName();
-		String query = "from org.glite.security.voms.admin.model.VOMSAdmin where dn like :searchString";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn like :searchString";
 		Iterator i = HibernateFactory.getSession().createQuery(query)
 				.setString("searchString", searchString).iterate();
 
@@ -361,7 +361,7 @@ public class VOMSAdminDAO {
 		Query q = HibernateFactory
 				.getSession()
 				.createQuery(
-						"delete from org.glite.security.voms.admin.model.VOMSAdmin where dn = :dn and ca =:ca")
+						"delete from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn = :dn and ca =:ca")
 				.setString("dn", dn).setParameter("ca", ca);
 
 		q.executeUpdate();

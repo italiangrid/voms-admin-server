@@ -20,8 +20,8 @@
 
 package it.infn.cnaf.voms.aa;
 
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSMapping;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 /**

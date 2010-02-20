@@ -24,8 +24,8 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.model.AUP;
 import org.glite.security.voms.admin.operations.aup.ChangeReacceptancePeriodOperation;
+import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;

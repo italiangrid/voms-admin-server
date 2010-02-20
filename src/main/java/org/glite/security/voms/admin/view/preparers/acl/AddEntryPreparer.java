@@ -28,13 +28,13 @@ import org.apache.tiles.preparer.ViewPreparerSupport;
 import org.glite.security.voms.admin.dao.CertificateDAO;
 import org.glite.security.voms.admin.dao.VOMSCADAO;
 import org.glite.security.voms.admin.dao.VOMSUserDAO;
-import org.glite.security.voms.admin.model.VOMSCA;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 import org.glite.security.voms.admin.operations.users.ListUsersOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddEntryPreparer extends ViewPreparerSupport {
 

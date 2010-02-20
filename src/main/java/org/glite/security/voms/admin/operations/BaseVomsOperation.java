@@ -32,8 +32,8 @@ import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.error.VOMSFatalException;
-import org.glite.security.voms.admin.model.ACL;
-import org.glite.security.voms.admin.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public abstract class BaseVomsOperation implements VOMSOperation {
 

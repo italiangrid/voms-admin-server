@@ -49,19 +49,19 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.UserCreatedEvent;
 import org.glite.security.voms.admin.event.user.UserDeletedEvent;
 import org.glite.security.voms.admin.event.user.UserSignedAUPEvent;
-import org.glite.security.voms.admin.model.AUP;
-import org.glite.security.voms.admin.model.AUPAcceptanceRecord;
-import org.glite.security.voms.admin.model.AUPVersion;
-import org.glite.security.voms.admin.model.Certificate;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
-import org.glite.security.voms.admin.model.VOMSCA;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSMapping;
-import org.glite.security.voms.admin.model.VOMSRole;
-import org.glite.security.voms.admin.model.VOMSUser;
-import org.glite.security.voms.admin.model.VOMSUserAttribute;
-import org.glite.security.voms.admin.model.VOMSUser.SuspensionReason;
-import org.glite.security.voms.admin.model.task.SignAUPTask;
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
+import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSMapping;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
@@ -659,7 +659,7 @@ public class VOMSUserDAO {
 		if (subject == null)
 			throw new NullArgumentException("subject cannot be null!");
 		
-		String query = "select u from org.glite.security.voms.admin.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
+		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
 		
 		Query q = HibernateFactory.getSession().createQuery(query);
 
@@ -679,7 +679,7 @@ public class VOMSUserDAO {
 		if (issuer == null)
 			throw new NullArgumentException("issuer cannot be null!");
 
-		String query = "select u from org.glite.security.voms.admin.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
+		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 
@@ -708,7 +708,7 @@ public class VOMSUserDAO {
 		if (emailAddress == null)
 			throw new NullArgumentException("emailAddress must be non-null!");
 
-		String query = "from org.glite.security.voms.admin.model.VOMSUser as u  where u.emailAddress = :emailAddress";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSUser as u  where u.emailAddress = :emailAddress";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("emailAddress", emailAddress);

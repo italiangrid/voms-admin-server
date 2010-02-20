@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.dao.generic;
 
-import org.glite.security.voms.admin.model.Tag;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.Tag;
 
 public interface TagDAO extends GenericDAO<Tag, Long> {
 

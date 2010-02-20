@@ -25,12 +25,12 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSRole;
 import org.glite.security.voms.admin.operations.groups.AddMemberOperation;
 import org.glite.security.voms.admin.operations.groups.RemoveMemberOperation;
 import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
 import org.glite.security.voms.admin.operations.users.DismissRoleOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")

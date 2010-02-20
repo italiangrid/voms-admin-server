@@ -31,8 +31,8 @@ import org.glite.security.voms.admin.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.database.NoSuchGroupException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 @ParentPackage("base")
 @Results({

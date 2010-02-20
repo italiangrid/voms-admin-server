@@ -26,14 +26,14 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.model.Certificate" table="certificate">	
+	<class name="org.glite.security.voms.admin.persistence.model.Certificate" table="certificate">	
 		
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
 		
 		<many-to-one name="user" 
-			class="org.glite.security.voms.admin.model.VOMSUser"
+			class="org.glite.security.voms.admin.persistence.model.VOMSUser"
 			column="usr_id"
 			foreign-key="fk_cert_usr"
 			not-null="true"
@@ -74,7 +74,7 @@
 		<many-to-one 
 			name="ca"
 			column="ca_id"
-			class="org.glite.security.voms.admin.model.VOMSCA"
+			class="org.glite.security.voms.admin.persistence.model.VOMSCA"
 			foreign-key="fk_certificate_ca"
 			not-null="true"/>
 

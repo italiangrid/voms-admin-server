@@ -20,7 +20,7 @@
 package org.glite.security.voms.admin.notification.messages;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 public class HandleGroupRequest extends AbstractVelocityNotification {
 

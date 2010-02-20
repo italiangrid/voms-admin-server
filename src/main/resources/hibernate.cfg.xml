@@ -63,28 +63,28 @@
         <!--  NEW MAPPINGS -->
         
         <!--  VOMS USER & CERTIFICATE -->
-        <mapping class="org.glite.security.voms.admin.model.VOMSUser"/>
-        <mapping class="org.glite.security.voms.admin.model.Certificate"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUser"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.Certificate"/>
         
         <!--  TASKS  -->
-        <mapping class="org.glite.security.voms.admin.model.task.TaskType"/>
-        <mapping class="org.glite.security.voms.admin.model.task.LogRecord"/>
-        <mapping class="org.glite.security.voms.admin.model.task.Task"/>
-        <mapping class="org.glite.security.voms.admin.model.task.ApproveUserRequestTask"/>
-        <mapping class="org.glite.security.voms.admin.model.task.SignAUPTask"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.TaskType"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.LogRecord"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.Task"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.SignAUPTask"/>
         
         <!-- REQUESTS -->
-        <mapping class="org.glite.security.voms.admin.model.request.Request"/>
-        <mapping class="org.glite.security.voms.admin.model.request.RequesterInfo"/>
-        <mapping class="org.glite.security.voms.admin.model.request.NewVOMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.model.request.GroupMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.model.request.RoleMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.model.request.CertificateRequest"/>
-        <mapping class="org.glite.security.voms.admin.model.request.MembershipRemovalRequest"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.Request"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.RequesterInfo"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.CertificateRequest"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest"/>
         
         <!-- PERSONAL INFO -->
-        <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationType"/>
-        <mapping class="org.glite.security.voms.admin.model.personal_info.PersonalInformationRecord"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationType"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
         
         
         

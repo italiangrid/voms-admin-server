@@ -36,11 +36,11 @@ import org.glite.security.voms.admin.database.VOMSDatabaseException;
 import org.glite.security.voms.admin.database.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
-import org.glite.security.voms.admin.model.VOMSAdmin;
-import org.glite.security.voms.admin.model.VOMSAttributeDescription;
-import org.glite.security.voms.admin.model.VOMSGroup;
-import org.glite.security.voms.admin.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -57,7 +57,7 @@ public class VOMSGroupDAO {
 
 	public List getAll() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSGroup order by name asc";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup order by name asc";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 		List res = q.list();
@@ -71,7 +71,7 @@ public class VOMSGroupDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String cQueryString = "select count(*) from org.glite.security.voms.admin.model.VOMSGroup where name like :searchString";
+		String cQueryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString";
 
 		Long totalMatches = (Long) HibernateFactory.getSession().createQuery(
 				cQueryString).setString("searchString", sString).uniqueResult();
@@ -85,7 +85,7 @@ public class VOMSGroupDAO {
 		Long count = (Long) HibernateFactory
 				.getSession()
 				.createQuery(
-						"select count(*) from org.glite.security.voms.admin.model.VOMSGroup")
+						"select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup")
 				.uniqueResult();
 
 		return count.intValue();
@@ -94,7 +94,7 @@ public class VOMSGroupDAO {
 
 	public List findAll() {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSGroup";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 
@@ -106,7 +106,7 @@ public class VOMSGroupDAO {
 
 		SearchResults results = SearchResults.instance();
 
-		String query = "from org.glite.security.voms.admin.model.VOMSGroup order by name asc";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup order by name asc";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 
@@ -134,7 +134,7 @@ public class VOMSGroupDAO {
 		SearchResults results = SearchResults.instance();
 
 		String sString = "%" + searchString + "%";
-		String queryString = "from org.glite.security.voms.admin.model.VOMSGroup where name like :searchString order by name asc";
+		String queryString = "from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString order by name asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString)
 				.setString("searchString", sString);
@@ -165,7 +165,7 @@ public class VOMSGroupDAO {
 
 		SearchResults results = SearchResults.instance();
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null";
+		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString)
 				.setFirstResult(firstResult).setMaxResults(maxResults);
@@ -202,7 +202,7 @@ public class VOMSGroupDAO {
 				+ "or m.user.institution like :searchString)";
 
 		// String queryString =
-		// "select count(m.user) from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
+		// "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
 		// "and m.user.dn like :searchString";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString)
@@ -238,7 +238,7 @@ public class VOMSGroupDAO {
 				+ "or m.user.institution like :searchString)";
 
 		// String queryString =
-		// "select m.user as user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null "+
+		// "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
 		// "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString)
@@ -266,7 +266,7 @@ public class VOMSGroupDAO {
 		if (!PathNamingScheme.isGroup(name))
 			throw new VOMSSyntaxException("Syntax error in group name: " + name);
 
-		String query = "from org.glite.security.voms.admin.model.VOMSGroup as g where g.name =:groupName";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup as g where g.name =:groupName";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 
@@ -307,7 +307,7 @@ public class VOMSGroupDAO {
 
 	public List getChildren(VOMSGroup parentGroup) {
 
-		String query = "from org.glite.security.voms.admin.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
+		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setEntity("parentGroup", parentGroup);
@@ -569,7 +569,7 @@ public class VOMSGroupDAO {
 			throw new NullArgumentException(
 					"Cannot get members of a null group!");
 
-		String query = "select m.user from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null";
+		String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
 		return HibernateFactory.getSession().createQuery(query).setEntity(
 				"group", g).list();
 
@@ -582,7 +582,7 @@ public class VOMSGroupDAO {
 					"Cannot get members of a null group!");
 
 		// String query =
-		// "select distinct m.user.dn from org.glite.security.voms.admin.model.VOMSMapping m where m.group = :group and m.role is null";
+		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
 
 		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
 
