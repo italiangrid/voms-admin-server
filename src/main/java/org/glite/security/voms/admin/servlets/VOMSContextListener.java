@@ -45,7 +45,7 @@ public class VOMSContextListener implements ServletContextListener {
 		
 		} catch (VOMSException e) {
 
-			log.fatal("VOMS-Admin setup failure!", e);
+			log.error("VOMS-Admin setup failure!", e);
 			
 
 		}

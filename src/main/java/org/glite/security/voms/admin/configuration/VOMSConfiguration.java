@@ -375,7 +375,7 @@ public final class VOMSConfiguration {
 		} catch (IOException e) {
 
 			log
-					.fatal("Error loading database properties: "
+					.error("Error loading database properties: "
 							+ e.getMessage(), e);
 			throw new VOMSException("Error loading database properties: "
 					+ e.getMessage(), e);
@@ -802,7 +802,7 @@ public final class VOMSConfiguration {
 
         } catch ( FileNotFoundException e ) {
 
-            log.fatal( "Error loading service credentials: " + e.getMessage(),
+            log.error( "Error loading service credentials: " + e.getMessage(),
                     e );
             throw new VOMSException( "Error loading service credentials: "
                     + e.getMessage(), e );
@@ -815,7 +815,7 @@ public final class VOMSConfiguration {
             certificateFactory = CertificateFactory.getInstance( "X509", "BC" );
 
         } catch ( CertificateException e ) {
-            log.fatal( "Error instantiating X509 certificate factory: "
+            log.error( "Error instantiating X509 certificate factory: "
                     + e.getMessage(), e );
             throw new VOMSException(
                     "Error instantiating X509 certificate factory: "
@@ -830,7 +830,7 @@ public final class VOMSConfiguration {
             serviceCertificate = (X509Certificate) certificateFactory
                     .generateCertificate( certificateInputStream );
         } catch ( CertificateException e ) {
-            log.fatal( "Error generating X509 certificate from input stream: "
+            log.error( "Error generating X509 certificate from input stream: "
                     + e.getMessage(), e );
             throw new VOMSException(
                     "Error generating X509 certificate from input stream: "
@@ -842,7 +842,7 @@ public final class VOMSConfiguration {
             certificateInputStream.close();
 
         } catch ( IOException e ) {
-            log.fatal( "Error closing certificate input stream:"
+            log.error( "Error closing certificate input stream:"
                     + e.getMessage(), e );
             throw new VOMSException( "Error closing certificate input stream:"
                     + e.getMessage(), e );
@@ -861,7 +861,7 @@ public final class VOMSConfiguration {
 
         } catch ( FileNotFoundException e ) {
          
-            log.fatal( "Error opening private key file:"+e.getMessage(),e );
+            log.error( "Error opening private key file:"+e.getMessage(),e );
             throw new VOMSException("Error opening private key file:"+e.getMessage(),e );
         }
 
@@ -872,13 +872,13 @@ public final class VOMSConfiguration {
         
         } catch ( GeneralSecurityException e ) {
             
-            log.fatal("Error parsing private key from input stream:"+e.getMessage(),e);
+            log.error("Error parsing private key from input stream:"+e.getMessage(),e);
             throw new VOMSException("Error parsing private key from input stream:"+e.getMessage(),e);
             
             
         } catch ( IOException e ) {
             
-            log.fatal( "Error opening private key file:"+e.getMessage(),e  );
+            log.error( "Error opening private key file:"+e.getMessage(),e  );
             throw new VOMSException("Error opening private key file:"+e.getMessage(),e);
             
         }
@@ -898,10 +898,10 @@ public final class VOMSConfiguration {
 			config.addConfiguration(vomsServiceProperties);
 
 		} catch (ConfigurationException e) {
-			log.fatal("Error loading service properties from " + fileName);
+			log.error("Error loading service properties from " + fileName);
 
 			if (log.isDebugEnabled())
-				log.fatal(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 
 			throw new VOMSConfigurationException(
 					"Error loading service properties from " + fileName, e);
@@ -951,7 +951,7 @@ public final class VOMSConfiguration {
 
 		} catch (IOException e) {
 
-			log.fatal("Error loading vomses configuration file:"
+			log.error("Error loading vomses configuration file:"
 					+ e.getMessage(), e);
 			throw new VOMSException("Error loading vomses configuration file:"
 					+ e.getMessage(), e);
@@ -968,10 +968,10 @@ public final class VOMSConfiguration {
 			jndiConfig = new JNDIConfiguration();
 
 		} catch (NamingException e) {
-			log.fatal("Error accessing JNDI configuration properties: "
+			log.error("Error accessing JNDI configuration properties: "
 					+ e.getMessage());
 			if (log.isDebugEnabled())
-				log.fatal(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 
 			throw new VOMSConfigurationException(
 					"Error accessing JNDI configuration properties: "

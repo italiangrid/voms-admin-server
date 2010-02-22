@@ -22,7 +22,7 @@ Dear $recipient,
 as VO administrator of VO $voName, your authorization is requested for the
 following $request.typeName.toLowerCase() issued by the following user:
 
-Certificate information:
+User Certificate information:
 
 	Subject: $request.requesterInfo.certificateSubject
 	Issuer:  $request.requesterInfo.certificateIssuer
@@ -54,6 +54,15 @@ in the context of group:
 	
 	$request.groupName
 	
+#elseif ($request.class.simpleName == 'CertificateRequest')
+
+The above user has requested that the certificate:
+
+	Subject: $request.certificateSubject
+	Issuer: $request.certificateIssuer
+	
+is added to the list of valid certificates for the user.
+
 #end
 
 In order to handle this request, point your browser

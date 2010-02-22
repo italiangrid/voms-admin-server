@@ -40,6 +40,7 @@ import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.notification.CertificateRequestsNotificationDispatcher;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
@@ -123,6 +124,8 @@ public final class VOMSService {
 		RoleMembershipNotificationDispatcher.instance();
 		
 		VOMembershipNotificationDispatcher.instance();
+		
+		CertificateRequestsNotificationDispatcher.instance();
 	}
 
 	protected static void startBackgroundTasks() {
@@ -174,7 +177,7 @@ public final class VOMSService {
 			conf = VOMSConfiguration.load(ctxt);
 
 		} catch (VOMSConfigurationException e) {
-			log.fatal("VOMS-Admin configuration failed!", e);
+			log.error("VOMS-Admin configuration failed!", e);
 			throw new VOMSFatalException(e);
 		}
 

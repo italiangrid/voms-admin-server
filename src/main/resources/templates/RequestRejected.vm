@@ -43,12 +43,12 @@ in group:
 
 has been REJECTED by the VO administrators.
 
-#else if ( $request.class.simpleName == 'CertificateRequest')
+#elseif ( $request.class.simpleName == 'CertificateRequest')
 
 your $request.typeName.toLowerCase() for certificate:
 
-	subject: $request.certificateSubject
-	issuer: $request.certificateIssuer
+	Subject: $request.certificateSubject
+	Issuer: $request.certificateIssuer
 
 has been REJECTED by the VO administrators.
 

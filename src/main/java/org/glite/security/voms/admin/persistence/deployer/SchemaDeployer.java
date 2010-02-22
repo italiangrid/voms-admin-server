@@ -145,14 +145,14 @@ public class SchemaDeployer {
 			s.beginTransaction();
 		
 		}catch(GenericJDBCException e){
-			log.fatal("");
+			log.error("");
 			
-			log.fatal("===========================================================================================================================");
-			log.fatal("Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
-			log.fatal("============================================================================================================================");
+			log.error("===========================================================================================================================");
+			log.error("Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
+			log.error("============================================================================================================================");
 			
 			if (log.isDebugEnabled())
-				log.fatal(e.getMessage(),e);
+				log.error(e.getMessage(),e);
 			
 			System.exit(-1);
 			
@@ -187,10 +187,10 @@ public class SchemaDeployer {
 		
 		}catch(Throwable t){
 			
-			log.fatal("Error writing to the voms database. Check your database settings and that the database backend is up and running.");
+			log.error("Error writing to the voms database. Check your database settings and that the database backend is up and running.");
 			
 			if (log.isDebugEnabled())
-				log.fatal("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"+t.getMessage(),t);
+				log.error("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"+t.getMessage(),t);
 			
 			throw new VOMSDatabaseException("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running", t);
 			
@@ -266,16 +266,16 @@ public class SchemaDeployer {
 	private void printException(Throwable t){
 		
 		if (t.getMessage() != null)
-			log.fatal(t.getMessage());
+			log.error(t.getMessage());
 		else
-			log.fatal(t);
+			log.error(t);
 		
 		if (log.isDebugEnabled()){
 			
 			if (t.getMessage() != null)
-				log.fatal(t.getMessage(),t);
+				log.error(t.getMessage(),t);
 			else
-				log.fatal(t,t);
+				log.error(t,t);
 			
 		}
 	}
@@ -285,7 +285,7 @@ public class SchemaDeployer {
 			printException(t);
 		
 		if (t.getCause()!= null){
-			log.fatal("caused by:");
+			log.error("caused by:");
 			printAllException(t.getCause());
 			
 		}
@@ -297,7 +297,7 @@ public class SchemaDeployer {
 		while (i.hasNext()) {
 
 			Throwable t = (Throwable) i.next();
-			log.fatal(t.getMessage());
+			log.error(t.getMessage());
 
 			if (log.isDebugEnabled())
 				printAllException(t);
@@ -444,7 +444,7 @@ public class SchemaDeployer {
 			List l = exporter.getExceptions();
 
 			if (!l.isEmpty()) {
-				log.fatal("Error deploying voms 2 database!");
+				log.error("Error deploying voms 2 database!");
 				printExceptions(l);
 				System.exit(2);
 
@@ -543,7 +543,7 @@ public class SchemaDeployer {
 			}
 			
 			if (!exceptions.isEmpty()){
-				log.fatal("Error upgrading voms 2.5 database!");
+				log.error("Error upgrading voms 2.5 database!");
 				printExceptions(exceptions);
 				System.exit(2);
 			}	
@@ -764,7 +764,7 @@ public class SchemaDeployer {
 		List l = export.getExceptions();
 
 		if (!l.isEmpty()) {
-			log.fatal("Error undeploying voms database!");
+			log.error("Error undeploying voms database!");
 			printExceptions(l);
 			System.exit(2);
 		}
@@ -796,7 +796,7 @@ public class SchemaDeployer {
 		List l = exporter.getExceptions();
 
 		if (!l.isEmpty()) {
-			log.fatal("Error deploying voms database!");
+			log.error("Error deploying voms database!");
 			printExceptions(l);
 			System.exit(2);
 
@@ -956,7 +956,7 @@ public class SchemaDeployer {
 			md = HibernateFactory.getSession().connection().getMetaData();
 		
 		} catch (Throwable t) {
-			log.fatal("Error accessing database metadata!",t);
+			log.error("Error accessing database metadata!",t);
 			System.exit(-1);
 		}
 		
@@ -969,7 +969,7 @@ public class SchemaDeployer {
 				toBeDropped.add(oldTables.getString("TABLE_NAME"));				
 		
 		}catch (SQLException e) {
-			log.fatal("Error reading table names from database metadata!",e);
+			log.error("Error reading table names from database metadata!",e);
 			System.exit(2);
 		}
 		

@@ -1,7 +1,19 @@
 Changes
 -------------
 
----+ voms-admin-server v. 2.5.1, voms-admin-client v. 2.0.11
+---+ voms-admin-server v. 2.5.2
+
+New features:
+
+* support for certificate requests
+
+Fixes the following bugs:
+
+
+
+
+
+---+ voms-admin-server v. 2.5.1
 
 First VOMS Admin 2.5 release.
 This release provides many new features, like:

@@ -55,10 +55,10 @@ public class VOMSResponseFactory {
             docBuilder = factory.newDocumentBuilder();
         } catch ( ParserConfigurationException e ) {
             
-            log.fatal( "Error configuring DOM document builder." );
+            log.error( "Error configuring DOM document builder." );
             
             if (log.isDebugEnabled()){
-                log.debug( e.getMessage(), e );
+                log.error( e.getMessage(), e );
             }
             
             throw new VOMSException(e);

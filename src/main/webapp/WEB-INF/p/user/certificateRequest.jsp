@@ -55,44 +55,7 @@
 						value="suspensionReason" /> </span>
 				</s:if></div>
 
-				<div class="cert-operations"><s:if
-					test="#attr.canSuspend and not suspended">
-
-					<s:form action="suspend-certificate" namespace="/user"
-						theme="simple" cssClass="cert-operation-forms" method="input">
-						<s:token />
-						<s:hidden name="userId" value="%{model.id}" />
-						<s:hidden name="certificateId" value="%{#cert.id}" />
-						<s:submit value="%{'Suspend'}" />
-					</s:form>
-				</s:if> <s:if test="#attr.canSuspend and suspended">
-
-					<s:if test="not user.suspended">
-						<s:form action="restore-certificate" namespace="/user"
-							theme="simple" cssClass="cert-operation-forms">
-							<s:token />
-							<s:hidden name="userId" value="%{model.id}" />
-							<s:hidden name="certificateId" value="%{#cert.id}" />
-							<s:submit value="%{'Restore'}" />
-						</s:form>
-					</s:if>
-
-				</s:if> 
-				
-				<s:if test="model.certificates.size > 1">
-				
-					<voms:hasPermissions var="canDelete" context="/${voName}"
-						permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE" />
-					<s:if test="#attr.canDelete">
-						<s:form action="delete-certificate" namespace="/user"
-							theme="simple" cssClass="cert-operation-forms">
-							<s:token />
-							<s:hidden name="userId" value="%{model.id}" />
-							<s:hidden name="certificateId" value="%{#cert.id}" />
-							<s:submit value="%{'Delete'}" />
-						</s:form>
-					</s:if>
-				</s:if>
+				<div class="cert-operations">
 				
 				</div>
 

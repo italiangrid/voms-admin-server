@@ -66,7 +66,7 @@ public class HibernateFactory {
 
 		} catch (HibernateException e) {
 
-			log.fatal("Hibernate session factory creation failed!", e);
+			log.error("Hibernate session factory creation failed!", e);
 			throw new ExceptionInInitializerError(e);
 
 		}
@@ -96,7 +96,7 @@ public class HibernateFactory {
 
 		} catch (HibernateException ex) {
 
-			log.fatal("Error getting hibernate session!", ex);
+			log.error("Error getting hibernate session!", ex);
 			throw new VOMSFatalException(ex.getMessage(), ex);
 		}
 		return s;
