@@ -24,19 +24,21 @@
 <div id="menu">
  
 <ul>
-
+	
   <li class="home-menu-item">
     <a href="<s:url action="login" namespace="/home"/>">Home</a>  
   </li>
-  
   <li>
     <a href="<s:url action="search" namespace="/user"/>">Browse VO</a>
   </li>
-  
   <li>
     <a href="<s:url action="configuration" namespace="/configuration"/>">Configuration Info</a>
   </li>
-  
+  <s:if test="#request.currentAdmin.voUser == null">
+  		<li>
+  			<a href="<s:url action="start" namespace="/register"/>">Request membership</a>
+  		</li>
+  </s:if>
   <li class="last-menu-item">
     <a href="<s:url action="siblings" namespace="/sibling"/>">Other VOs on this server</a>
   </li>

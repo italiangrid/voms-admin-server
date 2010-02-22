@@ -58,70 +58,70 @@ import org.glite.security.voms.admin.util.DNUtil;
 
 public final class VOMSConfiguration {
 
-	public static VOMSConfiguration instance() {
-
-		return instance(true, null);
-
-	}
-
-	public static VOMSConfiguration instance(boolean useJNDI,
-			ServletContext context) {
-
-		if (instance == null)
-			instance = new VOMSConfiguration(useJNDI, context);
-
-		return instance;
-
-	}
-
-	public static VOMSConfiguration instance(ServletContext context) {
-
-		return instance(true, context);
-
-	}
-
-	Log log = LogFactory.getLog(VOMSConfiguration.class);
-	
 	private static VOMSConfiguration instance = null;
-	
-	private ServletContext context;
-	
-
-	private CompositeConfiguration config;
-
-	
-	private X509Certificate serviceCertificate;
-	
-	private PrivateKey servicePrivateKey;
 
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
-	private VOMSConfiguration(boolean useJNDI, ServletContext ctxt) {
+	
+	public static VOMSConfiguration load(ServletContext context){
+		
+		if (instance != null)
+			throw new VOMSConfigurationException("VOMS configuration already loaded!");
+		
+		instance = new VOMSConfiguration(context);
+		
+		return instance;
+		
+	}
+	
+	public static VOMSConfiguration instance() {
 
-		if (ctxt != null)
-			context = ctxt;
+		if (instance == null)
+			throw new VOMSConfigurationException("VOMS configuration not loaded! Use the load method to load it.");
+		
+		return instance;
+
+	}
+	
+	private CompositeConfiguration config;
+	
+
+	private ServletContext context;
+
+	
+	Log log = LogFactory.getLog(VOMSConfiguration.class);
+	
+	private X509Certificate serviceCertificate;
+
+	private PrivateKey servicePrivateKey;
+
+	private VOMSConfiguration(ServletContext ctxt) {
 
 		config = new CompositeConfiguration();
-
-		if (useJNDI && context != null)
-			loadVORuntimeProperties();
-		else
-			config.addConfiguration(new SystemConfiguration());
-
-		if (context != null)
-			configureLogging();
-
-		if (!getVOName().equals("siblings") && context != null){
-			loadServiceProperties();
-			
-			if (getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
-				loadServiceCredentials();
-			
-			loadVersionProperties();
-				
-		}
 		
+
+		if (ctxt != null){
+			context = ctxt;
+			loadVORuntimeProperties();
+			configureLogging();
+			
+			if (!getVOName().equals("siblings")){
+				
+				loadServiceProperties();
+				if (getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+					loadServiceCredentials();
+				
+				loadVersionProperties();
+				
+			}
+			
+			
+		}else{
+			
+			config.addConfiguration(new SystemConfiguration());
+			
+		}
 
 		log.debug("VOMS-Admin configuration loaded!");
 

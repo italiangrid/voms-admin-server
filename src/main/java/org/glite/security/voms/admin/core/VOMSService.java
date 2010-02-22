@@ -95,8 +95,8 @@ public final class VOMSService {
 					.put("cpath.resource.loader.class",
 							"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-			p.put("runtime.log.logsystem.class",
-					"org.glite.security.voms.admin.velocity.VelocityLogger");
+			// p.put("runtime.log.logsystem.class",
+			//		"org.glite.security.voms.admin.velocity.VelocityLogger");
 
 			Velocity.init(p);
 			log.info("Velocity setup ok!");
@@ -171,7 +171,7 @@ public final class VOMSService {
 
 		try {
 
-			conf = VOMSConfiguration.instance(ctxt);
+			conf = VOMSConfiguration.load(ctxt);
 
 		} catch (VOMSConfigurationException e) {
 			log.fatal("VOMS-Admin configuration failed!", e);
@@ -199,7 +199,6 @@ public final class VOMSService {
 
 		NotificationService.instance().stop();
 
-		// Close hibernate session factory
 		HibernateFactory.getFactory().close();
 
 		log.info("VOMS admin stopped .");

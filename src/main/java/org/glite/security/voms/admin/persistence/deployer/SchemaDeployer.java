@@ -205,7 +205,7 @@ public class SchemaDeployer {
 	private void execute() {
 
 		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
-		VOMSConfiguration.instance(false, null);
+		VOMSConfiguration.load(null);
 
 		if (command.equals("deploy"))
 			doDeploy();
