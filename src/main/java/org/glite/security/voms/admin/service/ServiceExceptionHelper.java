@@ -19,13 +19,13 @@
  */
 package org.glite.security.voms.admin.service;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.hibernate.JDBCException;
 
 public class ServiceExceptionHelper {
 
-	public static void handleServiceException(Log log, RuntimeException t) {
+	public static void handleServiceException(Logger log, RuntimeException t) {
 
 		// If the exception is a DB exception, clean out the session gracefully
 		if (t instanceof JDBCException) {

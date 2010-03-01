@@ -28,7 +28,8 @@ import javax.xml.namespace.QName;
 import org.apache.axis.Constants;
 import org.apache.axis.encoding.SerializationContext;
 import org.apache.axis.wsdl.fromJava.Types;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Response;
@@ -47,7 +48,7 @@ import org.xml.sax.Attributes;
 public class Serializer implements org.apache.axis.encoding.Serializer
 {
 
-  static Logger logger = Logger.getLogger(Serializer.class);
+  static Logger logger = LoggerFactory.getLogger(Serializer.class);
 
   /*
    * (non-Javadoc)

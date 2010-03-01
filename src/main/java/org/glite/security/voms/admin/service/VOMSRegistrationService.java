@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis.MessageContext;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.VOMSException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.notification.VOMSNotificationException;
@@ -41,8 +41,8 @@ import org.glite.security.voms.service.registration.VOMSRegistration;
 
 public class VOMSRegistrationService implements VOMSRegistration {
 
-	private static final Log log = LogFactory
-			.getLog(VOMSRegistrationService.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(VOMSRegistrationService.class);
 
 	private String buildConfirmURL(HttpServletRequest request,
 			VOMembershipRequest membReq) {

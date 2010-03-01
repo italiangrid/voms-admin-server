@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -48,13 +47,16 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.JNDIConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.ssl.PKCS8Key;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public final class VOMSConfiguration {
 
@@ -90,7 +92,7 @@ public final class VOMSConfiguration {
 	private ServletContext context;
 
 	
-	Log log = LogFactory.getLog(VOMSConfiguration.class);
+ Logger log = LoggerFactory.getLogger(VOMSConfiguration.class);
 	
 	private X509Certificate serviceCertificate;
 
@@ -104,7 +106,7 @@ public final class VOMSConfiguration {
 		if (ctxt != null){
 			context = ctxt;
 			loadVORuntimeProperties();
-			configureLogging();
+			configureLogback();
 			
 			if (!getVOName().equals("siblings")){
 				
@@ -162,7 +164,56 @@ public final class VOMSConfiguration {
 
 		config.clearProperty(arg0);
 	}
+	
+	private void configureLogback(){
+		
+		if (context != null){
+			
+			InputStream is = null;
+			try{
+			
+				is = getExternalLogbackConfiguration();
+				
+			}catch(FileNotFoundException f){
+				
+				log.warn(f.getMessage());
+				if (log.isDebugEnabled()){
+					
+					log.warn(f.getMessage(),f);
+					log.warn("External logging configuration not found, will use internal configuration instead.");
+					
+				}
+			}
+			
+			if (is == null)
+				is = context.getResourceAsStream("/WEB-INF/classes/logback.runtime.xml");
+			
+			if (is == null)
+				throw new VOMSConfigurationException("Error configuring logging system: logback.runtime.xml not found in application context!");
+			
+			try{
+				LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory(); 
+				JoranConfigurator configurator = new JoranConfigurator();
+				
+				configurator.setContext(lc);
+				lc.reset();
 
+				configurator.doConfigure(is);
+				StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+			
+			}catch(JoranException e){
+				e.printStackTrace();
+				throw new VOMSConfigurationException("Error configuring logging system: "+e.getMessage(), e);
+				
+			}
+			
+			
+
+			
+		}
+	}
+
+	/*
 	private void configureLogging() {
 
 		if (context != null) {
@@ -211,7 +262,8 @@ public final class VOMSConfiguration {
 		}
 
 	}
-
+	*/
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -430,12 +482,14 @@ public final class VOMSConfiguration {
 
 		return config.getDouble(arg0, arg1);
 	}
-
-	private InputStream getExternalLoggingConfiguration() throws FileNotFoundException{
+	
+	
+	private InputStream getExternalLogbackConfiguration() throws FileNotFoundException{
 		
-		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/log4j.runtime.properties";
+		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/logback.runtime.xml";
 		
 		File f = new File(path);
+		
 		if (!f.exists())
 			log.warn("External logging configuration not found at path '"+path+"'... ");
 		if (!f.canRead())
@@ -1034,6 +1088,7 @@ public final class VOMSConfiguration {
 		// Rename the VO_NAME property for internal use
 		// FIXME: is this really needed?
 		config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getString("VO_NAME"));
+		System.setProperty(VOMSConfigurationConstants.VO_NAME, config.getString("VO_NAME"));
 
 	}
 	

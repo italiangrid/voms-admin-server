@@ -57,7 +57,8 @@ import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;
 import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.joda.time.DateTime;
@@ -82,7 +83,7 @@ import org.opensaml.xml.XMLObjectBuilderFactory;
  */
 public class SAMLResponseFactory
 {
-  private static Logger logger = Logger.getLogger(SAMLResponseFactory.class);
+  private static Logger logger = LoggerFactory.getLogger(SAMLResponseFactory.class);
   
   private static X500Principal issuer;
   private static HashMap<Class, String[]> statusMapper;

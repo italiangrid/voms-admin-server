@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -36,8 +36,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class CreateGroupOperation extends BaseVomsOperation {
-	private static final Log log = LogFactory
-			.getLog(CreateGroupOperation.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CreateGroupOperation.class);
 
 	String groupName;
 

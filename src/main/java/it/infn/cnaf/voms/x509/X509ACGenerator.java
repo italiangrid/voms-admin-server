@@ -39,8 +39,8 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DEREncodable;
@@ -67,7 +67,7 @@ import org.glite.security.voms.admin.error.VOMSFatalException;
  */
 public class X509ACGenerator {
 
-    public static final Log logger = LogFactory.getLog( X509ACGenerator.class );
+    public static final Logger logger = LoggerFactory.getLogger( X509ACGenerator.class );
 
     public static final String VOMS_OID = "1.3.6.1.4.1.8005.100.100";
     

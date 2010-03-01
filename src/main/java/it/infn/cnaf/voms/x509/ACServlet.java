@@ -41,8 +41,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -64,7 +64,7 @@ public class ACServlet extends BaseServlet implements VOMSErrorCodes {
      */
     private static final long serialVersionUID = 1L;
     
-    private static final Log log = LogFactory.getLog( ACServlet.class );
+    private static final Logger log = LoggerFactory.getLogger( ACServlet.class );
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     

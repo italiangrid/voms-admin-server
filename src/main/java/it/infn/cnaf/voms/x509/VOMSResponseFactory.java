@@ -24,8 +24,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.opensaml.xml.util.Base64;
 import org.w3c.dom.Document;
@@ -36,8 +36,8 @@ import org.w3c.dom.Element;
 
 public class VOMSResponseFactory {
     
-    private static final Log log = LogFactory
-            .getLog( VOMSResponseFactory.class );
+    private static final Logger log = LoggerFactory
+            .getLogger( VOMSResponseFactory.class );
     
     private static VOMSResponseFactory instance = null;
     

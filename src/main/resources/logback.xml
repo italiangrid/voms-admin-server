@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date{HH:mm:ss.SSS} - %level [%logger:%line] - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="org.apache.struts" level="WARN" />
+    <logger name="com.mchange" level="WARN" />
+    <logger name="org.glite.security.voms.admin" level="INFO" />
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

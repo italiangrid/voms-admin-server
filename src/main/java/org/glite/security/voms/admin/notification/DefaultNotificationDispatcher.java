@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.notification;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventMask;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
@@ -33,8 +33,8 @@ import org.glite.security.voms.admin.notification.messages.UserTargetedUserSuspe
 
 public class DefaultNotificationDispatcher extends BaseNotificationDispatcher{
 
-	public static final Log log = LogFactory
-			.getLog(DefaultNotificationDispatcher.class);
+	public static final Logger log = LoggerFactory
+			.getLogger(DefaultNotificationDispatcher.class);
 
 	private static DefaultNotificationDispatcher instance = null;
 

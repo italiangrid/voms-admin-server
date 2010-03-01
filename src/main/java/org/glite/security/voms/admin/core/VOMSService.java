@@ -26,8 +26,8 @@ import java.util.Timer;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -52,7 +52,7 @@ import org.opensaml.xml.ConfigurationException;
 
 public final class VOMSService {
 
-	static final Log log = LogFactory.getLog(VOMSService.class);
+	static final Logger log = LoggerFactory.getLogger(VOMSService.class);
 
 	static final Timer vomsTimer = new Timer(true);
 
@@ -64,10 +64,10 @@ public final class VOMSService {
 
 			if (version < VOMSServiceConstants.VOMS_DB_VERSION) {
 				log
-						.fatal("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
+						.error("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
 								+ version);
 				log
-						.fatal("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
+						.error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
 				throw new VOMSFatalException(
 						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
 								+ "', while it should be '"
@@ -75,7 +75,7 @@ public final class VOMSService {
 			} else {
 
 				log
-						.fatal("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
+						.error("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
 								+ version);
 				throw new VOMSFatalException(
 						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
@@ -96,11 +96,11 @@ public final class VOMSService {
 					.put("cpath.resource.loader.class",
 							"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-			// p.put("runtime.log.logsystem.class",
-			//		"org.glite.security.voms.admin.velocity.VelocityLogger");
+			p.put("runtime.log.logsystem.class",
+			"org.glite.security.voms.admin.util.velocity.VelocityLogger");
 
 			Velocity.init(p);
-			log.info("Velocity setup ok!");
+			log.debug("Velocity setup ok!");
 
 		} catch (Exception e) {
 

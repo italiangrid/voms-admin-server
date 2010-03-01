@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -37,7 +37,7 @@ import org.glite.security.voms.admin.util.DNUtil;
 
 public class CurrentAdmin {
 
-	private static final Log log = LogFactory.getLog(CurrentAdmin.class);
+	private static final Logger log = LoggerFactory.getLogger(CurrentAdmin.class);
 
 	private VOMSAdmin admin;
 
@@ -141,7 +141,7 @@ public class CurrentAdmin {
 				+ " in context " + c);
 
 		log.debug("ACL for this context: ");
-		log.debug(acl);
+		log.debug(acl.toString());
 		
 		if (isUnauthenticated()){
 			

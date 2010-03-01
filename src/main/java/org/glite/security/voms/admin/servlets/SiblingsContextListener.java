@@ -32,29 +32,24 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
+import org.glite.security.voms.admin.util.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 
 public class SiblingsContextListener implements ServletContextListener {
 
-	private static final Log log = LogFactory
-			.getLog(SiblingsContextListener.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(SiblingsContextListener.class);
 
 	public void contextDestroyed(ServletContextEvent ev) {
 		
-		// Release commons logging
-		// see
-		// http://wiki.apache.org/jakarta-commons/Logging/FrequentlyAskedQuestions
-		// and
-		// http://issues.apache.org/bugzilla/show_bug.cgi?id=26372#c15
-
-		java.beans.Introspector.flushCaches();
-		LogFactory.release(Thread.currentThread().getContextClassLoader());
-		java.beans.Introspector.flushCaches();
-
+		
 	}
 
 	public void contextInitialized(ServletContextEvent ev) {
@@ -94,21 +89,30 @@ public class SiblingsContextListener implements ServletContextListener {
 	}
 	
 	
+	
 	protected void configureLogging(ServletContextEvent ev) throws IOException{
 		
-		Properties log4jProps = new Properties();
+		InputStream is = ev.getServletContext().getResourceAsStream("/WEB-INF/classes/logback.siblings.xml");
+		
+		if (is == null){
+			throw new VOMSConfigurationException("Error configuring logging! Logback configuration file not found in context!");
+		}
+		
+		try{
+			LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory(); 
+			JoranConfigurator configurator = new JoranConfigurator();
+			configurator.setContext(lc);
 
-		InputStream is = ev.getServletContext()
-				.getResourceAsStream("/WEB-INF/classes/log4j.siblings.properties");
+			lc.reset();
+			configurator.doConfigure(is);
 		
+		}catch(JoranException e){
+			
+			ExceptionUtils.logError(log, e);
+			throw new VOMSConfigurationException("Error configuring logging system: "+e.getMessage(), e);
+			
+		}
 		
-		if (is == null)
-			throw new RuntimeException("Error configuring logging system: log4j.siblings.properties not found in application context!");
-		
-		log4jProps.load(is);
-		
-		LogManager.resetConfiguration();
-		PropertyConfigurator.configure(log4jProps);
 	
 	}
 	

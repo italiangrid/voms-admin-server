@@ -99,7 +99,8 @@
         </file>
 
         <file>
-            <source>resources/templates/log4j.properties</source>
+            <source>src/main/resources/logback.deployer.xml</source>
+            <destName>logback.xml</destName>
             <outputDirectory>/share/voms-admin/tools/classes</outputDirectory>
         </file>
         

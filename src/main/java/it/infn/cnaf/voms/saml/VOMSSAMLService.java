@@ -59,8 +59,8 @@ import java.util.List;
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.saml2.core.Assertion;
@@ -80,7 +80,7 @@ public class VOMSSAMLService {
 
 	public static final String VOMS_SAML_FQAN_URI = "http://voms.forge.cnaf.infn.it/fqan";
 	
-    static private Log logger = LogFactory.getLog(VOMSSAMLService.class);
+    static private Logger logger = LoggerFactory.getLogger(VOMSSAMLService.class);
     
     private SAMLAssertionFactory sAMLAssertionFactory;
 

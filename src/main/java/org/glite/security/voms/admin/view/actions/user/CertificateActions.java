@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -42,7 +42,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 		@Result(name = BaseAction.INPUT, location = "addCertificate") })
 public class CertificateActions extends UserActionSupport {
 
-	public static final Log log = LogFactory.getLog(CertificateActions.class);
+	public static final Logger log = LoggerFactory.getLogger(CertificateActions.class);
 
 	/**
 	 * 

@@ -22,13 +22,13 @@ package org.glite.security.voms.admin.operations;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSException;
 
 public abstract class OperationCollection {
 
-	public static final Log log = LogFactory.getLog(OperationCollection.class);
+	public static final Logger log = LoggerFactory.getLogger(OperationCollection.class);
 	
 	Class opClazz;
 	List<VOMSOperation> operations;

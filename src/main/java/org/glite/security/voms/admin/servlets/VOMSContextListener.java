@@ -22,14 +22,14 @@ package org.glite.security.voms.admin.servlets;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSService;
 import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSContextListener implements ServletContextListener {
 
-	static final Log log = LogFactory.getLog(VOMSContextListener.class);
+	static final Logger log = LoggerFactory.getLogger(VOMSContextListener.class);
 
 	public VOMSContextListener() {
 
@@ -55,16 +55,6 @@ public class VOMSContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent ctxtEvent) {
 
 		VOMSService.stop();
-
-		// Release commons logging
-		// see
-		// http://wiki.apache.org/jakarta-commons/Logging/FrequentlyAskedQuestions
-		// and
-		// http://issues.apache.org/bugzilla/show_bug.cgi?id=26372#c15
-
-		java.beans.Introspector.flushCaches();
-		LogFactory.release(Thread.currentThread().getContextClassLoader());
-		java.beans.Introspector.flushCaches();
 
 	}
 

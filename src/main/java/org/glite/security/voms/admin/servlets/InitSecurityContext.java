@@ -24,8 +24,8 @@ import java.security.cert.X509Certificate;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
@@ -67,7 +67,7 @@ import org.glite.security.voms.admin.util.DNUtil;
  */
 public class InitSecurityContext {
 
-	protected static Log log = LogFactory.getLog(InitSecurityContext.class);
+	protected static Logger log = LoggerFactory.getLogger(InitSecurityContext.class);
 
 	/**
 	 * Sets up the client's credentials. This method sets the current

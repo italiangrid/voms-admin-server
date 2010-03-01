@@ -23,8 +23,8 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
@@ -35,7 +35,7 @@ import org.glite.security.voms.admin.util.DNUtil;
 
 public class VOMSCADAO implements Searchable {
 
-	public static final Log log = LogFactory.getLog(VOMSCADAO.class);
+	public static final Logger log = LoggerFactory.getLogger(VOMSCADAO.class);
 
 	private VOMSCADAO() {
 

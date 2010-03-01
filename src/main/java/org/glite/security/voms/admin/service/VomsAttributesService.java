@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.VOMSException;
 import org.glite.security.voms.admin.error.UnimplementedFeatureException;
@@ -59,8 +59,8 @@ import org.glite.security.voms.service.attributes.VOMSAttributes;
 
 public class VomsAttributesService implements VOMSAttributes {
 
-	private static final Log log = LogFactory
-			.getLog(VomsAttributesService.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(VomsAttributesService.class);
 
 	public void createAttributeClass(String name, String description,
 			boolean unique) throws RemoteException, VOMSException {

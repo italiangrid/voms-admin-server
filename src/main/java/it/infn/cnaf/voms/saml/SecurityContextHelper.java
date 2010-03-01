@@ -49,7 +49,8 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.util.DNUtil;
 
 
@@ -59,7 +60,7 @@ import org.glite.security.voms.admin.util.DNUtil;
  */
 public class SecurityContextHelper 
 {
-  static private Logger logger = Logger.getLogger(SecurityContextHelper.class);
+  static private Logger logger = LoggerFactory.getLogger(SecurityContextHelper.class);
   
   private X509Certificate[] certificateChain;
   

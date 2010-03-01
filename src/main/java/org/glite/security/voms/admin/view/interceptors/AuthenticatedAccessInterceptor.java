@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.view.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -42,8 +42,8 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
      */
 	private static final long serialVersionUID = 1L;
 
-	private static final Log log = LogFactory
-			.getLog(AuthenticatedAccessInterceptor.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(AuthenticatedAccessInterceptor.class);
 	
 	
 	public void destroy() {

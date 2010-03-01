@@ -25,8 +25,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchAUPVersionException;
 
 public class AUP implements Serializable {
@@ -36,7 +36,7 @@ public class AUP implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 
-	private static final Log log = LogFactory.getLog(AUP.class);
+	private static final Logger log = LoggerFactory.getLogger(AUP.class);
 
 	public static final String VO_AUP_NAME = "VO-AUP";
 	public static final String GRID_AUP_NAME = "GRID-AUP";

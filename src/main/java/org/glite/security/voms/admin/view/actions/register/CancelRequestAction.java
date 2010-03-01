@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.view.actions.register;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -40,7 +40,7 @@ public class CancelRequestAction extends RegisterActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final Log log = LogFactory.getLog(CancelRequestAction.class);
+	public static final Logger log = LoggerFactory.getLogger(CancelRequestAction.class);
 	
 	String confirmationId;
 	

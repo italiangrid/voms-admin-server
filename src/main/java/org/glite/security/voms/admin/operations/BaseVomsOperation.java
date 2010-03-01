@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.StandardToStringStyle;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.error.VOMSFatalException;
@@ -50,7 +50,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
 	protected Map __requiredPermissions = null;
 
-	private static final Log __log = LogFactory.getLog(BaseVomsOperation.class);
+	private static final Logger __log = LoggerFactory.getLogger(BaseVomsOperation.class);
 
 	private boolean permissionsInitialized() {
 

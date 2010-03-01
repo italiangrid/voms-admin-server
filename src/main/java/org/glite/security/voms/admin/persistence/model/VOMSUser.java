@@ -50,8 +50,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
@@ -85,7 +85,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	private static final long serialVersionUID = -3815869585264835046L;
 
-	public static final Log log = LogFactory.getLog(VOMSUser.class);
+	public static final Logger log = LoggerFactory.getLogger(VOMSUser.class);
 
 	public enum SuspensionReason {
 

@@ -23,8 +23,8 @@ package it.infn.cnaf.voms.saml.axis_serializers;
 import org.apache.axis.encoding.DeserializationContext;
 import org.apache.axis.encoding.DeserializerImpl;
 import org.apache.axis.message.MessageElement;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.opensaml.Configuration;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.io.Unmarshaller;
@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  */
 public class Deserializer extends DeserializerImpl {
 		
-    static Log logger = LogFactory.getLog(Deserializer.class);
+    static Logger logger = LoggerFactory.getLogger(Deserializer.class);
 	
 	
 	public void onStartElement(java.lang.String namespace,

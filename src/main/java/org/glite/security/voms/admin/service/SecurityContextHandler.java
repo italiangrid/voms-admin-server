@@ -25,8 +25,8 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.servlets.InitSecurityContext;
 
 /**
@@ -68,7 +68,7 @@ public class SecurityContextHandler extends BasicHandler {
      */
 	private static final long serialVersionUID = 5598719642627462697L;
 
-	protected static Log log = LogFactory.getLog(SecurityContextHandler.class);
+	protected static Logger log = LoggerFactory.getLogger(SecurityContextHandler.class);
 
 	/**
 	 * Initializes the SecurityContext from a

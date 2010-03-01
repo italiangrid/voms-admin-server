@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -37,7 +37,7 @@ import com.opensymphony.xwork2.Preparable;
 public class SiblingsAction extends BaseAction implements Preparable{
 	
 	
-	public static Log log = LogFactory.getLog(SiblingsAction.class);
+	public static Logger log = LoggerFactory.getLogger(SiblingsAction.class);
 	
 	class VONameTransformer implements Transformer{
         String prefix;

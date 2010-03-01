@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
@@ -41,7 +41,7 @@ import org.glite.security.voms.admin.error.VOMSSyntaxException;
  */
 public class PathNamingScheme {
 
-	public static final Log log = LogFactory.getLog(PathNamingScheme.class);
+	public static final Logger log = LoggerFactory.getLogger(PathNamingScheme.class);
 
 	public static final String containerSyntax = "^(/[\\w.-]+)+|((/[\\w.-]+)+/)?(Role=[\\w.-]+)|(Capability=[\\w\\s.-]+)$";
 

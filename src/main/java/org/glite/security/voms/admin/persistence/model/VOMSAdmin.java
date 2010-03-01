@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
@@ -37,7 +37,7 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class VOMSAdmin implements Serializable, Auditable, Cloneable {
 
-	private static Log log = LogFactory.getLog(VOMSAdmin.class);
+	private static Logger log = LoggerFactory.getLogger(VOMSAdmin.class);
 
 	/**
      * 

@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.error.Auditable;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 
@@ -40,7 +40,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
  */
 public class VOMSGroup implements Serializable, Auditable, Comparable {
 
-	public static final Log log = LogFactory.getLog(VOMSGroup.class);
+	public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
 
 	private static final long serialVersionUID = -4693441755811017977L;
 

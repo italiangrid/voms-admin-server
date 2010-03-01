@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
@@ -35,7 +35,7 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
 public class TaskStatusUpdater extends TimerTask {
 
-	public static Log log = LogFactory.getLog(TaskStatusUpdater.class);
+	public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
 
 	private static TaskStatusUpdater instance = null;
 

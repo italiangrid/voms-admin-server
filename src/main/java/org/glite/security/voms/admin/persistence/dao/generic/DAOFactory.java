@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.persistence.dao.generic;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.dao.hibernate.HibernateDAOFactory;
 
 /**
@@ -37,7 +37,7 @@ import org.glite.security.voms.admin.persistence.dao.hibernate.HibernateDAOFacto
  */
 public abstract class DAOFactory {
 
-	private static Log log = LogFactory.getLog(DAOFactory.class);
+	private static Logger log = LoggerFactory.getLogger(DAOFactory.class);
 
 	/**
 	 * Creates a standalone DAOFactory that returns unmanaged DAO beans for use

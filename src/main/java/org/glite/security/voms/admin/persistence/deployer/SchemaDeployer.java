@@ -21,7 +21,9 @@ package org.glite.security.voms.admin.persistence.deployer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -43,9 +45,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
@@ -70,6 +69,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.util.ExceptionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -82,6 +82,13 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 @SuppressWarnings("deprecation")
 public class SchemaDeployer {
@@ -89,7 +96,7 @@ public class SchemaDeployer {
 	public static final String ORACLE_PRODUCT_NAME = "Oracle";
 	public static final String MYSQL_PRODUCT_NAME = "MySQL";
 
-	private static final Log log = LogFactory.getLog(SchemaDeployer.class);
+	private static final Logger log = LoggerFactory.getLogger(SchemaDeployer.class);
 
 	protected CommandLineParser parser = new PosixParser();
 
@@ -268,14 +275,14 @@ public class SchemaDeployer {
 		if (t.getMessage() != null)
 			log.error(t.getMessage());
 		else
-			log.error(t);
+			log.error(t.toString());
 		
 		if (log.isDebugEnabled()){
 			
 			if (t.getMessage() != null)
 				log.error(t.getMessage(),t);
 			else
-				log.error(t,t);
+				log.error(t.toString(),t);
 			
 		}
 	}
@@ -625,7 +632,7 @@ public class SchemaDeployer {
 		} catch (Throwable t) {
 
 			log.error("Error removing administrator!");
-			log.error(t, t);
+			log.error(t.toString(), t);
 
 			System.exit(-1);
 		}
@@ -687,7 +694,7 @@ public class SchemaDeployer {
 		} catch (Throwable t) {
 
 			log.error("Error adding new administrator!");
-			log.error(t, t);
+			log.error(t.toString(), t);
 
 			System.exit(-1);
 		}
@@ -1462,7 +1469,8 @@ public class SchemaDeployer {
 		}
 
 	}
-
+	
+	
 	public static void main(String[] args) throws ConfigurationException {
 
 		if (System.getProperty("GLITE_LOCATION") == null)
@@ -1473,8 +1481,6 @@ public class SchemaDeployer {
 			throw new VOMSException(
 					"Please set the GLITE_LOCATION_VAR system property before running this utility.");
 
-		PropertyConfigurator.configure(System.getProperty("GLITE_LOCATION")
-				+ "/share/voms-admin/tools/classes/log4j.properties");
 		new SchemaDeployer(args);
 
 	}

@@ -25,15 +25,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
 public class PermissionType implements UserType {
 
-	public static final Log log = LogFactory.getLog(PermissionType.class);
+	public static final Logger log = LoggerFactory.getLogger(PermissionType.class);
 
 	private static final int[] SQL_TYPES = { Types.INTEGER };
 

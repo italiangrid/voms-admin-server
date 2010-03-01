@@ -22,8 +22,8 @@ package org.glite.security.voms.admin.service;
 import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.VOMSException;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
@@ -52,7 +52,7 @@ import org.glite.security.voms.service.acl.VOMSACL;
 
 public class VOMSACLService implements VOMSACL {
 
-	private static final Log log = LogFactory.getLog(VOMSACLService.class);
+	private static final Logger log = LoggerFactory.getLogger(VOMSACLService.class);
 
 	public void addACLEntry(String container, ACLEntry entry,
 			boolean propagateToChildrenContexts) throws RemoteException,
@@ -133,20 +133,15 @@ public class VOMSACLService implements VOMSACL {
 			HibernateFactory.commitTransaction();
 
 		} catch (RuntimeException e) {
-
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
-
+			
 			// Clean up the just created ACL, if that's the case
 			if (g != null)
 				if (g.getDefaultACL() != null
 						&& g.getDefaultACL().getPermissions().isEmpty())
 					ACLDAO.instance().delete(g.getDefaultACL());
+			
+			ServiceExceptionHelper.handleServiceException(log, e);
 
-			throw e;
 		}
 	}
 
@@ -176,7 +171,7 @@ public class VOMSACLService implements VOMSACL {
 
 		} catch (RuntimeException e) {
 
-			log.error(e);
+			log.error(e.toString());
 
 			if (log.isDebugEnabled()) {
 				log.error(e.getMessage(), e);
@@ -203,7 +198,7 @@ public class VOMSACLService implements VOMSACL {
 
 		} catch (RuntimeException e) {
 
-			log.error(e);
+			log.error(e.toString());
 
 			if (log.isDebugEnabled()) {
 				log.error(e.getMessage(), e);
@@ -239,13 +234,8 @@ public class VOMSACLService implements VOMSACL {
 
 		} catch (RuntimeException e) {
 
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
-
-			throw e;
+			ServiceExceptionHelper.handleServiceException(log, e);
+			
 		}
 
 	}
@@ -278,14 +268,9 @@ public class VOMSACLService implements VOMSACL {
 			HibernateFactory.commitTransaction();
 
 		} catch (RuntimeException e) {
+			
+			ServiceExceptionHelper.handleServiceException(log, e);
 
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
-
-			throw e;
 		}
 
 	}
@@ -320,11 +305,6 @@ public class VOMSACLService implements VOMSACL {
 
 		} catch (RuntimeException e) {
 
-			log.error(e);
-
-			if (log.isDebugEnabled()) {
-				log.error(e.getMessage(), e);
-			}
 
 			// Clean up the just created ACL, if that's the case
 			if (g != null)
@@ -332,7 +312,7 @@ public class VOMSACLService implements VOMSACL {
 						&& g.getDefaultACL().getPermissions().isEmpty())
 					ACLDAO.instance().delete(g.getDefaultACL());
 
-			throw e;
+			ServiceExceptionHelper.handleServiceException(log, e);
 		}
 
 	}

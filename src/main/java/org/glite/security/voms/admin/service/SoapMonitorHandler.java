@@ -23,8 +23,8 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SoapMonitorHandler extends BasicHandler {
 
@@ -32,7 +32,7 @@ public class SoapMonitorHandler extends BasicHandler {
      * 
      */
 	private static final long serialVersionUID = 1L;
-	private static final Log log = LogFactory.getLog(SoapMonitorHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(SoapMonitorHandler.class);
 
 	public void invoke(MessageContext msgContext) throws AxisFault {
 

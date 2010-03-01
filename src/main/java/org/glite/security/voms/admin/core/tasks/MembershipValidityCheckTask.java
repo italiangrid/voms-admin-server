@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
@@ -45,8 +45,8 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
 public class MembershipValidityCheckTask extends TimerTask {
 
-	private static final Log log = LogFactory
-			.getLog(MembershipValidityCheckTask.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(MembershipValidityCheckTask.class);
 
 	private static MembershipValidityCheckTask instance;
 

@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.persistence.error;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.hibernate.HibernateException;
@@ -32,7 +32,7 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateFactory {
 
-	private static final Log log = LogFactory.getLog(HibernateFactory.class);
+	private static final Logger log = LoggerFactory.getLogger(HibernateFactory.class);
 
 	private static final SessionFactory sessionFactory;
 

@@ -21,12 +21,12 @@ package org.glite.security.voms.admin.core.tasks;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ThreadUncaughtExceptionHandler implements UncaughtExceptionHandler {
-	public static final Log log = LogFactory
-			.getLog(ThreadUncaughtExceptionHandler.class);
+	public static final Logger log = LoggerFactory
+			.getLogger(ThreadUncaughtExceptionHandler.class);
 
 	public void uncaughtException(Thread t, Throwable e) {
 

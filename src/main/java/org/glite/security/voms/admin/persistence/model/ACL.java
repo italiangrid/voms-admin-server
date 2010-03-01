@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -41,7 +41,7 @@ public class ACL implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 
-	private static final Log log = LogFactory.getLog(ACL.class);
+	private static final Logger log = LoggerFactory.getLogger(ACL.class);
 
 	Long id;
 

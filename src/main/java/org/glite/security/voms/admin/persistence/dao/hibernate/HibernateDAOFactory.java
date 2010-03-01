@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.persistence.dao.hibernate;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -101,7 +101,7 @@ public class HibernateDAOFactory extends DAOFactory {
 
 	}
 
-	private static Log log = LogFactory.getLog(HibernateDAOFactory.class);
+	private static Logger log = LoggerFactory.getLogger(HibernateDAOFactory.class);
 
 	@Override
 	public AUPDAO getAUPDAO() {

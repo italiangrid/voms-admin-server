@@ -27,8 +27,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class PrintPermissionTag extends TagSupport {
@@ -42,7 +42,7 @@ public class PrintPermissionTag extends TagSupport {
 
 	public static final String LONG_HEADER = "long";
 
-	private static final Log log = LogFactory.getLog(PrintPermissionTag.class);
+	private static final Logger log = LoggerFactory.getLogger(PrintPermissionTag.class);
 
 	String header;
 

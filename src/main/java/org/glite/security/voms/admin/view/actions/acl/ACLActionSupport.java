@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.Preparable;
 public abstract class ACLActionSupport extends BaseAction implements
 		Preparable, ModelDriven<ACL> {
 	
-	public static final Log log = LogFactory.getLog(ACLActionSupport.class);
+	public static final Logger log = LoggerFactory.getLogger(ACLActionSupport.class);
 
 	/**
 	 * 

@@ -21,8 +21,8 @@ package org.glite.security.voms.admin.service;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
@@ -36,8 +36,8 @@ import org.glite.security.voms.service.certificates.X509Certificate;
 
 public class VOMSCertificatesService implements VOMSCertificates {
 
-	private static final Log log = LogFactory
-			.getLog(VOMSCertificatesService.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(VOMSCertificatesService.class);
 
 	public void addCertificate(long userId, X509Certificate cert)
 			throws RemoteException {

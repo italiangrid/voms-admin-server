@@ -22,8 +22,8 @@ package org.glite.security.voms.admin.persistence.dao;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
@@ -44,7 +44,7 @@ import org.hibernate.criterion.Restrictions;
 
 public class VOMSAdminDAO {
 
-	public static final Log log = LogFactory.getLog(VOMSAdminDAO.class);
+	public static final Logger log = LoggerFactory.getLogger(VOMSAdminDAO.class);
 
 	protected VOMSAdminDAO() {
 

@@ -22,8 +22,8 @@ package org.glite.security.voms.admin.operations.acls;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -35,8 +35,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class SaveACLEntryOperation extends BaseVomsOperation {
 
-	private static final Log log = LogFactory
-			.getLog(SaveACLEntryOperation.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(SaveACLEntryOperation.class);
 
 	private ACL acl;
 	private VOMSAdmin admin;

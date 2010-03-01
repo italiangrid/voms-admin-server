@@ -37,8 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis.MessageContext;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 
@@ -47,8 +47,8 @@ public class AttributeAuthoritySoapBindingImpl implements
 	/**
    * 
    */
-	static private Log logger = LogFactory
-			.getLog(AttributeAuthoritySoapBindingImpl.class);
+	static private Logger logger = LoggerFactory
+			.getLogger(AttributeAuthoritySoapBindingImpl.class);
 
 	/**
    * 

@@ -19,14 +19,14 @@
  */
 package org.glite.security.voms.admin.operations;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation {
 
-	public static final Log log = LogFactory
-			.getLog(BaseUserAdministrativeOperation.class);
+	public static final Logger log = LoggerFactory
+			.getLogger(BaseUserAdministrativeOperation.class);
 
 	protected VOMSUser authorizedUser;
 

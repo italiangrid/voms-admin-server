@@ -34,15 +34,15 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.DOM2Writer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class PanelTag extends TagSupport {
 
-	private static final Log log = LogFactory.getLog(PanelTag.class);
+	private static final Logger log = LoggerFactory.getLogger(PanelTag.class);
 
 	/**
      * 

@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
@@ -49,7 +49,7 @@ import org.hibernate.Query;
 
 public class VOMSGroupDAO {
 
-	public static final Log log = LogFactory.getLog(VOMSGroupDAO.class);
+	public static final Logger log = LoggerFactory.getLogger(VOMSGroupDAO.class);
 
 	private VOMSGroupDAO() {
 

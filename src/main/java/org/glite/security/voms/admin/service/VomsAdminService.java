@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.ACLEntry;
 import org.glite.security.voms.User;
 import org.glite.security.voms.VOMSException;
@@ -59,7 +59,7 @@ import org.glite.security.voms.service.admin.VOMSAdmin;
 
 public class VomsAdminService implements VOMSAdmin {
 
-	private static final Log log = LogFactory.getLog(VomsAdminService.class);
+	private static final Logger log = LoggerFactory.getLogger(VomsAdminService.class);
 
 	public VomsAdminService() {
 

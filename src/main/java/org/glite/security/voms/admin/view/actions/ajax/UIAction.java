@@ -22,8 +22,8 @@ package org.glite.security.voms.admin.view.actions.ajax;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -36,7 +36,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
 public class UIAction extends BaseAction implements SessionAware {
 
-	public static final Log log = LogFactory.getLog(UIAction.class);
+	public static final Logger log = LoggerFactory.getLogger(UIAction.class);
 
 	/**
 	 * 

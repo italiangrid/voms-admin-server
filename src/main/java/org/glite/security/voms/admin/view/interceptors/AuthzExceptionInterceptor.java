@@ -19,8 +19,8 @@
  */
 package org.glite.security.voms.admin.view.interceptors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.view.actions.AuthorizationErrorAware;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -32,8 +32,8 @@ import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
 public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 
 	public static final String ERROR_KEY = "voms-authorization-error";
-	public static final Log log = LogFactory
-			.getLog(AuthzExceptionInterceptor.class);
+	public static final Logger log = LoggerFactory
+			.getLogger(AuthzExceptionInterceptor.class);
 	/**
 	 * 
 	 */
