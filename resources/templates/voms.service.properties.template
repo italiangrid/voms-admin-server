@@ -1,6 +1,11 @@
 ## Should the registration service be enabled?
 voms.request.webui.enabled = @WEBUI.ENABLED@
 
+## Should the VOMS SAML service be enabled? (disabled by default)
+## 
+## voms.aa.activate_saml_endpoint = true
+
+
 ## voms ca updater configuration
 voms.cafiles = @CA.FILES@
 

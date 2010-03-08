@@ -45,12 +45,20 @@
         <fileSet>
             <directory>resources/templates</directory>
             <excludes>
-                <exclude>**/log4j.properties</exclude>
                 <exclude>style/**</exclude>
                 <exclude>style</exclude>
                 <exclude>siblings/**</exclude>
                 <exclude>siblings</exclude>
             </excludes>
+            <outputDirectory>/etc/voms-admin/templates</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>logback.runtime.xml</include>
+            </includes>
             <outputDirectory>/etc/voms-admin/templates</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>

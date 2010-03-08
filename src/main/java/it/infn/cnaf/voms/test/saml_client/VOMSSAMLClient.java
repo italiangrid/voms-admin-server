@@ -29,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Security;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,7 +102,7 @@ public class VOMSSAMLClient {
 
         initializeOpenSAML();
         
-        AttributeQuery query = buildAttributeQuery( MY_OTHER_DN, null );
+        AttributeQuery query = buildAttributeQuery( MY_DN, null );
         
 
         System.out.println( "Query:" );

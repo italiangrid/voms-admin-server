@@ -96,11 +96,11 @@
   <tiles2:putAttribute name="panelName" value="Your certificates"/>
 </tiles2:insertTemplate>
 
+<tiles2:insertTemplate template="mappingsRequestPane.jsp"/>
+
 <tiles2:insertTemplate template="attributesPane.jsp">
   <tiles2:putAttribute name="panelName" value="Your generic attributes"/>
 </tiles2:insertTemplate>
-
-<tiles2:insertTemplate template="mappingsRequestPane.jsp"/>
 
 <s:if test="#request.registrationEnabled">
   <tiles2:insertTemplate template="aupHistoryPane.jsp">

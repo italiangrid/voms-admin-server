@@ -998,7 +998,7 @@ class VomsConstants:
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
     
     vo_aup_template = os.path.join(glite_loc,"etc","voms-admin","templates", "aup", "vo-aup.txt")
-    logging_conf_template = os.path.join(glite_loc,"etc","voms-admin","templates", "log4j.runtime.properties")
+    logging_conf_template = os.path.join(glite_loc,"etc","voms-admin","templates", "logback.runtime.xml")
     
     voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
     voms_admin_war_nodeps = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin-nodeps.war")

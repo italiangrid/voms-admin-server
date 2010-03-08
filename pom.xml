@@ -299,6 +299,7 @@
             <configuration>
                 <header>resources/doc/license.txt</header>
                 <excludes>
+                    <exclude>**/*.sql</exclude>
                     <exclude>**/*.jpage</exclude>
                     <exclude>**/*.template</exclude>
                     <exclude>**/*.wsdl</exclude>
@@ -306,15 +307,13 @@
                     <exclude>**/*.wsdd</exclude>
                     <exclude>**/*.spec</exclude>
                     <exclude>**/*.pydevproject</exclude>
-                    <exclude>target/**</exclude>
-                    <exclude>.clover/**</exclude>
-                    <exclude>**/jquery*.js</exclude>
+                    <exclude>**/*.js</exclude>
+                    <exclude>bin/**</exclude>
                     <exclude>src/main/webapp/common/struts/**</exclude>
-                    <exclude>src/main/resources/upgrade-scripts/*.sql</exclude>
                     <exclude>src/main/webapp/struts/**</exclude>
                     <exclude>resources/doc/**</exclude>
                     <exclude>resources/scripts/voms-admin-ping</exclude>
-                    <exclude>resources/templates/aup/*</exclude>
+                    <exclude>resources/templates/aup/**</exclude>
                 </excludes>
                 <useDefaultExcludes>true</useDefaultExcludes>
             </configuration>

@@ -6,10 +6,36 @@ Changes
 New features:
 
 * support for certificate requests
+* migration to slfj-logback for logging.
 
 Fixes the following bugs:
 
-
+https://savannah.cern.ch/bugs/?38150:  vom(r)s convergence: Extend member status in voms-admin
+https://savannah.cern.ch/bugs/?38151:  vom(r)s convergence: Implement member institutional expiration in voms-admin
+https://savannah.cern.ch/bugs/?43127:  vom(r)s convergence: implement in voms-admin VO membership expiration bound to AUP version
+https://savannah.cern.ch/bugs/?43129:  vom(r)s convergence: implement in voms-admin an authorisation-aware web UI
+https://savannah.cern.ch/bugs/?43130:  vom(r)s convergence: multiple certificate support
+https://savannah.cern.ch/bugs/?43189:  vom(r)s convergence: allow user to request his/her inclusion in a Group/Role in voms-admin
+https://savannah.cern.ch/bugs/?43264:  vom(r)s convergence: voms-admin to keep user Registration Data in the VOMS database
+https://savannah.cern.ch/bugs/?54613:  [VOMS Admin] voms-admin-configure ignores --dbhost option when configuring mysql VO
+https://savannah.cern.ch/bugs/?54614:  [VOMS Admin] voms-admin-configure should not try to create an administrator if the --skip-database option is set
+https://savannah.cern.ch/bugs/?56065:  voms-admin email notification behaviour should be configurable
+https://savannah.cern.ch/bugs/?58656:  [VOMS-ADMIN-2.5] Unique GAs handling exception
+https://savannah.cern.ch/bugs/?59918:  [VOMS-ADMIN-2.5] NullPointerException during group creation with slash in the name
+https://savannah.cern.ch/bugs/?59919:  [VOMS-ADMIN-2.5] No warning when creating a group in a read-only context
+https://savannah.cern.ch/bugs/?59933:  [VOMS-ADMIN-2.5] Problem removing config backup
+https://savannah.cern.ch/bugs/?60256:  [VOMS-ADMIN-2.5] Unhandled UserAlreadyExists Exception
+https://savannah.cern.ch/bugs/?60264:  [VOMS-ADMIN-2.5] Uncought IllegalArgumentException on request confirm
+https://savannah.cern.ch/bugs/?60265:  [VOMS-ADMIN-2.5] Other VOs list not complete
+https://savannah.cern.ch/bugs/?60296:  [VOMS-ADMIN-2.5] Database session problems when wrong request confirmation parameters are submitted
+https://savannah.cern.ch/bugs/?60308:  [VOMS-ADMIN-2.5] It is not possible to remove an AUP which has acceptance records
+https://savannah.cern.ch/bugs/?60313:  [VOMS-ADMIN-2.5] Trigger reacceptance work only for the predefined AUP
+https://savannah.cern.ch/bugs/?60314:  [VOMS-ADMIN-2.5] Links in user AUP acceptance history displaying same AUP
+https://savannah.cern.ch/bugs/?60337:  [VOMS-ADMIN-2.5] Locks held on access denied when processing membership requests
+https://savannah.cern.ch/bugs/?60483:  [VOMS-ADMIN 2.5] Unhandled exception when deleting groups containing subgroups & locks held
+https://savannah.cern.ch/bugs/?60517:  [VOMS-ADMIN-2.5] Unhandled exception when adding ACL entry
+https://savannah.cern.ch/bugs/?60600:  [VOMS-ADMIN-2.5] Problems with groups and roles having special characters in the name
+https://savannah.cern.ch/bugs/?60604:  [VOMS-ADMIN-2.5] Error adding a default ACL for a group
 
 
 
