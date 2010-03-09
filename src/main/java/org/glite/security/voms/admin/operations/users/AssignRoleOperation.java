@@ -84,13 +84,13 @@ public class AssignRoleOperation extends BaseVomsOperation {
 
 		if (u == null)
 			throw new NoSuchUserException("User '" + userName + "," + caDn
-					+ "' not found in org.glite.security.voms.admin.persistence.error.");
+					+ "' not found in database.");
 		if (g == null)
 			throw new NoSuchGroupException("Group '" + groupName
-					+ "' not found in org.glite.security.voms.admin.persistence.error.");
+					+ "' not found in database.");
 		if (r == null)
 			throw new NoSuchRoleException("Role '" + roleName
-					+ "' not found in org.glite.security.voms.admin.persistence.error.");
+					+ "' not found in database.");
 
 		return new AssignRoleOperation(u, g, r);
 

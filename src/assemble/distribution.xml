@@ -37,11 +37,11 @@
             <excludes>
                 <exclude>*.pyc</exclude>
                 <exclude>*.pyo</exclude>
+                <exclude>voms.py</exclude>
             </excludes>
             <outputDirectory>/sbin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
-
         <fileSet>
             <directory>resources/templates</directory>
             <excludes>
@@ -97,6 +97,12 @@
             <outputDirectory>/sbin</outputDirectory>
             <destName>voms-admin-configure</destName>
             <fileMode>0755</fileMode>
+        </file>
+        
+        <file>
+            <source>resources/scripts/voms.py</source>
+            <outputDirectory>/sbin</outputDirectory>
+            <filtered>true</filtered>
         </file>
 
         <file>

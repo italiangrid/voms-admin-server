@@ -983,7 +983,7 @@ class VomsConstants:
     glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
     glite_loc_log = os.environ.get("GLITE_LOCATION_LOG","/var/log/glite")
     
-    version = "2.5.2"
+    version = "${server-version}"
     
     db_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.database.properties.template")
     service_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.service.properties.template")

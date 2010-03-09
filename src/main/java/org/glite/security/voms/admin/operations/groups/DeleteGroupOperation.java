@@ -68,11 +68,11 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 			if (groupName == null)
 				msg = "Group having id '"
 						+ groupId
-						+ "' not found in org.glite.security.voms.admin.persistence.error";
+						+ "' not found in database.";
 			else
 				msg = "Group '"
 						+ groupName
-						+ "' not found in org.glite.security.voms.admin.persistence.error.";
+						+ "' not found in database.";
 
 			throw new NoSuchGroupException(msg);
 
@@ -115,7 +115,7 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 					throw new NoSuchGroupException(
 							"Group '"
 									+ parentGroupName
-									+ "' not found in org.glite.security.voms.admin.persistence.error!");
+									+ "' not found in database!");
 
 				ctxt = VOMSContext.instance(parentGroup);
 
@@ -127,7 +127,7 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 					throw new NoSuchGroupException(
 							"Group having id '"
 									+ groupId
-									+ "' not found in org.glite.security.voms.admin.persistence.error!");
+									+ "' not found in database!");
 
 				ctxt = VOMSContext.instance(g.getParent());
 			}

@@ -468,6 +468,8 @@ public class VOMSUserDAO {
 			throw new UserAlreadyExistsException("User " + u
 					+ " already in org.glite.security.voms.admin.persistence.error!");
 
+		caDN = DNUtil.normalizeDN(caDN);
+		
 		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
 		if (ca == null)
@@ -678,13 +680,16 @@ public class VOMSUserDAO {
 
 		if (issuer == null)
 			throw new NullArgumentException("issuer cannot be null!");
+		
+		String normalizedSubject = DNUtil.normalizeDN(subject);
+		String normalizedIssuer = DNUtil.normalizeDN(issuer);
 
 		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
 
-		q.setString("subjectString", subject);
-		q.setString("issuerSubjectString", issuer);
+		q.setString("subjectString", normalizedSubject);
+		q.setString("issuerSubjectString", normalizedIssuer);
 
 		VOMSUser u = (VOMSUser) q.uniqueResult();
 

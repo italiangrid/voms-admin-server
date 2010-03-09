@@ -1,6 +1,15 @@
 Changes
 -------------
 
+
+---+ voms-admin-server v. 2.5.3
+
+Fixes the following bugs:
+
+https://savannah.cern.ch/bugs/?51657: [VOMS-ADMIN] delete-user does not treat Email= and emailAddress= as equivalent
+
+That wasn't really fixed in 2.5.2.
+
 ---+ voms-admin-server v. 2.5.2
 
 New features:

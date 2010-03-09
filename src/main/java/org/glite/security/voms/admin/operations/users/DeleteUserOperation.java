@@ -66,7 +66,7 @@ public class DeleteUserOperation extends BaseVoRWOperation {
 				.execute();
 		if (u == null)
 			throw new NoSuchUserException("User '" + username + "," + userCa
-					+ "' not found in org.glite.security.voms.admin.persistence.error!");
+					+ "' not found in database!");
 		return new DeleteUserOperation(u);
 	}
 }

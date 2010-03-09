@@ -192,7 +192,7 @@ public class DatabaseSetupTask extends TimerTask {
 				log
 						.error("Trusted admin ca \""
 								+ trustedAdminCa
-								+ "\" not found in org.glite.security.voms.admin.persistence.error. Skipping creation of the trusted admin...");
+								+ "\" not found in database. Skipping creation of the trusted admin...");
 				return;
 			}
 
