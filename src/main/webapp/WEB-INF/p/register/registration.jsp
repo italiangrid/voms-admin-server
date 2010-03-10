@@ -53,7 +53,7 @@ used to contact you in relation to this activity.
   <div class="highlight" style="font-size: 14px">
       <s:property value="requester.certificateSubject"/>
   </div>
-  <h2 style="color: black">The CA that issuer your certificate:</h2>
+  <h2 style="color: black">The CA that issued your certificate:</h2>
   <div class="regDN" style="font-size: 14px">
       <s:property value="requester.certificateIssuer"/>
   </div>
