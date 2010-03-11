@@ -32,9 +32,7 @@ No AUP acceptance records found.
       <th>Last acceptance date</th>
     </tr>
     <s:iterator value="aupAcceptanceRecords" var="rec">
-      <s:url action="sign" namespace="/aup" method="input" var="saURL">
-                <s:param name="aupId" value="aupVersion.aup.id"/>
-       </s:url>
+      <s:url action="load" namespace="/aup" var="saURL"/>
       <tr>
         <td>
           <dl>
