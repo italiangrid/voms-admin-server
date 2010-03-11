@@ -857,6 +857,11 @@ class InstallMySqlVO(InstallVOAction):
                                                                                                                        self.user_options['dbusername'],
                                                                                                                        socket.gethostname(),
                                                                                                                        self.user_options['dbpassword'])
+                    
+                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                                                                                                                       self.user_options['dbusername'],
+                                                                                                                       socket.getfqdn(),
+                                                                                                                       self.user_options['dbpassword'])
             
                     print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
                                                                                                                        self.user_options['dbusername'],
