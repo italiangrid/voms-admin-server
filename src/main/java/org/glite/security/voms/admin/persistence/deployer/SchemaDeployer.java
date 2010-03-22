@@ -58,6 +58,7 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
@@ -487,7 +488,7 @@ public class SchemaDeployer {
 		
 		log.info("Adding implicit AUP sign records for vo users");
 		
-	List<VOMSUser> users  = VOMSUserDAO.instance().getAll();
+		List<VOMSUser> users  = VOMSUserDAO.instance().getAll();
 		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 		
 		for (VOMSUser u: users)
@@ -569,6 +570,10 @@ public class SchemaDeployer {
 			// Make users accept implicitly the AUP, if you don't want to flood them 
 			// with emails
 			implicitAUPSignup();
+			
+			
+			// Upgrade database version
+			VOMSVersionDAO.instance().setupVersion();
 			HibernateFactory.commitTransaction();
 			log.info("Database upgrade successfull!");
 		
