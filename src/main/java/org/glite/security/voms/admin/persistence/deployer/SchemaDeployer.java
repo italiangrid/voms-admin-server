@@ -67,6 +67,7 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
@@ -171,6 +172,7 @@ public class SchemaDeployer {
 				s.close();
 		}
 		
+		log.info("Database contacted succesfully");
 	}
 	
 	private void checkDatabaseWritable(){
@@ -209,6 +211,8 @@ public class SchemaDeployer {
 				s.close();
 		}
 		
+		log.info("Database is writable.");
+		
 	}
 	private void execute() {
 
@@ -227,6 +231,9 @@ public class SchemaDeployer {
 			doRemoveAdmin();
 		else if (command.equals("upgrade-script"))
 			printUpgradeScript();
+		else if (command.equals("check-connectivity")){
+			checkDatabaseExistence();
+		}
 		else{
 			
 			System.err.println("Unkown command specified: "+command);
@@ -428,6 +435,7 @@ public class SchemaDeployer {
 
 		}
 
+		log.info("No voms-admin database found.");
 		return -1;
 	}
 
@@ -573,7 +581,10 @@ public class SchemaDeployer {
 			
 			
 			// Upgrade database version
+			log.info("Upgrading database version information");
+			
 			VOMSVersionDAO.instance().setupVersion();
+			
 			HibernateFactory.commitTransaction();
 			log.info("Database upgrade successfull!");
 		
@@ -898,11 +909,13 @@ public class SchemaDeployer {
 
 			command = line.getOptionValue("command");
 
+			// FIXME: use an Enumeration for the commands!!
 			if (!command.equals("deploy") && !command.equals("upgrade")
 					&& !command.equals("add-admin")
 					&& !command.equals("remove-admin")
 					&& !command.equals("undeploy")
 					&& !command.equals("upgrade-script")
+					&& !command.equals("check-connectivity")
 				){
 				
 				System.err.println("Unknown command specified: "+command);

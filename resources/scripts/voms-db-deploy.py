@@ -25,7 +25,7 @@ from os import environ
 from voms import *
 
 option_list=["vo=","dn=","ca=","cert=", "email="]
-supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin"]
+supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "check-connectivity"]
 
 options={}
 
@@ -126,6 +126,14 @@ def do_remove_admin():
                                                                                      options['ca'])
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
+
+def do_check_connectivity():
+    cmd = "java %s -cp %s %s --command check-connectivity --vo %s" % (build_env_vars(),
+                                                                      build_classpath(),
+                                                                      VomsConstants.schema_deployer_class,
+                                                                      options['vo'])
+    status = os.system(cmd)
+    sys.exit(os.WEXITSTATUS(status))
     
 def execute():
     global command
@@ -139,7 +147,10 @@ def execute():
         do_add_admin()
     elif command == "remove-admin":
         do_remove_admin()
-        
+    elif command == "check-connectivity":
+        do_check_connectivity()
+    else:
+        raise VomsInvocationError, "Unknown command specified: %s" % command
     
     
 def check_env_var():
@@ -173,6 +184,8 @@ voms-db-deploy.py add-admin --vo [VONAME] --dn [ADMIN_DN] --ca [ADMIN_CA] --emai
 
 voms-db-deploy.py remove-admin --vo [VONAME] --cert [CERT_FILE]
 voms-db-deploy.py remove-admin --vo [VONAME] --dn [ADMIN_DN] --ca [ADMIN_CA]
+
+voms-db-deploy.py check-connectivity --vo [VONAME]
 """
     
     print help_str

@@ -58,7 +58,7 @@ public final class VOMSService {
 
 	protected static void checkDatabaseVersion() {
 
-		int version = VOMSVersionDAO.instance().getVersion();
+		int version = VOMSVersionDAO.instance().getVersion().getVersion();
 
 		if (version != VOMSServiceConstants.VOMS_DB_VERSION) {
 

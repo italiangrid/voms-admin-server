@@ -102,7 +102,8 @@ public final class VOMSConfiguration {
 
 		config = new CompositeConfiguration();
 		
-
+		loadVersionProperties();
+		
 		if (ctxt != null){
 			context = ctxt;
 			loadVORuntimeProperties();
@@ -114,7 +115,7 @@ public final class VOMSConfiguration {
 				if (getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
 					loadServiceCredentials();
 				
-				loadVersionProperties();
+				
 				
 			}
 			
