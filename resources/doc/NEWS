@@ -1,6 +1,12 @@
 Changes
 -------------
 
+---+ voms-admin-server v. 2.5.4
+
+Fixes for the following bugs:
+
+https://savannah.cern.ch/bugs/?66734: VOMS Admin attribute search broken
+https://savannah.cern.ch/bugs/?66727: VOMS Admin attribute search pagination broken
 
 ---+ voms-admin-server v. 2.5.3
 
