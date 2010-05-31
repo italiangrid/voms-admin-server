@@ -22,7 +22,7 @@ package org.glite.security.voms.admin.persistence.dao;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 
 public class VOMSVersionDAO {

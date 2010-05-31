@@ -52,6 +52,7 @@ import org.glite.security.voms.admin.core.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
@@ -60,7 +61,6 @@ import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.AUP;
@@ -644,6 +644,8 @@ public class SchemaDeployer {
 			VOMSAdminDAO.instance().delete(a);
 
 			HibernateFactory.commitTransaction();
+			
+			log.info("Administrator '{},{}' removed", new String[]{a.getDn(), a.getCa().getSubjectString()});
 
 		} catch (Throwable t) {
 
@@ -688,7 +690,7 @@ public class SchemaDeployer {
 				VOMSGroup g = (VOMSGroup) i.next();
 				g.getACL()
 						.setPermissions(a, VOMSPermission.getAllPermissions());
-				log.info("Adding ALL permissions on '" + g + "'");
+				log.info("Adding ALL permissions on '{}' for admin '{},{}'", new String[]{g.toString(),a.getDn(),a.getCa().getSubjectString()});
 
 				Iterator rolesIter = VOMSRoleDAO.instance().findAll()
 						.iterator();
@@ -697,8 +699,7 @@ public class SchemaDeployer {
 					VOMSRole r = (VOMSRole) rolesIter.next();
 					r.getACL(g).setPermissions(a,
 							VOMSPermission.getAllPermissions());
-					log.info("Adding ALL permissions on role '" + g + "/" + r
-							+ "'");
+					log.info("Adding ALL permissions on role '{}/{}' for admin '{},{}'", new String[]{g.toString(),r.toString(),a.getDn(),a.getCa().getSubjectString()});
 					HibernateFactory.getSession().save(r);
 				}
 				HibernateFactory.getSession().save(g);

@@ -407,6 +407,16 @@ public final class VOMSConfiguration {
 
 	}
 
+	
+	public String getConfigurationDirectoryPath(){
+		
+		String path = config.getString("GLITE_LOCATION_VAR")
+		+ "/etc/voms-admin/" + getVOName();
+		
+		return path;
+	}
+	
+	
 	private String getCustomizedContentPath() {
 
 		String pathName = config.getString("GLITE_LOCATION_VAR")

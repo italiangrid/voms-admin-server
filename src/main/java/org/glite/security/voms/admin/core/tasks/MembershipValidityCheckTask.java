@@ -31,11 +31,11 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
@@ -65,11 +65,18 @@ public class MembershipValidityCheckTask extends TimerTask {
 		this.timer = t;
 
 		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
-				"voms.request.webui.enabled", true);
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
 
 		if (!registrationEnabled) {
 			log
 					.info("MembershipValidityCheck thread not started since registration is DISABLED for this vo.");
+			return;
+		}
+		
+		boolean readOnly = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false);
+		
+		if (readOnly){
+			log.info(this.getClass().getSimpleName() + " thread not started since this is a READ ONLY voms admin instance.");
 			return;
 		}
 

@@ -101,7 +101,7 @@ public class VOMSSAMLClient {
             ServiceException, RemoteException {
 
         initializeOpenSAML();
-        
+                
         AttributeQuery query = buildAttributeQuery( MY_DN, null );
         
 

@@ -108,7 +108,7 @@ No attribute mappings defined in this VO.
   
   <div id="resultsFooter">
   <voms:searchNavBar context="vo" 
-      permission="ATTRIBUTE_READ" 
+      permission="ATTRIBUTES_READ" 
       disabledLinkStyleClass="disabledLink"
       id="searchResults"
       linkStyleClass="navBarLink"

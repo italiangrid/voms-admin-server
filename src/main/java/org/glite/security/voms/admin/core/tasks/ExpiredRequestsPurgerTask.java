@@ -26,11 +26,12 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestExpiredEvent;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
 public class ExpiredRequestsPurgerTask extends TimerTask {
@@ -56,9 +57,16 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
 				300);
 		warnUsers = conf.getBoolean(
 				"voms.request.vo_membership.warn_when_expired", false);
+		
 		boolean registrationEnabled = conf.getBoolean(
-				"voms.request.webui.enabled", true);
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
 
+		boolean readOnly = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false);
+		
+		if (readOnly){
+			log.info(this.getClass().getSimpleName() + " thread not started since this is a READ ONLY voms admin instance.");
+			return;
+		}
 		if (timer != null) {
 
 			if (!registrationEnabled)

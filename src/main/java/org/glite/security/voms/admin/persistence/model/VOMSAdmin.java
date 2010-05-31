@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.persistence.Auditable;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
-import org.glite.security.voms.admin.persistence.error.Auditable;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
@@ -111,35 +111,74 @@ public class VOMSAdmin implements Serializable, Auditable, Cloneable {
 		this.id = id;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object other) {
+	
+	
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see java.lang.Object#equals(java.lang.Object)
+//	 */
+//	public boolean equals(Object other) {
+//
+//		if (this == other)
+//			return true;
+//
+//		if (!(other instanceof VOMSAdmin))
+//			return false;
+//
+//		if (other == null)
+//			return false;
+//
+//		final VOMSAdmin that = (VOMSAdmin) other;
+//
+//		return (getDn().equals(that.getDn()));
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see java.lang.Object#hashCode()
+//	 */
+//	public int hashCode() {
+//
+//		return getDn().hashCode();
+//	}
 
-		if (this == other)
-			return true;
-
-		if (!(other instanceof VOMSAdmin))
-			return false;
-
-		if (other == null)
-			return false;
-
-		final VOMSAdmin that = (VOMSAdmin) other;
-
-		return (getDn().equals(that.getDn()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ca == null) ? 0 : ca.hashCode());
+		result = prime * result + ((dn == null) ? 0 : dn.hashCode());
+		return result;
+	}
 
-		return getDn().hashCode();
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VOMSAdmin other = (VOMSAdmin) obj;
+		if (ca == null) {
+			if (other.ca != null)
+				return false;
+		} else if (!ca.equals(other.ca))
+			return false;
+		if (dn == null) {
+			if (other.dn != null)
+				return false;
+		} else if (!dn.equals(other.dn))
+			return false;
+		return true;
 	}
 
 	/*

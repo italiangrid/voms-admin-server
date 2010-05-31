@@ -40,14 +40,17 @@ import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.integration.VOMSPluginConfigurationException;
+import org.glite.security.voms.admin.integration.ValidationManager;
+import org.glite.security.voms.admin.integration.provider.BlacklistRequestValidatorPlugin;
 import org.glite.security.voms.admin.notification.CertificateRequestsNotificationDispatcher;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.opensaml.xml.ConfigurationException;
 
 public final class VOMSService {
@@ -127,6 +130,30 @@ public final class VOMSService {
 		
 		CertificateRequestsNotificationDispatcher.instance();
 	}
+	
+	
+	protected static void configureValidationManager(){
+		
+		ValidationManager.instance();
+		
+		// FIXME: Implement parsable configuration of plugins
+		BlacklistRequestValidatorPlugin plugin = new BlacklistRequestValidatorPlugin();
+		try {
+			
+			plugin.configure();
+		
+		} catch (VOMSPluginConfigurationException e) {
+			
+			log.error(e.getMessage());
+			
+			if (log.isDebugEnabled())
+				log.error(e.getMessage(),e);
+			
+			
+		}
+		
+	
+	}
 
 	protected static void startBackgroundTasks() {
 
@@ -192,6 +219,8 @@ public final class VOMSService {
 		startBackgroundTasks();
 
 		bootstrapAttributeAuthorityServices();
+		
+		configureValidationManager();
 
 		log.info("VOMS-Admin started succesfully.");
 	}

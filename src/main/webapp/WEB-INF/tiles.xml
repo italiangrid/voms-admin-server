@@ -165,6 +165,10 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
     </definition>
     
+    <definition name="pluginValidationError" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/pluginValidationError.jsp"/>
+    </definition>
+    
     <definition name="registerLimbo" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationLimbo.jsp"/>
     </definition>

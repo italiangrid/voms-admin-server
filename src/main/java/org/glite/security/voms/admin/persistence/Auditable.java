@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.error;
+package org.glite.security.voms.admin.persistence;
 
 public interface Auditable {
 

@@ -30,7 +30,7 @@ import javax.servlet.ServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 
 public class HibernateSessionFilter implements Filter {
 

@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
@@ -243,9 +243,10 @@ public class VOMSAttributeDAO {
 
 		SearchResults results = SearchResults.instance();
 		String sString = "%" + searchString + "%";
-		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
-				+ "where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or "
-				+ "(a.value like :searchString) order by a.attributeDescription.name,u.dn";
+		String queryString = "select a.attributeDescription.name, u, a.value from VOMSUser u join u.certificates c "
+			    + " join u.attributes a "
+				+ "where (a.attributeDescription.name like :searchString) or (c.subjectString like :searchString) or (c.ca.subjectString like :searchString) or "
+				+ "(a.value like :searchString) order by a.attributeDescription.name,c.subjectString";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 

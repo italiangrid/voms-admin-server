@@ -29,6 +29,7 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
+import org.glite.security.voms.admin.integration.ValidationManager;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -42,7 +43,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 		@Result(name = BaseAction.INPUT, location = "register"),
 		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
 		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerConfirmation"),
-		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled")
+		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
+		@Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR, location = "pluginValidationError")
 })
 public class SubmitRequestAction extends RegisterActionSupport {
 
@@ -63,18 +65,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	
 	String aupAccepted;
 
-	@Override
-	public String execute() throws Exception {
-
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return REGISTRATION_DISABLED;
-
-		String result = checkExistingPendingRequests();
-
-		if (result != null)
-			return result;
-
+	
+	protected void populateRequestModel(){
 		
 		long requestLifetime = VOMSConfiguration.instance().getLong("voms.request.vo_membership.lifetime",
 				300);
@@ -91,13 +83,37 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 		request = DAOFactory.instance().getRequestDAO()
 				.createVOMembershipRequest(requester, expirationDate);
+			
+	}
+	
+	@Override
+	public String execute() throws Exception {
 
-		String confirmURL = buildConfirmURL();
-		String cancelURL = buildCancelURL();
+		if (!VOMSConfiguration.instance().getBoolean(
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+			return REGISTRATION_DISABLED;
+
+		String result = checkExistingPendingRequests();
+
+		if (result != null)
+			return result;
 		
-
+		populateRequestModel();		
+		
+		try{
+			
+			ValidationManager.instance().validateRequest(request);
+		
+		}catch (Exception e) {
+			
+			DAOFactory.instance().getRequestDAO().makeTransient(request);
+			addActionError(e.getMessage());
+			return PLUGIN_VALIDATION_ERROR;
+		}
+		
 		EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
-				confirmURL, cancelURL));
+				buildConfirmURL(), 
+				buildCancelURL()));
 
 		return SUCCESS;
 	}

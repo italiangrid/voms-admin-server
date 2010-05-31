@@ -41,7 +41,7 @@
 		<map name="permissions" cascade="all-delete-orphan" table="acl2_permissions" lazy="false">
 			<key column="acl_id"/>
 			<map-key-many-to-many class="org.glite.security.voms.admin.persistence.model.VOMSAdmin" column="admin_id"/>
-			<element type="org.glite.security.voms.admin.persistence.error.PermissionType" column="permissions"/>
+			<element type="org.glite.security.voms.admin.persistence.PermissionType" column="permissions"/>
 		</map>
 	</class>
 

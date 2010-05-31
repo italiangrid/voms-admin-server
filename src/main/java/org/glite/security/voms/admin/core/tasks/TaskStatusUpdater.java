@@ -27,9 +27,10 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
@@ -45,14 +46,22 @@ public class TaskStatusUpdater extends TimerTask {
 		timer = t;
 
 		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
-				"voms.request.webui.enabled", true);
+				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
 
+		
 		if (!registrationEnabled) {
 			log
 					.info("TaskStatusUpdater thread not started since registration is DISABLED for this vo.");
 			return;
 		}
 
+		boolean readOnly = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false);
+		
+		if (readOnly){
+			log.info(this.getClass().getSimpleName() + " thread not started since this is a READ ONLY voms admin instance.");
+			return;
+		}
+		
 		if (timer != null) {
 
 			long period = 10L;

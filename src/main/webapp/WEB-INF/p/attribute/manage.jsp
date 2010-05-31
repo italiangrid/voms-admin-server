@@ -30,7 +30,6 @@
       validate="true"
     >
     
-      <s:fielderror/>
       <s:token/>
       <s:textfield name="attributeName" size="20" value="" label="Name"/>
       <s:textarea name="attributeDescription" cols="20" rows="3" value="" label="Description"/>

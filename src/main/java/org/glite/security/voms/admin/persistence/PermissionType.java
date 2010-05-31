@@ -17,35 +17,40 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.error;
+package org.glite.security.voms.admin.persistence;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
-public class X500PrincipalType implements UserType {
-	private static final Logger log = LoggerFactory.getLogger(X500PrincipalType.class);
+public class PermissionType implements UserType {
 
-	private static final int[] SQL_TYPES = { Types.BLOB };
+	public static final Logger log = LoggerFactory.getLogger(PermissionType.class);
 
-	private static final int BUF_SIZE = 2048;
+	private static final int[] SQL_TYPES = { Types.INTEGER };
 
-	public X500PrincipalType() {
+	public PermissionType() {
 
 		super();
+		// TODO Auto-generated constructor stub
+	}
 
+	public int[] sqlTypes() {
+
+		return SQL_TYPES;
+	}
+
+	public Class returnedClass() {
+
+		return VOMSPermission.class;
 	}
 
 	public boolean equals(Object x, Object y) throws HibernateException {
@@ -63,83 +68,62 @@ public class X500PrincipalType implements UserType {
 	public int hashCode(Object x) throws HibernateException {
 
 		return x.hashCode();
-	}
-
-	public boolean isMutable() {
-		return true;
-	}
-
-	private X500Principal readPrincipal(InputStream is) {
-
-		try {
-
-			byte[] buf = new byte[BUF_SIZE];
-
-			int readBytes = is.read(buf);
-
-			byte[] val = new byte[readBytes];
-
-			System.arraycopy(buf, 0, val, 0, readBytes);
-
-			return new X500Principal(val);
-
-		} catch (IOException e) {
-			log.error("Error deserializing principal DER representation!");
-			return null;
-
-		}
 
 	}
 
 	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
 			throws HibernateException, SQLException {
 
-		InputStream is = rs.getBinaryStream(names[0]);
+		int bits = rs.getInt(names[0]);
 
 		if (rs.wasNull())
 			return null;
+		else
+			return new VOMSPermission(bits);
 
-		return readPrincipal(is);
 	}
 
-	public void nullSafeSet(PreparedStatement statement, Object value, int index)
+	public void nullSafeSet(PreparedStatement st, Object value, int index)
 			throws HibernateException, SQLException {
 
-		if (value == null) {
+		if (value == null)
+			st.setNull(index, Types.INTEGER);
 
-			statement.setNull(index, Types.BLOB);
+		else {
 
-		} else {
-
-			X500Principal p = (X500Principal) value;
-			ByteArrayInputStream bas = new ByteArrayInputStream(p.getEncoded());
-			statement.setBinaryStream(index, bas, p.getEncoded().length);
-
+			VOMSPermission p = (VOMSPermission) value;
+			st.setInt(index, p.getBits());
 		}
 
 	}
 
-	public Class returnedClass() {
-
-		return X500Principal.class;
-
-	}
-
-	public int[] sqlTypes() {
-
-		return SQL_TYPES;
-	}
-
 	public Object deepCopy(Object value) throws HibernateException {
+
+		VOMSPermission p = (VOMSPermission) value, clone = null;
 
 		if (value == null)
 			return null;
 
-		X500Principal p = (X500Principal) value;
-		X500Principal clone = new X500Principal(p.getEncoded());
+		try {
+
+			clone = (VOMSPermission) p.clone();
+
+		} catch (CloneNotSupportedException e) {
+			log.info(e.getMessage(), e);
+			return value;
+		}
 
 		return clone;
+	}
 
+	public boolean isMutable() {
+
+		return true;
+	}
+
+	public Serializable disassemble(Object value) throws HibernateException {
+
+		return (Serializable) deepCopy(value);
 	}
 
 	public Object assemble(Serializable cached, Object owner)
@@ -152,11 +136,6 @@ public class X500PrincipalType implements UserType {
 			throws HibernateException {
 
 		return deepCopy(original);
-	}
-
-	public Serializable disassemble(Object value) throws HibernateException {
-
-		return (Serializable) deepCopy(value);
 	}
 
 }

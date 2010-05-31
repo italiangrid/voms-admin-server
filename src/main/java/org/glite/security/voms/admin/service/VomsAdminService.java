@@ -51,7 +51,7 @@ import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.operations.users.ListUserGroupsOperation;
 import org.glite.security.voms.admin.operations.users.ListUserRolesOperation;
 import org.glite.security.voms.admin.operations.users.UpdateUserOperation;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.PathNamingScheme;

@@ -31,6 +31,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
@@ -67,7 +68,8 @@ public class AttributeActions extends UserActionSupport {
 		this.attributeName = attributeName;
 	}
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@StringLengthFieldValidator(type = ValidatorType.FIELD, message="The value for this attribute is too long", maxLength="255")
+	// @RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getAttributeValue() {
 		return attributeValue;
 	}

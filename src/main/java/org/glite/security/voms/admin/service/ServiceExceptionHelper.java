@@ -20,7 +20,7 @@
 package org.glite.security.voms.admin.service;
 
 import org.slf4j.Logger;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.hibernate.JDBCException;
 
 public class ServiceExceptionHelper {

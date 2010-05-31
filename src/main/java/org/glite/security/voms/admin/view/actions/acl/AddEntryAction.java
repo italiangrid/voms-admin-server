@@ -100,7 +100,12 @@ public class AddEntryAction extends ACLActionSupport {
 			if (emailAddress == null || "".equals(emailAddress))
 				addFieldError("emailAddress", "Please specify a valid email address!");
 			
-			if (VOMSAdminDAO.instance().getBySubject(dn) != null){
+			VOMSCA adminCA = VOMSCADAO.instance().getByID(caId);
+			if (adminCA == null){
+				addFieldError("caId", "A CA for the given subject is not registered in the VOMS database!");
+			}
+			
+			if (VOMSAdminDAO.instance().getByName(dn, adminCA.getSubjectString()) != null){
 				
 				addFieldError("dn", "An administrator with the given subject already exists. Choose a different subject!");
 			}

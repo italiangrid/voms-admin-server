@@ -17,12 +17,13 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.error;
+package org.glite.security.voms.admin.persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.VOMSFatalException;
+import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
