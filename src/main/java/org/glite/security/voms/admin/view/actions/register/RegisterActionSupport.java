@@ -56,9 +56,9 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	Long requestId = -1L;
 
-	NewVOMembershipRequest request;
+	protected NewVOMembershipRequest request;
 
-	RequesterInfo requester;
+	protected RequesterInfo requester;
 
 	AUPVersion currentAUPVersion;
 	
@@ -142,6 +142,10 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	public AUPVersion getCurrentAUPVersion() {
 		return currentAUPVersion;
+	}
+
+	public String getRegistrationType() {
+		return VOMSConfiguration.instance().getRegistrationType();
 	}
 	
 }

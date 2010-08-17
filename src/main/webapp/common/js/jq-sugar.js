@@ -190,7 +190,8 @@ function eyeCandy(){
 		$(this).fadeOut('normal');
 	});
 	
-	$('#membershipExpirationField[readonly!=readonly]').datepicker();
+	$('#membershipExpirationField[readonly!=readonly]').datepicker({ dateFormat: 'mm/dd/yy', constrainInput: true });
+	// $('#membershipExpirationField[readonly!=readonly]').datepicker();
 	
 	$('#userSelectorTrigger').change(function(){
 		

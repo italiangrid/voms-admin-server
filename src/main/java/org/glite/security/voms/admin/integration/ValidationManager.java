@@ -61,30 +61,30 @@ public class ValidationManager implements RequestValidator<NewVOMembershipReques
 	}
 
 
-	public void validateRequest(NewVOMembershipRequest r) throws RequestValidationException {
+	public ValidationResult validateRequest(NewVOMembershipRequest r) {
 		
-		for (RequestValidator<NewVOMembershipRequest> validator: membershipRequestValidators)
-			validator.validateRequest(r);
+		if (membershipRequestValidators.isEmpty())
+			return ValidationResult.success();
+		
+		return membershipRequestValidators.get(0).validateRequest(r);
 		
 	}
 
 
-	public void validateRequests(List<NewVOMembershipRequest> requests) throws RequestValidationException {
-		for (RequestValidator<NewVOMembershipRequest> validator: membershipRequestValidators)
-			validator.validateRequests(requests);
-	}
-
-
-	public void validateMembership(VOMSUser user) {
+	public ValidationResult validateMembership(VOMSUser user) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 
-	public void validateMembership(List<VOMSUser> users) {
+	public ValidationResult validateMembership(List<VOMSUser> users) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
+
+	
+
+
 
 	
 	

@@ -86,8 +86,11 @@ public class NotificationUtil {
 		}
 
 		if ("service".equals(notificationBehaviour)
-				|| "all".equals(notificationBehaviour))
-			adminEmails.add(serviceEmailAddress);
+				|| "all".equals(notificationBehaviour)){
+			
+			if (!adminEmails.contains(serviceEmailAddress))
+				adminEmails.add(serviceEmailAddress);
+		}
 
 		if (adminEmails.isEmpty()) {
 			log

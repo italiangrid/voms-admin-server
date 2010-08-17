@@ -26,8 +26,6 @@ import java.util.Timer;
 
 import javax.servlet.ServletContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -40,9 +38,7 @@ import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.integration.VOMSPluginConfigurationException;
-import org.glite.security.voms.admin.integration.ValidationManager;
-import org.glite.security.voms.admin.integration.provider.BlacklistRequestValidatorPlugin;
+import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.notification.CertificateRequestsNotificationDispatcher;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
@@ -52,6 +48,8 @@ import org.glite.security.voms.admin.notification.VOMembershipNotificationDispat
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.opensaml.xml.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class VOMSService {
 
@@ -117,7 +115,6 @@ public final class VOMSService {
 
 		EventManager.instance();
 		
-
 		DebugEventLogListener.instance();
 		
 		DefaultNotificationDispatcher.instance();
@@ -132,29 +129,6 @@ public final class VOMSService {
 	}
 	
 	
-	protected static void configureValidationManager(){
-		
-		ValidationManager.instance();
-		
-		// FIXME: Implement parsable configuration of plugins
-		BlacklistRequestValidatorPlugin plugin = new BlacklistRequestValidatorPlugin();
-		try {
-			
-			plugin.configure();
-		
-		} catch (VOMSPluginConfigurationException e) {
-			
-			log.error(e.getMessage());
-			
-			if (log.isDebugEnabled())
-				log.error(e.getMessage(),e);
-			
-			
-		}
-		
-	
-	}
-
 	protected static void startBackgroundTasks() {
 
 		UpdateCATask.instance(getTimer());
@@ -220,7 +194,7 @@ public final class VOMSService {
 
 		bootstrapAttributeAuthorityServices();
 		
-		configureValidationManager();
+		PluginManager.instance().configurePlugins();
 
 		log.info("VOMS-Admin started succesfully.");
 	}

@@ -21,9 +21,18 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request validation error.</h1>
+<h1>VO Memberhsip request validation error.</h1>
 
 <p>
-	Your request has not been accepted due to the following error:
-	<s:actionerror/>
+	<s:property value="validationResult.message"/>
 </p>
+
+
+<s:if test="validationResult.errorMessages != null ">
+Additional information:
+<ul>
+<s:iterator value="validationResult.errorMessages" var="message">
+	<li>${message}</li>
+</s:iterator>
+</ul>
+</s:if>

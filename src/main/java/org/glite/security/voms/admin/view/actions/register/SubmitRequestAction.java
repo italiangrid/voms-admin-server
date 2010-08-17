@@ -26,10 +26,11 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.integration.ValidationManager;
+import org.glite.security.voms.admin.integration.ValidationResult;
+import org.glite.security.voms.admin.integration.ValidationResult.Outcome;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -65,6 +66,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	
 	String aupAccepted;
 
+	ValidationResult validationResult;
 	
 	protected void populateRequestModel(){
 		
@@ -86,13 +88,15 @@ public class SubmitRequestAction extends RegisterActionSupport {
 			
 	}
 	
+	
+	
+	
 	@Override
 	public String execute() throws Exception {
-
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+		
+		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
-
+		
 		String result = checkExistingPendingRequests();
 
 		if (result != null)
@@ -100,14 +104,13 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		
 		populateRequestModel();		
 		
-		try{
-			
-			ValidationManager.instance().validateRequest(request);
 		
-		}catch (Exception e) {
-			
+		// External plugin validation
+		validationResult = ValidationManager.instance().validateRequest(request);
+		if (!validationResult.getOutcome().equals(Outcome.SUCCESS)){
+						
 			DAOFactory.instance().getRequestDAO().makeTransient(request);
-			addActionError(e.getMessage());
+			addActionError(validationResult.getMessage());
 			return PLUGIN_VALIDATION_ERROR;
 		}
 		
@@ -197,6 +200,14 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+
+	/**
+	 * @return the validationResult
+	 */
+	public ValidationResult getValidationResult() {
+		return validationResult;
 	}
 	
 	

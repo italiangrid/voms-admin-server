@@ -20,7 +20,14 @@
 
 package org.glite.security.voms.admin.integration;
 
-public interface Configurable {
+public interface PluginConfigurator {
 
 	public void configure() throws VOMSPluginConfigurationException;
+	
+	public void setPluginName(String name);
+	public String getPluginName();
+	
+	public String getPluginProperty(String propertyName, String defaultValue);
+	public String getPluginProperty(String propertyName);
+	
 }

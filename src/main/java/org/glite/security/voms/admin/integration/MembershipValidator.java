@@ -26,8 +26,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface MembershipValidator {
 	
-	public void validateMembership(VOMSUser user);
+	public ValidationResult validateMembership(VOMSUser user);
 	
-	public void validateMembership(List<VOMSUser> users);
+	public ValidationResult validateMembership(List<VOMSUser> users);
 
 }

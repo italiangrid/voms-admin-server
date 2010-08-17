@@ -70,7 +70,10 @@ public class DecisionAction extends RequestActionSupport {
 		if (request instanceof NewVOMembershipRequest)
 			validateVOMembershipRequest();
 		
-	}	@Override
+	}	
+	
+	
+	@Override
 	public String execute() throws Exception {
 
 		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());

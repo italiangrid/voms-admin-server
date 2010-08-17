@@ -51,7 +51,9 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 		
 		Date now = new Date();
 		
-		if (now.after(expirationDate))
+		if (expirationDate == null)
+			addFieldError("expirationDate", "Please enter a valid expiration date for the user.");
+		else if (now.after(expirationDate))
 			addFieldError("expirationDate", "Please enter a future expiration date for the user.");
 		
 		return;
@@ -70,7 +72,7 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 	}
 
 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please set a membership expiration date for the user.")
-	@DateRangeFieldValidator(type= ValidatorType.FIELD, message = "Please enter a valid expiration date for the user.")
+	@DateRangeFieldValidator(type = ValidatorType.FIELD, message = "Please enter a valid expiration date for the user.", min="12/25/2010")
 	public Date getExpirationDate() {
 		return expirationDate;
 	}

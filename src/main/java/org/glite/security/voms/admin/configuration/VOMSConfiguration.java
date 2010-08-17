@@ -65,35 +65,34 @@ public final class VOMSConfiguration {
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
-	
-	public static VOMSConfiguration load(ServletContext context){
-		
+	public static VOMSConfiguration load(ServletContext context) {
+
 		if (instance != null)
-			throw new VOMSConfigurationException("VOMS configuration already loaded!");
-		
+			throw new VOMSConfigurationException(
+					"VOMS configuration already loaded!");
+
 		instance = new VOMSConfiguration(context);
-		
+
 		return instance;
-		
+
 	}
-	
+
 	public static VOMSConfiguration instance() {
 
 		if (instance == null)
-			throw new VOMSConfigurationException("VOMS configuration not loaded! Use the load method to load it.");
-		
+			throw new VOMSConfigurationException(
+					"VOMS configuration not loaded! Use the load method to load it.");
+
 		return instance;
 
 	}
-	
+
 	private CompositeConfiguration config;
-	
 
 	private ServletContext context;
 
-	
- Logger log = LoggerFactory.getLogger(VOMSConfiguration.class);
-	
+	Logger log = LoggerFactory.getLogger(VOMSConfiguration.class);
+
 	private X509Certificate serviceCertificate;
 
 	private PrivateKey servicePrivateKey;
@@ -101,29 +100,28 @@ public final class VOMSConfiguration {
 	private VOMSConfiguration(ServletContext ctxt) {
 
 		config = new CompositeConfiguration();
-		
+
 		loadVersionProperties();
-		
-		if (ctxt != null){
+
+		if (ctxt != null) {
 			context = ctxt;
 			loadVORuntimeProperties();
 			configureLogback();
-			
-			if (!getVOName().equals("siblings")){
-				
+
+			if (!getVOName().equals("siblings")) {
+
 				loadServiceProperties();
-				if (getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+				if (getBoolean(
+						VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
+						false))
 					loadServiceCredentials();
-				
-				
-				
+
 			}
-			
-			
-		}else{
-			
+
+		} else {
+
 			config.addConfiguration(new SystemConfiguration());
-			
+
 		}
 
 		log.debug("VOMS-Admin configuration loaded!");
@@ -141,8 +139,6 @@ public final class VOMSConfiguration {
 
 		config.addProperty(arg0, arg1);
 	}
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -165,106 +161,103 @@ public final class VOMSConfiguration {
 
 		config.clearProperty(arg0);
 	}
-	
-	private void configureLogback(){
-		
-		if (context != null){
-			
+
+	private void configureLogback() {
+
+		if (context != null) {
+
 			InputStream is = null;
-			try{
-			
+			try {
+
 				is = getExternalLogbackConfiguration();
-				
-			}catch(FileNotFoundException f){
-				
+
+			} catch (FileNotFoundException f) {
+
 				log.warn(f.getMessage());
-				if (log.isDebugEnabled()){
-					
-					log.warn(f.getMessage(),f);
-					log.warn("External logging configuration not found, will use internal configuration instead.");
-					
+				if (log.isDebugEnabled()) {
+
+					log.warn(f.getMessage(), f);
+					log
+							.warn("External logging configuration not found, will use internal configuration instead.");
+
 				}
 			}
-			
+
 			if (is == null)
-				is = context.getResourceAsStream("/WEB-INF/classes/logback.runtime.xml");
-			
+				is = context
+						.getResourceAsStream("/WEB-INF/classes/logback.runtime.xml");
+
 			if (is == null)
-				throw new VOMSConfigurationException("Error configuring logging system: logback.runtime.xml not found in application context!");
-			
-			try{
-				LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory(); 
+				throw new VOMSConfigurationException(
+						"Error configuring logging system: logback.runtime.xml not found in application context!");
+
+			try {
+				LoggerContext lc = (LoggerContext) LoggerFactory
+						.getILoggerFactory();
 				JoranConfigurator configurator = new JoranConfigurator();
-				
+
 				configurator.setContext(lc);
 				lc.reset();
 
 				configurator.doConfigure(is);
 				StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-			
-			}catch(JoranException e){
-				e.printStackTrace();
-				throw new VOMSConfigurationException("Error configuring logging system: "+e.getMessage(), e);
-				
-			}
-			
-			
 
-			
+			} catch (JoranException e) {
+				e.printStackTrace();
+				throw new VOMSConfigurationException(
+						"Error configuring logging system: " + e.getMessage(),
+						e);
+
+			}
+
 		}
 	}
 
 	/*
-	private void configureLogging() {
+	 * private void configureLogging() {
+	 * 
+	 * if (context != null) {
+	 * 
+	 * try {
+	 * 
+	 * Properties log4jProps = new Properties();
+	 * 
+	 * InputStream is= null;
+	 * 
+	 * try{
+	 * 
+	 * is = getExternalLoggingConfiguration();
+	 * 
+	 * }catch(FileNotFoundException f){ log.warn(f.getMessage());log.warn(
+	 * "External logging configuration not found, will use internal configuration instead."
+	 * ); }
+	 * 
+	 * if (is == null) is = context
+	 * .getResourceAsStream("/WEB-INF/classes/log4j.runtime.properties");
+	 * 
+	 * if (is == null) throw new VOMSConfigurationException(
+	 * "Error configuring logging system: log4j.runtime.properties not found in application context!"
+	 * );
+	 * 
+	 * log4jProps.load(is); log4jProps.setProperty("log4j.vo", getVOName());
+	 * 
+	 * LogManager.resetConfiguration();
+	 * PropertyConfigurator.configure(log4jProps);
+	 * 
+	 * } catch (MalformedURLException e) {
+	 * 
+	 * log.error("Error configuring logging properties! " + e.getMessage(), e);
+	 * 
+	 * } catch (IOException e) {
+	 * log.error("Error configuring logging properties! " + e.getMessage(), e);
+	 * 
+	 * throw new VOMSConfigurationException(e.getMessage(), e); }
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
-		if (context != null) {
-
-			try {
-
-				Properties log4jProps = new Properties();
-				
-				InputStream is= null;
-				
-				try{
-					
-					is = getExternalLoggingConfiguration();
-					
-				}catch(FileNotFoundException f){
-					log.warn(f.getMessage());
-					log.warn("External logging configuration not found, will use internal configuration instead.");
-				}
-				
-				if (is == null)
-					is = context
-						.getResourceAsStream("/WEB-INF/classes/log4j.runtime.properties");
-
-				if (is == null)
-					throw new VOMSConfigurationException(
-							"Error configuring logging system: log4j.runtime.properties not found in application context!");
-
-				log4jProps.load(is);
-				log4jProps.setProperty("log4j.vo", getVOName());
-
-				LogManager.resetConfiguration();
-				PropertyConfigurator.configure(log4jProps);
-
-			} catch (MalformedURLException e) {
-
-				log.error("Error configuring logging properties! "
-						+ e.getMessage(), e);
-
-			} catch (IOException e) {
-				log.error("Error configuring logging properties! "
-						+ e.getMessage(), e);
-
-				throw new VOMSConfigurationException(e.getMessage(), e);
-			}
-
-		}
-
-	}
-	*/
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -407,16 +400,14 @@ public final class VOMSConfiguration {
 
 	}
 
-	
-	public String getConfigurationDirectoryPath(){
-		
+	public String getConfigurationDirectoryPath() {
+
 		String path = config.getString("GLITE_LOCATION_VAR")
-		+ "/etc/voms-admin/" + getVOName();
-		
+				+ "/etc/voms-admin/" + getVOName();
+
 		return path;
 	}
-	
-	
+
 	private String getCustomizedContentPath() {
 
 		String pathName = config.getString("GLITE_LOCATION_VAR")
@@ -493,21 +484,24 @@ public final class VOMSConfiguration {
 
 		return config.getDouble(arg0, arg1);
 	}
-	
-	
-	private InputStream getExternalLogbackConfiguration() throws FileNotFoundException{
-		
-		String path = getString("GLITE_LOCATION_VAR")+"/etc/voms-admin/"+getVOName()+"/logback.runtime.xml";
-		
+
+	private InputStream getExternalLogbackConfiguration()
+			throws FileNotFoundException {
+
+		String path = getString("GLITE_LOCATION_VAR") + "/etc/voms-admin/"
+				+ getVOName() + "/logback.runtime.xml";
+
 		File f = new File(path);
-		
+
 		if (!f.exists())
-			log.warn("External logging configuration not found at path '"+path+"'... ");
+			log.warn("External logging configuration not found at path '"
+					+ path + "'... ");
 		if (!f.canRead())
-			log.warn("External logging configuration is not readable: '"+path+"'... ");
-		
+			log.warn("External logging configuration is not readable: '" + path
+					+ "'... ");
+
 		return new FileInputStream(f);
-		
+
 	}
 
 	/*
@@ -716,12 +710,12 @@ public final class VOMSConfiguration {
 		return config.getProperty(arg0);
 	}
 
-	public X509Certificate getServiceCertificate(){
+	public X509Certificate getServiceCertificate() {
 		return serviceCertificate;
 	}
 
-	public PrivateKey getServicePrivateKey(){
-		
+	public PrivateKey getServicePrivateKey() {
+
 		return servicePrivateKey;
 	}
 
@@ -831,12 +825,11 @@ public final class VOMSConfiguration {
 		return fileName;
 
 	}
-	
+
 	public String getVOName() {
 
 		return getString(VOMSConfigurationConstants.VO_NAME);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -850,107 +843,113 @@ public final class VOMSConfiguration {
 
 	private void loadServiceCredentials() {
 
-        String certificateFileName = getString( VOMSConfigurationConstants.VOMS_AA_CERT_FILE,
-                "/etc/grid-security/hostcert.pem" );
-        
-        String privateKeyFileName = getString( VOMSConfigurationConstants.VOMS_AA_KEY_FILE,
-                "/etc/grid-security/hostkey.pem" );
+		String certificateFileName = getString(
+				VOMSConfigurationConstants.VOMS_AA_CERT_FILE,
+				"/etc/grid-security/hostcert.pem");
 
-        /* load certificate */
-        log.info( "Loading credentials for VOMS Attribute authority from:"
-                + certificateFileName + "," + privateKeyFileName );
+		String privateKeyFileName = getString(
+				VOMSConfigurationConstants.VOMS_AA_KEY_FILE,
+				"/etc/grid-security/hostkey.pem");
 
-        InputStream certificateInputStream;
-        try {
+		/* load certificate */
+		log.info("Loading credentials for VOMS Attribute authority from:"
+				+ certificateFileName + "," + privateKeyFileName);
 
-            certificateInputStream = new FileInputStream( certificateFileName );
+		InputStream certificateInputStream;
+		try {
 
-        } catch ( FileNotFoundException e ) {
+			certificateInputStream = new FileInputStream(certificateFileName);
 
-            log.error( "Error loading service credentials: " + e.getMessage(),
-                    e );
-            throw new VOMSException( "Error loading service credentials: "
-                    + e.getMessage(), e );
+		} catch (FileNotFoundException e) {
 
-        }
+			log
+					.error("Error loading service credentials: "
+							+ e.getMessage(), e);
+			throw new VOMSException("Error loading service credentials: "
+					+ e.getMessage(), e);
 
-        CertificateFactory certificateFactory;
+		}
 
-        try {
-            certificateFactory = CertificateFactory.getInstance( "X509", "BC" );
+		CertificateFactory certificateFactory;
 
-        } catch ( CertificateException e ) {
-            log.error( "Error instantiating X509 certificate factory: "
-                    + e.getMessage(), e );
-            throw new VOMSException(
-                    "Error instantiating X509 certificate factory: "
-                            + e.getMessage(), e );
-        } catch ( NoSuchProviderException e ) {
-            throw new VOMSException(
-                    "Error instantiating X509 certificate factory: "
-                            + e.getMessage(), e );
-        }
+		try {
+			certificateFactory = CertificateFactory.getInstance("X509", "BC");
 
-        try {
-            serviceCertificate = (X509Certificate) certificateFactory
-                    .generateCertificate( certificateInputStream );
-        } catch ( CertificateException e ) {
-            log.error( "Error generating X509 certificate from input stream: "
-                    + e.getMessage(), e );
-            throw new VOMSException(
-                    "Error generating X509 certificate from input stream: "
-                            + e.getMessage(), e );
-        }
+		} catch (CertificateException e) {
+			log.error("Error instantiating X509 certificate factory: "
+					+ e.getMessage(), e);
+			throw new VOMSException(
+					"Error instantiating X509 certificate factory: "
+							+ e.getMessage(), e);
+		} catch (NoSuchProviderException e) {
+			throw new VOMSException(
+					"Error instantiating X509 certificate factory: "
+							+ e.getMessage(), e);
+		}
 
-        try {
+		try {
+			serviceCertificate = (X509Certificate) certificateFactory
+					.generateCertificate(certificateInputStream);
+		} catch (CertificateException e) {
+			log.error("Error generating X509 certificate from input stream: "
+					+ e.getMessage(), e);
+			throw new VOMSException(
+					"Error generating X509 certificate from input stream: "
+							+ e.getMessage(), e);
+		}
 
-            certificateInputStream.close();
+		try {
 
-        } catch ( IOException e ) {
-            log.error( "Error closing certificate input stream:"
-                    + e.getMessage(), e );
-            throw new VOMSException( "Error closing certificate input stream:"
-                    + e.getMessage(), e );
-        }
+			certificateInputStream.close();
 
-        log
-                .info( "SAML service credential's DN: "
-                        + DNUtil.getBCasX500( serviceCertificate
-                                .getSubjectX500Principal() ) );
+		} catch (IOException e) {
+			log.error("Error closing certificate input stream:"
+					+ e.getMessage(), e);
+			throw new VOMSException("Error closing certificate input stream:"
+					+ e.getMessage(), e);
+		}
 
-        /* load private key */
-        FileInputStream fileInputStream = null;
+		log.info("SAML service credential's DN: "
+				+ DNUtil.getBCasX500(serviceCertificate
+						.getSubjectX500Principal()));
 
-        try {
-            fileInputStream = new FileInputStream( privateKeyFileName );
+		/* load private key */
+		FileInputStream fileInputStream = null;
 
-        } catch ( FileNotFoundException e ) {
-         
-            log.error( "Error opening private key file:"+e.getMessage(),e );
-            throw new VOMSException("Error opening private key file:"+e.getMessage(),e );
-        }
+		try {
+			fileInputStream = new FileInputStream(privateKeyFileName);
 
-        PKCS8Key pkcs8 = null;
+		} catch (FileNotFoundException e) {
 
-        try {
-            pkcs8 = new PKCS8Key( fileInputStream, "".toCharArray() );
-        
-        } catch ( GeneralSecurityException e ) {
-            
-            log.error("Error parsing private key from input stream:"+e.getMessage(),e);
-            throw new VOMSException("Error parsing private key from input stream:"+e.getMessage(),e);
-            
-            
-        } catch ( IOException e ) {
-            
-            log.error( "Error opening private key file:"+e.getMessage(),e  );
-            throw new VOMSException("Error opening private key file:"+e.getMessage(),e);
-            
-        }
+			log.error("Error opening private key file:" + e.getMessage(), e);
+			throw new VOMSException("Error opening private key file:"
+					+ e.getMessage(), e);
+		}
 
-        servicePrivateKey = pkcs8.getPrivateKey();
+		PKCS8Key pkcs8 = null;
 
-    }
+		try {
+			pkcs8 = new PKCS8Key(fileInputStream, "".toCharArray());
+
+		} catch (GeneralSecurityException e) {
+
+			log.error("Error parsing private key from input stream:"
+					+ e.getMessage(), e);
+			throw new VOMSException(
+					"Error parsing private key from input stream:"
+							+ e.getMessage(), e);
+
+		} catch (IOException e) {
+
+			log.error("Error opening private key file:" + e.getMessage(), e);
+			throw new VOMSException("Error opening private key file:"
+					+ e.getMessage(), e);
+
+		}
+
+		servicePrivateKey = pkcs8.getPrivateKey();
+
+	}
 
 	private void loadServiceProperties() {
 
@@ -1098,11 +1097,13 @@ public final class VOMSConfiguration {
 
 		// Rename the VO_NAME property for internal use
 		// FIXME: is this really needed?
-		config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getString("VO_NAME"));
-		System.setProperty(VOMSConfigurationConstants.VO_NAME, config.getString("VO_NAME"));
+		config.setProperty(VOMSConfigurationConstants.VO_NAME, config
+				.getString("VO_NAME"));
+		System.setProperty(VOMSConfigurationConstants.VO_NAME, config
+				.getString("VO_NAME"));
 
 	}
-	
+
 	public boolean pageHasCustomization(String pageName) {
 
 		String basePath = getCustomizedContentPath() + "/" + pageName;
@@ -1111,28 +1112,59 @@ public final class VOMSConfiguration {
 		return (f.exists() && f.canRead());
 
 	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#setProperty(java.lang.
-	 * String, java.lang.Object)
-	 */
+
 	public void setProperty(String arg0, Object arg1) {
 
 		config.setProperty(arg0, arg1);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.commons.configuration.Configuration#subset(java.lang.String)
-	 */
+
 	public Configuration subset(String arg0) {
 
 		return config.subset(arg0);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getExternalValidators(){
+		return config.getList(VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_LIST);
+	}
+	
+	public String getExternalValidatorConfigClass(String pluginName){
+		
+		String configClassPropertyName = String.format("%s.%s.%s", 
+					VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX,
+					pluginName,
+					VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX);
+				
+		return config.getString(configClassPropertyName);
+	}
+
+	public String getExternalValidatorProperty(String pluginName, String pluginPropertyName, String defaultValue){
+		
+		String propertyName = String.format("%s.%s.%s",
+				VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX,
+				pluginName,	pluginPropertyName);
+		
+		return config.getString(propertyName, defaultValue);
+		
+	}
+	
+	public String getExternalValidatorProperty(String pluginName, String pluginPropertyName){
+		
+		String propertyName = String.format("%s.%s.%s",
+				VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX,
+				pluginName,	pluginPropertyName);
+		
+		return config.getString(propertyName);
+		
+	}
+	
+	public void setRegistrationType(String registrationType){
+		
+		config.setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE, registrationType);
+	}
+	
+	public String getRegistrationType(){
+		return config.getString(VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE, "default");
+	}
+	
 }

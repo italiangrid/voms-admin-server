@@ -40,7 +40,7 @@ public class StartAction extends RegisterActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Override
 	public String execute() throws Exception {
 

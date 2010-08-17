@@ -18,7 +18,7 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.integration.provider;
+package org.glite.security.voms.admin.integration.blacklist;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,36 +29,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.integration.Configurable;
-import org.glite.security.voms.admin.integration.RequestValidationException;
+import org.glite.security.voms.admin.integration.AbstractPluginConfigurator;
 import org.glite.security.voms.admin.integration.RequestValidator;
 import org.glite.security.voms.admin.integration.VOMSPluginConfigurationException;
 import org.glite.security.voms.admin.integration.ValidationManager;
+import org.glite.security.voms.admin.integration.ValidationResult;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BlacklistRequestValidatorPlugin implements
-		RequestValidator<NewVOMembershipRequest>, Configurable {
+public class BlacklistRequestValidatorPlugin extends AbstractPluginConfigurator implements
+		RequestValidator<NewVOMembershipRequest>{
 
 	Logger log = LoggerFactory.getLogger(BlacklistRequestValidatorPlugin.class);
 	
 	private List<String> blacklistedDns;
 	
-	public void validateRequest(NewVOMembershipRequest r) throws RequestValidationException{
+	public ValidationResult validateRequest(NewVOMembershipRequest r) {
 		
 		String subject = r.getRequesterInfo().getCertificateSubject();
 		
-		if (blacklistedDns.contains(subject))
-			throw new RequestValidationException("User with dn '"+subject+"' has been blacklisted!");
+		if (blacklistedDns.contains(subject)){
+			return ValidationResult.failure("User with dn '"+subject+"' has been blacklisted!");
+		}
+				
+		
+		return ValidationResult.success();
 			
 	}
 
-	public void validateRequests(List<NewVOMembershipRequest> requests) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	
 	private void parseBlacklist() throws VOMSPluginConfigurationException {
 		
@@ -102,7 +102,6 @@ public class BlacklistRequestValidatorPlugin implements
 		
 		parseBlacklist();
 		
-		// Register plugin for request validation
 		ValidationManager.instance().registerRequestValidator(this);
 		log.info("Blacklist plugin configured correctly");
 		

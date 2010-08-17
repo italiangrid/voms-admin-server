@@ -24,7 +24,7 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
-	<constant name="struts.devMode" value="false" />
+	<constant name="struts.devMode" value="true" />
 	<constant name="struts.configuration.xml.reload" value="false" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
 	<constant name="struts.convention.classes.reload" value="true" />
@@ -83,6 +83,7 @@
                 <interceptor-ref name="prepare"/>
                 <interceptor-ref name="modelDriven"/>
                 <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
                 
                 <interceptor-ref name="fileUpload"/>
                 

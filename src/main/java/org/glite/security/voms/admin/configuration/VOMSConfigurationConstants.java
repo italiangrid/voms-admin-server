@@ -78,5 +78,18 @@ public interface VOMSConfigurationConstants {
 	public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
 	public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
 	public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
+	
+	/**
+	 * External validation plugin Properties
+	 */
 
+	public static final String VOMS_EXTERNAL_VALIDATOR_LIST = "voms.external-validators";
+	public static final String VOMS_EXTERNAL_VALIDATOR_PREFIX = "voms.ext";
+	public static final String VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX = "configClass"; 
+	
+	/**
+	 * Internal registration properties
+	 */
+	
+	public static final String VOMS_INTERNAL_REGISTRATION_TYPE = "___voms.regitration.type";
 }
