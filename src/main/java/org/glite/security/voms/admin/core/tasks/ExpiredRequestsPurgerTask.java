@@ -21,20 +21,18 @@ package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestExpiredEvent;
-import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ExpiredRequestsPurgerTask extends TimerTask {
+public class ExpiredRequestsPurgerTask extends DatabaseTransactionTask {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(ExpiredRequestsPurgerTask.class);
@@ -85,19 +83,6 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
 
 	}
 
-	public void run() {
-
-		log.info("Checking for expired requests...");
-		HibernateFactory.getSession();
-		HibernateFactory.beginTransaction();
-		
-		purgeExpiredRequests();
-		
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-		log.info("Done.");
-
-	}
 
 	public void purgeExpiredRequests(){
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
@@ -120,6 +105,13 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
 	public static ExpiredRequestsPurgerTask instance(Timer t) {
 
 		return new ExpiredRequestsPurgerTask(t);
+	}
+
+	@Override
+	protected void doRun() {
+		log.info("Checking for expired requests...");
+		purgeExpiredRequests();
+		log.info("Done.");
 	}
 
 }

@@ -49,6 +49,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1165,6 +1166,30 @@ public final class VOMSConfiguration {
 	
 	public String getRegistrationType(){
 		return config.getString(VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE, "default");
+	}
+	
+	
+	public VOMSPermission getUnauthenticatedClientPermissionMask(){
+		
+		String unauthenticatedClientPermMask = getString(VOMSConfigurationConstants.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
+		"CONTAINER_READ|MEMBERSHIP_READ");
+		
+		VOMSPermission permMask = null;
+		
+		try{
+			
+			permMask = VOMSPermission.fromString(unauthenticatedClientPermMask);
+			
+		}catch(IllegalArgumentException e){
+			// Parse error on user set permission mask
+			log.error("Error parsing user set permission mask for unauthenticated client: '"+unauthenticatedClientPermMask+"'");
+			log.error(e.getMessage());
+			permMask = VOMSPermission.getContainerReadPermission().setMembershipReadPermission();
+			
+		}
+		
+		return permMask;
+		
 	}
 	
 }

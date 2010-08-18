@@ -22,19 +22,17 @@ package org.glite.security.voms.admin.core.tasks;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
-import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TaskStatusUpdater extends TimerTask {
+public class TaskStatusUpdater extends DatabaseTransactionTask {
 
 	public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
 
@@ -83,11 +81,9 @@ public class TaskStatusUpdater extends TimerTask {
 
 	}
 
-	@Override
-	public void run() {
-		// log.info("TaskStatusUpdater started...");
-		HibernateFactory.beginTransaction();
 
+	@Override
+	protected void doRun() {
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 
 		List<Task> activeTasks = taskDAO.getActiveTasks();
@@ -103,10 +99,6 @@ public class TaskStatusUpdater extends TimerTask {
 
 			}
 		}
-
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-
 	}
 
 }

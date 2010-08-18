@@ -27,7 +27,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail"),
+@Results( { @Result(name = BaseAction.SUCCESS, location = "manage", type="chain"),
 		@Result(name = BaseAction.INPUT, location = "addACLEntry") })
 public class AddDefaultEntryAction extends AddEntryAction {
 

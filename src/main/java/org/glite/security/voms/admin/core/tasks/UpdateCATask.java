@@ -48,7 +48,7 @@ import org.glite.security.voms.admin.util.DNUtil;
  * 
  * 
  */
-public final class UpdateCATask extends TimerTask {
+public final class UpdateCATask extends DatabaseTransactionTask {
 
 	static final Logger log = LoggerFactory.getLogger(UpdateCATask.class);
 
@@ -93,17 +93,6 @@ public final class UpdateCATask extends TimerTask {
 				return;
 			}
 		}
-
-	}
-
-	public void run() {
-
-		log.info("CA update thread started...");
-		HibernateFactory.beginTransaction();
-		updateCAs();
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-		log.info("CA update thread done.");
 
 	}
 
@@ -182,5 +171,13 @@ public final class UpdateCATask extends TimerTask {
 
 		}
 
+	}
+
+	@Override
+	protected void doRun() {
+		log.info("CA update thread started...");
+		updateCAs();
+		log.info("CA update thread done.");
+		
 	}
 }

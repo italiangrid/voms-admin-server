@@ -37,6 +37,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
@@ -47,6 +48,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
 		@Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR, location = "pluginValidationError")
 })
+
 public class SubmitRequestAction extends RegisterActionSupport {
 
 	/**
@@ -137,7 +139,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your name.")
+	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter your name.")
 	public String getName() {
 		return name;
 	}
@@ -146,7 +148,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.name = name;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
 	public String getSurname() {
 		return surname;
 	}
@@ -155,7 +157,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.surname = surname;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
 	public String getInstitution() {
 		return institution;
 	}
@@ -164,7 +166,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.institution = institution;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
 	public String getAddress() {
 		return address;
 	}
@@ -173,7 +175,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.address = address;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -192,7 +194,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.aupAccepted = aupAccepted;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
 	public String getEmailAddress() {
 		return emailAddress;

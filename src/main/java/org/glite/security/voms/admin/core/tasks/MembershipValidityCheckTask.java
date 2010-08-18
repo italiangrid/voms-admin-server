@@ -43,7 +43,7 @@ import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 
-public class MembershipValidityCheckTask extends TimerTask {
+public class MembershipValidityCheckTask extends DatabaseTransactionTask {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(MembershipValidityCheckTask.class);
@@ -92,45 +92,6 @@ public class MembershipValidityCheckTask extends TimerTask {
 		}
 	}
 
-	@Override
-	public void run() {
-		log.debug("started...");
-		HibernateFactory.beginTransaction();
-
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		VOMSUserDAO userDAO = VOMSUserDAO.instance();
-
-		// Suspend users whose membership has expired
-		// and inform VO managers
-		List<VOMSUser> expiredMembers = userDAO.getExpiredUsers();
-
-		for (VOMSUser u : expiredMembers) {
-
-			if (!u.isSuspended()) {
-
-				log.debug("Suspending user '" + u
-						+ "' since its membership has expired.");
-				u.suspend(SuspensionReason.MEMBERSHIP_EXPIRATION);
-				EventManager.dispatch(new UserMembershipExpired(u));
-
-			}
-		}
-
-		// Suspend users that failed to sign AUP in time
-		List<VOMSUser> voAupFailingUsers = userDAO.getAUPFailingUsers(aupDAO
-				.getVOAUP());
-
-		log.debug("voAUPFailingUsers:" + voAupFailingUsers);
-
-		for (VOMSUser u : voAupFailingUsers)
-			checkAndPossiblySuspendUser(u, aupDAO.getVOAUP());
-
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-		log.debug("done.");
-
-	}
-
 	protected void checkAndPossiblySuspendUser(VOMSUser u, AUP aup) {
 
 		log.debug("Checking user '" + u + "' compliance with '" + aup.getName()
@@ -167,5 +128,41 @@ public class MembershipValidityCheckTask extends TimerTask {
 			}
 
 		}
+	}
+
+	@Override
+	protected void doRun() {
+		log.debug("started...");
+		
+		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+		VOMSUserDAO userDAO = VOMSUserDAO.instance();
+
+		// Suspend users whose membership has expired
+		// and inform VO managers
+		List<VOMSUser> expiredMembers = userDAO.getExpiredUsers();
+
+		for (VOMSUser u : expiredMembers) {
+
+			if (!u.isSuspended()) {
+
+				log.debug("Suspending user '" + u
+						+ "' since its membership has expired.");
+				u.suspend(SuspensionReason.MEMBERSHIP_EXPIRATION);
+				EventManager.dispatch(new UserMembershipExpired(u));
+
+			}
+		}
+
+		// Suspend users that failed to sign AUP in time
+		List<VOMSUser> voAupFailingUsers = userDAO.getAUPFailingUsers(aupDAO
+				.getVOAUP());
+
+		log.debug("voAUPFailingUsers:" + voAupFailingUsers);
+
+		for (VOMSUser u : voAupFailingUsers)
+			checkAndPossiblySuspendUser(u, aupDAO.getVOAUP());
+
+		log.debug("done.");
+		
 	}
 }
