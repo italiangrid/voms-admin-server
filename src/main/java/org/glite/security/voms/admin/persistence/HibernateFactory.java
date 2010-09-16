@@ -43,19 +43,11 @@ public class HibernateFactory {
 
 	private static final ThreadLocal threadInterceptor = new ThreadLocal();
 
-	private static final boolean auditingEnabled;
+	
 
 	static {
 
-		auditingEnabled = false;
-
-		// 
-		// Comment it out to allow configuring the voms-admin auditing
-		// infrastructure
-		//
-		// auditingEnabled = VOMSConfiguration.instance().getBoolean(
-		// "voms.auditing", false );
-
+		
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
 		try {

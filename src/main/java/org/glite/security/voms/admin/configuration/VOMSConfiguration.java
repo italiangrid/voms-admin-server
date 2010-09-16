@@ -60,13 +60,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public final class VOMSConfiguration {
-
-	private static VOMSConfiguration instance = null;
+	
+	private static volatile VOMSConfiguration instance = null;
 
 	private static final String[] voRuntimeProperties = new String[] {
 			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
 
-	public static VOMSConfiguration load(ServletContext context) {
+	public synchronized static VOMSConfiguration load(ServletContext context) {
 
 		if (instance != null)
 			throw new VOMSConfigurationException(
