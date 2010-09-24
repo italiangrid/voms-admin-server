@@ -18,16 +18,14 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.integration;
+package org.glite.security.voms.admin.core.validation.strategies;
 
 import java.util.List;
 
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public interface MembershipValidator {
-	
-	public ValidationResult validateMembership(VOMSUser user);
-	
-	public ValidationResult validateMembership(List<VOMSUser> users);
+public interface HandleExpiringMembersStrategy {
 
+	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers);
+	
 }

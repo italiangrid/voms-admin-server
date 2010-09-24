@@ -22,6 +22,8 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.users.SaveUserPersonalInfoOperation;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
@@ -54,6 +56,14 @@ public class SavePersonalInformationAction extends UserActionSupport {
 	@Override
 	public String execute() throws Exception {
 
+		Boolean roPI = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.FALSE);
+		
+		if (roPI != null && roPI){
+			addActionError("Personal informations are read only in this VOMS instance!");
+			return INPUT;
+		}
+			
+		
 		SaveUserPersonalInfoOperation op = new SaveUserPersonalInfoOperation(getModel(), theName, theSurname, theInstitution, theAddress,thePhoneNumber, theEmailAddress);
 		
 		op.setAuthorizedUser(getModel());

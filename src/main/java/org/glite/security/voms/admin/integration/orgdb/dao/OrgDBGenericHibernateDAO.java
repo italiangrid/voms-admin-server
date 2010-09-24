@@ -70,7 +70,10 @@ public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
 
 		if (session != null)
 			return session;
-
+		
+		if (OrgDBSessionFactory.getSessionFactory().getCurrentSession() != null)
+			return OrgDBSessionFactory.getSessionFactory().getCurrentSession();
+		
 		return OrgDBSessionFactory.getSessionFactory().openSession();
 
 	}

@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.view.actions.register.orgdb;
 
 import java.util.Calendar;
@@ -7,11 +27,11 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
-import org.glite.security.voms.admin.integration.ValidationManager;
-import org.glite.security.voms.admin.integration.ValidationResult;
-import org.glite.security.voms.admin.integration.ValidationResult.Outcome;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.register.RegisterActionSupport;
@@ -19,6 +39,7 @@ import org.glite.security.voms.admin.view.actions.register.RegisterActionSupport
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
@@ -51,7 +72,7 @@ public class SubmitRequestAction extends
 	
 	String aupAccepted;
 
-	ValidationResult validationResult;
+	RequestValidationResult validationResult;
 	
 	protected void populateRequestModel(){
 		
@@ -153,7 +174,7 @@ public class SubmitRequestAction extends
 	/**
 	 * @return the institution
 	 */
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
 	public String getInstitution() {
 		return institution;
 	}
@@ -170,7 +191,8 @@ public class SubmitRequestAction extends
 	/**
 	 * @return the address
 	 */
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getAddress() {
 		return address;
 	}
@@ -187,7 +209,8 @@ public class SubmitRequestAction extends
 	/**
 	 * @return the phoneNumber
 	 */
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -204,7 +227,7 @@ public class SubmitRequestAction extends
 	/**
 	 * @return the emailAddress
 	 */
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
 	public String getEmailAddress() {
 		return emailAddress;
@@ -240,7 +263,7 @@ public class SubmitRequestAction extends
 	/**
 	 * @return the validationResult
 	 */
-	public ValidationResult getValidationResult() {
+	public RequestValidationResult getValidationResult() {
 		return validationResult;
 	}	
 	

@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.view.actions.register.orgdb;
 
 import java.util.ArrayList;
@@ -11,68 +31,82 @@ import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
-import org.glite.security.voms.admin.integration.orgdb.model.VOMSPerson;
+import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.validator.annotations.EmailValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.SUCCESS, location = "searchResults.jsp") })
+@Results( { 
+	
+	@Result(name = BaseAction.SUCCESS, location = "searchResults.jsp"),
+	@Result(name = BaseAction.INPUT, location = "searchResults.jsp")
+	
+})
 public class QueryDatabaseAction extends BaseAction implements
-		ModelDriven<List<VOMSPerson>> {
+		ModelDriven<List<VOMSOrgDBPerson>>, Preparable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	protected RequesterInfo requester;
 
 	String emailAddress;
 
 	String name;
 	String surname;
 
-	List<VOMSPerson> searchResults;
+	List<VOMSOrgDBPerson> searchResults;
 	
 	String experimentName;
 	
-		
-	protected void validateAjaxInput() {
+	protected RequesterInfo requesterInfoFromCurrentAdmin() {
 
-		if (emailAddress == null || "".equals(emailAddress.trim())) {
-			addActionError("Please provide email address!");
-		}
+		RequesterInfo i = new RequesterInfo();
+		CurrentAdmin admin = CurrentAdmin.instance();
+		i.setCertificateSubject(admin.getRealSubject());
+		i.setCertificateIssuer(admin.getRealIssuer());
+		i.setEmailAddress(admin.getRealEmailAddress());
 
-		if (name == null || "".equals(name.trim())) {
-			addActionError("Please enter your name!");
-		}
-
-		if (surname == null || "".equals(surname.trim())) {
-			addActionError("Please enter your surname!");
-		}
+		return i;
 
 	}
+	
+	public void prepare() throws Exception {
+		requester = requesterInfoFromCurrentAdmin();	
+	}
+		
+	
 
 	@Override
 	public String execute() throws Exception {
 
 		try {
-
-			validateAjaxInput();
-
-			if (hasActionErrors())
-				return SUCCESS;
+			
+			requester.setName(name);
+			requester.setSurname(surname);
+			requester.setEmailAddress(emailAddress);
 
 			PluginConfigurator configuredPlugin = PluginManager.instance()
 					.getConfiguredPlugin(OrgDBConfigurator.class.getName());
 
 			experimentName = configuredPlugin
 					.getPluginProperty(OrgDBConfigurator.ORGDB_EXPERIMENT_NAME_PROPERTY);
+			
 			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
 					.getVOMSPersonDAO();
 
-			searchResults = new ArrayList<VOMSPerson>();
+			searchResults = new ArrayList<VOMSOrgDBPerson>();
 			
-			VOMSPerson exactMatch =  dao
+			VOMSOrgDBPerson exactMatch =  dao
 					.findPersonWithValidExperimentParticipationByEmail(
 							emailAddress, experimentName);
 
@@ -108,9 +142,10 @@ public class QueryDatabaseAction extends BaseAction implements
 
 	
 
-	/**
-	 * @return the emailAddress
-	 */
+	
+	
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
+	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
 	public String getEmailAddress() {
 		return emailAddress;
 	}
@@ -124,6 +159,7 @@ public class QueryDatabaseAction extends BaseAction implements
 	}
 	
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your name.")
 	public String getName() {
 		return name;
 	}
@@ -132,6 +168,7 @@ public class QueryDatabaseAction extends BaseAction implements
 		this.name = name;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
 	public String getSurname() {
 		return surname;
 	}
@@ -140,13 +177,18 @@ public class QueryDatabaseAction extends BaseAction implements
 		this.surname = surname;
 	}
 
-	public List<VOMSPerson> getModel() {
+	public List<VOMSOrgDBPerson> getModel() {
 		
 		return searchResults;
 	}
 
 	public String getExperimentName() {
 		return experimentName;
+	}
+
+
+	public RequesterInfo getRequester() {
+		return requester;
 	}
 	
 }

@@ -20,18 +20,11 @@
 package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
-import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -42,56 +35,15 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MembershipValidityCheckTask extends DatabaseTransactionTask {
+public class MembershipValidityCheckTask implements Runnable{
 
 	private static final Logger log = LoggerFactory
 			.getLogger(MembershipValidityCheckTask.class);
 
-	private static MembershipValidityCheckTask instance;
-
-	Timer timer;
-
-	public static MembershipValidityCheckTask instance(Timer t) {
-
-		if (instance == null)
-			instance = new MembershipValidityCheckTask(t);
-
-		return instance;
-
-	}
-
-	protected MembershipValidityCheckTask(Timer t) {
-		this.timer = t;
-
-		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
-
-		if (!registrationEnabled) {
-			log
-					.info("MembershipValidityCheck thread not started since registration is DISABLED for this vo.");
-			return;
-		}
-		
-		boolean readOnly = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false);
-		
-		if (readOnly){
-			log.info(this.getClass().getSimpleName() + " thread not started since this is a READ ONLY voms admin instance.");
-			return;
-		}
-
-		if (timer != null) {
-
-			long period = VOMSConfiguration.instance().getLong(
-					VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 30L);
-
-			log.info("Scheduling MembershipValidityCheckTask with period: "
-					+ period + " seconds.");
-			timer.schedule(this, 30 * 1000, period * 1000);
-
-		}
-	}
-
+	
 	protected void checkAndPossiblySuspendUser(VOMSUser u, AUP aup) {
 
 		log.debug("Checking user '" + u + "' compliance with '" + aup.getName()
@@ -102,7 +54,7 @@ public class MembershipValidityCheckTask extends DatabaseTransactionTask {
 
 			SignAUPTask t = taskDAO.createSignAUPTask(aup);
 			u.assignTask(t);
-			log.debug("Sign aup task assigned to user '" + u + "'.");
+			log.debug("Sign aup task assigned to user '{}'",u);
 			EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
 
 		} else {
@@ -130,8 +82,8 @@ public class MembershipValidityCheckTask extends DatabaseTransactionTask {
 		}
 	}
 
-	@Override
-	protected void doRun() {
+	public void run() {
+		
 		log.debug("started...");
 		
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();

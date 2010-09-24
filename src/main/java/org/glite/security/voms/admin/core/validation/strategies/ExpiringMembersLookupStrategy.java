@@ -18,12 +18,14 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.integration;
+package org.glite.security.voms.admin.core.validation.strategies;
 
-import org.glite.security.voms.admin.persistence.model.request.Request;
+import java.util.List;
 
-public interface RequestValidator<RequestType extends Request> {
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+
+public interface ExpiringMembersLookupStrategy {
+
+	public List<VOMSUser> findExpiringMembers();
 	
-	public ValidationResult validateRequest(RequestType r);
-
 }

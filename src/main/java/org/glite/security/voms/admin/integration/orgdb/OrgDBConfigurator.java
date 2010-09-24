@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.integration.orgdb;
 
 import java.io.File;
@@ -7,9 +27,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.integration.AbstractPluginConfigurator;
 import org.glite.security.voms.admin.integration.VOMSPluginConfigurationException;
-import org.glite.security.voms.admin.integration.ValidationManager;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
@@ -23,8 +45,16 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 	public static final Logger log = LoggerFactory.getLogger(OrgDBConfigurator.class);
 	
 	public static final String DEFAULT_CONFIG_FILE_NAME = "orgdb.properties";
+	
+	
 	public static final String ORGDB_EXPERIMENT_NAME_PROPERTY = "experimentName";
+	public static final String ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
 	public static final String ORGDB_REGISTRATION_TYPE= "orgdb";
+
+	/**
+	 * Default ORGDB membership check period in seconds. (6 hours)
+	 */
+	private static final Long ORGDB_DEFAULT_CHECK_PERIOD = 26100L;
 	
 	
 	/**
@@ -85,17 +115,45 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 		}
 		
 		log.debug("OrgDB Database properties loaded succesfully.");
-		checkOrgDBConnection();
-		String voNameCapitalised = VOMSConfiguration.instance().getVOName().toUpperCase();
 		
-		String experimentName= getPluginProperty(ORGDB_EXPERIMENT_NAME_PROPERTY, voNameCapitalised);
+		checkOrgDBConnection();
+		String uppercaseVOName = VOMSConfiguration.instance().getVOName().toUpperCase();
+		
+		String experimentName= getPluginProperty(ORGDB_EXPERIMENT_NAME_PROPERTY, uppercaseVOName);
 		log.info("Setting OrgDB experiment name: {}", experimentName);
 		
-		ValidationManager.instance().registerRequestValidator(new OrgDBRequestValidator(experimentName));
+		OrgDBRequestValidator validator = new OrgDBRequestValidator(experimentName);
+		
+		ValidationManager.instance().setRequestValidationContext(validator);
 		
 		VOMSConfiguration.instance().setRegistrationType(ORGDB_REGISTRATION_TYPE);
+		VOMSConfiguration.instance().setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.TRUE);
 		
 		log.info("OrgDB request validator registered SUCCESSFULLY.");
+		
+		Long checkPeriod;
+		
+		try {
+			
+			checkPeriod = Long.parseLong(getPluginProperty(OrgDBConfigurator.ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS, ORGDB_DEFAULT_CHECK_PERIOD.toString()));
+			
+		
+		}catch (NumberFormatException e) {
+			
+			log.error("Error parsing OrgDB membership check validity period: {}. Please provide an appropriate number for the OrgDb membership_check.period property!", 
+					e.getMessage());
+			
+			log.error("The default value of {} seconds will be used instead.", ORGDB_DEFAULT_CHECK_PERIOD);
+			checkPeriod = ORGDB_DEFAULT_CHECK_PERIOD;
+		}
+		
+		
+		OrgDBMembershipSynchronizationTask syncTask = new OrgDBMembershipSynchronizationTask(experimentName, 
+			new SuspendInvalidMembersStrategy(), 
+			new LogOnlyExpiredParticipationStrategy(), 
+			new DefaultSyncStrategy());
+		
+		VOMSExecutorService.instance().startBackgroundTask(syncTask, null,checkPeriod);
 		
 	}
 

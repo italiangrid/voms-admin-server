@@ -201,6 +201,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		 Date now = new Date();
 		 crit.add(Restrictions.lt("expirationDate", now));
+		 crit.add(Restrictions.or(Restrictions.eq("status", STATUS.SUBMITTED), Restrictions.eq("status", STATUS.CONFIRMED)));
 		 
 		return crit.list();
 	}

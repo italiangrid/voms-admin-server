@@ -1,18 +1,38 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.integration.orgdb;
 
 import java.util.List;
 import java.util.Vector;
 
-import org.glite.security.voms.admin.integration.RequestValidator;
-import org.glite.security.voms.admin.integration.ValidationResult;
+import org.glite.security.voms.admin.core.validation.RequestValidationContext;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult;
+import org.glite.security.voms.admin.core.validation.strategies.RequestValidationStrategy;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
-import org.glite.security.voms.admin.integration.orgdb.model.VOMSPerson;
+import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class OrgDBRequestValidator implements
-		RequestValidator<NewVOMembershipRequest> {
+public class OrgDBRequestValidator implements RequestValidationStrategy<NewVOMembershipRequest>, RequestValidationContext{
 
 	String experimentName;
 
@@ -30,7 +50,7 @@ public class OrgDBRequestValidator implements
 		}
 		
 	}
-	protected List<String> checkRequestAgainstParticipation(NewVOMembershipRequest r, VOMSPerson p){
+	protected List<String> checkRequestAgainstParticipation(NewVOMembershipRequest r, VOMSOrgDBPerson p){
 		
 		List<String> errors = new Vector<String>();
 		
@@ -40,7 +60,7 @@ public class OrgDBRequestValidator implements
 		return errors;
 		
 	}
-	public ValidationResult validateRequest(NewVOMembershipRequest r) {
+	public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
 
 		try {
 
@@ -48,7 +68,7 @@ public class OrgDBRequestValidator implements
 			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
 					.getVOMSPersonDAO();
 
-			VOMSPerson p = dao
+			VOMSOrgDBPerson p = dao
 					.findPersonWithValidExperimentParticipationByEmail(email,
 							experimentName);
 
@@ -57,17 +77,17 @@ public class OrgDBRequestValidator implements
 				List<String> errors = checkRequestAgainstParticipation(r, p);
 				
 				if (!errors.isEmpty()){
-					ValidationResult result = ValidationResult.failure("OrgDb validation failed. The OrgDb VOMS person record linked to email address '"+email+"' did not match the data you entered.");
+					RequestValidationResult result = RequestValidationResult.failure("OrgDb validation failed. The OrgDb VOMS person record linked to email address '"+email+"' did not match the data you entered.");
 					result.setErrorMessages(errors);
 					return result;
 				}
 				else{
-					return ValidationResult.success();
+					return RequestValidationResult.success();
 				}
 			
 			} else {
 
-				ValidationResult result = ValidationResult
+				RequestValidationResult result = RequestValidationResult
 						.failure("No OrgDB participation found matching email '"
 								+ email
 								+ "' for experiment '"
@@ -78,7 +98,7 @@ public class OrgDBRequestValidator implements
 			}
 
 		} catch (OrgDBError e) {
-			return ValidationResult.error(e.getMessage(), e);
+			return RequestValidationResult.error(e.getMessage(), e);
 		}
 	}
 
@@ -88,6 +108,12 @@ public class OrgDBRequestValidator implements
 
 	public void setExperimentName(String experimentName) {
 		this.experimentName = experimentName;
+	}
+
+
+	public RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy() {
+		
+		return this;
 	}
 
 }

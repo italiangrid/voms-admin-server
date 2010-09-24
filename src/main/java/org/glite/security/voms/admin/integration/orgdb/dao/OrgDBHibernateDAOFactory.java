@@ -42,7 +42,7 @@ public class OrgDBHibernateDAOFactory extends OrgDBDAOFactory {
 	@SuppressWarnings("unchecked")
 	private OrgDBGenericHibernateDAO instantiateDAO(Class daoClass) {
 		try {
-			log.debug("Instantiating DAO: " + daoClass);
+			// log.debug("Instantiating DAO: " + daoClass);
 			return (OrgDBGenericHibernateDAO) daoClass.newInstance();
 			
 		} catch(Exception e){

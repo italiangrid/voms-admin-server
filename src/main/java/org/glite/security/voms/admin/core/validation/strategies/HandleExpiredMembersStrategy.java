@@ -18,32 +18,14 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.integration;
+package org.glite.security.voms.admin.core.validation.strategies;
 
-public class RequestValidationException extends Exception {
+import java.util.List;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-	public RequestValidationException() {
-		// TODO Auto-generated constructor stub
-	}
+public interface HandleExpiredMembersStrategy {
 
-	public RequestValidationException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
-
-	public RequestValidationException(Throwable cause) {
-		super(cause);
-		// TODO Auto-generated constructor stub
-	}
-
-	public RequestValidationException(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
-
+	public void handleExpiredMembers(List<VOMSUser> expiredMembers);
+	
 }

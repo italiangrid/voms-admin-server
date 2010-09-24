@@ -86,9 +86,5 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationType"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
         
-        
-        
-        
-        
     </session-factory>
 </hibernate-configuration>

@@ -92,7 +92,11 @@
         <url-pattern>/generate-ac</url-pattern>
     </filter-mapping>
   
-	<!--  Struts 2 listeners -->
+	    
+    <listener>
+        <display-name>VOMSContextListener</display-name>
+        <listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
+    </listener>
      
     <listener>
         <listener-class>
@@ -100,12 +104,6 @@
         </listener-class>
     </listener>
       
-	<listener>
-		<display-name>VOMSContextListener</display-name>
-		<listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
-	</listener>
-
-
 	<servlet>
 		<servlet-name>axis</servlet-name>
 		<servlet-class>

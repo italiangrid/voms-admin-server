@@ -39,6 +39,8 @@ public interface VOMSConfigurationConstants {
 	public static final String SERVICE_EMAIL_ACCOUNT_PASSWORD = "voms.notification.password";
 	public static final String SERVICE_EMAIL_USE_TLS = "voms.notification.use_tls";
 	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify";
+	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
+	
 	/**
 	 * VO Membership requests expiration time (in minutes).
 	 */
@@ -56,7 +58,7 @@ public interface VOMSConfigurationConstants {
 	
 	public static final String VOMS_ADMIN_SERVER_VERSION = "voms-admin.server.version";
 	public static final String VOMS_ADMIN_INTERFACE_VERSION = "voms-admin.interface.version";
-	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
+	
 	/**
 	 * AUP Properties
 	 */
@@ -92,4 +94,10 @@ public interface VOMSConfigurationConstants {
 	 */
 	
 	public static final String VOMS_INTERNAL_REGISTRATION_TYPE = "___voms.regitration.type";
+	public static final String VOMS_INTERNAL_RO_PERSONAL_INFORMATION = "___voms.read-only-personal-information";
+	
+	/**
+	 * Executor service properties
+	 */
+	public static final String THREAD_POOL_SIZE_PROPERTY = "voms.background_tasks.thread_pool_size";
 }

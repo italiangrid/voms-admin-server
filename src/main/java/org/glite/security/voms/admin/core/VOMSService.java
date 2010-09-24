@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.core;
 import it.infn.cnaf.voms.x509.X509ACGenerator;
 
 import java.util.Properties;
-import java.util.Timer;
 
 import javax.servlet.ServletContext;
 
@@ -31,10 +30,11 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
-import org.glite.security.voms.admin.core.tasks.MembershipValidityCheckTask;
 import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
+import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
@@ -54,8 +54,6 @@ import org.slf4j.LoggerFactory;
 public final class VOMSService {
 
 	static final Logger log = LoggerFactory.getLogger(VOMSService.class);
-
-	static final Timer vomsTimer = new Timer(true);
 
 	protected static void checkDatabaseVersion() {
 
@@ -130,22 +128,25 @@ public final class VOMSService {
 	
 	
 	protected static void startBackgroundTasks() {
-
-		UpdateCATask.instance(getTimer());
-
-		ExpiredRequestsPurgerTask.instance(getTimer());
-
-		TaskStatusUpdater.instance(getTimer());
-
-		MembershipValidityCheckTask.instance(getTimer());
-
+		
+		
+		VOMSExecutorService es = VOMSExecutorService.instance();
+		
+		es.startBackgroundTask(new UpdateCATask(), 
+				VOMSConfigurationConstants.CAFILES_PERIOD);
+				
+		es.startBackgroundTask(new TaskStatusUpdater(), 
+				null, 
+				30L);
+		
+		es.startBackgroundTask(new ExpiredRequestsPurgerTask(), 
+				null, 
+				300L);
 	}
 
 	protected static void bootstrapAttributeAuthorityServices() {
 
 		VOMSConfiguration conf = VOMSConfiguration.instance();
-
-		// Bootstrap VOMS SAML attribute authority
 
 		try {
 			org.opensaml.DefaultBootstrap.bootstrap();
@@ -170,7 +171,7 @@ public final class VOMSService {
 
 		Thread
 				.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-
+		
 		VOMSConfiguration conf;
 
 		try {
@@ -182,7 +183,7 @@ public final class VOMSService {
 			throw new VOMSFatalException(e);
 		}
 
-		log.info("VOMS-Admin starting for vo:" + conf.getVOName());
+		log.info("VOMS-Admin starting for VO: " + conf.getVOName());
 
 		checkDatabaseVersion();
 
@@ -195,23 +196,21 @@ public final class VOMSService {
 		bootstrapAttributeAuthorityServices();
 		
 		PluginManager.instance().configurePlugins();
+		
+		ValidationManager.instance().startMembershipChecker();
 
 		log.info("VOMS-Admin started succesfully.");
 	}
 
 	public static void stop() {
-
-		getTimer().cancel();
-
-		NotificationService.instance().stop();
-
+		
+		VOMSExecutorService.instance().shutdownNow();
+		
+		NotificationService.instance().shutdownNow();
+		
 		HibernateFactory.getFactory().close();
 
 		log.info("VOMS admin stopped .");
 	}
 
-	public static Timer getTimer() {
-
-		return vomsTimer;
-	}
 }

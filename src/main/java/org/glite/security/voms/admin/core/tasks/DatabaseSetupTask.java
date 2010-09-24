@@ -304,7 +304,6 @@ public class DatabaseSetupTask extends TimerTask {
 		setupInternalCAs();
 		setupInternalAdmins();
 		
-			
 		VOMSVersionDAO.instance().setupVersion();
 
 		setupTasks();

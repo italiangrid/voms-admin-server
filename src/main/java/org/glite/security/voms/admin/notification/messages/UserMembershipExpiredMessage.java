@@ -19,9 +19,10 @@
  */
 package org.glite.security.voms.admin.notification.messages;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserMembershipExpiredMessage extends VelocityEmailNotification {
+public class UserMembershipExpiredMessage extends AbstractVelocityNotification {
 
 	VOMSUser user;
 
@@ -31,7 +32,15 @@ public class UserMembershipExpiredMessage extends VelocityEmailNotification {
 
 	@Override
 	protected void buildMessage() {
-		// TODO Auto-generated method stub
+		
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		String voName = conf.getVOName();
+		
+		setSubject(String.format("VO %s Membership expiration notification", voName));
+		context.put("voName", voName);
+		context.put("recipient", getRecipientList().get(0));
+		
+		super.buildMessage();
 
 	}
 

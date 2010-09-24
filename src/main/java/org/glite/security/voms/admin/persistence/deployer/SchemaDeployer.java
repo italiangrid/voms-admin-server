@@ -826,7 +826,7 @@ public class SchemaDeployer {
 
 		}
 
-		UpdateCATask caTask = UpdateCATask.instance(null);
+		UpdateCATask caTask = new UpdateCATask();
 		caTask.run();
 
 		DatabaseSetupTask task = DatabaseSetupTask.instance();

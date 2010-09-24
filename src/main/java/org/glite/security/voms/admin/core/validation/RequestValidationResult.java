@@ -1,12 +1,32 @@
-package org.glite.security.voms.admin.integration;
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
+package org.glite.security.voms.admin.core.validation;
 
 import java.util.List;
 
 
-public class ValidationResult {
+public class RequestValidationResult {
 	
 	
-	private static final ValidationResult SUCCESS_RESULT = new ValidationResult(Outcome.SUCCESS, null, null);
+	private static final RequestValidationResult SUCCESS_RESULT = new RequestValidationResult(Outcome.SUCCESS, null, null);
 	
 	public enum Outcome{
 		SUCCESS,
@@ -22,7 +42,7 @@ public class ValidationResult {
 	List<String> warningMessages;
 	
 	
-	private ValidationResult(Outcome status, String message, Throwable exception) {
+	private RequestValidationResult(Outcome status, String message, Throwable exception) {
 		
 		setOutcome(status);
 		setMessage(message);
@@ -74,19 +94,19 @@ public class ValidationResult {
 	}
 
 	
-	public static ValidationResult success(){
+	public static RequestValidationResult success(){
 		return SUCCESS_RESULT;
 	}
 	
 	
-	public static ValidationResult failure(String message){
+	public static RequestValidationResult failure(String message){
 		
-		return new ValidationResult(Outcome.FAILURE, message, null);
+		return new RequestValidationResult(Outcome.FAILURE, message, null);
 	}
 	
-	public static ValidationResult error(String message, Throwable exception){
+	public static RequestValidationResult error(String message, Throwable exception){
 		
-		return new ValidationResult(Outcome.ERROR, message, exception);
+		return new RequestValidationResult(Outcome.ERROR, message, exception);
 	}
 
 	/**

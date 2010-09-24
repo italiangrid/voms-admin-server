@@ -65,7 +65,7 @@ used to contact you in relation to this activity.
       <s:textfield name="surname" label="%{'Your surname'}" size="40" cssClass="registrationField" readonly="true" value="%{requester.surname}"/>
     </li>
     <li>
-      <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField" />
+      <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField" readonly="true" value="%{requester.institution}"/>
     </li>
     <li>
       <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField" />

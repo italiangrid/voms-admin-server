@@ -26,11 +26,11 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
-import org.glite.security.voms.admin.integration.ValidationManager;
-import org.glite.security.voms.admin.integration.ValidationResult;
-import org.glite.security.voms.admin.integration.ValidationResult.Outcome;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -68,7 +68,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	
 	String aupAccepted;
 
-	ValidationResult validationResult;
+	RequestValidationResult validationResult;
 	
 	protected void populateRequestModel(){
 		
@@ -106,7 +106,6 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		
 		populateRequestModel();		
 		
-		
 		// External plugin validation
 		validationResult = ValidationManager.instance().validateRequest(request);
 		if (!validationResult.getOutcome().equals(Outcome.SUCCESS)){
@@ -140,6 +139,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	}
 
 	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter your name.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getName() {
 		return name;
 	}
@@ -149,6 +149,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	}
 
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getSurname() {
 		return surname;
 	}
@@ -158,6 +159,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	}
 
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getInstitution() {
 		return institution;
 	}
@@ -167,6 +169,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	}
 
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getAddress() {
 		return address;
 	}
@@ -175,7 +178,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.address = address;
 	}
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phone number.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -208,7 +212,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	/**
 	 * @return the validationResult
 	 */
-	public ValidationResult getValidationResult() {
+	public RequestValidationResult getValidationResult() {
 		return validationResult;
 	}
 	
