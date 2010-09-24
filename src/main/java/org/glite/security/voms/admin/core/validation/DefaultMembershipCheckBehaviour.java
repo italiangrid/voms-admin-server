@@ -96,9 +96,7 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 						log.info("Suspeding user '" + u
 								+ "' that failed to sign AUP in time");
 
-						u.suspend(SuspensionReason.FAILED_TO_SIGN_AUP);
-						EventManager.dispatch(new UserSuspendedEvent(u,
-								SuspensionReason.FAILED_TO_SIGN_AUP));
+						ValidationManager.instance().suspendUser(u, SuspensionReason.FAILED_TO_SIGN_AUP);
 					}
 
 				}
@@ -127,8 +125,8 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 
 				log.debug("Suspending user '" + u
 						+ "' since its membership has expired.");
-				u.suspend(SuspensionReason.MEMBERSHIP_EXPIRATION);
-				EventManager.dispatch(new UserMembershipExpired(u));
+				
+				ValidationManager.instance().suspendUser(u, SuspensionReason.MEMBERSHIP_EXPIRATION);
 
 			}else{
 			    
