@@ -20,13 +20,10 @@
 
 package org.glite.security.voms.admin.core.validation;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
-import org.glite.security.voms.admin.event.user.UserMembershipExpired;
-import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -45,24 +42,22 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 	
 	public static final Logger log = LoggerFactory.getLogger(DefaultMembershipCheckBehaviour.class);
 
+	protected SendWarningToExpiringMembersStrategy expiringMembersStrategy = new SendWarningToExpiringMembersStrategy();
+	
+	
 	public List<VOMSUser> findAUPFailingMembers() {
 		
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 		VOMSUserDAO userDAO = VOMSUserDAO.instance();
 		
-		return userDAO.getAUPFailingUsers(aupDAO.getVOAUP());
+		return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
 		
 	}
 	
 	public List<VOMSUser> findExpiredMembers() {
 		
-		return VOMSUserDAO.instance().getExpiredUsers();
+		return VOMSUserDAO.instance().findExpiredUsers();
 		
-	}
-
-	public List<VOMSUser> findExpiringMembers() {
-		
-	    return Collections.emptyList();
 	}
 
 	
@@ -135,12 +130,21 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 		}
 	}
 
-	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
-	    	
-		return;
-
+	/**
+	 * @return
+	 * @see org.glite.security.voms.admin.core.validation.SendWarningToExpiringMembersStrategy#findExpiringMembers()
+	 */
+	public List<VOMSUser> findExpiringMembers() {
+	    return expiringMembersStrategy.findExpiringMembers();
 	}
 
+	/**
+	 * @param expiringMembers
+	 * @see org.glite.security.voms.admin.core.validation.SendWarningToExpiringMembersStrategy#handleMembersAboutToExpire(java.util.List)
+	 */
+	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
+	    expiringMembersStrategy.handleMembersAboutToExpire(expiringMembers);
+	}
 	
-
+	
 }

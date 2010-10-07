@@ -60,6 +60,7 @@
 						<td class="removeFromGroup"><s:form
 							action="remove-from-group" namespace="/user" theme="simple"
 							onsubmit="ajaxSubmit(this,'mappings-content'); return false;">
+							<s:token/>
 							<s:hidden name="userId" value="%{model.id}" />
 							<s:hidden name="groupId" value="%{#mapping.key.id}" />
 							<s:submit value="%{'Remove from this group'}" />

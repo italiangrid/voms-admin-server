@@ -496,7 +496,7 @@ public class SchemaDeployer {
 		
 		log.info("Adding implicit AUP sign records for vo users");
 		
-		List<VOMSUser> users  = VOMSUserDAO.instance().getAll();
+		List<VOMSUser> users  = VOMSUserDAO.instance().findAll();
 		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 		
 		for (VOMSUser u: users)

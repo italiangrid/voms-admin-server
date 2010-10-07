@@ -69,7 +69,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
 					.getVOMSPersonDAO();
 
-			List<VOMSUser> allUsers = VOMSUserDAO.instance().getAll();
+			List<VOMSUser> allUsers = VOMSUserDAO.instance().findAll();
 
 			for (VOMSUser u : allUsers) {
 

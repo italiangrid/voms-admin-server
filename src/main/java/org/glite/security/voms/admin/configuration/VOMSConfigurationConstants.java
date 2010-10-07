@@ -22,16 +22,26 @@ package org.glite.security.voms.admin.configuration;
 
 public interface VOMSConfigurationConstants {
 
+    	/**
+    	 * Internal property used to hold vo name
+    	 */
+    	public static final String VO_NAME = "voms.vo.name";
+    	
 	public static final String LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN = "voms.localhost.defaults.to.local.admin";
+	
 	public static final String READONLY = "voms.readonly";
+	
 	public static final String CAFILES = "voms.cafiles";
 	public static final String CAFILES_PERIOD = "voms.cafiles.period";
+	
+	
 	public static final String CREATE_EXPIRED_CAS = "voms.ca.create-when-expired";
 	public static final String DROP_EXPIRED_CAS = "voms.ca.drop-when-expired";
 	public static final String AUDITING = "voms.auditing";
 	public static final String AUDITING_INSERTS = "voms.auditing.inserts";
 	public static final String AUDITING_UPDATES = "voms.auditing.updates";
 	public static final String AUDITING_DELETIONS = "voms.auditing.deletions";
+	
 	public static final String SERVICE_EMAIL_ADDRESS = "voms.notification.email-address";
 	public static final String SERVICE_SMTP_SERVER = "voms.notification.smtp-server";
 	public static final String SERVICE_SMTP_SERVER_PORT = "voms.notification.smtp-server.port";
@@ -45,7 +55,7 @@ public interface VOMSConfigurationConstants {
 	 * VO Membership requests expiration time (in minutes).
 	 */
 	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo-membership-expiration-time";
-	public static final String VO_NAME = "voms.vo.name";
+	
 	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
 	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
 	public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
@@ -70,6 +80,8 @@ public interface VOMSConfigurationConstants {
 	 */
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
+	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
+	
 	/**
 	 * Attribute Authority Properties
 	 */

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -52,6 +53,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
 		@Result(name = BaseAction.INPUT, location = "addACLEntry") })
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class AddEntryAction extends ACLActionSupport {
 	
 	public static final Logger log = LoggerFactory.getLogger(AddEntryAction.class);
@@ -296,7 +299,7 @@ public class AddEntryAction extends ACLActionSupport {
 		entryTypeMap.put("anyone", "any authenticated user");
 		entryTypeMap.put("unauthenticated", "unauthenticated clients");
 		
-		if (!VOMSUserDAO.instance().getAll().isEmpty())
+		if (!VOMSUserDAO.instance().findAll().isEmpty())
 			entryTypeMap.put("vo-user", "a VO member certificate");
 		
 		entryTypeMap.put("role-admin","VO members with a specific role");

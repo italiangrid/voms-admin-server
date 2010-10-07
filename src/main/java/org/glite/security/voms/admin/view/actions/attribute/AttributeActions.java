@@ -65,7 +65,7 @@ public class AttributeActions extends BaseAction {
 	}
 
 	@Action(value = "create", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
-			"tokenSession.includeMethods", "create, delete" }) })
+			"token.includeMethods", "create, delete" }) })
 	public String create() throws Exception {
 
 		CreateAttributeDescriptionOperation.instance(attributeName,
@@ -76,7 +76,7 @@ public class AttributeActions extends BaseAction {
 
 	@SkipValidation
 	@Action(value = "delete", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
-			"tokenSession.includeMethods", "create, delete" }) })
+			"token.includeMethods", "create, delete" }) })
 	public String delete() throws Exception {
 
 		DeleteAttributeDescriptionOperation.instance(attributeName).execute();

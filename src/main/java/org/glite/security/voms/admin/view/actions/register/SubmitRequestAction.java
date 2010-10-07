@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.view.actions.register;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -48,7 +49,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
 		@Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR, location = "pluginValidationError")
 })
-
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class SubmitRequestAction extends RegisterActionSupport {
 
 	/**

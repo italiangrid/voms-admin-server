@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.admin;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -41,6 +42,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
 		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp") })
+		
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class DecisionAction extends RequestActionSupport {
 
 	/**

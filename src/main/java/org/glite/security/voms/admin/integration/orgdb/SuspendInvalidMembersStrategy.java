@@ -32,7 +32,7 @@ public class SuspendInvalidMembersStrategy implements
 	public void handleMissingMembershipRecord(VOMSUser u) {
 		
 		SuspensionReason reason = SuspensionReason.OTHER;
-		reason.setMessage("No record found for user {} inside CERN organization database.");
+		reason.setMessage(String.format("No record found for user '%s %s, %s' inside CERN organization database.", u.getName(), u.getSurname(), u.getEmailAddress()));
 		ValidationManager.instance().suspendUser(u, reason);
 
 	}

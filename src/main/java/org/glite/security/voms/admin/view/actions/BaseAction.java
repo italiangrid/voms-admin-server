@@ -38,13 +38,14 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ValidationAware;
 
 /**
  * @author andrea
  * 
  */
 
-public class BaseAction extends ActionSupport {
+public class BaseAction extends ActionSupport implements ValidationAware{
 
 	/**
 	 * 

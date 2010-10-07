@@ -1,4 +1,4 @@
-/**
+#*
  * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
  * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
@@ -16,25 +16,17 @@
  *
  * Authors:
  * 	Andrea Ceccanti (INFN)
- */
-package org.glite.security.voms.admin.operations.users;
+ *#
+Dear $recipient,
 
-import org.glite.security.voms.admin.operations.BaseVoReadOperation;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+this mail is to inform that your membership in VO $voName will expire
+on:
 
-public class ListUsersOperation extends BaseVoReadOperation {
+$expirationDate
 
-	protected ListUsersOperation() {
+After that date your membership for VO $voName will be suspended.
 
-	}
+Please contact your VO administrators for any questions.
 
-	protected Object doExecute() {
-
-		return VOMSUserDAO.instance().findAll();
-
-	}
-
-	public static ListUsersOperation instance() {
-		return new ListUsersOperation();
-	}
-}
+Your sincerely,
+Voms-Admin registration service for VO $voName

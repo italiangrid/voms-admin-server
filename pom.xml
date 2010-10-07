@@ -15,6 +15,7 @@
     <glite-services-namespace> http://glite.org/wsdl/services</glite-services-namespace>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <struts-version>2.2.1</struts-version>
   </properties>
   <developers>
     <developer>
@@ -498,24 +499,30 @@
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-core</artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-convention-plugin
       </artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-tiles-plugin</artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-json-plugin
       </artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.8.0.GA</version>
     </dependency>
      
     <!-- OpenSAML dependencies -->
@@ -552,7 +559,10 @@
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-ext-jdk15</artifactId>
         </exclusion>
-        
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>velocity</groupId>
           <artifactId>velocity</artifactId>

@@ -22,9 +22,11 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.groups.AddMemberOperation;
 import org.glite.security.voms.admin.operations.groups.RemoveMemberOperation;
 import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
@@ -36,7 +38,11 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "mappings.jsp"),
 		@Result(name = BaseAction.EDIT, location = "userDetail"),
-		@Result(name = BaseAction.INPUT, location = "mappings.jsp") })
+		@Result(name = BaseAction.INPUT, location = "mappings.jsp"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="mappings.jsp")})
+
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "assignRole,addToGroup,removeFromGroup,dismissRole" })
 public class MembershipActions extends UserActionSupport {
 
 	public static final Logger log = LoggerFactory.getLogger(MembershipActions.class);
@@ -50,6 +56,7 @@ public class MembershipActions extends UserActionSupport {
 	Long roleId;
 
 	@Action("add-to-group")
+	
 	public String addToGroup() throws Exception {
 
 		// log.debug(String.format("userId: %d, groupId: %d, roleId: %d",

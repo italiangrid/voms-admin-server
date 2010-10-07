@@ -19,3 +19,8 @@
     	Andrea Ceccanti (INFN)
 
 --%>
+<%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
+
+

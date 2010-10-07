@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -37,6 +38,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 	@Result(name=UserActionSupport.INPUT, location="userCreate" ),
 	@Result(name=UserActionSupport.SUCCESS, location="edit", type="redirectAction")
 })
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class CreateAction extends UserActionSupport{
 	
 	/**

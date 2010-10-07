@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -46,6 +47,9 @@ import org.glite.security.voms.admin.util.DNUtil;
 	@Result(name=UserActionSupport.ERROR,location="certificateRequest.jsp"),
 	@Result(name=UserActionSupport.INPUT,location="requestCertificate")
 })
+
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class RequestCertificateAction extends UserActionSupport {
 
 	/**

@@ -24,7 +24,7 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 	<constant name="struts.configuration.xml.reload" value="false" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
 	<constant name="struts.convention.classes.reload" value="true" />
@@ -66,11 +66,9 @@
                 <interceptor-ref name="searchAwareInterceptor"/>
                 <interceptor-ref name="logger"/>
                 
-                <interceptor-ref name="tokenSession">
-                  <param name="excludeMethods">*</param>
-                </interceptor-ref>
-                
                 <interceptor-ref name="authnInterceptor" />
+                
+                
                 
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>
@@ -98,6 +96,10 @@
                 
                 <interceptor-ref name="validation">
                     <param name="excludeMethods">input,back,cancel</param>    
+                </interceptor-ref>
+                
+                <interceptor-ref name="token">
+                  <param name="excludeMethods">*</param>
                 </interceptor-ref>
                 
                 <interceptor-ref name="workflow">

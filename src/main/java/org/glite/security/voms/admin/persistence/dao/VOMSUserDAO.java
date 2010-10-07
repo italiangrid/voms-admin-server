@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NotFoundException;
@@ -63,8 +61,12 @@ import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VOMSUserDAO {
 
@@ -176,7 +178,7 @@ public class VOMSUserDAO {
 
 	}
 
-	public List<VOMSUser> getUsersWithPendingSignAUPTask(AUP aup) {
+	public List<VOMSUser> findUsersWithPendingSignAUPTask(AUP aup) {
 
 		String queryString = "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
 
@@ -187,7 +189,7 @@ public class VOMSUserDAO {
 
 	}
 
-	public List<VOMSUser> getExpiredUsers() {
+	public List<VOMSUser> findExpiredUsers() {
 
 		Date now = new Date();
 
@@ -199,7 +201,7 @@ public class VOMSUserDAO {
 		return q.list();
 	}
 
-	public List<VOMSUser> getAUPFailingUsers(AUP aup) {
+	public List<VOMSUser> findAUPFailingUsers(AUP aup) {
 
 		List<VOMSUser> result = new ArrayList<VOMSUser>();
 
@@ -605,7 +607,7 @@ public class VOMSUserDAO {
 
 	public void deleteAll() {
 
-		Iterator users = getAll().iterator();
+		Iterator users = findAll().iterator();
 
 		while (users.hasNext())
 			delete((VOMSUser) users.next());
@@ -728,7 +730,7 @@ public class VOMSUserDAO {
 				userId);
 	}
 
-	public List getAll() {
+	public List findAll() {
 
 		Query q = HibernateFactory.getSession().createQuery(
 				"select u from VOMSUser u order by u.surname asc");
@@ -738,7 +740,7 @@ public class VOMSUserDAO {
 		return result;
 	}
 
-	public SearchResults getAll(int firstResults, int maxResults) {
+	public SearchResults findAll(int firstResults, int maxResults) {
 
 		SearchResults res = SearchResults.instance();
 		Query q = HibernateFactory.getSession().createQuery(
@@ -756,7 +758,7 @@ public class VOMSUserDAO {
 
 	}
 
-	public List getAllNames() {
+	public List findAllNames() {
 
 		String query = "select subjectString, ca.subjectString from Certificate";
 
@@ -857,7 +859,7 @@ public class VOMSUserDAO {
 
 		if (searchString == null || searchString.trim().equals("")
 				|| searchString.length() == 0)
-			return getAll(firstResults, maxResults);
+			return findAll(firstResults, maxResults);
 
 		SearchResults res = SearchResults.instance();
 
@@ -924,6 +926,39 @@ public class VOMSUserDAO {
 		HibernateFactory.getSession().update(u);
 		return u;
 
+	}
+	
+	public List<VOMSUser> findExpiringUsers(Integer[] integers){
+	    
+	    Criteria crit = HibernateFactory.getSession().createCriteria(VOMSUser.class);
+	    
+	    int min = 0;
+	    int max = 0;
+	    
+	    for (int i: integers){
+		if (i < min)
+		    min =i;
+		if (i > max)
+		    max = i;
+	    }
+	    
+	    Calendar cal = Calendar.getInstance();
+	    
+	    Date now = cal.getTime();
+	    cal.add(Calendar.DAY_OF_YEAR, min);
+	    
+	    Date minDate = cal.getTime();
+	    
+	    cal.setTime(now);
+	    cal.add(Calendar.DAY_OF_YEAR, max);
+	    
+	    Date maxDate = cal.getTime();
+	    
+	    crit.add(Restrictions.or(Restrictions.between("endTime", now, minDate), Restrictions.between("endTime", now, maxDate)));
+	    crit.add(Restrictions.eq("suspended", false));
+	    
+	    return crit.list();
+	    
 	}
 
 }

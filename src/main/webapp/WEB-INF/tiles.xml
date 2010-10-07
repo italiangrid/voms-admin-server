@@ -243,6 +243,11 @@
     
     <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
     
+    <definition name="tokenError" extends="empty-layout">
+        <put-attribute name="content" value="/WEB-INF/p/exception/tokenError.jsp"/>
+    </definition>
+    
+    
     <definition name="requestMembershipRemoval" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>
     </definition>
