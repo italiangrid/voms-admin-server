@@ -58,9 +58,6 @@
         <filter-name>rest-security-context-filter</filter-name>
         <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
     </filter>
-
-    
-    
 	
     <!-- Struts 2 filter mapping -->
     
@@ -74,14 +71,11 @@
         <url-pattern>*.action</url-pattern>
     </filter-mapping>
     
-    
-    
-	
 	<filter-mapping>
 		<filter-name>axis-hibernate-session-filter</filter-name>
 		<url-pattern>/services/*</url-pattern>
 	</filter-mapping>
-	
+     
     <filter-mapping>
         <filter-name>rest-security-context-filter</filter-name>
         <url-pattern>/generate-ac</url-pattern>

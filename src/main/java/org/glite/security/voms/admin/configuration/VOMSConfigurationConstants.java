@@ -112,4 +112,10 @@ public interface VOMSConfigurationConstants {
 	 * Executor service properties
 	 */
 	public static final String THREAD_POOL_SIZE_PROPERTY = "voms.background_tasks.thread_pool_size";
+	
+	/**
+	 * Axis Web services CSRF guard
+	 */
+	public static final String VOMS_CSRF_GUARD_LOG_ONLY = "voms.csrf.log_only"; 
+	
 }

@@ -36,7 +36,9 @@
 
 				<requestFlow>
 						<handler
-								type="java:org.glite.security.voms.admin.service.SecurityContextHandler" />
+								type="java:org.glite.security.voms.admin.service.CSRFGuardHandler" />
+                        <handler 
+                                type="java:org.glite.security.voms.admin.service.SecurityContextHandler"/>
 				</requestFlow>
 
 		</globalConfiguration>
@@ -134,11 +136,6 @@
 						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
 						languageSpecificType="java:org.glite.security.voms.User" />
 
-				<!-- Comment it out to enable logging of generated soap responses
-						<responseFlow>
-						<handler type="java:service.SoapMonitorHandler"/>
-						</responseFlow> 
-				-->
 		</service>
 		
 		<service
