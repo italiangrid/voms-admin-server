@@ -155,3 +155,12 @@ input.activeTextField, textarea.activeTextField{
 	-webkit-border-bottom-right-radius: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 }
+
+.userFormButtons{
+	display: inline;
+	
+}
+.lastUserFormButton{
+	float: right;
+	margin-left: 5px;	
+}

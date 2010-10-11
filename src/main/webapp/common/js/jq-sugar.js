@@ -397,7 +397,8 @@ function openSuspendDialog(node, dialogId, text){
 		
 		confirmFunc = function(){
 			
-			var suspensionReason = $('#suspensionReasonDialogField').val();
+			var formInputElem = '#'+dialogId + "_suspensionReasonInputField";
+			var suspensionReason = $(formInputElem).val();
 			
 			var form = $(node).closest('form');
 			

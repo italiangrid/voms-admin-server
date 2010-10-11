@@ -37,7 +37,6 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "mappings.jsp"),
-		@Result(name = BaseAction.EDIT, location = "userDetail"),
 		@Result(name = BaseAction.INPUT, location = "mappings.jsp"),
 		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="mappings.jsp")})
 
@@ -121,11 +120,6 @@ public class MembershipActions extends UserActionSupport {
 
 	}
 
-	@Action("edit")
-	public String edit() throws Exception {
-
-		return EDIT;
-	}
 
 	public Long getGroupId() {
 		return groupId;

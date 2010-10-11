@@ -44,6 +44,7 @@
 	<s:if test="#attr.canModify">  	
   		<s:form action="change-reacceptance-period" namespace="/aup" validate="true" cssStyle="clear:both; float: right">
       		<s:hidden name="aupId" value="%{id}"/>
+      		<s:token/>
 
       		<s:textfield name="period" value="%{model.reacceptancePeriod}" label="Reacceptance period (in days)" size="4" labelposition="left"/>
       		<s:submit value="%{'Change'}" align="right" cssStyle="margin-top: 5px"/>
@@ -94,6 +95,7 @@
           <s:else>
           	<s:if test="#attr.canModify">
             	<s:form action="set-active-version" namespace="/aup" theme="simple">
+            		<s:token/>
               		<s:hidden name="aupId" value="%{model.id}"/>
               		<s:hidden name="version" value="%{version}"/>
               		<s:submit value="%{'Set active'}"/>
@@ -106,6 +108,7 @@
         <s:if test="#attr.canModify">
           	<s:if test="%{versions.size > 1 and not active}">
             	<s:form action="remove-version" namespace="/aup" theme="simple">
+            		<s:token/>
               		<s:hidden name="aupId" value="%{model.id}"/>
               		<s:hidden name="version" value="%{version}"/>
               		<s:submit value="%{'Remove'}" onclick="openConfirmDialog(this, 'deleteAUPVersionDialog','%{version}'); return false"/>
@@ -113,6 +116,7 @@
           </s:if>
           <s:if test="active">
           	<s:form action="trigger-acceptance" theme="simple">
+          		<s:token/>
     			<s:submit value="%{'Trigger reacceptance'}" onclick="openConfirmDialog(this, 'triggerReacceptanceDialog','%{version}'); return false"/>      	
           	</s:form>
           </s:if>

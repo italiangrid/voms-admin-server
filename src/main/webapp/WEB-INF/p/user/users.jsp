@@ -68,7 +68,7 @@
     cellspacing="0"
     class="table"
   >
-    
+    <s:token/>
     <tr class="userBulkOperations">
       <td style="border: none">
         <s:checkbox 
@@ -77,10 +77,6 @@
           disabled="%{(not #attr.canCreate and not #attr.CanSuspend)}"
           theme="simple"
           />
-          
-        
-          
-          
       </td>
       <td colspan="2" style="border: none;">
         
@@ -197,57 +193,16 @@
           </ol>
           
           
-          <div class="actions" style="float: right; margin-top: 2em;">
-            <s:url action="edit" namespace="/user" var="editURL">
-              <s:param name="userId" value="id"/>
-            </s:url>
-            <s:a href="%{editURL}" cssClass="actionLink">
+          <div class="actions" style="float: right; margin-top: 2em">
+          
+          	<s:url action="load" var="userLoadURL">
+          		<s:param name="userId" value="id"/>	
+          	</s:url> 
+          	<s:a href="%{userLoadURL}" cssClass="actionLink">
               more info     
-            </s:a>
-         
-            <voms:hasPermissions var="canSuspend" 
-            context="/${voName}" 
-            permission="CONTAINER_READ|MEMBERSHIP_READ|SUSPEND"/>
-            
-            <s:if test="#attr.canSuspend and not suspended">
-         
-              <s:url action="suspend" namespace="/user" method="input" var="suspendURL">
-                <s:param name="userId" value="%{#user.id}"/>
-              </s:url>
-              <s:a href="%{suspendURL}" cssClass="actionLink">
-                suspend
-              </s:a>
-         
-            </s:if>
-            <s:if test="#attr.canSuspend and suspended">
-         
-              <s:url action="restore" namespace="/user" var="restoreURL">
-                <s:param name="userId" value="%{#user.id}"/>
-              </s:url>
-              
-              <s:a href="%{restoreURL}" cssClass="actionLink">
-                restore
-              </s:a>
-         
-            </s:if>
-         
-         <voms:hasPermissions var="canDelete" 
-            context="/${voName}" 
-            permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE"/>
-            
-          <s:if test="#attr.canDelete">
-            <s:url action="delete" namespace="/user" var="deleteURL">
-              <s:param name="userId" value="id"/>
-            </s:url>
-            <a href="${deleteURL}" class="actionLink" onclick="openConfirmDialog(this, 'deleteUserDialog','${shortName}'); return false;">
-              delete
-            </a>
-          
-          </s:if>
+          	</s:a>	  	
           </div>
-          
          </td>
-        
       </tr>
     </s:iterator>
   </table>

@@ -17,46 +17,22 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
+
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.apache.struts2.interceptor.TokenInterceptor;
-import org.glite.security.voms.admin.operations.SingleArgumentOperationCollection;
-import org.glite.security.voms.admin.operations.users.DeleteUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results({
-	
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
-	@Result(name = BaseAction.INPUT, location = "users"),
-	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location="users")
-	
-})
+@Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail")})
 
-@InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
-public class BulkDeleteAction extends UserBulkActionSupport {
+public class LoadAction extends UserActionSupport {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		SingleArgumentOperationCollection<Long> op = new SingleArgumentOperationCollection<Long>(userIds, DeleteUserOperation.class);
-		op.execute();
-		
-		
-		addActionMessage("Users deleted!");
-		
-		return SUCCESS;
-	}
-	
+    @Override
+    public String execute() throws Exception {
+        
+        return SUCCESS;
+    }
 }

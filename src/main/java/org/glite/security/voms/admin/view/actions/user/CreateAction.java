@@ -36,7 +36,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 @Results({
 	@Result(name=UserActionSupport.INPUT, location="userCreate" ),
-	@Result(name=UserActionSupport.SUCCESS, location="edit", type="redirectAction")
+	@Result(name=UserActionSupport.SUCCESS, location="load", type="redirectAction")
 })
 @InterceptorRef(value = "authenticatedStack", params = {
 		"token.includeMethods", "execute" })

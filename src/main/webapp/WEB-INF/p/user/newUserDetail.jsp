@@ -51,27 +51,30 @@
 
 <div class="userAdminActions">
   <s:if test="#attr.canSuspend">
-    <s:url action="suspend" var="suspendUsrURL" method="input">
-      <s:param name="userId" value="id"/>
-    </s:url>
-    <s:url action="restore" var="restoreUsrURL">
-      <s:param name="userId" value="id"/>
-    </s:url>
+    
     <s:if test="suspended">
-      <a href="${restoreUsrURL}" class="actionLink">Restore this user</a>
+    	<s:form action="restore" theme="simple" cssStyle="display:inline">
+    		<s:token/>
+    		<s:hidden name="userId" value="%{id}"/>
+    		<s:submit value="%{'Restore this user'}"/>
+    	</s:form>
     </s:if>
     <s:else>
-      <a href="${suspendUsrURL}" class="actionLink">Suspend this user</a>
+    	<s:form action="suspend" theme="simple" cssStyle="display:inline">
+    		<s:token/>
+    		<s:hidden name="userId" value="%{id}"/>
+    		<s:submit value="%{'Suspend this user'}" onclick="return openSuspendDialog(this, 'suspendUserDialog','%{shortName}');"/>
+    	</s:form>
     </s:else>
     
     </s:if>
     
 	<s:if test="#attr.canDelete">
-		<s:url action="delete" var="deleteUsrURL">
-			<s:param name="userId" value="id"/>
-		</s:url>
-	
-		<a href="${deleteUsrURL}" class="actionLink" onclick="openConfirmDialog(this, 'deleteUserDialog','${shortName}'); return false">Delete this user</a>
+		<s:form action="delete" theme="simple" cssStyle="display:inline">
+    		<s:token/>
+    		<s:hidden name="userId" value="%{id}"/>
+    		<s:submit value="%{'Delete this user'}" onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
+    	</s:form>
 	
 	</s:if>
 </div>
