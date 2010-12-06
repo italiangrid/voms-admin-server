@@ -130,14 +130,6 @@
             it.infn.cnaf.voms.x509.ACServlet
         </servlet-class>
     </servlet>
-    
-    <servlet>
-        <servlet-name>voms-third-party-servlet</servlet-name>
-        <servlet-class>
-            org.glite.security.voms.admin.servlets.rest.AAServlet
-        </servlet-class>
-    </servlet>
-    
 
 	<!-- Axis servlet mapping -->
 	<servlet-mapping>
@@ -159,12 +151,6 @@
         <servlet-name>voms-ac-servlet</servlet-name>
         <url-pattern>/generate-ac</url-pattern>
     </servlet-mapping>
-    
-    <servlet-mapping>
-        <servlet-name>voms-third-party-servlet</servlet-name>
-        <url-pattern>/get-attributes</url-pattern>
-    </servlet-mapping>
-  
     
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
