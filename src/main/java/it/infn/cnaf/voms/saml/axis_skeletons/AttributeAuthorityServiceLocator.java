@@ -27,6 +27,11 @@
 
 package it.infn.cnaf.voms.saml.axis_skeletons;
 
+import javax.xml.rpc.Stub;
+
+import org.apache.axis.transport.http.HTTPConstants;
+import org.glite.security.voms.admin.service.CSRFGuardHandler;
+
 public class AttributeAuthorityServiceLocator extends org.apache.axis.client.Service implements it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityService {
 
     public AttributeAuthorityServiceLocator() {
@@ -51,6 +56,7 @@ public class AttributeAuthorityServiceLocator extends org.apache.axis.client.Ser
     // The WSDD service name defaults to the port name.
     private java.lang.String AttributeAuthorityPortTypeWSDDServiceName = "AttributeAuthorityPortType";
 
+    
     public java.lang.String getAttributeAuthorityPortTypeWSDDServiceName() {
         return AttributeAuthorityPortTypeWSDDServiceName;
     }

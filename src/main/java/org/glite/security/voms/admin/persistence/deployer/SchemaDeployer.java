@@ -1626,12 +1626,4 @@ public class SchemaDeployer {
 		}
 	}
 
-	private void testDialect(){
-		
-		System.out.println(dialect.getCreateTableString());
-		System.out.println(dialect.getDropForeignKeyString());
-		System.out.println(dialect.dropConstraints());
-		
-		
-	}
 }

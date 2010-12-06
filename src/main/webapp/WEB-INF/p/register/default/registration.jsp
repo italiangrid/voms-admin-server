@@ -48,6 +48,7 @@ used to contact you in relation to this activity.
 </p>
 
 <s:form action="submit-request" validate="true">
+	<s:token/>
   
   <h2 style="color: black">Your certificate subject (DN):</h2>
   <div class="highlight" style="font-size: 14px">

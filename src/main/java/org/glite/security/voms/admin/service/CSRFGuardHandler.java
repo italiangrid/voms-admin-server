@@ -43,9 +43,16 @@ public class CSRFGuardHandler extends BasicHandler {
     
     public static final Logger log = LoggerFactory.getLogger(CSRFGuardHandler.class);
     
+    public static final String[] uncheckedServices = {"VOMSSaml", "VOMSCompatibility"};
     
     
     public void invoke(MessageContext msgContext) throws AxisFault {
+	
+	// Don't check readonly services
+	for (String uncheckedService: uncheckedServices)
+	    if (uncheckedService.equals(msgContext.getTargetService()))
+		    return;    
+	
 	
 	HttpServletRequest httpReq = (HttpServletRequest) MessageContext
 		.getCurrentContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
