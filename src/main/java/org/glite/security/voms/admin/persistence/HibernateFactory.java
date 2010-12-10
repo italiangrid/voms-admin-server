@@ -66,6 +66,16 @@ public class HibernateFactory {
 
 	}
 
+	
+	
+	public static synchronized void shutdown(){
+	    
+	    if (sessionFactory != null)
+		sessionFactory.close();
+	    
+	}
+	
+	
 	public static SessionFactory getFactory() {
 
 		return sessionFactory;

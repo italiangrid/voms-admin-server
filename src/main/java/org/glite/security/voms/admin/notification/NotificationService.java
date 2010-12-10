@@ -50,6 +50,19 @@ public class NotificationService {
 	    	executorService.submit(new NotificationRunner(outgoingMessages));
 	    	
 	}
+	
+	
+	public synchronized static void shutdown(){
+	    
+	    if (singleton == null){
+		log.debug("Notification service has not been started and, as such, cannot be shut down.");
+		return;
+	    }
+	
+	    
+	    singleton.shutdownNow();
+	    
+	}
 
 	public synchronized static NotificationService instance() {
 
@@ -58,6 +71,8 @@ public class NotificationService {
 
 		return singleton;
 	}
+	
+	
 
 	public void send(EmailNotification n) {
 
@@ -132,7 +147,7 @@ public class NotificationService {
 	 * @return
 	 * @see java.util.concurrent.ExecutorService#shutdownNow()
 	 */
-	public List<Runnable> shutdownNow() {
+	protected List<Runnable> shutdownNow() {
 	    return executorService.shutdownNow();
 	}
 	

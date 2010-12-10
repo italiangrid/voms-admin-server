@@ -53,6 +53,16 @@ public class VOMSExecutorService {
 		executorService = Executors.newScheduledThreadPool(threadPoolSize);
 	}
 	
+	public static synchronized void shutdown(){
+	    
+	    if (INSTANCE == null){
+		log.debug("Executor service has not been started and, as such, cannot be shut down");
+		return;
+	    }
+	    
+	    INSTANCE.shutdownNow();
+	}
+	
 	public static synchronized VOMSExecutorService instance(){
 		if (INSTANCE == null)
 			INSTANCE = new VOMSExecutorService();
@@ -139,7 +149,7 @@ public class VOMSExecutorService {
 	 * @return
 	 * @see java.util.concurrent.ExecutorService#shutdownNow()
 	 */
-	public List<Runnable> shutdownNow() {
+	protected List<Runnable> shutdownNow() {
 		return executorService.shutdownNow();
 	}
 

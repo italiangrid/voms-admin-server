@@ -204,11 +204,11 @@ public final class VOMSService {
 
 	public static void stop() {
 		
-		VOMSExecutorService.instance().shutdownNow();
+		VOMSExecutorService.shutdown();
 		
-		NotificationService.instance().shutdownNow();
+		NotificationService.shutdown();
 		
-		HibernateFactory.getFactory().close();
+		HibernateFactory.shutdown();
 
 		log.info("VOMS admin stopped .");
 	}
