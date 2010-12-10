@@ -64,7 +64,7 @@ public class AAServlet extends ACServlet {
 	
 	String voMember = request.getParameter("dn");
 	
-	if (voMember == null || voMember.isEmpty())
+	if (voMember == null || "".equals(voMember))
 	    voMember = CurrentAdmin.instance().getRealSubject();
 	
 		
