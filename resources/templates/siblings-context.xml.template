@@ -1,7 +1,7 @@
 <Context path="/vomses" 
 		docBase="@WAR_FILE@"
-        debug="0" 
-        reloadable="true">
+        debug="0"
+        reloadable="false" unpackWAR="false">
                
         <Environment name="VO_NAME" value="siblings" type="java.lang.String"/>      
         <Environment name="GLITE_LOCATION" value="@GLITE_LOCATION@" type="java.lang.String"/>

@@ -629,7 +629,7 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
    
     
