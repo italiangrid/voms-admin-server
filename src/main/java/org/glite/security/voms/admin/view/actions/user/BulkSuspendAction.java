@@ -30,6 +30,9 @@ import org.glite.security.voms.admin.operations.DoubleArgumentOperationCollectio
 import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 @Results({
 	
@@ -49,6 +52,7 @@ public class BulkSuspendAction extends UserBulkActionSupport {
 	String suspensionReason;
 	
 
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
 	public String getSuspensionReason() {
 		return suspensionReason;
 	}

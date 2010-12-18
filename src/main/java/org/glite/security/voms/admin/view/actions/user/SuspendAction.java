@@ -27,9 +27,13 @@ import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "userDetail")
+		@Result(name = BaseAction.SUCCESS, location = "userDetail"),
+		@Result(name = BaseAction.INPUT, location = "userDetail")
 })
 		
 @InterceptorRef(value = "authenticatedStack", params = {
@@ -55,6 +59,7 @@ public class SuspendAction extends UserActionSupport {
 	}
 
 
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
 	public String getSuspensionReason() {
 		return suspensionReason;
 	}
