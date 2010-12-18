@@ -57,6 +57,7 @@
 				<td style="vertical-align: bottom; text-align: right;">
 				<s:form
 					action="drop-request" onsubmit="ajaxSubmit($(this),'pending-req-content'); return false;">
+					<s:token/>
 					<s:hidden name="requestId" value="%{id}" />
 					<s:submit value="%{'Drop this request'}"/>
 				</s:form>
