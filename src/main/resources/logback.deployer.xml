@@ -42,7 +42,7 @@
         connecting to the database or need more information about how the connection
         pool is handled.
      -->
-    <logger name="com.mchange" level="WARN" />
+    <logger name="com.mchange" level="ERROR" />
     
     <!-- NORMALLY YOU SHOULDN'T EDIT BELOW THIS POINT -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
