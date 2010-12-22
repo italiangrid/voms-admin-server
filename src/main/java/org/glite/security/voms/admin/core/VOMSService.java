@@ -42,6 +42,7 @@ import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.notification.CertificateRequestsNotificationDispatcher;
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.MembershipRemovalNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
@@ -124,6 +125,8 @@ public final class VOMSService {
 		VOMembershipNotificationDispatcher.instance();
 		
 		CertificateRequestsNotificationDispatcher.instance();
+		
+		MembershipRemovalNotificationDispatcher.instance();
 	}
 	
 	

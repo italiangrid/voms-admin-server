@@ -83,7 +83,7 @@ public class CreateAction extends UserActionSupport{
 		return SUCCESS;
 	}
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The namel field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a name for the user.")
 	public String getTheName() {
 		return theName;

@@ -29,7 +29,7 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskStatusUpdater implements Runnable {
+public class TaskStatusUpdater implements Runnable, RegistrationServiceTask {
 
 	public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
 	

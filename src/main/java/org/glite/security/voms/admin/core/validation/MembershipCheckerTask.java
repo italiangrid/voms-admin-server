@@ -22,11 +22,12 @@ package org.glite.security.voms.admin.core.validation;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.core.tasks.RegistrationServiceTask;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MembershipCheckerTask extends AbstractMembershipChecker implements Runnable{
+public class MembershipCheckerTask extends AbstractMembershipChecker implements Runnable, RegistrationServiceTask{
 	
 	public static final Logger log = LoggerFactory.getLogger(MembershipCheckerTask.class);
 

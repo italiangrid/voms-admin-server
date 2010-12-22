@@ -30,7 +30,7 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExpiredRequestsPurgerTask implements Runnable{
+public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceTask{
 
 	private static final Logger log = LoggerFactory
 			.getLogger(ExpiredRequestsPurgerTask.class);

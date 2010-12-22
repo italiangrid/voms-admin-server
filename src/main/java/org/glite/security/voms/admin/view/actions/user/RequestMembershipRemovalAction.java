@@ -34,6 +34,10 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userHome"),
 		@Result(name = BaseAction.INPUT, location = "requestMembershipRemoval"),
@@ -82,6 +86,8 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
 		return SUCCESS;
 	}
 
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the reason field!")
+	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter a reason.")
 	public String getReason() {
 		return reason;
 	}

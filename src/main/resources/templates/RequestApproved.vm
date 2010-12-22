@@ -39,6 +39,10 @@ issuer: $request.certificateIssuer
 
 is now active for your VOMS membership.
 
+#elseif ( $request.class.simpleName == 'MembershipRemovalRequest')
+
+You are no longer part of the $voName VO.
+
 #end
 
 Your sincerely,

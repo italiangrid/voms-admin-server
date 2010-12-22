@@ -79,7 +79,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 	}
 
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The namel field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getTheName() {
 		return theName;
 	}

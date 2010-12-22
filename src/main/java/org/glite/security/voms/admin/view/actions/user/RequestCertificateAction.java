@@ -39,6 +39,9 @@ import org.glite.security.voms.admin.persistence.model.request.CertificateReques
 import org.glite.security.voms.admin.util.CertUtil;
 import org.glite.security.voms.admin.util.DNUtil;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 
 @Results({
@@ -67,7 +70,7 @@ public class RequestCertificateAction extends UserActionSupport {
 	public void validate(){
 		
 		CertificateDAO dao = CertificateDAO.instance();
-		
+		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
 		if (certificateFile != null){
 			
 			X509Certificate cert = null;
@@ -77,7 +80,7 @@ public class RequestCertificateAction extends UserActionSupport {
 				
 			} catch (Throwable e) {
 				
-				addFieldError("certificateFile","Error parsing certificate passed as argument: "+e.getMessage()+". Please upload a valid X509, PEM encoded certificate.");
+				addFieldError("certificateFile","Error parsing certificate passed as argument. Please upload a valid X509, PEM encoded certificate.");
 				return;
 			}
 			
@@ -89,14 +92,26 @@ public class RequestCertificateAction extends UserActionSupport {
 			if (dao.find(cert) != null)
 				addFieldError("certificateFile","Certificate already bound!");
 			
+			
 			subject = DNUtil.getBCasX500(cert.getSubjectX500Principal());
 			caSubject = DNUtil.getBCasX500(cert.getIssuerX500Principal());
+			
+			if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)){
+			    addFieldError("certificateFile", "You already have a pending request for this certificate!");
+			    
+			}
 			
 		}else if (subject!= null && !"".equals(subject)){
 			
 			if (dao.findByDNCA(subject, caSubject) != null){
 				addFieldError("subject", "Certificate already bound!");
 				addFieldError("caSubject", "Certificate already bound!");
+				return;
+			}
+			
+			if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)){
+			    addFieldError("subject", "You already have a pending request for this certificate!");
+			    addFieldError("caSubject", "You already have a pending request for this certificate!");
 			}
 		}else{
 			
@@ -114,6 +129,7 @@ public class RequestCertificateAction extends UserActionSupport {
 		this.certificateFile = certificateFile;
 	}
 	
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
 	public String getSubject() {
 		return subject;
 	}
@@ -122,6 +138,7 @@ public class RequestCertificateAction extends UserActionSupport {
 		this.subject = subject;
 	}
 	
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
 	public String getCaSubject() {
 		return caSubject;
 	}

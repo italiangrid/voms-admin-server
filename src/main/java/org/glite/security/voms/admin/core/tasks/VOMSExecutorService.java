@@ -98,9 +98,14 @@ public class VOMSExecutorService {
 		
 		boolean readOnly = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false);
 		
-		if (!registrationEnabled || readOnly ) {
-			log.info("Task {} not started since the VOMS registration service for this VO is DISABLED or this instance is read-only.", task.getClass().getSimpleName());
+		if ( readOnly ) {
+			log.info("Task {} not started since this instance is read-only.", task.getClass().getSimpleName());
 			return;
+		}
+		
+		if ( !registrationEnabled && task instanceof RegistrationServiceTask) {
+		    log.info("Task {} not started since registration is DISABLED for this VO.", task.getClass().getSimpleName());
+		    return;
 		}
 		
 		Long period = getPeriod(periodPropertyName, defaultPeriod);
