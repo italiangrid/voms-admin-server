@@ -51,7 +51,7 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			return REGISTRATION_DISABLED;
 
 		if (!getModel().getStatus().equals(STATUS.SUBMITTED)){
-			addActionError("You request has already been confirmed!");
+			addActionError("Your request has already been confirmed!");
 			return ERROR;
 		}
 			

@@ -90,6 +90,7 @@
 	<s:if test="#request.registrationEnabled">
 	
 		<s:form action="request-certificate" namespace="/user">
+			<s:token/>
 			<s:hidden name="userId" value="%{model.id}" />
 			<s:submit value="%{'Request new certificate'}" method="input" align="right"/>
 		</s:form>

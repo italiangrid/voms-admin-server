@@ -69,6 +69,7 @@
       value="%{'reject'}" name="decision"/>
   </li>
   <li>
+  	<s:token/>
     <s:hidden name="requestId" value="%{model.id}"/>
     <s:submit/>
   </li>

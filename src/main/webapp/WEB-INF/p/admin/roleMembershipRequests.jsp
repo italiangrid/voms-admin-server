@@ -43,6 +43,7 @@
 
 				<td style="vertical-align: bottom; text-align: right"><s:form
 					action="decision">
+					<s:token/>
 					<s:hidden name="requestId" value="%{id}" />
 					<s:radio list="{'approve','reject'}" name="decision"
 						onchange="ajaxSubmit($(this).closest('form'),'pending-req-content'); return false;" />
