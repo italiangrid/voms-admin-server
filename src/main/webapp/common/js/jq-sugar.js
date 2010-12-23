@@ -60,6 +60,16 @@ function disableIfNoPermission(node,gid,rid,perms){
 	
 }
 
+function enableAddToGroupForm(){
+	
+	$('#add-to-group').map(function(){
+			
+		var gid = $(this).find('[name="groupId"]').val();
+		disableIfNoPermission($(this).find(':submit'), gid, null, 'CONTAINER_READ|MEMBERSHIP_READ|MEMBERSHIP_WRITE');
+		
+		return this;
+	});
+}
 
 function enableDeleteRoleAttributeForms(){
 	 
@@ -210,6 +220,8 @@ function eyeCandy(){
 		else
 			$(this).closest('tr').removeClass('userSelected');
 	});
+	
+	
 }
 
 function countSelectedUsers(){

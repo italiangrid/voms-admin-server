@@ -36,7 +36,7 @@
 		<s:token />
 		<s:hidden name="userId" value="%{model.id}" />
 		<s:select list="#attr.unsubscribedGroups" listKey="id"
-			listValue="name" name="groupId" />
+			listValue="name" name="groupId" onchange="enableAddToGroupForm();"/>
 		<s:submit value="%{'Add to group'}" />
 	</s:form></div>
 </s:if>
