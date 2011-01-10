@@ -21,7 +21,9 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<div class="reloadable">
 
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <voms:authorized permission="CONTAINER_READ|CONTAINER_WRITE"
 	context="vo">
@@ -70,17 +72,17 @@
 					test="#attr.canSuspend and not suspended">
 
 					<s:form action="suspend-certificate" namespace="/user"
-						theme="simple" cssClass="cert-operation-forms" method="input">
+						cssClass="cert-operation-forms" onsubmit="ajaxSubmit(this,'cert-info-content');" method="post">
 						<s:token />
 						<s:hidden name="userId" value="%{model.id}" />
 						<s:hidden name="certificateId" value="%{#cert.id}" />
-						<s:submit value="%{'Suspend'}" />
+						<s:submit value="%{'Suspend'}" onclick=" return openSuspendDialog(this, 'suspendCertificateDialog','%{#cert.subjectString}');" />
 					</s:form>
 				</s:if> <s:if test="#attr.canSuspend and suspended">
 
 					<s:if test="not user.suspended">
 						<s:form action="restore-certificate" namespace="/user"
-							theme="simple" cssClass="cert-operation-forms">
+							cssClass="cert-operation-forms" onsubmit="ajaxSubmit(this,'cert-info-content'); return false;">
 							<s:token />
 							<s:hidden name="userId" value="%{model.id}" />
 							<s:hidden name="certificateId" value="%{#cert.id}" />
@@ -112,3 +114,5 @@
 		</s:iterator>
 	</table>
 </s:else>
+
+</div>

@@ -418,7 +418,14 @@ function openSuspendDialog(node, dialogId, text){
 			
 			form.append("<input type='hidden' name='suspensionReason' value='"+suspensionReason+"'/>");
 			
-			form.submit();
+			if ($(node).attr('form').onsubmit != undefined){
+				
+				$(node).attr('form').onsubmit();
+				$('#'+dialogId).dialog('destroy');
+				return false;
+			}
+			else
+				form.submit();
 				
 		};
 		
@@ -434,7 +441,7 @@ function openSuspendDialog(node, dialogId, text){
 	$('#'+dialogId+" .dialogMessage").text(text);
 	
 	$('#'+dialogId).dialog({resizable: false,
-		width: 600,
+		width: 800,
 		modal: true,
 		closeOnEscape: true,
 		autoOpen: false,

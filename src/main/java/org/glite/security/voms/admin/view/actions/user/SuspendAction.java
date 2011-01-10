@@ -23,6 +23,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -33,7 +34,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.INPUT, location = "userDetail")
+		@Result(name = BaseAction.INPUT, location = "userDetail"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="userDetail")
 })
 		
 @InterceptorRef(value = "authenticatedStack", params = {

@@ -21,6 +21,13 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<div id="suspendCertificateDialog" title="Suspend certificate?" style="display:none" class="dialog">
+	<p>Suspend certificate:</p>
+	<div class="dialogMessage"></div>
+	<label for="suspensionReason">Suspension reason:</label>
+  	<input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspendCertificateDialog_suspensionReasonInputField"/>
+</div>
+
 <div id="suspendUserDialog" title="Suspend user?" style="display: none" class="dialog">
 	<p>Suspend user:</p>
 	<div class="dialogMessage"></div>

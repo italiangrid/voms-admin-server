@@ -1,6 +1,31 @@
 Changes
 -------------
 
+---+ voms-admin-server v. 2.5.5
+
+Fixes for the following bugs:
+
+https://savannah.cern.ch/bugs/?45425: VOMS Admin gives terrifying error message when database is not reachable  
+https://savannah.cern.ch/bugs/?45567:  VOMS Admin background tasks are not resilient to transient database failures
+https://savannah.cern.ch/bugs/?55988:  VOMS Admin should provide a way to see and manage unconfirmed request
+https://savannah.cern.ch/bugs/?60323:  [VOMS-ADMIN-2.5] Unhandled exception on adding ACL for a non-VO member
+https://savannah.cern.ch/bugs/?62266:  VOMS-Admin shows error to VO applicant if there is an SMTP error delivering a notification to a VO-admin 
+https://savannah.cern.ch/bugs/?68966:  membership expiration date format problem  
+https://savannah.cern.ch/bugs/?76587:  [VOMS-Admin] There are possible vulnerabilities in VOMS-Admin  
+https://savannah.cern.ch/bugs/?76610:  [VOMS] yaim voms ships confusing template configuration files  
+https://savannah.cern.ch/bugs/?76628:  [VOMS Admin] User request forms do not work as expected  
+https://savannah.cern.ch/bugs/?76837:  [VOMS Admin] Registration should be turned off when the service is started in read only mode  
+https://savannah.cern.ch/bugs/?76838:  [VOMS Admin] VOMS admin CA updater not started when registration is disabled  
+https://savannah.cern.ch/bugs/?76839:  [VOMS Admin] No notification sent to users when a membership removal request is approved/rejected by administrators  
+https://savannah.cern.ch/bugs/?76840:  [VOMS Admin] No notification is sent to administrators when a membership removal request is submitted by users 
+https://savannah.cern.ch/bugs/?76841:  [VOMS Admin] Submitting a request for the same certificate twice causes a stack trace to be printed  
+https://savannah.cern.ch/bugs/?76842:  [VOMS Admin] The notification delivery fails when all the admins have empty email addresses
+
+New features:
+
+
+
+
 ---+ voms-admin-server v. 2.5.4
 
 Fixes for the following bugs:

@@ -98,12 +98,12 @@
                     <param name="excludeMethods">input,back,cancel</param>    
                 </interceptor-ref>
                 
-                <interceptor-ref name="token">
-                  <param name="excludeMethods">*</param>
-                </interceptor-ref>
-                
                 <interceptor-ref name="workflow">
                     <param name="excludeMethods">input,back,cancel</param>
+                </interceptor-ref>
+                
+                <interceptor-ref name="token">
+                  <param name="excludeMethods">*</param>
                 </interceptor-ref>
                 
                 <interceptor-ref name="hibernateInterceptor" />
