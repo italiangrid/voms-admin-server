@@ -23,7 +23,21 @@ https://savannah.cern.ch/bugs/?76842:  [VOMS Admin] The notification delivery fa
 
 New features:
 
+* Configurable anti-CSRF filter on the web service interfaces
 
+Now also the VOMS admin web service interfaces are protected against Cross Site Request Forgery attacks. 
+As this feature breaks compatibility with existing clients it is turned off by default.
+The feature can be activated by setting the property:
+
+voms.csrf.log_only = false
+
+in the voms.service.properties file for the VO being configured.
+ 
+
+* Check connectivity method in voms-db-deploy.py 
+
+The voms-db-deploy.py script now provides a check-connectivity method that can be used to verify the credentials
+used to access the database.
 
 
 ---+ voms-admin-server v. 2.5.4
