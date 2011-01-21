@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glite.voms</groupId>
   <artifactId>voms-admin-server</artifactId>
@@ -10,11 +14,13 @@
   </url>
   <properties>
   	<age>1</age>
-  	<server-version>2.5.3</server-version>
-    <interface-version>2.0.2</interface-version>
+  	<server-version>2.5.5</server-version>
+  	<interface-version>2.0.2</interface-version>
     <glite-services-namespace> http://glite.org/wsdl/services</glite-services-namespace>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <struts-version>2.2.1</struts-version>
+    <axis-version>1.2.1</axis-version>
   </properties>
   <developers>
     <developer>
@@ -391,6 +397,7 @@
       <artifactId>hibernate</artifactId>
       <version>3.2.6.ga</version>
     </dependency>
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-annotations</artifactId>
@@ -409,6 +416,14 @@
       <version>2.0</version>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
@@ -450,31 +465,42 @@
       <artifactId>bcprov-ext-jdk15</artifactId>
       <version>1.44</version>
     </dependency>
+    
+    <!-- AXIS  -->
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis</artifactId>
-      <version>1.2.1</version>
+      <version>${axis-version}</version>
     </dependency>
+    
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis-jaxrpc</artifactId>
-      <version>1.2.1</version>
+      <version>${axis-version}</version>
     </dependency>
+    
+    <!-- 
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis-wsdl4j</artifactId>
-      <version>1.2.1</version>
+      <version>${axis-version}</version>
     </dependency>
+    -->
+    
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis-saaj</artifactId>
-      <version>1.2.1</version>
+      <version>${axis-version}</version>
     </dependency>
+
+     
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.0.7</version>
     </dependency>
+    
+    
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
@@ -485,37 +511,44 @@
     <dependency>
       <groupId>org.glite.security</groupId>
       <artifactId>trustmanager</artifactId>
-      <version>2.0.5</version>
+      <version>2.5.5</version>
+      <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.glite.security</groupId>
       <artifactId>util-java</artifactId>
-      <version>2.0.1</version>
+      <version>2.8.6</version>
     </dependency>
 
     <!-- Struts 2.x dependencies -->
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-core</artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-convention-plugin
       </artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-tiles-plugin</artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-json-plugin
       </artifactId>
-      <version>2.1.8.1</version>
+      <version>${struts-version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.8.0.GA</version>
     </dependency>
      
     <!-- OpenSAML dependencies -->
@@ -552,7 +585,10 @@
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-ext-jdk15</artifactId>
         </exclusion>
-        
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>velocity</groupId>
           <artifactId>velocity</artifactId>
@@ -560,7 +596,52 @@
       </exclusions>
     </dependency>
     
+    <!-- XML PARSER STUFF -->
+    <dependency>
+        <groupId>org.apache.xerces</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>2.9.1</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.9.1</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.xerces</groupId>
+        <artifactId>resolver</artifactId>
+        <version>2.9.1</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.1</version>
+        <scope>provided</scope>
+    </dependency>   
+    
+    <dependency>
+        <groupId>org.apache.xerces</groupId>
+        <artifactId>serializer</artifactId>
+        <version>2.9.1</version>
+        <scope>provided</scope>
+    </dependency>
+    
     <!-- LOGGING STUFF -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <scope>runtime</scope>
+    </dependency>
+   
+    
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -585,32 +666,6 @@
         <artifactId>logback-classic</artifactId>
         <version>0.9.18</version>
     </dependency>
-    
-    <!-- 
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.mail</groupId>
-          <artifactId>mail</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.jms</groupId>
-          <artifactId>jms</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jdmk</groupId>
-          <artifactId>jmxtools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jmx</groupId>
-          <artifactId>jmxri</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    -->
      
   </dependencies>
   

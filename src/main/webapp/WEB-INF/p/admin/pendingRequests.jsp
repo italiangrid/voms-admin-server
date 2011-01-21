@@ -21,13 +21,18 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<div class="reloadable"><s:if test="pendingRequests.empty">
+
+<div class="reloadable">
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
+
+<s:if test="pendingRequests.empty">
   No pending requests found.
 </s:if> <s:else>
-	<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
-
+	
 	<!-- Membership requests -->
-
+	
+	<tiles2:insertTemplate template="unconfirmedVoMembershipRequests.jsp" />
+	
 	<tiles2:insertTemplate template="voMembershipRequests.jsp" />
 
 	<tiles2:insertTemplate template="groupMembershipRequests.jsp" />

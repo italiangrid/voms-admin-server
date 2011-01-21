@@ -52,7 +52,7 @@ public class CancelRequestAction extends RegisterActionSupport {
 		
 		if (!request.getStatus().equals(STATUS.SUBMITTED)){
 			
-			addActionError("Your request has already been canceled!");
+			addActionError("Your request cannot be canceled at this stage!");
 			return ERROR;
 		}
 			

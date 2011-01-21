@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -33,12 +34,18 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userHome"),
 		@Result(name = BaseAction.INPUT, location = "requestMembershipRemoval"),
 		@Result(name = "registrationDisabled", location = "userHome")
 })
 
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class RequestMembershipRemovalAction extends UserActionSupport {
 
 	/**
@@ -79,6 +86,8 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
 		return SUCCESS;
 	}
 
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the reason field!")
+	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter a reason.")
 	public String getReason() {
 		return reason;
 	}

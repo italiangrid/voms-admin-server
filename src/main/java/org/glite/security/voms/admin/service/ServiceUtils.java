@@ -179,6 +179,14 @@ public class ServiceUtils {
 		return entries;
 	}
 
+	public static void limitUnauthenticatedClientPermissions(VOMSAdmin admin, VOMSPermission perms){
+		
+		if (admin.isUnauthenticated()){
+			VOMSPermission permMask = VOMSConfiguration.instance().getUnauthenticatedClientPermissionMask();
+			perms.limitToPermissions(permMask);
+		}
+	}
+	
 	public static Map<VOMSAdmin, VOMSPermission> toPermissionMap(
 			ACLEntry[] entries) {
 
@@ -194,10 +202,12 @@ public class ServiceUtils {
 
 			VOMSPermission perm = VOMSPermission.fromBits(e
 					.getVomsPermissionBits());
-
-			if (admin != null)
+			
+			
+			if (admin != null){
+				limitUnauthenticatedClientPermissions(admin, perm);
 				map.put(admin, perm);
-
+			}
 		}
 
 		return map;

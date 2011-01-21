@@ -138,10 +138,10 @@
                
                <td class="actions">
                
-                <s:url action="edit" namespace="/user" var="editURL">
+                <s:url action="load" namespace="/user" var="loadURL">
                     <s:param name="userId" value="id"/>
                   </s:url>
-                  <s:a href="%{editURL}" cssClass="actionLink">
+                  <s:a href="%{loadURL}" cssClass="actionLink">
                     more info     
                   </s:a>
                

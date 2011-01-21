@@ -98,3 +98,9 @@
     </s:else>
   </voms:authorized>
   </div>
+  
+  <voms:hasPermissions context="${groupName}" var="canReadAttributes" permission="ATTRIBUTES_READ"/>
+  <s:if test="not #attr.canReadAttributes">
+  	You do not have enough permissions to browse this VO generic attributes. 
+  </s:if>
+  

@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -35,8 +36,10 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 @ParentPackage("base")
 @Results({
 	@Result(name=UserActionSupport.INPUT, location="userCreate" ),
-	@Result(name=UserActionSupport.SUCCESS, location="edit", type="redirectAction")
+	@Result(name=UserActionSupport.SUCCESS, location="load", type="redirectAction")
 })
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class CreateAction extends UserActionSupport{
 	
 	/**
@@ -80,7 +83,7 @@ public class CreateAction extends UserActionSupport{
 		return SUCCESS;
 	}
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The namel field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a name for the user.")
 	public String getTheName() {
 		return theName;

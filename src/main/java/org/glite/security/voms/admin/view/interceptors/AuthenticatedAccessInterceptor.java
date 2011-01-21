@@ -78,6 +78,9 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 			req.setAttribute("registrationEnabled", VOMSConfiguration.instance().getBoolean(
 					VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
 			
+			req.setAttribute("readOnlyPI", 
+					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,false));
+			
 		}
 		
 

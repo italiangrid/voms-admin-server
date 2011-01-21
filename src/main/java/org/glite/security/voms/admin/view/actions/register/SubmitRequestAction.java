@@ -22,11 +22,14 @@ package org.glite.security.voms.admin.view.actions.register;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -35,6 +38,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
@@ -42,8 +46,11 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 		@Result(name = BaseAction.INPUT, location = "register"),
 		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
 		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerConfirmation"),
-		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled")
+		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
+		@Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR, location = "pluginValidationError")
 })
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class SubmitRequestAction extends RegisterActionSupport {
 
 	/**
@@ -63,18 +70,9 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	
 	String aupAccepted;
 
-	@Override
-	public String execute() throws Exception {
-
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return REGISTRATION_DISABLED;
-
-		String result = checkExistingPendingRequests();
-
-		if (result != null)
-			return result;
-
+	RequestValidationResult validationResult;
+	
+	protected void populateRequestModel(){
 		
 		long requestLifetime = VOMSConfiguration.instance().getLong("voms.request.vo_membership.lifetime",
 				300);
@@ -91,13 +89,37 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 		request = DAOFactory.instance().getRequestDAO()
 				.createVOMembershipRequest(requester, expirationDate);
-
-		String confirmURL = buildConfirmURL();
-		String cancelURL = buildCancelURL();
+			
+	}
+	
+	
+	
+	
+	@Override
+	public String execute() throws Exception {
 		
+		if (!registrationEnabled())
+			return REGISTRATION_DISABLED;
+		
+		String result = checkExistingPendingRequests();
 
+		if (result != null)
+			return result;
+		
+		populateRequestModel();		
+		
+		// External plugin validation
+		validationResult = ValidationManager.instance().validateRequest(request);
+		if (!validationResult.getOutcome().equals(Outcome.SUCCESS)){
+						
+			DAOFactory.instance().getRequestDAO().makeTransient(request);
+			addActionError(validationResult.getMessage());
+			return PLUGIN_VALIDATION_ERROR;
+		}
+		
 		EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
-				confirmURL, cancelURL));
+				buildConfirmURL(), 
+				buildCancelURL()));
 
 		return SUCCESS;
 	}
@@ -118,7 +140,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your name.")
+	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter your name.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getName() {
 		return name;
 	}
@@ -127,7 +150,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.name = name;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getSurname() {
 		return surname;
 	}
@@ -136,7 +160,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.surname = surname;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getInstitution() {
 		return institution;
 	}
@@ -145,7 +170,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.institution = institution;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getAddress() {
 		return address;
 	}
@@ -154,7 +180,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.address = address;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phone number.")
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -173,7 +200,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		this.aupAccepted = aupAccepted;
 	}
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
 	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
 	public String getEmailAddress() {
 		return emailAddress;
@@ -181,6 +208,14 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+
+	/**
+	 * @return the validationResult
+	 */
+	public RequestValidationResult getValidationResult() {
+		return validationResult;
 	}
 	
 	

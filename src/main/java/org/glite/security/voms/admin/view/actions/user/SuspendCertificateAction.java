@@ -19,31 +19,38 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.apache.struts2.convention.annotation.Action;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.operations.users.RestoreUserCertificateOperation;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.SuspendUserCertificateOperation;
-import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
-import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.INPUT, location = "suspendCertificate") })
-public class SuspendCertificateAction extends UserActionSupport {
+@Results( { @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
+		@Result(name = BaseAction.INPUT, location = "certificates.jsp"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="certificates.jsp")
+		
+})
+		
+		@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
+public class SuspendCertificateAction extends CertificateActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Long certificateId;
-
-	Certificate certificate;
-
+	
 	String suspensionReason;
 
 	@Override
@@ -58,32 +65,8 @@ public class SuspendCertificateAction extends UserActionSupport {
 		return SUCCESS;
 	}
 
-	@Action("restore-certificate")
-	public String restore() throws Exception {
-
-		RestoreUserCertificateOperation.instance(certificate)
-				.execute();
-		return SUCCESS;
-	}
-
-	@Override
-	public void prepare() throws Exception {
-
-		if (certificate == null)
-			certificate = CertificateDAO.instance().findById(certificateId);
-
-		super.prepare();
-
-	}
-
-	public Long getCertificateId() {
-		return certificateId;
-	}
-
-	public void setCertificateId(Long certificateId) {
-		this.certificateId = certificateId;
-	}
-
+	
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
 	public String getSuspensionReason() {
 		return suspensionReason;
 	}
@@ -91,13 +74,15 @@ public class SuspendCertificateAction extends UserActionSupport {
 	public void setSuspensionReason(String suspensionReason) {
 		this.suspensionReason = suspensionReason;
 	}
-
-	public Certificate getCertificate() {
-		return certificate;
-	}
-
-	public void setCertificate(Certificate certificate) {
-		this.certificate = certificate;
+	
+	@Override
+	public void validate() {
+	    
+	    // Actually this is needed for this action since the field is in a dialog that will be closed when the validation
+	    // returns...
+	    if (!getFieldErrors().isEmpty()){
+		addActionError("You entered invalid characters in the suspension reason field!");
+	    }
 	}
 
 }

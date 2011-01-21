@@ -20,9 +20,11 @@
 
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.aup.TriggerReacceptanceOperation;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -32,8 +34,11 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @ParentPackage("base")
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "aupHistory.jsp"),
-		@Result(name = BaseAction.INPUT, location = "aupHistory.jsp") })
+		@Result(name = BaseAction.INPUT, location = "aupHistory.jsp"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="aupHistory.jsp")})
 
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class TriggerReacceptanceAction extends UserActionSupport {
 
 	/**

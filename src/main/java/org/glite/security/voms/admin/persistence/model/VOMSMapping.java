@@ -24,7 +24,7 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.IllegalStateException;
-import org.glite.security.voms.admin.persistence.error.Auditable;
+import org.glite.security.voms.admin.persistence.Auditable;
 
 /**
  * 

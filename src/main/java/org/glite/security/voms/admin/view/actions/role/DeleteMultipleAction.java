@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.view.actions.role;
 
 import java.util.List;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -34,6 +35,8 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 	@Result(name = BaseAction.SUCCESS, location = "/role/search.action", type = "redirect"),
 	@Result(name = BaseAction.INPUT, location = "search", type = "chain")
 })
+
+@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
 public class DeleteMultipleAction extends BaseAction {
 
 	/**

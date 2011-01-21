@@ -762,12 +762,12 @@ class InstallOracleVO(InstallVOAction):
     
     def build_url(self):
        
-       if self.user_options.has_key('use-thin-driver'):
-           return "jdbc:oracle:thin:@//%s:%s/%s" % (self.user_options['dbhost'],
+        if self.user_options.has_key('use-thin-driver'):
+            return "jdbc:oracle:thin:@//%s:%s/%s" % (self.user_options['dbhost'],
                                                     self.user_options['dbport'],
                                                     self.user_options['dbname'])
-       else:
-           return "jdbc:oracle:oci:@%s" % (self.user_options['dbname'])
+        else:
+            return "jdbc:oracle:oci:@%s" % (self.user_options['dbname'])
     
 
 class InstallMySqlVO(InstallVOAction):

@@ -40,6 +40,7 @@
 	<div class="subscribeGroups"><s:form
 		action="request-group-membership" namespace="/user" theme="simple"
 		onsubmit="ajaxSubmit(this,'req-content'); return false;">
+		<s:token/>
 		<s:hidden name="userId" value="%{model.id}" />
 		<s:select list="#unrequestedGroups" listKey="id"
 			listValue="name" name="groupId" />

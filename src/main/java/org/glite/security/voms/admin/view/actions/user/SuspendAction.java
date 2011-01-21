@@ -19,22 +19,27 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.UserRestoredEvent;
-import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
-import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "/user/search.action", type = "redirect"),
-		@Result(name = BaseAction.INPUT, location = "userSuspend") })
+		@Result(name = BaseAction.SUCCESS, location = "userDetail"),
+		@Result(name = BaseAction.INPUT, location = "userDetail"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="userDetail")
+})
+		
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class SuspendAction extends UserActionSupport {
 
 	/**
@@ -51,21 +56,12 @@ public class SuspendAction extends UserActionSupport {
 		r.setMessage(getSuspensionReason());
 
 		SuspendUserOperation.instance(getModel(), r).execute();
-		EventManager.dispatch(new UserSuspendedEvent(getModel(), r));
 
 		return SUCCESS;
 	}
 
-	@Action("restore")
-	public String restore() throws Exception {
 
-		RestoreUserOperation.instance(getModel()).execute();
-
-		EventManager.dispatch(new UserRestoredEvent(getModel()));
-
-		return SUCCESS;
-	}
-
+	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
 	public String getSuspensionReason() {
 		return suspensionReason;
 	}

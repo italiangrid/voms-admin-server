@@ -81,7 +81,7 @@ public class VOMSSAMLClient {
     public static void main( String[] args ) throws MalformedURLException ,
             ServiceException , RemoteException {
 
-        new VOMSSAMLClient( null );
+        new VOMSSAMLClient( args[0], args[1] );
     }
 
     public static Element marshall( XMLObject xmlObject )
@@ -97,18 +97,18 @@ public class VOMSSAMLClient {
         return element;
     }
 
-    public VOMSSAMLClient( String host ) throws MalformedURLException,
+    public VOMSSAMLClient( String host, String vo) throws MalformedURLException,
             ServiceException, RemoteException {
 
         initializeOpenSAML();
-        
+                
         AttributeQuery query = buildAttributeQuery( MY_DN, null );
         
 
         System.out.println( "Query:" );
         print( query );
 
-        AttributeAuthorityPortType aa = getVOMSSamlService( "localhost", "mysql" );
+        AttributeAuthorityPortType aa = getVOMSSamlService( host, vo );
         
         Response response = aa.attributeQuery( query );
 

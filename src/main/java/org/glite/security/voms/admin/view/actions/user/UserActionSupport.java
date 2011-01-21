@@ -32,6 +32,7 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -63,6 +64,7 @@ public class UserActionSupport extends BaseAction implements
 	
 	protected List<CertificateRequest> pendingCertificateRequests;
 	
+	protected List<MembershipRemovalRequest> pendingMembershipRemovalRequests;
 	
 	protected Map<String, Object> theSession;
 	
@@ -115,6 +117,11 @@ public class UserActionSupport extends BaseAction implements
 	public List<CertificateRequest> getPendingCertificateRequests() {
 		return pendingCertificateRequests;
 	}
+	
+	
+	public List<MembershipRemovalRequest> getPendingMembershipRemovalRequests() {
+	    return pendingMembershipRemovalRequests;
+	}
 
 	protected void refreshPendingRequests(){
 		
@@ -126,7 +133,9 @@ public class UserActionSupport extends BaseAction implements
 		
 		pendingRoleMembershipRequests = rDAO.findPendingUserRoleMembershipRequests(model);
 		
-		pendingCertificateRequests =rDAO.findPendingUserCertificateRequests(getModel());
+		pendingCertificateRequests =rDAO.findPendingUserCertificateRequests(model);
+		
+		pendingMembershipRemovalRequests = rDAO.findPendingUserMembershipRemovalRequests(model);
 		
 	}
 

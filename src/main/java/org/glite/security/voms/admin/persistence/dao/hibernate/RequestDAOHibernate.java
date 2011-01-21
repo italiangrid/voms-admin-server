@@ -158,15 +158,14 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 			RequesterInfo requester) {
 		Criteria crit = getSession().createCriteria(
 				NewVOMembershipRequest.class);
-
+		
 		crit.add(Restrictions.ne("status", STATUS.APPROVED)).add(
 				Restrictions.ne("status", STATUS.REJECTED)).createCriteria(
 				"requesterInfo").add(
 				Restrictions.eq("certificateSubject", requester
 						.getCertificateSubject())).add(
 				Restrictions.eq("certificateIssuer", requester
-						.getCertificateIssuer())).add(
-				Restrictions.eq("emailAddress", requester.getEmailAddress()));
+						.getCertificateIssuer()));
 
 		return (NewVOMembershipRequest) crit.uniqueResult();
 
@@ -183,12 +182,26 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		return crit.list();
 
 	}
+	
+	public List<NewVOMembershipRequest> findPendingVOMembershipRequests() {
+
+		Criteria crit = getSession().createCriteria(
+				NewVOMembershipRequest.class);
+
+		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+		return crit.list();
+
+	}
+	
+	
 
 	public List<NewVOMembershipRequest> findExpiredVOMembershipRequests() {
 		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
 		
 		 Date now = new Date();
 		 crit.add(Restrictions.lt("expirationDate", now));
+		 crit.add(Restrictions.or(Restrictions.eq("status", STATUS.SUBMITTED), Restrictions.eq("status", STATUS.CONFIRMED)));
 		 
 		return crit.list();
 	}
@@ -222,6 +235,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	public List<Request> findPendingRequests() {
 		List<Request> result = new ArrayList<Request>();
 		
+		result.addAll(findPendingVOMembershipRequests());
 		result.addAll(findConfirmedVOMembershipRequests());
 		result.addAll(findPendingGroupMembershipRequests());
 		result.addAll(findPendingRoleMembershipRequests());

@@ -57,8 +57,9 @@
           </div>
         </s:if>
         <s:if test="#req instanceof org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest">
+        
           <div class="userRoleName">
-            ${roleName}
+            ${groupName}/Role=${roleName}
           </div>
         </s:if>
       </td>

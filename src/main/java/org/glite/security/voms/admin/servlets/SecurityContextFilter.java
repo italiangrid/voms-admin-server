@@ -28,12 +28,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -45,9 +44,7 @@ public class SecurityContextFilter implements Filter {
 	protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
 	public SecurityContextFilter() {
-
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {

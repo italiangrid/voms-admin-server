@@ -169,9 +169,12 @@ public class CurrentAdmin {
 				+ anyAuthenticatedUserPermissions);
 
 		VOMSPermissionList adminPerms = VOMSPermissionList.instance();
+		
+		VOMSPermission unauthenticatedClientPermissions = acl.getUnauthenticatedClientPermissions();
+		log.debug("Permissions for unauthenticated clients: "+ unauthenticatedClientPermissions);
 
 		if (personalPermissions == null && adminUser == null
-				&& anyAuthenticatedUserPermissions == null)
+				&& anyAuthenticatedUserPermissions == null && unauthenticatedClientPermissions == null)
 			return false;
 
 		if (personalPermissions != null)
@@ -179,6 +182,9 @@ public class CurrentAdmin {
 
 		if (anyAuthenticatedUserPermissions != null)
 			adminPerms.addPermission(anyAuthenticatedUserPermissions);
+		
+		if (unauthenticatedClientPermissions != null)
+			adminPerms.addPermission(unauthenticatedClientPermissions);
 
 		if (adminUser == null)
 			return adminPerms.satifies(p);

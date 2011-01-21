@@ -22,20 +22,26 @@ package org.glite.security.voms.admin.view.actions.user;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.DeleteUserAttributeOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
-		@Result(name = BaseAction.INPUT, location ="attributes.jsp") })
+		@Result(name = BaseAction.INPUT, location ="attributes.jsp"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="attributes.jsp")})
+		
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "deleteAttribute" })
 public class AttributeActions extends UserActionSupport {
 
 	/**
@@ -67,7 +73,8 @@ public class AttributeActions extends UserActionSupport {
 		this.attributeName = attributeName;
 	}
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@StringLengthFieldValidator(type = ValidatorType.FIELD, message="The value for this attribute is too long", maxLength="255")
+	// @RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getAttributeValue() {
 		return attributeValue;
 	}

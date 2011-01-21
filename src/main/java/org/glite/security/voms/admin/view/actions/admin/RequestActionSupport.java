@@ -41,7 +41,7 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 	Request request;
 	
 	List<Request> pendingRequests;
-
+	
 	/**
 	 * 
 	 */
@@ -49,7 +49,9 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
 	protected void refreshPendingRequests(){
 		RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+		
 		pendingRequests = rDAO.findPendingRequests();
+		
 	}
 	
 	public void prepare() throws Exception {

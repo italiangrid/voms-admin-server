@@ -58,9 +58,6 @@
         <filter-name>rest-security-context-filter</filter-name>
         <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
     </filter>
-
-    
-    
 	
     <!-- Struts 2 filter mapping -->
     
@@ -74,14 +71,11 @@
         <url-pattern>*.action</url-pattern>
     </filter-mapping>
     
-    
-    
-	
 	<filter-mapping>
 		<filter-name>axis-hibernate-session-filter</filter-name>
 		<url-pattern>/services/*</url-pattern>
 	</filter-mapping>
-	
+     
     <filter-mapping>
         <filter-name>rest-security-context-filter</filter-name>
         <url-pattern>/generate-ac</url-pattern>
@@ -92,7 +86,21 @@
         <url-pattern>/generate-ac</url-pattern>
     </filter-mapping>
   
-	<!--  Struts 2 listeners -->
+    <!-- Third party plain text restful service -->
+    <filter-mapping>
+        <filter-name>rest-security-context-filter</filter-name>
+        <url-pattern>/get-attributes</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>rest-hibernate-session-filter</filter-name>
+        <url-pattern>/get-attributes</url-pattern>
+    </filter-mapping>
+    	    
+    <listener>
+        <display-name>VOMSContextListener</display-name>
+        <listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
+    </listener>
      
     <listener>
         <listener-class>
@@ -100,12 +108,6 @@
         </listener-class>
     </listener>
       
-	<listener>
-		<display-name>VOMSContextListener</display-name>
-		<listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
-	</listener>
-
-
 	<servlet>
 		<servlet-name>axis</servlet-name>
 		<servlet-class>
@@ -128,7 +130,6 @@
             it.infn.cnaf.voms.x509.ACServlet
         </servlet-class>
     </servlet>
-    
 
 	<!-- Axis servlet mapping -->
 	<servlet-mapping>
@@ -150,7 +151,6 @@
         <servlet-name>voms-ac-servlet</servlet-name>
         <url-pattern>/generate-ac</url-pattern>
     </servlet-mapping>
-  
     
 	<!-- The Usual Welcome File List -->
 	<welcome-file-list>

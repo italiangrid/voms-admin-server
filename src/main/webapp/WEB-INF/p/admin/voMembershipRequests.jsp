@@ -22,7 +22,8 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <s:if
-	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest}.empty">
+	test="not pendingRequests.{? (#this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest) and 
+	#this.status == @org.glite.security.voms.admin.persistence.model.request.Request$STATUS@CONFIRMED }.empty">
 	<h1>VO membership requests:</h1>
 	<table>
 		<tr>
@@ -32,7 +33,8 @@
 		</tr>
 
 		<s:iterator
-			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest}">
+			value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest and 
+			#this.status == @org.glite.security.voms.admin.persistence.model.request.Request$STATUS@CONFIRMED }">
 			<tr>
 				<td><tiles2:insertTemplate template="userInfo.jsp" flush="true" />
 				</td>
@@ -51,6 +53,7 @@
 
 				<td style="vertical-align: bottom; text-align: right;"><s:form
 					action="decision">
+					<s:token/>
 					<s:hidden name="requestId" value="%{id}" />
 					<s:radio list="{'approve','reject'}" name="decision"
 						onchange="ajaxSubmit($(this).closest('form'),'pending-req-content'); return false;" />

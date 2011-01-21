@@ -86,7 +86,6 @@ No groups found in this VO.
             
           <s:if test="(not rootGroup) and #attr['canDelete']">
             <s:form action="delete" namespace="/group">
-              <s:url value="/img/delete_16.png" var="deleteImg"/>
               <s:token/>
               <s:hidden name="groupId" value="%{id}"/>
               

@@ -37,6 +37,7 @@ public class UserDetailPreparer extends ViewPreparerSupport {
 				.instance().getAllAttributeDescriptions();
 
 		context.getRequestScope().put("attributeClasses", attributeClasses);
+		
 
 	}
 

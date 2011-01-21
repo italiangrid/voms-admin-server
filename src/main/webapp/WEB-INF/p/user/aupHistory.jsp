@@ -73,6 +73,7 @@ No AUP acceptance records found.
 		<s:if test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
 			
 			<s:form action="trigger-reacceptance" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;">
+				<s:token/>
 				<s:hidden name="userId" value="%{model.id}" />
 				<s:submit 
 					value="%{'Request AUP reacceptance'}" 

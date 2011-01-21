@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -39,6 +40,9 @@ import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRe
 	@Result(name=UserActionSupport.ERROR,location="mappingsRequest.jsp"),
 	@Result(name=UserActionSupport.INPUT,location="mappingsRequest.jsp")
 })
+
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class RequestGroupMembershipAction extends UserActionSupport {
 
 	/**

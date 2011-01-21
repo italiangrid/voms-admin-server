@@ -21,64 +21,19 @@ package org.glite.security.voms.admin.core.tasks;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TaskStatusUpdater extends TimerTask {
+public class TaskStatusUpdater implements Runnable, RegistrationServiceTask {
 
 	public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
-
-	private static TaskStatusUpdater instance = null;
-
-	Timer timer;
-
-	private TaskStatusUpdater(Timer t) {
-		timer = t;
-
-		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
-				"voms.request.webui.enabled", true);
-
-		if (!registrationEnabled) {
-			log
-					.info("TaskStatusUpdater thread not started since registration is DISABLED for this vo.");
-			return;
-		}
-
-		if (timer != null) {
-
-			long period = 10L;
-
-			log.info("Scheduling TaskStatusUpdater with period: " + period
-					+ " seconds.");
-			timer.schedule(this, 5 * 1000, period * 1000);
-
-		}
-
-	}
-
-	public static TaskStatusUpdater instance(Timer t) {
-
-		if (instance == null)
-			instance = new TaskStatusUpdater(t);
-
-		return instance;
-
-	}
-
-	@Override
+	
 	public void run() {
-		// log.info("TaskStatusUpdater started...");
-		HibernateFactory.beginTransaction();
-
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 
 		List<Task> activeTasks = taskDAO.getActiveTasks();
@@ -94,10 +49,6 @@ public class TaskStatusUpdater extends TimerTask {
 
 			}
 		}
-
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-
 	}
 
 }

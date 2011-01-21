@@ -22,6 +22,8 @@ package org.glite.security.voms.admin.view.actions.register;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -40,12 +42,15 @@ public class StartAction extends RegisterActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Override
 	public String execute() throws Exception {
 
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
+		
+		if (VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false))
+		    	return REGISTRATION_DISABLED;
 		
 		if (CurrentAdmin.instance().isUnauthenticated())
 			return UNAUTHENTICATED_CLIENT;

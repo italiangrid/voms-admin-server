@@ -51,6 +51,7 @@ public interface RequestDAO extends GenericDAO<Request, Long> {
 	public NewVOMembershipRequest findActiveVOMembershipRequest(
 			RequesterInfo requester);
 	
+	public List<NewVOMembershipRequest> findPendingVOMembershipRequests();
 	public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests();
 	
 	public List<NewVOMembershipRequest> findExpiredVOMembershipRequests();

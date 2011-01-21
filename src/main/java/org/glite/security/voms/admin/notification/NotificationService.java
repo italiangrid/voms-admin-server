@@ -19,15 +19,16 @@
  */
 package org.glite.security.voms.admin.notification;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.notification.messages.EmailNotification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NotificationService {
 
@@ -37,7 +38,7 @@ public class NotificationService {
 
 	private LinkedBlockingQueue<EmailNotification> outgoingMessages = new LinkedBlockingQueue<EmailNotification>();
 
-	ExecutorService executorService;
+	private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt(
 			"voms.noification.max_delivery_attempt_count", 5);
@@ -45,26 +46,33 @@ public class NotificationService {
 	long sleepTimeBeforeRetry = 30;
 
 	private NotificationService() {
-
-		executorService = Executors.newSingleThreadExecutor();
-		executorService.submit(new NotificationRunner(outgoingMessages));
-
+	    
+	    	executorService.submit(new NotificationRunner(outgoingMessages));
+	    	
+	}
+	
+	
+	public synchronized static void shutdown(){
+	    
+	    if (singleton == null){
+		log.debug("Notification service has not been started and, as such, cannot be shut down.");
+		return;
+	    }
+	
+	    
+	    singleton.shutdownNow();
+	    
 	}
 
-	public static NotificationService instance() {
+	public synchronized static NotificationService instance() {
 
 		if (singleton == null)
 			singleton = new NotificationService();
 
 		return singleton;
 	}
-
-	public void stop() {
-
-		log.info("Shutting down notification service");
-		executorService.shutdownNow();
-
-	}
+	
+	
 
 	public void send(EmailNotification n) {
 
@@ -95,7 +103,7 @@ public class NotificationService {
 					try {
 						n.send();
 						deliveryHadErrors = false;
-						log.info("Notification '" + n
+						log.debug("Notification '" + n
 								+ "' delivered succesfully.");
 
 					} catch (VOMSNotificationException e) {
@@ -135,4 +143,12 @@ public class NotificationService {
 		}
 	}
 
+	/**
+	 * @return
+	 * @see java.util.concurrent.ExecutorService#shutdownNow()
+	 */
+	protected List<Runnable> shutdownNow() {
+	    return executorService.shutdownNow();
+	}
+	
 }

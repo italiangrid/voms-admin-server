@@ -26,6 +26,7 @@
 <s:actionerror/>
 
 <s:form validate="true">
+  <s:token/>
   <s:hidden name="aupId" value="%{model.id}"/>
   <s:textfield name="version" label="Version"/>
   <s:textfield name="url" label="URL" size="40"/>

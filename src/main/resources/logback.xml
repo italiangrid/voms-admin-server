@@ -27,6 +27,7 @@
     <logger name="org.glite.security.voms.admin" level="INFO" />
     <logger name="org.apache.struts" level="WARN" />
     <logger name="com.mchange" level="WARN" />
+    <logger name="org.hibernate" level="INFO" />
     
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">

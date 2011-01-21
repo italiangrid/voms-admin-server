@@ -157,12 +157,20 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registration.jsp"/>
     </definition>
     
+    <definition name="orgdbRegister" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/orgdb/registration2.jsp"/>
+    </definition>
+    
     <definition name="registerConfirmation" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
     </definition>
     
     <definition name="registrationConfirmationError" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
+    </definition>
+    
+    <definition name="pluginValidationError" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/pluginValidationError.jsp"/>
     </definition>
     
     <definition name="registerLimbo" extends="user-layout">
@@ -234,6 +242,11 @@
     </definition>
     
     <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
+    
+    <definition name="tokenError" extends="empty-layout">
+        <put-attribute name="content" value="/WEB-INF/p/exception/tokenError.jsp"/>
+    </definition>
+    
     
     <definition name="requestMembershipRemoval" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>

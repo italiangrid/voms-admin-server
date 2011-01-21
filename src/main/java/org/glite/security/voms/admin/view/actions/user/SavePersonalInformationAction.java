@@ -19,9 +19,13 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.users.SaveUserPersonalInfoOperation;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
@@ -33,8 +37,12 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
 	@Result(name=UserActionSupport.SUCCESS,location="personalInfo.jsp"),
-	@Result(name=UserActionSupport.INPUT,location="personalInfo.jsp")
+	@Result(name=UserActionSupport.INPUT,location="personalInfo.jsp"),
+	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="personalInfo.jsp")
 })
+
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class SavePersonalInformationAction extends UserActionSupport {
 	
 	
@@ -54,6 +62,14 @@ public class SavePersonalInformationAction extends UserActionSupport {
 	@Override
 	public String execute() throws Exception {
 
+		Boolean roPI = VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.FALSE);
+		
+		if (roPI != null && roPI){
+			addActionError("Personal informations are read only in this VOMS instance!");
+			return INPUT;
+		}
+			
+		
 		SaveUserPersonalInfoOperation op = new SaveUserPersonalInfoOperation(getModel(), theName, theSurname, theInstitution, theAddress,thePhoneNumber, theEmailAddress);
 		
 		op.setAuthorizedUser(getModel());
@@ -65,7 +81,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 	}
 
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The namel field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getTheName() {
 		return theName;
 	}

@@ -25,21 +25,18 @@ import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.util.FileCertReader;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
@@ -48,72 +45,17 @@ import org.glite.security.voms.admin.util.DNUtil;
  * 
  * 
  */
-public final class UpdateCATask extends TimerTask {
+public final class UpdateCATask implements Runnable{
 
 	static final Logger log = LoggerFactory.getLogger(UpdateCATask.class);
-
-	static private UpdateCATask instance = null;
-
-	protected Timer timer;
-
-	public static UpdateCATask instance(Timer theTimer) {
-
-		if (instance == null)
-			instance = new UpdateCATask(theTimer);
-
-		return instance;
-	}
-
-	private UpdateCATask(Timer theTimer) {
-
-		timer = theTimer;
-		// Configure UpdateCATask
-		VOMSConfiguration config = VOMSConfiguration.instance();
-
-		if (config.getBoolean(VOMSConfigurationConstants.READONLY, false)) {
-			log
-					.info("CA update thread not started.  This is a read-only VOMS Admin instance");
-			return;
-		}
-
-		if (timer != null) {
-			long period = config.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, -1);
-
-			if (period > 0) {
-
-				log.info("Scheduling UpdateCATask with period: " + period
-						+ " seconds.");
-
-				timer.schedule(this, 60 * 1000, period * 1000);
-
-			} else {
-
-				log
-						.info("CA update thread not started. voms.cafiles.period is negative or undefined.");
-				return;
-			}
-		}
-
-	}
-
-	public void run() {
-
-		log.info("CA update thread started...");
-		HibernateFactory.beginTransaction();
-		updateCAs();
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-		log.info("CA update thread done.");
-
-	}
-
-	public synchronized static void updateCAs() {
-
+	
+	public void run(){
+		
 		String caFiles = VOMSConfiguration.instance().getString(
 				VOMSConfigurationConstants.CAFILES,
 				"/etc/grid-security/certificates/*.0");
 
-		log.info("Updating CAs from: " + caFiles);
+		log.debug("Updating CAs from: " + caFiles);
 
 		if (caFiles != null) {
 
@@ -175,9 +117,7 @@ public final class UpdateCATask extends TimerTask {
 			} catch (VOMSDatabaseException e) {
 
 				log.error("Error updating trusted CA database!", e);
-				throw new VOMSException("Error updating trusted CA database!",
-						e);
-
+				throw e;
 			}
 
 		}

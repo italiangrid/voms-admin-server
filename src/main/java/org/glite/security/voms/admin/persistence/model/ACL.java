@@ -226,11 +226,11 @@ public class ACL implements Serializable {
 			VOMSAdmin a = entry.getKey();
 			VOMSPermission p = entry.getValue();
 
-			// We return here only group admins and role admins!
-			// FIXME: maybe tag admins should be here as well
-			if (p.satisfies(requiredPermission)
-					&& ((a.isGroupAdmin() || a.isRoleAdmin())))
-				results.add(entry.getKey());
+			// Here the historic behavior was to return only group or role admins.
+			// This is being changed now (Mar 17 Ago 2010 15:26:16 CEST) as it does not
+			// make a lot of sense to me currently.
+			if (p.satisfies(requiredPermission))
+				results.add(a);
 
 		}
 

@@ -28,7 +28,7 @@
     <div class="reloadable">
         
         <dl>
-            <dt>Membership expiration date:</dt>
+            <dt>Membership expiration date (mm/dd/yyyy):</dt>
             <dd class="userMembershipEndTime">
               
               
@@ -54,7 +54,7 @@
                 
                   <s:submit value="%{'Change'}" disabled="%{#attr.canDelete == false}"/>
                 
-              </s:form>
+			  </s:form>
               <s:fielderror fieldName="expirationDate"/>
               <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
           </dd>

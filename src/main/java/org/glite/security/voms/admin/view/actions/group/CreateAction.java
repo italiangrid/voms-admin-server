@@ -23,6 +23,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.operations.groups.CreateGroupOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
@@ -36,10 +37,13 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "/group/search.action", type = "redirect"),
-		@Result(name = BaseAction.INPUT, location = "groupCreate") })
+		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
+		@Result(name = BaseAction.INPUT, location = "groupCreate"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "groupCreate")
+
+})
 @InterceptorRef(value = "authenticatedStack", params = {
-		"tokenSession.includeMethods", "execute" })
+		"token.includeMethods", "execute" })
 public class CreateAction extends GroupActionSupport {
 
 	/**

@@ -20,85 +20,50 @@
 package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestExpiredEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ExpiredRequestsPurgerTask extends TimerTask {
+public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceTask{
 
 	private static final Logger log = LoggerFactory
 			.getLogger(ExpiredRequestsPurgerTask.class);
-
-	private static final long period = 300;
-
-	private Timer timer;
 
 	private long requestLifetime;
 
 	private boolean warnUsers;
 
-	private ExpiredRequestsPurgerTask(Timer t) {
-
-		timer = t;
-
+	public ExpiredRequestsPurgerTask() {
+		
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
 		requestLifetime = conf.getLong("voms.request.vo_membership.lifetime",
 				300);
 		warnUsers = conf.getBoolean(
 				"voms.request.vo_membership.warn_when_expired", false);
-		boolean registrationEnabled = conf.getBoolean(
-				"voms.request.webui.enabled", true);
-
-		if (timer != null) {
-
-			if (!registrationEnabled)
-				log
-						.info("Request purger not started since the registration is DISABLED for this vo.");
-			else if (requestLifetime > 0) {
-				log
-						.info("Scheduling expired request reaper thread with period: "
-								+ period + " seconds.");
-				
-				timer.schedule(this, 30*1000, period * 1000);
-			} else
-				log
-						.info("Request purger not started according to configuration (negative lifetime for requests!).");
-		}
-
+		
 	}
-
+	 
 	public void run() {
-
-		log.info("Checking for expired requests...");
-		HibernateFactory.getSession();
-		HibernateFactory.beginTransaction();
 		
-		purgeExpiredRequests();
-		
-		HibernateFactory.commitTransaction();
-		HibernateFactory.closeSession();
-		log.info("Done.");
-
-	}
-
-	public void purgeExpiredRequests(){
+		if (requestLifetime < 0){
+			log.debug("Request purger NOT STARTED since a negative lifetime for requests was set in configuration.");
+			return;
+		}
+			
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
 		
 		List<NewVOMembershipRequest> expiredRequests = dao.findExpiredVOMembershipRequests();
 		
 		for (NewVOMembershipRequest req: expiredRequests){
 			
-			log.info("Removing unconfirmed request '"+req+"' from database since the confirmation period has expired.");
+			log.info("Removing unconfirmed request '{}' from database since the confirmation period has expired.", req);
 			dao.makeTransient(req);
 			
 			if (warnUsers)
@@ -106,12 +71,6 @@ public class ExpiredRequestsPurgerTask extends TimerTask {
 			
 		}
 		
-		
-	}
-
-	public static ExpiredRequestsPurgerTask instance(Timer t) {
-
-		return new ExpiredRequestsPurgerTask(t);
 	}
 
 }

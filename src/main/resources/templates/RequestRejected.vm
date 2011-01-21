@@ -52,6 +52,10 @@ your $request.typeName.toLowerCase() for certificate:
 
 has been REJECTED by the VO administrators.
 
+#elseif ( $request.class.simpleName == 'MembershipRemovalRequest')
+
+your membership removal request has been REJECTED by the VO administrators.
+
 #end 
 
 #if ( $rejectReasons )

@@ -40,6 +40,7 @@ public class SearchAction extends BaseSearchAction implements Preparable {
 	private static final long serialVersionUID = 1L;
 
 	public void prepare() throws Exception {
+		
 		initSearchData(ATTRIBUTE_SEARCH_NAME);
 
 	}

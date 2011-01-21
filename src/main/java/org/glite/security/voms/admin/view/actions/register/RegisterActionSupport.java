@@ -48,6 +48,7 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public static final String ALREADY_MEMBER = "alreadyAMember";
 	public static final String REGISTRATION_DISABLED = "registrationDisabled";
 	public static final String UNAUTHENTICATED_CLIENT = "unauthenticatedClient";
+	public static final String PLUGIN_VALIDATION_ERROR = "pluginValidationError";
 	/**
 	 * 
 	 */
@@ -55,9 +56,9 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	Long requestId = -1L;
 
-	NewVOMembershipRequest request;
+	protected NewVOMembershipRequest request;
 
-	RequesterInfo requester;
+	protected RequesterInfo requester;
 
 	AUPVersion currentAUPVersion;
 	
@@ -141,6 +142,10 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
 	public AUPVersion getCurrentAUPVersion() {
 		return currentAUPVersion;
+	}
+
+	public String getRegistrationType() {
+		return VOMSConfiguration.instance().getRegistrationType();
 	}
 	
 }

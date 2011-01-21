@@ -197,6 +197,7 @@ public class ACServlet extends BaseServlet implements VOMSErrorCodes {
     	
     }
     
+    
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
             throws ServletException , IOException {
     

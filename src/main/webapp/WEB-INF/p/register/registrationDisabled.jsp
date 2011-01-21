@@ -25,6 +25,3 @@
 The registration service for this VO is currently disabled.
 </h1>
 
-<p>
-
-</p>

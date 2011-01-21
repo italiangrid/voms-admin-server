@@ -29,7 +29,7 @@ import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.error.Auditable;
+import org.glite.security.voms.admin.persistence.Auditable;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 
 /**

@@ -78,7 +78,7 @@ public class NotificationUtil {
 
 			for (VOMSAdmin a : admins) {
 
-				if (a.getEmailAddress() != null) {
+				if (a.getEmailAddress() != null && !"".equals(a.getEmailAddress().trim())) {
 					if (!adminEmails.contains(a.getEmailAddress()))
 						adminEmails.add(a.getEmailAddress());
 				}
@@ -86,8 +86,11 @@ public class NotificationUtil {
 		}
 
 		if ("service".equals(notificationBehaviour)
-				|| "all".equals(notificationBehaviour))
-			adminEmails.add(serviceEmailAddress);
+				|| "all".equals(notificationBehaviour)){
+			
+			if (!adminEmails.contains(serviceEmailAddress))
+				adminEmails.add(serviceEmailAddress);
+		}
 
 		if (adminEmails.isEmpty()) {
 			log

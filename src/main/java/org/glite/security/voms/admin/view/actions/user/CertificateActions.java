@@ -26,6 +26,7 @@ import java.security.cert.X509Certificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -40,6 +41,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
 		@Result(name = BaseAction.EDIT, location = "addCertificate"),
 		@Result(name = BaseAction.INPUT, location = "addCertificate") })
+		
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "deleteCertificate,saveCertificate" })
 public class CertificateActions extends UserActionSupport {
 
 	public static final Logger log = LoggerFactory.getLogger(CertificateActions.class);

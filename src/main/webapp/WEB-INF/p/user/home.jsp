@@ -42,9 +42,11 @@
 	</s:else>
 </div>
 
+
 <s:url action="request-membership-removal" method="input" var="requestMembershipRemovalURL">
-  <s:param name="userId" value="id"/>
+ <s:param name="userId" value="id"/>
 </s:url>
+
 
 <div class="membershipInfo">
 	<dl>
@@ -83,9 +85,11 @@
 </div>
 
 <s:if test="#request.registrationEnabled">
-  <div style="clear: both; float: right; margin-bottom: .5em">
-    <a href="${requestMembershipRemovalURL}" class="actionLink">Apply for membership removal</a> 
-  </div>
+	<s:if test="pendingMembershipRemovalRequests.empty">
+  		<div style="clear: both; float: right; margin-bottom: .5em">
+    		<a href="${requestMembershipRemovalURL}" class="actionLink">Apply for membership removal</a> 
+  		</div>
+  	</s:if>
 </s:if>
 
 <tiles2:insertTemplate template="personalInfoPane.jsp">

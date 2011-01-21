@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.ACL;

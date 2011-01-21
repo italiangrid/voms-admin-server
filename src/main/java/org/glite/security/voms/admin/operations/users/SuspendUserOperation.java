@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
@@ -62,8 +63,9 @@ public class SuspendUserOperation extends BaseVomsOperation {
 			throw new NullArgumentException("User cannot be null!");
 		if (reason == null)
 			throw new NullArgumentException("Reason cannot be null!");
+		
+		ValidationManager.instance().suspendUser(user, reason);
 
-		user.suspend(reason);
 		return null;
 	}
 

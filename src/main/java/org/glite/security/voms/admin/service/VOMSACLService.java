@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.VOMSException;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -33,11 +34,11 @@ import org.glite.security.voms.admin.operations.acls.LoadACLOperation;
 import org.glite.security.voms.admin.operations.acls.SaveACLEntryOperation;
 import org.glite.security.voms.admin.operations.acls.SetACLOperation;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchACLException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAdminException;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
@@ -54,6 +55,8 @@ public class VOMSACLService implements VOMSACL {
 
 	private static final Logger log = LoggerFactory.getLogger(VOMSACLService.class);
 
+	
+	
 	public void addACLEntry(String container, ACLEntry entry,
 			boolean propagateToChildrenContexts) throws RemoteException,
 			VOMSException {
@@ -81,6 +84,8 @@ public class VOMSACLService implements VOMSACL {
 			VOMSPermission perms = VOMSPermission.fromBits(entry
 					.getVomsPermissionBits());
 
+			ServiceUtils.limitUnauthenticatedClientPermissions(theAdmin, perms);
+			
 			SaveACLEntryOperation.instance(theACL, theAdmin, perms,
 					propagateToChildrenContexts).execute();
 
@@ -127,6 +132,8 @@ public class VOMSACLService implements VOMSACL {
 			VOMSPermission perms = VOMSPermission.fromBits(entry
 					.getVomsPermissionBits());
 
+			ServiceUtils.limitUnauthenticatedClientPermissions(theAdmin, perms);
+			
 			SaveACLEntryOperation.instance(acl, theAdmin, perms).execute();
 
 			// Commit hibernate transaction

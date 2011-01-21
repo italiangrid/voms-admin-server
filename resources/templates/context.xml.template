@@ -2,7 +2,7 @@
 <Context path="/voms/@VO_NAME@" 
 		docBase="@WAR_FILE@"
         debug="0" 
-        reloadable="true">
+        reloadable="false" unpackWAR="false">
         
         <Environment name="VO_NAME" value="@VO_NAME@" type="java.lang.String"/>
         

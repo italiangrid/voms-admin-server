@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import java.util.Date;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -36,6 +37,9 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 	@Result(name=UserActionSupport.SUCCESS,location = "membershipExpiration.jsp"),
 	@Result(name=UserActionSupport.INPUT, location="membershipExpiration.jsp")
 })	
+
+@InterceptorRef(value = "authenticatedStack", params = {
+		"token.includeMethods", "execute" })
 public class SetMembershipExpirationAction extends UserActionSupport {
 
 	/**
@@ -51,7 +55,9 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 		
 		Date now = new Date();
 		
-		if (now.after(expirationDate))
+		if (expirationDate == null)
+			addFieldError("expirationDate", "Please enter a valid expiration date for the user.");
+		else if (now.after(expirationDate))
 			addFieldError("expirationDate", "Please enter a future expiration date for the user.");
 		
 		return;
@@ -70,7 +76,7 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 	}
 
 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "Please set a membership expiration date for the user.")
-	@DateRangeFieldValidator(type= ValidatorType.FIELD, message = "Please enter a valid expiration date for the user.")
+	@DateRangeFieldValidator(type = ValidatorType.FIELD, message = "Please enter a valid expiration date for the user.", min="12/25/2010")
 	public Date getExpirationDate() {
 		return expirationDate;
 	}

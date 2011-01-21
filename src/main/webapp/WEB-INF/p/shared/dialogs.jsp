@@ -21,12 +21,26 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<div id="suspendCertificateDialog" title="Suspend certificate?" style="display:none" class="dialog">
+	<p>Suspend certificate:</p>
+	<div class="dialogMessage"></div>
+	<label for="suspensionReason">Suspension reason:</label>
+  	<input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspendCertificateDialog_suspensionReasonInputField"/>
+</div>
+
+<div id="suspendUserDialog" title="Suspend user?" style="display: none" class="dialog">
+	<p>Suspend user:</p>
+	<div class="dialogMessage"></div>
+	<label for="suspensionReason">Suspension reason:</label>
+  	<input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspendUserDialog_suspensionReasonInputField"/>
+</div>
+
 <div id="suspendMultiUserDialog" title="Suspend multiple users?" style="display: none" class="dialog">
   <p>
   Do you really want to suspend selected users?
   </p>
   <label for="suspensionReason">Suspension reason:</label>
-  <input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspensionReasonDialogField"/>
+  <input type="text" size="40" name="suspensionReason" class="text ui-widget-content ui-corner-all" value="" id="suspendMultiUserDialog_suspensionReasonInputField"/>
 </div>
 
 <div id="deleteMultiUserDialog" title="Delete multiple users?" style="display: none" class="dialog">

@@ -19,10 +19,8 @@
  */
 package org.glite.security.voms.admin.view.interceptors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts2.StrutsStatics;
-import org.glite.security.voms.admin.persistence.error.HibernateFactory;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
@@ -30,8 +28,7 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 public class HibernateInterceptor extends AbstractInterceptor implements
 		StrutsStatics {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(HibernateInterceptor.class);
+	
 	/**
      * 
      */

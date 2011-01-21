@@ -30,7 +30,7 @@ public class ListUsersOperation extends BaseVoReadOperation {
 
 	protected Object doExecute() {
 
-		return VOMSUserDAO.instance().getAll();
+		return VOMSUserDAO.instance().findAll();
 
 	}
 
