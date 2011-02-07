@@ -62,7 +62,7 @@ public class TriggerReacceptanceOperation extends BaseVomsOperation {
 
 	@Override
 	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
+		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission().setSuspendPermission());
 
 	}
 

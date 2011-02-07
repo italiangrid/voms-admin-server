@@ -68,20 +68,40 @@ No AUP acceptance records found.
   
   <s:if test="#request.registrationEnabled">
   	<voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
-  	<s:if test="#attr.canSuspend">
+  	<div style="text-align: right;">
+  		
+  	
+  		<s:if test="#attr.canSuspend">
 		
-		<s:if test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
+		
+			<s:if test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
+				
+				<s:form action="trigger-reacceptance" 
+				onsubmit="ajaxSubmit(this,'aup-history-content'); return false;" 
+				theme="simple" 
+				cssStyle="display: inline;">
+					<s:token/>
+					<s:hidden name="userId" value="%{model.id}" />
+					<s:submit 
+					value="%{'Request AUP reacceptance'}"/>
+				</s:form>
 			
-			<s:form action="trigger-reacceptance" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;">
-				<s:token/>
-				<s:hidden name="userId" value="%{model.id}" />
-				<s:submit 
-					value="%{'Request AUP reacceptance'}" 
-					align="right"/>
-			</s:form>
+			
+			
+			</s:if>
+		
+			
+				<s:form action="create-acceptance-record" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;" theme="simple" cssStyle="display: inline">
+					<s:token/>
+					<s:hidden name="userId" value="%{model.id}" />
+					<s:submit 
+						value="%{'Sign AUP on behalf of user'}"	/>
+				</s:form>
+			
+		
 		</s:if>
-    	
-	</s:if>
+		
+	</div>
 	</s:if>	
 </s:else>
 </div>
