@@ -138,6 +138,7 @@
           </execution>
           
           <!-- VOMS-Admin server skinny war -->
+          <!-- 
           <execution>
             <id>VOMS-Admin server Skinny War creation</id>
             <goals>
@@ -170,6 +171,7 @@
               </packagingIncludes>
             </configuration>
           </execution>
+          -->
           
           <!-- Main VOMS-Admin server war -->
           <execution>

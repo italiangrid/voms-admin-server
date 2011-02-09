@@ -124,6 +124,9 @@ public class CurrentAdmin {
 		if (hasPermissions(VOMSContext.getVoContext(), VOMSPermission
 				.getAllPermissions()))
 			return true;
+		
+		if (hasPermissions(VOMSContext.getVoContext(), VOMSPermission.getRequestsRWPermissions()))
+			return true;
 
 		return false;
 	}

@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.notification.messages;
 
+import java.util.List;
+
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.persistence.model.request.Request;
@@ -29,13 +31,23 @@ public class HandleRequest extends AbstractVelocityNotification {
 
 	String requestManagementURL;
 
-	public HandleRequest(Request request,
-			String requestManagementURL) {
-
+	
+	public HandleRequest(Request request, 
+			String requestManagementURL,
+			List<String> administratorEmailAddresses){
+		
 		this.request = request;
 		this.requestManagementURL = requestManagementURL;
 		
-		addRecipients(NotificationUtil.getAdministratorsEmailList());
+		addRecipients(administratorEmailAddresses);
+		
+	}
+	
+	public HandleRequest(Request request,
+			String requestManagementURL) {
+
+		this(request, requestManagementURL, NotificationUtil.getAdministratorsEmailList());
+		
 	}
 
 	protected void buildMessage() {

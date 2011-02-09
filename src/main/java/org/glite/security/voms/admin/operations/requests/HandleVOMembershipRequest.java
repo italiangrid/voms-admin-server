@@ -49,8 +49,10 @@ public class HandleVOMembershipRequest extends
 	protected void approve() {
 		checkRequestStatus(STATUS.CONFIRMED);
 
-		VOMSUser user = (VOMSUser) CreateUserOperation.instance(request)
-				.execute();
+		
+		VOMSUser user = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
+		VOMSUserDAO.instance().create(user,
+					request.getRequesterInfo().getCertificateIssuer());
 
 		request.approve();
 
@@ -79,7 +81,7 @@ public class HandleVOMembershipRequest extends
 	@Override
 	protected void setupPermissions() {
 		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions().setMembershipRWPermission()
+				.getContainerReadPermission().setMembershipReadPermission()
 				.setRequestsReadPermission().setRequestsWritePermission());
 
 	}

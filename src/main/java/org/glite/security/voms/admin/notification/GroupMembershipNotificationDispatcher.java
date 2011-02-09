@@ -20,6 +20,8 @@
 
 package org.glite.security.voms.admin.notification;
 
+import java.util.List;
+
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventMask;
 import org.glite.security.voms.admin.event.EventType;
@@ -30,6 +32,8 @@ import org.glite.security.voms.admin.event.registration.GroupMembershipSubmitted
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 public class GroupMembershipNotificationDispatcher extends BaseNotificationDispatcher{
@@ -58,6 +62,10 @@ public class GroupMembershipNotificationDispatcher extends BaseNotificationDispa
 		if (e instanceof GroupMembershipSubmittedEvent){
 			
 			GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent)e;
+			
+			VOMSContext context = VOMSContext.instance(ee.getRequest().getGroupName());
+			
+			List<String> admins = NotificationUtil.getAdministratorsEmailList(context, VOMSPermission.getRequestsRWPermissions());
 			
 			HandleRequest msg = new HandleRequest(req,ee.getManagementURL());
 					

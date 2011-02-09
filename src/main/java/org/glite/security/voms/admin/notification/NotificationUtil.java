@@ -36,8 +36,21 @@ public class NotificationUtil {
 
 	public static final Logger log = LoggerFactory.getLogger(NotificationUtil.class);
 
-	public static List<String> getAdministratorsEmailList() {
+	public static List<String> getAdministratorsEmailList(){
+		
+		return getAdministratorsEmailList(VOMSContext.getVoContext(),
+				VOMSPermission.getAllPermissions());
+	}
+	
+	public static List<String> getAdministratorsEmailList(VOMSContext context,
+			VOMSPermission permission) {
 
+		if (context == null)
+			throw new IllegalArgumentException("Please provide a non-null context!");
+		
+		if (permission == null)
+			throw new IllegalArgumentException("Please provide a non-null permission!");
+		
 		final String[] possibleBehaviours = { "admins", "service", "all" };
 
 		String notificationBehaviour = VOMSConfiguration.instance().getString(
@@ -68,10 +81,8 @@ public class NotificationUtil {
 
 		ArrayList<String> adminEmails = new ArrayList<String>();
 
-		VOMSContext voContext = VOMSContext.getVoContext();
-
-		Set<VOMSAdmin> admins = voContext.getACL().getAdminsWithPermissions(
-				VOMSPermission.getAllPermissions());
+		Set<VOMSAdmin> admins = context.getACL().getAdminsWithPermissions(
+				permission);
 
 		if ("admins".equals(notificationBehaviour)
 				|| "all".equals(notificationBehaviour)) {
