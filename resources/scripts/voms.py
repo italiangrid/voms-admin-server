@@ -18,8 +18,13 @@
 # 	Andrea Ceccanti (INFN)
 #
 
-import exceptions,re,os.path,os,commands,glob,socket,string,shutil,time,popen2
+import exceptions,re,os,os.path,commands,glob,socket,string,shutil,time,popen2
 
+glite_loc_default = "${gliteLocationDefault}"
+glite_loc_var_default = "${gliteLocationVarDefault}"
+glite_loc_log_default = "${gliteLocationLogDefault}" 
+voms_template_prefix = "${vomsTemplatePrefix}"
+voms_admin_server_version = "${server-version}"
 
 def exit_status(status):
     if os.WIFEXITED(status):
@@ -984,26 +989,27 @@ class X509Helper:
  
 class VomsConstants:
     
-    glite_loc = os.environ.get("GLITE_LOCATION","/opt/glite")
-    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
-    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG","/var/log/glite")
+    version = voms_admin_server_version
+        
+    glite_loc = os.environ.get("GLITE_LOCATION", glite_loc_default)
+    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR",glite_loc_var_default)
+    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG",glite_loc_log_default)
     
-    version = "${server-version}"
+    db_props_template = os.path.join(voms_template_prefix,"templates","voms.database.properties.template")
+    service_props_template = os.path.join(voms_template_prefix,"templates","voms.service.properties.template")
     
-    db_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.database.properties.template")
-    service_props_template = os.path.join(glite_loc,"etc","voms-admin","templates","voms.service.properties.template")
-    
-    context_template = os.path.join(glite_loc,"etc","voms-admin","templates","context.xml.template")
-    voms_template = os.path.join(glite_loc,"etc","voms-admin","templates", "voms.conf.template")
+    context_template = os.path.join(voms_template_prefix,"templates","context.xml.template")
+    voms_template = os.path.join(voms_template_prefix,"templates", "voms.conf.template")
     
     voms_admin_conf_dir = os.path.join(glite_loc_var,"etc","voms-admin")
+    
     voms_conf_dir = os.path.join(glite_loc,"etc","voms")
     
-    voms_siblings_context_template = os.path.join(glite_loc,"etc","voms-admin","templates", "siblings-context.xml.template")
+    voms_siblings_context_template = os.path.join(voms_template_prefix,"templates","siblings-context.xml.template")
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
     
-    vo_aup_template = os.path.join(glite_loc,"etc","voms-admin","templates", "aup", "vo-aup.txt")
-    logging_conf_template = os.path.join(glite_loc,"etc","voms-admin","templates", "logback.runtime.xml")
+    vo_aup_template = os.path.join(voms_template_prefix,"templates", "aup", "vo-aup.txt")
+    logging_conf_template = os.path.join(voms_template_prefix,"templates", "logback.runtime.xml")
     
     voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
     voms_admin_war_nodeps = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin-nodeps.war")

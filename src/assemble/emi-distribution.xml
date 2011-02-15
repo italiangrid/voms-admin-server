@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Authors:
+    	Andrea Ceccanti (INFN)
+
+-->
+<assembly>
+    <!-- 
+    <id>server-${server-version}-${age}</id>
+     -->
+     <id>server</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <fileSets>
+        <fileSet>
+            <directory>resources/scripts</directory>
+            <excludes>
+                <exclude>*.pyc</exclude>
+                <exclude>*.pyo</exclude>
+                <exclude>voms.py</exclude>
+            </excludes>
+            <outputDirectory>/usr/share/sbin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>resources/templates</directory>
+            <excludes>
+                <exclude>style/**</exclude>
+                <exclude>style</exclude>
+                <exclude>siblings/**</exclude>
+                <exclude>siblings</exclude>
+            </excludes>
+            <outputDirectory>/usr/share/voms-admin/templates</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>logback.runtime.xml</include>
+            </includes>
+            <outputDirectory>/usr/share/voms-admin/templates</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>resources/doc</directory>
+            <outputDirectory>/usr/share/doc/voms-admin-server</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>resources/wsdls</directory>
+            <outputDirectory>/usr/share/voms-admin-server/wsdls</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>/usr/share/voms-admin/tools/lib</outputDirectory>
+        </dependencySet>
+        
+        <dependencySet>
+          <outputDirectory>/usr/share/voms-admin/endorsed</outputDirectory>
+          <includes>
+            <include>org.apache.xerces:xml-apis</include>
+            <include>org.apache.xerces:xercesImpl</include>
+            <include>org.apache.xerces:serializer</include>
+            <include>org.apache.xerces:resolver</include>
+          </includes>
+        </dependencySet>
+    </dependencySets>
+
+    <files>
+        <file>
+            <source>resources/scripts/voms-admin-configure.py</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-admin-configure</destName>
+            <fileMode>0755</fileMode>
+        </file>
+        
+        <file>
+            <source>resources/scripts/voms.py</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+        
+        <file>
+            <source>resources/scripts/init-voms-admin.py</source>
+            <outputDirectory>/etc/rc.d/init.d</outputDirectory>
+            <destName>voms-admin</destName>
+            <fileMode>0755</fileMode>
+        </file>
+
+        <file>
+            <source>src/main/resources/logback.deployer.xml</source>
+            <destName>logback.xml</destName>
+            <outputDirectory>/usr/share/voms-admin/tools/classes</outputDirectory>
+        </file>
+        
+        <file>
+            <source>src/main/resources/c3p0.properties</source>
+            <outputDirectory>/usr/share/voms-admin/tools/classes</outputDirectory>
+        </file>
+        
+        <file>
+            <source>target/glite-security-voms-admin.jar</source>
+            <outputDirectory>/usr/share/java</outputDirectory>
+        </file>
+
+        <file>
+            <source>target/glite-security-voms-admin.war</source>
+            <outputDirectory>/usr/share/webapps</outputDirectory>
+        </file>
+		 
+        <file>
+            <source>target/glite-security-voms-siblings.war</source>
+            <outputDirectory>/usr/share/webapps</outputDirectory>
+        </file>
+    </files>
+</assembly>

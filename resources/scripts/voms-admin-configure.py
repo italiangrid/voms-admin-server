@@ -522,7 +522,7 @@ def do_command():
 def main():
 
     try:
-        print "voms-admin-configure, version %s\n" % VomsConstants.version
+        print "voms-admin-configure, version %s\n" % voms_admin_server_version
         
         parse_options()
         
