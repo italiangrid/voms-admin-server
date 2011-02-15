@@ -40,6 +40,16 @@ public class CreateGroupOperation extends BaseVomsOperation {
 			.getLogger(CreateGroupOperation.class);
 
 	String groupName;
+	String groupDescription;
+	Boolean restricted;
+	
+	private CreateGroupOperation(String name,String groupDescription, Boolean restricted){
+		
+		this.groupName = name;
+		this.groupDescription = groupDescription;
+		this.restricted = restricted;
+		
+	}
 
 	private CreateGroupOperation(String name) {
 
@@ -75,7 +85,7 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
 	protected Object doExecute() {
 
-		VOMSGroup g = VOMSGroupDAO.instance().create(groupName);
+		VOMSGroup g = VOMSGroupDAO.instance().create(groupName,groupDescription,restricted);
 
 		setupACLs(g);
 
@@ -87,6 +97,11 @@ public class CreateGroupOperation extends BaseVomsOperation {
 	public static CreateGroupOperation instance(String groupName) {
 
 		return new CreateGroupOperation(groupName);
+	}
+	
+	public static CreateGroupOperation instance(String groupName, String groupDescription, Boolean isRestricted){
+		
+		return new CreateGroupOperation(groupName, groupDescription, isRestricted);
 	}
 
 	protected void setupPermissions() {

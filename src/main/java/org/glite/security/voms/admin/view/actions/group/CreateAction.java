@@ -54,6 +54,10 @@ public class CreateAction extends GroupActionSupport {
 
 	String groupName;
 	String parentGroupName;
+	
+	String description;
+	Boolean isRestricted;
+	
 
 	@Override
 	public void validate() {
@@ -93,7 +97,7 @@ public class CreateAction extends GroupActionSupport {
 
 		String name = getParentGroupName() + "/" + getGroupName();
 
-		VOMSGroup g = (VOMSGroup) CreateGroupOperation.instance(name).execute();
+		VOMSGroup g = (VOMSGroup) CreateGroupOperation.instance(name, description, isRestricted).execute();
 
 		if (g != null)
 			addActionMessage(getText("confirm.group.creation", g.getName()));
@@ -125,6 +129,19 @@ public class CreateAction extends GroupActionSupport {
 		this.parentGroupName = parentGroupName;
 	}
 
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The description field contains illegal characters!", expression = "^[^<>&=;]*$")
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Boolean getIsRestricted() {
+		return isRestricted;
+	}
+	public void setIsRestricted(Boolean isRestricted) {
+		this.isRestricted = isRestricted;
+	}
 	@Override
 	public void prepare() throws Exception {
 

@@ -300,7 +300,7 @@ public class VOMSGroupDAO {
 
 		if (g == null)
 			throw new VOMSInconsistentDatabaseException(
-					"VO root group undefined in org.glite.security.voms.admin.persistence.error!");
+					"VO root group undefined in database!");
 
 		return g;
 
@@ -317,7 +317,11 @@ public class VOMSGroupDAO {
 
 	}
 
-	public VOMSGroup create(String groupName) {
+	public VOMSGroup create(String groupName){
+		return create(groupName, null, null);
+	}
+	
+	public VOMSGroup create(String groupName, String description, Boolean isRestricted) {
 
 		if (!PathNamingScheme.isGroup(groupName))
 			throw new VOMSSyntaxException("Syntax error in group name: "
@@ -346,11 +350,17 @@ public class VOMSGroupDAO {
 			throw new NoSuchGroupException(
 					"Parent group \""
 							+ parentGroupName
-							+ "\" not defined in org.glite.security.voms.admin.persistence.error!");
+							+ "\" not defined in database!");
 
 		VOMSGroup newGroup = new VOMSGroup();
 		newGroup.setName(groupName);
 		newGroup.setParent(parentGroup);
+		
+		if (description != null)
+			newGroup.setDescription(description);
+		
+		if (isRestricted != null)
+			newGroup.setRestricted(isRestricted);
 
 		log.debug("Creating group \"" + newGroup + "\".");
 
