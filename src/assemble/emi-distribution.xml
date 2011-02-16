@@ -42,7 +42,7 @@
                 <exclude>*.pyo</exclude>
                 <exclude>voms.py</exclude>
             </excludes>
-            <outputDirectory>/usr/share/sbin</outputDirectory>
+            <outputDirectory>/usr/sbin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
         <fileSet>
