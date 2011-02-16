@@ -73,7 +73,7 @@
 
         <fileSet>
             <directory>resources/wsdls</directory>
-            <outputDirectory>/usr/share/voms-admin-server/wsdls</outputDirectory>
+            <outputDirectory>/usr/share/voms-admin/wsdls</outputDirectory>
         </fileSet>
     </fileSets>
 
