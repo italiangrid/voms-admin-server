@@ -159,9 +159,9 @@ def check_installed_setup():
         raise VomsConfigureError,"GLITE_LOCATION undefined!"
 
     checked_paths = [ 
-                     os.path.join(glite_loc,"etc","voms-admin","templates","voms.database.properties.template"),
-                     os.path.join(glite_loc,"etc","voms-admin","templates","voms.service.properties.template"),
-                     os.path.join(glite_loc,"etc","voms-admin","templates","context.xml.template"),
+                     os.path.join(voms_template_prefix,"templates","voms.database.properties.template"),
+                     os.path.join(voms_template_prefix,"templates","voms.service.properties.template"),
+                     os.path.join(voms_template_prefix,"templates","context.xml.template"),
                      os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war"),
                      os.path.join(glite_loc, "share","java","glite-security-voms-admin.jar")
                      ]
@@ -460,8 +460,8 @@ def do_install():
     print Template("""
 VO @voname@ installation finished.\n 
 You can start the voms services using the following commands:
-    @glite_location@/etc/init.d/voms start @voname@
-    @glite_location@/etc/init.d/voms-admin start @voname@""").sub({'voname':options['vo'], 'glite_location': os.environ['GLITE_LOCATION']})
+    /etc/init.d/voms start @voname@
+    /etc/init.d/voms-admin start @voname@""").sub({'voname':options['vo']})
     
     
     
