@@ -209,6 +209,7 @@ public class VOMSUserDAO {
 
 		// Get users First that do not have any acceptance records
 		// String queryString = " from VOMSUser u where u.aupAcceptanceRecords is empty";
+		// FIXME: https://gus.fzk.de/ws/ticket_info.php?ticket=67505
 		String noAcceptanceRecordForActiveAUPVersionQuery = "from VOMSUser where not exists (from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
 
 		Query q = HibernateFactory.getSession().createQuery(noAcceptanceRecordForActiveAUPVersionQuery);
