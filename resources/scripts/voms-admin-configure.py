@@ -25,9 +25,6 @@ import os.path,getopt,sys,exceptions,pwd,grp,socket
 from os import environ
 from voms import *
 
-required_env_variables = ("GLITE_LOCATION",
-                           "GLITE_LOCATION_VAR",
-                           "GLITE_LOCATION_LOG")
 options = {}
 
 certificate = None
@@ -37,6 +34,7 @@ command = None
 supported_commands = ("install", "remove", "update", "upgrade")
 
 def vlog(msg):
+    global options
     if options.has_key("verbose"):
         print msg
 
@@ -65,12 +63,13 @@ def setup_aa_defaults():
     
     set_default(options, "saml-max-assertion-lifetime", "720")
 
-## FIXME: move this into Voms::ConfigureAction
+
 def setup_defaults():
     global options
-    set_default(os.environ, 'VOMS_LOCATION',os.environ['GLITE_LOCATION'])
+    
+    set_default(os.environ, 'VOMS_LOCATION',VomsConstants.voms_loc)
     set_default(options,"hostname",socket.gethostname())
-    set_default(options,"libdir",os.path.join(os.environ['GLITE_LOCATION'],"lib"))
+    set_default(options,"libdir",os.path.join(VomsConstants.voms_loc,"lib"))
     set_default(options, "mysql-command", "mysql")
     set_default(options, "openssl","openssl")
     set_default(options, "dbauser", "root")    
@@ -139,36 +138,28 @@ def setup_identity():
     options['ta.subject']=certificate.subject
     options['ta.ca']=certificate.issuer
 
-def check_env_var():
-        
-    missing_variables = []
-    
-    for i in required_env_variables:
-        if environ.get(i, None) is None:
-            missing_variables.append(i)
-    
-    if len(missing_variables) != 0:
-        raise VomsConfigureError, "Please set the following environment variables before running this program: "+ string.join(missing_variables,",")
-  
+ 
     
 def check_installed_setup():
     
-    glite_loc = environ.get("GLITE_LOCATION", None)
+    vlog("VOMS_LOCATION: %s" % VomsConstants.voms_loc)
+    vlog("VOMS_LOCATION_VAR: %s" % VomsConstants.voms_loc_var)
+    vlog("VOMS_LOCATION_CONF: %s" % VomsConstants.voms_conf_loc)
+    vlog("VOMS_ADMIN_LOCATION: %s" % VomsConstants.voms_admin_loc)
+    vlog("VOMS_ADMIN_LOCATION_VAR: %s" % VomsConstants.voms_admin_conf_dir)
     
-    if glite_loc is None:
-        raise VomsConfigureError,"GLITE_LOCATION undefined!"
-
+    vlog("Checking local installation...")
     checked_paths = [ 
-                     os.path.join(voms_template_prefix,"templates","voms.database.properties.template"),
-                     os.path.join(voms_template_prefix,"templates","voms.service.properties.template"),
-                     os.path.join(voms_template_prefix,"templates","context.xml.template"),
-                     os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war"),
-                     os.path.join(glite_loc, "share","java","glite-security-voms-admin.jar")
+                     VomsConstants.db_props_template,
+                     VomsConstants.context_template,
+                     VomsConstants.service_props_template,
+                     VomsConstants.voms_admin_war,
+                     VomsConstants.voms_admin_jar
                      ]
     
     for i in checked_paths:
         if not os.path.exists(i):
-            raise VomsConfigureError, i+ " not found in local filesystem!"    
+            raise VomsConfigureError, i+ " not found in local filesystem! Local installation check failed."    
 
 def usage():
     usage_str = """
@@ -356,7 +347,7 @@ def parse_options():
     cmd_line = None
 
     if len(sys.argv) == 1:
-        usage()
+        print "No command specified, Type voms-admin-configure --help for more information."
         sys.exit(2)
     
     if re.match("^--",sys.argv[1]):
@@ -523,13 +514,14 @@ def main():
 
     try:
         print "voms-admin-configure, version %s\n" % voms_admin_server_version
-        
         parse_options()
-        
         vlog("Checking glite installation...")
         check_env_var()
         check_installed_setup()
         vlog("Glite installation ok.")
+        
+        
+        
         
         setup_defaults()
         setup_identity()

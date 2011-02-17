@@ -21,9 +21,19 @@
 
 import getopt, sys, os, os.path, commands,urllib,xml.dom.minidom, getopt, shutil, time, re, glob
 
+def voms_admin_config_dir():
+    conf_dir_prefix = os.environ.get('VOMS_ADMIN_LOCATION_VAR')
+    if conf_dir_prefix is None:
+        conf_dir_prefix = os.environ.get('GLITE_LOCATION_VAR')
+        
+    if conf_dir_prefix is None:
+        raise ValueError, "Please define VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR environment variables for this script to work!"
+    
+    return os.path.join(conf_dir_prefix,"etc","voms-admin")
+    
 def configured_vos():
-    ## Get directories in GLITE_LOCATION_VAR/etc/voms-admin
-    conf_dir =  os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin")
+    
+    conf_dir =  voms_admin_config_dir()
     
     return [os.path.basename(v) for v in glob.glob(os.path.join(conf_dir,"*")) if os.path.isdir(v)]
 
@@ -75,14 +85,14 @@ def setup_cert():
 
 
 def siblings_context_file():
-    return os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin", "voms-siblings.xml")    
+    return os.path.join(voms_admin_config_dir(),"etc","voms-admin", "voms-siblings.xml")    
 
 def context_file(vo):
     
     if options.has_key("context"):
         return os.path.abspath(options['context'])
     else:
-        prefix = os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",vo)
+        prefix = os.path.join(voms_admin_config_dir(),"etc","voms-admin",vo)
         return "%s/voms-admin-%s.xml" % (prefix,vo)
 
 def catalina_context_file(vo):

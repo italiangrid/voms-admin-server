@@ -79,6 +79,13 @@ public class SiblingsContextListener implements ServletContextListener {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context) initCtx.lookup("java:comp/env");
 
+		String vomsAdminLocationVar = (String ) envCtx.lookup("VOMS_ADMIN_LOCATION_VAR");
+		
+		if (vomsAdminLocationVar == null)
+		    log.warn("VOMS_ADMIN_LOCATION_VAR not defined in naming context...");
+		else
+		    ev.getServletContext().setAttribute("VOMS_ADMIN_LOCATION_VAR", vomsAdminLocationVar);
+		
 		String gliteLocationVar = (String) envCtx.lookup("GLITE_LOCATION_VAR");
 		
 		if (gliteLocationVar == null)
@@ -131,11 +138,13 @@ public class SiblingsContextListener implements ServletContextListener {
 	
 	public void findConfiguredVOs(ServletContextEvent ev) {
 
-		String configDirPath = (String) ev.getServletContext().getAttribute("GLITE_LOCATION_VAR");
+		String configDirPath = (String) ev.getServletContext().getAttribute("VOMS_ADMIN_LOCATION_VAR");
+		if (configDirPath == null)
+		    configDirPath = (String) ev.getServletContext().getAttribute("GLITE_LOCATION_VAR");
 
 		if (configDirPath == null)
 			throw new RuntimeException(
-					"No value found for GLITE_LOCATION_VAR!");
+					"No value found for VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR!");
 
 		
 		List voList = new ArrayList();

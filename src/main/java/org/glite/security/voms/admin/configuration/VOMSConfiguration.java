@@ -401,25 +401,26 @@ public final class VOMSConfiguration {
 
 	}
 
+	
+	
 	public String getConfigurationDirectoryPath() {
-
-		String path = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName();
+	    
+	    	String prefix = config.getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR"));
+	    	
+		String path = prefix + "/etc/voms-admin/" + getVOName();
 
 		return path;
 	}
 
 	private String getCustomizedContentPath() {
 
-		String pathName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/customized-content/";
+		String pathName = getConfigurationDirectoryPath() + "/customized-content/";
 		return pathName;
 	}
 
 	public Properties getDatabaseProperties() {
 
-		String propFileName = getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName()
+		String propFileName = getConfigurationDirectoryPath()
 				+ "/voms.database.properties";
 
 		Properties props = new Properties();
@@ -439,15 +440,17 @@ public final class VOMSConfiguration {
 		return props;
 
 	}
+	
+	
+	
 
 	public String getDefaultGridAUPURL() {
 		return String.format("file://%s/etc/voms-admin/%s/grid-aup.txt",
-				getString("GLITE_LOCATION_VAR"), getVOName());
+				getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")), getVOName());
 	}
 
 	public String getDefaultVOAUPURL() {
-		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt",
-				getString("GLITE_LOCATION_VAR"), getVOName());
+		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt",getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")), getVOName());
 	}
 
 	/*
@@ -489,7 +492,7 @@ public final class VOMSConfiguration {
 	private InputStream getExternalLogbackConfiguration()
 			throws FileNotFoundException {
 
-		String path = getString("GLITE_LOCATION_VAR") + "/etc/voms-admin/"
+		String path = getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")) + "/etc/voms-admin/"
 				+ getVOName() + "/logback.runtime.xml";
 
 		File f = new File(path);
@@ -621,11 +624,11 @@ public final class VOMSConfiguration {
 
 	public List getLocallyConfiguredVOs() {
 
-		String configDirPath = getString("GLITE_LOCATION_VAR");
+		String configDirPath = getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR"));
 
 		if (configDirPath == null)
 			throw new VOMSConfigurationException(
-					"No value found for GLITE_LOCATION_VAR!");
+					"No value found for VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR!");
 
 		List voList = new ArrayList();
 
@@ -795,17 +798,7 @@ public final class VOMSConfiguration {
 		return config.getStringArray(arg0);
 	}
 
-	private String getVomsDatabasePropertiesFileName() {
 
-		String fileName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName()
-				+ "/voms.database.properties";
-
-		log.debug("voms.database.properties=" + fileName);
-
-		return fileName;
-
-	}
 
 	public String getVomsesConfigurationString() {
 
@@ -820,8 +813,7 @@ public final class VOMSConfiguration {
 
 	private String getVomsServicePropertiesFileName() {
 
-		String fileName = config.getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/voms.service.properties";
+		String fileName = getConfigurationDirectoryPath() + "/voms.service.properties";
 
 		return fileName;
 
@@ -1000,8 +992,7 @@ public final class VOMSConfiguration {
 
 	private String loadVomsesConfigurationString() {
 
-		String vomsesConfFileName = getString("GLITE_LOCATION_VAR")
-				+ "/etc/voms-admin/" + getVOName() + "/vomses";
+		String vomsesConfFileName = getConfigurationDirectoryPath() + "/vomses";
 
 		try {
 
@@ -1191,5 +1182,8 @@ public final class VOMSConfiguration {
 		return permMask;
 		
 	}
+	
+	
+	
 	
 }

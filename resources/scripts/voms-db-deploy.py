@@ -45,7 +45,8 @@ def build_classpath():
 
 
 def build_env_vars():
-    return string.join(map(lambda x: "-D%s=%s" % (x, os.environ[x]), VomsConstants.env_variables)," ")        
+    env_vars = string.join(map(lambda x: "-D%s=%s" % (x, os.environ[x]), VomsConstants.env_variables)," ") 
+    return env_vars 
     
 
 def do_deploy():

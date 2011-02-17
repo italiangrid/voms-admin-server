@@ -621,12 +621,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <gliteLocationDefault>/opt/glite</gliteLocationDefault>
-                <gliteLocationVarDefault>/var/glite</gliteLocationVarDefault>
-                <gliteLocationLogDefault>/var/log/</gliteLocationLogDefault>
-                <vomsTemplatePrefix>/opt/glite/etc/voms-admin</vomsTemplatePrefix>
-            </properties>
             
             <build>
                 <plugins>
@@ -657,14 +651,6 @@
 
         <profile>
             <id>EMI</id>
-            
-            <properties>
-                <gliteLocationDefault>/usr/share</gliteLocationDefault>
-                <gliteLocationVarDefault>/etc</gliteLocationVarDefault>
-                <gliteLocationLogDefault>/var/log/</gliteLocationLogDefault>
-                <vomsTemplatePrefix>/usr/share/voms-admin</vomsTemplatePrefix>
-            </properties>
-            
             <build>
                 <plugins>
 

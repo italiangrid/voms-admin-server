@@ -726,8 +726,12 @@ public class SchemaDeployer {
 
 			if (hibernatePropertiesFile == null) {
 
-				String f = System.getProperty("GLITE_LOCATION_VAR")
-						+ "/etc/voms-admin/" + vo + "/voms.database.properties";
+			    	String configPrefix = System.getProperty("VOMS_ADMIN_LOCATION_VAR");
+			    	
+			    	if (configPrefix == null)
+			    	    configPrefix = System.getProperty("GLITE_LOCATION_VAR");
+			    	
+				String f = configPrefix	+ "/etc/voms-admin/" + vo + "/voms.database.properties";
 
 				log.debug("Loading database properties from: " + f);
 
@@ -1492,13 +1496,9 @@ public class SchemaDeployer {
 	
 	public static void main(String[] args) throws ConfigurationException {
 
-		if (System.getProperty("GLITE_LOCATION") == null)
+	    if ((System.getProperty("GLITE_LOCATION_VAR") == null) && (System.getProperty("VOMS_ADMIN_LOCATION_VAR") == null))
 			throw new VOMSException(
-					"Please set the GLITE_LOCATION system property before running this utility.");
-
-		if (System.getProperty("GLITE_LOCATION_VAR") == null)
-			throw new VOMSException(
-					"Please set the GLITE_LOCATION_VAR system property before running this utility.");
+					"Please set the VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR system property before running this utility.");
 
 		new SchemaDeployer(args);
 

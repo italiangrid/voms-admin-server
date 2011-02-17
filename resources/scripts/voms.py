@@ -20,10 +20,6 @@
 
 import exceptions,re,os,os.path,commands,glob,socket,string,shutil,time,popen2
 
-glite_loc_default = "${gliteLocationDefault}"
-glite_loc_var_default = "${gliteLocationVarDefault}"
-glite_loc_log_default = "${gliteLocationLogDefault}" 
-voms_template_prefix = "${vomsTemplatePrefix}"
 voms_admin_server_version = "${server-version}"
 
 def exit_status(status):
@@ -41,7 +37,7 @@ def setup_permissions(file,perms,tomcat_group):
 
 def configured_vos():
     ## Get directories in GLITE_LOCATION_VAR/etc/voms-admin
-    conf_dir =  os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin")
+    conf_dir =  VomsConstants.voms_admin_conf_dir
     
     return [os.path.basename(v) for v in glob.glob(os.path.join(conf_dir,"*")) if os.path.isdir(v)]
 
@@ -195,7 +191,11 @@ class ConfigureAction:
         if self.user_options.has_key('disable-webui-requests'):
             self.user_options['webui-enabled'] = 'false'
         else:
-            self.user_options['webui-enabled'] = 'true'        
+            self.user_options['webui-enabled'] = 'true'
+    
+    def vlog(self, msg):
+        if self.user_options.has_key('verbose') :
+            print msg  
         
     
 
@@ -210,7 +210,7 @@ class UpgradeVO(ConfigureAction):
 #        
 #        set_default(self.user_options,"timeout", "86400")
         
-        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (os.environ['GLITE_LOCATION_VAR'],
+        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (VomsConstants.voms_admin_conf_loc,
                                                                                                   self.user_options['vo']))
         print "Upgrading vo ",self.user_options['vo']
         
@@ -338,7 +338,7 @@ class UpgradeVO(ConfigureAction):
         service_props_file.close()
         
     def write_context_file(self):
-        set_default(os.environ, 'VOMS_LOCATION',os.environ['GLITE_LOCATION'])
+        set_default(os.environ, 'VOMS_LOCATION',VomsConstants.voms_loc)
         
         war_file = VomsConstants.voms_admin_war
         
@@ -347,10 +347,10 @@ class UpgradeVO(ConfigureAction):
         
         m = {'VO_NAME': self.user_options['vo'],
              'WAR_FILE': war_file,
-             'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
-             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
-             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
-             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             'CONFIG_DIR': os.path.join(VomsConstants.voms_admin_conf_dir,self.user_options['vo']),
+             'GLITE_LOCATION': VomsConstants.voms_loc,
+             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
+             'VOMS_LOCATION': VomsConstants.voms_loc
              }
              
         t = Template(open(VomsConstants.context_template,"r").read())
@@ -361,9 +361,9 @@ class UpgradeVO(ConfigureAction):
     
     def write_siblings_context(self):
         m = {'WAR_FILE': VomsConstants.voms_siblings_war,
-             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
-             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
-             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             'GLITE_LOCATION': VomsConstants.voms_loc,
+             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
+             'VOMS_LOCATION': VomsConstants.voms_loc
              }
         
         t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
@@ -521,7 +521,7 @@ class InstallVOAction(ConfigureAction):
         
         set_default(self.user_options,"timeout", "86400")
         
-        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (os.environ['GLITE_LOCATION_VAR'],
+        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (VomsConstants.voms_admin_conf_loc,
                                                                                                   self.user_options['vo']))
                 
         if self.user_options['vo'] == 'siblings':
@@ -643,9 +643,9 @@ class InstallVOAction(ConfigureAction):
     
     def write_siblings_context(self):
         m = {'WAR_FILE': VomsConstants.voms_siblings_war,
-             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
-             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
-             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             'GLITE_LOCATION': VomsConstants.voms_loc,
+             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
+             'VOMS_LOCATION': VomsConstants.voms_loc
              }
         
         t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
@@ -666,10 +666,10 @@ class InstallVOAction(ConfigureAction):
 
         m = {'VO_NAME': self.user_options['vo'],
              'WAR_FILE': war_file,
-             'CONFIG_DIR': os.path.join(os.environ['GLITE_LOCATION_VAR'],"etc","voms-admin",self.user_options['vo']),
-             'GLITE_LOCATION': os.environ['GLITE_LOCATION'],
-             'GLITE_LOCATION_VAR': os.environ['GLITE_LOCATION_VAR'],
-             'VOMS_LOCATION': os.environ['GLITE_LOCATION']
+             'CONFIG_DIR': os.path.join(VomsConstants.voms_admin_conf_dir,self.user_options['vo']),
+             'GLITE_LOCATION': VomsConstants.voms_loc,
+             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
+             'VOMS_LOCATION': VomsConstants.voms_loc
              }
              
         t = Template(open(VomsConstants.context_template,"r").read())
@@ -686,8 +686,8 @@ class InstallVOAction(ConfigureAction):
         m = { 
              'CODE': self.user_options['code'],
              'DBNAME': self.user_options['dbname'],
-             'LOGFILE': os.path.join(os.environ['GLITE_LOCATION_LOG'],"voms."+self.user_options['vo']),
-             'PASSFILE': os.path.join(os.environ['GLITE_LOCATION'],"etc","voms",self.user_options['vo'],"voms.pass"),
+             'LOGFILE': os.path.join(VomsConstants.voms_loc_var,"log","voms."+self.user_options['vo']),
+             'PASSFILE': os.path.join(VomsConstants.voms_conf_dir,self.user_options['vo'],"voms.pass"),
              'SQLLOC': os.path.join(self.user_options['libdir'],self.user_options['sqlloc']),
              'USERNAME': self.user_options['dbusername'],
              'VONAME': self.user_options['vo'],
@@ -696,6 +696,8 @@ class InstallVOAction(ConfigureAction):
              'TIMEOUT': self.user_options['timeout']}
         
         t = Template(open(VomsConstants.voms_template,"r").read())
+        
+        self.vlog("voms core configuration:\n%s" % t.sub(m))
         
         self.write_and_close(voms_config_file(self.user_options['vo']), 
                              t.sub(m))
@@ -986,41 +988,77 @@ class X509Helper:
     def __repr__(self):
         return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
         
- 
+
+
+def check_env_var():
+    if os.environ.get("VOMS_LOCATION") is None and os.environ.get("GLITE_LOCATION") is None:
+        raise VomsConfigureError,"VOMS_LOCATION *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
+    
+    if os.environ.get("VOMS_LOCATION_CONF") is None and os.environ.get("GLITE_LOCATION") is None:
+        raise VomsConfigureError,"VOMS_LOCATION_CONF *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
+    
+    if os.environ.get("VOMS_LOCATION_VAR") is None and os.environ.get("GLITE_LOCATION_VAR") is None:
+        raise VomsConfigureError,"VOMS_LOCATION_VAR *and* GLITE_LOCATION_VAR are both undefined. Please specify one of the two, depending on your installation."
+    
+    if os.environ.get("VOMS_ADMIN_LOCATION") is None and os.environ.get("GLITE_LOCATION") is None:
+        raise VomsConfigureError,"VOMS_ADMIN_LOCATION *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
+    
+    if os.environ.get("VOMS_ADMIN_LOCATION_VAR") is None and os.environ.get("GLITE_LOCATION_VAR") is None:
+        raise VomsConfigureError,"VOMS_ADMIN_LOCATION_VAR *and* GLITE_LOCATION_VAR are both undefined. Please specify one of the two, depending on your installation."
+          
+def template_prefix():
+    check_env_var()
+    if os.environ.get("VOMS_ADMIN_LOCATION") is None:
+        return os.path.join(os.environ.get("GLITE_LOCATION"),"etc","voms-admin","templates")
+    else:
+        return os.path.join(os.environ.get("VOMS_ADMIN_LOCATION"),"templates")
+
+
 class VomsConstants:
     
     version = voms_admin_server_version
         
-    glite_loc = os.environ.get("GLITE_LOCATION", glite_loc_default)
-    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR",glite_loc_var_default)
-    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG",glite_loc_log_default)
+    glite_loc = os.environ.get("GLITE_LOCATION","/opt/glite")
+    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
+    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG", "/var/log/glite")
     
-    db_props_template = os.path.join(voms_template_prefix,"templates","voms.database.properties.template")
-    service_props_template = os.path.join(voms_template_prefix,"templates","voms.service.properties.template")
+    voms_loc = os.environ.get("VOMS_LOCATION", glite_loc)
+    voms_loc_var = os.environ.get("VOMS_LOCATION_VAR", glite_loc_var)
     
-    context_template = os.path.join(voms_template_prefix,"templates","context.xml.template")
-    voms_template = os.path.join(voms_template_prefix,"templates", "voms.conf.template")
+    ## TODO: define voms_loc_log here 
     
-    voms_admin_conf_dir = os.path.join(glite_loc_var,"etc","voms-admin")
+    voms_conf_loc = os.environ.get("VOMS_LOCATION_CONF", glite_loc)
     
-    voms_conf_dir = os.path.join(glite_loc,"etc","voms")
+    voms_admin_loc = os.environ.get("VOMS_ADMIN_LOCATION", glite_loc)
+    voms_admin_conf_loc = os.environ.get("VOMS_ADMIN_LOCATION_VAR", glite_loc_var)
     
-    voms_siblings_context_template = os.path.join(voms_template_prefix,"templates","siblings-context.xml.template")
+    voms_admin_template_prefix = template_prefix()
+    
+    db_props_template = os.path.join(voms_admin_template_prefix,"voms.database.properties.template")
+    service_props_template = os.path.join(voms_admin_template_prefix,"voms.service.properties.template")
+    
+    context_template = os.path.join(voms_admin_template_prefix,"context.xml.template")
+    voms_template = os.path.join(voms_admin_template_prefix,"voms.conf.template")
+    
+    voms_admin_conf_dir = os.path.join(voms_admin_conf_loc,"etc","voms-admin")
+    voms_conf_dir = os.path.join(voms_conf_loc,"etc","voms")
+    
+    voms_siblings_context_template = os.path.join(voms_admin_template_prefix,"siblings-context.xml.template")
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
     
-    vo_aup_template = os.path.join(voms_template_prefix,"templates", "aup", "vo-aup.txt")
-    logging_conf_template = os.path.join(voms_template_prefix,"templates", "logback.runtime.xml")
+    vo_aup_template = os.path.join(voms_admin_template_prefix,"aup", "vo-aup.txt")
+    logging_conf_template = os.path.join(voms_admin_template_prefix, "logback.runtime.xml")
     
-    voms_admin_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin.war")
-    voms_admin_war_nodeps = os.path.join(glite_loc, "share","webapps","glite-security-voms-admin-nodeps.war")
+    voms_admin_war = os.path.join(voms_loc, "share","webapps","glite-security-voms-admin.war")
+    voms_admin_war_nodeps = os.path.join(voms_loc, "share","webapps","glite-security-voms-admin-nodeps.war")
     
-    voms_siblings_war = os.path.join(glite_loc, "share","webapps","glite-security-voms-siblings.war")
+    voms_siblings_war = os.path.join(voms_loc, "share","webapps","glite-security-voms-siblings.war")
     
-    voms_admin_libs = glob.glob(os.path.join(glite_loc,"share","voms-admin","tools","lib")+"/*.jar")
-    voms_admin_classes = os.path.join(glite_loc,"share","voms-admin","tools", "classes")
-    voms_admin_jar = os.path.join(glite_loc, "share","java","glite-security-voms-admin.jar")
+    voms_admin_libs = glob.glob(os.path.join(voms_loc,"share","voms-admin","tools","lib")+"/*.jar")
+    voms_admin_classes = os.path.join(voms_loc,"share","voms-admin","tools", "classes")
+    voms_admin_jar = os.path.join(voms_loc, "share","java","glite-security-voms-admin.jar")
        
-    voms_db_deploy = os.path.join(glite_loc,"sbin","voms-db-deploy.py")
+    voms_db_deploy = os.path.join(voms_loc,"sbin","voms-db-deploy.py")
     
     schema_deployer_class = "org.glite.security.voms.admin.persistence.deployer.SchemaDeployer"
     
@@ -1062,6 +1100,7 @@ class VomsConstants:
               "key=",
               "certdir=",
               "code=",
+              "libdir=",
               "sqlloc=",
               "config-owner=",
               "tomcat-group=",
@@ -1088,12 +1127,17 @@ class VomsConstants:
                "update",
                "upgrade"]
     
-    env_variables= ("GLITE_LOCATION",
+    env_variables= ("VOMS_LOCATION",
+                    "VOMS_LOCATION_VAR",
+                    "VOMS_ADMIN_LOCATION",
+                    "VOMS_ADMIN_LOCATION_VAR",
+                    "GLITE_LOCATION",
                     "GLITE_LOCATION_VAR",
                     "GLITE_LOCATION_LOG")
 
     
-    
+
+
 
 
 class PropertyHelper(dict):
