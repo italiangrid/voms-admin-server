@@ -146,7 +146,7 @@ def check_installed_setup():
     vlog("VOMS_LOCATION_VAR: %s" % VomsConstants.voms_loc_var)
     vlog("VOMS_LOCATION_CONF: %s" % VomsConstants.voms_conf_loc)
     vlog("VOMS_ADMIN_LOCATION: %s" % VomsConstants.voms_admin_loc)
-    vlog("VOMS_ADMIN_LOCATION_VAR: %s" % VomsConstants.voms_admin_conf_dir)
+    vlog("VOMS_ADMIN_LOCATION_VAR: %s" % VomsConstants.voms_admin_conf_loc)
     
     vlog("Checking local installation...")
     checked_paths = [ 
@@ -266,6 +266,9 @@ def usage():
      --libdir PATH         The directory that contains the database access
                            libraries of the VOMS core service.
                            (Default is $GLITE_LOCATION/lib.)
+    
+     --logdir PATH         The directory that will contain the VOMS core service
+                           log files. (Default is $GLITE_LOCATION_LOG)
 
      --sqlloc FILE         Full path to the database access library for the VOMS
                            core service.  (In case --libdir is not enough.)

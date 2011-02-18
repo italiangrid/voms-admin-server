@@ -645,7 +645,9 @@ class InstallVOAction(ConfigureAction):
         m = {'WAR_FILE': VomsConstants.voms_siblings_war,
              'GLITE_LOCATION': VomsConstants.voms_loc,
              'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc
+             'VOMS_LOCATION': VomsConstants.voms_loc,
+             'VOMS_ADMIN_LOCATION': VomsConstants.voms_admin_loc,
+             'VOMS_ADMIN_LOCATION_VAR': VomsConstants.voms_admin_conf_loc
              }
         
         t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
@@ -669,7 +671,9 @@ class InstallVOAction(ConfigureAction):
              'CONFIG_DIR': os.path.join(VomsConstants.voms_admin_conf_dir,self.user_options['vo']),
              'GLITE_LOCATION': VomsConstants.voms_loc,
              'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc
+             'VOMS_LOCATION': VomsConstants.voms_loc,
+             'VOMS_ADMIN_LOCATION': VomsConstants.voms_admin_loc,
+             'VOMS_ADMIN_LOCATION_VAR': VomsConstants.voms_admin_conf_loc
              }
              
         t = Template(open(VomsConstants.context_template,"r").read())
@@ -683,10 +687,15 @@ class InstallVOAction(ConfigureAction):
         
     
     def write_voms_properties(self):
+        
+        voms_log_dir = VomsConstants.voms_loc_log
+        if self.user_options.has_key('logdir'):
+            voms_log_dir = self.user_options['logdir']
+            
         m = { 
              'CODE': self.user_options['code'],
              'DBNAME': self.user_options['dbname'],
-             'LOGFILE': os.path.join(VomsConstants.voms_loc_var,"log","voms."+self.user_options['vo']),
+             'LOGFILE': os.path.join(voms_log_dir,"voms."+self.user_options['vo']),
              'PASSFILE': os.path.join(VomsConstants.voms_conf_dir,self.user_options['vo'],"voms.pass"),
              'SQLLOC': os.path.join(self.user_options['libdir'],self.user_options['sqlloc']),
              'USERNAME': self.user_options['dbusername'],
@@ -1013,7 +1022,14 @@ def template_prefix():
     else:
         return os.path.join(os.environ.get("VOMS_ADMIN_LOCATION"),"templates")
 
-
+def voms_logfile_prefix():
+    check_env_var()
+    if os.environ.get("VOMS_LOCATION_VAR") is None:
+        ## GLITE packaging
+        return os.environ.get("GLITE_LOCATION_LOG")
+    else:
+        return os.path.join(os.environ.get("VOMS_LOCATION_VAR"),"log","voms")
+    
 class VomsConstants:
     
     version = voms_admin_server_version
@@ -1024,8 +1040,7 @@ class VomsConstants:
     
     voms_loc = os.environ.get("VOMS_LOCATION", glite_loc)
     voms_loc_var = os.environ.get("VOMS_LOCATION_VAR", glite_loc_var)
-    
-    ## TODO: define voms_loc_log here 
+    voms_loc_log = voms_logfile_prefix()
     
     voms_conf_loc = os.environ.get("VOMS_LOCATION_CONF", glite_loc)
     
@@ -1101,6 +1116,7 @@ class VomsConstants:
               "certdir=",
               "code=",
               "libdir=",
+              "logdir=",
               "sqlloc=",
               "config-owner=",
               "tomcat-group=",

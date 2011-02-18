@@ -18,10 +18,14 @@
 # Authors:
 # 	Andrea Ceccanti (INFN)
 #
+#
+#   chkconfig: 345 97 97
+#   description:  VOMS Admin web applications startup script
+#
 
 import getopt, sys, os, os.path, commands,urllib,xml.dom.minidom, getopt, shutil, time, re, glob
 
-def voms_admin_config_dir():
+def voms_admin_config_dir_prefix():
     conf_dir_prefix = os.environ.get('VOMS_ADMIN_LOCATION_VAR')
     if conf_dir_prefix is None:
         conf_dir_prefix = os.environ.get('GLITE_LOCATION_VAR')
@@ -29,7 +33,10 @@ def voms_admin_config_dir():
     if conf_dir_prefix is None:
         raise ValueError, "Please define VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR environment variables for this script to work!"
     
-    return os.path.join(conf_dir_prefix,"etc","voms-admin")
+    return conf_dir_prefix
+
+def voms_admin_config_dir():
+    return os.path.join(voms_admin_config_dir_prefix(), "etc", "voms-admin")
     
 def configured_vos():
     
@@ -85,14 +92,14 @@ def setup_cert():
 
 
 def siblings_context_file():
-    return os.path.join(voms_admin_config_dir(),"etc","voms-admin", "voms-siblings.xml")    
+    return os.path.join(voms_admin_config_dir_prefix(),"etc","voms-admin", "voms-siblings.xml")    
 
 def context_file(vo):
     
     if options.has_key("context"):
         return os.path.abspath(options['context'])
     else:
-        prefix = os.path.join(voms_admin_config_dir(),"etc","voms-admin",vo)
+        prefix = os.path.join(voms_admin_config_dir_prefix(),"etc","voms-admin",vo)
         return "%s/voms-admin-%s.xml" % (prefix,vo)
 
 def catalina_context_file(vo):

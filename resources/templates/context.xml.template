@@ -8,10 +8,14 @@
         
         <Environment name="CONFIG_DIR" value="@CONFIG_DIR@" type="java.lang.String"/>
         
+        <Environment name="VOMS_LOCATION" value="@VOMS_LOCATION@" type="java.lang.String"/>
+        
+        <Environment name="VOMS_ADMIN_LOCATION" value="@VOMS_ADMIN_LOCATION@" type="java.lang.String"/>
+        
+        <Environment name="VOMS_ADMIN_LOCATION_VAR" value="@VOMS_ADMIN_LOCATION_VAR@" type="java.lang.String"/>
+        
         <Environment name="GLITE_LOCATION" value="@GLITE_LOCATION@" type="java.lang.String"/>
         
         <Environment name="GLITE_LOCATION_VAR" value="@GLITE_LOCATION_VAR@" type="java.lang.String"/>
-        
-        <Environment name="VOMS_LOCATION" value="@VOMS_LOCATION@" type="java.lang.String"/>
         
 </Context>
