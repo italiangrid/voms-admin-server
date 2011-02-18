@@ -45,8 +45,9 @@ def build_classpath():
 
 
 def build_env_vars():
-    env_vars = string.join(map(lambda x: "-D%s=%s" % (x, os.environ[x]), VomsConstants.env_variables)," ") 
-    return env_vars 
+    
+    defined_vars = filter(lambda x: os.environ.has_key(x), VomsConstants.env_variables)
+    return string.join(map(lambda x: "-D%s=%s" % (x, os.environ[x]), defined_vars)," ") 
     
 
 def do_deploy():
@@ -154,12 +155,6 @@ def execute():
         raise VomsInvocationError, "Unknown command specified: %s" % command
     
     
-def check_env_var():
-    for i in VomsConstants.env_variables:
-        if environ.get(i, None) is None:
-            raise VomsConfigureError, i+" environment variable is not set" 
-
-
 def main():
     check_env_var()
     try:
