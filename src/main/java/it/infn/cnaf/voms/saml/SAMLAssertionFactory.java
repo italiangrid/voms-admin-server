@@ -114,7 +114,7 @@ public class SAMLAssertionFactory {
         .getBuilder( org.opensaml.saml2.core.Assertion.DEFAULT_ELEMENT_NAME );
         
         Assertion assertion = assertionBuilder.buildObject();
-        assertion.addNamespace(new Namespace(EMISAMLProfileConstants.DCI_SEC_NS, "dci-sec"));
+        assertion.addNamespace(new Namespace(EMISAMLProfileConstants.DCI_SEC_NS, EMISAMLProfileConstants.DCI_SEC_PREFIX ));
         
         
         /* set some attributes */
