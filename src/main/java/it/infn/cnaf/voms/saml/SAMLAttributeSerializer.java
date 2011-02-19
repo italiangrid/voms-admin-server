@@ -23,10 +23,12 @@ package it.infn.cnaf.voms.saml;
 import it.infn.cnaf.voms.aa.VOMSAttributes;
 import it.infn.cnaf.voms.aa.VOMSFQAN;
 import it.infn.cnaf.voms.aa.VOMSGenericAttribute;
+import it.infn.cnaf.voms.saml.emi.AttributeWizard;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeValue;
@@ -105,6 +107,35 @@ public class SAMLAttributeSerializer {
         assert attributes != null: "Cannot serialize a NULL attribute!";
         
         List<Attribute> vomsSAMLAttributes = new ArrayList <Attribute>();
+        
+        // EMI profile
+        String voName = VOMSConfiguration.instance().getVOName();
+        
+        vomsSAMLAttributes.add(AttributeWizard.createVOAttribute(voName));
+       
+        vomsSAMLAttributes.add(AttributeWizard.createGroupAttribute(attributes.getFqans()));
+        
+        // Find primary group
+        for (VOMSFQAN f: attributes.getFqans()){
+        	
+        	if (f.isGroup()){
+        		vomsSAMLAttributes.add(AttributeWizard.createPrimaryGroupAttribute(f));
+        		break;
+        	}
+        		
+        }
+        
+        vomsSAMLAttributes.add(AttributeWizard.createRoleAttribute(attributes.getFqans()));
+        
+        // Find primary role
+        for (VOMSFQAN f: attributes.getFqans()){
+        	
+        	if (f.isRole()){
+        		vomsSAMLAttributes.add(AttributeWizard.createPrimaryRoleAttribute(f));
+        		break;
+        	}
+        		
+        }
         
         // Serialize FQANs
         vomsSAMLAttributes.add(serializeFQAN( attributes.getFqans() ));

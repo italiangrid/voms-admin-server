@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Security;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -102,7 +103,8 @@ public class VOMSSAMLClient {
 
         initializeOpenSAML();
                 
-        AttributeQuery query = buildAttributeQuery( MY_DN, null );
+        String role = "/mysql/Role=VO-Admin";
+        AttributeQuery query = buildAttributeQuery( MY_DN, Collections.singletonList(role));
         
 
         System.out.println( "Query:" );

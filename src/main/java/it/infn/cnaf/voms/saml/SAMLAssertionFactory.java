@@ -43,6 +43,7 @@
 package it.infn.cnaf.voms.saml;
 
 import it.infn.cnaf.voms.aa.VOMSAttributes;
+import it.infn.cnaf.voms.saml.emi.EMISAMLProfileConstants;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -72,6 +73,7 @@ import org.opensaml.saml2.core.impl.NameIDBuilder;
 import org.opensaml.saml2.core.impl.SubjectBuilder;
 import org.opensaml.saml2.core.impl.SubjectConfirmationBuilder;
 import org.opensaml.saml2.core.impl.SubjectConfirmationDataBuilder;
+import org.opensaml.xml.Namespace;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.SecurityHelper;
@@ -112,6 +114,8 @@ public class SAMLAssertionFactory {
         .getBuilder( org.opensaml.saml2.core.Assertion.DEFAULT_ELEMENT_NAME );
         
         Assertion assertion = assertionBuilder.buildObject();
+        assertion.addNamespace(new Namespace(EMISAMLProfileConstants.DCI_SEC_NS, "dci-sec"));
+        
         
         /* set some attributes */
 

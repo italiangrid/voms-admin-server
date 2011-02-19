@@ -42,14 +42,17 @@ public class VOMSCADAO implements Searchable {
 		HibernateFactory.beginTransaction();
 	}
 
-	public VOMSCA createIfMissing(String caDN, String description){
+	public boolean createIfMissing(String caDN, String description){
 		
 		VOMSCA ca = getByName(caDN);
-		if (ca == null)
-			return createCA(caDN, description);
 		
-		return ca;
+		if (ca == null){
+			createCA(caDN, description);
+			return true;
+		}		
 		
+		log.debug(caDN	+ " is already in the trusted CA database.");
+		return false;		
 	}
 	public VOMSCA createCA(String caDN, String description) {
 
@@ -216,6 +219,7 @@ public class VOMSCADAO implements Searchable {
 		return res;
 	}
 
+	
 	public List getValid() {
 
 		String query = "from VOMSCA where subjectString not like '/O=VOMS%' order by subjectString";

@@ -1,6 +1,19 @@
 Changes
 -------------
 
+---+ voms-admin-server v. 2.6.0
+
+First EMI release. 
+
+* Packaging changes to (partly) be compliant with EPEL guidelines.
+* EMI SAML profile implementation.
+
+Bug fixes:
+
+https://savannah.cern.ch/bugs/?78350
+https://savannah.cern.ch/bugs/?78349
+
+
 ---+ voms-admin-server v. 2.5.5
 
 Fixes for the following bugs:

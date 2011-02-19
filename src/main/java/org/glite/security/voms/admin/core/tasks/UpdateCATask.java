@@ -24,7 +24,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import org.glite.security.util.FileCertReader;
@@ -33,7 +32,6 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
-import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,30 +66,16 @@ public final class UpdateCATask implements Runnable{
 
 				Iterator caIter = cas.iterator();
 
-				List<VOMSCA> knownCAs = dao.getValid();
-
 				while (caIter.hasNext()) {
-
+									
 					TrustAnchor anchor = (TrustAnchor) caIter.next();
 					X509Certificate caCert = anchor.getTrustedCert();
 
 					String caDN = DNUtil.getBCasX500(caCert
 							.getSubjectX500Principal());
 
-					log.debug("Checking CA: " + caDN);
-
-					boolean foundCA = false;
-
-					for (VOMSCA knownCA : knownCAs)
-						if (knownCA.getDn().equals(caDN)) {
-							foundCA = true;
-							log
-									.debug(caDN
-											+ " is already in the trusted CA database.");
-						}
-
-					if (!foundCA)
-						dao.createCA(caDN, null);
+					log.debug("Checking CA: " + caDN);					
+					dao.createIfMissing(caDN, null);
 
 				}
 
