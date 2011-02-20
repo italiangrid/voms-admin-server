@@ -128,6 +128,7 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 		
 		VOMSConfiguration.instance().setRegistrationType(ORGDB_REGISTRATION_TYPE);
 		VOMSConfiguration.instance().setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.TRUE);
+		VOMSConfiguration.instance().setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE, Boolean.TRUE);
 		
 		log.info("OrgDB request validator registered SUCCESSFULLY.");
 		

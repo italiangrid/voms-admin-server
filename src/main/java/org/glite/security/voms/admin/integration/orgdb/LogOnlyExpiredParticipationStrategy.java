@@ -34,7 +34,7 @@ public class LogOnlyExpiredParticipationStrategy implements
     public void handleOrgDbExpiredParticipation(VOMSUser u,
 	    VOMSOrgDBPerson orgDBPerson, String experimentName) {
 	
-	log.info("User {} participation for experiment {} has expired.", u, experimentName);
+	log.debug("User {} participation for experiment {} has expired.", u, experimentName);
 
     }
 

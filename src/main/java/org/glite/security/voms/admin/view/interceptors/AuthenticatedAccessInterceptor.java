@@ -81,6 +81,9 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 			req.setAttribute("readOnlyPI", 
 					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,false));
 			
+			req.setAttribute("readOnlyMembershipExpiration", 
+					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,false));
+			
 		}
 		
 

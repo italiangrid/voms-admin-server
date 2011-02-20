@@ -49,10 +49,10 @@
                   value="%{#userEndTime}" 
                   size="10" 
                   cssClass="membershipExpiration"
-                  readonly="%{#attr.canDelete == false}"
+                  readonly="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"
                   />
                 
-                  <s:submit value="%{'Change'}" disabled="%{#attr.canDelete == false}"/>
+                  <s:submit value="%{'Change'}" disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"/>
                 
 			  </s:form>
               <s:fielderror fieldName="expirationDate"/>

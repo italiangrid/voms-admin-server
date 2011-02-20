@@ -107,6 +107,7 @@ public interface VOMSConfigurationConstants {
 	
 	public static final String VOMS_INTERNAL_REGISTRATION_TYPE = "___voms.regitration.type";
 	public static final String VOMS_INTERNAL_RO_PERSONAL_INFORMATION = "___voms.read-only-personal-information";
+	public static final String VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE = "___voms.read-only-membership-expiration";
 	
 	/**
 	 * Executor service properties

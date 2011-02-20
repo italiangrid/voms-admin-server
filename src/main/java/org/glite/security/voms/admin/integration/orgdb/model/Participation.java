@@ -401,6 +401,13 @@ public class Participation implements Serializable {
 		return id.getStartDate();
 	}
 
+	
+
+
+	public void setStartDate(Date startDate) {
+		id.setStartDate(startDate);
+	}
+
 
 
 	/* (non-Javadoc)

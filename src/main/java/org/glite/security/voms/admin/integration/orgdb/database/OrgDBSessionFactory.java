@@ -56,6 +56,7 @@ public class OrgDBSessionFactory {
 		// Hardwired configuration properties
 		Properties p = new Properties();
 		p.setProperty("hibernate.current_session_context_class", ThreadLocalSessionContext.class.getName());
+		// p.setProperty("hibernate.show_sql", "true");
 		
 		log.debug("Hardwired configuration properties: {}",p);
 		
