@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.integration.orgdb.tools;
 
 import java.io.BufferedReader;
@@ -8,7 +28,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -21,7 +40,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
-import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBGenericHibernateDAO;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBSessionFactory;
 import org.glite.security.voms.admin.integration.orgdb.model.Experiment;
@@ -29,7 +47,6 @@ import org.glite.security.voms.admin.integration.orgdb.model.Institute;
 import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.integration.orgdb.model.Participation.Id;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
