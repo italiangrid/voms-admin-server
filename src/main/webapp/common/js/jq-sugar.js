@@ -25,7 +25,11 @@ function vomsErrorMessage(node, text){
 function hideIfNoPermission(node, gid, rid, perms){
 	
 	var permActionURL = ajaxBaseURL +"permission.action";
-	var params = {groupId : gid, roleId : rid, permissionString: perms};
+	var params = {groupId : gid, permissionString: perms};
+	
+	if (rid != null){
+		params['rid'] = rid;
+	}
 	
 	jQuery.getJSON(permActionURL, params, function(data, status){
 		if (status != "success")
@@ -44,7 +48,11 @@ function hideIfNoPermission(node, gid, rid, perms){
 function disableIfNoPermission(node,gid,rid,perms){
 	
 	var permActionURL = ajaxBaseURL +"permission.action";
-	var params = {groupId : gid, roleId : rid, permissionString: perms};
+	var params = {groupId : gid, permissionString: perms};
+	
+	if (rid != null){
+		params['rid'] = rid;
+	}
 	
 	jQuery.getJSON(permActionURL, params, function(data, status){
 		if (status != "success")
