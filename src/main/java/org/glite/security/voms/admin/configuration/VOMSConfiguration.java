@@ -201,7 +201,7 @@ public final class VOMSConfiguration {
 				lc.reset();
 
 				configurator.doConfigure(is);
-				StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+				
 
 			} catch (JoranException e) {
 				e.printStackTrace();
@@ -213,51 +213,6 @@ public final class VOMSConfiguration {
 
 		}
 	}
-
-	/*
-	 * private void configureLogging() {
-	 * 
-	 * if (context != null) {
-	 * 
-	 * try {
-	 * 
-	 * Properties log4jProps = new Properties();
-	 * 
-	 * InputStream is= null;
-	 * 
-	 * try{
-	 * 
-	 * is = getExternalLoggingConfiguration();
-	 * 
-	 * }catch(FileNotFoundException f){ log.warn(f.getMessage());log.warn(
-	 * "External logging configuration not found, will use internal configuration instead."
-	 * ); }
-	 * 
-	 * if (is == null) is = context
-	 * .getResourceAsStream("/WEB-INF/classes/log4j.runtime.properties");
-	 * 
-	 * if (is == null) throw new VOMSConfigurationException(
-	 * "Error configuring logging system: log4j.runtime.properties not found in application context!"
-	 * );
-	 * 
-	 * log4jProps.load(is); log4jProps.setProperty("log4j.vo", getVOName());
-	 * 
-	 * LogManager.resetConfiguration();
-	 * PropertyConfigurator.configure(log4jProps);
-	 * 
-	 * } catch (MalformedURLException e) {
-	 * 
-	 * log.error("Error configuring logging properties! " + e.getMessage(), e);
-	 * 
-	 * } catch (IOException e) {
-	 * log.error("Error configuring logging properties! " + e.getMessage(), e);
-	 * 
-	 * throw new VOMSConfigurationException(e.getMessage(), e); }
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
 
 	/*
 	 * (non-Javadoc)

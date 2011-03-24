@@ -115,6 +115,12 @@
               </webappDirectory>
                             <webXml>resources/templates/siblings/web.xml
               </webXml>
+                            <packagingExcludes>WEB-INF/lib/resolver-*.jar,
+                           WEB-INF/lib/serializer-*.jar,
+                           WEB-INF/lib/xercesImpl-*.jar,
+                           WEB-INF/lib/xml-apis-*.jar,
+                           WEB-INF/lib/xalan-*.jar
+                           </packagingExcludes>
                             <warSourceIncludes>
                                 style/*,
                                 common/**,
@@ -142,6 +148,12 @@
                             <goal>war</goal>
                         </goals>
                         <configuration>
+                           <packagingExcludes>WEB-INF/lib/resolver-*.jar,
+                           WEB-INF/lib/serializer-*.jar,
+                           WEB-INF/lib/xercesImpl-*.jar,
+                           WEB-INF/lib/xml-apis-*.jar,
+                           WEB-INF/lib/xalan-*.jar
+                           </packagingExcludes>
                             <webResources>
                                 <resource>
                                     <directory>src/main/resources</directory>
@@ -546,35 +558,30 @@
             <groupId>org.apache.xerces</groupId>
             <artifactId>xml-apis</artifactId>
             <version>2.9.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xerces</groupId>
             <artifactId>resolver</artifactId>
             <version>2.9.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xerces</groupId>
             <artifactId>serializer</artifactId>
             <version>2.9.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- LOGGING STUFF -->
