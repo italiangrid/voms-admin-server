@@ -658,9 +658,9 @@ public class SchemaDeployer {
 
 	private void doAddAdmin() {
 
-		if (adminDN == null || adminCA == null || adminEmailAddress == null)
+	    if (adminDN == null || adminCA == null)
 			throw new VOMSException(
-					"adminDN or adminCA or adminEmailAddress is not set!");
+					"adminDN or adminCA not set!");
 
 		HibernateFactory.beginTransaction();
 

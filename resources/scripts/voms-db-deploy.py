@@ -24,7 +24,7 @@ from os import environ
 
 from voms import *
 
-option_list=["vo=","dn=","ca=","cert=", "email="]
+option_list=["vo=","dn=","ca=","cert=", "email=", "ignore-cert-email"]
 supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "check-connectivity"]
 
 options={}
@@ -82,7 +82,9 @@ def do_add_admin():
         cert = X509Helper(options['cert'])
         options['dn'] = cert.subject
         options['ca'] = cert.issuer
-        options['email'] = cert.email
+        
+        if not options.has_key("ignore-cert-email"):
+            options['email'] = cert.email
     else:
         if not options.has_key("dn"):
             raise VomsInvocationError, "No DN specified for the admin!"
@@ -91,15 +93,18 @@ def do_add_admin():
             raise VomsInvocationError, "No CA specified for the admin!"
         
         if not options.has_key("email"):
-            raise VomsInvocationError, "No email address specified for the admin!"
+            print "WARNING: No email was specified for this administrator! The new administrator will not receive VOMS Admin notifications"
         
-    cmd = "java %s -cp %s %s --command add-admin --vo %s --dn '%s' --ca '%s' --email '%s'" % (build_env_vars(),
+        
+    cmd = "java %s -cp %s %s --command add-admin --vo %s --dn '%s' --ca '%s'" % (build_env_vars(),
                                                                                  build_classpath(),
                                                                                  VomsConstants.schema_deployer_class,
                                                                                  options['vo'],
                                                                                  options['dn'],
-                                                                                 options['ca'],
-                                                                                 options['email'])
+                                                                                 options['ca'])
+    if options.has_key("email"):
+        cmd += " --email '%s' " % options['email']
+    
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
 
@@ -175,7 +180,7 @@ voms-db-deploy.py deploy --vo [VONAME]
 voms-db-deploy.py undeploy --vo [VONAME]
 voms-db-deploy.py upgrade --vo [VONAME]
 
-voms-db-deploy.py add-admin --vo [VONAME] --cert [CERT_FILE]
+voms-db-deploy.py add-admin [--ignore-cert-email] --vo [VONAME] --cert [CERT_FILE]
 voms-db-deploy.py add-admin --vo [VONAME] --dn [ADMIN_DN] --ca [ADMIN_CA] --email [EMAILADDRESS]
 
 voms-db-deploy.py remove-admin --vo [VONAME] --cert [CERT_FILE]
