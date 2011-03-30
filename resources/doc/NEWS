@@ -1,6 +1,24 @@
 Changes
 -------------
 
+---+ voms-admin-server v. 2.6.1
+
+New features:
+
+Support for the creation of VOMS administrators with no email address attached. 
+This is useful for host certificates administrators that typically contain email addresses that should not 
+receive VOMS Admin emails.
+
+The "ignore-cert-email" option has been added to the voms-db-deploy.py command, so that is now possible
+to issue a command like
+
+voms-db-deploy.py add-admin --vo test.vo --cert /etc/grid-security/hostcert.pem --ignore-cert-email
+
+which will grant full privileges to the host certificate for the machine where VOMS Admin is installed without
+including the email address contained in the certificate in the list of recipients of VOMS admin email notifications.
+
+ 
+
 ---+ voms-admin-server v. 2.6.0
 
 First EMI release. 
