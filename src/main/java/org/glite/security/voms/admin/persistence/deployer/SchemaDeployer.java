@@ -21,9 +21,7 @@ package org.glite.security.voms.admin.persistence.deployer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -67,11 +65,9 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
-import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.util.ExceptionUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -86,11 +82,6 @@ import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
 
 @SuppressWarnings("deprecation")
 public class SchemaDeployer {
@@ -1284,7 +1275,12 @@ public class SchemaDeployer {
 		
 			Certificate candidateCert = certDAO.findByDNCA(dn, ca.getSubjectString());
 			if (candidateCert != null){
-				log.warn("Found two users with the same dn, ca in this database! Will ignore this one...");
+			    	
+			    	log.warn("**** WARNING *****\n");
+			    	log.warn("There is a duplicated entry in the database for user: '{}','{}'", dn, ca.getSubjectString());
+				log.warn("The duplicated entry will be REMOVED.\n");
+						
+				HibernateFactory.getSession().createSQLQuery("delete from usr where userid = :id").setLong("id", u.getId()).executeUpdate();
 				continue;
 			}
 			

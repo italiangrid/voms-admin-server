@@ -3,6 +3,12 @@ Changes
 
 ---+ voms-admin-server v. 2.6.1
 
+What's new:
+
+Bug fixes:
+
+https://savannah.cern.ch/bugs/index.php?80308
+
 New features:
 
 Support for the creation of VOMS administrators with no email address attached. 
