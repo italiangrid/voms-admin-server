@@ -1276,11 +1276,14 @@ public class SchemaDeployer {
 			Certificate candidateCert = certDAO.findByDNCA(dn, ca.getSubjectString());
 			if (candidateCert != null){
 			    	
-			    	log.warn("**** WARNING *****\n");
+			    	log.warn("**** WARNING *****");
 			    	log.warn("There is a duplicated entry in the database for user: '{}','{}'", dn, ca.getSubjectString());
 				log.warn("The duplicated entry will be REMOVED.\n");
 						
+				HibernateFactory.getSession().createSQLQuery("delete from m where userid = :id").setLong("id", u.getId()).executeUpdate();
+				HibernateFactory.getSession().createSQLQuery("delete from usr_attrs where u_id = :id").setLong("id", u.getId()).executeUpdate();
 				HibernateFactory.getSession().createSQLQuery("delete from usr where userid = :id").setLong("id", u.getId()).executeUpdate();
+				
 				continue;
 			}
 			
