@@ -11,7 +11,7 @@ https://savannah.cern.ch/bugs/index.php?80308
 
 New features:
 
-Support for the creation of VOMS administrators with no email address attached. 
+*) Support for the creation of VOMS administrators with no email address attached. 
 This is useful for host certificates administrators that typically contain email addresses that should not 
 receive VOMS Admin emails.
 
@@ -23,6 +23,9 @@ voms-db-deploy.py add-admin --vo test.vo --cert /etc/grid-security/hostcert.pem 
 which will grant full privileges to the host certificate for the machine where VOMS Admin is installed without
 including the email address contained in the certificate in the list of recipients of VOMS admin email notifications.
 
+*) The voms.aup.require_signature_for_created_users gives VO administrators control on whether AUP signing should be
+requested from users created by administrators via the voms-admin cli or the web interface. The default value for the option
+is "false", meaning that users created from the command line will NOT be requested to sign AUPs.
  
 
 ---+ voms-admin-server v. 2.6.0
