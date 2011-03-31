@@ -24,6 +24,20 @@
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 <s:if test="aupAcceptanceRecords.empty">
 No AUP acceptance records found.
+
+	<s:if test="#request.registrationEnabled">
+  		<voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
+		<s:if test="#attr.canSuspend">
+			<div style="text-align: right;">
+				<s:form action="create-acceptance-record" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;" theme="simple" cssStyle="display: inline">
+					<s:token/>
+					<s:hidden name="userId" value="%{model.id}" />
+					<s:submit 
+						value="%{'Sign AUP on behalf of user'}"	/>
+				</s:form>
+			</div>
+		</s:if>
+	</s:if>
 </s:if>
 <s:else>
   <table>

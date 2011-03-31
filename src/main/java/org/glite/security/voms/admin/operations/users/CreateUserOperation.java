@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -57,7 +59,13 @@ public class CreateUserOperation extends BaseVomsOperation {
 
 	protected Object doExecute() {
 
-		return VOMSUserDAO.instance().create(usr, caDN);
+	    VOMSUser user = VOMSUserDAO.instance().create(usr, caDN);
+	    
+	    // Create an AUP signature record for this user if the  automatically created users are not required to sign the AUP
+	    if (! VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS, false) )
+		VOMSUserDAO.instance().signAUP(user);
+	    
+	    return user;
 	}
 
 	public static CreateUserOperation instance(NewVOMembershipRequest request) {

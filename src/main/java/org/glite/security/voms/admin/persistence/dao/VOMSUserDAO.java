@@ -111,6 +111,10 @@ public class VOMSUserDAO {
 		
 	}
 	
+	public void signAUP(VOMSUser user){
+	    
+	    signAUP(user,DAOFactory.instance().getAUPDAO().getVOAUP());
+	}
 	
 	public void signAUP(VOMSUser user, AUP aup) {
 
@@ -533,6 +537,7 @@ public class VOMSUserDAO {
 		HibernateFactory.getSession().save(usr);
 
 		usr.addToGroup(voGroup);
+		
 
 		EventManager.dispatch(new UserCreatedEvent(usr));
 		return usr;
