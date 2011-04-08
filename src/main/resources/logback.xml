@@ -31,7 +31,7 @@
     
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%date{HH:mm:ss.SSS} - %level [%logger:%line] - %msg%n</Pattern>
+            <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</Pattern>
         </layout>
     </appender>
 

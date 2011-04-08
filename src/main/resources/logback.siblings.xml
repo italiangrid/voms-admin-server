@@ -37,8 +37,7 @@
         </rollingPolicy>
 
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%date{HH:mm:ss.SSS} [%thread] - %-5level
-                %logger{36} - %msg%n</Pattern>
+            <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</Pattern>
         </layout>
     </appender>
     <root level="INFO">
