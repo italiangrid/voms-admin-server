@@ -115,6 +115,11 @@ public class VOMSExecutorService {
 			return;
 		}
 		
+		if (period < 0){
+		    log.info("Task {} will not be started, as requested: {} < 0.", task.getClass().getSimpleName(), periodPropertyName);
+		    return;
+		}
+		
 		log.info("Scheduling task {} with period: {} seconds", new String[]{task.getClass().getSimpleName(), period.toString()});
 		executorService.scheduleAtFixedRate(new DatabaseTransactionTaskWrapper(task, true), BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
 	}

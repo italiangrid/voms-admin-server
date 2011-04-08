@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.core.tasks;
 import java.util.List;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestExpiredEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -43,10 +44,10 @@ public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceT
 		
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		requestLifetime = conf.getLong("voms.request.vo_membership.lifetime",
+		requestLifetime = conf.getLong(VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRATION_TIME,
 				300);
-		warnUsers = conf.getBoolean(
-				"voms.request.vo_membership.warn_when_expired", false);
+		
+		warnUsers = conf.getBoolean(VOMSConfigurationConstants.VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY, false);
 		
 	}
 	 
@@ -60,7 +61,7 @@ public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceT
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
 		
 		List<NewVOMembershipRequest> expiredRequests = dao.findExpiredVOMembershipRequests();
-		
+				
 		for (NewVOMembershipRequest req: expiredRequests){
 			
 			log.info("Removing unconfirmed request '{}' from database since the confirmation period has expired.", req);

@@ -143,7 +143,7 @@ public final class VOMSService {
 				30L);
 		
 		es.startBackgroundTask(new ExpiredRequestsPurgerTask(), 
-				null, 
+				VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 
 				300L);
 	}
 

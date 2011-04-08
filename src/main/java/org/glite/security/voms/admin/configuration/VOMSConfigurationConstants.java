@@ -51,10 +51,10 @@ public interface VOMSConfigurationConstants {
 	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify";
 	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
 	
-	/**
-	 * VO Membership requests expiration time (in minutes).
-	 */
-	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo-membership-expiration-time";
+	
+	public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD = "voms.request.vo_membership.expired_request_purger.period";
+	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
+	public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY = "voms.request.vo_membership.warn_when_expired";
 	
 	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
 	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
