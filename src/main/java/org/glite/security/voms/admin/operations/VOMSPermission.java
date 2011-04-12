@@ -25,10 +25,31 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * This class represents a VOMS permission that can be assigned to a VOMS-Admin administrator.
+ * A {@link VOMSPermission} is fixed-length sequence of permission flags that describe the set of permissions a VOMS Administrator has in a specific context.
+ * 
+ * The currently defined flags are:
+ * 
+ * <ul>
+<li> <code>CONTAINER_READ, CONTAINER_WRITE</code>: These flags are used to control access to the operations that list/alter the VO internal structure (groups and roles list/creations/deletions, user creations/deletions).
+</li> <li> <code>MEMBERSHIP_READ, MEMBERSHIP_WRITE</code>: These flags are used to control  access to operations that manage/list membership in group and roles. 
+</li> <li> <code>ATTRIBUTES_READ,ATTRIBUTES_WRITE</code>: These flags are used to control access to operations that mange generic attributes (at the user, group, or role level).
+</li> <li> <code>ACL_READ,ACL_WRITE,ACL_DEFAULT</code>: These flags are used to control  access to operations that manage VO ACLs and default ACLs.
+</li> <li> <code>REQUESTS_READ,&nbsp;REQUESTS_WRITE</code>: These flags are used to control  access to operations that  manage subscription requests regarding the VO,  group membership,  role assignment etc...
+</li> <li> <code>PERSONAL_INFO_READ, PERSONAL_INFO_WRITE</code>: The flags are used to control  access to user personal information stored in the database.
+</li> <li> <code>SUSPEND</code>: This flag controls who can suspend other users.
+</li></ul>
+ *  
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
+ *
+ */
 public class VOMSPermission implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	
+	
 	public static final int CONTAINER_READ = 1;
 
 	public static final int CONTAINER_WRITE = 2;
@@ -60,6 +81,7 @@ public class VOMSPermission implements Serializable, Cloneable {
 
 	private static final int ALL_PERMISSION_MASK = ~0 >>> (32 - NUM_PERMISSIONS);
 
+	
 	public static String asString(int bits) {
 
 		VOMSPermission p = new VOMSPermission(bits);

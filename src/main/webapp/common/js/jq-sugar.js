@@ -187,9 +187,10 @@ function eyeCandy(){
 	enableSetRoleAttributeForm();
 	enableDeleteRoleAttributeForms();
 	
-	$('select').change(function(){
-		blinkBackground(this);
-	});
+
+	// $('select').change(function(){
+	//	blinkBackground(this);
+	// });
 	
 	formattedDNMagic();
 	

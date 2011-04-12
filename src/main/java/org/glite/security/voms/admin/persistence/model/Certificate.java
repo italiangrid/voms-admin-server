@@ -278,7 +278,7 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
 		CompareToBuilder builder = new CompareToBuilder();
 		
-		builder.append(subjectString, o.subjectString).append(ca, o.ca);
+		builder.append(subjectString, o.subjectString).append(ca.getSubjectString(), o.ca.getSubjectString());
 
 		return builder.toComparison();
 	}

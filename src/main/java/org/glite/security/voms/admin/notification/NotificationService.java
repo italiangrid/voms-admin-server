@@ -26,6 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.notification.messages.EmailNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,12 @@ public class NotificationService {
 	public void send(EmailNotification n) {
 
 		log.debug("Adding notification '" + n + "' to outgoing message queue.");
-		outgoingMessages.add(n);
+		if (!VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)){
+		    outgoingMessages.add(n);
+		}
+		else{
+		    log.warn("Outgoing notification {} will be discarded as the notification service is DISABLED.", n.toString());
+		}
 
 	}
 

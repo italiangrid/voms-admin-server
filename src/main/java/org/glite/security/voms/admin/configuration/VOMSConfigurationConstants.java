@@ -50,7 +50,7 @@ public interface VOMSConfigurationConstants {
 	public static final String SERVICE_EMAIL_USE_TLS = "voms.notification.use_tls";
 	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify";
 	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
-	
+	public static final String NOTIFICATION_DISABLED = "voms.notification.disable";
 	
 	public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD = "voms.request.vo_membership.expired_request_purger.period";
 	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";

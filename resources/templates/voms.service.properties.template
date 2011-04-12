@@ -28,10 +28,10 @@ voms.trusted.admin.subject =  @TRUSTED_ADMIN.SUBJECT@
 voms.trusted.admin.ca = @TRUSTED_ADMIN.CA@
 
 ## voms pagination options
-voms.pagination.user.max.results.per.page = 10
-voms.pagination.group.max.results.per.page = 10
+voms.pagination.user.max.results.per.page = 20
+voms.pagination.group.max.results.per.page = 20
 voms.pagination.role.max.results.per.page = 10
-voms.pagination.attributes.max.results.per.page = 10
+voms.pagination.attributes.max.results.per.page = 50
 
 ## voms request options
 

@@ -21,6 +21,12 @@ package org.glite.security.voms.admin.api.registration;
 
 import java.io.Serializable;
 
+/**
+ * This class models a VOMS registration request.
+ * 
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
+ *
+ */
 public class RegistrationRequest implements Serializable {
 
 	/**
@@ -28,11 +34,27 @@ public class RegistrationRequest implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * A flag that states whether the AUP was accepted by the user.
+	 */
 	boolean aupAccepted;
 
+	/**
+	 * The user email address
+	 */
 	String emailAddress;
+	/**
+	 * The user institute
+	 */
 	String institute;
+	/**
+	 * The user phone number
+	 */
 	String phoneNumber;
+	
+	/**
+	 * Comments to the VO administrator.
+	 */
 	String comments;
 
 	public boolean isAupAccepted() {

@@ -29,12 +29,22 @@ User Certificate information:
 	
 Personal information:
 
+#if ( $request.requesterInfo.name ) 
 	Name: $request.requesterInfo.name
+#end
+#if ( $request.requesterInfo.surname )
 	Surname: $request.requesterInfo.surname
+#end
+#if ( $request.requesterInfo.institution )
 	Institution: $request.requesterInfo.institution
+#end
+#if ( $request.requesterInfo.address )
 	Address: $request.requesterInfo.address
+#end
+#if ( $request.requesterInfo.phoneNumber )
 	Phone number: $request.requesterInfo.phoneNumber
-	
+#end
+
 	Email: $request.requesterInfo.emailAddress
 
 

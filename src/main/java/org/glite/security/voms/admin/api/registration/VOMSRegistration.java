@@ -20,12 +20,38 @@
 package org.glite.security.voms.admin.api.registration;
 
 import org.glite.security.voms.admin.api.VOMSException;
-
+/**
+ * This service defines methods to submit VOMS membership requests.
+ * 
+ *  @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
+ *
+ */
 public interface VOMSRegistration {
 
+    	/**
+    	 * Submits a registration request. User certificate information is taken from the security context.
+    	 * @param req
+    	 * The {@link RegistrationRequest} object
+    	 * 
+    	 * @throws VOMSException
+    	 */
 	public void submitRegistrationRequest(RegistrationRequest req)
 			throws VOMSException;
 
+	/**
+	 * Submits a registration request for a given user certificate.
+	 *  
+	 * @param userSubject
+	 * The user certificate subject for which a registration request is submitted.
+	 * 
+	 * @param caSubject
+	 * The user certificate issuer subject for which a registration request is submitted.
+	 * 
+	 * @param req
+	 * The {@link RegistrationRequest} object describing the registration subject.
+	 * 
+	 * @throws VOMSException
+	 */
 	public void submitRegistrationRequestForUser(String userSubject,
 			String caSubject, RegistrationRequest req) throws VOMSException;
 

@@ -21,6 +21,12 @@ package org.glite.security.voms.admin.api.attributes;
 
 import java.io.Serializable;
 
+/**
+ * This class models a Generic Attribute (GA) in the VOMS database.
+ * 
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
+ *
+ */
 public class AttributeClass implements Serializable {
 
 	/**
@@ -28,35 +34,83 @@ public class AttributeClass implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The GA name
+	 */
 	private String name;
+	
+	/**
+	 * A textual description for the GA
+	 */
 	private String description;
+	
+	/**
+	 * A boolean flag that states whether attribute value uniqueness across VOMS users should be enforced for this GA
+	 */
 	private boolean uniquenessChecked;
 
+	/**
+	 * Returns the description associated to this GA
+	 * 
+	 * @return
+	 * the GA description
+	 */
 	public String getDescription() {
 
 		return description;
 	}
 
+	/**
+	 * Sets a description of this GA
+	 * 
+	 * @param description
+	 * the GA description
+	 */
 	public void setDescription(String description) {
 
 		this.description = description;
 	}
 
+	/**
+	 * Returns the GA name
+	 * 
+	 * @return
+	 * the GA name
+	 */
 	public String getName() {
 
 		return name;
 	}
 
+	/**
+	 * Sets a name for this GA
+	 * 
+	 * @param name
+	 * the GA name
+	 */
 	public void setName(String name) {
 
 		this.name = name;
 	}
 
+	/**
+	 * Tests whether uniqueness of values across VOMS users is checked for this GA 
+	 * 
+	 * @return
+	 * <code>true</code> if uniqueness is checked, <code>false</code> otherwise.
+	 */
 	public boolean isUniquenessChecked() {
 
 		return uniquenessChecked;
 	}
+	
 
+	/**
+	 * Sets whether uniqueness of values should be checked across VOMS users for this GA
+	 * 
+	 * @param uniquenessChecked
+	 * <code>true</code> to enable uniqueness value checking, <code>false</code> otherwise
+	 */
 	public void setUniquenessChecked(boolean uniquenessChecked) {
 
 		this.uniquenessChecked = uniquenessChecked;
