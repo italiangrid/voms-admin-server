@@ -566,6 +566,10 @@ public class SchemaDeployer {
 			
 			DatabaseSetupTask.instance().run();
 			
+			// Very old version of VOMS Admin populated the admin table incorrectly, so we're left
+			// with many orphans there that can be dropped.
+			dropOrphanedAdministrators();
+			
 			// Make users accept implicitly the AUP, if you don't want to flood them 
 			// with emails
 			implicitAUPSignup();
@@ -1207,23 +1211,15 @@ public class SchemaDeployer {
 		executeAndLog("update acl2_permissions set permissions = 16383 where permissions = 4095");
 	}
 	
-	private void dropFKConstraintsForTable(String tableName) throws SQLException{
-		DatabaseMetaData md = (DatabaseMetaData) HibernateFactory.getSession().connection().getMetaData();
-		
-		ResultSet rs = md.getImportedKeys(null, null, tableName);
-		
-		while(rs.next()){
-			
-			String importedPkTableName = rs.getString("PKTABLE_NAME");
-			String importedPkColumnName = rs.getString("PKCOLUMN_NAME");
-			String fkTableName = rs.getString("FKTABLE_NAME");
-			
-			String fkName = rs.getString("FK_NAME");
-			String logMessage = String.format("Dropping foreign key constraint '%s' on table '%s' referencing '%s.%s'",fkName,tableName,importedPkTableName, importedPkColumnName);
-			log.debug(logMessage);
-			
-			executeAndLog(String.format("alter table %s drop constraint %s", fkTableName, fkName));
-		}
+	private void dropOrphanedAdministrators(){
+	    
+	    List<VOMSAdmin> orphanedAdmins = ACLDAO.instance().getAdminsWithoutActivePermissions();
+	    
+	    for (VOMSAdmin a: orphanedAdmins){
+		log.info("Dropping orphaned administrator '{}' - email: '{}'", a.getDn(), a.getEmailAddress());
+		HibernateFactory.getSession().delete(a);
+	    }
+	    
 	}
 	
 	private void fixUsrTable() throws HibernateException, SQLException{

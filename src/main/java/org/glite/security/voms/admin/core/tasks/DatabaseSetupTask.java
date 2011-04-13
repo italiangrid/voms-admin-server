@@ -298,6 +298,7 @@ public class DatabaseSetupTask extends TimerTask {
 
 	}
 
+	
 	public void run() {
 
 		setupRootGroup();

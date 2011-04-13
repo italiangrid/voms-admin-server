@@ -97,6 +97,13 @@ public class ACLDAO {
 
 	}
 
+	public List<VOMSAdmin> getAdminsWithoutActivePermissions(){
+	    	    
+	    String query = "from VOMSAdmin a where a.dn not like '/O=VOMS%' and a not in (select distinct(index(p)) from ACL a join a.permissions p)";
+	    return HibernateFactory.getSession().createQuery(query).list();
+	}
+	
+	
 	public boolean hasActivePermissions(VOMSAdmin a) {
 
 		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
@@ -222,13 +229,6 @@ public class ACLDAO {
 				HibernateFactory.getSession().save(childRoleACL);
 			}
 		}
-
-	}
-
-	public void checkAdmin(VOMSAdmin a) {
-
-		if (a.isInternalAdmin())
-			return;
 
 	}
 
