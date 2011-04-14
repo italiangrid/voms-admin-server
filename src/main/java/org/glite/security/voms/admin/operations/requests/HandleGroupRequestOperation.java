@@ -46,7 +46,8 @@ public class HandleGroupRequestOperation extends BaseHandleRequestOperation<Grou
 		VOMSUser u = getRequesterAsVomsUser();
 		VOMSGroup g = findGroupByName(request.getGroupName());
 		
-		AddMemberOperation.instance(u, g).execute();
+		if (!u.isMember(g))
+		    AddMemberOperation.instance(u, g).execute();
 		
 		request.approve();
 		
