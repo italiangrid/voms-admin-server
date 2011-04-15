@@ -122,6 +122,17 @@ function ajaxSubmit(formNode, outputPanelId){
 	ajaxLoad(outputPanelId,url);
 }
 
+
+function updateCSRFToken(lastPaneId){
+	
+	var lastTokenValue = $('#'+lastPaneId).find('[name="struts.token"]').val();
+	
+	if (lastTokenValue != undefined){
+		
+		$('input[name="struts.token"]').attr('value', lastTokenValue);
+	}
+}
+
 function ajaxLoad(id, url){
 	
 	$('#loadDiv').show();
@@ -138,6 +149,7 @@ function ajaxLoad(id, url){
 			
 		$('#'+id+' div.reloadable').fadeTo("fast",1.00);
 		eyeCandy();
+		updateCSRFToken(id);
 	});
 }
 
