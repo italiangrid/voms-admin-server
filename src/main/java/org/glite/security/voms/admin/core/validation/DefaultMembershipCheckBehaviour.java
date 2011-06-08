@@ -61,7 +61,7 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 	}
 
 	
-	protected void handleAUPFailingMember(VOMSUser u){
+	protected synchronized void handleAUPFailingMember(VOMSUser u){
 		
 		AUPDAO aupDAO = HibernateDAOFactory.instance().getAUPDAO();
 		AUP aup = aupDAO.getVOAUP();
