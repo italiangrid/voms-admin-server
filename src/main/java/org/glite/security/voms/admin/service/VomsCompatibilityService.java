@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.glite.security.voms.VOMSException;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.groups.ListMemberNamesOperation;
+import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
+import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.service.compatibility.VOMSCompatibility;
 
 public class VomsCompatibilityService implements VOMSCompatibility {
@@ -88,7 +90,17 @@ public class VomsCompatibilityService implements VOMSCompatibility {
 
 			return ServiceUtils.toStringArray(members);
 
-		} catch (RuntimeException e) {
+		} catch (NoSuchRoleException e){ 
+		    
+		    log.warn("Role '{}' is not defined for this VO.", container);
+		    return null;
+		
+		} catch (NoSuchGroupException e){
+		    
+		    log.warn("Group '{}' is not defined for this VO.", container);
+		    return null;
+		
+		}catch (RuntimeException e) {
 
 			ServiceExceptionHelper.handleServiceException(log, e);
 			throw e;
