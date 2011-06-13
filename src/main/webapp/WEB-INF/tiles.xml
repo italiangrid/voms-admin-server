@@ -141,6 +141,10 @@
       <put-attribute name="content" value="/WEB-INF/p/aup/addAupVersion.jsp"/>
     </definition>
     
+    <definition name="editAupVersion" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/aup/editAupVersion.jsp"/>
+    </definition>
+    
     <definition name="signAup" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/aup/signAup.jsp"/>
     </definition>

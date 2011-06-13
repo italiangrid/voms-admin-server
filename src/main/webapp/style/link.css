@@ -45,6 +45,15 @@
 	
 }
 
+.changeAUPURL{
+	font-size: smaller;
+	text-decoration: none;
+}
+
+.changeAUPURL:HOVER{
+	text-decoration: none;
+}
+
 .actionLink:HOVER {
 	
 	text-decoration: underline;

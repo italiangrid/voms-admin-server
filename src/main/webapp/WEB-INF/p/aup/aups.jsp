@@ -84,8 +84,20 @@
         </td>
         <td>
         	<s:property value="url"/>
-        	<span id="showAUPContent" class="clickable" onclick="showAUPContent(this)">show content</span>
-        	<span style="display:none"><s:property value="URLContent"/></span>
+        	<s:url action="edit-version!input" var="editAUPVersionURL">
+        		<s:param name="aupId" value="model.id"/>
+        		<s:param name="version" value="version"/>
+        	</s:url>
+        	
+        	<s:a href="%{#editAUPVersionURL}" cssClass="changeAUPURL">change</s:a>
+        	
+        	 
+        	 
+        	<s:if test="versions.size > 1">
+        		<span id="showAUPContent" class="clickable" onclick="showAUPContent(this)">show content</span>
+        		<span style="display:none"><s:property value="URLContent"/></span>
+        	</s:if>
+        	
         </td>
         	
         <td>

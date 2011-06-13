@@ -21,14 +21,14 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1> Add a new version for '<s:property value="name"/>' AUP</h1> 
+<h1>Edit URL for AUP version '<s:property value="version"/>'</h1> 
 
 <s:actionerror/>
 
 <s:form validate="true">
   <s:token/>
   <s:hidden name="aupId" value="%{model.id}"/>
-  <s:textfield name="version" label="Version"/>
-  <s:textfield name="url" label="URL" size="40"/>
-  <s:submit value="%{'Add version'}" align="left"/>
+  <s:hidden name="version" value="%{version}"/>
+  <s:textfield name="url" label="URL" size="60"/>
+  <s:submit value="%{'Save URL'}" align="left"/>
 </s:form>
