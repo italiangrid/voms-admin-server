@@ -22,7 +22,7 @@
 -->
 
 
-<configuration>
+<configuration scan="true" scanPeriod="60 seconds">
     
     <!-- 
         This logger controls the MAIN voms admin log messages. Set the level to DEBUG 

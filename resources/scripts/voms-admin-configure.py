@@ -21,6 +21,7 @@
 # Help message about command line options by:
 #
 #     Karoly Lorentey - karoly.lorentey@cern.ch
+
 import os.path,getopt,sys,exceptions,pwd,grp,socket
 from os import environ
 from voms import *

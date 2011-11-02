@@ -24,6 +24,11 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
+	<constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
+	
+	<!-- Namespace mapping for PrefixBasedActionMapper -->
+	<constant name="struts.mapper.prefixMapping" value="/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
+	
 	<constant name="struts.devMode" value="false" />
 	<constant name="struts.configuration.xml.reload" value="false" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
@@ -31,6 +36,8 @@
 	
 	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
 	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
+	
+	
     
 	
 	<package name="base" extends="struts-default">
