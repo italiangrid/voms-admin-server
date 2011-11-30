@@ -17,9 +17,17 @@
 		<glite-services-namespace> http://glite.org/wsdl/services</glite-services-namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<struts-version>2.2.3.1</struts-version>
-		<axis-version>1.2.1</axis-version>
+		
+		<!-- Dependencies versions -->
+		<struts.version>2.2.1</struts.version>
+		<hibernate.version>3.2.6.ga</hibernate.version>
+		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
+		<c3p0.version>0.9.1</c3p0.version>
+		<axis.version>1.2.1</axis.version>
+		<bouncycastle.version>1.45</bouncycastle.version>
+		<trustmanager.version>3.0.5</trustmanager.version>
 	</properties>
+	
 	<developers>
 		<developer>
 			<id>andreac</id>
@@ -31,6 +39,7 @@
 			</roles>
 		</developer>
 	</developers>
+	
 	<build>
 		<resources>
 			<resource>
@@ -312,19 +321,19 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.3.1.GA</version>
+			<version>${hibernate-annotations.version}</version>
 		</dependency>
-
+		 
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.1</version>
+			<version>${c3p0.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -353,54 +362,60 @@
 			<version>1.4</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.5</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
 			<version>1.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 			<version>1.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.5</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-ext-jdk15</artifactId>
-			<version>1.44</version>
+			<version>${bouncycastle.version}</version>
 		</dependency>
 
 		<!-- AXIS -->
 		<dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis</artifactId>
-			<version>${axis-version}</version>
+			<version>${axis.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis-jaxrpc</artifactId>
-			<version>${axis-version}</version>
+			<version>${axis.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis-saaj</artifactId>
-			<version>${axis-version}</version>
+			<version>${axis.version}</version>
 		</dependency>
 
 		<!-- MySQL connector -->
@@ -416,51 +431,53 @@
 			<version>1.1.2</version>
 			<scope>runtime</scope>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.glite.security</groupId>
-			<artifactId>trustmanager</artifactId>
-			<version>2.5.5</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>emi</groupId>
+            <artifactId>trustmanager</artifactId>
+            <version>${trustmanager.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.glite.security</groupId>
-			<artifactId>util-java</artifactId>
-			<version>2.8.6</version>
-		</dependency>
 
 		<!-- Struts 2.x dependencies -->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-core</artifactId>
-			<version>${struts-version}</version>
+			<version>${struts.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-convention-plugin
       </artifactId>
-			<version>${struts-version}</version>
+			<version>${struts.version}</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-rest-plugin
       </artifactId>
-			<version>${struts-version}</version>
+			<version>${struts.version}</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-tiles-plugin</artifactId>
-			<version>${struts-version}</version>
+			<version>${struts.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-json-plugin
       </artifactId>
-			<version>${struts-version}</version>
+			<version>${struts.version}</version>
 		</dependency>
-		<!-- <dependency> <groupId>javassist</groupId> <artifactId>javassist</artifactId> 
-			<version>3.8.0.GA</version> </dependency> -->
+		
+		 
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.8.0.GA</version>
+		</dependency>
+		
 		<!-- OpenSAML dependencies -->
 		<dependency>
 			<groupId>org.opensaml</groupId>
@@ -505,16 +522,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!-- XML PARSER STUFF -->
-		<!-- <dependency> <groupId>org.apache.xerces</groupId> <artifactId>xml-apis</artifactId> 
-			<version>2.9.1</version> </dependency> <dependency> <groupId>org.apache.xerces</groupId> 
-			<artifactId>xercesImpl</artifactId> <version>2.9.1</version> </dependency> 
-			<dependency> <groupId>org.apache.xerces</groupId> <artifactId>resolver</artifactId> 
-			<version>2.9.1</version> </dependency> <dependency> <groupId>org.apache.xalan</groupId> 
-			<artifactId>xalan</artifactId> <version>2.7.1</version> </dependency> <dependency> 
-			<groupId>org.apache.xerces</groupId> <artifactId>serializer</artifactId> 
-			<version>2.9.1</version> </dependency> -->
 
 		<!-- LOGGING STUFF -->
 		<dependency>
