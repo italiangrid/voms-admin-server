@@ -33,7 +33,9 @@ import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.impl.AttributeBuilder;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.schema.XSAny;
+import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSAnyBuilder;
+import org.opensaml.xml.schema.impl.XSStringBuilder;
 
 public class AttributeWizard {
 	
@@ -77,6 +79,17 @@ public class AttributeWizard {
 		return attrVal;
 	}
 
+	protected static XSString createStringAttributeValue(String value){
+		
+		XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
+		XSStringBuilder builder = (XSStringBuilder) bf.getBuilder(XSString.TYPE_NAME);
+		
+		XSString attrVal = builder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
+		attrVal.setValue(value);
+		
+		return attrVal;
+		
+	}
 	protected static XSAny createRoleAttributeValue(VOMSFQAN fqan){
 		
 		
@@ -96,7 +109,7 @@ public class AttributeWizard {
 		for (VOMSFQAN f: fqans){
 			
 			if (f.isGroup())
-				groupAttr.getAttributeValues().add(createAttributeValue(GROUP_XSD_TYPE, f.getFQAN()));
+				groupAttr.getAttributeValues().add(createStringAttributeValue(f.getFQAN()));
 			
 		}
         
@@ -142,7 +155,7 @@ public class AttributeWizard {
 	public static Attribute createVOAttribute(String voName){
 		Attribute voAttr = createAttribute(EMISAMLProfileConstants.VO_ATTRIBUTE_NAME);
 		
-		voAttr.getAttributeValues().add(createAttributeValue(VO_XSD_TYPE, voName));
+		voAttr.getAttributeValues().add(createStringAttributeValue(voName));
 		
 		return voAttr;
 	}

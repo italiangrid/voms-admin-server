@@ -26,6 +26,8 @@
 		<axis.version>1.2.1</axis.version>
 		<bouncycastle.version>1.45</bouncycastle.version>
 		<trustmanager.version>3.0.5</trustmanager.version>
+		<trustmanager-axis.version>1.0.0</trustmanager-axis.version>
+		<opensaml.version>2.4.1</opensaml.version>
 	</properties>
 	
 	<developers>
@@ -437,6 +439,12 @@
             <artifactId>trustmanager</artifactId>
             <version>${trustmanager.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>emi</groupId>
+            <artifactId>trustmanager-axis</artifactId>
+            <version>${trustmanager-axis.version}</version>
+        </dependency>
 
 
 		<!-- Struts 2.x dependencies -->
@@ -482,7 +490,7 @@
 		<dependency>
 			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
-			<version>2.3.0</version>
+			<version>${opensaml.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>

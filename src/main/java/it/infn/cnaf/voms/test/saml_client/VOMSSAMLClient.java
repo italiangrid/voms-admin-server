@@ -79,6 +79,7 @@ public class VOMSSAMLClient {
 
     }
 
+    
     public static void main( String[] args ) throws MalformedURLException ,
             ServiceException , RemoteException {
 
@@ -103,7 +104,7 @@ public class VOMSSAMLClient {
 
         initializeOpenSAML();
                 
-        String role = "/mysql/Role=VO-Admin";
+        String role = "/mysql/Role=CiccioBomba";
         AttributeQuery query = buildAttributeQuery( MY_DN, Collections.singletonList(role));
         
 
