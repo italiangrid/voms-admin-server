@@ -584,12 +584,7 @@ public class OrgDBUtil {
 	}
 
 	public static void main(String[] args) throws ParseException, FileNotFoundException, IOException {
-
-		if ((System.getenv("GLITE_LOCATION_VAR") == null)
-				&& (System.getenv("VOMS_ADMIN_LOCATION_VAR") == null))
-			throw new VOMSException(
-					"Please set the VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR environment variables before running this utility.");
-		
+	
 		new OrgDBUtil(args);
 
 	}

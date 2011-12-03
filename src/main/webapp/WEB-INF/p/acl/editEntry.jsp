@@ -36,6 +36,12 @@
       </div>
       <div class="userCA"><voms:formatDN dn="${admin.ca.subjectString}"
         fields="CN" /></div>
+        
+        <s:if test="%{#admin.emailAddress != null}">
+            	<div class="aclEmail">
+            		${admin.emailAddress}
+            	</div>
+        </s:if>
       </td>
     </tr>
  

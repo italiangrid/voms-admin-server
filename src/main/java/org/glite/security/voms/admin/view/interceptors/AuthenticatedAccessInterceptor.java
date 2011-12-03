@@ -62,8 +62,6 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 	public String intercept(ActionInvocation ai) throws Exception {
 		
 		
-
-		
 		HttpServletRequest req = ServletActionContext.getRequest(); 
 		
 		InitSecurityContext.setContextFromRequest(req);

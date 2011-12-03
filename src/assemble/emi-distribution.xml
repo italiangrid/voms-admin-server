@@ -24,10 +24,7 @@
     xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-    <!-- 
-    <id>server-${server-version}-${age}</id>
-     -->
-     <id>server</id>
+    <id>server</id>
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <formats>
@@ -83,18 +80,17 @@
             <outputDirectory>/usr/share/voms-admin/tools/lib</outputDirectory>
         </dependencySet>
         
-        <dependencySet>
-          <outputDirectory>/usr/share/voms-admin/endorsed</outputDirectory>
-          <includes>
-            <include>org.apache.xerces:xml-apis</include>
-            <include>org.apache.xerces:xercesImpl</include>
-            <include>org.apache.xerces:serializer</include>
-            <include>org.apache.xerces:resolver</include>
-          </includes>
-        </dependencySet>
     </dependencySets>
 
     <files>
+    	<file>
+        	<source>src/config/sysconfig</source>
+        	<outputDirectory>/etc/sysconfig</outputDirectory>
+        	<destName>voms-admin</destName>
+        	<filtered>true</filtered>
+        	<fileMode>0644</fileMode>
+        </file>
+        
         <file>
             <source>resources/scripts/voms-admin-configure.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>

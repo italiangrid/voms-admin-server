@@ -43,6 +43,12 @@
 	font-weight: bold;
 }
 
+.aclEmail{
+	font-size: smaller;
+	font-weight: bold;
+	margin-top: 1em;
+}
+
 
 .resultsHeader {
 	font-size: xx-small;

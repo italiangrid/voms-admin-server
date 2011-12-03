@@ -19,6 +19,9 @@
  */
 package org.glite.security.voms.admin.configuration;
 
+import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_CONF_DIR;
+import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_FILE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -60,11 +63,14 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public final class VOMSConfiguration {
 	
+	
 	private static volatile VOMSConfiguration instance = null;
 
 	private static final String[] voRuntimeProperties = new String[] {
-			"VO_NAME", "GLITE_LOCATION", "GLITE_LOCATION_VAR", "VOMS_LOCATION" };
+			"VO_NAME"};
 
+	
+	
 	public synchronized static VOMSConfiguration load(ServletContext context) {
 
 		if (instance != null)
@@ -102,10 +108,19 @@ public final class VOMSConfiguration {
 		config = new CompositeConfiguration();
 
 		loadVersionProperties();
+		loadSysconfig();
 
+		if (config.getString(SYSCONFIG_CONF_DIR) == null){
+			
+			log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
+			log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
+			config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
+		}
+		
 		if (ctxt != null) {
 			context = ctxt;
-			loadVORuntimeProperties();
+			
+			loadVOName();
 			configureLogback();
 
 			if (!getVOName().equals("siblings")) {
@@ -196,6 +211,7 @@ public final class VOMSConfiguration {
 						.getILoggerFactory();
 				JoranConfigurator configurator = new JoranConfigurator();
 
+			
 				configurator.setContext(lc);
 				lc.reset();
 
@@ -358,10 +374,9 @@ public final class VOMSConfiguration {
 	
 	
 	public String getConfigurationDirectoryPath() {
-	    
-	    	String prefix = config.getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR"));
-	    	
-		String path = prefix + "/etc/voms-admin/" + getVOName();
+	   
+		
+		String path = config.getString(SYSCONFIG_CONF_DIR)+ "/"+ getVOName();
 
 		return path;
 	}
@@ -394,17 +409,10 @@ public final class VOMSConfiguration {
 		return props;
 
 	}
-	
-	
-	
 
-	public String getDefaultGridAUPURL() {
-		return String.format("file://%s/etc/voms-admin/%s/grid-aup.txt",
-				getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")), getVOName());
-	}
 
 	public String getDefaultVOAUPURL() {
-		return String.format("file://%s/etc/voms-admin/%s/vo-aup.txt",getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")), getVOName());
+		return String.format("file://%s/vo-aup.txt", getConfigurationDirectoryPath());
 	}
 
 	/*
@@ -446,8 +454,7 @@ public final class VOMSConfiguration {
 	private InputStream getExternalLogbackConfiguration()
 			throws FileNotFoundException {
 
-		String path = getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR")) + "/etc/voms-admin/"
-				+ getVOName() + "/logback.runtime.xml";
+		String path = getConfigurationDirectoryPath()+"/logback.runtime.xml"; 
 
 		File f = new File(path);
 
@@ -578,16 +585,15 @@ public final class VOMSConfiguration {
 
 	public List getLocallyConfiguredVOs() {
 
-		String configDirPath = getString("VOMS_ADMIN_LOCATION_VAR", getString("GLITE_LOCATION_VAR"));
+		String configDirPath = getString(SYSCONFIG_CONF_DIR);
 
 		if (configDirPath == null)
 			throw new VOMSConfigurationException(
-					"No value found for VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR!");
+					"No value found for " + SYSCONFIG_CONF_DIR+"!");
 
 		List voList = new ArrayList();
 
-		File configDir = new File(configDirPath + File.separator + "etc"
-				+ File.separator + "voms-admin");
+		File configDir = new File(configDirPath);
 
 		if (!configDir.exists())
 			throw new VOMSConfigurationException(
@@ -923,6 +929,20 @@ public final class VOMSConfiguration {
 
 	}
 
+	private void loadSysconfig(){
+		
+		try {
+			
+			PropertiesConfiguration sysconfigProperties = new PropertiesConfiguration(SYSCONFIG_FILE);
+			config.addConfiguration(sysconfigProperties);
+		
+		}catch (ConfigurationException e) {
+			log.error("Error parsing VOMS Admin system configuration file "+SYSCONFIG_FILE);
+			throw new VOMSConfigurationException("Error parsing VOMS Admin system configuration file "+ SYSCONFIG_FILE, e);
+		}
+		
+	}
+	
 	private void loadVersionProperties() {
 
 		InputStream versionPropStream = this.getClass().getClassLoader()
@@ -968,9 +988,10 @@ public final class VOMSConfiguration {
 		}
 
 	}
-
-	private void loadVORuntimeProperties() {
-
+	
+	
+	private void loadVOName() {
+		
 		JNDIConfiguration jndiConfig;
 
 		try {
@@ -988,7 +1009,7 @@ public final class VOMSConfiguration {
 							+ e.getMessage(), e);
 
 		}
-
+		
 		SystemConfiguration systemConfig = new SystemConfiguration();
 
 		if (log.isDebugEnabled()) {
@@ -1012,42 +1033,42 @@ public final class VOMSConfiguration {
 				log.debug(key + " = " + systemConfig.getProperty(key));
 			}
 		}
-
+		
 		jndiConfig.setPrefix("java:comp/env");
 
 		// Add values coming from JNDI context
 		config.addConfiguration(jndiConfig);
-
-		for (int i = 0; i < voRuntimeProperties.length; i++)
-			if (!config.containsKey(voRuntimeProperties[i])) {
-				log
-						.debug("VO runtime property '"
-								+ voRuntimeProperties[i]
-								+ "' not found in JNDI context! Checking system properties for fallback value!");
-
-				if (!systemConfig.containsKey(voRuntimeProperties[i]))
-					throw new VOMSConfigurationException(
-							"Error loading voms-admin configuration: '"
-									+ voRuntimeProperties[i]
-									+ "' VO runtime property, needed to properly initialize voms-admin services, was not found "
-									+ "in JNDI naming service and in the process environment!");
-
-				// Property value found in environment
-				config.setProperty(voRuntimeProperties[i], systemConfig
-						.getString(voRuntimeProperties[i]));
-				log.debug("VO runtime property '" + voRuntimeProperties[i]
-						+ "' found in the system properties with value: '"
-						+ systemConfig.getString(voRuntimeProperties[i]));
-
+		
+		if (!config.containsKey("VO_NAME")){
+			
+			log.warn("VO_NAME not found in JNDI context");
+			if (config.containsKey("DEFAULT_VO_NAME")){
+				
+				log.info("DEFAULT_VO_NAME found, using {} for VO_NAME", config.getString("DEFAULT_VO_NAME"));
+				
+				config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
+				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
+				
 			}
-
-		// Rename the VO_NAME property for internal use
-		// FIXME: is this really needed?
-		config.setProperty(VOMSConfigurationConstants.VO_NAME, config
-				.getString("VO_NAME"));
-		System.setProperty(VOMSConfigurationConstants.VO_NAME, config
-				.getString("VO_NAME"));
-
+			
+			if (systemConfig.containsKey("DEFAULT_VO_NAME")){
+				
+				log.info("DEFAULT_VO_NAME found in system config, using {} for VO_NAME", systemConfig.getString("DEFAULT_VO_NAME"));
+				
+				config.setProperty(VOMSConfigurationConstants.VO_NAME, systemConfig.getProperty("DEFAULT_VO_NAME"));
+				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
+				
+			}
+			
+			if (!config.containsKey(VOMSConfigurationConstants.VO_NAME)){
+				throw new VOMSConfigurationException("VO_NAME property not found!");
+			}
+		}else{
+		
+			config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("VO_NAME"));
+			systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("VO_NAME"));
+			
+		}
 	}
 
 	public boolean pageHasCustomization(String pageName) {

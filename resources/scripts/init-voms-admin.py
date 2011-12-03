@@ -24,19 +24,17 @@
 #
 
 import getopt, sys, os, os.path, commands,urllib,xml.dom.minidom, getopt, shutil, time, re, glob
+from voms import voms_admin_conf_dir, catalina_home
 
-def voms_admin_config_dir_prefix():
-    conf_dir_prefix = os.environ.get('VOMS_ADMIN_LOCATION_VAR')
+def voms_admin_config_dir():
+    
+    conf_dir_prefix = voms_admin_conf_dir()
+            
     if conf_dir_prefix is None:
-        conf_dir_prefix = os.environ.get('GLITE_LOCATION_VAR')
-        
-    if conf_dir_prefix is None:
-        raise ValueError, "Please define VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR environment variables for this script to work!"
+        raise ValueError, "Please define CONF_DIR appropriately in your /etc/sysconfig/voms-admin file for this script to work!"
     
     return conf_dir_prefix
 
-def voms_admin_config_dir():
-    return os.path.join(voms_admin_config_dir_prefix(), "etc", "voms-admin")
     
 def configured_vos():
     
@@ -92,14 +90,14 @@ def setup_cert():
 
 
 def siblings_context_file():
-    return os.path.join(voms_admin_config_dir_prefix(),"etc","voms-admin", "voms-siblings.xml")    
+    return os.path.join(voms_admin_config_dir(), "voms-siblings.xml")    
 
 def context_file(vo):
     
     if options.has_key("context"):
         return os.path.abspath(options['context'])
     else:
-        prefix = os.path.join(voms_admin_config_dir_prefix(),"etc","voms-admin",vo)
+        prefix = os.path.join(voms_admin_config_dir(),vo)
         return "%s/voms-admin-%s.xml" % (prefix,vo)
 
 def catalina_context_file(vo):
@@ -112,16 +110,21 @@ def context_path(vo):
     return "/voms/"+vo
 
 def catalina_conf_dir():
-    if not os.environ.has_key('CATALINA_HOME'):
+    
+    home = catalina_home()
+    
+    if not catalina_home():
         raise ValueError, "CATALINA_HOME is not defined!"
     
-    return os.path.join(os.environ['CATALINA_HOME'],"conf","Catalina","localhost")
+    return os.path.join(home,"conf","Catalina","localhost")
 
 def catalina_webapp_vo_dir(vo):
-    if not os.environ.has_key('CATALINA_HOME'):
+    home = catalina_home()
+    
+    if not catalina_home():
         raise ValueError, "CATALINA_HOME is not defined!"
     
-    return os.path.join(os.environ['CATALINA_HOME'],"webapps","voms",vo)
+    return os.path.join(home,"webapps","voms",vo)
 
 def remove_siblings_context_file():
     
@@ -131,9 +134,13 @@ def remove_siblings_context_file():
         os.remove(siblings_catalina_ctxt)
     
 def remove_siblings_webapp_dir():
+    home = catalina_home()
     
-    if os.path.exists(os.path.join(os.environ['CATALINA_HOME'],"webapps","vomses")):
-        shutil.rmtree(os.path.join(os.environ['CATALINA_HOME'],"webapps","vomses"),
+    if not catalina_home():
+        raise ValueError, "CATALINA_HOME is not defined!"
+    
+    if os.path.exists(os.path.join(home,"webapps","vomses")):
+        shutil.rmtree(os.path.join(home,"webapps","vomses"),
                       True)
     
 def remove_context_file(vo):

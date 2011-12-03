@@ -20,6 +20,7 @@
 package org.glite.security.voms.admin.persistence.deployer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,6 +69,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -89,7 +91,8 @@ public class SchemaDeployer {
 	public static final String ORACLE_PRODUCT_NAME = "Oracle";
 	public static final String MYSQL_PRODUCT_NAME = "MySQL";
 
-	private static final Logger log = LoggerFactory.getLogger(SchemaDeployer.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(SchemaDeployer.class);
 
 	protected CommandLineParser parser = new PosixParser();
 
@@ -112,7 +115,7 @@ public class SchemaDeployer {
 	String adminEmailAddress = null;
 
 	SessionFactory sf;
-	
+
 	protected Dialect dialect;
 
 	public SchemaDeployer(String[] args) {
@@ -123,88 +126,86 @@ public class SchemaDeployer {
 
 	}
 
-	private void printUpgradeScript(){
-		
-		
+	private void printUpgradeScript() {
+
 		SchemaUpdate updater = new SchemaUpdate(loadHibernateConfiguration());
 		updater.execute(true, false);
-		
+
 	}
-	
-	
-	private void checkDatabaseConnectivity(){
-		
+
+	private void checkDatabaseConnectivity() {
+
 		log.info("Checking database connectivity...");
-		
+
 		Session s = null;
-		
-		
-		try{
-			
+
+		try {
+
 			s = HibernateFactory.getFactory().openSession();
 			s.beginTransaction();
-		
-		}catch(GenericJDBCException e){
+
+		} catch (GenericJDBCException e) {
 			log.error("");
-			
+
 			log.error("===========================================================================================================================");
 			log.error("Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
 			log.error("============================================================================================================================");
-			
+
 			if (log.isDebugEnabled())
-				log.error(e.getMessage(),e);
-			
+				log.error(e.getMessage(), e);
+
 			System.exit(-1);
-			
-			
-		}finally{
-			
+
+		} finally {
+
 			if (s != null)
 				s.close();
 		}
-		
+
 		log.info("Database contacted succesfully");
 	}
-	
-	private void checkDatabaseWritable(){
-		
+
+	private void checkDatabaseWritable() {
+
 		log.info("Checking that the database is writable...");
-		
+
 		Session s = null;
-		
-		
-		try{
-			
+
+		try {
+
 			s = HibernateFactory.getFactory().openSession();
 			Transaction t = s.beginTransaction();
-			
+
 			s.createSQLQuery("create table writetest(integer a)");
 			t.commit();
-			
+
 			t = s.beginTransaction();
 			s.createSQLQuery("drop table writetest");
 			t.commit();
-			
-		
-		}catch(Throwable t){
-			
+
+		} catch (Throwable t) {
+
 			log.error("Error writing to the voms database. Check your database settings and that the database backend is up and running.");
-			
+
 			if (log.isDebugEnabled())
-				log.error("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"+t.getMessage(),t);
-			
-			throw new VOMSDatabaseException("Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running", t);
-			
-			
-		}finally{
-			
+				log.error(
+						"Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"
+								+ t.getMessage(), t);
+
+			throw new VOMSDatabaseException(
+					"Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running",
+					t);
+
+		} finally {
+
 			if (s != null)
 				s.close();
 		}
-		
+
 		log.info("Database is writable.");
-		
+
 	}
+
 	private void execute() {
 
 		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
@@ -222,15 +223,14 @@ public class SchemaDeployer {
 			doRemoveAdmin();
 		else if (command.equals("upgrade-script"))
 			printUpgradeScript();
-		else if (command.equals("check-connectivity")){
+		else if (command.equals("check-connectivity")) {
 			checkDatabaseExistence();
-		}
-		else{
-			
-			System.err.println("Unkown command specified: "+command);
+		} else {
+
+			System.err.println("Unkown command specified: " + command);
 			System.exit(2);
 		}
-				
+
 	}
 
 	private boolean isOracleBackend() {
@@ -248,18 +248,16 @@ public class SchemaDeployer {
 
 		} catch (HibernateException e) {
 
-			log
-					.error(
-							"Hibernate error accessing database metadata from Hibernate connection!",
-							e);
+			log.error(
+					"Hibernate error accessing database metadata from Hibernate connection!",
+					e);
 			System.exit(-1);
 
 		} catch (SQLException e) {
 
-			log
-					.error(
-							"SQL error while accessing database metadata from Hibernate connection!",
-							e);
+			log.error(
+					"SQL error while accessing database metadata from Hibernate connection!",
+					e);
 			System.exit(-1);
 
 		}
@@ -269,33 +267,35 @@ public class SchemaDeployer {
 
 	}
 
-	private void printException(Throwable t){
-		
+	private void printException(Throwable t) {
+
 		if (t.getMessage() != null)
 			log.error(t.getMessage());
 		else
 			log.error(t.toString());
-		
-		if (log.isDebugEnabled()){
-			
+
+		if (log.isDebugEnabled()) {
+
 			if (t.getMessage() != null)
-				log.error(t.getMessage(),t);
+				log.error(t.getMessage(), t);
 			else
-				log.error(t.toString(),t);
-			
+				log.error(t.toString(), t);
+
 		}
 	}
-	private void printAllException(Throwable t){
-		
+
+	private void printAllException(Throwable t) {
+
 		if (t != null)
 			printException(t);
-		
-		if (t.getCause()!= null){
+
+		if (t.getCause() != null) {
 			log.error("caused by:");
 			printAllException(t.getCause());
-			
+
 		}
 	}
+
 	private void printExceptions(List l) {
 
 		Iterator i = l.iterator();
@@ -310,32 +310,34 @@ public class SchemaDeployer {
 		}
 
 	}
-	
-	private String getVarcharType(){
-		
+
+	private String getVarcharType() {
+
 		if (isOracleBackend())
 			return "varchar2";
-		else 
+		else
 			return "varchar";
 	}
-	
-	private String getTimestampType(){
-		
+
+	private String getTimestampType() {
+
 		if (isOracleBackend())
 			return "timestamp";
 		else
 			return "datetime";
-		
+
 	}
-	private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md, String pattern){
-		
+
+	private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md,
+			String pattern) {
+
 		String[] names = { "TABLE" };
 
 		ResultSet tableNames = null;
 
 		try {
 
-			tableNames = md.getTables(null, "%", pattern, names);	
+			tableNames = md.getTables(null, "%", pattern, names);
 
 		} catch (SQLException e) {
 			log.error(
@@ -343,16 +345,15 @@ public class SchemaDeployer {
 					e);
 			System.exit(-1);
 		}
-		
+
 		return tableNames;
 	}
 
 	private int checkDatabaseExistence() {
-
+		checkVoExistence();
 		checkDatabaseConnectivity();
 		log.info("Checking database existence...");
 		Session s = HibernateFactory.getSession();
-
 
 		DatabaseMetaData dbMetadata = null;
 
@@ -362,24 +363,22 @@ public class SchemaDeployer {
 
 		} catch (HibernateException e) {
 
-			log
-					.error(
-							"Hibernate error accessing database metadata from Hibernate connection!",
-							e);
+			log.error(
+					"Hibernate error accessing database metadata from Hibernate connection!",
+					e);
 			System.exit(-1);
 
 		} catch (SQLException e) {
 
-			log
-					.error(
-							"SQL error while accessing database metadata from Hibernate connection!",
-							e);
+			log.error(
+					"SQL error while accessing database metadata from Hibernate connection!",
+					e);
 			System.exit(-1);
 
 		}
 
 		ResultSet tableNames = getTableNamesMatchingPattern(dbMetadata, "%");
-		
+
 		boolean foundACL2 = false;
 		boolean foundACL = false;
 		boolean foundAUP = false;
@@ -482,110 +481,110 @@ public class SchemaDeployer {
 		}
 
 	}
-	
-	private void implicitAUPSignup(){
-		
+
+	private void implicitAUPSignup() {
+
 		log.info("Adding implicit AUP sign records for vo users");
-		
-		List<VOMSUser> users  = VOMSUserDAO.instance().findAll();
+
+		List<VOMSUser> users = VOMSUserDAO.instance().findAll();
 		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
-		
-		for (VOMSUser u: users)
-			VOMSUserDAO.instance().signAUP(u,aup);
-		
+
+		for (VOMSUser u : users)
+			VOMSUserDAO.instance().signAUP(u, aup);
+
 	}
 
-	private List<String> loadUpgradeScript() throws IOException{
-			
-		String upgradeScriptFileName = "/upgrade-scripts/mysql-upgrade_20_25.sql"; 
-		
+	private List<String> loadUpgradeScript() throws IOException {
+
+		String upgradeScriptFileName = "/upgrade-scripts/mysql-upgrade_20_25.sql";
+
 		if (isOracleBackend())
 			upgradeScriptFileName = "/upgrade-scripts/oracle-upgrade_20_25.sql";
-			
-		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(upgradeScriptFileName)));
-		
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(this
+				.getClass().getResourceAsStream(upgradeScriptFileName)));
+
 		ArrayList<String> commands = new ArrayList<String>();
-		
+
 		String line;
-		
-		do{
+
+		do {
 			line = reader.readLine();
 			if (line != null)
 				commands.add(line);
-			
-		}while (line != null);
-		
+
+		} while (line != null);
+
 		return commands;
-		
+
 	}
-	
-		
+
 	private void doUpgrade2_0_x(Configuration hibernateConfig) {
-		
-		try{
-			
+
+		try {
+
 			HibernateFactory.beginTransaction();
-						
+
 			List<String> upgradeScript = loadUpgradeScript();
-			
+
 			ArrayList<Exception> exceptions = new ArrayList<Exception>();
-			
+
 			log.info("Upgrading voms 2.5 database...");
-			
-			
-			Statement statement = HibernateFactory.getSession().connection().createStatement();
-			
-			for (String command: upgradeScript){
-				try{
-					
+
+			Statement statement = HibernateFactory.getSession().connection()
+					.createStatement();
+
+			for (String command : upgradeScript) {
+				try {
+
 					log.info(command);
 					statement.executeUpdate(command);
-					
-				}catch (SQLException e) {
-					log.error("Error while executing: "+command);
+
+				} catch (SQLException e) {
+					log.error("Error while executing: " + command);
 					exceptions.add(e);
 				}
-				
+
 			}
-			
-			if (!exceptions.isEmpty()){
+
+			if (!exceptions.isEmpty()) {
 				log.error("Error upgrading voms 2.5 database!");
 				printExceptions(exceptions);
 				System.exit(2);
-			}	
-			
+			}
+
 			dropUnusedTables_2_0_x();
 			fixCaTable();
 			migrateUsrTable();
 			HibernateFactory.commitTransaction();
-			
+
 			HibernateFactory.beginTransaction();
 			fixUsrTable();
 			updateACLPerms();
-			
+
 			DatabaseSetupTask.instance().run();
-			
-			// Very old version of VOMS Admin populated the admin table incorrectly, so we're left
+
+			// Very old version of VOMS Admin populated the admin table
+			// incorrectly, so we're left
 			// with many orphans there that can be dropped.
 			dropOrphanedAdministrators();
-			
-			// Make users accept implicitly the AUP, if you don't want to flood them 
+
+			// Make users accept implicitly the AUP, if you don't want to flood
+			// them
 			// with emails
 			implicitAUPSignup();
-			
-			
+
 			// Upgrade database version
 			log.info("Upgrading database version information");
-			
+
 			VOMSVersionDAO.instance().setupVersion();
-			
+
 			HibernateFactory.commitTransaction();
 			log.info("Database upgrade successfull!");
-		
-		}catch (Throwable t) {
 
-			log.error("Database upgrade failed!",t);
+		} catch (Throwable t) {
+
+			log.error("Database upgrade failed!", t);
 			HibernateFactory.rollbackTransaction();
 			HibernateFactory.closeSession();
 			System.exit(2);
@@ -595,9 +594,11 @@ public class SchemaDeployer {
 	}
 
 	private void doUpgrade() {
+		
+		checkVoExistence();
 
 		Configuration hibernateConfig = loadHibernateConfiguration();
-		
+
 		int existingDB = checkDatabaseExistence();
 
 		if (existingDB == -1) {
@@ -606,21 +607,22 @@ public class SchemaDeployer {
 		}
 
 		if (existingDB == 1) {
-			log
-					.info("Upgrading voms-admin 1.2.x database to the voms-admin 2.5.x structure.");
+			log.info("Upgrading voms-admin 1.2.x database to the voms-admin 2.5.x structure.");
 			doUpgrade1_2_19(hibernateConfig);
 
 		}
 
 		if (existingDB == 2) {
-			log
-					.info("Upgrading voms-admin 2.0.x database to the voms-admin 2.5.x structure.");
+			log.info("Upgrading voms-admin 2.0.x database to the voms-admin 2.5.x structure.");
 			doUpgrade2_0_x(hibernateConfig);
 		}
 
 	}
 
 	private void doRemoveAdmin() {
+		
+		checkVoExistence();
+		
 		if (adminDN == null || adminCA == null)
 			throw new VOMSException("adminDN or adminCA is not set!");
 
@@ -639,8 +641,9 @@ public class SchemaDeployer {
 			VOMSAdminDAO.instance().delete(a);
 
 			HibernateFactory.commitTransaction();
-			
-			log.info("Administrator '{},{}' removed", new String[]{a.getDn(), a.getCa().getSubjectString()});
+
+			log.info("Administrator '{},{}' removed", new String[] { a.getDn(),
+					a.getCa().getSubjectString() });
 
 		} catch (Throwable t) {
 
@@ -653,9 +656,9 @@ public class SchemaDeployer {
 
 	private void doAddAdmin() {
 
-	    if (adminDN == null || adminCA == null)
-			throw new VOMSException(
-					"adminDN or adminCA not set!");
+		checkVoExistence();
+		if (adminDN == null || adminCA == null)
+			throw new VOMSException("adminDN or adminCA not set!");
 
 		HibernateFactory.beginTransaction();
 
@@ -667,8 +670,7 @@ public class SchemaDeployer {
 
 				log.info("Admin '" + a.getDn() + "," + a.getCa().getDn()
 						+ "' already exists in database...");
-				log
-						.warn("This admin will be granted full privileges on the VOMS database.");
+				log.warn("This admin will be granted full privileges on the VOMS database.");
 			} else {
 
 				log.info("Admin '" + adminDN + "," + adminCA
@@ -685,7 +687,9 @@ public class SchemaDeployer {
 				VOMSGroup g = (VOMSGroup) i.next();
 				g.getACL()
 						.setPermissions(a, VOMSPermission.getAllPermissions());
-				log.info("Adding ALL permissions on '{}' for admin '{},{}'", new String[]{g.toString(),a.getDn(),a.getCa().getSubjectString()});
+				log.info("Adding ALL permissions on '{}' for admin '{},{}'",
+						new String[] { g.toString(), a.getDn(),
+								a.getCa().getSubjectString() });
 
 				Iterator rolesIter = VOMSRoleDAO.instance().findAll()
 						.iterator();
@@ -694,7 +698,10 @@ public class SchemaDeployer {
 					VOMSRole r = (VOMSRole) rolesIter.next();
 					r.getACL(g).setPermissions(a,
 							VOMSPermission.getAllPermissions());
-					log.info("Adding ALL permissions on role '{}/{}' for admin '{},{}'", new String[]{g.toString(),r.toString(),a.getDn(),a.getCa().getSubjectString()});
+					log.info(
+							"Adding ALL permissions on role '{}/{}' for admin '{},{}'",
+							new String[] { g.toString(), r.toString(),
+									a.getDn(), a.getCa().getSubjectString() });
 					HibernateFactory.getSession().save(r);
 				}
 				HibernateFactory.getSession().save(g);
@@ -713,6 +720,33 @@ public class SchemaDeployer {
 
 	}
 
+	
+	private String getVOConfigurationDir(){
+		Properties sysconfProps = SysconfigUtil.loadSysconfig();
+		
+		String confDir = sysconfProps.getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
+		
+		if (confDir == null)
+			confDir = "/etc/voms-admin";
+		
+		return confDir;
+		
+	}
+	
+	private boolean isVoConfigured(String voName){
+		
+		String confDir = getVOConfigurationDir();
+		
+		File voConfDir = new File(confDir+"/"+voName);
+		
+		if (voConfDir.exists() && voConfDir.isDirectory())
+			return true;
+		
+		return false;
+		
+	}
+	
+	
 	private Configuration loadHibernateConfiguration() {
 
 		Properties dbProperties = new Properties();
@@ -721,12 +755,10 @@ public class SchemaDeployer {
 
 			if (hibernatePropertiesFile == null) {
 
-			    	String configPrefix = System.getProperty("VOMS_ADMIN_LOCATION_VAR");
-			    	
-			    	if (configPrefix == null)
-			    	    configPrefix = System.getProperty("GLITE_LOCATION_VAR");
-			    	
-				String f = configPrefix	+ "/etc/voms-admin/" + vo + "/voms.database.properties";
+				
+				String f = String.format("%s/%s/%s",
+						getVOConfigurationDir(),vo,
+						"voms.database.properties");
 
 				log.debug("Loading database properties from: " + f);
 
@@ -744,14 +776,16 @@ public class SchemaDeployer {
 
 		}
 
-		Configuration cfg = new AnnotationConfiguration().addProperties(dbProperties)
-			.configure(); 
-		
+		Configuration cfg = new AnnotationConfiguration().addProperties(
+				dbProperties).configure();
+
 		dialect = Dialect.getDialect(cfg.getProperties());
 		return cfg;
 	}
 
 	private void doUndeploy() {
+		
+		checkVoExistence();
 
 		log.info("Undeploying voms database...");
 		Configuration hibernateConfig = loadHibernateConfiguration();
@@ -759,16 +793,14 @@ public class SchemaDeployer {
 		int existingDB = checkDatabaseExistence();
 
 		if (existingDB == 1) {
-			log
-					.error("This tool cannot undeploy voms-admin 1.2.x database! Please upgrade to voms-admin 2 or use voms-admin-configure 1.2.x tools to undeploy this database.");
+			log.error("This tool cannot undeploy voms-admin 1.2.x database! Please upgrade to voms-admin 2 or use voms-admin-configure 1.2.x tools to undeploy this database.");
 			System.exit(-1);
 		}
 
 		if (existingDB == 2) {
 
-			log
-					.error("This tool cannot undeploy voms-admin 2.0.x databases! Please either upgrade the database to voms-admin 2.5 (using this tool) or use voms-admin-configure 2.0.x"
-							+ " tools to undeploy this database");
+			log.error("This tool cannot undeploy voms-admin 2.0.x databases! Please either upgrade the database to voms-admin 2.5 (using this tool) or use voms-admin-configure 2.0.x"
+					+ " tools to undeploy this database");
 
 			System.exit(-1);
 		}
@@ -779,7 +811,7 @@ public class SchemaDeployer {
 		}
 
 		checkDatabaseWritable();
-		
+
 		SchemaExport export = new SchemaExport(hibernateConfig);
 
 		export.drop(false, true);
@@ -795,21 +827,31 @@ public class SchemaDeployer {
 		log.info("Database undeployed correctly!");
 
 	}
+	
+	private void checkVoExistence(){
+		
+		if (!isVoConfigured(vo)){
+			log.error("VO {} is not configured on this host.", vo);
+			System.exit(1);
+		}
+		
+	}
 
 	private void doDeploy() {
-
+		
+		checkVoExistence();
+		
 		Configuration hibernateConfig = loadHibernateConfiguration();
 
 		int existingDb = checkDatabaseExistence();
 
 		if (existingDb > 0) {
-			log
-					.warn("Existing voms database found. Will not overwrite the database!");
+			log.warn("Existing voms database found. Will not overwrite the database!");
 			System.exit(0);
 		}
 
 		checkDatabaseWritable();
-		
+
 		SchemaExport exporter = new SchemaExport(hibernateConfig);
 
 		exporter.execute(true, true, false, true);
@@ -840,48 +882,48 @@ public class SchemaDeployer {
 
 		options = new Options();
 
-		options.addOption(OptionBuilder.withLongOpt("help").withDescription(
-				"Displays helps and exits.").create("h"));
+		options.addOption(OptionBuilder.withLongOpt("help")
+				.withDescription("Displays helps and exits.").create("h"));
 
-		options
-				.addOption(OptionBuilder
-						.withLongOpt("command")
-						.withDescription(
-								"Specifies the command to be executed: deploy,undeploy,upgrade,add-admin")
-						.hasArg().create("command"));
+		options.addOption(OptionBuilder
+				.withLongOpt("command")
+				.withDescription(
+						"Specifies the command to be executed: deploy,undeploy,upgrade,add-admin")
+				.hasArg().create("command"));
 
-		options.addOption(OptionBuilder.withLongOpt("vo").withDescription(
-				"Specifies the vo name.").hasArg().create("vo"));
+		options.addOption(OptionBuilder.withLongOpt("vo")
+				.withDescription("Specifies the vo name.").hasArg()
+				.create("vo"));
 
-		options.addOption(OptionBuilder.withLongOpt("config").withDescription(
-				"Specifies the hibernate config file to be used.").hasArg()
-				.create("config"));
+		options.addOption(OptionBuilder
+				.withLongOpt("config")
+				.withDescription(
+						"Specifies the hibernate config file to be used.")
+				.hasArg().create("config"));
 
-		options.addOption(OptionBuilder.withLongOpt("properties")
+		options.addOption(OptionBuilder
+				.withLongOpt("properties")
 				.withDescription(
 						"Specifies the hibernate properties file to be used.")
 				.hasArg().create("properties"));
 
-		options
-				.addOption(OptionBuilder
-						.withLongOpt("dn")
-						.withDescription(
-								"Specifies the dn for the admin to add (valid only if add-admin command is given).")
-						.hasArg().create("dn"));
+		options.addOption(OptionBuilder
+				.withLongOpt("dn")
+				.withDescription(
+						"Specifies the dn for the admin to add (valid only if add-admin command is given).")
+				.hasArg().create("dn"));
 
-		options
-				.addOption(OptionBuilder
-						.withLongOpt("ca")
-						.withDescription(
-								"Specifies the ca for the admin to add (valid only if add-admin command is given).")
-						.hasArg().create("ca"));
+		options.addOption(OptionBuilder
+				.withLongOpt("ca")
+				.withDescription(
+						"Specifies the ca for the admin to add (valid only if add-admin command is given).")
+				.hasArg().create("ca"));
 
-		options
-				.addOption(OptionBuilder
-						.withLongOpt("email")
-						.withDescription(
-								"Specifies the email address for the admin to add (valid only if add-admin command is given).")
-						.hasArg().create("email"));
+		options.addOption(OptionBuilder
+				.withLongOpt("email")
+				.withDescription(
+						"Specifies the email address for the admin to add (valid only if add-admin command is given).")
+				.hasArg().create("email"));
 
 	}
 
@@ -915,13 +957,11 @@ public class SchemaDeployer {
 					&& !command.equals("remove-admin")
 					&& !command.equals("undeploy")
 					&& !command.equals("upgrade-script")
-					&& !command.equals("check-connectivity")
-				){
-				
-				System.err.println("Unknown command specified: "+command);
+					&& !command.equals("check-connectivity")) {
+
+				System.err.println("Unknown command specified: " + command);
 				printHelpMessageAndExit(2);
 			}
-				
 
 			vo = line.getOptionValue("vo");
 
@@ -963,47 +1003,48 @@ public class SchemaDeployer {
 		return s.createSQLQuery(command).executeUpdate();
 	}
 
-	
-	private void dropUnusedTables_2_0_x(){
-		
-		String[] tableNames = {"admins_history","history"};
-		
-		for (String table: tableNames)
+	private void dropUnusedTables_2_0_x() {
+
+		String[] tableNames = { "admins_history", "history" };
+
+		for (String table : tableNames)
 			dropTable(table);
-		
+
 	}
-	private void dropOldTables_2_0_x(){
-		
+
+	private void dropOldTables_2_0_x() {
+
 		DatabaseMetaData md = null;
-		
+
 		try {
-			
+
 			md = HibernateFactory.getSession().connection().getMetaData();
-		
+
 		} catch (Throwable t) {
-			log.error("Error accessing database metadata!",t);
+			log.error("Error accessing database metadata!", t);
 			System.exit(-1);
 		}
-		
+
 		ResultSet oldTables = getTableNamesMatchingPattern(md, "%_old");
 		ArrayList<String> toBeDropped = new ArrayList<String>();
-		
+
 		try {
 
 			while (oldTables.next())
-				toBeDropped.add(oldTables.getString("TABLE_NAME"));				
-		
-		}catch (SQLException e) {
-			log.error("Error reading table names from database metadata!",e);
+				toBeDropped.add(oldTables.getString("TABLE_NAME"));
+
+		} catch (SQLException e) {
+			log.error("Error reading table names from database metadata!", e);
 			System.exit(2);
 		}
-		
-		for (String tableName: toBeDropped){
-			log.debug("Dropping '"+tableName+"'...");
+
+		for (String tableName : toBeDropped) {
+			log.debug("Dropping '" + tableName + "'...");
 			dropTable(tableName);
 		}
-		
+
 	}
+
 	private void dropOldTables_1_2_19() {
 		String[] dTables = new String[] { "acl_old", "acld", "admins_old",
 				"attributes_old", "ca_old", "capabilities_old",
@@ -1031,8 +1072,7 @@ public class SchemaDeployer {
 			if (e.getCause().getMessage().contains("sequence does not exist")) {
 				log.warn("Error dropping sequence: " + sequenceName
 						+ "... such sequence doesn't exist.");
-				log
-						.warn("This error may be ignored at this stage of the database upgrade...");
+				log.warn("This error may be ignored at this stage of the database upgrade...");
 			}
 			return 0;
 		}
@@ -1057,8 +1097,7 @@ public class SchemaDeployer {
 				+ "_old";
 		return s.createSQLQuery(command).executeUpdate();
 	}
-	
-	
+
 	private void renameTables_1_2_19() {
 
 		String[] oldTables = new String[] { "ca", "acl", "admins",
@@ -1092,200 +1131,203 @@ public class SchemaDeployer {
 		s.createSQLQuery(createHibSeqStatement).executeUpdate();
 		log.info("Sequences migration complete.");
 	}
-	
-	private void renameTables_2_0_x(){
-		
-		String[] tables20x = {
-				"acl2",
-				"acl2_permissions",
-				"admins",
-				"admins_history",
-				"attributes",
-				"ca",
-				"capabilities",
-				"group_attrs",
-				"groups",
-				"history",
-				"m",
-				"memb_req",
-				"role_attrs",
-				"roles",
-				"seqnumber",
-				"usr",
-				"usr_attrs",
-				"version"};
-		
-		
-		for (String tableName: tables20x)
+
+	private void renameTables_2_0_x() {
+
+		String[] tables20x = { "acl2", "acl2_permissions", "admins",
+				"admins_history", "attributes", "ca", "capabilities",
+				"group_attrs", "groups", "history", "m", "memb_req",
+				"role_attrs", "roles", "seqnumber", "usr", "usr_attrs",
+				"version" };
+
+		for (String tableName : tables20x)
 			renameTable(tableName);
-		
+
 	}
-	
-	private void executeAndLog(String command){
-		
-		log.info("Executing '"+command+"'");
-		
+
+	private void executeAndLog(String command) {
+
+		log.info("Executing '" + command + "'");
+
 		HibernateFactory.getSession().createSQLQuery(command).executeUpdate();
-		
+
 	}
-	
-	private void fixCaTable() throws HibernateException, SQLException{
-		
+
+	private void fixCaTable() throws HibernateException, SQLException {
+
 		executeAndLog("update ca set subject_string = ca");
-		
+
 		// set creation time
-		HibernateFactory.getSession().createSQLQuery("update ca set creation_time = :creationTime").setTimestamp("creationTime", new Date()).executeUpdate();		
-		
+		HibernateFactory.getSession()
+				.createSQLQuery("update ca set creation_time = :creationTime")
+				.setTimestamp("creationTime", new Date()).executeUpdate();
+
 		dropColumn("ca", "ca");
-		setColumnNullability(false,"ca", "subject_string",getVarcharType()+"(255)");
-		setColumnNullability(false,"ca", "creation_time", getTimestampType());
-				
+		setColumnNullability(false, "ca", "subject_string", getVarcharType()
+				+ "(255)");
+		setColumnNullability(false, "ca", "creation_time", getTimestampType());
+
 	}
-	
-	
-	
-	private String getColumnType(String tableName, String columnName) throws HibernateException, SQLException{
-		
-		DatabaseMetaData md = HibernateFactory.getSession().connection().getMetaData();
-		
+
+	private String getColumnType(String tableName, String columnName)
+			throws HibernateException, SQLException {
+
+		DatabaseMetaData md = HibernateFactory.getSession().connection()
+				.getMetaData();
+
 		ResultSet columnData = md.getColumns("%", "%", tableName, columnName);
-		
+
 		int matches = 0;
-		
-		while (columnData.next()){
+
+		while (columnData.next()) {
 			matches++;
 			String typeName = columnData.getString("TYPE_NAME");
 			int colSize = columnData.getInt("COLUMN_SIZE");
-			
+
 			if (colSize > 0)
-				typeName = typeName+"("+colSize+")";
-			
-			log.debug( String.format("%s.%s type:%s colSize:%s", tableName, columnName, typeName, colSize));
+				typeName = typeName + "(" + colSize + ")";
+
+			log.debug(String.format("%s.%s type:%s colSize:%s", tableName,
+					columnName, typeName, colSize));
 			return typeName;
-			
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
-	
-	
-	private void setColumnNullability(boolean nullable,String tableName, String columnName, String typeName){ 
-		
-		String nullString = (nullable?"":"not");
-		
-		String command = String.format("alter table %s modify %s %s %s null", tableName, columnName, typeName, nullString);
+
+	private void setColumnNullability(boolean nullable, String tableName,
+			String columnName, String typeName) {
+
+		String nullString = (nullable ? "" : "not");
+
+		String command = String.format("alter table %s modify %s %s %s null",
+				tableName, columnName, typeName, nullString);
 		executeAndLog(command);
 	}
-	
-	
-	private void dropColumn(String tableName, String columnName){
-		
-		executeAndLog(String.format("alter table %s drop column %s", tableName, columnName));
-		
+
+	private void dropColumn(String tableName, String columnName) {
+
+		executeAndLog(String.format("alter table %s drop column %s", tableName,
+				columnName));
+
 	}
-	
-	private List<String> getForeignKeyContraintNamesOnColumn(String tableName, String columnName) throws SQLException{
-		DatabaseMetaData md = HibernateFactory.getSession().connection().getMetaData();
-		
+
+	private List<String> getForeignKeyContraintNamesOnColumn(String tableName,
+			String columnName) throws SQLException {
+		DatabaseMetaData md = HibernateFactory.getSession().connection()
+				.getMetaData();
+
 		ResultSet rs = md.getImportedKeys(null, null, tableName);
 		ArrayList<String> res = new ArrayList<String>();
-		
-		while(rs.next()){
-			
+
+		while (rs.next()) {
+
 			String importedPkTableName = rs.getString("PKTABLE_NAME");
 			String importedPkColumnName = rs.getString("PKCOLUMN_NAME");
-			
+
 			String fkName = rs.getString("FK_NAME");
 			String pkName = rs.getString("PK_NAME");
 			res.add(fkName);
-			
+
 		}
-		
+
 		return res;
 	}
-	
-	private void updateACLPerms(){
+
+	private void updateACLPerms() {
 		// Grant all permissions to those that had all permissions in 2.0.x!
 		executeAndLog("update acl2_permissions set permissions = 16383 where permissions = 4095");
 	}
-	
-	private void dropOrphanedAdministrators(){
-	    
-	    List<VOMSAdmin> orphanedAdmins = ACLDAO.instance().getAdminsWithoutActivePermissions();
-	    
-	    for (VOMSAdmin a: orphanedAdmins){
-		log.info("Dropping orphaned administrator '{}' - email: '{}'", a.getDn(), a.getEmailAddress());
-		HibernateFactory.getSession().delete(a);
-	    }
-	    
+
+	private void dropOrphanedAdministrators() {
+
+		List<VOMSAdmin> orphanedAdmins = ACLDAO.instance()
+				.getAdminsWithoutActivePermissions();
+
+		for (VOMSAdmin a : orphanedAdmins) {
+			log.info("Dropping orphaned administrator '{}' - email: '{}'",
+					a.getDn(), a.getEmailAddress());
+			HibernateFactory.getSession().delete(a);
+		}
+
 	}
-	
-	private void fixUsrTable() throws HibernateException, SQLException{
-		
+
+	private void fixUsrTable() throws HibernateException, SQLException {
+
 		// Move email addresses in new column
 		executeAndLog("update usr set email_address = mail");
-			
+
 		// Drop old email field
 		dropColumn("usr", "mail");
 		dropColumn("usr", "cn");
 		dropColumn("usr", "cauri");
-		
+
 		// Fix missing null checks
-		setColumnNullability(false,"usr", "creation_time", getTimestampType());
+		setColumnNullability(false, "usr", "creation_time", getTimestampType());
 		setColumnNullability(false, "usr", "end_time", getTimestampType());
-		
+
 		// Drop nullability from old dn and ca fields
-		
-		setColumnNullability(true,"usr", "dn", getVarcharType()+"(255)");
-		
+
+		setColumnNullability(true, "usr", "dn", getVarcharType() + "(255)");
+
 		if (!isOracleBackend())
-			setColumnNullability(true,"usr", "ca", "smallint");
-			
+			setColumnNullability(true, "usr", "ca", "smallint");
+
 		// Drop foreign key created by 2.0.x installation,
 		// otherwise an undeploy would not perform cleanly
 		String dropForeignKeyString = dialect.getDropForeignKeyString();
-		
-		executeAndLog("alter table usr "+dropForeignKeyString+" fk_usr_ca");
-		
-		
+
+		executeAndLog("alter table usr " + dropForeignKeyString + " fk_usr_ca");
+
 		// Set dn null for usr
 		executeAndLog("update usr set dn = null");
 		executeAndLog("update usr set ca = null");
 	}
-	
-	
-	private void migrateUsrTable(){
-		
+
+	private void migrateUsrTable() {
+
 		CertificateDAO certDAO = CertificateDAO.instance();
-		
-		Iterator userIterator = HibernateFactory.getSession().createQuery("select u, u.dn, u.ca from VOMSUser u").iterate();
-		
-		while(userIterator.hasNext()){
-			
-			Object[] result = (Object[])userIterator.next();
+
+		Iterator userIterator = HibernateFactory.getSession()
+				.createQuery("select u, u.dn, u.ca from VOMSUser u").iterate();
+
+		while (userIterator.hasNext()) {
+
+			Object[] result = (Object[]) userIterator.next();
 			VOMSUser u = (VOMSUser) result[0];
 			String dn = (String) result[1];
-			VOMSCA ca  = (VOMSCA) result[2];
-		
-			Certificate candidateCert = certDAO.findByDNCA(dn, ca.getSubjectString());
-			if (candidateCert != null){
-			    	
-			    	log.warn("**** WARNING *****");
-			    	log.warn("There is a duplicated entry in the database for user: '{}','{}'", dn, ca.getSubjectString());
+			VOMSCA ca = (VOMSCA) result[2];
+
+			Certificate candidateCert = certDAO.findByDNCA(dn,
+					ca.getSubjectString());
+			if (candidateCert != null) {
+
+				log.warn("**** WARNING *****");
+				log.warn(
+						"There is a duplicated entry in the database for user: '{}','{}'",
+						dn, ca.getSubjectString());
 				log.warn("The duplicated entry will be REMOVED.\n");
-						
-				HibernateFactory.getSession().createSQLQuery("delete from m where userid = :id").setLong("id", u.getId()).executeUpdate();
-				HibernateFactory.getSession().createSQLQuery("delete from usr_attrs where u_id = :id").setLong("id", u.getId()).executeUpdate();
-				HibernateFactory.getSession().createSQLQuery("delete from usr where userid = :id").setLong("id", u.getId()).executeUpdate();
-				
+
+				HibernateFactory.getSession()
+						.createSQLQuery("delete from m where userid = :id")
+						.setLong("id", u.getId()).executeUpdate();
+				HibernateFactory
+						.getSession()
+						.createSQLQuery(
+								"delete from usr_attrs where u_id = :id")
+						.setLong("id", u.getId()).executeUpdate();
+				HibernateFactory.getSession()
+						.createSQLQuery("delete from usr where userid = :id")
+						.setLong("id", u.getId()).executeUpdate();
+
 				continue;
 			}
-			
+
 			candidateCert = certDAO.create(u, ca.getSubjectString());
 			u.addCertificate(candidateCert);
-			
+
 			u.setEmailAddress("temporary_value");
 			u.setCreationTime(new Date());
 
@@ -1298,57 +1340,48 @@ public class SchemaDeployer {
 
 			c.add(Calendar.MONTH, lifetime);
 			u.setEndTime(c.getTime());
-			
+
 			HibernateFactory.getSession().save(u);
 		}
-		
+
 	}
-	
-	
+
 	private void migrateDbContents() {
 
 		log.info("Migrating db contents...");
 
 		Session s = HibernateFactory.getSession();
 
-		s
-				.createSQLQuery(
-						"insert into ca (cid, ca, cadescr) select cid, ca, cadescr from ca_old")
+		s.createSQLQuery(
+				"insert into ca (cid, ca, cadescr) select cid, ca, cadescr from ca_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into admins(adminid,dn,ca) select adminid, dn,ca from admins_old")
+		s.createSQLQuery(
+				"insert into admins(adminid,dn,ca) select adminid, dn,ca from admins_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into groups(gid,dn,parent,must) select gid,dn,parent,must from groups_old")
+		s.createSQLQuery(
+				"insert into groups(gid,dn,parent,must) select gid,dn,parent,must from groups_old")
 				.executeUpdate();
 		s.createSQLQuery(
 				"insert into roles(rid,role) select rid, role from roles_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into usr(userid,dn,ca,cn,mail,cauri) select userid, dn, ca, cn, mail, cauri from usr_old")
+		s.createSQLQuery(
+				"insert into usr(userid,dn,ca,cn,mail,cauri) select userid, dn, ca, cn, mail, cauri from usr_old")
 				.executeUpdate();
 
 		s.createSQLQuery("insert into version values('3')").executeUpdate();
 
 		// Generic attributes migration
-		s
-				.createSQLQuery(
-						"insert into attributes(a_id, a_name, a_desc) select a_id,a_name,a_desc from attributes_old")
+		s.createSQLQuery(
+				"insert into attributes(a_id, a_name, a_desc) select a_id,a_name,a_desc from attributes_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into usr_attrs(u_id,a_id,a_value) select u_id,a_id,a_value from usr_attrs_old")
+		s.createSQLQuery(
+				"insert into usr_attrs(u_id,a_id,a_value) select u_id,a_id,a_value from usr_attrs_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into group_attrs(g_id,a_id,a_value) select g_id,a_id,a_value from group_attrs_old")
+		s.createSQLQuery(
+				"insert into group_attrs(g_id,a_id,a_value) select g_id,a_id,a_value from group_attrs_old")
 				.executeUpdate();
-		s
-				.createSQLQuery(
-						"insert into role_attrs(r_id,g_id,a_id,a_value) select r_id, g_id,a_id,a_value from role_attrs_old")
+		s.createSQLQuery(
+				"insert into role_attrs(r_id,g_id,a_id,a_value) select r_id, g_id,a_id,a_value from role_attrs_old")
 				.executeUpdate();
 
 		// Seqnumber migration
@@ -1361,10 +1394,12 @@ public class SchemaDeployer {
 
 		Session s = HibernateFactory.getSession();
 
-		List oldMappings = s.createSQLQuery(
-				"select userid,gid,rid,cid from m_old").addScalar("userid",
-				new LongType()).addScalar("gid", new LongType()).addScalar(
-				"rid", new LongType()).addScalar("cid", new LongType()).list();
+		List oldMappings = s
+				.createSQLQuery("select userid,gid,rid,cid from m_old")
+				.addScalar("userid", new LongType())
+				.addScalar("gid", new LongType())
+				.addScalar("rid", new LongType())
+				.addScalar("cid", new LongType()).list();
 
 		Iterator i = oldMappings.iterator();
 
@@ -1407,9 +1442,8 @@ public class SchemaDeployer {
 		log.info("Removing eventual buggy duplicated ACL entries... ");
 
 		Session s = HibernateFactory.getSession();
-		s
-				.createSQLQuery(
-						"delete from admins_old where dn not like '/O=VOMS/%' and adminid not in (select adminid from acl_old)")
+		s.createSQLQuery(
+				"delete from admins_old where dn not like '/O=VOMS/%' and adminid not in (select adminid from acl_old)")
 				.executeUpdate();
 
 	}
@@ -1438,8 +1472,8 @@ public class SchemaDeployer {
 					while (keys.hasNext()) {
 
 						List perms = (List) m.get(keys.next());
-						setGlobalPermission(a, ACLMapper
-								.translatePermissions(perms));
+						setGlobalPermission(a,
+								ACLMapper.translatePermissions(perms));
 
 					}
 				}
@@ -1479,27 +1513,21 @@ public class SchemaDeployer {
 
 						VOMSRole targetRole = VOMSRoleDAO.instance().findById(
 								roleId);
-						setPermissionOnRole(a, targetRole, ACLMapper
-								.translatePermissions(perms));
+						setPermissionOnRole(a, targetRole,
+								ACLMapper.translatePermissions(perms));
 					}
 				}
 			}
 		}
 
 	}
-	
-	
-	public static void main(String[] args) throws ConfigurationException {
 
-	    if ((System.getProperty("GLITE_LOCATION_VAR") == null) && (System.getProperty("VOMS_ADMIN_LOCATION_VAR") == null))
-			throw new VOMSException(
-					"Please set the VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR system property before running this utility.");
+	public static void main(String[] args) throws ConfigurationException {
 
 		new SchemaDeployer(args);
 
 	}
 
-	
 	private MultiHashMap buildACLEntries(List acl) {
 
 		if (acl.isEmpty())
@@ -1527,8 +1555,8 @@ public class SchemaDeployer {
 		String query = "select groups.gid as gid, acl.operation as operation from acl_old acl, groups_old groups where acl.aid = groups.aclid and acl.allow = 1 and adminid = :adminId";
 
 		List acls = s.createSQLQuery(query).addScalar("gid", new LongType())
-				.addScalar("operation", new ShortType()).setLong("adminId",
-						adminid).list();
+				.addScalar("operation", new ShortType())
+				.setLong("adminId", adminid).list();
 
 		return buildACLEntries(acls);
 
@@ -1541,8 +1569,8 @@ public class SchemaDeployer {
 		String query = "select -1 as gid, acl.operation as operation from acl_old acl, groups_old groups where acl.aid = 0 and acl.allow = 1 and adminid = :adminId";
 
 		List acls = s.createSQLQuery(query).addScalar("gid", new LongType())
-				.addScalar("operation", new ShortType()).setLong("adminId",
-						adminid).list();
+				.addScalar("operation", new ShortType())
+				.setLong("adminId", adminid).list();
 
 		return buildACLEntries(acls);
 	}
@@ -1554,8 +1582,8 @@ public class SchemaDeployer {
 		String query = "select roles.rid as rid, acl.operation as operation from acl_old acl, roles_old roles where acl.aid = roles.aclid and acl.allow = 1 and adminid = :adminId";
 
 		List acls = s.createSQLQuery(query).addScalar("rid", new LongType())
-				.addScalar("operation", new ShortType()).setLong("adminId",
-						adminid).list();
+				.addScalar("operation", new ShortType())
+				.setLong("adminId", adminid).list();
 
 		return buildACLEntries(acls);
 	}

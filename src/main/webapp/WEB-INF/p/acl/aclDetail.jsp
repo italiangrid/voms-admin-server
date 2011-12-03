@@ -85,7 +85,7 @@
   <s:else>
     <table class="table" cellpadding="0" cellspacing="0">
       <tr>
-        <th>Admin DN &amp; CA</th>
+        <th>Administrator</th>
         <th>Container</th>
         <th>Membership</th>
         <th>ACL</th>
@@ -111,6 +111,11 @@
             <div class="userCA">
               <voms:formatDN dn="${permission.key.ca.subjectString}" fields="CN"/>
             </div>
+            <s:if test="%{#permission.key.emailAddress != null}">
+            	<div class="aclEmail">
+            		${permission.key.emailAddress}
+            	</div>
+            </s:if>
             </td>
             <voms:printPermission var="permission" />
             <td class="actions">

@@ -26,14 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
+import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.util.ExceptionUtils;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,51 +54,20 @@ public class SiblingsContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent ev) {
 
 		try {
-			
-			initializeVomsProperties(ev);
+		
 			findConfiguredVOs(ev);
 			loadVersionProperties(ev);
 			configureLogging(ev);
 			log.info("Siblings context initialized.");
 		
-		
-		} catch (NamingException e) {
-			throw new RuntimeException("Error initalizing VOMS properties!", e); 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			throw new RuntimeException("Error configuring loggin system!", e);
 		}
 		
 
 	}
-	
-	
-	public void initializeVomsProperties(ServletContextEvent ev) throws NamingException{
-		// Obtain our environment naming context
-		Context initCtx = new InitialContext();
-		Context envCtx = (Context) initCtx.lookup("java:comp/env");
 
-		try{
-		    
-		    String vomsAdminLocationVar = (String ) envCtx.lookup("VOMS_ADMIN_LOCATION_VAR");
-		    ev.getServletContext().setAttribute("VOMS_ADMIN_LOCATION_VAR", vomsAdminLocationVar);
-		
-		}catch(NamingException ne){
-		    
-		    log.warn("VOMS_ADMIN_LOCATION_VAR not defined in naming context...");
-		    
-		}
-			    
-		String gliteLocationVar = (String) envCtx.lookup("GLITE_LOCATION_VAR");
-		
-		if (gliteLocationVar == null)
-			throw new NamingException("GLITE_LOCATION_VAR property not found in JNDI context!");
-		
-		ev.getServletContext().setAttribute("GLITE_LOCATION_VAR", gliteLocationVar);
-		
-	}
-	
-	
 	
 	protected void configureLogging(ServletContextEvent ev) throws IOException{
 		
@@ -142,19 +110,21 @@ public class SiblingsContextListener implements ServletContextListener {
 	
 	public void findConfiguredVOs(ServletContextEvent ev) {
 
-		String configDirPath = (String) ev.getServletContext().getAttribute("VOMS_ADMIN_LOCATION_VAR");
-		if (configDirPath == null)
-		    configDirPath = (String) ev.getServletContext().getAttribute("GLITE_LOCATION_VAR");
-
-		if (configDirPath == null)
-			throw new RuntimeException(
-					"No value found for VOMS_ADMIN_LOCATION_VAR or GLITE_LOCATION_VAR!");
+		
+		Properties sysconfigProps = SysconfigUtil.loadSysconfig();
+		
+		String configDirPath = sysconfigProps.getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
+		
+		if (configDirPath == null){
+			
+			throw new VOMSFatalException(SysconfigUtil.SYSCONFIG_CONF_DIR +" undefined in VOMS sysconfig!");
+			
+		}
 
 		
 		List voList = new ArrayList();
 
-		File configDir = new File(configDirPath + File.separator + "etc"
-				+ File.separator + "voms-admin");
+		File configDir = new File(configDirPath);
 
 		if (!configDir.exists())
 			throw new RuntimeException(

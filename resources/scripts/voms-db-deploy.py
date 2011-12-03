@@ -18,11 +18,11 @@
 # Authors:
 # 	Andrea Ceccanti (INFN)
 #
-import os.path,getopt,sys,exceptions,pwd,grp,string,commands
+import os.path,getopt,sys,exceptions,pwd,grp,string,commands,re
 
 from os import environ
 
-from voms import *
+from voms import VomsConstants,VomsInvocationError, X509Helper
 
 option_list=["vo=","dn=","ca=","cert=", "email=", "ignore-cert-email"]
 supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "check-connectivity"]
@@ -30,6 +30,9 @@ supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "
 options={}
 
 command=None
+
+def build_env_vars():
+    return ""
 
 def build_classpath():
     
@@ -41,14 +44,7 @@ def build_classpath():
     jars.append(VomsConstants.voms_admin_jar)
     jars.append(VomsConstants.voms_admin_classes)
     
-    return string.join(jars,":")
-
-
-def build_env_vars():
-    
-    defined_vars = filter(lambda x: os.environ.has_key(x), VomsConstants.env_variables)
-    return string.join(map(lambda x: "-D%s=%s" % (x, os.environ[x]), defined_vars)," ") 
-    
+    return string.join(jars,":") 
 
 def do_deploy():
     cmd = "java %s -cp %s %s --command deploy --vo %s" % (build_env_vars(),
@@ -161,7 +157,6 @@ def execute():
     
     
 def main():
-    check_env_var()
     try:
         parse_arguments()
         execute()

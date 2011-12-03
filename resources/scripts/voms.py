@@ -18,27 +18,61 @@
 # 	Andrea Ceccanti (INFN)
 #
 
-import exceptions,re,os,os.path,commands,glob,socket,string,shutil,time,popen2
+import exceptions,re,os.path,commands,glob,socket,string,shutil,time,subprocess
 
 voms_admin_server_version = "${server-version}"
 
-def exit_status(status):
-    if os.WIFEXITED(status):
-        return os.WEXITSTATUS(status)
-    else:
-        raise RuntimeError, "Error getting exit status from children process!"
+class PropertyHelper(dict):
+    empty_or_comment_lines = re.compile("^\\s*$|^#.*$")
+    property_matcher = re.compile("^\\s*([^=\\s]+)=?\\s*(\\S.*)$")
 
-def setup_permissions(file,perms,tomcat_group):
+    
+    def __init__(self,filename):
+        self._filename = filename
+        self._load_properties()
+    
+    def _load_properties(self):
+        f = open(self._filename,"r")
+        for l in f:
+            if re.match(PropertyHelper.empty_or_comment_lines, l) is None:
+                m = re.search(PropertyHelper.property_matcher,l) 
+                if m:
+                    PropertyHelper.__setitem__(self,m.groups()[0],m.groups()[1])
+        f.close()
+    
+    def save_properties(self):
+        def helper(l):
+            m = re.search(PropertyHelper.property_matcher,l) 
+            if m:
+                return re.sub("=.*$","=%s" % self[m.groups()[0]],l)
+            else:
+                return l
+        
+        f = open(self._filename,"rw+")
+        lines = map(helper,f.readlines())
+        f.seek(0)
+        f.writelines(lines)
+        f.truncate()
+        f.close()
+
+def load_sysconfig():     
+    return PropertyHelper("/etc/sysconfig/voms-admin")
+
+voms_admin_sysconfig_props = load_sysconfig()
+
+def exit_status(status):
+    ## FIXME: No op
+    return status
+
+def setup_permissions(f,perms,tomcat_group):
     
     if os.getgid() == 0:
-        os.chown(file, 0, tomcat_group)
+        os.chown(f, 0, tomcat_group)
     
-    os.chmod(file,perms)
+    os.chmod(f,perms)
 
 def configured_vos():
-    ## Get directories in GLITE_LOCATION_VAR/etc/voms-admin
     conf_dir =  VomsConstants.voms_admin_conf_dir
-    
     return [os.path.basename(v) for v in glob.glob(os.path.join(conf_dir,"*")) if os.path.isdir(v)]
 
 def is_oracle_vo(vo):
@@ -86,9 +120,9 @@ def vo_context_file(vo):
 def vomses_file(vo):
     return os.path.join(vo_config_dir(vo),"vomses")
 
-def set_default(dict,key,value):
-    if not dict.has_key(key):
-        dict[key]=value
+def set_default(d,key,value):
+    if not d.has_key(key):
+        d[key]=value
 """
 This methods returns a tuple containing host, port, database name 
 extracted from the mysql connection string"""
@@ -109,9 +143,9 @@ def mysql_database_connection_properties(vo):
     
     
     
-def backup_dir_contents(dir):
+def backup_dir_contents(d):
     
-    backup_filez = glob.glob(os.path.join(dir,"*_backup_*"))
+    backup_filez = glob.glob(os.path.join(d,"*_backup_*"))
     
     ## Remove backup filez
     for f in backup_filez:
@@ -119,7 +153,7 @@ def backup_dir_contents(dir):
         if not os.path.isdir(f):
             os.remove(f)
     
-    filez = glob.glob(os.path.join(dir,"*"))
+    filez = glob.glob(os.path.join(d,"*"))
     backup_date = time.strftime("%d-%m-%Y_%H-%M-%S",time.gmtime())
     
     for f in filez:
@@ -204,14 +238,9 @@ class UpgradeVO(ConfigureAction):
         ConfigureAction.__init__(self, "upgrade_vo", ["vo"],user_options)
     
     def upgrade_vo(self):
-#        set_default(self.user_options,"code",self.user_options['port'])
-#                         
-#        set_default(self.user_options,"uri","%s:%s" % (socket.gethostname(),self.user_options['port']))
-#        
-#        set_default(self.user_options,"timeout", "86400")
         
-        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (VomsConstants.voms_admin_conf_loc,
-                                                                                                  self.user_options['vo']))
+        set_default(self.user_options,"vo-aup-url", "file://%s/vo-aup.txt" % (vo_config_dir(self.user_options['vo'])))
+                                                                                                  
         print "Upgrading vo ",self.user_options['vo']
         
         self.upgrade_configuration()
@@ -338,20 +367,12 @@ class UpgradeVO(ConfigureAction):
         service_props_file.close()
         
     def write_context_file(self):
-        set_default(os.environ, 'VOMS_LOCATION',VomsConstants.voms_loc)
-        
         war_file = VomsConstants.voms_admin_war
         
         if self.user_options.has_key('use-skinny-war'):
             war_file = VomsConstants.voms_admin_war_nodeps
         
-        m = {'VO_NAME': self.user_options['vo'],
-             'WAR_FILE': war_file,
-             'CONFIG_DIR': os.path.join(VomsConstants.voms_admin_conf_dir,self.user_options['vo']),
-             'GLITE_LOCATION': VomsConstants.voms_loc,
-             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc
-             }
+        m = {'VO_NAME': self.user_options['vo'], 'WAR_FILE': war_file} 
              
         t = Template(open(VomsConstants.context_template,"r").read())
         
@@ -360,11 +381,7 @@ class UpgradeVO(ConfigureAction):
         context_file.close()
     
     def write_siblings_context(self):
-        m = {'WAR_FILE': VomsConstants.voms_siblings_war,
-             'GLITE_LOCATION': VomsConstants.voms_loc,
-             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc
-             }
+        m = {'WAR_FILE': VomsConstants.voms_siblings_war }
         
         t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
         ConfigureAction.write_and_close(self, 
@@ -479,16 +496,16 @@ class RemoveMySQLVO(RemoveVOAction):
                                               self.user_options['dbport'])
                 
                 
-            mysql_proc = popen2.Popen4(mysql_cmd)
-            
+            mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+                        
             ## Drop database 
-            print >>mysql_proc.tochild, "drop database %s;" % self.user_options['dbname']
-            mysql_proc.tochild.close()
+            print >>mysql_proc.stdin, "drop database %s;" % self.user_options['dbname']
+            mysql_proc.stdin.close()
             
             status = exit_status(mysql_proc.wait())
             
             if status != 0:
-                err_msg = mysql_proc.fromchild.read()
+                err_msg = mysql_proc.stderr.read()
                 raise VomsConfigureError, "Error dropping mysql database! "+err_msg
         else:
             RemoveVOAction.undeploy_db(self)
@@ -521,8 +538,7 @@ class InstallVOAction(ConfigureAction):
         
         set_default(self.user_options,"timeout", "86400")
         
-        set_default(self.user_options,"vo-aup-url", "file://%s/etc/voms-admin/%s/vo-aup.txt" % (VomsConstants.voms_admin_conf_loc,
-                                                                                                  self.user_options['vo']))
+        set_default(self.user_options,"vo-aup-url", "file://%s/vo-aup.txt" % (vo_config_dir(self.user_options['vo'])))
                 
         if self.user_options['vo'] == 'siblings':
             raise VomsConfigureError, "Cannot create a vo named siblings, that name is reserved!"
@@ -642,13 +658,7 @@ class InstallVOAction(ConfigureAction):
     
     
     def write_siblings_context(self):
-        m = {'WAR_FILE': VomsConstants.voms_siblings_war,
-             'GLITE_LOCATION': VomsConstants.voms_loc,
-             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc,
-             'VOMS_ADMIN_LOCATION': VomsConstants.voms_admin_loc,
-             'VOMS_ADMIN_LOCATION_VAR': VomsConstants.voms_admin_conf_loc
-             }
+        m = {'WAR_FILE': VomsConstants.voms_siblings_war }
         
         t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
         ConfigureAction.write_and_close(self, 
@@ -667,14 +677,7 @@ class InstallVOAction(ConfigureAction):
             war_file = VomsConstants.voms_admin_war_nodeps
 
         m = {'VO_NAME': self.user_options['vo'],
-             'WAR_FILE': war_file,
-             'CONFIG_DIR': os.path.join(VomsConstants.voms_admin_conf_dir,self.user_options['vo']),
-             'GLITE_LOCATION': VomsConstants.voms_loc,
-             'GLITE_LOCATION_VAR': VomsConstants.voms_admin_conf_loc,
-             'VOMS_LOCATION': VomsConstants.voms_loc,
-             'VOMS_ADMIN_LOCATION': VomsConstants.voms_admin_loc,
-             'VOMS_ADMIN_LOCATION_VAR': VomsConstants.voms_admin_conf_loc
-             }
+             'WAR_FILE': war_file }
              
         t = Template(open(VomsConstants.context_template,"r").read())
         ConfigureAction.write_and_close(self,
@@ -688,7 +691,8 @@ class InstallVOAction(ConfigureAction):
     
     def write_voms_properties(self):
         
-        voms_log_dir = VomsConstants.voms_loc_log
+        voms_log_dir = voms_log_dir()
+        
         if self.user_options.has_key('logdir'):
             voms_log_dir = self.user_options['logdir']
             
@@ -848,11 +852,11 @@ class InstallMySqlVO(InstallVOAction):
                 raise VomsConfigureError, "MYSQL usernames can be up to 16 characters long! Choose a shorter username"
             
             
-            mysql_proc = popen2.Popen4(mysql_cmd)
+            mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
             
             ## Check if database already exists
-            print >>mysql_proc.tochild, "use %s;" % self.user_options['dbname']
-            mysql_proc.tochild.close()
+            print >>mysql_proc.stdin, "use %s;" % self.user_options['dbname']
+            mysql_proc.stdin.close()
             
             status = exit_status(mysql_proc.wait())
             
@@ -861,40 +865,39 @@ class InstallMySqlVO(InstallVOAction):
             else:          
                 
                 ## We received an error from the mysql command line client
-                err_msg = mysql_proc.fromchild.read()
+                err_msg = mysql_proc.stderr.read()
                 match = re.match("ERROR 1049", string.strip(err_msg))
                 if match:
                     
                     ## The database for this vo is not there, let's create it
-                                       
-                    mysql_proc = popen2.Popen4(mysql_cmd)
-                    print >>mysql_proc.tochild, "create database %s;" % self.user_options['dbname']
-                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                    mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE)
+                    print >>mysql_proc.stdin, "create database %s;" % self.user_options['dbname']
+                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
                                                                                                                        self.user_options['dbusername'],
                                                                                                                        socket.gethostname(),
                                                                                                                        self.user_options['dbpassword'])
                     
-                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
                                                                                                                        self.user_options['dbusername'],
                                                                                                                        socket.getfqdn(),
                                                                                                                        self.user_options['dbpassword'])
             
-                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
                                                                                                                        self.user_options['dbusername'],
                                                                                                                         'localhost',
                                                                                                                         self.user_options['dbpassword'])
             
-                    print >>mysql_proc.tochild, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
+                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
                                                                                                                        self.user_options['dbusername'],
                                                                                                                      'localhost.%',
                                                                                                                      self.user_options['dbpassword'])
-                    print >>mysql_proc.tochild, "flush privileges;"
+                    print >>mysql_proc.stdin, "flush privileges;"
                     
-                    mysql_proc.tochild.close()
+                    mysql_proc.stdin.close()
                     status = exit_status(mysql_proc.wait())
                     
                     if status != 0:
-                        raise VomsConfigureError, "Error creating mysql database! " + mysql_proc.fromchild.read()
+                        raise VomsConfigureError, "Error creating mysql database! " + mysql_proc.stdout.read()
                 
                 else:
                     
@@ -997,83 +1000,76 @@ class X509Helper:
     def __repr__(self):
         return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
         
-
-
-def check_env_var():
-    if os.environ.get("VOMS_LOCATION") is None and os.environ.get("GLITE_LOCATION") is None:
-        raise VomsConfigureError,"VOMS_LOCATION *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
-    
-    if os.environ.get("VOMS_LOCATION_CONF") is None and os.environ.get("GLITE_LOCATION") is None:
-        raise VomsConfigureError,"VOMS_LOCATION_CONF *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
-    
-    if os.environ.get("VOMS_LOCATION_VAR") is None and os.environ.get("GLITE_LOCATION_VAR") is None:
-        raise VomsConfigureError,"VOMS_LOCATION_VAR *and* GLITE_LOCATION_VAR are both undefined. Please specify one of the two, depending on your installation."
-    
-    if os.environ.get("VOMS_ADMIN_LOCATION") is None and os.environ.get("GLITE_LOCATION") is None:
-        raise VomsConfigureError,"VOMS_ADMIN_LOCATION *and* GLITE_LOCATION are both undefined. Please specify one of the two, depending on your installation."
-    
-    if os.environ.get("VOMS_ADMIN_LOCATION_VAR") is None and os.environ.get("GLITE_LOCATION_VAR") is None:
-        raise VomsConfigureError,"VOMS_ADMIN_LOCATION_VAR *and* GLITE_LOCATION_VAR are both undefined. Please specify one of the two, depending on your installation."
           
 def template_prefix():
-    check_env_var()
-    if os.environ.get("VOMS_ADMIN_LOCATION") is None:
-        return os.path.join(os.environ.get("GLITE_LOCATION"),"etc","voms-admin","templates")
-    else:
-        return os.path.join(os.environ.get("VOMS_ADMIN_LOCATION"),"templates")
+    return os.path.join(voms_admin_prefix(),"share","voms-admin","templates")
 
-def voms_logfile_prefix():
-    check_env_var()
-    if os.environ.get("VOMS_LOCATION_VAR") is None:
-        ## GLITE packaging
-        return os.environ.get("GLITE_LOCATION_LOG")
-    else:
-        return os.path.join(os.environ.get("VOMS_LOCATION_VAR"),"log","voms")
+def voms_log_dir():
+    return os.path.join(voms_prefix(),"var","log","voms")
+    
+def voms_admin_prefix():
+    if voms_admin_sysconfig_props.has_key('PREFIX'):
+        return voms_admin_sysconfig_props['PREFIX']
+    
+    return "/usr" 
+
+def voms_admin_conf_dir():
+    if voms_admin_sysconfig_props.has_key('CONF_DIR'):
+        return voms_admin_sysconfig_props['CONF_DIR']
+    
+    return "/etc/voms-admin"
+
+def voms_prefix():
+    return "/usr"
+
+def voms_conf_dir():
+    return "/etc/voms"
+
+def voms_lib_dir():
+    prefix=voms_prefix()
+    
+    ## FIXME: should take into account the platform to 
+    ## understand whether it should be lib or lib64
+    return os.path.join(prefix,"lib")
+
+def catalina_home():
+    if voms_admin_sysconfig_props.has_key('CATALINA_HOME'):
+        return voms_admin_sysconfig_props['CATALINA_HOME']
+    
+    if os.environ.has_key('CATALINA_HOME'):
+        return os.environ['CATALINA_HOME']
+    
+    return None
     
 class VomsConstants:
     
     version = voms_admin_server_version
-        
-    glite_loc = os.environ.get("GLITE_LOCATION","/opt/glite")
-    glite_loc_var = os.environ.get("GLITE_LOCATION_VAR","/var/glite")
-    glite_loc_log = os.environ.get("GLITE_LOCATION_LOG", "/var/log/glite")
+      
+    db_props_template = os.path.join(template_prefix(),"voms.database.properties.template")
+    service_props_template = os.path.join(template_prefix(),"voms.service.properties.template")
     
-    voms_loc = os.environ.get("VOMS_LOCATION", glite_loc)
-    voms_loc_var = os.environ.get("VOMS_LOCATION_VAR", glite_loc_var)
-    voms_loc_log = voms_logfile_prefix()
+    context_template = os.path.join(template_prefix(),"context.xml.template")
+    voms_template = os.path.join(template_prefix(),"voms.conf.template")
     
-    voms_conf_loc = os.environ.get("VOMS_LOCATION_CONF", glite_loc)
+    voms_admin_conf_dir = voms_admin_conf_dir()
+    voms_conf_dir = voms_conf_dir() 
     
-    voms_admin_loc = os.environ.get("VOMS_ADMIN_LOCATION", glite_loc)
-    voms_admin_conf_loc = os.environ.get("VOMS_ADMIN_LOCATION_VAR", glite_loc_var)
-    
-    voms_admin_template_prefix = template_prefix()
-    
-    db_props_template = os.path.join(voms_admin_template_prefix,"voms.database.properties.template")
-    service_props_template = os.path.join(voms_admin_template_prefix,"voms.service.properties.template")
-    
-    context_template = os.path.join(voms_admin_template_prefix,"context.xml.template")
-    voms_template = os.path.join(voms_admin_template_prefix,"voms.conf.template")
-    
-    voms_admin_conf_dir = os.path.join(voms_admin_conf_loc,"etc","voms-admin")
-    voms_conf_dir = os.path.join(voms_conf_loc,"etc","voms")
-    
-    voms_siblings_context_template = os.path.join(voms_admin_template_prefix,"siblings-context.xml.template")
+    voms_siblings_context_template = os.path.join(template_prefix(),"siblings-context.xml.template")
     voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
     
-    vo_aup_template = os.path.join(voms_admin_template_prefix,"aup", "vo-aup.txt")
-    logging_conf_template = os.path.join(voms_admin_template_prefix, "logback.runtime.xml")
+    vo_aup_template = os.path.join(template_prefix(),"aup", "vo-aup.txt")
+    logging_conf_template = os.path.join(template_prefix(), "logback.runtime.xml")
     
-    voms_admin_war = os.path.join(voms_loc, "share","webapps","glite-security-voms-admin.war")
-    voms_admin_war_nodeps = os.path.join(voms_loc, "share","webapps","glite-security-voms-admin-nodeps.war")
+    voms_admin_war = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-admin.war")
+    voms_admin_war_nodeps = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-admin-nodeps.war")
     
-    voms_siblings_war = os.path.join(voms_loc, "share","webapps","glite-security-voms-siblings.war")
+    voms_siblings_war = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-siblings.war")
     
-    voms_admin_libs = glob.glob(os.path.join(voms_loc,"share","voms-admin","tools","lib")+"/*.jar")
-    voms_admin_classes = os.path.join(voms_loc,"share","voms-admin","tools", "classes")
-    voms_admin_jar = os.path.join(voms_loc, "share","java","glite-security-voms-admin.jar")
+    voms_admin_libs = glob.glob(os.path.join(voms_admin_prefix(),"share","voms-admin","tools","lib")+"/*.jar")
+    voms_admin_classes = os.path.join(voms_admin_prefix(),"share","voms-admin","tools", "classes")
+    voms_admin_jar = os.path.join(voms_admin_prefix(), "share","java","glite-security-voms-admin.jar")
        
-    voms_db_deploy = os.path.join(voms_loc,"sbin","voms-db-deploy.py")
+    voms_db_deploy = os.path.join(voms_admin_prefix(),"sbin","voms-db-deploy.py")
     
     schema_deployer_class = "org.glite.security.voms.admin.persistence.deployer.SchemaDeployer"
     
@@ -1140,54 +1136,10 @@ class VomsConstants:
 
     commands= ["install", 
                "remove", 
-               "update",
                "upgrade"]
     
-    env_variables= ("VOMS_LOCATION",
-                    "VOMS_LOCATION_VAR",
-                    "VOMS_ADMIN_LOCATION",
-                    "VOMS_ADMIN_LOCATION_VAR",
-                    "GLITE_LOCATION",
-                    "GLITE_LOCATION_VAR",
-                    "GLITE_LOCATION_LOG")
-
     
 
-
-
-
-class PropertyHelper(dict):
-    empty_or_comment_lines = re.compile("^\\s*$|^#.*$")
-    property_matcher = re.compile("^\\s*([^=\\s]+)=?\\s*(\\S.*)$")
-
-    
-    def __init__(self,filename):
-        self._filename = filename
-        self._load_properties()
-    
-    def _load_properties(self):
-        f = open(self._filename,"r")
-        for l in f:
-            if re.match(PropertyHelper.empty_or_comment_lines, l) is None:
-                m = re.search(PropertyHelper.property_matcher,l) 
-                if m:
-                    PropertyHelper.__setitem__(self,m.groups()[0],m.groups()[1])
-        f.close()
-    
-    def save_properties(self):
-        def helper(l):
-            m = re.search(PropertyHelper.property_matcher,l) 
-            if m:
-                return re.sub("=.*$","=%s" % self[m.groups()[0]],l)
-            else:
-                return l
-        
-        f = open(self._filename,"rw+")
-        lines = map(helper,f.readlines())
-        f.seek(0)
-        f.writelines(lines)
-        f.truncate()
-        f.close()
         
 
 

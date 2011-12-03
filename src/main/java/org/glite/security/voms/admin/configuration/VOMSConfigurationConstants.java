@@ -22,26 +22,25 @@ package org.glite.security.voms.admin.configuration;
 
 public interface VOMSConfigurationConstants {
 
-    	/**
-    	 * Internal property used to hold vo name
-    	 */
-    	public static final String VO_NAME = "voms.vo.name";
-    	
+	/**
+	 * Internal property used to hold vo name
+	 */
+	public static final String VO_NAME = "voms.vo.name";
+	
 	public static final String LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN = "voms.localhost.defaults.to.local.admin";
-	
+
 	public static final String READONLY = "voms.readonly";
-	
+
 	public static final String CAFILES = "voms.cafiles";
 	public static final String CAFILES_PERIOD = "voms.cafiles.period";
-	
-	
+
 	public static final String CREATE_EXPIRED_CAS = "voms.ca.create-when-expired";
 	public static final String DROP_EXPIRED_CAS = "voms.ca.drop-when-expired";
 	public static final String AUDITING = "voms.auditing";
 	public static final String AUDITING_INSERTS = "voms.auditing.inserts";
 	public static final String AUDITING_UPDATES = "voms.auditing.updates";
 	public static final String AUDITING_DELETIONS = "voms.auditing.deletions";
-	
+
 	public static final String SERVICE_EMAIL_ADDRESS = "voms.notification.email-address";
 	public static final String SERVICE_SMTP_SERVER = "voms.notification.smtp-server";
 	public static final String SERVICE_SMTP_SERVER_PORT = "voms.notification.smtp-server.port";
@@ -51,11 +50,11 @@ public interface VOMSConfigurationConstants {
 	public static final String NOTIFICATION_NOTIFY_BEHAVIOUR = "voms.notification.notify";
 	public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
 	public static final String NOTIFICATION_DISABLED = "voms.notification.disable";
-	
+
 	public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD = "voms.request.vo_membership.expired_request_purger.period";
 	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
 	public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY = "voms.request.vo_membership.warn_when_expired";
-	
+
 	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
 	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
 	public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
@@ -65,10 +64,10 @@ public interface VOMSConfigurationConstants {
 	/**
 	 * VERSION Properties
 	 */
-	
+
 	public static final String VOMS_ADMIN_SERVER_VERSION = "voms-admin.server.version";
 	public static final String VOMS_ADMIN_INTERFACE_VERSION = "voms-admin.interface.version";
-	
+
 	/**
 	 * AUP Properties
 	 */
@@ -76,14 +75,14 @@ public interface VOMSConfigurationConstants {
 	public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
 	public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
 	public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS = "voms.aup.require_signature_for_created_users";
-	
+
 	/**
 	 * Membership Properties
 	 */
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
 	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
-	
+
 	/**
 	 * Attribute Authority Properties
 	 */
@@ -94,31 +93,31 @@ public interface VOMSConfigurationConstants {
 	public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
 	public static final String VOMS_AA_REST_ACTIVATE_ENDPOINT = "voms.aa.activate_rest_endpoint";
 	public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
-	
+
 	/**
 	 * External validation plugin Properties
 	 */
 
 	public static final String VOMS_EXTERNAL_VALIDATOR_LIST = "voms.external-validators";
 	public static final String VOMS_EXTERNAL_VALIDATOR_PREFIX = "voms.ext";
-	public static final String VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX = "configClass"; 
-	
+	public static final String VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX = "configClass";
+
 	/**
 	 * Internal registration properties
 	 */
-	
+
 	public static final String VOMS_INTERNAL_REGISTRATION_TYPE = "___voms.regitration.type";
 	public static final String VOMS_INTERNAL_RO_PERSONAL_INFORMATION = "___voms.read-only-personal-information";
 	public static final String VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE = "___voms.read-only-membership-expiration";
-	
+
 	/**
 	 * Executor service properties
 	 */
 	public static final String THREAD_POOL_SIZE_PROPERTY = "voms.background_tasks.thread_pool_size";
-	
+
 	/**
 	 * Axis Web services CSRF guard
 	 */
-	public static final String VOMS_CSRF_GUARD_LOG_ONLY = "voms.csrf.log_only"; 
-	
+	public static final String VOMS_CSRF_GUARD_LOG_ONLY = "voms.csrf.log_only";
+
 }

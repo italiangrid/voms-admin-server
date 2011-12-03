@@ -74,10 +74,11 @@ function test_vo {
 
 vos=            # Space-separated list of VOs
 function get_vos {
-    if [ -d "${GLITE_LOCATION_VAR}/etc/voms-admin" ]; then
-        for d in "${GLITE_LOCATION_VAR}"/etc/voms-admin/*; do
+	source /etc/sysconfig/voms-admin
+    if [ -d "${CONF_DIR}" ]; then
+        for d in "${CONF_DIR}"/*; do
        if [ -r "$d/voms.database.properties" ]; then
-      vos="$vos `basename $d`"
+       		vos="$vos `basename $d`"
        fi
    done
    all_vos=yes

@@ -68,9 +68,10 @@ def setup_aa_defaults():
 def setup_defaults():
     global options
     
-    set_default(os.environ, 'VOMS_LOCATION',VomsConstants.voms_loc)
     set_default(options,"hostname",socket.gethostname())
-    set_default(options,"libdir",os.path.join(VomsConstants.voms_loc,"lib"))
+    
+    set_default(options,"libdir",os.path.join(voms_prefix(),"lib"))
+    
     set_default(options, "mysql-command", "mysql")
     set_default(options, "openssl","openssl")
     set_default(options, "dbauser", "root")    
@@ -142,12 +143,6 @@ def setup_identity():
  
     
 def check_installed_setup():
-    
-    vlog("VOMS_LOCATION: %s" % VomsConstants.voms_loc)
-    vlog("VOMS_LOCATION_VAR: %s" % VomsConstants.voms_loc_var)
-    vlog("VOMS_LOCATION_CONF: %s" % VomsConstants.voms_conf_loc)
-    vlog("VOMS_ADMIN_LOCATION: %s" % VomsConstants.voms_admin_loc)
-    vlog("VOMS_ADMIN_LOCATION_VAR: %s" % VomsConstants.voms_admin_conf_loc)
     
     vlog("Checking local installation...")
     checked_paths = [ 
@@ -266,10 +261,10 @@ def usage():
 
      --libdir PATH         The directory that contains the database access
                            libraries of the VOMS core service.
-                           (Default is $GLITE_LOCATION/lib.)
+                           
     
      --logdir PATH         The directory that will contain the VOMS core service
-                           log files. (Default is $GLITE_LOCATION_LOG)
+                           log files. 
 
      --sqlloc FILE         Full path to the database access library for the VOMS
                            core service.  (In case --libdir is not enough.)
@@ -300,8 +295,7 @@ def usage():
                            (Useful if you want to use an alias instead.)
 
      --openssl COMMAND     The path to the openssl executable used to interpret
-                           certificates. (Default is "$GLOBUS_LOCATION/bin/openssl"
-                           or "/usr/bin/openssl".)
+                           certificates.
 
      --cert FILENAME       Override $X509_USER_CERT.
      --key FILENAME        Override $X509_USER_KEY.
@@ -324,9 +318,9 @@ def usage():
      --vo-aup-url          Sets the URL for the initial version of the VO acceptable usage 
                            policy. Usually the URL points to a local or remote, http accessible
                            text file. If this option is not set a template vo-aup file will
-                           be created in vo runtime configuration directory 
-                           ($GLITE_LOCATION_VAR/etc/voms-admin/<vo-name>/vo-aup.txt).
+                           be created in vo runtime configuration directory.
 VOMS SAML options:
+
      --aa-cert
                           The certificate that will be used by the VOMS SAML attribute 
                           authority
@@ -507,25 +501,18 @@ def do_command():
     elif command == "remove":
         do_remove()
         
-    elif command == "update":
-        do_update()
-        
     elif command == "upgrade":        
         do_upgrade()
 
 
 def main():
-
+    
     try:
         print "voms-admin-configure, version %s\n" % voms_admin_server_version
         parse_options()
-        vlog("Checking glite installation...")
-        check_env_var()
+        vlog("Checking installation...")
         check_installed_setup()
-        vlog("Glite installation ok.")
-        
-        
-        
+        vlog("Installation ok.")
         
         setup_defaults()
         setup_identity()
