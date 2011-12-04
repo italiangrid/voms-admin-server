@@ -33,7 +33,7 @@ Personal information:
 	Name: $request.requesterInfo.name
 #end
 #if ( $request.requesterInfo.surname )
-	Surname: $request.requesterInfo.surname
+	Family name: $request.requesterInfo.surname
 #end
 #if ( $request.requesterInfo.institution )
 	Institution: $request.requesterInfo.institution
