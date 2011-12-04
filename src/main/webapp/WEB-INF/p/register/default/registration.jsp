@@ -60,22 +60,22 @@ used to contact you in relation to this activity.
   </div>
   <ul class="form">
     <li>
-      <s:textfield name="name" label="%{'Your name'}" size="40" cssClass="registrationField"/>
+      <s:textfield name="name" label="%{'Given name'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="surname" label="%{'Your surname'}" size="40" cssClass="registrationField"/>
+      <s:textfield name="surname" label="%{'Family name'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField"/>
+      <s:textfield name="institution" label="%{'Institution'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField"/>
+      <s:textfield name="phoneNumber" label="%{'Phone number'}" size="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField"/>
+      <s:textarea name="address" label="%{'Address'}" rows="5" cols="40" cssClass="registrationField"/>
     </li>
     <li>
-      <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}" cssClass="registrationField"/>
+      <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Email address'}" cssClass="registrationField"/>
     </li>
     <li>
      <h2 style="color: black">The VO AUP:</h2>

@@ -30,7 +30,7 @@
   <s:hidden name="userId" value="%{model.id}"/>
   <h2>Enter a DN, CA couple:</h2>
   <div style="padding: 1em 2em 1em 2em; background-color: #F5F5F5">
-    <s:textfield name="subject" size="45" label="Subject" labelposition="top"/>
+    <s:textfield name="subject" size="45" label="Certificate subject (DN)" labelposition="top"/>
     <s:select name="caSubject" list="#request.trustedCas" listKey="subjectString" listValue="subjectString" label="CA"/>
   </div>
   <h2>Or choose a PEM encoded X509 certificate from your file system:</h2>
