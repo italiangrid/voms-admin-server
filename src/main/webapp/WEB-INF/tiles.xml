@@ -95,6 +95,10 @@
       <put-attribute name="content" value="/WEB-INF/p/user/addCertificate.jsp"/>
     </definition>
     
+    <definition name="editCertificate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/editCertificate.jsp"/>
+    </definition>
+    
     <definition name="requestCertificate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/requestCertificate.jsp"/>
     </definition>

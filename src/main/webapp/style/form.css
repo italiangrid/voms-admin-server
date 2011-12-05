@@ -105,6 +105,7 @@ span.label{
 }
 .cert-operation-forms{
 	float: left;
+	margin-left: 5px;
 }
 
 #addACLEntrySubmit{

@@ -70,7 +70,7 @@ public class CreateAction extends UserActionSupport{
 		newUser.setAddress(theAddress);
 		newUser.setPhoneNumber(thePhoneNumber);
 		newUser.setEmailAddress(theEmailAddress);
-		newUser.setDn(subject);
+		newUser.setDn(subject.trim());
 		
 		CreateUserOperation op = CreateUserOperation.instance(newUser, caSubject);
 		model= (VOMSUser) op.execute();
@@ -94,7 +94,7 @@ public class CreateAction extends UserActionSupport{
 		this.theName = theName;
 	}
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a surname for the user.")
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a family name for the user.")
 	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getTheSurname() {
 		return theSurname;

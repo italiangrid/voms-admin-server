@@ -26,10 +26,10 @@
 <s:form validate="true">
 		<s:token/>
 		
-		<s:textfield name="theName" label="Name" size="40"
+		<s:textfield name="theName" label="Given name" size="40"
 			value="%{name}" disabled="false" cssClass="registrationField"/>
 			
-		<s:textfield name="theSurname" disabled="false" label="Surname" size="40"
+		<s:textfield name="theSurname" disabled="false" label="Family name" size="40"
 			value="%{surname}" cssClass="registrationField"/>
 			
 		<s:textfield name="theInstitution" disabled="false" label="Institution"

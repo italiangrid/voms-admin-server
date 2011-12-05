@@ -68,7 +68,22 @@
 						value="suspensionReason" /> </span>
 				</s:if></div>
 
-				<div class="cert-operations"><s:if
+				<div class="cert-operations">
+				
+				<voms:hasPermissions var="canDelete" context="/${voName}"
+						permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE" />
+						
+				<s:if test="#attr.canDelete">
+					<s:form action="edit-certificate" namespace="/user"
+							theme="simple" cssClass="cert-operation-forms">
+							<s:token />
+							<s:hidden name="userId" value="%{model.id}" />
+							<s:hidden name="certificateId" value="%{#cert.id}" />
+							<s:submit value="%{'Edit'}" />
+						</s:form>
+				</s:if>
+				
+				<s:if
 					test="#attr.canSuspend and not suspended">
 
 					<s:form action="suspend-certificate" namespace="/user"
@@ -94,8 +109,7 @@
 				
 				<s:if test="model.certificates.size > 1">
 				
-					<voms:hasPermissions var="canDelete" context="/${voName}"
-						permission="CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE" />
+				
 					<s:if test="#attr.canDelete">
 						<s:form action="delete-certificate" namespace="/user"
 							theme="simple" cssClass="cert-operation-forms">

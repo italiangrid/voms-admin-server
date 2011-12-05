@@ -39,7 +39,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.EDIT, location = "addCertificate"),
+		@Result(name = BaseAction.EDIT, location = "editCertificate"),
 		@Result(name = BaseAction.INPUT, location = "addCertificate") })
 		
 @InterceptorRef(value = "authenticatedStack", params = {
@@ -79,6 +79,11 @@ public class CertificateActions extends UserActionSupport {
 		return INPUT;
 	}
 
+	@Action("edit-certificate")
+	public String editCertificate() throws Exception {
+		return EDIT;
+	}
+	
 	@Action("save-certificate")
 	public String saveCertificate() throws Exception {
 
@@ -92,7 +97,8 @@ public class CertificateActions extends UserActionSupport {
 
 		} else {
 			
-			AddUserCertificateOperation.instance(getModel(), subject, caSubject, null).execute();
+			// Fix for bug https://savannah.cern.ch/bugs/?88019
+			AddUserCertificateOperation.instance(getModel(), subject.trim(), caSubject.trim(), null).execute();
 			
 
 		}
