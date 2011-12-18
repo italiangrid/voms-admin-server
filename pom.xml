@@ -585,9 +585,9 @@
 						<configuration>
 							<descriptors>
 								<descriptor>src/assemble/emi-distribution.xml</descriptor>
+								<descriptor>src/assemble/sources.xml</descriptor>
 							</descriptors>
-							<finalName>voms-admin-server-${version}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>voms-admin</finalName>
 						</configuration>
 						<executions>
 							<execution>
