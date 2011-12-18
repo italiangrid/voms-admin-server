@@ -49,8 +49,24 @@ tar -C $RPM_BUILD_ROOT -xvzf target/%{name}-%{version}.tar.gz
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/voms-admin
 
+# Stage oracle jar
+cp `find %{oracle_location} -name ojdbc14.jar` $RPM_BUILD_ROOT%{_datadir}/voms-admin/tools/lib
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+
+if [ -d "%{_datadir}/voms-admin/tools/lib" ]; then
+	rm -rf %{_datadir}/voms-admin/tools/lib/*.jar
+fi
+exit 0
+
+%preun
+echo "Stopping potentially running voms-admin instances..."
+%{_initrddir}/voms-admin stop
+exit 0
+
 
 %files
 
@@ -78,5 +94,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Fri Dec 16 2011 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.0.7-1
+* Fri Dec 16 2011 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.7.0-1
 - Self-managed packaging
