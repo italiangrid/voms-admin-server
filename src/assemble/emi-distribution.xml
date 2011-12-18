@@ -65,7 +65,7 @@
 
         <fileSet>
             <directory>resources/doc</directory>
-            <outputDirectory>/usr/share/doc/voms-admin-server</outputDirectory>
+            <outputDirectory>/usr/share/doc/voms-admin-server-${version}</outputDirectory>
         </fileSet>
 
         <fileSet>

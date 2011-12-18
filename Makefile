@@ -17,7 +17,7 @@ rpm:
 					$(rpmbuild_dir)/SOURCES $(rpmbuild_dir)/SPECS \
 					$(rpmbuild_dir)/SRPMS
 
-		cp target/$(name)-$(version).tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(version).tar.gz
+		cp target/$(name)-$(version).src.tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(version).tar.gz
 		rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)"
 
 etics: 	clean rpm

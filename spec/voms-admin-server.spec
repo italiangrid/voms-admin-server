@@ -1,3 +1,6 @@
+## Turn off meaningless jar repackaging 
+%define __jar_repack 0
+
 Name: voms-admin-server
 Version: 2.7.0
 Release: 1%{?dist}
@@ -35,7 +38,7 @@ the VOMS VO structure. It provides an intuitive web user interface for daily
 administration tasks.
 
 %prep
-%setup -q
+%setup -q -n voms-admin
 
 %build
 mvn -B package
@@ -44,12 +47,14 @@ mvn -B package
 mkdir -p $RPM_BUILD_ROOT
 tar -C $RPM_BUILD_ROOT -xvzf target/%{name}-%{version}.tar.gz
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/voms-admin
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 
-defattr(-,root,root,-)
+%defattr(-,root,root,-)
 
 %{_initrddir}/voms-admin
 
@@ -67,7 +72,7 @@ defattr(-,root,root,-)
 %{_datadir}/webapps/glite-security-voms-admin.war
 %{_datadir}/webapps/glite-security-voms-siblings.war
 
-%doc AUTHORS NEWS README license.txt
+%doc resources/doc/*
 
 %{_datadir}/voms-admin/*
 
