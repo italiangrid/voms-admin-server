@@ -13,7 +13,7 @@ clean:
 		rm -rf target $(rpmbuild_dir) tgz RPMS 
 
 rpm:	
-		mvn package
+		mvn -B -s src/config/emi-build-settings.xml package
 		mkdir -p 	$(rpmbuild_dir)/BUILD $(rpmbuild_dir)/RPMS \
 					$(rpmbuild_dir)/SOURCES $(rpmbuild_dir)/SPECS \
 					$(rpmbuild_dir)/SRPMS
