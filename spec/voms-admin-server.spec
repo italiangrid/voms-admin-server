@@ -1,13 +1,14 @@
 ## Turn off meaningless jar repackaging 
 %define __jar_repack 0
 
+
 Name: voms-admin-server
 Version: 2.7.0
 Release: 1%{?dist}
 Summary: The VOMS Administration service
 
 Group:		Applications/Internet
-License: ASL 2.0
+License:    ASL 2.0
 URL: https://twiki.cnaf.infn.it/twiki/bin/view/VOMS
 Source:  %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -78,12 +79,7 @@ exit 0
 
 # The question mark is to avoid failures on SL5
 # due to python compilation
-%{_sbindir}/init-voms-admin.py?
-%{_sbindir}/voms-db-deploy.py?
-%{_sbindir}/voms-admin-configure
-%{_sbindir}/voms-admin-configure.py?
-%{_sbindir}/voms.py?
-%{_sbindir}/voms-admin-ping
+%{_sbindir}/*
 
 %{_javadir}/glite-security-voms-admin.jar
 %{_datadir}/webapps/glite-security-voms-admin.war
