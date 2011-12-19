@@ -50,13 +50,12 @@ tar -C $RPM_BUILD_ROOT -xvzf target/%{name}-%{version}.tar.gz
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/voms-admin
 
 # Stage oracle jar
-cp `find %{oracle_location} -name ojdbc14.jar` $RPM_BUILD_ROOT%{_datadir}/voms-admin/tools/lib
+cp `find /usr/lib/oracle/ -name ojdbc14.jar` $RPM_BUILD_ROOT%{_datadir}/voms-admin/tools/lib
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-
 if [ -d "%{_datadir}/voms-admin/tools/lib" ]; then
 	rm -rf %{_datadir}/voms-admin/tools/lib/*.jar
 fi
