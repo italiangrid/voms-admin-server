@@ -76,11 +76,13 @@ exit 0
 %dir %{_sysconfdir}/voms-admin
 %config(noreplace) %{_sysconfdir}/sysconfig/voms-admin
 
-%{_sbindir}/init-voms-admin.py
-%{_sbindir}/voms-db-deploy.py
+# The question mark is to avoid failures on SL5
+# due to python compilation
+%{_sbindir}/init-voms-admin.py?
+%{_sbindir}/voms-db-deploy.py?
 %{_sbindir}/voms-admin-configure
-%{_sbindir}/voms-admin-configure.py
-%{_sbindir}/voms.py
+%{_sbindir}/voms-admin-configure.py?
+%{_sbindir}/voms.py?
 %{_sbindir}/voms-admin-ping
 
 %{_javadir}/glite-security-voms-admin.jar
