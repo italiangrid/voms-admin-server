@@ -41,9 +41,6 @@
 
 package it.infn.cnaf.voms.saml;
 
-import it.infn.cnaf.voms.aa.VOMSAA;
-import it.infn.cnaf.voms.aa.VOMSAttributeAuthority;
-import it.infn.cnaf.voms.aa.VOMSAttributes;
 import it.infn.cnaf.voms.saml.exceptions.IssuerPeerMismatchException;
 import it.infn.cnaf.voms.saml.exceptions.UnauthorizedQueryException;
 import it.infn.cnaf.voms.saml.exceptions.UnknownAttributeException;
@@ -53,23 +50,18 @@ import it.infn.cnaf.voms.saml.exceptions.X509SubjectWrongNameIDFormatException;
 import it.infn.cnaf.voms.saml.exceptions.X509SubjectWrongNameIDValueException;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeQuery;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.schema.XSString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Valerio Venturi (valerio.venturi@cnaf.infn.it)
@@ -108,30 +100,10 @@ public class VOMSSAMLService {
 
             checkAttributeQuery( attributeQuery, peerSecurityContext );
 
-            String userDN = DNUtil.getBCasX500( attributeQuery.getSubject()
-                    .getNameID().getValue() );
-
-            List <String> requestedFQANs = getFQANsFromAttributeQuery( attributeQuery );
-
-            VOMSAttributeAuthority vomsAA = VOMSAA.getVOMSAttributeAuthority();
-
-            // The VOMS attributes, i.e., FQANs + Generic Attributes
-            VOMSAttributes attributes = null;
-
-            /* call the core service to get the granted attributes */
-            if ( requestedFQANs == null )
-                attributes = vomsAA.getVOMSAttributes( userDN );
-            
-            else if ( requestedFQANs.isEmpty() )
-                attributes = vomsAA.getAllVOMSAttributes( userDN );
-            
-            else
-                attributes = vomsAA.getVOMSAttributes( userDN, requestedFQANs );
-
             /* prepare the Assertion */
             Assertion assertion = sAMLAssertionFactory.create(
                             peerSecurityContext.getCertificate(), 
-                            attributes,
+                            attributeQuery,
                             maxAssertionLifetime );
 
             /* prepare the Response and return it */
@@ -180,7 +152,7 @@ public class VOMSSAMLService {
         logger.debug( "Received AttributeQuery issued by " + issuer.getName()
                 + " for subject " + subjectNameIDValue );
 
-        // chech the peer identity corresponds to the issuer of the
+        // check the peer identity corresponds to the issuer of the
         // AttributeQuery
         if ( !peerSecurityContext.is( issuer ) )
             throw new IssuerPeerMismatchException( issuer.getName(),
@@ -190,42 +162,6 @@ public class VOMSSAMLService {
         if ( !peerSecurityContext.is( subject ) )
             throw new UnauthorizedQueryException( issuer.getName(), subject
                     .getName() );
-
-        // Check requested attributes size.
-        // Currently we support only requests for FQAN according to the VOMS
-        // SAML profile
-        if ( attributeQuery.getAttributes().size() > 1 )
-            throw new UnsupportedQueryException();
-
-        if (! attributeQuery.getAttributes().isEmpty()){
-            
-            Attribute attr = attributeQuery.getAttributes().get( 0 );
-            
-            if ( !attr.getName().equals( VOMS_SAML_FQAN_URI ) )
-                throw new UnknownAttributeException( attr.getName() );
-        }
-        // logger.info( "AttributeQuery authorized" );
-
-    }
-
-    private List <String> getFQANsFromAttributeQuery( AttributeQuery attributeQuery ) {
-    
-        // Get only first attribute (currenty VOMS SAML supports requests only
-        // for FQANs...)
-        if (attributeQuery.getAttributes().isEmpty())
-            return null;
         
-        Attribute samlAttribute = attributeQuery.getAttributes().get( 0 );
-        
-        List<XMLObject> attributeValues = samlAttribute.getAttributeValues();
-        
-        List<String> result = new ArrayList <String>();
-        
-        for (XMLObject o : attributeValues){
-            XSString stringContent = (XSString)o;
-            result.add( stringContent.getValue());   
-        }
-        
-        return result;
     }
 }

@@ -49,5 +49,4 @@ public interface EMISAMLProfileConstants {
 	public static final String DCI_SEC_SCOPE = "scope";
 	
 	
-	
 }

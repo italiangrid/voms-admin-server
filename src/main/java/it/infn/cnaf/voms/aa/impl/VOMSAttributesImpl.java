@@ -273,4 +273,24 @@ class VOMSAttributesImpl implements VOMSAttributes {
     		
     }
 
+	public boolean hasRoles() {
+		
+		for (VOMSFQAN f: getFqans()){
+			
+			if (f.isRole())
+				return true;
+			
+		}
+		
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		
+		if (fqans ==  null || fqans.isEmpty())
+			return "[]";
+		
+		return fqans.toString();
+	}
 }

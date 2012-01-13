@@ -137,7 +137,15 @@ public class PathNamingScheme {
 
 		return result;
 	}
-
+	
+	public static boolean isGroupFQAN(String groupName){
+		checkSyntax(groupName);
+		
+		return groupPattern.matcher(groupName).matches();
+		
+	}
+	
+	
 	public static boolean isGroup(String groupName) {
 
 		checkSyntax(groupName);

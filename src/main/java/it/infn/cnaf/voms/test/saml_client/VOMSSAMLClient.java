@@ -24,12 +24,13 @@ import it.infn.cnaf.voms.saml.axis_serializers.DeserializerFactory;
 import it.infn.cnaf.voms.saml.axis_serializers.SerializerFactory;
 import it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType;
 import it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityServiceLocator;
+import it.infn.cnaf.voms.saml.emi.AttributeWizard;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Security;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,18 +43,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeQuery;
-import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.impl.AttributeBuilder;
 import org.opensaml.saml2.core.impl.AttributeQueryBuilder;
 import org.opensaml.saml2.core.impl.IssuerBuilder;
 import org.opensaml.saml2.core.impl.NameIDBuilder;
@@ -64,8 +64,6 @@ import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.schema.impl.XSStringBuilder;
 import org.w3c.dom.Element;
 
 public class VOMSSAMLClient {
@@ -83,7 +81,7 @@ public class VOMSSAMLClient {
     public static void main( String[] args ) throws MalformedURLException ,
             ServiceException , RemoteException {
 
-        new VOMSSAMLClient( args[0], args[1] );
+        new VOMSSAMLClient( args);
     }
 
     public static Element marshall( XMLObject xmlObject )
@@ -99,14 +97,24 @@ public class VOMSSAMLClient {
         return element;
     }
 
-    public VOMSSAMLClient( String host, String vo) throws MalformedURLException,
+    public VOMSSAMLClient( String[] args ) throws MalformedURLException,
             ServiceException, RemoteException {
 
+    	String host = args[0];
+    	String vo = args[1];
+    	
+    	List<String> fqans = new ArrayList<String>();
+    	
+    	if (args.length > 2){
+    		
+    		for (int i=2; i < args.length; i++)
+    			fqans.add(args[i]);
+    		
+    	}
+    	
         initializeOpenSAML();
-                
-        String role = "/mysql/Role=CiccioBomba";
-        AttributeQuery query = buildAttributeQuery( MY_DN, Collections.singletonList(role));
         
+        AttributeQuery query = buildAttributeQuery( MY_DN, vo ,fqans);
 
         System.out.println( "Query:" );
         print( query );
@@ -119,8 +127,11 @@ public class VOMSSAMLClient {
         print( response );
         
     }
+    
+    
+    
 
-    AttributeQuery buildAttributeQuery( String userDn, List<String>  fqans) {
+    AttributeQuery buildAttributeQuery( String userDn, String voName, List<String>  fqans) {
 
         XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
 
@@ -158,29 +169,34 @@ public class VOMSSAMLClient {
 
         query.setSubject( subject );
         
+        if (!fqans.isEmpty()){
+        	List<Attribute> requestedAttrs = new ArrayList<Attribute>();
         
-        AttributeBuilder ab = (AttributeBuilder) bf.getBuilder( Attribute.DEFAULT_ELEMENT_NAME );
-        Attribute fqanAttr = ab.buildObject();
-        
-        fqanAttr.setName( "http://voms.forge.cnaf.infn.it/fqan" );
-        fqanAttr.setNameFormat( Attribute.UNSPECIFIED );
-        
-        if (fqans != null){
-            
-            XSStringBuilder attributeValueBuilder = 
-                (XSStringBuilder) bf.getBuilder(XSString.TYPE_NAME);
-            
-            for (String fqan: fqans){
-                
-                XSString fqanStringObject = attributeValueBuilder.buildObject( AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME );
-                fqanStringObject.setValue( fqan );
-                fqanAttr.getAttributeValues().add( fqanStringObject );
-            }
-            
-            query.getAttributes().add( fqanAttr );
+        	requestedAttrs.add(AttributeWizard.createVOAttribute(voName));
+       
+        	List<String> groups = new ArrayList<String>();
+        	List<String> roles = new ArrayList<String>();
+        	
+        	for (String f: fqans){
+        		
+        		if (PathNamingScheme.isGroupFQAN(f))
+        			groups.add(f);
+        		else
+        			roles.add(f);
+        	}
+        	
+        	requestedAttrs.add(AttributeWizard.createPrimaryGroupAttributeFromString(null));
+        	
+        	requestedAttrs.add(AttributeWizard.createGroupAttributeFromStrings(groups));	
+        	
+        	if (!roles.isEmpty()){
+        		requestedAttrs.add(AttributeWizard.createRoleAttributeFromStrings(roles));
+        		requestedAttrs.add(AttributeWizard.createPrimaryRoleAttributeFromString(null));
+        	}
+        	
+        	query.getAttributes().addAll(requestedAttrs);
         }
         
-
         return query;
     }
 

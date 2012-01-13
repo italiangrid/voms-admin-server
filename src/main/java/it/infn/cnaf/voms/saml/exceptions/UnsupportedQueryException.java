@@ -23,4 +23,17 @@ package it.infn.cnaf.voms.saml.exceptions;
 
 public class UnsupportedQueryException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public UnsupportedQueryException() {
+		super();
+	}
+
+	public UnsupportedQueryException(String message) {
+		super(message);
+	}
+
 }

@@ -42,22 +42,33 @@
 
 package it.infn.cnaf.voms.saml;
 
+import it.infn.cnaf.voms.aa.VOMSAA;
+import it.infn.cnaf.voms.aa.VOMSAttributeAuthority;
 import it.infn.cnaf.voms.aa.VOMSAttributes;
+import it.infn.cnaf.voms.aa.VOMSFQAN;
+import it.infn.cnaf.voms.saml.emi.AttributeWizard;
 import it.infn.cnaf.voms.saml.emi.EMISAMLProfileConstants;
+import it.infn.cnaf.voms.saml.exceptions.UnsupportedQueryException;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignature;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.util.DNUtil;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeQuery;
 import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
@@ -114,8 +125,8 @@ public class SAMLAssertionFactory {
         .getBuilder( org.opensaml.saml2.core.Assertion.DEFAULT_ELEMENT_NAME );
         
         Assertion assertion = assertionBuilder.buildObject();
-        assertion.addNamespace(new Namespace(EMISAMLProfileConstants.DCI_SEC_NS, EMISAMLProfileConstants.DCI_SEC_PREFIX ));
         
+        assertion.getNamespaceManager().registerNamespace(new Namespace(EMISAMLProfileConstants.DCI_SEC_NS, EMISAMLProfileConstants.DCI_SEC_PREFIX ));
         
         /* set some attributes */
 
@@ -137,6 +148,7 @@ public class SAMLAssertionFactory {
 
         SubjectBuilder subjectBuilder = (SubjectBuilder) builderFactory
                 .getBuilder( Subject.DEFAULT_ELEMENT_NAME );
+        
         Subject assertionSubject = subjectBuilder.buildObject();
 
         NameIDBuilder nameIDBuilder = (NameIDBuilder) builderFactory
@@ -228,12 +240,127 @@ public class SAMLAssertionFactory {
         return assertion;
     }
     
+    
+    public Attribute findAttributeInQuery(AttributeQuery query, String attributeName){
+    	
+    	for (Attribute a: query.getAttributes()){
+    		if (a.getName().equals(attributeName))
+    			return a;
+    		
+    	}
+    	
+    	return null;
+    }
+    
+    
     public Assertion create( X509Certificate subjectCertificate,
-            VOMSAttributes vomsAttributes, int lifetime ) throws SecurityException {
+            AttributeQuery attributeQuery,
+    		int lifetime ) throws SecurityException {
 
-        List<Attribute> vomsSamlAttributes = SAMLAttributeSerializer.serializeAttributes( vomsAttributes );
+                
+        String userDN = DNUtil.getBCasX500( attributeQuery.getSubject()
+                .getNameID().getValue() );
+
+        List<Attribute> vomsSAMLAttributes = new ArrayList <Attribute>();
         
-        return createAssertion( subjectCertificate, vomsSamlAttributes, lifetime );
+        VOMSAttributeAuthority vomsAA = VOMSAA.getVOMSAttributeAuthority();
+        
+        // The VOMS attributes, i.e., FQANs + Generic Attributes
+        VOMSAttributes attributes = null;
+        
+		String voName = VOMSConfiguration.instance().getVOName();
+		
+		if (attributeQuery.getAttributes().isEmpty()){
+			
+			attributes = vomsAA.getAllVOMSAttributes( userDN );
+        	vomsSAMLAttributes.addAll(SAMLAttributeSerializer.serializeAllAttributes(attributes));
+        	
+        	return createAssertion( subjectCertificate, vomsSAMLAttributes, lifetime );
+			
+		}
+		
+		// Some attributes were explicitly requested
+		
+		Attribute voAttr  = findAttributeInQuery(attributeQuery, EMISAMLProfileConstants.VO_ATTRIBUTE_NAME);
+			
+		if ( voAttr != null){
+   
+			List<String> requestedVOs = AttributeWizard.attributeToListOfStrings(voAttr);
+			
+			if (requestedVOs.isEmpty() || requestedVOs.contains(voName))
+				vomsSAMLAttributes.add(AttributeWizard.createVOAttribute(voName));
+        			
+        }
+        	
+		Attribute groupAttr = findAttributeInQuery(attributeQuery, EMISAMLProfileConstants.GROUP_ATTRIBUTE_NAME);
+		
+		if (groupAttr != null){
+			
+			List<String> requestedGroups = AttributeWizard.attributeToListOfStrings(groupAttr);
+			
+			if (requestedGroups.isEmpty())
+				attributes = vomsAA.getVOMSAttributes( userDN );
+			else
+				attributes = vomsAA.getVOMSAttributes( userDN, requestedGroups );
+			
+			vomsSAMLAttributes.add(AttributeWizard.createGroupAttribute(attributes.getFqans()));
+			
+			// Primary group is related to group
+			Attribute pGroupAttr = findAttributeInQuery(attributeQuery, EMISAMLProfileConstants.GROUP_ATTRIBUTE_NAME);
+			
+			List<String> requestedPrimaryGroup = AttributeWizard.attributeToListOfStrings(pGroupAttr);
+			
+			if (requestedPrimaryGroup.isEmpty())
+				vomsSAMLAttributes.add(AttributeWizard.createPrimaryGroupAttribute(attributes.getFqans().get(0)));
+			else{
+				
+				VOMSFQAN reqPrimGroup = VOMSFQAN.fromString(requestedPrimaryGroup.get(0));
+				
+				if (attributes.getFqans().contains(reqPrimGroup))
+					vomsSAMLAttributes.add(AttributeWizard.createPrimaryGroupAttribute(reqPrimGroup));
+						
+			}
+		
+			// Roles can be requested only if also groups are requested 
+			Attribute roleAttr = findAttributeInQuery(attributeQuery, EMISAMLProfileConstants.ROLE_ATTRIBUTE_NAME);
+			
+			if (roleAttr != null){
+				
+				List<String> requestedRoles = AttributeWizard.roleAttributeToFQAN(roleAttr);
+				VOMSAttributes roleAttrs = vomsAA.getVOMSAttributes(userDN, requestedRoles);
+								
+				ListIterator<VOMSFQAN> iter = roleAttrs.getFqans().listIterator();
+				
+				while (iter.hasNext()){
+					
+					VOMSFQAN f = iter.next();
+					if (!attributes.getFqans().contains(f.getGroupPartAsVOMSFQAN()))
+						iter.remove();
+				}
+				
+				if (roleAttrs.hasRoles()){	
+				
+					vomsSAMLAttributes.add(AttributeWizard.createRoleAttribute(roleAttrs.getFqans()));
+					
+					Attribute pRoleAttr = findAttributeInQuery(attributeQuery, EMISAMLProfileConstants.PRIMARY_ROLE_ATTRIBUTE_NAME);
+					
+					List<String> requestedPrimaryRole = AttributeWizard.roleAttributeToFQAN(pRoleAttr);
+					
+					if (requestedPrimaryRole.isEmpty())
+						vomsSAMLAttributes.add(AttributeWizard.createPrimaryRoleAttribute(roleAttrs.getFqans().get(0)));
+					else{
+						
+						VOMSFQAN reqPrimRole = VOMSFQAN.fromString(requestedPrimaryRole.get(0));
+						if (roleAttrs.getFqans().contains(reqPrimRole))
+							vomsSAMLAttributes.add(AttributeWizard.createPrimaryRoleAttribute(reqPrimRole));
+					}
+				
+				}
+					
+			}
+		}
+        
+        return createAssertion( subjectCertificate, vomsSAMLAttributes, lifetime );
     }
 
 }

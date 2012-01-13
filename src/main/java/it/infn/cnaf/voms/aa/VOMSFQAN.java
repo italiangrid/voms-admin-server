@@ -57,14 +57,24 @@ public class VOMSFQAN {
     }
     
     public boolean isGroup(){
-        assert FQAN != null;
+    
         return PathNamingScheme.isGroup( FQAN );
         
     }
     
     public boolean isRole(){
-        assert FQAN != null;
+    
         return PathNamingScheme.isQualifiedRole( FQAN );   
+    }
+    
+    public String getGroupPartAsString(){
+    	
+    	return PathNamingScheme.getGroupName(FQAN);
+    }
+    
+    public VOMSFQAN getGroupPartAsVOMSFQAN(){
+    	
+    	return VOMSFQAN.fromString(getGroupPartAsString());
     }
     
     public static VOMSFQAN fromModel(VOMSMapping m){

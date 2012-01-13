@@ -29,10 +29,11 @@ import java.util.List;
  */
 public interface VOMSAttributes {
 
-	public abstract List<VOMSFQAN> getFqans();
+	public List<VOMSFQAN> getFqans();
 
-	public abstract List<VOMSGenericAttribute> getGenericAttributes();
+	public List<VOMSGenericAttribute> getGenericAttributes();
 
-	public abstract VOMSUser getUser();
+	public VOMSUser getUser();
 
+	public boolean hasRoles(); 
 }

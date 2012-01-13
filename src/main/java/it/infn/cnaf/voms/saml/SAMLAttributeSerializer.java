@@ -103,7 +103,8 @@ public class SAMLAttributeSerializer {
         
     }
     
-    public static List<Attribute> serializeAttributes(VOMSAttributes attributes){
+    
+    public static List<Attribute> serializeAllAttributes(VOMSAttributes attributes){
         assert attributes != null: "Cannot serialize a NULL attribute!";
         
         List<Attribute> vomsSAMLAttributes = new ArrayList <Attribute>();
@@ -142,7 +143,7 @@ public class SAMLAttributeSerializer {
         
         // Serialized Generic Attributes
         for (VOMSGenericAttribute ga: attributes.getGenericAttributes())
-            vomsSAMLAttributes.add( serializeGenericAttribute( ga ) );
+        	vomsSAMLAttributes.add( serializeGenericAttribute( ga ) );
         
         return vomsSAMLAttributes;   
     }
