@@ -97,11 +97,34 @@ public class VOMSSAMLClient {
         return element;
     }
 
+    
+    public void usage(){
+    	
+    	System.out.format("usage: %s <host> <vo> <dn>", this.getClass().getName());
+    	
+    }
+    
+    
+    public void testEmptyAttributeQuery(){
+    	
+    	
+    	
+    }
     public VOMSSAMLClient( String[] args ) throws MalformedURLException,
             ServiceException, RemoteException {
 
+    	
+    	if (args.length < 3){
+    		usage();
+    		System.exit(-1);
+    		
+    	}
+    	
     	String host = args[0];
     	String vo = args[1];
+    	String dn = args[2];
+    	
+    	initializeOpenSAML();
     	
     	List<String> fqans = new ArrayList<String>();
     	
@@ -109,10 +132,10 @@ public class VOMSSAMLClient {
     		
     		for (int i=2; i < args.length; i++)
     			fqans.add(args[i]);
-    		
+ 	
     	}
     	
-        initializeOpenSAML();
+        
         
         AttributeQuery query = buildAttributeQuery( MY_DN, vo ,fqans);
 

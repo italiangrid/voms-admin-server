@@ -154,14 +154,14 @@ public class VOMSSAMLService {
 
         // check the peer identity corresponds to the issuer of the
         // AttributeQuery
-        if ( !peerSecurityContext.is( issuer ) )
-            throw new IssuerPeerMismatchException( issuer.getName(),
-                    peerSecurityContext.getX500Principal().getName() );
+        //        if ( !peerSecurityContext.is( issuer ) )
+        //            throw new IssuerPeerMismatchException( issuer.getName(),
+        //                    peerSecurityContext.getX500Principal().getName() );
 
         // Check the AttributeQuery is authorized
-        if ( !peerSecurityContext.is( subject ) )
-            throw new UnauthorizedQueryException( issuer.getName(), subject
-                    .getName() );
+        //        if ( !peerSecurityContext.is( subject ) )
+        //            throw new UnauthorizedQueryException( issuer.getName(), subject
+        //                    .getName() );
         
     }
 }
