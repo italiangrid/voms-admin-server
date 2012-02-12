@@ -16,15 +16,21 @@
 # limitations under the License.
 #
 # Authors:
-# 	Andrea Ceccanti (INFN)
+#     Andrea Ceccanti (INFN)
 
 # Help message about command line options by:
 #
 #     Karoly Lorentey - karoly.lorentey@cern.ch
 
-import os.path,getopt,sys,exceptions,pwd,grp,socket
 from os import environ
 from voms import *
+import os.path
+import getopt
+import sys
+import exceptions
+import pwd
+import grp
+import socket
 
 options = {}
 
@@ -32,7 +38,7 @@ certificate = None
 
 command = None
 
-supported_commands = ("install", "remove", "update", "upgrade")
+supported_commands = ("install", "remove", "upgrade")
 
 def vlog(msg):
     global options
@@ -43,26 +49,26 @@ def setup_aa_defaults():
     global certificate, options
     
     vlog("Setting defaults for the VOMS AA credentials")
-    ## AA Certificate defaults
-    if os.environ.has_key("CATALINA_HOME"): 
-        
-        glite_tomcat_cert = os.path.join(os.environ['CATALINA_HOME'],".certs", "hostcert.pem")
-        glite_tomcat_key = os.path.join(os.environ['CATALINA_HOME'],".certs", "hostkey.pem")
-        
-        if os.path.exists(glite_tomcat_cert) and os.path.exists(glite_tomcat_key):
-            
-            vlog("Using gLite CATALINA_HOME certificates...")
-            
-            set_default(options,"aa-cert",glite_tomcat_cert)
-            set_default(options,"aa-key",glite_tomcat_key)
-            
-            return
-              
-    vlog("Setting host credentials defaults for VOMS AA.")
-    set_default(options, "aa-cert", "/etc/grid-security/hostcert.pem")
-    set_default(options, "aa-key", "/etc/grid-security/hostkey.pem")
     
+    ## Default assertion lifetime
     set_default(options, "saml-max-assertion-lifetime", "720")
+    
+    ## AA Certificate defaults
+    tomcat_cert = "/etc/grid-security/tomcat-cert.pem"
+    tomcat_key = "/etc/grid-security/tomcat-key.pem"
+    
+    if os.path.exists(tomcat_cert) and os.path.exists(tomcat_key):
+        set_default(options, "aa-cert", tomcat_cert)
+        set_default(options, "aa-key", tomcat_key)
+        vlog("AA certificates settings:\ncert:%s\nkey:%s" % (tomcat_cert, tomcat_key))
+        return
+    
+    host_cert =  "/etc/grid-security/hostcert.pem"
+    host_key = "/etc/grid-security/hostkey.pem"
+    
+    set_default(options, "aa-cert", host_cert)
+    set_default(options, "aa-key", host_key)
+    vlog("Using host certificate for VOMS AA:\ncert:%s\nkey:%s" % (host_cert, host_key))
 
 
 def setup_defaults():
@@ -70,7 +76,8 @@ def setup_defaults():
     
     set_default(options,"hostname",socket.gethostname())
     
-    set_default(options,"libdir",os.path.join(voms_prefix(),"lib"))
+    set_default(options,"libdir", voms_lib_dir())
+    set_default(options,"logdir", voms_log_dir())
     
     set_default(options, "mysql-command", "mysql")
     set_default(options, "openssl","openssl")
@@ -423,9 +430,6 @@ def check_remove_options():
     
     return a
 
-def check_update_options():
-    pass
-
 def check_upgrade_options():
     vlog("Checking input parameters...")
     
@@ -449,8 +453,8 @@ def do_install():
     print Template("""
 VO @voname@ installation finished.\n 
 You can start the voms services using the following commands:
-    /etc/init.d/voms start @voname@
-    /etc/init.d/voms-admin start @voname@""").sub({'voname':options['vo']})
+    @prefix@/etc/init.d/voms start @voname@
+    @prefix@/etc/init.d/voms-admin start @voname@""").sub({'voname':options['vo'], 'prefix': voms_prefix()})
     
     
     
@@ -463,12 +467,6 @@ def do_remove():
     action.remove_vo()
     
     print "VO %s succesfully removed." % options['vo']
-    
-def do_update():
-    if not options.has_key('vo'):
-        raise VomsConfigureError, "No vo specified!"
-    action = check_update_options()
-    
     
 def do_upgrade():
     if not options.has_key('vo'):
@@ -489,8 +487,7 @@ def do_upgrade():
         action.upgrade_vo()        
         print "Vo %s succesfully upgraded" % options['vo']
 
-def do_command():
-    
+def do_command():    
     if command is None:
         print "No command specified!"
         sys.exit(2)
@@ -517,6 +514,9 @@ def main():
         setup_defaults()
         setup_identity()
         setup_aa_defaults()
+        
+        vlog("Prefix: %s" % voms_admin_prefix())
+        vlog("Configuration dir: %s" % voms_admin_conf_dir())
         
         do_command()
     

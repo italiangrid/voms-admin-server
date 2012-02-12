@@ -15,12 +15,23 @@
 # limitations under the License.
 #
 # Authors:
-# 	Andrea Ceccanti (INFN)
+#     Andrea Ceccanti (INFN)
 #
 
-import exceptions,re,os.path,commands,glob,socket,string,shutil,time,subprocess
+import commands
+import exceptions
+import glob
+import os.path
+import platform
+import re
+import shutil
+import socket
+import string
+import subprocess
+import time
 
 voms_admin_server_version = "${server-version}"
+package_prefix= "${package.prefix}"
 
 class PropertyHelper(dict):
     empty_or_comment_lines = re.compile("^\\s*$|^#.*$")
@@ -56,7 +67,7 @@ class PropertyHelper(dict):
         f.close()
 
 def load_sysconfig():     
-    return PropertyHelper("/etc/sysconfig/voms-admin")
+    return PropertyHelper("%s/etc/sysconfig/voms-admin" % package_prefix )
 
 voms_admin_sysconfig_props = load_sysconfig()
 
@@ -198,14 +209,14 @@ class ConfigureAction:
         if len(missing_options) != 0:
             raise VomsConfigureError, "Please set the following required options: " + string.join(missing_options,",")  
             
-    def write_and_close(self, file, content):
+    def write_and_close(self, filename, content):
         
-        f = open(file,"w")
+        f = open(filename,"w")
         f.write(content)
         f.close()
         
-    def append_and_close(self,file, content):
-        f = open(file,"a")
+    def append_and_close(self,filename, content):
+        f = open(filename,"a")
         f.write(content)
         f.close()
         
@@ -691,15 +702,10 @@ class InstallVOAction(ConfigureAction):
     
     def write_voms_properties(self):
         
-        voms_log_dir = voms_log_dir()
-        
-        if self.user_options.has_key('logdir'):
-            voms_log_dir = self.user_options['logdir']
-            
         m = { 
              'CODE': self.user_options['code'],
              'DBNAME': self.user_options['dbname'],
-             'LOGFILE': os.path.join(voms_log_dir,"voms."+self.user_options['vo']),
+             'LOGFILE': os.path.join(self.user_options['logdir'],"voms.%s " % self.user_options['vo']),
              'PASSFILE': os.path.join(VomsConstants.voms_conf_dir,self.user_options['vo'],"voms.pass"),
              'SQLLOC': os.path.join(self.user_options['libdir'],self.user_options['sqlloc']),
              'USERNAME': self.user_options['dbusername'],
@@ -710,20 +716,25 @@ class InstallVOAction(ConfigureAction):
         
         t = Template(open(VomsConstants.voms_template,"r").read())
         
-        self.vlog("voms core configuration:\n%s" % t.sub(m))
+        voms_conf = t.sub(m)
+        
+        if self.user_options.has_key('shortfqans'):
+            voms_conf = voms_conf + "\n--shortfqans"
+        
+        if self.user_options['dbtype'] == 'mysql' and self.user_options['dbhost'] != 'localhost':
+            voms_conf = voms_conf + "\n--dbhost=%s" % self.user_options['dbhost']
+        
+        if self.user_options.has_key('skip-ca-check'):
+            voms_conf = voms_conf + "\n--skipcacheck"
+        
+        self.vlog("voms core configuration:\n%s" % voms_conf)
         
         self.write_and_close(voms_config_file(self.user_options['vo']), 
-                             t.sub(m))
+                             voms_conf)
         
         self.write_and_close(voms_pass_file(self.user_options['vo']), 
                              self.user_options['dbpassword']+"\n")
-        
-        ## VOMS short-fqans support
-        if self.user_options.has_key('shortfqans'):
-            self.append_and_close(voms_config_file(self.user_options['vo']), 
-                                  "\n--shortfqans")
-        
-        
+     
         os.chmod(voms_config_file(self.user_options['vo']),0640)
         os.chmod(voms_pass_file(self.user_options['vo']), 0640)
         
@@ -1009,7 +1020,7 @@ def voms_log_dir():
     
 def voms_admin_prefix():
     if voms_admin_sysconfig_props.has_key('PREFIX'):
-        return voms_admin_sysconfig_props['PREFIX']
+        return voms_admin_sysconfig_props['PREFIX']+"/usr"
     
     return "/usr" 
 
@@ -1020,17 +1031,28 @@ def voms_admin_conf_dir():
     return "/etc/voms-admin"
 
 def voms_prefix():
-    return "/usr"
+    if voms_admin_sysconfig_props.has_key('PREFIX'):
+        return voms_admin_sysconfig_props['PREFIX']
+    
+    return "/"
 
 def voms_conf_dir():
+    if voms_admin_sysconfig_props.has_key('PREFIX'):
+        return voms_admin_sysconfig_props['PREFIX']+"/etc/voms"
+    
     return "/etc/voms"
 
 def voms_lib_dir():
     prefix=voms_prefix()
     
-    ## FIXME: should take into account the platform to 
-    ## understand whether it should be lib or lib64
-    return os.path.join(prefix,"lib")
+    plat = platform.machine()
+    libdir = "lib"
+    
+    if plat == "x86_64":
+        ## FIXME: understand how this behaves in Debian
+        libdir = "lib64"
+            
+    return os.path.join(prefix,"usr", libdir)
 
 def catalina_home():
     if voms_admin_sysconfig_props.has_key('CATALINA_HOME'):
@@ -1130,7 +1152,8 @@ class VomsConstants:
               "use-skinny-war",
               "aa-cert=",
               "aa-key=",
-              "saml-max-assertion-lifetime="]              
+              "saml-max-assertion-lifetime=",
+              "skip-ca-check"]              
 
     short_options = "hvV";
 

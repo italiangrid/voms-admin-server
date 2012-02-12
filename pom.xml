@@ -6,15 +6,13 @@
 	<groupId>org.glite.voms</groupId>
 	<artifactId>voms-admin-server</artifactId>
 	<packaging>war</packaging>
-	<name>glite-security-voms-admin</name>
+	<name>VOMS Administration service</name>
 	<version>2.7.0</version>
-	<url>https://twiki.cnaf.infn.it/cgi-bin/twiki/view/VOMS/
-  </url>
 	<properties>
 		<age>1</age>
-		<server-version>2.6.2</server-version>
+		<server-version>${version}</server-version>
 		<interface-version>2.0.2</interface-version>
-		<glite-services-namespace> http://glite.org/wsdl/services</glite-services-namespace>
+		<glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		
@@ -50,12 +48,14 @@
 				<excludes>
 					<exclude>voms-admin.tld</exclude>
 					<exclude>version.properties</exclude>
+					<exclude>packaging.properties</exclude>
 				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>version.properties</include>
+					<include>packaging.properties</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>
@@ -576,7 +576,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<package.prefix>/usr</package.prefix>
+				<package.prefix>/</package.prefix>
 				<package.confdir>/etc/voms-admin</package.confdir>
 			</properties>
 			<build>
@@ -605,6 +605,14 @@
 		</profile>
 		
 		<profile>
+			<id>local</id>
+			<properties>
+				<package.prefix>/opt/voms</package.prefix>
+				<package.confdir>/opt/voms/etc/voms-admin</package.confdir>
+			</properties>
+		</profile>
+		
+		<profile>
 			<id>tomcat5</id>
 			<properties>
 				<package.catalina_home>/usr/share/tomcat5</package.catalina_home>
@@ -618,4 +626,12 @@
 			</properties>
 		</profile>
 	</profiles>
+	<scm>
+		<url>https://github.com/andreaceccanti/voms-admin-server</url>
+	</scm>
+	<url>https://wiki.italiangrid.it/twiki/bin/view/VOMS</url>
+	<issueManagement>
+		<system>jira</system>
+		<url>http://issues.cnaf.infn.it</url>
+	</issueManagement>
 </project>

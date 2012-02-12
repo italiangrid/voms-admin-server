@@ -54,6 +54,7 @@ import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -929,17 +930,45 @@ public final class VOMSConfiguration {
 
 	}
 
-	private void loadSysconfig(){
+	private void loadSysconfig() {
+
+		String sysconfigFilePath = SYSCONFIG_FILE;
 		
 		try {
 			
-			PropertiesConfiguration sysconfigProperties = new PropertiesConfiguration(SYSCONFIG_FILE);
-			config.addConfiguration(sysconfigProperties);
+			Properties packagingProps = new Properties();
+
+			packagingProps.load(this.getClass().getClassLoader()
+					.getResourceAsStream("packaging.properties"));
+
+			String prefix = packagingProps.getProperty("package.prefix");
+
+			if (prefix != null) {
+
+				sysconfigFilePath = String.format(
+						"%s/etc/sysconfig/voms-admin", prefix);
+				log.info("SYSCONFIG file: {}", sysconfigFilePath);
+
+			} else {
+
+				log.warn("Packaging properties do not specify package.prefix property...using default value for sysconfig location");
+			}
+
+			PropertiesConfiguration sysconf = new PropertiesConfiguration(
+					sysconfigFilePath);
+			config.addConfiguration(sysconf);
+
+		} catch (IOException e1) {
+			log.warn("Packaging properties not found in classloader... using default value for sysconfig location");
 		
-		}catch (ConfigurationException e) {
-			log.error("Error parsing VOMS Admin system configuration file "+SYSCONFIG_FILE);
-			throw new VOMSConfigurationException("Error parsing VOMS Admin system configuration file "+ SYSCONFIG_FILE, e);
-		}
+		} catch (ConfigurationException e) {
+			log.error("Error parsing VOMS Admin system configuration file "
+					+ sysconfigFilePath);
+		
+			throw new VOMSConfigurationException(
+					"Error parsing VOMS Admin system configuration file "
+							+ SYSCONFIG_FILE, e);
+		}	
 		
 	}
 	

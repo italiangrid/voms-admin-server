@@ -19,24 +19,48 @@ public class SysconfigUtil {
 	
 	public synchronized static Properties loadSysconfig(){
 		
+		Properties packagingProps = new Properties();
+		
+		String sysconfigFilePath=SYSCONFIG_FILE;
+		
+		try {
+			packagingProps.load(SysconfigUtil.class.getClassLoader().getResourceAsStream("packaging.properties"));
+			
+			String prefix = packagingProps.getProperty("package.prefix");
+			
+			if (prefix != null){
+				
+				sysconfigFilePath = String.format("%s/etc/sysconfig/voms-admin", prefix);
+				log.info("SYSCONFIG file: {}", sysconfigFilePath);
+				
+			}else{
+				
+				log.warn("Packaging properties do not specify package.prefix property...using default value for sysconfig location");
+			}
+		
+		} catch (IOException e1) {
+			log.warn("Packaging properties not found in classloader... using default value for sysconfig location");
+		}
+		
 		FileReader sysconfigReader;
+		
 		Properties props = new Properties();
 		
 		try {
 			
-			sysconfigReader = new FileReader(SYSCONFIG_FILE);
+			sysconfigReader = new FileReader(sysconfigFilePath);
 			props.load(sysconfigReader);
 			
 			return props;
 		
 		}catch (FileNotFoundException e) {
 			
-			log.error("Error opening VOMS Admin system configuration file "+ SYSCONFIG_FILE);
-			throw new VOMSConfigurationException("Error opening VOMS Admin system configuration file "+SYSCONFIG_FILE, e);
+			log.error("Error opening VOMS Admin system configuration file "+ sysconfigFilePath);
+			throw new VOMSConfigurationException("Error opening VOMS Admin system configuration file "+sysconfigFilePath, e);
 		
 		} catch (IOException e) {
 			log.error("Error parsing VOMS Admin system configuration file "+ SYSCONFIG_FILE);
-			throw new VOMSConfigurationException("Error parsing VOMS Admin system configuration file "+ SYSCONFIG_FILE, e);
+			throw new VOMSConfigurationException("Error parsing VOMS Admin system configuration file "+ sysconfigFilePath, e);
 		}
 	}
 	

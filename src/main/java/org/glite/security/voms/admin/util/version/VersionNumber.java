@@ -82,16 +82,4 @@ public class VersionNumber implements EndpointVersion {
 
 		return version;
 	}
-
-	public static void main(String[] args) {
-
-		VersionNumber vn = new VersionNumber("22.567.18");
-
-		System.out.println(vn.getMajorVersionNumber());
-		System.out.println(vn.getMinorVersionNumber());
-		System.out.println(vn.getPatchVersionNumber());
-
-		System.out.println(vn);
-
-	}
 }
