@@ -1,6 +1,7 @@
 name=voms-admin-server
 spec=spec/$(name).spec
 oracle_location=/usr/lib/oracle/10.2.0.4
+tomcat_version=5
 version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]*//g")
 release=1
 rpmbuild_dir=$(shell pwd)/rpmbuild
@@ -20,7 +21,8 @@ rpm:
 
 		cp target/$(name)-$(version).src.tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(version).tar.gz
 		rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" \
-			--define "oracle_location $(oracle_location)"
+			--define "oracle_location $(oracle_location)" \
+			--define "tomcat_version $(tomcat_version)
 
 etics: 	clean rpm
 		mkdir -p tgz RPMS
