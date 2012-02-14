@@ -1,7 +1,6 @@
 ## Turn off meaningless jar repackaging 
 %define __jar_repack 0
 
-
 Name: voms-admin-server
 Version: 2.7.0
 Release: 1%{?dist}
@@ -22,7 +21,7 @@ BuildRequires:  oracle-instantclient-basic
 
 Requires: emi-trustmanager
 Requires: bouncycastle >= 1.39
-Requires: tomcat
+Requires: tomcat%{?tomcat_version}
 Requires: java
 
 %description
@@ -77,8 +76,6 @@ exit 0
 %dir %{_sysconfdir}/voms-admin
 %config(noreplace) %{_sysconfdir}/sysconfig/voms-admin
 
-# The question mark is to avoid failures on SL5
-# due to python compilation
 %{_sbindir}/*
 
 %{_javadir}/glite-security-voms-admin.jar
