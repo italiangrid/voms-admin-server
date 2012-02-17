@@ -5,6 +5,7 @@ tomcat_version=5
 version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]*//g")
 release=1
 rpmbuild_dir=$(shell pwd)/rpmbuild
+settings_file="src/config/emi-build-settings.xml"
 
 .PHONY: etics clean rpm
 
@@ -14,7 +15,7 @@ clean:
 		rm -rf target $(rpmbuild_dir) tgz RPMS 
 
 rpm:	
-		mvn -B -s src/config/emi-build-settings.xml package
+		mvn -B -s $(settings_file) package
 		mkdir -p 	$(rpmbuild_dir)/BUILD $(rpmbuild_dir)/RPMS \
 					$(rpmbuild_dir)/SOURCES $(rpmbuild_dir)/SPECS \
 					$(rpmbuild_dir)/SRPMS
