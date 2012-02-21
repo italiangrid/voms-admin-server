@@ -7,15 +7,17 @@ release=1
 rpmbuild_dir=$(shell pwd)/rpmbuild
 settings_file="src/config/emi-build-settings.xml"
 
-.PHONY: etics clean rpm
+.PHONY: etics dist clean rpm
 
 all: 	rpm
 
 clean:	
 		rm -rf target $(rpmbuild_dir) tgz RPMS 
 
-rpm:	
+dist:
 		mvn -B -s $(settings_file) package
+
+rpm:	
 		mkdir -p 	$(rpmbuild_dir)/BUILD $(rpmbuild_dir)/RPMS \
 					$(rpmbuild_dir)/SOURCES $(rpmbuild_dir)/SPECS \
 					$(rpmbuild_dir)/SRPMS
@@ -25,7 +27,7 @@ rpm:
 			--define "oracle_location $(oracle_location)" \
 			--define "tomcat_version $(tomcat_version)"
 
-etics: 	clean rpm
+etics: 	dist clean rpm
 		mkdir -p tgz RPMS
 		cp target/*.tar.gz tgz
 		cp -r $(rpmbuild_dir)/RPMS/* $(rpmbuild_dir)/SRPMS/* RPMS
