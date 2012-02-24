@@ -44,6 +44,7 @@ administration tasks.
 mvn -B -s src/config/cnaf-build-settings.xml package
 
 %install
+rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 tar -C $RPM_BUILD_ROOT -xvzf target/%{name}-%{version}.tar.gz
 
