@@ -41,7 +41,7 @@ administration tasks.
 %setup -q -n voms-admin
 
 %build
-mvn -B -s src/config/emi-build-settings.xml package
+mvn -B -s src/config/cnaf-build-settings.xml package
 
 %install
 mkdir -p $RPM_BUILD_ROOT

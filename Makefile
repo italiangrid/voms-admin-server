@@ -5,7 +5,7 @@ tomcat_version=5
 version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]*//g")
 release=1
 rpmbuild_dir=$(shell pwd)/rpmbuild
-settings_file="src/config/emi-build-settings.xml"
+settings_file="src/config/cnaf-build-settings.xml"
 
 .PHONY: etics dist clean rpm
 
@@ -24,7 +24,6 @@ rpm:
 
 		cp target/$(name)-$(version).src.tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(version).tar.gz
 		rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" \
-			--define "oracle_location $(oracle_location)" \
 			--define "tomcat_version $(tomcat_version)"
 
 etics: 	dist clean rpm
