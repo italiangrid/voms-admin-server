@@ -20,6 +20,7 @@ BuildRequires:  java-devel
 BuildRequires:  oracle-instantclient-basic
 
 Requires: emi-trustmanager
+Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
 Requires: tomcat%{?tomcat_version}
 Requires: java
