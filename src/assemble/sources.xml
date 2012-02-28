@@ -14,10 +14,10 @@
       <outputDirectory>/</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
-	<exclude>**/debbuild/**</exclude>
-	<exclude>**/rpmbuild/**</exclude>
-	<exclude>**/RPMS/**</exclude>
-	<exclude>**/tgz/**</exclude>
+	    <exclude>**/debbuild/**</exclude>
+	    <exclude>**/rpmbuild/**</exclude>
+	    <exclude>**/RPMS/**</exclude>
+	    <exclude>**/tgz/**</exclude>
         <exclude>**/target/**</exclude>
         <exclude>**/.git/**</exclude>
         <exclude>**/.*</exclude>

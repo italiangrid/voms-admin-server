@@ -22,7 +22,7 @@ BuildRequires:  oracle-instantclient-basic
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
-Requires: tomcat%{?tomcat_version}
+Requires: tomcat%{?@@TOMCAT_VERSION@@}
 Requires: java
 
 %description
@@ -42,7 +42,7 @@ administration tasks.
 %setup -q -n voms-admin
 
 %build
-mvn -B -s src/config/emi-build-settings.xml package
+mvn -B -s @@BUILD_SETTINGS@@ -P EMI -P tomcat@@TOMCAT_VERSION@@ package
 
 %install
 rm -rf $RPM_BUILD_ROOT

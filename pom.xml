@@ -15,6 +15,9 @@
 		<glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <tomcat.version>5</tomcat.version>
+        <build.settings>src/config/emi-build-settings.xml</build.settings>
 		
 		<!-- Dependencies versions -->
 		<struts.version>2.2.1</struts.version>
@@ -59,7 +62,6 @@
 				</includes>
 				<filtering>true</filtering>
 			</resource>
-
 		</resources>
 		<plugins>
 			<plugin>
@@ -73,13 +75,13 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/</outputDirectory>
+							<outputDirectory>${basedir}/src/spec/</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/spec</directory>
 									<includes>
 										<include>
-											*.spec
+											voms-admin-server.spec.in
 										</include>
 									</includes>
 									<filtering>true</filtering>
