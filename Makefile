@@ -5,7 +5,7 @@ tomcat_version=5
 version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]*//g")
 release=1
 rpmbuild_dir=$(shell pwd)/rpmbuild
-settings_file="src/config/cnaf-build-settings.xml"
+settings_file="src/config/emi-build-settings.xml"
 
 .PHONY: etics dist clean rpm
 
