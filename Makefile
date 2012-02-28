@@ -26,7 +26,7 @@ rpm:
 		rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" \
 			--define "tomcat_version $(tomcat_version)"
 
-etics: 	dist clean rpm
+etics: 	dist rpm
 		mkdir -p tgz RPMS
 		cp target/*.tar.gz tgz
 		cp -r $(rpmbuild_dir)/RPMS/* $(rpmbuild_dir)/SRPMS/* RPMS
