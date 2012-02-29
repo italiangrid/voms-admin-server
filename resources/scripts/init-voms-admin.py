@@ -24,7 +24,15 @@
 #
 
 import getopt, sys, os, os.path, commands,urllib,xml.dom.minidom, getopt, shutil, time, re, glob
+
+package_prefix= "${package.prefix}"
+
+sys.path.append(os.path.join(package_prefix,"usr","sbin"))
 from voms import voms_admin_conf_dir, catalina_home
+
+
+
+
 
 def voms_admin_config_dir():
     

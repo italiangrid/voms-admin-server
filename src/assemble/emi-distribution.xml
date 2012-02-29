@@ -32,16 +32,23 @@
     </formats>
 
     <fileSets>
+    	<!--
+    	
+    		Package scripts. voms.py and init-voms-admin.py are excluded as
+    		they need filtering.
+    	 -->
         <fileSet>
             <directory>resources/scripts</directory>
             <excludes>
                 <exclude>*.pyc</exclude>
                 <exclude>*.pyo</exclude>
                 <exclude>voms.py</exclude>
+                <exclude>init-voms-admin.py</exclude>
             </excludes>
             <outputDirectory>/usr/sbin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
+        
         <fileSet>
             <directory>resources/templates</directory>
             <excludes>
@@ -109,6 +116,15 @@
             <outputDirectory>/etc/rc.d/init.d</outputDirectory>
             <destName>voms-admin</destName>
             <fileMode>0755</fileMode>
+            <filtered>true</filtered>
+        </file>
+        
+        <!--  Keep traditional init script location for backward compatibility -->
+        <file>
+            <source>resources/scripts/init-voms-admin.py</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <filtered>true</filtered>
         </file>
 
         <file>
