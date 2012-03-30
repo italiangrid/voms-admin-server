@@ -16,5 +16,5 @@ Contact
 If you have problems, questions, ideas or suggestions, please contact us at
 the following URLs
 
-GGUS (official support channel): http://www.ggus.eu
-VOMS Product Team list: voms-product-team@cnaf.infn.it
+* GGUS (official support channel): http://www.ggus.eu
+* VOMS Product Team list: voms-product-team@cnaf.infn.it
