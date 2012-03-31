@@ -128,7 +128,7 @@ public class NotificationService {
 					} catch (Throwable t) {
 
 						log.error("Error dispatching email notification '" + n
-								+ "': " + t.getMessage());
+								+ "': "+ t.getClass().getName()+ " - " + t.getMessage());
 						if (log.isDebugEnabled())
 							log.error("Error dispatching email notification '"
 									+ n + "': " + t.getMessage(), t);

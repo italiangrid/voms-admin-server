@@ -20,6 +20,7 @@
 Dear $recipient,
 
 this mail is to inform that your membership in VO $voName has expired. 
+
 In a short time you will be suspended from the VO and you will not
 be able to obtain VOMS proxies anymore.
 

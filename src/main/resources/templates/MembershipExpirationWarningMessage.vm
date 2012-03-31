@@ -17,16 +17,10 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  *#
-Dear $recipient,
+Dear VO Administrator,
 
-this mail is to inform that your membership in VO $voName will expire
-on:
+this mail is to inform that membership for some VO users are is about to expire in VO $voName.
 
-$expirationDate
-
-After that date your membership for VO $voName will be suspended.
-
-Please contact your VO administrators for any questions.
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

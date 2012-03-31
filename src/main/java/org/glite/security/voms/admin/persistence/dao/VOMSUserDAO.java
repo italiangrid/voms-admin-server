@@ -70,7 +70,8 @@ import org.slf4j.LoggerFactory;
 
 public class VOMSUserDAO {
 
-	private static final Logger log = LoggerFactory.getLogger(VOMSUserDAO.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(VOMSUserDAO.class);
 
 	public static VOMSUserDAO instance() {
 
@@ -82,40 +83,39 @@ public class VOMSUserDAO {
 
 	}
 
-	
-	public void requestAUPReacceptance(VOMSUser user, AUP aup){
+	public void requestAUPReacceptance(VOMSUser user, AUP aup) {
 		if (user == null)
 			throw new NullArgumentException("user cannot be null!");
 
 		if (aup == null)
 			throw new NullArgumentException("aup cannot be null!");
-		
+
 		AUPVersion aupVersion = aup.getActiveVersion();
 
 		if (aupVersion == null)
 			throw new NotFoundException("No registered version found for AUP '"
 					+ aup.getName() + "'.");
-		
-		log.debug("User '" + user + "' is request to reaccept aup version '" + aupVersion
-				+ "'");
-		
+
+		log.debug("User '" + user + "' is request to reaccept aup version '"
+				+ aupVersion + "'");
+
 		AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
 
 		if (r != null) {
-			
+
 			if (r.getValid())
 				r.setValid(false);
 			else
 				log.debug("Ignoring invalidation of already invalid record.");
 		}
-		
+
 	}
-	
-	public void signAUP(VOMSUser user){
-	    
-	    signAUP(user,DAOFactory.instance().getAUPDAO().getVOAUP());
+
+	public void signAUP(VOMSUser user) {
+
+		signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
 	}
-	
+
 	public void signAUP(VOMSUser user, AUP aup) {
 
 		if (user == null)
@@ -211,23 +211,25 @@ public class VOMSUserDAO {
 
 		AUPVersion activeVersion = aup.getActiveVersion();
 
-		// Get users First that do not have any acceptance records for the active aupVersion
+		// Get users First that do not have any acceptance records for the
+		// active aupVersion
 		String noAcceptanceRecordForActiveAUPVersionQuery = "select u from VOMSUser u where u not in (select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
 
-		Query q = HibernateFactory.getSession().createQuery(noAcceptanceRecordForActiveAUPVersionQuery);
+		Query q = HibernateFactory.getSession().createQuery(
+				noAcceptanceRecordForActiveAUPVersionQuery);
 		List<VOMSUser> noRecordUsers = q.list();
-		
+
 		result.addAll(noRecordUsers);
 
-		log.debug("Users without acceptance records for currently active aup:" + result);
-		
+		log.debug("Users without acceptance records for currently active aup:"
+				+ result);
 
 		// Add users that have an expired aup acceptance record due to aup
 		// update or acceptance retriggering.
 		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
 
 		Query q2 = HibernateFactory.getSession().createQuery(qString);
-		
+
 		q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 		List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
 		result.addAll(expiredDueToAUPUpdateUsers);
@@ -235,38 +237,36 @@ public class VOMSUserDAO {
 		log.debug("Users that signed the AUP before it was last updated:"
 				+ expiredDueToAUPUpdateUsers);
 
-		// Add users that have a valid aup acceptance record that needs to be checked against 
+		// Add users that have a valid aup acceptance record that needs to be
+		// checked against
 		// the reacceptance period
 		Query q3 = HibernateFactory
 				.getSession()
 				.createQuery(
 						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
 								+ " and r.lastAcceptanceDate > :lastUpdateTime ");
-		
+
 		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 
 		List<VOMSUser> potentiallyExpiredUsers = q3.list();
 		HibernateFactory.getSession().flush();
 
-		log
-				.debug("Users that needs checking since their aup acceptance record could be expired:"
-						+ potentiallyExpiredUsers);
-		
+		log.debug("Users that needs checking since their aup acceptance record could be expired:"
+				+ potentiallyExpiredUsers);
+
 		for (VOMSUser u : potentiallyExpiredUsers) {
 
 			AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup
 					.getActiveVersion());
-			
-			if (r.hasExpired()){
-				log
-				.debug(String
-						.format(
-								"Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
+
+			if (r.hasExpired()) {
+				log.debug(String
+						.format("Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
 								u.toString()));
 				result.add(u);
-				
+
 			}
-			
+
 		}
 
 		return result;
@@ -307,7 +307,6 @@ public class VOMSUserDAO {
 
 	}
 
-	
 	public void addCertificate(VOMSUser u, X509Certificate x509Cert) {
 
 		assert u != null : "User must be non-null!";
@@ -433,11 +432,11 @@ public class VOMSUserDAO {
 		String sString = "%" + searchString + "%";
 
 		String countString = "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-			+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "+
-			" or lower(u.institution) like lower(:searchString) "+
-			" or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "+
-			" order by u.surname asc";
-		
+				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+				+ " or lower(u.institution) like lower(:searchString) "
+				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+				+ " order by u.surname asc";
+
 		Query q = HibernateFactory.getSession().createQuery(countString);
 		q.setString("searchString", sString);
 
@@ -472,11 +471,13 @@ public class VOMSUserDAO {
 		VOMSUser u = findByDNandCA(dn, caDN);
 
 		if (u != null)
-			throw new UserAlreadyExistsException("User " + u
-					+ " already in org.glite.security.voms.admin.persistence.error!");
+			throw new UserAlreadyExistsException(
+					"User "
+							+ u
+							+ " already in org.glite.security.voms.admin.persistence.error!");
 
 		caDN = DNUtil.normalizeDN(caDN);
-		
+
 		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
 		if (ca == null)
@@ -501,7 +502,6 @@ public class VOMSUserDAO {
 		return u;
 	}
 
-	
 	public VOMSUser create(VOMSUser usr, String caDN) {
 
 		checkNullFields(usr);
@@ -537,7 +537,6 @@ public class VOMSUserDAO {
 		HibernateFactory.getSession().save(usr);
 
 		usr.addToGroup(voGroup);
-		
 
 		EventManager.dispatch(new UserCreatedEvent(usr));
 		return usr;
@@ -602,9 +601,8 @@ public class VOMSUserDAO {
 		u.getPersonalInformations().clear();
 		u.getTasks().clear();
 
-		
 		DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
-		
+
 		HibernateFactory.getSession().delete(u);
 
 		EventManager.dispatch(new UserDeletedEvent(u));
@@ -648,15 +646,20 @@ public class VOMSUserDAO {
 		assert cert != null : "Certificate must be non-null!";
 
 		if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
-			throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
-		
-		if (!u.getCertificates().remove(cert)){
-			// This should never happen
-			throw new VOMSDatabaseException("Inconsistent database! It was not possible to remove certificate '"+cert+"' from user '"+u+"', even if it seemed user actually possessed such certificate.");
-		}
-		
-	}
+			throw new VOMSException(
+					"User has only one certificate registered, so it cannot be removed!");
 
+		if (!u.getCertificates().remove(cert)) {
+			// This should never happen
+			throw new VOMSDatabaseException(
+					"Inconsistent database! It was not possible to remove certificate '"
+							+ cert
+							+ "' from user '"
+							+ u
+							+ "', even if it seemed user actually possessed such certificate.");
+		}
+
+	}
 
 	public void dismissRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
@@ -665,22 +668,22 @@ public class VOMSUserDAO {
 
 	}
 
-	public VOMSUser findBySubject(String subject){
+	public VOMSUser findBySubject(String subject) {
 		if (subject == null)
 			throw new NullArgumentException("subject cannot be null!");
-		
+
 		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
-		
+
 		Query q = HibernateFactory.getSession().createQuery(query);
 
 		q.setString("subjectString", subject);
-		
+
 		VOMSUser u = (VOMSUser) q.uniqueResult();
 
 		return u;
-		
+
 	}
-	
+
 	public VOMSUser findByCertificate(String subject, String issuer) {
 
 		if (subject == null)
@@ -688,7 +691,7 @@ public class VOMSUserDAO {
 
 		if (issuer == null)
 			throw new NullArgumentException("issuer cannot be null!");
-		
+
 		String normalizedSubject = DNUtil.normalizeDN(subject);
 		String normalizedIssuer = DNUtil.normalizeDN(issuer);
 
@@ -872,10 +875,10 @@ public class VOMSUserDAO {
 		String sString = "%" + searchString + "%";
 
 		String queryString = "select distinct u from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "+
-				" or lower(u.institution) like lower(:searchString) "+
-				" or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "+
-				" order by u.surname asc";
+				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+				+ " or lower(u.institution) like lower(:searchString) "
+				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+				+ " order by u.surname asc";
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 
@@ -926,45 +929,48 @@ public class VOMSUserDAO {
 						+ "' has been already assigned to another user in this vo! Choose a different value.");
 
 	}
-	
+
 	public VOMSUser update(VOMSUser u) {
 
 		HibernateFactory.getSession().update(u);
 		return u;
 
 	}
-	
-	public List<VOMSUser> findExpiringUsers(Integer[] integers){
-	    
-	    Criteria crit = HibernateFactory.getSession().createCriteria(VOMSUser.class);
-	    
-	    int min = 0;
-	    int max = 0;
-	    
-	    for (int i: integers){
-		if (i < min)
-		    min =i;
-		if (i > max)
-		    max = i;
-	    }
-	    
-	    Calendar cal = Calendar.getInstance();
-	    
-	    Date now = cal.getTime();
-	    cal.add(Calendar.DAY_OF_YEAR, min);
-	    
-	    Date minDate = cal.getTime();
-	    
-	    cal.setTime(now);
-	    cal.add(Calendar.DAY_OF_YEAR, max);
-	    
-	    Date maxDate = cal.getTime();
-	    
-	    crit.add(Restrictions.or(Restrictions.between("endTime", now, minDate), Restrictions.between("endTime", now, maxDate)));
-	    crit.add(Restrictions.eq("suspended", false));
-	    
-	    return crit.list();
-	    
+
+	public List<VOMSUser> findExpiringUsers(Integer[] integers) {
+
+		Criteria crit = HibernateFactory.getSession().createCriteria(
+				VOMSUser.class);
+
+		int min = 0;
+		int max = 0;
+
+		for (int i : integers) {
+			if (i < min)
+				min = i;
+			if (i > max)
+				max = i;
+		}
+
+		Calendar cal = Calendar.getInstance();
+
+		Date now = cal.getTime();
+		cal.add(Calendar.DAY_OF_YEAR, min);
+
+		Date minDate = cal.getTime();
+
+		cal.setTime(now);
+		cal.add(Calendar.DAY_OF_YEAR, max);
+
+		Date maxDate = cal.getTime();
+
+		crit.add(Restrictions.or(Restrictions.between("endTime", now, minDate),
+				Restrictions.between("endTime", now, maxDate)));
+		
+		crit.add(Restrictions.eq("suspended", false));
+
+		return crit.list();
+
 	}
 
 }

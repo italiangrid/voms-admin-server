@@ -82,7 +82,7 @@ public interface VOMSConfigurationConstants {
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
 	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
-
+	
 	/**
 	 * Attribute Authority Properties
 	 */

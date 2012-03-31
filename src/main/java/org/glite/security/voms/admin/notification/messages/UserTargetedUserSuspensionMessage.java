@@ -42,9 +42,12 @@ public class UserTargetedUserSuspensionMessage extends
 		String voName = conf.getVOName();
 
 		setSubject("Membership suspension notification");
+		
 		context.put("voName", voName);
 		context.put("recipient", getRecipientList().get(0));
 		context.put("suspensionReason", suspensionReason);
+		context.put("user", user);
+		
 		super.buildMessage();
 	}
 

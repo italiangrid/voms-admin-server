@@ -37,9 +37,13 @@ Please sign the AUP before the following date:
 
 $expirationDate
 
-or your VO membership will be automatically suspended
+
+After this date your membership will be suspended
 and you will not be able to obtain VOMS credentials
-for the $voName VO.
+for the $voName VO. Note however that you can restore
+your membership at any time by simply signing again
+the AUP following the URL given above.
+
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

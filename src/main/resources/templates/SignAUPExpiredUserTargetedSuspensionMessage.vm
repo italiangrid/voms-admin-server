@@ -22,11 +22,15 @@ Dear $recipient,
 your membership of VO $voName has been suspended since you failed to sign 
 VO Acceptable Usage Policy (AUP) in time.
 
+IMPORTANT:
+
 Your membership is still maintained in the VO $voName database,
 however you will not be able to get VOMS credentials for such
 VO until you explicitly accept the VO AUP.
 
-The VO AUP could be accepted by pointing your browser to the
+No intervention by the VO administrator is required. 
+
+To restore your membership and accept the VO AUP point your browser to the 
 following URL:
   
 $aupAcceptanceURL
