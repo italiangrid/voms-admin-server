@@ -79,6 +79,14 @@
       <put-attribute name="content" value="/WEB-INF/p/user/users.jsp"/>
     </definition>
     
+    <definition name="suspendedUsers" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/suspendedUsers.jsp"/>
+    </definition>
+    
+    <definition name="expiredUsers" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.ListUsersPreparer">
+      <put-attribute name="content" value="/WEB-INF/p/user/expiredUsers.jsp"/>
+    </definition>
+    
     <definition name="userDetail" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/newUserDetail.jsp"/>
     </definition>

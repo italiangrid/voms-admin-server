@@ -52,7 +52,7 @@ public interface VOMSConfigurationConstants {
 	public static final String NOTIFICATION_DISABLED = "voms.notification.disable";
 
 	public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD = "voms.request.vo_membership.expired_request_purger.period";
-	public static final String VO_MEMBERSHIP_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
+	public static final String UNCONFIRMED_REQUESTS_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
 	public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY = "voms.request.vo_membership.warn_when_expired";
 
 	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
@@ -82,6 +82,11 @@ public interface VOMSConfigurationConstants {
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
 	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
+	public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
+	public static final String NOTIFICATION_WARNING_RESEND_PERIOD = "voms.membership.notification_resend_period";
+	public static final String PRESERVE_EXPIRED_MEMBERS = "voms.preserve_expired_members";
+	
+	
 	
 	/**
 	 * Attribute Authority Properties
@@ -119,5 +124,11 @@ public interface VOMSConfigurationConstants {
 	 * Axis Web services CSRF guard
 	 */
 	public static final String VOMS_CSRF_GUARD_LOG_ONLY = "voms.csrf.log_only";
+	
+	/**
+	 * VOMS Admin service hostname. This property is needed to properly compute the service
+	 * address when sending out email notifications.
+	 */
+	public static final String VOMS_SERVICE_HOSTNAME = "voms.hostname";
 
 }

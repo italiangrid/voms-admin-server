@@ -19,8 +19,20 @@
  *#
 Dear VO Administrator,
 
-this mail is to inform that membership for some VO users are is about to expire in VO $voName.
+this mail is to inform you that membership in VO $voName for the following users has EXPIRED:
 
+#foreach ( $member in $expiredMembers)
+
+$member.shortName membership has expired since $member.daysSinceExpiration days.#if ($member.suspended) The user membership is currently suspended.#else
+The user is still active can get VOMS attributes as usual.
+  
+#end
+
+#end
+
+Please evaluate whether each membership should be extended by pointing your browser to the following URL:
+
+$serviceManagementURL/user/expired.action
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

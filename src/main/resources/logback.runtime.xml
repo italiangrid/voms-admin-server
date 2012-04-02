@@ -30,6 +30,12 @@
      -->
     <logger name="org.glite.security.voms.admin" level="INFO" />
     
+    <!--
+         This logger controls the main validation service VOMS Admin log messages.
+         Set the level to DEBUG for maximum detail.
+    -->
+    <logger name="org.glite.security.voms.admin.core.validation" level="DEBUG"/>
+    
     <!-- 
         This logger controls the log messages produced when exceptions are raised by a call to the voms admin
         web services. Set the level to DEBUG for maximum detail.  

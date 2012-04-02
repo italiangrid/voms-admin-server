@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.notification.messages;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
+import org.glite.security.voms.admin.notification.NotificationUtil;
 
 public abstract class AbstractVelocityNotification extends
 		VelocityEmailNotification {
@@ -38,11 +39,19 @@ public abstract class AbstractVelocityNotification extends
 		context.put(key, value);
 	}
 
+	protected void setupContext(){
+		context.put("serviceManagementURL", NotificationUtil.getServiceURL());
+	}
+	
+	
 	@Override
 	protected void buildMessage() {
 
+		setupContext();
+		
 		String templateFileName = String.format("/%s/%s.vm",
 				getTemplatePrefix(), getClass().getSimpleName());
+		
 		setTemplateFile(templateFileName);
 
 		buildMessageFromTemplate(context);
@@ -56,6 +65,7 @@ public abstract class AbstractVelocityNotification extends
 	public void setTemplatePrefix(String templatePrefix) {
 		this.templatePrefix = templatePrefix;
 	}
+	
 
 	@Override
 	public void setSubject(String subject) {

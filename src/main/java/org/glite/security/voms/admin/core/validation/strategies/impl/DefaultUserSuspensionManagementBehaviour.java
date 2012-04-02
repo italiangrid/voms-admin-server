@@ -18,9 +18,11 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.core.validation.strategies;
+package org.glite.security.voms.admin.core.validation.strategies.impl;
 
 import org.glite.security.voms.admin.core.validation.UserSuspensionManagementContext;
+import org.glite.security.voms.admin.core.validation.strategies.RestoreUserStrategy;
+import org.glite.security.voms.admin.core.validation.strategies.SuspendUserStrategy;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.UserRestoredEvent;
 import org.glite.security.voms.admin.event.user.UserSuspendedEvent;

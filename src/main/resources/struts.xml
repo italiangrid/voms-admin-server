@@ -27,9 +27,6 @@
 
 	 
 	<constant name="struts.mapper.class" value="org.glite.security.voms.admin.view.mapper.PrefixBasedActionMapper"/>
-	
-	
-	 
 	<constant name="struts.mapper.prefixMapping" value="/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
 	
 	 
@@ -124,7 +121,7 @@
     
         
 		<default-interceptor-ref name="authenticatedStack" />
-        
+	   
         <global-results>
           <result name="invalid.token">tokenError</result>
           <result name="exception">exception</result>
@@ -138,6 +135,7 @@
           <exception-mapping result="authzException" exception="org.glite.security.voms.admin.error.VOMSAuthorizationException"/>
           <exception-mapping result="notFoundException" exception="org.hibernate.ObjectNotFoundException"/>
         </global-exception-mappings>
+     
     </package>
     
     <package name="json" extends="base">

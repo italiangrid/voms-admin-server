@@ -1,4 +1,4 @@
-/**
+#*
  * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
  * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
@@ -16,34 +16,22 @@
  *
  * Authors:
  * 	Andrea Ceccanti (INFN)
- */
+ *#
+Dear VO Administrator,
 
-package org.glite.security.voms.admin.notification.messages;
+this mail is to inform you that membership in VO $voName for the following users is ABOUT
+TO EXPIRE:
 
-import java.util.List;
+#foreach ( $user in $expiringUsers)
+#if ($user.daysBeforeEndTime > 0)
+$user.shortName membership will expire in $user.daysBeforeEndTime days.
+#end
+#end
 
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
+Please evaluate whether extending each membership by pointing your browser to
+the following URL:
 
-public class MembershipExpirationWarningMessage extends
-		AbstractVelocityNotification {
+$serviceManagementURL
 
-	List<VOMSUser> users;
-
-	public MembershipExpirationWarningMessage(List<VOMSUser> users) {
-		this.users = users;
-	}
-
-	@Override
-	protected void buildMessage() {
-
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
-
-		setSubject(String.format("VO %s Membership expiration warning", voName));
-		context.put("voName", voName);
-
-		super.buildMessage();
-	}
-
-}
+Your sincerely,
+Voms-Admin registration service for VO $voName

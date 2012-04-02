@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -831,6 +832,20 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		this.creationTime = creationTime;
 	}
 
+	
+	public long getDaysBeforeEndTime(){
+		
+		Date now = new Date();
+		
+		if (now.after(getEndTime()))
+			return -1;
+		
+		long timeDiff = getEndTime().getTime() - now.getTime();
+		
+		return TimeUnit.MILLISECONDS.toDays(timeDiff);
+		
+	}
+	
 	public Date getEndTime() {
 
 		return endTime;
@@ -1186,6 +1201,19 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 	public boolean hasExpired(){
 		
 		return endTime.before(new Date());
+	}
+	
+	public long getDaysSinceExpiration(){
+		
+		if (hasExpired()){
+			
+			Date now = new Date();
+			long timediff = now.getTime() - getEndTime().getTime();
+			
+			return TimeUnit.MILLISECONDS.toDays(timediff);
+		}
+		
+		return -1L;
 	}
 
 	public static VOMSUser fromRequesterInfo(RequesterInfo ri) {

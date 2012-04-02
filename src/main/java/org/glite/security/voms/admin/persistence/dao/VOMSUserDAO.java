@@ -64,6 +64,7 @@ import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -860,6 +861,15 @@ public class VOMSUserDAO {
 		HibernateFactory.getSession().save(u);
 	}
 
+	public List<VOMSUser> findSuspendedUsers(){
+		
+		String queryString = "from VOMSUser u where u.suspended = true";
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+
+		return q.list();		
+	}
+	
+
 	public SearchResults search(String searchString, int firstResults,
 			int maxResults) {
 
@@ -968,6 +978,8 @@ public class VOMSUserDAO {
 				Restrictions.between("endTime", now, maxDate)));
 		
 		crit.add(Restrictions.eq("suspended", false));
+		
+		crit.addOrder(Order.asc("endTime"));
 
 		return crit.list();
 

@@ -368,7 +368,8 @@ class UpgradeVO(ConfigureAction):
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
-             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime']
+             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
+             'HOSTNAME' : self.user_options['hostname']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -655,7 +656,8 @@ class InstallVOAction(ConfigureAction):
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
-             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime']
+             'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
+             'HOSTNAME' : self.user_options['hostname']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())

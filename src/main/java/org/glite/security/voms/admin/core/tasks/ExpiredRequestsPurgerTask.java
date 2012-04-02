@@ -20,6 +20,7 @@
 package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -44,8 +45,8 @@ public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceT
 		
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		requestLifetime = conf.getLong(VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRATION_TIME,
-				300);
+		requestLifetime = conf.getLong(VOMSConfigurationConstants.UNCONFIRMED_REQUESTS_EXPIRATION_TIME,
+				TimeUnit.DAYS.toSeconds(7));
 		
 		warnUsers = conf.getBoolean(VOMSConfigurationConstants.VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY, false);
 		

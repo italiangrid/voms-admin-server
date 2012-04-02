@@ -1,27 +1,10 @@
-/**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
- */
-
-package org.glite.security.voms.admin.core.validation;
+package org.glite.security.voms.admin.core.validation.strategies.impl;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.core.validation.ValidationManager;
+import org.glite.security.voms.admin.core.validation.strategies.AUPFailingMembersLookupStrategy;
+import org.glite.security.voms.admin.core.validation.strategies.HandleAUPFailingMembersStrategy;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -38,11 +21,9 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBehaviour{
-	
-	public static final Logger log = LoggerFactory.getLogger(DefaultMembershipCheckBehaviour.class);
+public class SuspendAUPFailingMembersStrategy implements HandleAUPFailingMembersStrategy, AUPFailingMembersLookupStrategy{
 
-	protected SendWarningToExpiringMembersStrategy expiringMembersStrategy = new SendWarningToExpiringMembersStrategy();
+	public static final Logger log = LoggerFactory.getLogger(SuspendAUPFailingMembersStrategy.class);
 	
 	
 	public List<VOMSUser> findAUPFailingMembers() {
@@ -53,14 +34,7 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 		return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
 		
 	}
-	
-	public List<VOMSUser> findExpiredMembers() {
-		
-		return VOMSUserDAO.instance().findExpiredUsers();
-		
-	}
 
-	
 	protected synchronized void handleAUPFailingMember(VOMSUser u){
 		
 		AUPDAO aupDAO = HibernateDAOFactory.instance().getAUPDAO();
@@ -111,40 +85,4 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 			handleAUPFailingMember(u);
 		
 	}
-
-	public void handleExpiredMembers(List<VOMSUser> expiredMembers) {
-		
-		for (VOMSUser u : expiredMembers) {
-
-			if (!u.isSuspended()) {
-
-				log.debug("Suspending user '" + u
-						+ "' since its membership has expired.");
-				
-				ValidationManager.instance().suspendUser(u, SuspensionReason.MEMBERSHIP_EXPIRATION);
-
-			}else{
-			    
-			    log.debug("User {} has expired but is currently already suspended.", u);
-			}
-		}
-	}
-
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.SendWarningToExpiringMembersStrategy#findExpiringMembers()
-	 */
-	public List<VOMSUser> findExpiringMembers() {
-	    return expiringMembersStrategy.findExpiringMembers();
-	}
-
-	/**
-	 * @param expiringMembers
-	 * @see org.glite.security.voms.admin.core.validation.SendWarningToExpiringMembersStrategy#handleMembersAboutToExpire(java.util.List)
-	 */
-	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
-	    expiringMembersStrategy.handleMembersAboutToExpire(expiringMembers);
-	}
-	
-	
 }

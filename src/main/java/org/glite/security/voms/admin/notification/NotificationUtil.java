@@ -50,6 +50,18 @@ public class NotificationUtil {
 
     public static final Logger log = LoggerFactory
 	    .getLogger(NotificationUtil.class);
+    
+    
+    
+    public static String getServiceURL(){
+    	
+    	VOMSConfiguration conf = VOMSConfiguration.instance(); 
+    	String hostname = conf.getServiceHostname();
+    	String voName = conf.getVOName();
+    	
+    	return String.format("https://%s:8443/voms/%s", hostname, voName);
+    	
+    }
 
     /**
      * This method resolves the email address for a given VOMS administrator. For "normal" administrators, the email address stored in the database

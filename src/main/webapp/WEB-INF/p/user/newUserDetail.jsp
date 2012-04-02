@@ -35,19 +35,11 @@
 			<voms:formatDN dn="${userDN}" fields="CN"/>
 		</span>
 	</s:else>
-</div>
+	
 
-<s:if test="suspended">
-<div class="userSuspensionInfo">
-  This user is currently <span class="suspended">suspended</span>.
-  <div>Reason: <span class="suspensionReason"> ${suspensionReason }</span></div>
-</div>
-</s:if>
+
 <voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
 <voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
-
-
-<tiles2:insertTemplate template="membershipExpiration.jsp"/>
 
 <div class="userAdminActions">
   <s:if test="#attr.canSuspend">
@@ -78,6 +70,19 @@
 	
 	</s:if>
 </div>
+
+</div>
+<s:if test="suspended">
+<div class="userSuspensionInfo">
+  This user is currently <span class="suspended">suspended</span>.
+  <div>Reason: <span class="suspensionReason"> ${suspensionReason }</span></div>
+</div>
+</s:if>
+
+
+
+<tiles2:insertTemplate template="membershipExpiration2.jsp"/>
+
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute name="panelName" value="Personal information"/>
 </tiles2:insertTemplate>

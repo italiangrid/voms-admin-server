@@ -17,37 +17,35 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.view.actions.user;
+
+package org.glite.security.voms.admin.notification.messages;
 
 import java.util.List;
 
-import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserBulkActionSupport extends BaseAction {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	List<Long> userIds;
+public class MembershipExpirationWarning extends
+		AbstractVelocityNotification {
+
+	String subject;
+	List<VOMSUser> users;
+
+	public MembershipExpirationWarning(List<VOMSUser> users) {
+		this.users = users;
+	}
 
 	@Override
-	public void validate() {
-		
-		if (userIds == null)
-			addActionError("No users selected!");
-		else if (userIds.contains("ognl.NoConversionPossible"))
-			addActionError("No users selected!");
-	}
-	
-	
-	public List<Long> getUserIds() {
-		return userIds;
+	protected void buildMessage() {
+
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		String voName = conf.getVOName();
+
+		setSubject(String.format("Membership expiration notice for VO %s.", voName));
+		context.put("voName", voName);
+		context.put("expiringUsers", users);
+
+		super.buildMessage();
 	}
 
-	public void setUserIds(List<Long> userIds) {
-		this.userIds = userIds;
-	}
-	
 }

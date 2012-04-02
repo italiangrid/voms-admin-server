@@ -120,5 +120,17 @@ public class SearchResults {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
+	
+	public static SearchResults fromList(List<?> results){
+		
+		SearchResults res = new SearchResults();
+		res.setResults(results);
+		res.setCount(results.size());
+		res.setFirstResult(0);
+		res.setResultsPerPage(results.size());
+		
+		return res;
+		
+	}
 
 }

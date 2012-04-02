@@ -24,5 +24,20 @@ the following reason:
 
 $suspensionReason
 
+While suspended you will not be entitled to obtain VOMS attributes for this VO, and
+as such submit Grid jobs or access resources assigned to this VO.
+
+#if ($suspensionReason == 'User failed to sign the AUP in time.')
+IMPORTANT:
+Note that you can restore your membership at *anytime*, without requiring the VO Admin intervention,
+by signing the VO Acceptable Usage Policy.
+In order to do so, point your browser to:
+
+${serviceManagementURL}/sign-aup
+#end
+#if ($suspensionReason == 'User membership has expired.')
+Contact the VO admnistrator for further information.
+#end
+
 Your sincerely,
 Voms-Admin registration service for VO $voName

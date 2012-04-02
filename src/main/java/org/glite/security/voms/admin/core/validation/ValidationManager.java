@@ -22,10 +22,12 @@ package org.glite.security.voms.admin.core.validation;
 
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
-import org.glite.security.voms.admin.core.validation.strategies.DefaultUserSuspensionManagementBehaviour;
 import org.glite.security.voms.admin.core.validation.strategies.RequestValidationStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.RestoreUserStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.SuspendUserStrategy;
+import org.glite.security.voms.admin.core.validation.strategies.impl.DefaultMembershipCheckBehaviour;
+import org.glite.security.voms.admin.core.validation.strategies.impl.DefaultRequestValidationBehaviour;
+import org.glite.security.voms.admin.core.validation.strategies.impl.DefaultUserSuspensionManagementBehaviour;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;

@@ -87,7 +87,7 @@ No AUP acceptance records found.
   	
   		<s:if test="#attr.canSuspend">
 		
-		
+		     
 			<s:if test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
 				
 				<s:form action="trigger-reacceptance" 
@@ -100,17 +100,15 @@ No AUP acceptance records found.
 					value="%{'Request AUP reacceptance'}"/>
 				</s:form>
 			
-			
-			
-			</s:if>
+			</s:if> 
 		
 			
-				<s:form action="create-acceptance-record" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;" theme="simple" cssStyle="display: inline">
+			<%-- 	<s:form action="create-acceptance-record" onsubmit="ajaxSubmit(this,'aup-history-content'); return false;" theme="simple" cssStyle="display: inline">
 					<s:token/>
 					<s:hidden name="userId" value="%{model.id}" />
 					<s:submit 
 						value="%{'Sign AUP on behalf of user'}"	/>
-				</s:form>
+				</s:form> --%>
 			
 		
 		</s:if>

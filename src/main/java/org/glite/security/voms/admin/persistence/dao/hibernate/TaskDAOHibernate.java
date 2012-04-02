@@ -103,7 +103,7 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
 
     public SignAUPTask createSignAUPTask(AUP aup) {
 
-	int lifetime = VOMSConfiguration.instance().getInt(VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME, 1);
+	int lifetime = VOMSConfiguration.instance().getInt(VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME, 15);
 	
 	Calendar cal = Calendar.getInstance();
 	

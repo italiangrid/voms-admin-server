@@ -19,22 +19,28 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import java.util.Date;
+
+import org.glite.security.voms.admin.core.validation.ValidationUtil;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 public class RestoreUserOperation extends BaseVomsOperation {
 
 	VOMSUser user;
 
-	private RestoreUserOperation(Long userId){
+	protected RestoreUserOperation(Long userId){
 		
 		user = VOMSUserDAO.instance().findById(userId);
 	}
 	
-	private RestoreUserOperation(VOMSUser u) {
+	protected RestoreUserOperation(VOMSUser u) {
 		user = u;
 	}
 
@@ -51,7 +57,24 @@ public class RestoreUserOperation extends BaseVomsOperation {
 	@Override
 	protected Object doExecute() {
 
-		user.restore();
+		if (user.isSuspended()){
+			
+			if (user.getSuspensionReason().equals(SuspensionReason.FAILED_TO_SIGN_AUP.getMessage())){
+				AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+				
+				// Sign AUP on behalf of the user
+				VOMSUserDAO.instance().signAUP(user, aupDAO.getVOAUP());
+				
+			}else if (user.getSuspensionReason().equals(SuspensionReason.MEMBERSHIP_EXPIRATION.getMessage()) && user.hasExpired()){
+				
+				// Extend membership
+				Date expirationDate = ValidationUtil.membershipExpirationDateStartingFromNow();
+				user.setEndTime(expirationDate);
+			}
+				
+			user.restore();		
+			
+		}
 
 		return null;
 	}

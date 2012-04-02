@@ -96,7 +96,7 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>,
 	public void prepare() throws Exception {
 		if (aup == null) {
 			AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			aup = dao.findById(aupId, false);
+			aup = dao.getVOAUP();
 		}
 	}
 

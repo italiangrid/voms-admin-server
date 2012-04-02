@@ -24,7 +24,9 @@ import java.util.Date;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 public class SetMembershipExpirationOperation extends BaseVomsOperation {
 
@@ -47,6 +49,14 @@ public class SetMembershipExpirationOperation extends BaseVomsOperation {
 	protected void setupPermissions() {
 		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
 
+	}
+	
+	
+	public static SetMembershipExpirationOperation instance(Long userId, Date expirationDate){
+		
+		VOMSUser user = VOMSUserDAO.instance().findById(userId);
+		return new SetMembershipExpirationOperation(user, expirationDate);
+		
 	}
 
 }

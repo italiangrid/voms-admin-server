@@ -1,43 +1,74 @@
+## The VOMS service hostname
+voms.hostname = @HOSTNAME@
+
 ## Should the registration service be enabled?
 voms.request.webui.enabled = @WEBUI.ENABLED@
 
-## Should the VOMS SAML service be enabled? (disabled by default)
-## 
-## voms.aa.activate_saml_endpoint = true
-
-
-## voms ca updater configuration
+## Which files should VOMS Admin consider as trust anchors
 voms.cafiles = @CA.FILES@
 
-# voms ca updater period in seconds
+# The CA update period in seconds. 
 voms.cafiles.period = 1800
 
-## voms notification facility
+## VOMS notification settings 
+
+### The email address that will be used as the sender for VOMS Admin notification messages.  
 voms.notification.email-address = @NOTIFICATION.EMAIL_ADDRESS@
+
+### The SMTP server
 voms.notification.smtp-server = @NOTIFICATION.SMTP_SERVER@
+
+### SMTP authentication settings
 # voms.notification.username = ...
 # voms.notification.password = ...
 # voms.notification.use_tls = false
 
-## should the vo be configured to be read accessible for authenticated clients?
-## (mkgridmap clients need this!)
+## Sets whether the VO should be configured to be read accessible for authenticated clients.
+## (mkgridmap clients need this to be TRUE)
 voms.read-access-for-authenticated-clients = @READ_ACCESS@  
  
-## voms trusted admin settings
+## The default VOMS administrator
 voms.trusted.admin.subject =  @TRUSTED_ADMIN.SUBJECT@
 voms.trusted.admin.ca = @TRUSTED_ADMIN.CA@
 
-## voms pagination options
-voms.pagination.user.max.results.per.page = 20
-voms.pagination.group.max.results.per.page = 20
-voms.pagination.role.max.results.per.page = 10
-voms.pagination.attributes.max.results.per.page = 50
+## Membership Validation options
 
-## voms request options
+## Default VO membership lifetime duration (in months).
+## This setting is used to compute the default membership expiration date
+## for newly created users. The default value is  12 months.
+voms.membership.default_lifetime = 12
 
-## Time in seconds that unconfirmed requests are kept
-## inside the voms database.
-voms.request.vo_membership.lifetime = 86400
+## Period for the membership check background thread (in seconds).
+## Default value is every 6 hours.
+voms.task.membership_check.period =  21600
+
+## Warning period duration in days. VOMS Admin will notify of 
+## users about to expire in the next number of days expressed by 
+## this configuration option.  
+voms.membership.expiration_warning_period = 30
+
+## Membership expiration grace period (in days). In the grace period
+## the user will be maintained active even if its membership has expired.
+## Note that this option has no effect if the voms.preserve_expired_members
+## option is set to true.
+voms.membership.expiration_grace_period = 7
+
+## Time (in days) that should pass between consecutive warning expiration messages sent
+## to VO administrators to inform about expired and expiring VO members.
+## Note that state about sent notifications is not stored in the database, so the counting
+## is zeroed at every service restart.
+voms.membership.notification_resend_period = 1
+
+## When this option value is true, expired users are NOT suspended.
+## VO administrators are always notified of expired and about to expire
+## members via mail.
+voms.preserve_expired_members = false
+
+## VOMS registration service options
+
+## Time (in seconds) that unconfirmed membership requests are kept
+## inside the voms database. The default value is 7 days.
+voms.request.vo_membership.lifetime = 604800
 
 ## Should voms-admin send a warning email to the user when
 ## his/her uncorfimed request is removed from the database?
@@ -48,11 +79,35 @@ voms.request.vo_membership.warn_when_expired = true
 ## to the "Email=" format used by default?
 voms.mkgridmap.translate_dn_email_format = false
 
-## Should the webui always show full DNs (instead of just the first CN)?
-# voms.webapp.always-show-full-dns = true
-
 ## AUP options
-
 voms.aup.vo_aup.initial_url =  @VO_AUP_URL@
+
+## The time (in days) given to users to sign the AUP, after being notified, before being suspended.
+voms.aup.sign_aup_task_lifetime = 7
+
+## Attribute authority options
+
+## Should the VOMS SAML service be enabled? (disabled by default)
+## voms.aa.activate_saml_endpoint = true
+
+## The X509 certificate and key that will be used to sign SAML assertions and X.509 attribute certificates.
+## Set these options if you activate the SAML endpoint.
+# voms.aa.certificate = 
+# voms.aa.key = 
+
+## The lifetime of issued SAML assertion (in seconds)
+# voms.saml.max_assertion_lifetime = 86400
+
+## VOMS compulsory group membership setting. Default value is true. 
+## Set this to false to have a standard SAML AA behaviour.
+# voms.aa.compulsory_group_membership = true
+
+
+## Screen pagination options
+
+voms.pagination.user.max.results.per.page = 50
+voms.pagination.group.max.results.per.page = 50
+voms.pagination.role.max.results.per.page = 50
+voms.pagination.attributes.max.results.per.page = 50
 
 #### Add other options after this line

@@ -1187,7 +1187,8 @@ public final class VOMSConfiguration {
 		
 	}
 	
-	
-	
-	
+	public String getServiceHostname(){
+		
+		return config.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, "localhost");
+	}
 }

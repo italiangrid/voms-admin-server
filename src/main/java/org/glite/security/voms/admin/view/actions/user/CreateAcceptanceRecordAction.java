@@ -31,29 +31,31 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
-@Results( {
+@Results({
 		@Result(name = BaseAction.SUCCESS, location = "aupHistory.jsp"),
 		@Result(name = BaseAction.INPUT, location = "aupHistory.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="aupHistory.jsp")})
-
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "aupHistory.jsp")
+		})
 @InterceptorRef(value = "authenticatedStack", params = {
 		"token.includeMethods", "execute" })
 public class CreateAcceptanceRecordAction extends UserActionSupport {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    @Override
-    public String execute() throws Exception {
-        
-	AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-	
-	new CreateAcceptanceRecordOperation(aupDAO.getVOAUP(), getModel()).execute();
-	addActionMessage("AUP acceptance record created.");
-	
-        return SUCCESS;
-    }
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String execute() throws Exception {
+
+		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+		new CreateAcceptanceRecordOperation(aupDAO.getVOAUP(), getModel())
+				.execute();
+
+		addActionMessage("AUP acceptance record created.");
+
+		return SUCCESS;
+	}
 
 }

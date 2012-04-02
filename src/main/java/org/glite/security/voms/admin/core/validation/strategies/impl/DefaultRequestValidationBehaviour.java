@@ -18,8 +18,10 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.core.validation;
+package org.glite.security.voms.admin.core.validation.strategies.impl;
 
+import org.glite.security.voms.admin.core.validation.RequestValidationContext;
+import org.glite.security.voms.admin.core.validation.RequestValidationResult;
 import org.glite.security.voms.admin.core.validation.strategies.RequestValidationStrategy;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
