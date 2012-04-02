@@ -62,7 +62,7 @@ public class SuspendAUPFailingMembersStrategy implements HandleAUPFailingMembers
 					if (tt.getAup().equals(aup)
 							&& tt.getStatus().equals(TaskStatus.EXPIRED)
 							&& !u.getSuspended()) {
-						log.info("Suspeding user '" + u
+						log.info("Suspending user '" + u
 								+ "' that failed to sign AUP in time");
 
 						ValidationManager.instance().suspendUser(u, SuspensionReason.FAILED_TO_SIGN_AUP);
