@@ -76,14 +76,14 @@ public class GracePeriodExpiredMembersStrategy implements
 				
 				if (TimeUnit.MILLISECONDS.toDays(timeDiff) > gracePeriod){
 					
-					log.debug("Suspending user '" + u
+					log.info("Suspending user '" + u
 							+ "' since its membership has expired and grace period is over.");
 					
 					ValidationManager.instance().suspendUser(u, SuspensionReason.MEMBERSHIP_EXPIRATION);
 					
 				}else{
 					
-					log.debug("User '{}'not suspended due to grace period.", u);
+					log.debug("User '{}' not suspended due to grace period.", u);
 					
 				}
 				
