@@ -36,6 +36,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -56,7 +57,8 @@ public abstract class Task {
 
 	@Id
 	@Column(name = "task_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_TASK_SEQ")
+	@SequenceGenerator(name="VOMS_TASK_SEQ", sequenceName="VOMS_TASK_SEQ")
 	Long id;
 
 	@ManyToOne(optional = false)

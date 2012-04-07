@@ -27,9 +27,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -47,7 +49,8 @@ public class LogRecord implements Serializable, Comparable<LogRecord> {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_TASK_LR_SEQ")
+	@SequenceGenerator(name="VOMS_TASK_LR_SEQ", sequenceName="VOMS_TASK_LR_SEQ")
 	Long id;
 
 	@Enumerated(EnumType.STRING)

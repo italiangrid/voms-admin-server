@@ -30,7 +30,9 @@
 	<class name="org.glite.security.voms.admin.persistence.model.Tag" table="tags">
 	
 		<id name="id" column="id" type="long">
-			<generator class="native"/>
+			<generator class="native">
+				<param name="sequence">VOMS_TAG_SEQ</param>
+			</generator>
 		</id>
 	
 		<property name="name" type="string" update="true" insert="true"

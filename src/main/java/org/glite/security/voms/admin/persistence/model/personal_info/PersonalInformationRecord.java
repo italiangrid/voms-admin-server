@@ -21,9 +21,11 @@ package org.glite.security.voms.admin.persistence.model.personal_info;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -31,7 +33,8 @@ import javax.persistence.Table;
 public class PersonalInformationRecord {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_PI_SEQ")
+	@SequenceGenerator(name="VOMS_PI_SEQ", sequenceName="VOMS_PI_SEQ")
 	Long id;
 
 	@ManyToOne

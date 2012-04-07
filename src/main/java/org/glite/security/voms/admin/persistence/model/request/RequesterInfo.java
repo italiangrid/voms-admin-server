@@ -26,9 +26,11 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -46,7 +48,8 @@ public class RequesterInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_REQ_INFO_SEQ")
+	@SequenceGenerator(name="VOMS_REQ_INFO_SEQ", sequenceName="VOMS_REQ_INFO_SEQ")
 	Long id;
 
 	@Column(nullable = false)

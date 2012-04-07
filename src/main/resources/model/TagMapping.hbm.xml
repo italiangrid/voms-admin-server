@@ -29,7 +29,9 @@
 	<class name="org.glite.security.voms.admin.persistence.model.TagMapping" table="tag_mapping">
 
 		<id name="id" column="mapping_id">
-			<generator class="native"/>
+			<generator class="native">
+				<param name="sequence">VOMS_TAG_MAP_SEQ</param>
+			</generator>
 		</id>
 		
 		<natural-id>

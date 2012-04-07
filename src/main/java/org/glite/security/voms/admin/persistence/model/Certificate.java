@@ -33,6 +33,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -54,6 +55,7 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_CERT_SEQ")
+	@SequenceGenerator(name="VOMS_CERT_SEQ", sequenceName="VOMS_CERT_SEQ")
 	protected Long id;
 
 	@Column(name = "subject_string", nullable = false)

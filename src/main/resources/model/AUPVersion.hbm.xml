@@ -29,7 +29,9 @@
 	<class name="org.glite.security.voms.admin.persistence.model.AUPVersion" table="aup_version">	
 		
 		<id name="id" type="long">
-			<generator class="native"/>
+			<generator class="native">
+				<param name="sequence">VOMS_AUP_VER_SEQ</param>
+			</generator>
 		</id>
 	
         <natural-id>
