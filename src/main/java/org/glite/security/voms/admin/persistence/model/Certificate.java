@@ -53,7 +53,7 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_CERT_SEQ")
 	protected Long id;
 
 	@Column(name = "subject_string", nullable = false)
