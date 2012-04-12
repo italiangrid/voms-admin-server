@@ -1191,4 +1191,42 @@ public final class VOMSConfiguration {
 		
 		return config.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, "localhost");
 	}
+	
+	public int getExpiringUsersWarningInterval() {
+
+		String warningPeriodInDays = VOMSConfiguration
+				.instance()
+				.getString(
+						VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD,
+						VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+
+		Integer i;
+
+		try {
+
+			i = Integer.parseInt(warningPeriodInDays);
+			
+		}	catch (NumberFormatException e) {
+
+			log.error(
+					"Error converting {} to an integer. The {} property should contain a positive integer! Using the default value instead.",
+					warningPeriodInDays);
+
+			return Integer
+					.parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+
+		}
+
+		if (i <= 0) {
+
+			log.warn(
+					"Negative warning period set for the property {}. Using the default value instead.",
+					VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD);
+
+				return Integer
+						.parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+			}
+		
+		return i;
+	}
 }

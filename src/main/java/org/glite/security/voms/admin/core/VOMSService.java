@@ -33,6 +33,7 @@ import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
+import org.glite.security.voms.admin.core.tasks.UserStatsTask;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
@@ -145,6 +146,8 @@ public final class VOMSService {
 		es.startBackgroundTask(new ExpiredRequestsPurgerTask(), 
 				VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 
 				300L);
+		
+		es.startBackgroundTask(new UserStatsTask(), VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, UserStatsTask.DEFAULT_PERIOD_IN_MILLISECONDS);
 	}
 
 	protected static void bootstrapAttributeAuthorityServices() {
@@ -213,6 +216,7 @@ public final class VOMSService {
 		
 		HibernateFactory.shutdown();
 
+		
 		log.info("VOMS admin stopped .");
 	}
 

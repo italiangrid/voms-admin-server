@@ -57,14 +57,15 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -192,6 +193,20 @@ public class VOMSUserDAO {
 
 		return q.list();
 
+	}
+	
+	public Long countExpiredUsers(){
+		
+		Date now = new Date();
+
+		String queryString = "select count(*) from VOMSUser u where u.endTime < :now";
+		
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+
+		q.setDate("now", now);
+
+		return (Long) q.uniqueResult();
+		
 	}
 
 	public List<VOMSUser> findExpiredUsers() {
@@ -447,14 +462,14 @@ public class VOMSUserDAO {
 
 	}
 
-	public int countUsers() {
+	public Long countUsers() {
 
 		Query q = HibernateFactory.getSession().createQuery(
 				"select count(*) from VOMSUser");
 
 		Long count = (Long) q.uniqueResult();
 
-		return count.intValue();
+		return count;
 	}
 
 	public VOMSUser create(String dn, String caDN, String cn, String certURI,
@@ -759,7 +774,7 @@ public class VOMSUserDAO {
 		q.setFirstResult(firstResults);
 		q.setMaxResults(maxResults);
 
-		res.setCount(countUsers());
+		res.setCount(countUsers().intValue());
 		res.setResults(q.list());
 		res.setFirstResult(firstResults);
 		res.setResultsPerPage(maxResults);
@@ -869,6 +884,15 @@ public class VOMSUserDAO {
 		return q.list();		
 	}
 	
+	public Long countSuspendedUsers(){
+		
+		String queryString = "select count(*) from VOMSUser u where u.suspended = true";
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+		
+		return (Long) q.uniqueResult();
+		
+	}
+	
 
 	public SearchResults search(String searchString, int firstResults,
 			int maxResults) {
@@ -946,39 +970,43 @@ public class VOMSUserDAO {
 		return u;
 
 	}
+	
 
-	public List<VOMSUser> findExpiringUsers(Integer[] integers) {
-
+	public Long countExpiringUsers(Integer intervalInDays) {
 		Criteria crit = HibernateFactory.getSession().createCriteria(
 				VOMSUser.class);
-
-		int min = 0;
-		int max = 0;
-
-		for (int i : integers) {
-			if (i < min)
-				min = i;
-			if (i > max)
-				max = i;
-		}
 
 		Calendar cal = Calendar.getInstance();
 
 		Date now = cal.getTime();
-		cal.add(Calendar.DAY_OF_YEAR, min);
+		cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
 
-		Date minDate = cal.getTime();
+		Date intervalDate = cal.getTime();
 
-		cal.setTime(now);
-		cal.add(Calendar.DAY_OF_YEAR, max);
-
-		Date maxDate = cal.getTime();
-
-		crit.add(Restrictions.or(Restrictions.between("endTime", now, minDate),
-				Restrictions.between("endTime", now, maxDate)));
-		
+		crit.add(Restrictions.between("endTime", now, intervalDate));
 		crit.add(Restrictions.eq("suspended", false));
 		
+		crit.setProjection(Projections.rowCount());
+		
+		return (Long)crit.list().get(0);
+		
+	}
+	
+	
+	public List<VOMSUser> findExpiringUsers(Integer intervalInDays) {
+
+		Criteria crit = HibernateFactory.getSession().createCriteria(
+				VOMSUser.class);
+
+		Calendar cal = Calendar.getInstance();
+
+		Date now = cal.getTime();
+		cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
+
+		Date intervalDate = cal.getTime();
+
+		crit.add(Restrictions.between("endTime", now, intervalDate));
+		crit.add(Restrictions.eq("suspended", false));
 		crit.addOrder(Order.asc("endTime"));
 
 		return crit.list();

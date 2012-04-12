@@ -82,6 +82,7 @@ public interface VOMSConfigurationConstants {
 	public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
 	public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
 	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
+	public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE = "15";
 	public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
 	public static final String NOTIFICATION_WARNING_RESEND_PERIOD = "voms.membership.notification_resend_period";
 	public static final String PRESERVE_EXPIRED_MEMBERS = "voms.preserve_expired_members";
@@ -130,5 +131,21 @@ public interface VOMSConfigurationConstants {
 	 * address when sending out email notifications.
 	 */
 	public static final String VOMS_SERVICE_HOSTNAME = "voms.hostname";
+	
+	/**
+	 * The local path where monitored stats properties will be stored. 
+	 */
+	public static final String MONITORING_USER_STATS_BASE_PATH = "voms.monitoring.user_stats_base_path";
+	
+	/**
+	 * The file name of the monitored stats properties.
+	 */
+	public static final String MONITORING_USER_STATS_FILE_NAME = "voms.monitoring.user_stats_filename";
+	
+	/**
+	 * How often (in minutes) the stats will be updated
+	 * 
+	 */
+	public static final String MONITORING_USER_STATS_UPDATE_PERIOD = "voms.monitoring.user_stats_period";
 
 }

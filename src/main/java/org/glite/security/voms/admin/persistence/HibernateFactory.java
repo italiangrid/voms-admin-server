@@ -19,6 +19,11 @@
  */
 package org.glite.security.voms.admin.persistence;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -71,11 +76,48 @@ public class HibernateFactory {
 	public static synchronized void shutdown(){
 	    
 	    if (sessionFactory != null)
-		sessionFactory.close();
+	    	sessionFactory.close();
+	    
+	    unregisterSQLDrivers();
+	    cleanupThreadLocals();
 	    
 	}
 	
+	protected static void unregisterSQLDrivers(){
+		
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+	    
+	    while(drivers.hasMoreElements()){
+	    	Driver driver = drivers.nextElement();
+	    	try{
+	    		
+	    		DriverManager.deregisterDriver(driver);
+	    		
+	    	}catch (SQLException e) {
+				log.warn("Error deregistering driver {}", driver ,e);
+			}
+	    	
+	    }
+		
+	}
 	
+	
+	protected static void cleanupThreadLocals(){
+		
+		if (threadSession != null){
+			threadSession.remove();
+		}
+		
+		if (threadTransaction != null){
+			
+			threadTransaction.remove();
+		}
+		
+		if (threadInterceptor != null){
+			
+			threadInterceptor.remove();
+		}
+	}
 	public static SessionFactory getFactory() {
 
 		return sessionFactory;
