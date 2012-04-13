@@ -1,33 +1,10 @@
-/**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
- */
 package org.glite.security.voms.admin.view.actions.register;
 
-import java.util.List;
-
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
-import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -35,26 +12,26 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
+
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
-		@Result(name = BaseAction.ERROR, location = "registrationConfirmationError"),
-		@Result(name = ConfirmRequestAction.REQUEST_ATTRIBUTES, location = "requestAttributes")
+@Results( { @Result(name = BaseAction.INPUT, location = "requestAttributes"),
+	@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
+	@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")
 })
-public class ConfirmRequestAction extends RegisterActionSupport {
+public class RequestAttributesAction extends RegisterActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String REQUEST_ATTRIBUTES = "REQUEST_ATTRIBUTES";
-
 	String confirmationId;
-
+	
+	Long groupId = -1L;
+	
 	@Override
 	public String execute() throws Exception {
-
+		
 		if (!registrationEnabled())
 			return REGISTRATION_DISABLED;
 
@@ -63,16 +40,6 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			return ERROR;
 		}
 		
-		if (attributeRequestsEnabled()){
-			
-			List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
-			
-			// We exclude the VO root group
-			ServletActionContext.getRequest().setAttribute("voGroups", groups.subList(1, groups.size()));
-			
-			return REQUEST_ATTRIBUTES;
-		}
-
 		if (getModel().getConfirmId().equals(confirmationId))
 			request.setStatus(STATUS.CONFIRMED);
 		else{
@@ -80,14 +47,20 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			return ERROR;
 		}
 		
+		
 		String manageURL = getBaseURL() + "/home/login.action";
+		
+		if (groupId != -1){
+			VOMSGroup g = groupById(groupId);
+			getModel().getRequesterInfo().addInfo("requestedGroup", g.getName());
+		}
 
 		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
 				manageURL));
+		
 		return SUCCESS;
 	}
 
-	
 	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "A confirmation id is required!")
 	public String getConfirmationId() {
 		return confirmationId;
@@ -97,4 +70,12 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		this.confirmationId = confirmationId;
 	}
 
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+	
 }

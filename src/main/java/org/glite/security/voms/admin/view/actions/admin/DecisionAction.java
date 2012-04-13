@@ -44,8 +44,6 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
 		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
 		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="pendingRequests.jsp")
-		
-
 })
 		
 @InterceptorRef(value = "authenticatedStack", params = {
@@ -58,38 +56,11 @@ public class DecisionAction extends RequestActionSupport {
 	private static final long serialVersionUID = 1L;
 
 	String decision;
-
-	protected void validateVOMembershipRequest() {
-
-		NewVOMembershipRequest r = (NewVOMembershipRequest) getModel();
-
-		VOMSUser sameDnUser = (VOMSUser) FindUserOperation.instance(
-				r.getRequesterInfo().getCertificateSubject(),
-				r.getRequesterInfo().getCertificateIssuer()).execute();
-
-		if (sameDnUser != null && decision.equals("approve")){
-			addActionError("A user with such certificate already exists. Please reject such request.");
-			decision = null;
-		}
-	}
-
-	@Override
-	public void validate() {
-		
-		if (request instanceof NewVOMembershipRequest)
-			validateVOMembershipRequest();
-		
-	}	
-	
 	
 	@Override
 	public String execute() throws Exception {
 
 		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
-
-		if (request instanceof NewVOMembershipRequest)
-				new HandleVOMembershipRequest((NewVOMembershipRequest) request,
-						theDecision).execute();
 
 		if (request instanceof GroupMembershipRequest)
 			new HandleGroupRequestOperation((GroupMembershipRequest) request,

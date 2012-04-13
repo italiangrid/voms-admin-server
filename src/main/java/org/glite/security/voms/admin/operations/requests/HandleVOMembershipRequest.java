@@ -20,14 +20,17 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
+import java.util.List;
+
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.glite.security.voms.admin.operations.users.CreateUserOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
@@ -37,13 +40,14 @@ public class HandleVOMembershipRequest extends
 
 	private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
 
-	public HandleVOMembershipRequest(NewVOMembershipRequest request,
-			DECISION decision) {
-		super(request, decision);
-
-	}
-
+	List<String> approvedGroups; 
 	
+	public HandleVOMembershipRequest(NewVOMembershipRequest request,
+			DECISION decision, List<String> approvedGroups) {
+		
+		super(request, decision);
+		this.approvedGroups = approvedGroups;
+	}
 
 	@Override
 	protected void approve() {
@@ -59,6 +63,18 @@ public class HandleVOMembershipRequest extends
 		// Add a sign aup record for the user
 		VOMSUserDAO.instance().signAUP(user,
 				DAOFactory.instance().getAUPDAO().getVOAUP());
+		
+		if (approvedGroups != null){
+			VOMSGroupDAO groupDAO = VOMSGroupDAO.instance();
+			
+			for (String groupName: approvedGroups){
+				
+				VOMSGroup g = groupDAO.findByName(groupName);
+				if (g != null)
+					user.addToGroup(g);
+			}
+			
+		}
 
 		EventManager
 				.dispatch(new VOMembershipRequestApprovedEvent(request));

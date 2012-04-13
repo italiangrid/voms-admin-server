@@ -181,6 +181,11 @@
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
     </definition>
     
+    <definition name="requestAttributes" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/requestAttributes.jsp"/>
+    </definition>
+    
+    
     <definition name="registrationConfirmationError" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmationError.jsp"/>
     </definition>

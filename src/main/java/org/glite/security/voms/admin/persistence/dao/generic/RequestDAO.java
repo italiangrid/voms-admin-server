@@ -45,7 +45,7 @@ public interface RequestDAO extends GenericDAO<Request, Long> {
 	
 	public NewVOMembershipRequest createVOMembershipRequest(
 			RequesterInfo requester, Date expirationDate);
-
+	
 	public void deleteRequestFromUser(VOMSUser u);
 
 	public NewVOMembershipRequest findActiveVOMembershipRequest(

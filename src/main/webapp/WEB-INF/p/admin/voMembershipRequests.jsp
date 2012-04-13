@@ -29,6 +29,7 @@
 		<tr>
 			<th>Requester</th>
 			<th>Personal Info</th>
+			<th>Requested groups</th>
 			<th />
 		</tr>
 
@@ -39,7 +40,7 @@
 				<td><tiles2:insertTemplate template="userInfo.jsp" flush="true" />
 				</td>
 
-
+				
 				<td class="personalInfo">
 				<dl>
 					<dt>Address:</dt>
@@ -50,14 +51,40 @@
 					<dd>${requesterInfo.emailAddress}</dd>
 				</dl>
 				</td>
+				<s:form 
+					id="req-%{id}" 
+					action="membership-decision"
+					onsubmit="ajaxSubmit($(this),'pending-req-content'); return false;"
+					>
+				
+				<s:set var="requestedGroup" value="requesterInfo.getInfo('requestedGroup')"/>
 
-				<td style="vertical-align: bottom; text-align: right;"><s:form
-					action="decision">
+				<s:if test="#requestedGroup != null">
+				<td>
+					${requestedGroup}
+					<s:checkbox name="approvedGroups" fieldValue="%{#requestedGroup}" value="%{true}" theme="simple"/>
+				</td>
+				</s:if>
+				
+				<td style="vertical-align: bottom; text-align: right;">
+					
 					<s:token/>
 					<s:hidden name="requestId" value="%{id}" />
-					<s:radio list="{'approve','reject'}" name="decision"
-						onchange="ajaxSubmit($(this).closest('form'),'pending-req-content'); return false;" />
-				</s:form></td>
+					<s:hidden name="decision" value="reject"/>
+					
+					<s:submit 
+						name="submit" 
+						value="approve"
+						onclick="this.form.decision.value = this.value"
+						/>
+					
+					<s:submit 
+						name="submit" 
+						value="reject"
+						onclick="this.form.decision.value = this.value"
+						/>
+				</td>
+				</s:form>
 			</tr>
 		</s:iterator>
 	</table>

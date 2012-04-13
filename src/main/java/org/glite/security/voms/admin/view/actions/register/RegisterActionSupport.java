@@ -38,8 +38,8 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("base")
-@Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation")})
+@Results({ @Result(name = BaseAction.INPUT, location = "register"),
+		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation") })
 public abstract class RegisterActionSupport extends BaseAction implements
 		Preparable, ModelDriven<NewVOMembershipRequest> {
 
@@ -61,7 +61,7 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	protected RequesterInfo requester;
 
 	AUPVersion currentAUPVersion;
-	
+
 	protected String checkExistingPendingRequests() {
 
 		RequestDAO dao = DAOFactory.instance().getRequestDAO();
@@ -98,11 +98,11 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public void prepare() throws Exception {
 
 		requester = requesterInfoFromCurrentAdmin();
-		
+
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
 		currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
-		
+
 		if (getModel() == null) {
 
 			if (requestId != -1L) {
@@ -140,6 +140,16 @@ public abstract class RegisterActionSupport extends BaseAction implements
 				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
 	}
 
+	public boolean attributeRequestsEnabled() {
+
+		return VOMSConfiguration
+				.instance()
+				.getBoolean(
+						VOMSConfigurationConstants.VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST,
+						false);
+
+	}
+
 	public AUPVersion getCurrentAUPVersion() {
 		return currentAUPVersion;
 	}
@@ -147,5 +157,5 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public String getRegistrationType() {
 		return VOMSConfiguration.instance().getRegistrationType();
 	}
-	
+
 }

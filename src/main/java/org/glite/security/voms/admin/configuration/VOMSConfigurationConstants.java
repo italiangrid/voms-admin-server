@@ -55,6 +55,11 @@ public interface VOMSConfigurationConstants {
 	public static final String UNCONFIRMED_REQUESTS_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
 	public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY = "voms.request.vo_membership.warn_when_expired";
 
+	/**
+	 * This configuration flag controls the user's ability to request attributes at VO registration time.
+	 */
+	public static final String VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST = "voms.request.vo_membership.enable_attribute_requests";
+
 	public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
 	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
 	public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
