@@ -225,6 +225,8 @@ public class SchemaDeployer {
 			printUpgradeScript();
 		else if (command.equals("check-connectivity")) {
 			checkDatabaseExistence();
+		} else if (command.equals("grant-read-only-access")){
+			doGrantROAccess();
 		} else {
 
 			System.err.println("Unkown command specified: " + command);
@@ -594,7 +596,7 @@ public class SchemaDeployer {
 	}
 
 	private void doUpgrade() {
-		
+
 		checkVoExistence();
 
 		Configuration hibernateConfig = loadHibernateConfiguration();
@@ -620,9 +622,9 @@ public class SchemaDeployer {
 	}
 
 	private void doRemoveAdmin() {
-		
+
 		checkVoExistence();
-		
+
 		if (adminDN == null || adminCA == null)
 			throw new VOMSException("adminDN or adminCA is not set!");
 
@@ -720,33 +722,32 @@ public class SchemaDeployer {
 
 	}
 
-	
-	private String getVOConfigurationDir(){
+	private String getVOConfigurationDir() {
 		Properties sysconfProps = SysconfigUtil.loadSysconfig();
-		
-		String confDir = sysconfProps.getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
-		
+
+		String confDir = sysconfProps
+				.getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
+
 		if (confDir == null)
 			confDir = "/etc/voms-admin";
-		
+
 		return confDir;
-		
+
 	}
-	
-	private boolean isVoConfigured(String voName){
-		
+
+	private boolean isVoConfigured(String voName) {
+
 		String confDir = getVOConfigurationDir();
-		
-		File voConfDir = new File(confDir+"/"+voName);
-		
+
+		File voConfDir = new File(confDir + "/" + voName);
+
 		if (voConfDir.exists() && voConfDir.isDirectory())
 			return true;
-		
+
 		return false;
-		
+
 	}
-	
-	
+
 	private Configuration loadHibernateConfiguration() {
 
 		Properties dbProperties = new Properties();
@@ -755,10 +756,8 @@ public class SchemaDeployer {
 
 			if (hibernatePropertiesFile == null) {
 
-				
-				String f = String.format("%s/%s/%s",
-						getVOConfigurationDir(),vo,
-						"voms.database.properties");
+				String f = String.format("%s/%s/%s", getVOConfigurationDir(),
+						vo, "voms.database.properties");
 
 				log.debug("Loading database properties from: " + f);
 
@@ -784,7 +783,7 @@ public class SchemaDeployer {
 	}
 
 	private void doUndeploy() {
-		
+
 		checkVoExistence();
 
 		log.info("Undeploying voms database...");
@@ -827,20 +826,73 @@ public class SchemaDeployer {
 		log.info("Database undeployed correctly!");
 
 	}
-	
-	private void checkVoExistence(){
-		
-		if (!isVoConfigured(vo)){
+
+	private void checkVoExistence() {
+
+		if (!isVoConfigured(vo)) {
 			log.error("VO {} is not configured on this host.", vo);
 			System.exit(1);
 		}
-		
+
+	}
+
+	private void doGrantROAccess() {
+		try {
+
+			checkVoExistence();
+
+			checkDatabaseWritable();
+
+			HibernateFactory.beginTransaction();
+
+			VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
+					.getAnyAuthenticatedUserAdmin();
+
+			VOMSPermission readOnlyPerms = VOMSPermission.getEmptyPermissions()
+					.setContainerReadPermission().setMembershipReadPermission();
+
+			List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
+
+			for (VOMSGroup g : groups) {
+
+				g.getACL().setPermissions(anyUserAdmin, readOnlyPerms);
+
+				log.info(
+						"Granting read-only access to any authenticated user on group '{}'",
+						g.getName());
+
+				List<VOMSRole> roles = VOMSRoleDAO.instance().findAll();
+
+				for (VOMSRole r : roles) {
+
+					r.getACL(g).setPermissions(anyUserAdmin, readOnlyPerms);
+					log.info(
+							"Granting read-only access to any authenticated user on role '{}/{}'",
+							new String[] { g.toString(), r.toString() });
+
+					HibernateFactory.getSession().save(r);
+
+				}
+
+				HibernateFactory.getSession().save(g);
+			}
+
+			HibernateFactory.commitTransaction();
+
+		} catch (Throwable t) {
+
+			log.error("Error creating read-only access grants!");
+			log.error(t.toString(), t);
+
+			System.exit(-1);
+		}
+
 	}
 
 	private void doDeploy() {
-		
+
 		checkVoExistence();
-		
+
 		Configuration hibernateConfig = loadHibernateConfiguration();
 
 		int existingDb = checkDatabaseExistence();
@@ -957,7 +1009,8 @@ public class SchemaDeployer {
 					&& !command.equals("remove-admin")
 					&& !command.equals("undeploy")
 					&& !command.equals("upgrade-script")
-					&& !command.equals("check-connectivity")) {
+					&& !command.equals("check-connectivity")
+					&& !command.equals("grant-read-only-access")) {
 
 				System.err.println("Unknown command specified: " + command);
 				printHelpMessageAndExit(2);

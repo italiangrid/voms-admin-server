@@ -27,10 +27,6 @@ voms.notification.smtp-server = @NOTIFICATION.SMTP_SERVER@
 ## (mkgridmap clients need this to be TRUE)
 voms.read-access-for-authenticated-clients = @READ_ACCESS@  
  
-## The default VOMS administrator
-voms.trusted.admin.subject =  @TRUSTED_ADMIN.SUBJECT@
-voms.trusted.admin.ca = @TRUSTED_ADMIN.CA@
-
 ## Membership Validation options
 
 ## Default VO membership lifetime duration (in months).

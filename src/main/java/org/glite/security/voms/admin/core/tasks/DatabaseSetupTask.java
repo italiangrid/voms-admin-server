@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
@@ -43,12 +41,12 @@ import org.glite.security.voms.admin.persistence.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
-import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSSeqNumber;
 import org.glite.security.voms.admin.persistence.model.task.TaskType;
-import org.glite.security.voms.admin.util.DNUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -160,80 +158,14 @@ public class DatabaseSetupTask extends TimerTask {
 
 			voGroupACL.setPermissions(voAdmin, allPermissions);
 
+			voAdminRole.importACL(voGroup);
+			
 			VOMSSeqNumber seqNum = new VOMSSeqNumber();
 			seqNum.setSeq("0");
+			
 			HibernateFactory.getSession().save(seqNum);
-
-			// Trusted admin creation
-
-			String trustedAdminDn = VOMSConfiguration.instance().getString(
-					"voms.trusted.admin.subject");
-
-			if (trustedAdminDn == null) {
-
-				voAdminRole.importACL(voGroup);
-				HibernateFactory.commitTransaction();
-				return;
-			}
-
-			String trustedAdminCa = VOMSConfiguration.instance().getString(
-					"voms.trusted.admin.ca");
-
-			if (trustedAdminCa == null) {
-				log
-						.error("Missing \"voms.trusted.admin.ca\" configuration parameter. Skipping creation of the trusted admin...");
-				return;
-			}
-
-			VOMSCA ca = VOMSCADAO.instance().getByName(trustedAdminCa);
-
-			if (ca == null) {
-
-				log
-						.error("Trusted admin ca \""
-								+ trustedAdminCa
-								+ "\" not found in database. Skipping creation of the trusted admin...");
-				return;
-			}
-
-			VOMSAdmin trustedAdmin = VOMSAdminDAO.instance().getByName(
-					trustedAdminDn, ca.getSubjectString());
-
-			if (trustedAdmin == null) {
-
-				String emailAddress = DNUtil
-						.getEmailAddressFromDN(trustedAdminDn);
-
-				// Get default email address from voms service configuration
-				if (emailAddress == null)
-					emailAddress = VOMSConfiguration.instance().getString(
-							"voms.notification.email-address");
-
-				trustedAdmin = VOMSAdminDAO.instance().create(trustedAdminDn,
-						ca.getSubjectString(), emailAddress);
-
-			}
-
-			voGroupACL.setPermissions(trustedAdmin, allPermissions);
-
-			log.info("Trusted admin created.");
-
-			if (VOMSConfiguration.instance().getBoolean(
-					VOMSConfigurationConstants.READ_ACCESS_FOR_AUTHENTICATED_CLIENTS,
-					false)) {
-
-				// Grant read-only access to authenticated clients
-				VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
-						.getAnyAuthenticatedUserAdmin();
-				VOMSPermission readOnlyPerms = VOMSPermission
-						.getEmptyPermissions().setContainerReadPermission()
-						.setMembershipReadPermission();
-				voGroupACL.setPermissions(anyUserAdmin, readOnlyPerms);
-
-			}
-
-			// Import ACL *after* trusted and anyuser admins have been created!
-			voAdminRole.importACL(voGroup);
+			
+			
 		}
 	}
 

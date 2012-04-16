@@ -28,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -47,6 +49,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.JNDIConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -1228,5 +1231,11 @@ public final class VOMSConfiguration {
 			}
 		
 		return i;
+	}
+	
+	public void dump(PrintStream stream){
+		
+		for (int i=0; i < config.getNumberOfConfigurations(); i++)
+			ConfigurationUtils.dump(config.getConfiguration(i), stream);
 	}
 }

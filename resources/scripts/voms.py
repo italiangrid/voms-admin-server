@@ -360,11 +360,9 @@ class UpgradeVO(ConfigureAction):
                 
         m = {'NOTIFICATION.EMAIL_ADDRESS': self.mail_from,
              'NOTIFICATION.SMTP_SERVER': self.mail_host,
-             'TRUSTED_ADMIN.SUBJECT': "",
-             'TRUSTED_ADMIN.CA': "",
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')).lower(),
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
@@ -570,6 +568,12 @@ class InstallVOAction(ConfigureAction):
                 print "Will not add the admin since the --skip-database option is set"
             else: 
                 self.add_default_admin()
+        
+        if self.user_options.has_key("read-access-for-authenticated-clients"):
+            if self.user_options.has_key("skip-database"):
+                print "Will not set read-only access for authenticated clients as the --skip-database option is set"
+            else:
+                self.enable_readonly_access()
 
         
     def create_configuration(self):    
@@ -648,8 +652,6 @@ class InstallVOAction(ConfigureAction):
                             
         m = {'NOTIFICATION.EMAIL_ADDRESS': self.user_options['mail-from'],
              'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
-             'TRUSTED_ADMIN.SUBJECT': self.user_options['ta.subject'],
-             'TRUSTED_ADMIN.CA': self.user_options['ta.ca'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
              'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
@@ -762,6 +764,15 @@ class InstallVOAction(ConfigureAction):
         
         if status != 0:
             raise VomsConfigureError, "Error deploying voms database!"
+        
+    def enable_readonly_access(self):
+        print "Adding read access for authenticated clients..."
+        add_cmd = "%s --vo %s grant-read-only-access" % (VomsConstants.voms_db_deploy, 
+                                                        self.user_options['vo'])
+        
+        status = os.system(add_cmd)
+        if status != 0:
+            raise VomsConfigureError, "Error enabling read-only access for authenticated clients!"
         
     def add_default_admin(self):
         print "Adding default admin for %s vo" % self.user_options['vo']

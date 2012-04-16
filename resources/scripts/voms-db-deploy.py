@@ -25,7 +25,7 @@ from os import environ
 from voms import VomsConstants,VomsInvocationError, X509Helper
 
 option_list=["vo=","dn=","ca=","cert=", "email=", "ignore-cert-email"]
-supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "check-connectivity"]
+supported_commands= ["deploy","undeploy","upgrade","add-admin","remove-admin", "check-connectivity", "grant-read-only-access"]
 
 options={}
 
@@ -137,7 +137,15 @@ def do_check_connectivity():
                                                                       options['vo'])
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
-    
+
+def do_grant_read_only_access():
+    cmd = "java %s -cp %s %s --command grant-read-only-access --vo %s" % (build_env_vars(),
+                                                                          build_classpath(),
+                                                                          VomsConstants.schema_deployer_class,
+                                                                          options['vo'])
+    status = os.system(cmd)
+    sys.exit(os.WEXITSTATUS(status))
+
 def execute():
     global command
     if command == "deploy":
@@ -152,6 +160,8 @@ def execute():
         do_remove_admin()
     elif command == "check-connectivity":
         do_check_connectivity()
+    elif command == "grant-read-only-access":
+        do_grant_read_only_access()
     else:
         raise VomsInvocationError, "Unknown command specified: %s" % command
     
@@ -182,6 +192,8 @@ voms-db-deploy.py remove-admin --vo [VONAME] --cert [CERT_FILE]
 voms-db-deploy.py remove-admin --vo [VONAME] --dn [ADMIN_DN] --ca [ADMIN_CA]
 
 voms-db-deploy.py check-connectivity --vo [VONAME]
+
+voms-db-deploy.py grant-read-only-access --vo [VONAME]
 """
     
     print help_str
