@@ -42,8 +42,10 @@
 	<voms:hasPermissions var="canSuspend" context="/${voName}"
 		permission="CONTAINER_READ|MEMBERSHIP_READ|SUSPEND" />
 
-	<table cellpadding="0" cellspacing="0">
-
+	<table>
+        <tr>
+          <th colspan="2">Certificate</th>
+        </tr>
 		<s:iterator var="cert" value="certificates">
 			<tr class="tableRow">
 				<td>
@@ -61,12 +63,9 @@
                       value="creationTime" />
                   </s:text></span></div>
 
-				<div class="cert-status-info"><s:if test="suspended">
-					<span> Suspended: </span>
-
-					<span class="suspensionReason"> <s:property
-						value="suspensionReason" /> </span>
-				</s:if></div>
+				<div class="badge-container">
+                  <tiles2:insertTemplate template="suspensionDetail.jsp"/>
+                </div>
 
 				<div class="cert-operations">
 				

@@ -21,15 +21,17 @@ package org.glite.security.voms.admin.view.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.servlets.InitSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
@@ -68,6 +70,8 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 		
 		if (!VOMSConfiguration.instance().getVOName().equals("siblings")){
 			
+			AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+			
 			req.setAttribute("voName", VOMSConfiguration.instance().getVOName());
 			
 			req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
@@ -81,6 +85,11 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 			
 			req.setAttribute("readOnlyMembershipExpiration", 
 					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,false));
+			
+			req.setAttribute("disableMembershipEndTime", 
+					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
+			
+			req.setAttribute("defaultAUP", aup);
 			
 		}
 		

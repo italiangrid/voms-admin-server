@@ -39,6 +39,9 @@
     <link type="text/css" 
       href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
       rel="stylesheet" />
+      
+    <!-- Bootstrap -->
+    
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
     	

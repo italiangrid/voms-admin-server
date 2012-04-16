@@ -20,7 +20,7 @@ public class UserStatsTask implements Runnable {
 	public static final String DEFAULT_USER_STATS_BASE_PATH = "/var/tmp/voms-admin";
 	public static final String DEFAULT_USER_STATS_FILENAME = "stats.properties";
 	
-	public static final Long DEFAULT_PERIOD_IN_MILLISECONDS = TimeUnit.MINUTES.toSeconds(60);
+	public static final Long DEFAULT_PERIOD_IN_SECONDS = TimeUnit.MINUTES.toSeconds(60);
 	
 	Properties monitoredProperties;
 	

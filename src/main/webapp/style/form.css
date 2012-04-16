@@ -165,3 +165,7 @@ input.activeTextField, textarea.activeTextField{
 	float: right;
 	margin-left: 5px;	
 }
+
+.decisionForm {
+	display: inline;
+}

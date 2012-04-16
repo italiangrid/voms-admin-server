@@ -21,9 +21,15 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
+<voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
+
 <div class="usernameHeader">
+    
   	<s:if test="name != null and surname != null">
-		<s:property value="name+ ' ' +surname"/>
+        <span style="vertical-align: middle">
+		  <s:property value="name+ ' ' +surname"/>
+        </span>
 			<span class="institution">
     			(<s:property value="institution"/>)  
   			</span>
@@ -35,12 +41,7 @@
 			<voms:formatDN dn="${userDN}" fields="CN"/>
 		</span>
 	</s:else>
-	
-
-
-<voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
-<voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
-
+    
 <div class="userAdminActions">
   <s:if test="#attr.canSuspend">
     
@@ -70,18 +71,17 @@
 	
 	</s:if>
 </div>
+</div>
+<div class="badge-container">
+  <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
+</div>
+<div class="badge-container">
+  <tiles2:insertTemplate template="suspensionDetail.jsp"/>
+</div>
 
-</div>
-<s:if test="suspended">
-<div class="userSuspensionInfo">
-  This user is currently <span class="suspended">suspended</span>.
-  <div>Reason: <span class="suspensionReason"> ${suspensionReason }</span></div>
-</div>
+<s:if test="not #attr.disableMembershipEndTime">
+	<tiles2:insertTemplate template="membershipExpiration2.jsp"/>
 </s:if>
-
-
-
-<tiles2:insertTemplate template="membershipExpiration2.jsp"/>
 
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute name="panelName" value="Personal information"/>

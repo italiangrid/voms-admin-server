@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.persistence.model.task;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -303,6 +304,13 @@ public abstract class Task {
 
 		getLogRecords().add(r);
 
+	}
+	
+	public long getDaysBeforeExpiration(){
+		
+		long now = new Date().getTime();
+		return TimeUnit.MILLISECONDS.toDays(getExpiryDate().getTime()-now);
+		
 	}
 
 }

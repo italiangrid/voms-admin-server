@@ -26,7 +26,7 @@
 	test="not pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest }.empty">
 	<h1 style="margin-top: 2em">Membership removal requests:</h1>
 	<table>
-		<tr>
+		<tr class="req-header-row">
 			<th>Requester</th>
 			<th>Reason</th>
 			<th />
@@ -38,13 +38,9 @@
 				<td style="width: 40%"><tiles2:insertTemplate
 					template="userInfo.jsp" flush="true" /></td>
 				<td><s:property value="reason" /></td>
-				<td style="vertical-align: bottom; text-align: right"><s:form
-					action="decision">
-					<s:token/>
-					<s:hidden name="requestId" value="%{id}" />
-					<s:radio list="{'approve','reject'}" name="decision"
-						onchange="ajaxSubmit($(this).closest('form'),'pending-req-content'); return false;" />
-				</s:form></td>
+				<td style="vertical-align: bottom; text-align: right">
+                  <tiles2:insertTemplate template="decisionForm.jsp"/>
+                </td>
 			</tr>
 		</s:iterator>
 	</table>

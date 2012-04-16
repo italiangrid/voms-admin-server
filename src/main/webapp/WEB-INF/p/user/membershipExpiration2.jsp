@@ -21,39 +21,37 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ"/>
+<voms:hasPermissions
+  var="canReadPI"
+  context="vo"
+  permission="PERSONAL_INFO_READ" />
 
 <s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
   <div id="membership-expiration-pane">
-  	
+
     <div class="reloadable">
-		<voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
-        
-       	<s:text name="format.date" var="userEndTime">
-       		<s:param value="endTime"/>
-        </s:text>
-        
-		<span class="label">Membership expiration date (mm/dd/yyyy):</span>
-		<span>${userEndTime}</span>
-		
-                        
-          
-		<s:form theme="simple" 
-			action="extend-membership-expiration"
-            onsubmit="ajaxSubmit(this,'membership-expiration-pane'); return false;"
-            cssStyle="display:inline">
-              
-              <s:token/>
-              <s:hidden name="userId" value="%{id}"/>                               
-              	<s:submit 
-              		value="%{'Extend membership'}" 
-              		disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}" 
-              		cssStyle="display:inline"
-              		tooltip="Extends membership for the user starting from the current date for the default period configured for the VO (typically 12 months)."
-              		/>
-	  	</s:form>  
+      <voms:hasPermissions
+        var="canDelete"
+        context="vo"
+        permission="rw" />
+
+      <tiles2:insertTemplate template="membershipExpirationDetail.jsp" />
+
+      <s:form
+        action="extend-membership-expiration"
+        onsubmit="ajaxSubmit(this,'membership-expiration-pane'); return false;" theme="simple" cssStyle="display:inline">
+
+        <s:token />
+        <s:hidden
+          name="userId"
+          value="%{id}" />
+        <s:submit
+          value="%{'Extend membership'}"
+          disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"
+          tooltip="Extends membership for the user starting from the current date for the default period configured for the VO (typically 12 months)." />
+      </s:form>
     </div>
-	<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>    
+    <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
   </div>
 </s:if>
 

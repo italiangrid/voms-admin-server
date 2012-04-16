@@ -147,7 +147,7 @@ public final class VOMSService {
 				VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 
 				300L);
 		
-		es.startBackgroundTask(new UserStatsTask(), VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, UserStatsTask.DEFAULT_PERIOD_IN_MILLISECONDS);
+		es.startBackgroundTask(new UserStatsTask(), VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
 	}
 
 	protected static void bootstrapAttributeAuthorityServices() {

@@ -1099,7 +1099,7 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		return false;
 
 	}
-
+	
 	public SignAUPTask getPendingSignAUPTask(AUP aup) {
 
 		if (getTasks().isEmpty())
@@ -1152,7 +1152,9 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	public void restore() {
 		setSuspended(false);
+		
 		setSuspensionReason(null);
+		setSuspensionReasonCode(null);
 
 		for (Certificate c : getCertificates())
 			c.restore();

@@ -22,6 +22,9 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 
@@ -38,9 +41,40 @@ public class SearchAction extends BaseSearchAction implements Preparable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	String limitToSuspendedUsers;
 
 	public void prepare() throws Exception {
 		initSearchData(USER_SEARCH_NAME);
 
 	}
+
+	@Override
+	public String execute() throws Exception {
+	
+		if (limitToSuspendedUsers == null){
+			return super.execute();
+		}
+		
+		if (limitToSuspendedUsers.equals("false"))
+			return super.execute();
+		
+		searchResults = SearchResults.fromList(VOMSUserDAO.instance().findSuspendedUsers());
+		
+		session.put("searchData", getSearchData());
+		session.put("searchResults", searchResults);
+		
+		return SUCCESS;
+		
+	}
+	
+	public String getLimitToSuspendedUsers() {
+		return limitToSuspendedUsers;
+	}
+
+	public void setLimitToSuspendedUsers(String limitToSuspendedUsers) {
+		this.limitToSuspendedUsers = limitToSuspendedUsers;
+	}
+	
+	
 }

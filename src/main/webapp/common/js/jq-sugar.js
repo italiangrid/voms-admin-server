@@ -256,8 +256,11 @@ function showAUPContent(node){
 
 function colorTableRows(){
 	
-	$('.tableRow:odd').addClass('tableRowOdd');
-	$('.tableRow:even').addClass('tableRowEven');
+	$('.tableRow:nth-child(1)').addClass('tableRowOdd');
+	
+	$('.tableRow:nth-child(2n)').addClass('tableRowEven');
+	$('.tableRow:nth-child(3n)').addClass('tableRowOdd');
+	
 }
 
 function initializePanelHeaders(){
@@ -418,8 +421,6 @@ function pageSetup(){
 	aclEntryStuff();
 	
 	
-	
-	
 }
 
 
@@ -539,7 +540,5 @@ function openConfirmDialog(node,dialogId,text){
 	$('#'+dialogId).dialog('open');
 	
 }
-
-	
 
 

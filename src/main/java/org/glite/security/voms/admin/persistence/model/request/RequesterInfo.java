@@ -20,7 +20,10 @@
 package org.glite.security.voms.admin.persistence.model.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -46,6 +49,7 @@ public class RequesterInfo implements Serializable {
      * 
      */
 	private static final long serialVersionUID = 1L;
+	public static final String MULTIVALUE_COUNT_PREFIX = "num_";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_REQ_INFO_SEQ")
@@ -279,6 +283,24 @@ public class RequesterInfo implements Serializable {
 		
 		return builder.toString();
 			
+	}
+	
+	public List<String> getMultivaluedInfo(String propertyName){
+		List<String> result = new ArrayList<String>();
+		
+		Integer valueCount;
+		
+		if (personalInformation.get(MULTIVALUE_COUNT_PREFIX+propertyName) != null){
+			valueCount = Integer.parseInt(personalInformation.get(MULTIVALUE_COUNT_PREFIX+propertyName));
+			
+			for (int i=0; i < valueCount; i++)
+				result.add(personalInformation.get(propertyName+i));
+			
+			return result;
+		
+		}
+		
+		return Collections.EMPTY_LIST;
 	}
 
 	public static RequesterInfo fromVOUser(VOMSUser user){

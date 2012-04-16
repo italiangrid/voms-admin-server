@@ -37,6 +37,8 @@
     <s:hidden name="searchData.type" value="%{'user'}"/>
     <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
+    <s:checkbox name="limitToSuspendedUsers" onclick="this.form.submit()"/>
+    <s:label for="limitToSuspendedUsers">Show suspended users only</s:label>
   </s:form>
   <s:fielderror fieldName="searchData.text"/>
 </div>
@@ -53,19 +55,15 @@
 <div class="searchResultsPane">
   <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
   <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
-    No users found in this VO.
+    No users found.
   </s:if>
   <s:elseif test="#session.searchResults.results.size == 0">
     No users found matching search string '<s:property value="#session.searchResults.searchString"/>'.
   </s:elseif>
   <s:elseif test="#session.searchResults != null">
   
-  
-  
   <s:form id="multiUserOpsForm">
   <table
-    cellpadding="0"
-    cellspacing="0"
     class="table"
   >
     <s:token/>
@@ -78,7 +76,7 @@
           theme="simple"
           />
       </td>
-      <td colspan="2" style="border: none;">
+      <td colspan="3" style="border: none;">
         
         <s:submit value="%{'Suspend'}" align="right" action="bulk-suspend" theme="simple" 
         cssClass="userActionButton"
@@ -113,6 +111,7 @@
         
       <th>Certificates<tiles2:insertTemplate template="../shared/formattedDNControls.jsp"/>
       </th>
+      <th/>
     </tr>
     <s:iterator
       value="#session.searchResults.results"
@@ -129,7 +128,7 @@
             value="%{'false'}"
             disabled="%{#attr.canCreate == false and #attr.canSuspend == false}"/>
         </td>
-        <td style="width: 20%"> <!-- Personal info -->
+        <td style="width: 40%"> <!-- Personal info -->
           <div class="personal-info">
             
             <s:if test="name != null and name != ''">
@@ -143,7 +142,7 @@
               </div>
             </s:else>
             <s:if test="institution != null and institution != ''">
-              <div class="institution">
+              <div class="institution" style="padding-top: .5em">
                 <s:property value="institution"/>
               </div>
             </s:if>
@@ -152,7 +151,7 @@
                 No institution specified for this user.
               </div>
             </s:else>
-            
+       
             <div class="email">
               <a href="mailto:<s:property value="emailAddress"/>">
                 <s:property value="emailAddress"/>
@@ -160,22 +159,23 @@
             </div>
             
             <s:if test="suspended">
-              <div class="warning">
-                This user is suspended.
-                <br />Reason: 
-                <span class="suspensionReason"><s:property value="suspensionReason"/></span>
+              <div>
+                <span class="blabel blabel-important">Suspended</span>  
+                <span class="blabel blabel-invert-important"><s:property value="suspensionReason"/></span>
               </div>
-              
             </s:if>
-          </div>
+            <s:else>
+              <div class="aupInfo">
+                <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
+              </div>
+              <div class="expirationInfo">
+                <tiles2:insertTemplate template="membershipExpirationDetail.jsp"/>
+              </div>
+            </s:else>
+            </div>
         </td>
 
-        <td style="width:88%;"> <!-- Certificate information -->
-          <s:if test="#user.suspended">
-                <div class="warning">
-                  Certificates listed below are suspended due to membership suspension:
-                </div>
-          </s:if>
+        <td> <!-- Certificate information -->
           <ol class="certificate-info">
           
           <s:iterator value="certificates" var="cert">
@@ -191,9 +191,10 @@
             </li>
           </s:iterator>
           </ol>
+          </td>
           
-          
-          <div class="actions" style="float: right; margin-top: 2em">
+          <td style="vertical-align: bottom;"> <!--  Actions -->
+          <div class="actions" style="float: right;">
           
           	<s:url action="load" var="userLoadURL">
           		<s:param name="userId" value="id"/>	

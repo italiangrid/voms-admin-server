@@ -47,36 +47,75 @@ public class DefaultMembershipCheckBehaviour extends AbstractMembershipCheckBeha
 	protected final HandleExpiredMembersStrategy expiredMembersStrategy;
 	protected final HandleExpiringMembersStrategy expiringMembersStrategy;
 	
-	
-	public DefaultMembershipCheckBehaviour() {
-		
+	protected void validateMembershipCheckConfiguration(){
 		
 		VOMSConfiguration conf = VOMSConfiguration.instance();
 		
-		aupFMLookupStrategy = new DefaultAUPFailingMembersLookupStrategy();
-		expiredMembersLookupStrategy = new DefaultExpiredMembersLookupStrategy();
-		expiringMembersLookupStrategy = new DefaultExpiringMembersLookupStrategy();
+		boolean disableMembershipEndTime = conf.getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
+		boolean preserveExpiredMembers = conf.getBoolean(VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
 		
+		if (disableMembershipEndTime && preserveExpiredMembers){
+			log.error("The {} and {} configuration properties cannot be true at the same time", new String[]{VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
+					VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS});
+			
+			log.warn("Setting {} to false", VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME);
+			conf.setProperty(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
+		}
+		
+	}
+	
+	public DefaultMembershipCheckBehaviour() {
+		
+		validateMembershipCheckConfiguration();
+		
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		
+		// AUP handling strategy is not configurable
+		aupFMLookupStrategy = new DefaultAUPFailingMembersLookupStrategy();
 		aupFailingMembersStrategy = new SuspendAUPFailingMembersStrategy();
 		
-		boolean preserveExpiredMembers = conf.getBoolean(VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false); 
+		
+		boolean disableMembershipEndTime = conf.getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
+		boolean preserveExpiredMembers = conf.getBoolean(VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
 		
 		int notificationInterval = VOMSConfiguration.instance().getInt(VOMSConfigurationConstants.NOTIFICATION_WARNING_RESEND_PERIOD, 1);
 		
-		if (preserveExpiredMembers){
+		if (disableMembershipEndTime){
+			
+			IgnoreMembershipEndTimeStrategy s = new IgnoreMembershipEndTimeStrategy();
+			
+			log.warn("The membership end time will be IGNORED by the VOMS membership check behaviour as requested by configuration.");
+			
+			expiredMembersLookupStrategy =  s;
+			expiredMembersStrategy = s;
+			expiringMembersStrategy = s;
+			expiringMembersLookupStrategy = s;
+			
+		}else if (preserveExpiredMembers){
+			
 			log.warn("Expired members will NOT be suspended as requested. Administrators will be notified of expired members via email.");
 			expiredMembersStrategy =  new PreserveExpiredMembersStrategy(notificationInterval);
 			
-		}else{
+			expiredMembersLookupStrategy = new DefaultExpiredMembersLookupStrategy();
+			expiringMembersLookupStrategy = new DefaultExpiringMembersLookupStrategy();
+			
+			expiringMembersStrategy = new SendWarningAboutExpiringMembersStrategy();
+				
+		}else{ 
+			
+			expiredMembersLookupStrategy = new DefaultExpiredMembersLookupStrategy();
+			expiringMembersLookupStrategy = new DefaultExpiringMembersLookupStrategy();
 			
 			long gracePeriodInDays = VOMSConfiguration.instance().getLong(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_GRACE_PERIOD, 7L);
+			if (gracePeriodInDays <= 0)
+				gracePeriodInDays = 0;
 			
 			log.info("Expired users will be suspended after a grace period of {} days.", gracePeriodInDays);
+			
 			expiredMembersStrategy = new GracePeriodExpiredMembersStrategy(gracePeriodInDays, notificationInterval);
+			
+			expiringMembersStrategy = new SendWarningAboutExpiringMembersStrategy();
 		}
-		
-		expiringMembersStrategy = new SendWarningAboutExpiringMembersStrategy();
-		
 		
 	}
 	

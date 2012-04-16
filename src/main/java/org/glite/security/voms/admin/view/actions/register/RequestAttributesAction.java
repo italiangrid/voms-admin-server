@@ -1,5 +1,8 @@
 package org.glite.security.voms.admin.view.actions.register;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -7,6 +10,7 @@ import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
+import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
@@ -27,7 +31,7 @@ public class RequestAttributesAction extends RegisterActionSupport {
 	
 	String confirmationId;
 	
-	Long groupId = -1L;
+	List<String> requestedGroups;
 	
 	@Override
 	public String execute() throws Exception {
@@ -46,13 +50,17 @@ public class RequestAttributesAction extends RegisterActionSupport {
 			addActionError("Wrong confirmation id!");
 			return ERROR;
 		}
-		
-		
+				
 		String manageURL = getBaseURL() + "/home/login.action";
 		
-		if (groupId != -1){
-			VOMSGroup g = groupById(groupId);
-			getModel().getRequesterInfo().addInfo("requestedGroup", g.getName());
+		if (requestedGroups != null && !requestedGroups.isEmpty()){
+			Integer requestedGroupsSize = requestedGroups.size();
+			
+			getModel().getRequesterInfo().addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX+"requestedGroup",requestedGroupsSize.toString());
+			
+			for (int i=0; i < requestedGroupsSize; i++)
+				getModel().getRequesterInfo().addInfo("requestedGroup"+i, requestedGroups.get(i));
+			
 		}
 
 		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
@@ -70,12 +78,12 @@ public class RequestAttributesAction extends RegisterActionSupport {
 		this.confirmationId = confirmationId;
 	}
 
-	public Long getGroupId() {
-		return groupId;
+	public List<String> getRequestedGroups() {
+		return requestedGroups;
 	}
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
+	public void setRequestedGroups(List<String> requestedGroups) {
+		this.requestedGroups = requestedGroups;
 	}
 	
 }

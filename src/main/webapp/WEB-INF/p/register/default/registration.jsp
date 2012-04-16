@@ -31,21 +31,22 @@ To access the VO resources, you must agree to the VO's Acceptable Usage Policy (
 Please fill out all fields in the form below and click on the submit
 button at the bottom of the page.
 </p>
-<p>
-After you submit this request, you will receive an email with instructions on how to proceed. 
-<br/>
-<span style="font-weight: bold">
-Your request will not be forwarded to the VO managers until you confirm that you have a valid email 
-address by following those instructions.</span>
-</p>
+<div>
+  <h2>IMPORTANT:</h2>
+  <div style="margin-top: 1em; line-height: 1.5em;">
+  By submitting this information you agree that it may be distributed to and stored by 
+  VO and site administrators.<br/>
+  You also agree that action may be taken to confirm the information you provide 
+  is correct, that it may be used for the purpose of controlling access to VO resources and that it may be 
+  used to contact you in relation to this activity.
+  </div>
+  <div class="alert alert-error" style="margin-top: 1em; line-height: 1.5em">
+  After you submit this request, you will receive an email with instructions on how to proceed.<br/>
+  Your request will not be forwarded to the VO managers until you confirm that you have a valid email 
+  address by following those instructions.
+  </div>
+</div>
 
-<p><span style="font-weight: bold">IMPORTANT</span>:</p>
-<p style="margin-bottom: 2em">
-By submitting this information you agree that it may be distributed to and stored by 
-VO and site administrators. You also agree that action may be taken to confirm the information you provide 
-is correct, that it may be used for the purpose of controlling access to VO resources and that it may be 
-used to contact you in relation to this activity.
-</p>
 
 <s:form action="submit-request" validate="true">
 	<s:token/>

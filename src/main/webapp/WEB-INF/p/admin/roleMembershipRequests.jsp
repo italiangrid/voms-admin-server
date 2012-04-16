@@ -24,7 +24,7 @@
 	test="not pendingRequests.{? #this.typeName == 'Role membership request'}.empty">
 	<h1 style="margin-top: 2em">Role membership requests:</h1>
 	<table>
-		<tr>
+		<tr class="req-header-row">
 			<th>Requester</th>
 			<th>Requested role</th>
 			<th />
@@ -40,15 +40,11 @@
 					value="roleName" /></div>
 
 				</td>
-
-				<td style="vertical-align: bottom; text-align: right"><s:form
-					action="decision">
-					<s:token/>
-					<s:hidden name="requestId" value="%{id}" />
-					<s:radio list="{'approve','reject'}" name="decision"
-						onchange="ajaxSubmit($(this).closest('form'),'pending-req-content'); return false;" />
-				</s:form></td>
-			</tr>
+            
+				<td style="vertical-align: bottom; text-align: right">
+                  <tiles2:insertTemplate template="decisionForm.jsp"/>
+                </td>
+            </tr>
 		</s:iterator>
 	</table>
 </s:if>

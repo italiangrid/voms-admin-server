@@ -28,5 +28,11 @@ following reason:
 
 $suspensionReason
 
+#if ($suspensionReason == 'User failed to sign the AUP in time.')
+IMPORTANT:
+Note that the user can restore his/her membership at *anytime*, without requiring the VO manager intervention,
+by signing the VO Acceptable Usage Policy.
+#end
+
 Your sincerely,
 Voms-Admin registration service for VO $voName

@@ -30,7 +30,10 @@
 
 <s:else>
 	
-	<table cellpadding="0" cellspacing="0">
+	<table>
+        <tr>
+          <th colspan="2">Certificate</th>
+        </tr>
 		<s:iterator var="cert" value="certificates">
 			<tr class="tableRow">
 				<td>

@@ -63,12 +63,18 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			return ERROR;
 		}
 		
-		if (attributeRequestsEnabled()){
+		List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
+		
+		// Enable group selection only if configured to do so
+		// and if there's more than one group in the VO
+		if (attributeRequestsEnabled() && groups.size() > 1){
 			
-			List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
+			// All members are included in the root group by default, so
+			// it is removed from the list of groups that could be requested
+			if (groups.size() > 1)
+				groups = groups.subList(1, groups.size());
 			
-			// We exclude the VO root group
-			ServletActionContext.getRequest().setAttribute("voGroups", groups.subList(1, groups.size()));
+			ServletActionContext.getRequest().setAttribute("voGroups", groups);
 			
 			return REQUEST_ATTRIBUTES;
 		}

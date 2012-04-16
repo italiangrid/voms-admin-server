@@ -80,6 +80,7 @@ public interface VOMSConfigurationConstants {
 	public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
 	public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
 	public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS = "voms.aup.require_signature_for_created_users";
+	public static final String SIGN_AUP_EXTENDS_MEMBERSHIP = "voms.aup.signature_extends_membership";
 
 	/**
 	 * Membership Properties
@@ -91,6 +92,8 @@ public interface VOMSConfigurationConstants {
 	public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
 	public static final String NOTIFICATION_WARNING_RESEND_PERIOD = "voms.membership.notification_resend_period";
 	public static final String PRESERVE_EXPIRED_MEMBERS = "voms.preserve_expired_members";
+	public static final String DISABLE_MEMBERSHIP_END_TIME = "voms.disable_membership_end_time";
+	
 	
 	
 	

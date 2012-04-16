@@ -26,10 +26,6 @@
 </s:if>
 <s:else>
 
-<h1>
-  Welcome to the <span class="voName">${voName}</span> VO,
-</h1>
-
 <div id="welcomeUserName">
   	<s:if test="name != null and surname != null">
 		<s:property value="name+ ' ' +surname"/>
@@ -50,18 +46,19 @@
 
 <div class="membershipInfo">
 	<dl>
-		<s:if test="suspended">		
-			<dt>Your membership is currently <span class="suspensionWarning">suspended</span> for the following reason:</dt>
-			<dd class="suspensionReason"><s:property value="suspensionReason"/></dd>
-		</s:if>
-		<s:else>
-			<dt>Your membership will expire on:</dt>
+		<s:if test="not #attr.disableMembershipEndTime">
+			<dt>Membership expiration date:</dt>
 			<dd class="userMembershipEndTime">
                 <s:text name="format.datetime">
                   <s:param value="endTime"/>
                 </s:text>.
 			</dd>
-		</s:else>
+		</s:if>
+		
+		<s:if test="suspended">		
+			<dt>Your membership is currently <span class="suspensionWarning">suspended</span> for the following reason:</dt>
+			<dd class="suspensionReason"><s:property value="suspensionReason"/></dd>
+		</s:if>
         
         <s:if test="hasPendingSignAUPTasks()">
           <dt>You have pending sign AUP tasks for:</dt>

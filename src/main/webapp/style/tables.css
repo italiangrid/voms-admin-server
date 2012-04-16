@@ -25,20 +25,33 @@ table{
 }
 
 th {
-	padding: 0.5em;
+	padding: 1em;
 	text-align: left;
 	border-bottom: 1px solid rgb(200,200,200);
-	
 	font-weight: bold;
 }
 
 tr td{
-	padding: 0.5em;	
-	border-bottom: 1px solid rgb(200,200,200);
-	/** border-top: 1px solid rgb(200,200,200); **/ 
+	padding: 1em;	
+	border-bottom: 1px solid rgb(200,200,200); 
 	vertical-align: top;
 }
 
+tr.req-header-row {
+	background-color: #F5F5F5;
+	
+	
+}
+
+tr.req-header-row th {
+	padding-top: 1em;
+	padding-bottom: 1em;
+	text-align: left;
+	border-bottom: 0;
+	border-top: 1px solid rgb(200,200,200);
+	font-weight: bold;
+	
+}
 .tableRowOdd{
 	background-color: #F5F5F5;
 }
@@ -130,3 +143,11 @@ div.requestedRoleName{
 td.requestedGroupName span, div.requestedRoleName span{
 	font-size: smaller;	
 }
+
+td.no-border-bottom{
+	border-bottom: 0;	
+}
+
+
+
+

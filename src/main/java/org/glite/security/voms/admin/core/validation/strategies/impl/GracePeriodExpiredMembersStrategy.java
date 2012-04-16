@@ -33,6 +33,7 @@ public class GracePeriodExpiredMembersStrategy implements
 	public GracePeriodExpiredMembersStrategy(long gracePeriod, int notificationInterval) {
 		
 		this.gracePeriod = gracePeriod;
+		
 		this.notificationStrategy = new TimeIntervalNotificationStrategy(notificationInterval);
 		
 	}

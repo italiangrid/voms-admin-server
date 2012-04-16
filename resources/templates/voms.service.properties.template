@@ -64,7 +64,18 @@ voms.membership.notification_resend_period = 1
 ## members via mail.
 voms.preserve_expired_members = false
 
+## This flag disables the membership end time checks completely.
+## Turn this setting to true in case you want that user membership 
+## lifetime is linked only to the AUP acceptance period.  
+voms.disable_membership_end_time = false
+
 ## VOMS registration service options
+
+## Enable attribute request at registration time. Setting this option to true
+## will allow users to request membership in groups and roles also when first registering
+## at the VO. The VO manager will be given the chance to approve every membership
+## request.
+voms.request.vo_membership.enable_attribute_requests = false
 
 ## Time (in seconds) that unconfirmed membership requests are kept
 ## inside the voms database. The default value is 7 days.
@@ -83,7 +94,7 @@ voms.mkgridmap.translate_dn_email_format = false
 voms.aup.vo_aup.initial_url =  @VO_AUP_URL@
 
 ## The time (in days) given to users to sign the AUP, after being notified, before being suspended.
-voms.aup.sign_aup_task_lifetime = 7
+voms.aup.sign_aup_task_lifetime = 15
 
 ## Attribute authority options
 
