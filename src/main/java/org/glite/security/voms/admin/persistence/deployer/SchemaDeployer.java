@@ -51,6 +51,7 @@ import org.glite.security.voms.admin.core.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.DBUtil;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
@@ -750,35 +751,19 @@ public class SchemaDeployer {
 
 	private Configuration loadHibernateConfiguration() {
 
-		Properties dbProperties = new Properties();
-
-		try {
-
-			if (hibernatePropertiesFile == null) {
-
-				String f = String.format("%s/%s/%s", getVOConfigurationDir(),
-						vo, "voms.database.properties");
-
-				log.debug("Loading database properties from: " + f);
-
-				dbProperties.load(new FileInputStream(f));
-
-			} else
-				dbProperties.load(new FileInputStream(hibernatePropertiesFile));
-
-		} catch (IOException e) {
-
-			log.error("Error loading hibernate properties: " + e.getMessage(),
-					e);
-			throw new VOMSException("Error loading hibernate properties: "
-					+ e.getMessage(), e);
-
+		Configuration cfg;
+		
+		if (hibernatePropertiesFile == null) {
+			
+			cfg = DBUtil.loadHibernateConfiguration(getVOConfigurationDir(), vo);
+			
+		}else{
+			
+			cfg = DBUtil.loadHibernateConfiguration(hibernatePropertiesFile); 
 		}
 
-		Configuration cfg = new AnnotationConfiguration().addProperties(
-				dbProperties).configure();
-
 		dialect = Dialect.getDialect(cfg.getProperties());
+		
 		return cfg;
 	}
 

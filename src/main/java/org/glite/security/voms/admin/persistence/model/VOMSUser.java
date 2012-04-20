@@ -54,6 +54,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
+import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
@@ -1218,18 +1219,33 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 		return -1L;
 	}
 
+	
+	public static VOMSUser fromVOMSUserJSON(VOMSUserJSON user){
+		
+		VOMSUser u = new VOMSUser();
+		
+		u.setName(user.getName());
+		u.setSurname(user.getSurname());
+		u.setAddress(user.getAddress());
+		u.setInstitution(user.getInstitution());
+		u.setPhoneNumber(user.getPhoneNumber());
+		u.setEmailAddress(user.getEmailAddress());
+		
+		return u;
+		
+	}
+	
 	public static VOMSUser fromRequesterInfo(RequesterInfo ri) {
 
 		VOMSUser u = new VOMSUser();
 
 		u.setDn(ri.getCertificateSubject());
-		// Personal information
+		
 		u.setName(ri.getName());
 		u.setSurname(ri.getSurname());
 		u.setAddress(ri.getAddress());
 		u.setInstitution(ri.getInstitution());
 		u.setPhoneNumber(ri.getPhoneNumber());
-
 		u.setEmailAddress(ri.getEmailAddress());
 
 		return u;

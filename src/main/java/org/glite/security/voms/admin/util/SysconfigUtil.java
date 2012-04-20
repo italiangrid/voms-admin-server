@@ -17,6 +17,7 @@ public class SysconfigUtil {
 	public static final String SYSCONFIG_CONF_DIR = "CONF_DIR";
 	public static final String SYSCONFIG_DEFAULT_VO_NAME = "DEFAULT_VO_NAME";
 	
+	
 	public synchronized static Properties loadSysconfig(){
 		
 		Properties packagingProps = new Properties();

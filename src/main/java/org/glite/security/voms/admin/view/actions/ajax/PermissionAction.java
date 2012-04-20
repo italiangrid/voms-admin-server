@@ -29,7 +29,7 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("json")
+@ParentPackage("json-light")
 @Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
 public class PermissionAction extends BaseAction {
 

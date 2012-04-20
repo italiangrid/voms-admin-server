@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2011.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 package org.glite.security.voms.admin.apiv2;
 
 import java.util.ArrayList;
@@ -8,7 +23,12 @@ import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
-public class SimpleVOMSUser {
+import com.opensymphony.xwork2.validator.annotations.EmailValidator;
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
+public class VOMSUserJSON {
 	
 	/**
 	 * 
@@ -39,7 +59,8 @@ public class SimpleVOMSUser {
 
 	String suspensionReason;
 
-	List<SimpleCertificate> certificates;
+	List<CertificateJSON> certificates;
+	
 	
 	public Long getId() {
 		return id;
@@ -49,6 +70,8 @@ public class SimpleVOMSUser {
 		this.id = id;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a name for the user.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getName() {
 		return name;
 	}
@@ -57,6 +80,8 @@ public class SimpleVOMSUser {
 		this.name = name;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a family name for the user.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The family name contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getSurname() {
 		return surname;
 	}
@@ -65,6 +90,8 @@ public class SimpleVOMSUser {
 		this.surname = surname;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an institution for the user.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getInstitution() {
 		return institution;
 	}
@@ -73,6 +100,8 @@ public class SimpleVOMSUser {
 		this.institution = institution;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an address for the user.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getAddress() {
 		return address;
 	}
@@ -81,6 +110,8 @@ public class SimpleVOMSUser {
 		this.address = address;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a phone number for the user.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phone number contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -89,6 +120,9 @@ public class SimpleVOMSUser {
 		this.phoneNumber = phoneNumber;
 	}
 
+	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an email address for the user.")
+	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
+	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email address contains illegal characters!", expression = "^[^<>&=;]*$")
 	public String getEmailAddress() {
 		return emailAddress;
 	}
@@ -138,17 +172,17 @@ public class SimpleVOMSUser {
 	}
 	
 	
-	public List<SimpleCertificate> getCertificates() {
+	public List<CertificateJSON> getCertificates() {
 		return certificates;
 	}
 
-	public void setCertificates(List<SimpleCertificate> certificates) {
+	public void setCertificates(List<CertificateJSON> certificates) {
 		this.certificates = certificates;
 	}
 
-	public static SimpleVOMSUser fromVOMSUser(VOMSUser user){
+	public static VOMSUserJSON fromVOMSUser(VOMSUser user){
 		
-		SimpleVOMSUser u = new SimpleVOMSUser();
+		VOMSUserJSON u = new VOMSUserJSON();
 		u.setId(user.getId());
 		u.setName(user.getName());
 		u.setSurname(user.getSurname());
@@ -162,9 +196,9 @@ public class SimpleVOMSUser {
 		u.setCreationTime(user.getCreationTime());
 		u.setEndTime(user.getEndTime());
 		
-		List<SimpleCertificate> certs = new ArrayList<SimpleCertificate>();
+		List<CertificateJSON> certs = new ArrayList<CertificateJSON>();
 		for (Certificate c: user.getCertificates())
-			certs.add(SimpleCertificate.fromCertificate(c));
+			certs.add(CertificateJSON.fromCertificate(c));
 		
 		u.setCertificates(certs);
 		return u;

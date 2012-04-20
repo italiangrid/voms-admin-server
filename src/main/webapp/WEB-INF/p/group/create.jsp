@@ -41,11 +41,11 @@
       <s:token/>
       <s:textfield name="groupName" size="20" value="" label="Group name"/>
       
-      <%--
       <s:textarea name="description" label="Group description"/>
+      
+      <%--
       <s:checkbox name="isRestricted" label="Restricted?" value="true"/>
       --%>
-      
       
       <s:submit value="%{'Create!'}" align="left"/>
     </s:form>

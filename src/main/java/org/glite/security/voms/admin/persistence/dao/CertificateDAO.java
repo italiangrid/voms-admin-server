@@ -98,11 +98,7 @@ public class CertificateDAO {
 		return (dbCert != null);
 	}
 
-
-	public Certificate create(VOMSUser u, String ca) {
-
-		assert u != null : "null user passed as argument!";
-		assert ca != null : "null ca passed as argument!";
+	public Certificate create(String dn, String ca) {
 
 		String normalizedCA = DNUtil.normalizeDN(ca);
 
@@ -111,13 +107,20 @@ public class CertificateDAO {
 		if (dbCA == null)
 			throw new NoSuchCAException("CA '" + ca
 					+ "' not found in database!");
+		
 		Certificate cert = new Certificate();
 
-		cert.setSubjectString(DNUtil.normalizeDN(u.getDn()));
+		cert.setSubjectString(DNUtil.normalizeDN(dn));
 		cert.setCa(dbCA);
 		cert.setCreationTime(new Date());
-		cert.setUser(u);
 
+		return cert;
+	}
+	
+	public Certificate create(VOMSUser u, String ca) {
+
+		Certificate cert = create(u.getDn(), ca);
+		cert.setUser(u);
 		return cert;
 	}
 

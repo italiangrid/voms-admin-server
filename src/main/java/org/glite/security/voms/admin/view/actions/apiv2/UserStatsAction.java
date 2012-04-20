@@ -1,4 +1,4 @@
-package org.glite.security.voms.admin.view.actions.ajax;
+package org.glite.security.voms.admin.view.actions.apiv2;
 
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;

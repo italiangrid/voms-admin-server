@@ -34,7 +34,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 public class CreateRoleOperation extends BaseVomsOperation {
 
 	String roleName;
-
+	
 	private CreateRoleOperation(String roleName) {
 
 		this.roleName = roleName;

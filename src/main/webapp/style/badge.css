@@ -138,6 +138,10 @@
     color: #3A87AD;
 }
 .alert-block {
+	background-color: #F5F5F5;
+	color: #353535;
+	border: 1px solid #CCCCCC;
+	
     padding-bottom: 14px;
     padding-top: 14px;
 }

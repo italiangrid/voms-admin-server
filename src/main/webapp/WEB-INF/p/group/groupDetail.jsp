@@ -34,7 +34,11 @@
   <s:a href="%{editACLURL}" cssClass="actionLink" cssStyle="margin-left:1em">View ACL</s:a>
   </voms:authorized>
 </h1>
-
+<s:if test="description != null">
+	<div class="alert alert-block">
+		<s:property value="description"/>
+	</div>
+</s:if>
 <div class="info-tab">
   <h2><span>Membership information</span></h2>
   <voms:div id="group-membership-content" cssClass="content">

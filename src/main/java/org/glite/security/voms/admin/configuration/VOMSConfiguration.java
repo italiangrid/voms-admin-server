@@ -374,12 +374,9 @@ public final class VOMSConfiguration {
 		return null;
 
 	}
-
-	
 	
 	public String getConfigurationDirectoryPath() {
 	   
-		
 		String path = config.getString(SYSCONFIG_CONF_DIR)+ "/"+ getVOName();
 
 		return path;

@@ -32,7 +32,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("json")
+@ParentPackage("json-light")
 @Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
 public class UIAction extends BaseAction implements SessionAware {
 

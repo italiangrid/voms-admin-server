@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NotFoundException;
@@ -517,41 +518,83 @@ public class VOMSUserDAO {
 
 		return u;
 	}
-
-	public VOMSUser create(VOMSUser usr, String caDN) {
-
-		checkNullFields(usr);
-
+	
+	public VOMSUser create(VOMSUserJSON usr, String certificateSubject, String caSubject){
+		
+		VOMSUser u = VOMSUser.fromVOMSUserJSON(usr);
+		
+		u.setDn(certificateSubject);
+		return create(u, caSubject);
+		
+	}
+	
+	protected Certificate createCertificate(String certificateSubject, String caSubject){
+		
 		CertificateDAO certDAO = CertificateDAO.instance();
-
-		// Look for an already registered certificate
-		Certificate cert = certDAO.findByDNCA(usr.getDn(), caDN);
-
+		
+		return certDAO.create(certificateSubject, caSubject);
+		
+		
+	}
+	protected Certificate lookupCertificate(String certificateSubject, String caSubject){
+		
+		CertificateDAO certDAO = CertificateDAO.instance();
+		Certificate cert = certDAO.findByDNCA(certificateSubject, caSubject);
+		
+		return cert;
+	}
+	
+	
+	protected Certificate assertCertificateIsNotBound(String certificateSubject, String caSubject){
+		
+		Certificate cert = lookupCertificate(certificateSubject, caSubject);
+		
 		if (cert != null)
-			throw new UserAlreadyExistsException(
-					"A user with the following subject '" + usr.getDn()
-							+ "' already exists in this VO.");
-
-		cert = certDAO.create(usr, caDN);
-		usr.addCertificate(cert);
-
-		usr.setCreationTime(new Date());
-
+			throw new UserAlreadyExistsException("A user holding a certificate with the following subject '" + certificateSubject
+					+ "' already exists in this VO.");
+		return cert;
+		
+	}
+	
+	
+	
+	protected VOMSUser initUserMembership(VOMSUser user){
+		
 		Calendar c = Calendar.getInstance();
-		c.setTime(usr.getCreationTime());
+		
+		// Membership start and end time 
+		user.setCreationTime(c.getTime());
 
 		// Default lifetime for membership is 12 months
 		int lifetime = VOMSConfiguration.instance().getInt(
 				VOMSConfigurationConstants.DEFAULT_MEMBERSHIP_LIFETIME, 12);
 
 		c.add(Calendar.MONTH, lifetime);
-		usr.setEndTime(c.getTime());
+		user.setEndTime(c.getTime());
+		
+		return user;
+		
+	}
+	
+	
+	public VOMSUser create(VOMSUser usr, String caDN) {
 
+		checkNullFields(usr);
+
+		Certificate cert = assertCertificateIsNotBound(usr.getDn(), caDN);
+		
+		// Initialize user membership 
+		initUserMembership(usr);
+		
+		// Create certificate and link it to the membership
+		cert = createCertificate(usr.getDn(), caDN);
+		
+		usr.addCertificate(cert);
+		
+		HibernateFactory.getSession().save(usr);
+		
 		// Add user to VO root group
 		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-
-		HibernateFactory.getSession().save(usr);
-
 		usr.addToGroup(voGroup);
 
 		EventManager.dispatch(new UserCreatedEvent(usr));

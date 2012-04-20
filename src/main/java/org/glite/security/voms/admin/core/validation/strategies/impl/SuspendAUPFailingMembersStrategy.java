@@ -21,25 +21,26 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SuspendAUPFailingMembersStrategy implements HandleAUPFailingMembersStrategy, AUPFailingMembersLookupStrategy{
+public class SuspendAUPFailingMembersStrategy implements
+		HandleAUPFailingMembersStrategy, AUPFailingMembersLookupStrategy {
 
-	public static final Logger log = LoggerFactory.getLogger(SuspendAUPFailingMembersStrategy.class);
-	
-	
+	public static final Logger log = LoggerFactory
+			.getLogger(SuspendAUPFailingMembersStrategy.class);
+
 	public List<VOMSUser> findAUPFailingMembers() {
-		
+
 		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 		VOMSUserDAO userDAO = VOMSUserDAO.instance();
-		
+
 		return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
-		
+
 	}
 
-	protected synchronized void handleAUPFailingMember(VOMSUser u){
-		
+	protected synchronized void handleAUPFailingMember(VOMSUser u) {
+
 		AUPDAO aupDAO = HibernateDAOFactory.instance().getAUPDAO();
 		AUP aup = aupDAO.getVOAUP();
-		
+
 		log.debug("Checking user '" + u + "' compliance with '" + aup.getName()
 				+ "'");
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
@@ -48,7 +49,7 @@ public class SuspendAUPFailingMembersStrategy implements HandleAUPFailingMembers
 
 			SignAUPTask t = taskDAO.createSignAUPTask(aup);
 			u.assignTask(t);
-			log.debug("Sign aup task assigned to user '{}'",u);
+			log.debug("Sign aup task assigned to user '{}'", u);
 			EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
 
 		} else {
@@ -59,30 +60,44 @@ public class SuspendAUPFailingMembersStrategy implements HandleAUPFailingMembers
 
 					SignAUPTask tt = (SignAUPTask) t;
 
-					if (tt.getAup().equals(aup)
-							&& tt.getStatus().equals(TaskStatus.EXPIRED)
-							&& !u.getSuspended()) {
-						log.info("Suspending user '" + u
-								+ "' that failed to sign AUP in time");
+					log.debug("Sign AUP task: {}", tt);
 
-						ValidationManager.instance().suspendUser(u, SuspensionReason.FAILED_TO_SIGN_AUP);
+					// If the user is not suspended
+					if (!u.getSuspended()) {
+
+						// And the AUP failing user has a pending task for this
+						// AUP
+						if (tt.getAup() != null && tt.getAup().equals(aup)) {
+
+							// And the pending task status is EXPIRED
+							if (tt.getStatus() != null
+									&& tt.getStatus()
+											.equals(TaskStatus.EXPIRED)) {
+
+								log.info("Suspending user '" + u
+										+ "' that failed to sign AUP in time");
+
+								ValidationManager.instance().suspendUser(u,
+										SuspensionReason.FAILED_TO_SIGN_AUP);
+							}
+
+						}
 					}
-
 				}
 			}
 
 		}
-		
+
 	}
-	
+
 	public void handleAUPFailingMembers(List<VOMSUser> aupFailingMembers) {
-		
-		if (aupFailingMembers == null || aupFailingMembers.isEmpty()){
+
+		if (aupFailingMembers == null || aupFailingMembers.isEmpty()) {
 			return;
 		}
-		
-		for (VOMSUser u: aupFailingMembers)
+
+		for (VOMSUser u : aupFailingMembers)
 			handleAUPFailingMember(u);
-		
+
 	}
 }

@@ -78,6 +78,12 @@ No groups found in this VO.
               <s:property value="name" />
             </s:a>
           </div>
+          
+          <s:if test="description != null">
+          	<div class="groupDescription">
+          		<s:property value="description"/>
+          	</div>
+          </s:if>
          </td>
          <td>
           <voms:hasPermissions var="canDelete" 
