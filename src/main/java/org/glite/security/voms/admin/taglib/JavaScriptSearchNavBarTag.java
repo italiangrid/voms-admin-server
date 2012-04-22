@@ -37,14 +37,14 @@ public class JavaScriptSearchNavBarTag extends SearchNavBarTag {
 	String searchPanelId;
 
 	@Override
-	protected void writeLink(SearchResults res, int firstResult, String content)
+	protected void writeLink(SearchResults res, int firstResult, int resultsPerPage, String content)
 			throws JspException, IOException {
 
 		StringBuilder link = new StringBuilder();
 		String url;
 
 		try {
-			url = buildURL(res.getSearchString(), firstResult);
+			url = buildURL(res.getSearchString(), firstResult, resultsPerPage);
 
 		} catch (MalformedURLException e) {
 

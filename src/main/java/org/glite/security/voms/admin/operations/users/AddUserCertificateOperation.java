@@ -41,7 +41,7 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 	
 
 
-	private AddUserCertificateOperation(VOMSUser u, X509Certificate cert) {
+	protected AddUserCertificateOperation(VOMSUser u, X509Certificate cert) {
 
 		if (u == null)
 			throw new NullArgumentException("User cannot be null!");
@@ -54,7 +54,7 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 
 	}
 
-	private AddUserCertificateOperation(VOMSUser u, String certSubject,
+	protected AddUserCertificateOperation(VOMSUser u, String certSubject,
 			String certIssuer, String certNotAfter) {
 
 		if (u == null)

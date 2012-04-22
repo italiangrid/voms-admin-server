@@ -32,7 +32,7 @@ The user is still active can get VOMS attributes as usual.
 
 Please evaluate whether each membership should be extended by pointing your browser to the following URL:
 
-$serviceManagementURL/user/expired.action
+$serviceManagementURL/user/search.action
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

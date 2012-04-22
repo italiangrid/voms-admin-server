@@ -31,7 +31,7 @@ $user.shortName membership will expire in $user.daysBeforeEndTime days.
 Please evaluate whether extending each membership by pointing your browser to
 the following URL:
 
-$serviceManagementURL
+$serviceManagementURL/user/search.action
 
 Your sincerely,
 Voms-Admin registration service for VO $voName

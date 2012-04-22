@@ -68,7 +68,7 @@ public class BaseSearchOperation extends BaseVoReadOperation implements
 
 			if (searchType.equals("user"))
 				return SearchUsersOperation.instance(searchData.getText(),
-						searchData.getFirstResult(), userMaxResults).execute();
+						searchData.getFirstResult(), searchData.getMaxResults()).execute();
 			else if (searchType.equals("group"))
 				return SearchGroupsOperation.instance(searchData.getText(),
 						searchData.getFirstResult(), groupMaxResults).execute();

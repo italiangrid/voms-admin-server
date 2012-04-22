@@ -808,22 +808,56 @@ public class VOMSUserDAO {
 		return result;
 	}
 
-	public SearchResults findAll(int firstResults, int maxResults) {
-
+	
+	private SearchResults paginatedFind(Query q, Query countQuery, String searchString, int firstResults, int maxResults) {
+		
 		SearchResults res = SearchResults.instance();
-		Query q = HibernateFactory.getSession().createQuery(
-				"from VOMSUser as u order by u.surname asc");
-
+		
+		res.setSearchString(searchString);
+		 
 		q.setFirstResult(firstResults);
 		q.setMaxResults(maxResults);
-
-		res.setCount(countUsers().intValue());
+		
 		res.setResults(q.list());
+		
+		Long count = (Long) countQuery.uniqueResult();
+		
+		res.setCount(count.intValue());
+		
 		res.setFirstResult(firstResults);
 		res.setResultsPerPage(maxResults);
 
 		return res;
+	}
+	
+	private String getUserOrderClause(){
+		
+		// If endTime is ignored by configuration, we should not consider
+		// it for sorting the search results
+		boolean endTimeDisabled = VOMSConfiguration
+					.instance()
+					.getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, 
+								false);
+		
+		if (endTimeDisabled)
+			return "order by u.surname asc";
+		else
+			return "order by u.endTime asc, u.surname asc";
+		
+	}
+	
+	public SearchResults findAll(int firstResults, int maxResults) {
 
+		
+		String query = "from VOMSUser as u "+getUserOrderClause(); 
+		
+		Query q = HibernateFactory.getSession().createQuery(
+				query);
+		
+		Query countQ = HibernateFactory.getSession().createQuery(
+				"select count(*) from VOMSUser");
+		
+		return paginatedFind(q, countQ, null, firstResults, maxResults);
 	}
 
 	public List findAllNames() {
@@ -927,6 +961,15 @@ public class VOMSUserDAO {
 		return q.list();		
 	}
 	
+	public List<VOMSUser> findSuspendedUsers(int firstResult, int maxResults){
+		
+		
+		String queryString = "from VOMSUser u where u.suspended = true";
+		Query q = HibernateFactory.getSession().createQuery(queryString);
+		
+		return q.list();		
+	}
+	
 	public Long countSuspendedUsers(){
 		
 		String queryString = "select count(*) from VOMSUser u where u.suspended = true";
@@ -936,10 +979,10 @@ public class VOMSUserDAO {
 		
 	}
 	
-
-	public SearchResults search(String searchString, int firstResults,
+	
+	public SearchResults searchExpired(String searchString, int firstResults,
 			int maxResults) {
-
+		
 		log.debug("searchString:" + searchString + ",firstResults: "
 				+ firstResults + ",maxResults: " + maxResults);
 
@@ -951,11 +994,11 @@ public class VOMSUserDAO {
 
 		String sString = "%" + searchString + "%";
 
-		String queryString = "select distinct u from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+		String queryString = "select distinct u from VOMSUser u join u.certificates as cert where u.expired = true and (lower(u.surname) like lower(:searchString) "
 				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
 				+ " or lower(u.institution) like lower(:searchString) "
-				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
-				+ " order by u.surname asc";
+				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+				+ getUserOrderClause();
 
 		Query q = HibernateFactory.getSession().createQuery(queryString);
 
@@ -970,6 +1013,75 @@ public class VOMSUserDAO {
 		res.setSearchString(searchString);
 
 		return res;
+	}
+	
+	public SearchResults searchSuspended(String searchString, int firstResults,
+			int maxResults) {
+
+		
+		if (searchStringEmpty(searchString)){	
+			
+			Query q = HibernateFactory.getSession().createQuery("from VOMSUser u where u.suspended = true");
+			Query countQ = HibernateFactory.getSession().createQuery("select count(*) from VOMSUser u where u.suspended = true");
+			
+			return paginatedFind(q, countQ,null,firstResults, maxResults);
+			
+			
+		}else{
+			
+			String sString = "%" + searchString + "%";
+			
+			String commonQueryPart = "from VOMSUser u join u.certificates as cert where u.suspended = true and (lower(u.surname) like lower(:searchString) "
+					+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+					+ " or lower(u.institution) like lower(:searchString) "
+					+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+					+ getUserOrderClause();
+			
+			// FIXME: this is *UGLY*, use Criteria API instead
+			Query q = HibernateFactory.getSession().createQuery(String.format("select distinct u %s", commonQueryPart));
+			Query count = HibernateFactory.getSession().createQuery(String.format("select count(*) %s", commonQueryPart));
+
+			q.setString("searchString", sString);
+			count.setString("searchString", sString);
+			
+			return paginatedFind(q, count, searchString, firstResults, maxResults);
+			
+		}
+	
+	}
+	
+	private boolean searchStringEmpty(String searchString){
+		
+		return (searchString == null || 
+				searchString.trim().equals("")
+				|| searchString.length() == 0);
+		
+	}
+	
+	public SearchResults search(String searchString, int firstResults,
+			int maxResults) {
+		
+		log.debug("searchString:" + searchString + ",firstResults: "
+				+ firstResults + ",maxResults: " + maxResults);
+
+		if (searchStringEmpty(searchString))
+			return findAll(firstResults, maxResults);
+
+		String sString = "%" + searchString + "%";
+
+		String commonPart = "from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+				+ " or lower(u.institution) like lower(:searchString) "
+				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+				+ getUserOrderClause();
+		
+		Query q = HibernateFactory.getSession().createQuery(String.format("select distinct u %s", commonPart));
+		Query count = HibernateFactory.getSession().createQuery(String.format("select count(*) %s", commonPart));
+		
+		q.setString("searchString", sString);
+		count.setString("searchString", sString);
+		
+		return paginatedFind(q, count, searchString, firstResults, maxResults);
 
 	}
 

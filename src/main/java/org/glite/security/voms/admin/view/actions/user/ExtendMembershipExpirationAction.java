@@ -6,11 +6,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.core.validation.ValidationUtil;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.UserRestoredEvent;
-import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.operations.users.SetMembershipExpirationOperation;
-import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 @ParentPackage("base")
 @Results({

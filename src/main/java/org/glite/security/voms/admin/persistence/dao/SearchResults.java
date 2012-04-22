@@ -19,7 +19,9 @@
  */
 package org.glite.security.voms.admin.persistence.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -34,9 +36,11 @@ public class SearchResults {
 	int firstResult;
 
 	int resultsPerPage;
+	
+
 
 	public SearchResults() {
-
+		
 	}
 
 	public SearchResults(int c, List res) {

@@ -20,3 +20,27 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+<h1>Edit group description</h1>
+
+<div class="editTab">
+  <voms:hasPermissions var="canCreate" 
+            context="/${voName}" 
+            permission="CONTAINER_READ|CONTAINER_WRITE"
+            />
+  
+  <s:if test="#attr.canCreate">
+    <s:actionerror/>
+      <s:form 
+      action="save"
+      namespace="/group"
+      validate="true"
+    >
+      <s:token/>
+      <div class="groupName"><s:property value="name"/></div>
+      <s:textarea name="description" label="Group description"/>
+      
+      <s:submit value="%{'Update!'}" align="left"/>
+    </s:form>
+  </s:if>
+
+</div>

@@ -803,12 +803,14 @@ input.membershipExpiration {
 }
 
 tr.userSelected {
-	background-color: #FFFFDF;
+	background-color: #FFFFDF !important;
 }
 
+
 tr.userSelected td {
-	border-top: 2px solid #FFE08F;
-	border-bottom: 2px solid #FFE08F;
+	
+	border-top: 2px solid #FFE08F !important;
+	border-bottom: 2px solid #FFE08F !important;
 }
 
 tr.userBulkOperations {
@@ -852,6 +854,10 @@ div.userSuspensionInfo .suspensionReason {
 	vertical-align: baseline;
 }
 
+.middleline{
+	vertical-align: middle;
+}
+
 .strong{
 	font-weight: bolder;	
 }
@@ -866,4 +872,18 @@ div.userSuspensionInfo .suspensionReason {
 	color: #505050;
 	margin-top: .5em;
 	font-size: 11px;
+}
+
+.hide {
+	display: none;
+}
+
+.inline {
+	display: inline;
+}
+
+.cont {
+
+	margin-top: 1em;
+	margin-bottom: 1em;
 }

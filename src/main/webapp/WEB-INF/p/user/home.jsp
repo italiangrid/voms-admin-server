@@ -104,8 +104,8 @@
 </tiles2:insertTemplate>
 
 <s:if test="#request.registrationEnabled">
-  <tiles2:insertTemplate template="aupHistoryPane.jsp">
-    <tiles2:putAttribute name="panelName" value="Your AUP acceptance history"/>
+  <tiles2:insertTemplate template="aupStatusPane.jsp">
+    <tiles2:putAttribute name="panelName" value="Your AUP acceptance status"/>
   </tiles2:insertTemplate>
 </s:if>
 

@@ -33,9 +33,9 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("base")
 @Results( {
-		@Result(name = BaseAction.SUCCESS, location = "aupHistory.jsp"),
-		@Result(name = BaseAction.INPUT, location = "aupHistory.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="aupHistory.jsp")})
+		@Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
+		@Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
+		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="aupStatus.jsp")})
 
 @InterceptorRef(value = "authenticatedStack", params = {
 		"token.includeMethods", "execute" })

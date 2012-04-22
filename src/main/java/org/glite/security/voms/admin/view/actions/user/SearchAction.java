@@ -19,12 +19,14 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
-import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.taglib.SearchNavBarTag;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 
@@ -49,6 +51,17 @@ public class SearchAction extends BaseSearchAction implements Preparable {
 
 	}
 
+	protected Map<String,String> getSearchCustomFlags(){
+		
+		Map<String,String> params = new HashMap<String, String>();
+		
+		if (limitToSuspendedUsers != null){
+			params.put("limitToSuspendedUsers", limitToSuspendedUsers);
+		}
+		
+		return params;
+	}
+	
 	@Override
 	public String execute() throws Exception {
 	
@@ -59,10 +72,14 @@ public class SearchAction extends BaseSearchAction implements Preparable {
 		if (limitToSuspendedUsers.equals("false"))
 			return super.execute();
 		
-		searchResults = SearchResults.fromList(VOMSUserDAO.instance().findSuspendedUsers());
+		searchResults = VOMSUserDAO.instance().searchSuspended(searchData.getText(), 
+					searchData.getFirstResult(), 
+					searchData.getMaxResults());
 		
 		session.put("searchData", getSearchData());
 		session.put("searchResults", searchResults);
+		
+		session.put(SearchNavBarTag.SEARCH_PARAMS_KEY, getSearchCustomFlags());
 		
 		return SUCCESS;
 		

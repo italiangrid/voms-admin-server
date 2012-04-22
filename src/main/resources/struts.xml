@@ -113,7 +113,7 @@
                     <param name="excludeMethods">input,back,cancel</param>
                 </interceptor-ref>
                 
-                <interceptor-ref name="token">
+                <interceptor-ref name="tokenSession">
                   <param name="excludeMethods">*</param>
                 </interceptor-ref>
                 
@@ -245,43 +245,28 @@
                 
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>
+                
                 <interceptor-ref name="params">
                     <param name="excludeParams">dojo\..*,^struts\..*</param>
                 </interceptor-ref>
                 
                 <interceptor-ref name="checkbox"/>
-                
-                <interceptor-ref name="prepare"/>
-                <interceptor-ref name="modelDriven"/>
-                <interceptor-ref name="chain"/>
-                <interceptor-ref name="debugging"/>
-                
-                <interceptor-ref name="fileUpload"/>
-                
-                <interceptor-ref name="staticParams"/>
-                <interceptor-ref name="actionMappingParams"/>
-                
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
-                
-                <interceptor-ref name="conversionError"/>
+               
                 
                 <interceptor-ref name="json" />
+                
+                <interceptor-ref name="prepare"/>
                 
                 <interceptor-ref name="validation">
                     <param name="excludeMethods">input,back,cancel</param>    
                 </interceptor-ref>
                 
+                <interceptor-ref name="modelDriven"/>
+                
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                
                 <interceptor-ref name="jsonValidationReporting"/>
-                
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
-                
-                <interceptor-ref name="token">
-                  <param name="excludeMethods">*</param>
-                </interceptor-ref>
                 
                 <interceptor-ref name="hibernateInterceptor" />
               </interceptor-stack>

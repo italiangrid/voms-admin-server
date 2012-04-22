@@ -56,6 +56,10 @@ tr.req-header-row th {
 	background-color: #F5F5F5;
 }
 
+tr.tableRow:nth-child(odd){
+	background-color: #F5F5F5;
+}
+
 .tableRowEven{
 	
 }

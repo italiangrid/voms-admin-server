@@ -25,8 +25,6 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.UserRestoredEvent;
 import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -46,13 +44,10 @@ public class RestoreAction extends SuspendAction {
 
     @Override
     public String execute() throws Exception {
-	RestoreUserOperation.instance(getModel()).execute();
+    	
+    	RestoreUserOperation.instance(getModel()).execute();
 
-	EventManager.dispatch(new UserRestoredEvent(getModel()));
-
-	return SUCCESS;
+    	return SUCCESS;
     }
-    
-    
     
 }

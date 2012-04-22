@@ -37,8 +37,13 @@
     <s:hidden name="searchData.type" value="%{'user'}"/>
     <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
+    <span>Limit to:</span>
+    <s:label for="limitToSuspendedUsers"><span class="blabel blabel-important baseline">Suspended</span></s:label>
     <s:checkbox name="limitToSuspendedUsers" onclick="this.form.submit()"/>
-    <s:label for="limitToSuspendedUsers">Show suspended users only</s:label>
+    <s:label for="searchData.maxResults">Show:</s:label>
+    <s:select name="searchData.maxResults" list="{'10','50','100'}"  
+      value="%{#session.searchData.maxResults}" 
+      onchange="this.form.submit()"/>
   </s:form>
   <s:fielderror fieldName="searchData.text"/>
 </div>
@@ -164,14 +169,12 @@
                 <span class="blabel blabel-invert-important"><s:property value="suspensionReason"/></span>
               </div>
             </s:if>
-            <s:else>
-              <div class="aupInfo">
-                <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
-              </div>
-              <div class="expirationInfo">
-                <tiles2:insertTemplate template="membershipExpirationDetail.jsp"/>
-              </div>
-            </s:else>
+            <div class="cont aupInfo">
+              <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
+            </div>
+            <div class="expirationInfo cont">
+               <tiles2:insertTemplate template="membershipExpirationDetail.jsp"/>
+            </div>
             </div>
         </td>
 

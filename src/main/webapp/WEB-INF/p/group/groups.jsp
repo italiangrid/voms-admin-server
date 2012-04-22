@@ -57,6 +57,10 @@ No groups found in this VO.
   No groups found matching search string '<s:property value="#session.searchResults.searchString"/>'.
 </s:elseif> 
 <s:else>
+  <div class="resultsNav" style="margin-bottom: 1em;">
+     <tiles2:insertTemplate template="../shared/searchNavBar.jsp"/>
+  </div>
+  
   <table
     class="table"
     cellpadding="0"
@@ -86,17 +90,25 @@ No groups found in this VO.
           </s:if>
          </td>
          <td>
+          
           <voms:hasPermissions var="canDelete" 
             context="/${voName}" 
             permission="CONTAINER_READ|CONTAINER_WRITE"/>
             
           <s:if test="(not rootGroup) and #attr['canDelete']">
-            <s:form action="delete" namespace="/group">
+            <div style="float: right">
+            <s:form action="edit" namespace="/group" theme="simple" cssClass="inline">
+              <s:hidden name="groupId" value="%{id}"/>
+              <s:submit value="%{'edit'}"/>
+            </s:form>
+            
+            <s:form action="delete" namespace="/group" theme="simple" cssClass="inline">
               <s:token/>
               <s:hidden name="groupId" value="%{id}"/>
               
-              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteGroupDialog','%{name}'); return false"/>
+              <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteGroupDialog','%{name}'); return false" />
             </s:form>
+            </div>
           </s:if>
           
          </td>
@@ -121,4 +133,3 @@ No groups found in this VO.
 <s:else>
   You do not have enough permissions to browse this VO groups.
 </s:else>
-

@@ -93,6 +93,15 @@
 	Do you really want to trigger the reacceptance of the currently active version of the VO Acceptable Usage Policy?
 	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules, version:
 	<div class="dialogMessage"></div>
+</div>
+
+<div id="changeActiveAUPVersionDialog" title="Change active AUP version?" style="display: none" class="dialog">
+  Do you really want to change the currently active version of the VO Acceptable Usage Policy?<br/>
+  If you confirm, all the VO users who has not signed AUP version:
+  <div class="dialogMessage"></div>
+  <p>
+    will be notified by email and requested to sign the AUP.
+  </p>
 </div> 
 
 <div id="deleteAUPVersionDialog" title="Delete AUP version?" style="display: none" class="dialog">
@@ -104,3 +113,4 @@
 		All the associated acceptance records will be dropped from the database...
 	</p>
 </div>
+

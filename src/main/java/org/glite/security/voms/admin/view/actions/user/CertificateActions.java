@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -36,15 +34,16 @@ import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.util.CertUtil;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ParentPackage("base")
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.EDIT, location = "editCertificate"),
 		@Result(name = BaseAction.INPUT, location = "addCertificate") })
 		
 @InterceptorRef(value = "authenticatedStack", params = {
 		"token.includeMethods", "deleteCertificate,saveCertificate" })
-public class CertificateActions extends UserActionSupport {
+public class CertificateActions extends UserActionSupport{
 
 	public static final Logger log = LoggerFactory.getLogger(CertificateActions.class);
 
@@ -77,11 +76,6 @@ public class CertificateActions extends UserActionSupport {
 	@Action("add-certificate")
 	public String addCertificate() throws Exception {
 		return INPUT;
-	}
-
-	@Action("edit-certificate")
-	public String editCertificate() throws Exception {
-		return EDIT;
 	}
 	
 	@Action("save-certificate")
@@ -172,6 +166,5 @@ public class CertificateActions extends UserActionSupport {
 
 	public void setCertificateId(Long certificateId) {
 		this.certificateId = certificateId;
-	}
-
+	}	
 }

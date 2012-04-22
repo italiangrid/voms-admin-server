@@ -72,11 +72,13 @@
 	</s:if>
 </div>
 </div>
-<div class="badge-container">
-  <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
-</div>
+
 <div class="badge-container">
   <tiles2:insertTemplate template="suspensionDetail.jsp"/>
+</div>
+
+<div class="badge-container">
+  <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
 </div>
 
 <s:if test="not #attr.disableMembershipEndTime">
@@ -97,8 +99,8 @@
 	<tiles2:putAttribute name="panelName" value="Generic Attributes"/>
 </tiles2:insertTemplate>
 
-<tiles2:insertTemplate template="aupHistoryPane.jsp">
-  <tiles2:putAttribute name="panelName" value="AUP acceptance history"/>
+<tiles2:insertTemplate template="aupStatusPane.jsp">
+  <tiles2:putAttribute name="panelName" value="AUP acceptance status"/>
 </tiles2:insertTemplate>
 
 <tiles2:insertTemplate template="requestHistoryPane.jsp">

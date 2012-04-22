@@ -22,8 +22,15 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 <div class="reloadable">
   <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
+  
+  <voms:hasPermissions
+          var="canSuspend"
+          context="vo"
+          permission="SUSPEND" />
+  
   <s:if test="aupAcceptanceRecords.empty">
-No AUP acceptance records found.
+    
+    No acceptance records found for the currently active AUP version. 
 	<s:if test="#request.registrationEnabled">
       <voms:hasPermissions
         var="canSuspend"
@@ -51,56 +58,52 @@ No AUP acceptance records found.
     </s:if>
   </s:if>
   <s:else>
-
-    <s:iterator value="aupAcceptanceRecords">
-      <s:url
-        action="load"
-        namespace="/aup"
-        var="saURL" />
-
-      <s:if test="not valid">
+    
+    <s:set var="currentAccRec" value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}"/>
+    <s:if test="not #currentAccRec.empty">
+      <s:iterator value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
+        <s:url
+          action="load"
+          namespace="/aup"
+          var="saURL" />
+                
         <s:if test="hasPendingSignAUPTasks()">
-          <div>
+          <div style="margin-bottom: 1em" >
             <tiles2:insertTemplate template="aupStatusDetail.jsp" />
-            <div style="display: inline; vertical-align: middle">
-              for AUP version <a href="${saURL}"><s:property
-                  value="aupVersion.version" /></a>.
-                  <s:if test="getPendingSignAUPTask(#attr.defaultAUP).daysBeforeExpiration > 0">
-                    Task expires in 
-                    <s:property value="getPendingSignAUPTask(#attr.defaultAUP).daysBeforeExpiration"/> days.
-                  </s:if>
-            </div>
           </div>
+          <div class="alert alert-warning">
+            <strong>WARNING:</strong>
+            If the user fails to sign the AUP in the requested time he/she will be suspended.
+            Note that membership can be then restored at anytime by just signing the AUP
+            following the instructions sent in the email notification.
+          </div>
+        </s:if>
+        <s:else>
+          <s:if test="not valid">
+              <a href="${saURL}">AUP</a> signature has been invalidated.
+              A request to sign the AUP is being sent to the user. 
           </s:if>
           <s:else>
-            AUP <a href="${saURL}"><s:property value="aupVersion.version" /></a> signature has been invalidated.
-            A request to sign the AUP is being sent to the user. 
+            <div>
+            The <a href="${saURL}">current AUP</a> was last signed
+            <s:property value="daysSinceLastAcceptance" />
+            days ago. This signature will expire in
+            <s:property value="daysBeforeExpiration" />
+            days.
+          </div>
           </s:else>
-      </s:if>
-      <s:else>
-        <div>
-          AUP version <a href="${saURL}"><s:property
-              value="aupVersion.version" /></a> was last signed
-          <s:property value="daysSinceLastAcceptance" />
-          days ago. This signature will expire in
-          <s:property value="daysBeforeExpiration" />
-          days.
-        </div>
-      </s:else>
-    </s:iterator>
-
-    <s:if test="#request.registrationEnabled">
-      <voms:hasPermissions
-        var="canSuspend"
-        context="vo"
-        permission="SUSPEND" />
-      <div style="text-align: right;">
-
-        <s:if test="#attr.canSuspend">
-          <s:if
-            test="(not model.hasInvalidAUPAcceptanceRecord()) and (not model.hasPendingSignAUPTasks())">
-
-            <s:form
+        </s:else>
+      
+      </s:iterator>
+      <s:if test="#request.registrationEnabled">
+        
+        <div style="text-align: right;">
+        
+        <s:if test="#attr.canSuspend 
+          and (not model.hasInvalidAUPAcceptanceRecordForAUP(#attr.defaultAUP)) 
+          and (not model.hasPendingSignAUPTasks())">
+          
+          <s:form
               action="trigger-reacceptance"
               onsubmit="ajaxSubmit(this,'aup-history-content'); return false;"
               theme="simple"
@@ -111,12 +114,14 @@ No AUP acceptance records found.
                 value="%{model.id}" />
               <s:submit value="%{'Request AUP reacceptance'}" />
             </s:form>
-
-          </s:if>
         </s:if>
-
+        
       </div>
     </s:if>
+   </s:if>
+   <s:else>
+    No acceptance records found for the active AUP.
+   </s:else>
   </s:else>
 </div>
 

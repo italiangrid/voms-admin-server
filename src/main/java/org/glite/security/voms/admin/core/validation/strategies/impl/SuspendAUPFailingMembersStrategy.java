@@ -45,7 +45,9 @@ public class SuspendAUPFailingMembersStrategy implements
 				+ "'");
 		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 
-		if (u.getPendingSignAUPTask(aup) == null) {
+		SignAUPTask pendingSignAUPTask = u.getPendingSignAUPTask(aup); 
+		
+		if (pendingSignAUPTask == null) {
 
 			SignAUPTask t = taskDAO.createSignAUPTask(aup);
 			u.assignTask(t);
@@ -54,38 +56,25 @@ public class SuspendAUPFailingMembersStrategy implements
 
 		} else {
 
-			for (Task t : u.getTasks()) {
-
-				if (t instanceof SignAUPTask) {
-
-					SignAUPTask tt = (SignAUPTask) t;
-
-					log.debug("Sign AUP task: {}", tt);
-
-					// If the user is not suspended
-					if (!u.getSuspended()) {
-
-						// And the AUP failing user has a pending task for this
-						// AUP
-						if (tt.getAup() != null && tt.getAup().equals(aup)) {
-
-							// And the pending task status is EXPIRED
-							if (tt.getStatus() != null
-									&& tt.getStatus()
-											.equals(TaskStatus.EXPIRED)) {
-
-								log.info("Suspending user '" + u
-										+ "' that failed to sign AUP in time");
-
-								ValidationManager.instance().suspendUser(u,
-										SuspensionReason.FAILED_TO_SIGN_AUP);
-							}
-
-						}
-					}
-				}
+			if (u.getSuspended()){
+				
+				log.debug("User already suspended. Reason: {}", u.getSuspensionReason());
+				return;
 			}
+			
+			// User is not suspended, look if expired the pending Sign AUP task
+			// has expired
+			
+			log.debug("Sign AUP task: {}", pendingSignAUPTask);
+			
+			if (pendingSignAUPTask.getStatus().equals(TaskStatus.EXPIRED)){
+				
+				log.info("Suspending user '" + u
+						+ "' that failed to sign AUP in time");
 
+				ValidationManager.instance().suspendUser(u,
+						SuspensionReason.FAILED_TO_SIGN_AUP);
+			}
 		}
 
 	}

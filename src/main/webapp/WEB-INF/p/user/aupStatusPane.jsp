@@ -24,6 +24,6 @@
 <div class="info-tab">
   <h2><span><tiles2:insertAttribute name="panelName"/></span></h2>
   <voms:div id="aup-history-content" cssClass="content">
-    <tiles2:insertTemplate template="aupHistory.jsp"/>
+    <tiles2:insertTemplate template="aupStatus.jsp"/>
   </voms:div>
 </div>

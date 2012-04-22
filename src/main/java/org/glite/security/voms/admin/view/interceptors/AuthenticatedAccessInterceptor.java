@@ -60,13 +60,8 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 		
 
 	}
-
-	public String intercept(ActionInvocation ai) throws Exception {
-		
-		
-		HttpServletRequest req = ServletActionContext.getRequest(); 
-		
-		InitSecurityContext.setContextFromRequest(req);
+	
+	protected void setupGlobalObjects(HttpServletRequest req){
 		
 		if (!VOMSConfiguration.instance().getVOName().equals("siblings")){
 			
@@ -93,6 +88,16 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 			
 		}
 		
+	}
+
+	public String intercept(ActionInvocation ai) throws Exception {
+		
+		
+		HttpServletRequest req = ServletActionContext.getRequest(); 
+		
+		InitSecurityContext.setContextFromRequest(req);
+		
+		setupGlobalObjects(req);
 
 		return ai.invoke();
 	}

@@ -22,6 +22,8 @@ package org.glite.security.voms.admin.operations.users;
 import java.util.Date;
 
 import org.glite.security.voms.admin.core.validation.ValidationUtil;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserRestoredEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -30,8 +32,12 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RestoreUserOperation extends BaseVomsOperation {
+	
+	public static final Logger log = LoggerFactory.getLogger(RestoreUserOperation.class);
 
 	VOMSUser user;
 
@@ -57,6 +63,8 @@ public class RestoreUserOperation extends BaseVomsOperation {
 	@Override
 	protected Object doExecute() {
 
+		log.info("Restoring user {}.", user.getShortName());
+		
 		if (user.isSuspended()){
 			
 			if (user.getSuspensionReason().equals(SuspensionReason.FAILED_TO_SIGN_AUP.getMessage())){
@@ -64,18 +72,23 @@ public class RestoreUserOperation extends BaseVomsOperation {
 				
 				// Sign AUP on behalf of the user
 				VOMSUserDAO.instance().signAUP(user, aupDAO.getVOAUP());
+				log.debug("Creating AUP acceptance record for user {}", user);
 				
-			}else if (user.getSuspensionReason().equals(SuspensionReason.MEMBERSHIP_EXPIRATION.getMessage()) && user.hasExpired()){
 				
+			}
+			
+			if (user.hasExpired()){
 				// Extend membership
 				Date expirationDate = ValidationUtil.membershipExpirationDateStartingFromNow();
+				log.debug("Extending membership for user {} to {}", user, expirationDate);
 				user.setEndTime(expirationDate);
 			}
 				
-			user.restore();		
+			user.restore();	
+			
+			EventManager.dispatch(new UserRestoredEvent(user));
 			
 		}
-
 		return null;
 	}
 

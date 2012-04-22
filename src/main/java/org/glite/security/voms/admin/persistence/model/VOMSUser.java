@@ -1054,6 +1054,18 @@ public class VOMSUser implements Serializable, Auditable, Comparable {
 
 	}
 	
+	public boolean hasInvalidAUPAcceptanceRecordForAUP(AUP aup){
+		
+		if (getAupAcceptanceRecords().isEmpty())
+			return false;
+		
+		for (AUPAcceptanceRecord r: getAupAcceptanceRecords()){
+			if (r.getAupVersion().equals(aup.getActiveVersion()) && !r.getValid())
+				return true;
+			
+		}
+		return false;
+	}
 	
 	public boolean hasInvalidAUPAcceptanceRecord(){
 		

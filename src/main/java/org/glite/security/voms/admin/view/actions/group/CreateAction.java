@@ -33,6 +33,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("base")
@@ -96,6 +97,9 @@ public class CreateAction extends GroupActionSupport {
 			return INPUT;
 
 		String name = getParentGroupName() + "/" + getGroupName();
+		
+		if ("".equals(description.trim()))
+			description = null;
 
 		VOMSGroup g = (VOMSGroup) CreateGroupOperation.instance(name, description, isRestricted).execute();
 
@@ -130,6 +134,7 @@ public class CreateAction extends GroupActionSupport {
 	}
 
 	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The description field contains illegal characters!", expression = "^[^<>&=;]*$")
+	@StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength="255", message="The description field size is limited to 255 characters.")
 	public String getDescription() {
 		return description;
 	}

@@ -27,7 +27,7 @@
   permission="PERSONAL_INFO_READ" />
 
 <s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
-  <div id="membership-expiration-pane">
+  <div id="membership-expiration-pane" class="cont">
 
     <div class="reloadable">
       <voms:hasPermissions
@@ -39,7 +39,7 @@
 
       <s:form
         action="extend-membership-expiration"
-        onsubmit="ajaxSubmit(this,'membership-expiration-pane'); return false;" theme="simple" cssStyle="display:inline">
+        onsubmit="ajaxSubmit(this,'membership-expiration-pane'); return false;" theme="simple" cssClass="middleline" cssStyle="display:inline">
 
         <s:token />
         <s:hidden

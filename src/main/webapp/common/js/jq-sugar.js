@@ -17,6 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
+
 function vomsErrorMessage(node, text){
 	
 	$(node).prepend("<div class='errorMessage'>"+text+"</div>");
@@ -155,11 +156,7 @@ function ajaxLoad(id, url){
 
 
 
-$(document).ready(function(){
-	
-	pageSetup();
-	
-});
+
 
 function blinkBackground(node){
 	var bgColor = $(node).css('background-color');
@@ -171,8 +168,7 @@ function blinkBackground(node){
 
 function eyeCandy(){
 	
-	colorTableRows();
-
+	formattedDNMagic();
 	
 	$('input:text.registrationField, textarea[readonly!=readonly].registrationField').focus(function(){
 		
@@ -193,18 +189,11 @@ function eyeCandy(){
 	
 	$('*[readonly="readonly"]').addClass('readOnly');
 	
-	
 	$('select').addClass('selectBox');
 	
 	enableSetRoleAttributeForm();
 	enableDeleteRoleAttributeForms();
 	
-
-	// $('select').change(function(){
-	//	blinkBackground(this);
-	// });
-	
-	formattedDNMagic();
 	
 	$('input.checkboxError').wrap("<span class='checkboxValidationError'></span>");
 	
@@ -222,7 +211,6 @@ function eyeCandy(){
 	});
 	
 	$('#membershipExpirationField[readonly!=readonly]').datepicker({ dateFormat: 'mm/dd/yy', constrainInput: true });
-	// $('#membershipExpirationField[readonly!=readonly]').datepicker();
 	
 	$('#userSelectorTrigger').change(function(){
 		
@@ -254,14 +242,6 @@ function showAUPContent(node){
 	$('#aclShowTextArea').val(aupText);
 }
 
-function colorTableRows(){
-	
-	$('.tableRow:nth-child(1)').addClass('tableRowOdd');
-	
-	$('.tableRow:nth-child(2n)').addClass('tableRowEven');
-	$('.tableRow:nth-child(3n)').addClass('tableRowOdd');
-	
-}
 
 function initializePanelHeaders(){
 	
@@ -542,3 +522,9 @@ function openConfirmDialog(node,dialogId,text){
 }
 
 
+$(document).ready(function(){
+	
+	pageSetup();
+	
+	
+});

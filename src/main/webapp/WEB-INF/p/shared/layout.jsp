@@ -62,7 +62,7 @@
     
     <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
     </script>
-  
+    
     <s:head/>
   </head>
 
@@ -83,7 +83,9 @@
   <div id="body">
       <tiles2:insertAttribute name="leftBar" />
       
-      <tiles2:insertAttribute name="content" />
+      <div id="noflash">
+        <tiles2:insertAttribute name="content" />
+      </div>
   </div> <!-- body -->
   
   <div id="footer">

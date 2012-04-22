@@ -21,17 +21,20 @@ package org.glite.security.voms.admin.taglib;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.dao.SearchResults;
 
 public class SearchNavBarTag extends TagSupport {
 
+	public static final String SEARCH_PARAMS_KEY = "searchParams";
+	
 	private static final Logger log = LoggerFactory.getLogger(SearchNavBarTag.class);
 
 	String id;
@@ -49,6 +52,8 @@ public class SearchNavBarTag extends TagSupport {
 	String linkStyleClass;
 
 	String searchType;
+	
+	Map<String, String> searchParams;
 
 	/**
      * 
@@ -61,7 +66,7 @@ public class SearchNavBarTag extends TagSupport {
 
 	}
 
-	protected String buildURL(String text, int firstResult)
+	protected String buildURL(String text, int firstResult, int resultsPerPage)
 			throws MalformedURLException {
 
 		StringBuilder url = new StringBuilder(searchURL);
@@ -72,24 +77,35 @@ public class SearchNavBarTag extends TagSupport {
 			querySeparator = "&";
 
 		url.append(querySeparator + "searchData.firstResult=" + firstResult);
+		
+		if (resultsPerPage > 0)
+			url.append("&searchData.maxResults=" + resultsPerPage);
 
 		if (text != null)
 			url.append("&searchData.text=" + text);
 
 		if (getSearchType() != null)
 			url.append("&searchData.type=" + getSearchType());
+		
+		if (searchParams != null){
+			
+			for (String param: searchParams.keySet()){
+				url.append(String.format("&%s=%s",param, searchParams.get(param)));
+			}
+			
+		}
 
 		return url.toString();
 	}
 
-	protected void writeLink(SearchResults res, int firstResult, String content)
+	protected void writeLink(SearchResults res, int firstResult, int resultsPerPage, String content)
 			throws JspException, IOException {
 
 		String link;
 		String url;
 
 		try {
-			url = buildURL(res.getSearchString(), firstResult);
+			url = buildURL(res.getSearchString(), firstResult, resultsPerPage);
 
 		} catch (MalformedURLException e) {
 
@@ -115,14 +131,14 @@ public class SearchNavBarTag extends TagSupport {
 	protected void writeFirst(SearchResults res) throws JspException,
 			IOException {
 
-		writeLink(res, 0, "first");
+		writeLink(res, 0, res.getResultsPerPage(), "first");
 
 	}
 
 	protected void writeLast(SearchResults res) throws JspException,
 			IOException {
 
-		writeLink(res, res.getCount() - res.getResultsPerPage(), "last");
+		writeLink(res, res.getCount() - res.getResultsPerPage(), res.getResultsPerPage(), "last");
 
 	}
 
@@ -133,14 +149,14 @@ public class SearchNavBarTag extends TagSupport {
 		if (previousIndex < 0)
 			previousIndex = 0;
 
-		writeLink(res, previousIndex, "&lt;");
+		writeLink(res, previousIndex, res.getResultsPerPage(), "&lt;");
 
 	}
 
 	protected void writeNext(SearchResults res) throws JspException,
 			IOException {
 
-		writeLink(res, res.getFirstResult() + res.getResultsPerPage(), "&gt;");
+		writeLink(res, res.getFirstResult() + res.getResultsPerPage(), res.getResultsPerPage(), "&gt;");
 
 	}
 
@@ -158,6 +174,9 @@ public class SearchNavBarTag extends TagSupport {
 	public int doStartTag() throws JspException {
 
 		SearchResults results = (SearchResults) pageContext.findAttribute(id);
+		
+		
+		searchParams = (Map<String, String>) pageContext.findAttribute(SEARCH_PARAMS_KEY); 
 
 		if (results == null) {
 

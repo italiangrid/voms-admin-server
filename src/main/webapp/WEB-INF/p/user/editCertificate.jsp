@@ -25,18 +25,19 @@
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 
-<s:form action="save-certificate" enctype="multipart/form-data" namespace="/user" method="POST">
+<s:form action="save-edited-certificate" enctype="multipart/form-data" namespace="/user" method="POST">
   <s:token/>
   <s:hidden name="userId" value="%{model.id}"/>
-  <h2>Enter a DN, CA couple:</h2>
+  <h2>Edit certificate subject:</h2>
   <div style="padding: 1em 2em 1em 2em; background-color: #F5F5F5">
-    <s:textfield name="subject" size="45" label="Certificate subject (DN)" labelposition="top"/>
-    <s:select name="caSubject" list="#request.trustedCas" listKey="subjectString" listValue="subjectString" label="CA"/>
-  </div>
-  <h2>Or choose a PEM encoded X509 certificate from your file system:</h2>
-  <div style="padding: 1em 2em 1em 2em; background-color: #f5f5f5">
-    <s:file name="certificateFile" label="Certificate file"/>
-    <s:submit value="%{'Edit certificate'}"/>
-  </div>
-      
+    <s:textfield name="subject" size="45" label="Certificate subject (DN)" labelposition="top" value="%{#session.cert.subjectString}"/>
+    <s:select name="caSubject" 
+      list="#request.trustedCas" 
+      listKey="subjectString" 
+      listValue="subjectString" 
+      label="CA"
+      value="%{#session.cert.ca.subjectString}"
+      disabled="true" />
+     <s:submit value="%{'Save certificate'}"/>
+  </div>  
 </s:form>

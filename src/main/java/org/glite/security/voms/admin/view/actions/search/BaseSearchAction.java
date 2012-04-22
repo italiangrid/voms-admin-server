@@ -25,6 +25,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
 import org.glite.security.voms.admin.persistence.dao.SearchResults;
+import org.glite.security.voms.admin.taglib.SearchNavBarTag;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.SearchData;
 
@@ -72,6 +73,8 @@ public abstract class BaseSearchAction extends BaseAction implements SessionAwar
 		session.put("searchData", getSearchData());
 		session.put("searchResults", searchResults);
 		
+		cleanupCustomFlags();
+		
 		return SUCCESS;
 
 	}
@@ -95,6 +98,11 @@ public abstract class BaseSearchAction extends BaseAction implements SessionAwar
 			getSearchData().setType(searchType);
 	}
 	
+	
+	protected void cleanupCustomFlags(){
+		
+		session.remove(SearchNavBarTag.SEARCH_PARAMS_KEY);
+	}
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

@@ -35,6 +35,7 @@
   </voms:authorized>
 </h1>
 <s:if test="description != null">
+  <h2>Description:</h2>
 	<div class="alert alert-block">
 		<s:property value="description"/>
 	</div>

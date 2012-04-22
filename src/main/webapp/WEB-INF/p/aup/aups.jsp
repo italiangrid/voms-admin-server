@@ -110,7 +110,7 @@
             		<s:token/>
               		<s:hidden name="aupId" value="%{model.id}"/>
               		<s:hidden name="version" value="%{version}"/>
-              		<s:submit value="%{'Set active'}"/>
+              		<s:submit value="%{'Set active'}" onclick="openConfirmDialog(this, 'changeActiveAUPVersionDialog','%{version}'); return false"/>
             	</s:form>
             </s:if>
           </s:else>
