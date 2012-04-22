@@ -67,6 +67,7 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
@@ -521,6 +522,71 @@ public class SchemaDeployer {
 		return commands;
 
 	}
+	
+	private void fixHibernateSequences261(Configuration hibernateConfig){
+		
+		String[] newOracleSequences = {"VOMS_ACL_SEQ", 
+				"VOMS_ADMIN_SEQ", 
+				"VOMS_ATTR_DESC_SEQ", 
+				"VOMS_AUP_ACC_REC_SEQ", 
+				"VOMS_AUP_SEQ", 
+				"VOMS_AUP_VER_SEQ", 
+				"VOMS_CA_SEQ", 
+				"VOMS_CERT_SEQ", 
+				"VOMS_GROUP_SEQ", 
+				"VOMS_M_SEQ", 
+				"VOMS_PI_SEQ", 
+				"VOMS_PI_TYPE_SEQ", 
+				"VOMS_REQ_INFO_SEQ", 
+				"VOMS_REQ_SEQ", 
+				"VOMS_ROLE_SEQ", 
+				"VOMS_TAG_MAP_SEQ", 
+				"VOMS_TAG_SEQ", 
+				"VOMS_TASK_LR_SEQ", 
+				"VOMS_TASK_SEQ", 
+				"VOMS_TASK_TYPE_SEQ" };
+		
+		log.info("Creating oracle sequences starting from VOMS Admin 2.6.x database.");
+		Session s = HibernateFactory.getSession();
+
+		Long maxSeqValue = (Long) s
+				.createSQLQuery(
+						"select max(last_number) as max from user_sequences where sequence_name = 'HIBERNATE_SEQUENCE'")
+				.addScalar("max", new LongType()).uniqueResult();
+		
+		for (String seq: newOracleSequences){
+			
+			String createHibSeqStatement = "create sequence "+seq+" MINVALUE 1 MAXVALUE 999999999999999999999999999 "
+					+ "INCREMENT BY 1 START WITH "
+					+ maxSeqValue
+					+ " CACHE 20 NOORDER NOCYCLE";
+			
+			s.createSQLQuery(createHibSeqStatement).executeUpdate();
+		}
+		
+		log.info("Sequences migration complete.");
+		
+	}
+	
+	private void doUpgrade2_5(Configuration hibernateConfig){
+		
+		HibernateFactory.beginTransaction();
+		VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
+		
+		if (isOracleBackend() && version.getAdminVersion().equals("2.6.1")){
+			try{
+				
+				fixHibernateSequences261(hibernateConfig);
+			
+			}catch (Exception e) {
+				
+				log.error("Error fixing VOMS Admin 2.6.1 oracle sequence: {}", e.getMessage(),e);
+				HibernateFactory.rollbackTransaction();
+			}
+		}
+		
+		HibernateFactory.commitTransaction();
+	}
 
 	private void doUpgrade2_0_x(Configuration hibernateConfig) {
 
@@ -620,6 +686,10 @@ public class SchemaDeployer {
 			doUpgrade2_0_x(hibernateConfig);
 		}
 
+		if (existingDB == 3){
+			log.info("Upgrading voms-admin 2.5.x database to the latest schema.");
+			doUpgrade2_5(hibernateConfig);
+		}
 	}
 
 	private void doRemoveAdmin() {

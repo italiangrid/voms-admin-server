@@ -46,7 +46,7 @@ input[type=text].registrationField, textarea.registrationField{
 
 }
 
-.submitButton{
+input[type="submit"]{
 	-moz-border-radius-bottomleft:11px;
 	-moz-border-radius-bottomright:11px;
 	-moz-border-radius-topleft:11px;
@@ -65,18 +65,17 @@ input[type=text].registrationField, textarea.registrationField{
 	text-decoration:none;
 	text-shadow:0 1px 0 #FFFFFF;
 	background: #F2F2F2 url(../img/white-grad.png) repeat-x scroll left top;
+	
 }
 
 
-.submitButton[disabled=disabled]:hover{
-	border-color:#c3c3c3;
-}
-
-.submitButton:hover{
+input[type="submit"]:hover{
 	border-color:#666666;
 }
 
-
+input[type="submit"][disabled=disabled]:hover{
+	border-color:#c3c3c3;
+}
 
 .form tr{
 
