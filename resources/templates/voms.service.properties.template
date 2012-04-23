@@ -68,7 +68,7 @@ voms.disable_membership_end_time = false
 ## VOMS registration service options
 
 ## Enable attribute request at registration time. Setting this option to true
-## will allow users to request membership in groups and roles also when first registering
+## will allow users to request membership in groups also when first registering
 ## at the VO. The VO manager will be given the chance to approve every membership
 ## request.
 voms.request.vo_membership.enable_attribute_requests = false

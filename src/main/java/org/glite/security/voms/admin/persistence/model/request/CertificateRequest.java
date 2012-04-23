@@ -71,7 +71,7 @@ public class CertificateRequest extends Request {
 	}
 
 	/**
-	 * @return the caSubject
+	 * @return the certificateIssuer
 	 */
 	public String getCertificateIssuer() {
 
@@ -96,8 +96,8 @@ public class CertificateRequest extends Request {
 	}
 
 	/**
-	 * @param caSubject
-	 *            the caSubject to set
+	 * @param certficateIssuer
+	 *            the certificateIssuer to set
 	 */
 	public void setCertificateIssuer(String certificateIssuer) {
 
@@ -154,7 +154,7 @@ public class CertificateRequest extends Request {
 		
 		builder.appendSuper(super.toString())
 			.append("certificateSubject", certificateSubject)
-			.append("caSubject", certificateIssuer)
+			.append("certificateIssuer", certificateIssuer)
 			.append("certificate", certificate);
 		
 		return builder.toString();

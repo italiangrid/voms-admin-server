@@ -100,7 +100,7 @@ public class RequesterInfo implements Serializable {
 	}
 
 	/**
-	 * @return the caSubject
+	 * @return the certificateIssuer
 	 */
 	public String getCertificateIssuer() {
 
@@ -126,8 +126,8 @@ public class RequesterInfo implements Serializable {
 	}
 
 	/**
-	 * @param caSubject
-	 *            the caSubject to set
+	 * @param certificateIssuer
+	 *            the certificateIssuer to set
 	 */
 	public void setCertificateIssuer(String certificateIssuer) {
 
@@ -277,7 +277,7 @@ public class RequesterInfo implements Serializable {
 		ToStringBuilder builder = new ToStringBuilder(this);
 		
 		builder.append("certificateSubject", certificateSubject).
-			append("caSubject", certificateIssuer).
+			append("certificateIssuer", certificateIssuer).
 			append("emailAddress", emailAddress).
 			append("name", name).append("surname",surname).append("voMember", voMember);
 		

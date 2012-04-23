@@ -164,7 +164,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 				"requesterInfo").add(
 				Restrictions.eq("certificateSubject", requester
 						.getCertificateSubject())).add(
-				Restrictions.eq("caSubject", requester
+				Restrictions.eq("certificateIssuer", requester
 						.getCertificateIssuer()));
 
 		return (NewVOMembershipRequest) crit.uniqueResult();
