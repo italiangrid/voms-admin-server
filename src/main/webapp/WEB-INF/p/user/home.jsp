@@ -61,22 +61,24 @@
 		</s:if>
         
         <s:if test="hasPendingSignAUPTasks()">
-          <dt>You have pending sign AUP tasks for:</dt>
-          <dd>
+          <div class="alert alert-error">
+            <strong>You have a pending request to sign the current version of the Acceptable Usage Policy (AUP) !</strong><br/>
             <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.persistence.model.task.SignAUPTask 
             and #this.status.toString() != 'COMPLETED')}">
               <div>
                 <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">
                   <s:param name="aupId" value="aup.id"/>
                 </s:url>
-                <span class="aupVersionName"><s:property value="aup.name"/> version <s:property value="aup.activeVersion.version"/></span>.<br/>
-                Click <a href="${signAUPURL}">here</a> to sign the AUP. Sign it before <span style="font-weight: bold">
-                	<s:text name="format.datetime">
-                		<s:param value="expiryDate"/>
-                	</s:text></span>, or your membership will be suspended.
+                Click <a href="${signAUPURL}">here</a> to sign the AUP.
               </div>
             </s:iterator>
+          </div>
+          <%--
+          <dt> for:</dt>
+          <dd>
+            
           </dd>
+           --%>
         </s:if>
 	</dl>		
 </div>

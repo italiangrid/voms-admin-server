@@ -74,14 +74,18 @@
           <div class="alert alert-warning">
             <strong>WARNING:</strong>
             If the user fails to sign the AUP in the requested time he/she will be suspended.
-            Note that membership can be then restored at anytime by just signing the AUP
-            following the instructions sent in the email notification.
+            Note that the user can restore his/her membership at <strong>any time</strong>, even after being
+            suspended, by just signing the AUP following the instructions sent in the Sign AUP email 
+            notification.
           </div>
         </s:if>
         <s:else>
           <s:if test="not valid">
-              <a href="${saURL}">AUP</a> signature has been invalidated.
-              A request to sign the AUP is being sent to the user. 
+              <div class="alert alert-info">
+                <strong><a href="${saURL}">AUP</a> signature has been invalidated.</strong>
+                A request to sign the AUP will be sent to the user as soon as the membership check task
+                runs again.
+              </div> 
           </s:if>
           <s:else>
             <div>

@@ -35,8 +35,8 @@ voms.read-access-for-authenticated-clients = @READ_ACCESS@
 voms.membership.default_lifetime = 12
 
 ## Period for the membership check background thread (in seconds).
-## Default value is every 6 hours.
-voms.task.membership_check.period =  21600
+## Default value is every 10 minutes.
+voms.task.membership_check.period =  600
 
 ## Warning period duration in days. VOMS Admin will notify of 
 ## users about to expire in the next number of days expressed by 

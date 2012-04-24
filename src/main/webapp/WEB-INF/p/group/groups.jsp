@@ -97,10 +97,6 @@ No groups found in this VO.
             
           <s:if test="(not rootGroup) and #attr['canDelete']">
             <div style="float: right">
-            <s:form action="edit" namespace="/group" theme="simple" cssClass="inline">
-              <s:hidden name="groupId" value="%{id}"/>
-              <s:submit value="%{'edit'}"/>
-            </s:form>
             
             <s:form action="delete" namespace="/group" theme="simple" cssClass="inline">
               <s:token/>

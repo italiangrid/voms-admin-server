@@ -111,16 +111,14 @@ function enableSetRoleAttributeForm(){
 function ajaxSubmit(formNode, outputPanelId){
 	
 	var url = $(formNode).attr('action');
-	var params = $(formNode).serialize();
+	var params = $(formNode).serializeArray();
 	
 	if (url == undefined){
 		// Should log something to the javascript console
 		return;
 	}
-	if (params != "" && params != null)
-		url += "?"+params;
 	
-	ajaxLoad(outputPanelId,url);
+	ajaxLoad(outputPanelId,url,params);
 }
 
 
@@ -134,13 +132,13 @@ function updateCSRFToken(lastPaneId){
 	}
 }
 
-function ajaxLoad(id, url){
+function ajaxLoad(id, url, params){
 	
 	$('#loadDiv').show();
 	
 	$('#'+id+' div.reloadable').fadeTo("fast",0.50);
 	
-	$('#'+id).load(url, null, function(responseText,textStatus,req){
+	$('#'+id).load(url, params, function(responseText,textStatus,req){
 		if (textStatus == 'error'){
 			alert("Error executing ajax request!");
 			$(this).html(responseText);
