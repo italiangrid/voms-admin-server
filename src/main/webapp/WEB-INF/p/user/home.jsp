@@ -45,42 +45,35 @@
 
 
 <div class="membershipInfo">
-	<dl>
-		<s:if test="not #attr.disableMembershipEndTime">
-			<dt>Membership expiration date:</dt>
-			<dd class="userMembershipEndTime">
-                <s:text name="format.datetime">
-                  <s:param value="endTime"/>
-                </s:text>.
-			</dd>
-		</s:if>
-		
-		<s:if test="suspended">		
-			<dt>Your membership is currently <span class="suspensionWarning">suspended</span> for the following reason:</dt>
-			<dd class="suspensionReason"><s:property value="suspensionReason"/></dd>
-		</s:if>
-        
-        <s:if test="hasPendingSignAUPTasks()">
-          <div class="alert alert-error">
-            <strong>You have a pending request to sign the current version of the Acceptable Usage Policy (AUP) !</strong><br/>
-            <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.persistence.model.task.SignAUPTask 
-            and #this.status.toString() != 'COMPLETED')}">
-              <div>
-                <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">
-                  <s:param name="aupId" value="aup.id"/>
-                </s:url>
-                Click <a href="${signAUPURL}">here</a> to sign the AUP.
-              </div>
-            </s:iterator>
-          </div>
-          <%--
-          <dt> for:</dt>
-          <dd>
+  <s:if test="suspended">
+    <div>
+      <span class="blabel blabel-important">Suspended</span>  
+      <span class="blabel blabel-invert-important"><s:property value="suspensionReason"/></span>
+    </div>
+  </s:if>
+  
+   <div class="expirationInfo cont">
+    <tiles2:insertTemplate template="membershipExpirationDetail.jsp"/>
+   </div>
             
-          </dd>
-           --%>
-        </s:if>
-	</dl>		
+   <div class="cont aupInfo">
+    <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
+   </div>
+        
+   <s:if test="hasPendingSignAUPTasks()">
+      <div class="alert alert-error">
+        <strong>You have a pending request to sign the current version of the Acceptable Usage Policy (AUP) !</strong><br/>
+        <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.persistence.model.task.SignAUPTask 
+        and #this.status.toString() != 'COMPLETED')}">
+          <div>
+            <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">
+              <s:param name="aupId" value="aup.id"/>
+            </s:url>
+            Click <a href="${signAUPURL}">here</a> to sign the AUP.
+          </div>
+        </s:iterator>
+      </div>
+    </s:if>			
 </div>
 
 <s:if test="#request.registrationEnabled">

@@ -50,14 +50,11 @@
                     <s:param
                       value="creationTime" />
                   </s:text></span></div>
-
-				<div class="cert-status-info"><s:if test="suspended">
-					<span> Suspended: </span>
-
-					<span class="suspensionReason"> <s:property
-						value="suspensionReason" /> </span>
-				</s:if></div>
-
+                
+                <div class="badge-container">
+                  <tiles2:insertTemplate template="suspensionDetail.jsp"/>
+                </div>
+				
 				<div class="cert-operations">
 				
 				</div>
