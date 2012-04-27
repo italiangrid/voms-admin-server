@@ -31,11 +31,7 @@
   <s:if test="aupAcceptanceRecords.empty">
     
     No acceptance records found for the currently active AUP version. 
-	<s:if test="#request.registrationEnabled">
-      <voms:hasPermissions
-        var="canSuspend"
-        context="vo"
-        permission="SUSPEND" />
+    <s:if test="#request.registrationEnabled"> 
 
       <s:if test="#attr.canSuspend">
         <div style="text-align: right;">
