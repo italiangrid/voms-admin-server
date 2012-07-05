@@ -314,6 +314,30 @@
 		<finalName>glite-security-voms-admin</finalName>
 	</build>
 
+    <repositories>
+      <repository>
+        <id>cnaf-snapshots</id>
+        <url>http://radiohead.cnaf.infn.it:8081/nexus/content/repositories/cnaf-snapshots</url>
+        <releases>
+           <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>        
+     </repository>
+     
+     <repository>
+        <id>cnaf-releases</id>
+        <url>http://radiohead.cnaf.infn.it:8081/nexus/content/repositories/cnaf-releases</url>
+        <releases>
+           <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>        
+     </repository>
+    </repositories>
+    
 	<dependencies>
 
 		<dependency>
@@ -636,4 +660,5 @@
 		<system>jira</system>
 		<url>http://issues.cnaf.infn.it</url>
 	</issueManagement>
+  
 </project>
