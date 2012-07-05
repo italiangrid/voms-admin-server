@@ -6,11 +6,11 @@
 	<groupId>org.glite.voms</groupId>
 	<artifactId>voms-admin-server</artifactId>
 	<packaging>war</packaging>
-	<name>VOMS Administration service</name>
-	<version>2.7.0</version>
+	<name>VOMS web services</name>
+	<version>2.8.0</version>
 	<properties>
 		<age>1</age>
-		<server-version>${version}</server-version>
+		<server-version>${project.version}</server-version>
 		<interface-version>2.0.2</interface-version>
 		<glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,10 +25,12 @@
 		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
 		<c3p0.version>0.9.1</c3p0.version>
 		<axis.version>1.2.1</axis.version>
-		<bouncycastle.version>1.45</bouncycastle.version>
+		<bouncycastle.version>1.46</bouncycastle.version>
 		<trustmanager.version>3.0.5</trustmanager.version>
 		<trustmanager-axis.version>1.0.0</trustmanager-axis.version>
 		<opensaml.version>2.4.1</opensaml.version>
+        <slf4j.version>1.6.6</slf4j.version>
+        <logback.version>1.0.6</logback.version>
 		<package.catalina_home>${env.CATALINA_HOME}</package.catalina_home>
 	</properties>
 	
@@ -94,6 +96,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -188,6 +191,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>axistools-maven-plugin
 				</artifactId>
+                <version>1.4</version>
 				<executions>
 					<execution>
 						<goals>
@@ -267,6 +271,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
@@ -571,28 +576,33 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.10</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.5.10</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>0.9.18</version>
+			<version>${logback.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>0.9.18</version>
+			<version>${logback.version}</version>
 		</dependency>
 
+		<dependency>
+		  <groupId>org.italiangrid</groupId>
+		  <artifactId>https-utils</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
