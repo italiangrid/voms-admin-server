@@ -28,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -57,7 +56,6 @@ import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
-import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +68,6 @@ public final class VOMSConfiguration {
 	
 	private static volatile VOMSConfiguration instance = null;
 
-	private static final String[] voRuntimeProperties = new String[] {
-			"VO_NAME"};
-
-	
-	
 	public synchronized static VOMSConfiguration load(ServletContext context) {
 
 		if (instance != null)
@@ -125,7 +118,6 @@ public final class VOMSConfiguration {
 			context = ctxt;
 			
 			loadVOName();
-			configureLogback();
 
 			if (!getVOName().equals("siblings")) {
 

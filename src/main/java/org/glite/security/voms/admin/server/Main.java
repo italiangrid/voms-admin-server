@@ -22,12 +22,17 @@ public class Main {
 	public static final Logger log = LoggerFactory.getLogger(Main.class);
 	
 	public static final String DEFAULT_WAR = "/usr/share/webapps/glite-security-voms-admin.war";
+	
+	public static final String DEFAULT_HOST = "localhost";
+	public static final String DEFAULT_PORT = "15000";
+	
 	public static final String DEFAULT_CERT = "/etc/grid-security/hostcert.pem";
 	public static final String DEFAULT_KEY = "/etc/grid-security/hostkey.pem";
 	public static final String DEFAULT_TRUSTSTORE_DIR = "/etc/grid-security/certificates";
 	
 	private static final String ARG_VO = "vo";
 	private static final String ARG_WAR = "war";
+	private static final String ARG_CONFDIR = "confdir";
 	
 	private static final String ARG_HOST = "host";
 	private static final String ARG_PORT = "port";
@@ -75,6 +80,10 @@ public class Main {
 		cliOptions.addOption(hostOption);
 		cliOptions.addOption(portOption);
 		
+		Option confDirOption = new Option(ARG_CONFDIR, true, "The configuration directory where VOMS configuration is stored.");
+		
+		cliOptions.addOption(confDirOption);
+		
 		Option certOption = new Option(ARG_CERT, true, "The X.509 certificate (in PEM format) used by the VOMS server.");
 		Option keyOption = new Option(ARG_KEY, true, "The X.509 key (in PEM format) used by the VOMS server.");
 		Option trustDir = new Option(ARG_TRUSTDIR, true, "The trust store directory");
@@ -106,8 +115,11 @@ public class Main {
 			
 			CommandLine cmdLine = parser.parse(cliOptions, args);
 			
-			vo = cmdLine.getOptionValue("vo");
-			war = cmdLine.getOptionValue("war", DEFAULT_WAR);
+			vo = cmdLine.getOptionValue(ARG_VO);
+			war = cmdLine.getOptionValue(ARG_WAR, DEFAULT_WAR);
+			host = cmdLine.getOptionValue(ARG_HOST, DEFAULT_HOST);
+			port = cmdLine.getOptionValue(ARG_PORT, DEFAULT_PORT);
+			
 			certFile = cmdLine.getOptionValue("cert", DEFAULT_CERT);
 			keyFile = cmdLine.getOptionValue("key", DEFAULT_KEY);
 			trustDir = cmdLine.getOptionValue("trustDir", DEFAULT_TRUSTSTORE_DIR);
@@ -150,6 +162,7 @@ public class Main {
 		context.setContextPath(String.format("/voms/%s", vo));
 		context.setWar(war);
 		context.setInitParameter("VO_NAME", vo);
+		context.setParentLoaderPriority(true);
 		
 		HandlerCollection handlers = new HandlerCollection();
 		
