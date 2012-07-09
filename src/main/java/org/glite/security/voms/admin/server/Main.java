@@ -12,6 +12,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.italiangrid.utils.https.JettyAdminService;
+import org.italiangrid.utils.https.JettyRunThread;
+import org.italiangrid.utils.https.JettyShutdownTask;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ public class Main {
 	
 	public static final String DEFAULT_HOST = "localhost";
 	public static final String DEFAULT_PORT = "15000";
+	public static final String DEFAULT_SHUTDOWN_PORT="15001";
 	
 	public static final String DEFAULT_CERT = "/etc/grid-security/hostcert.pem";
 	public static final String DEFAULT_KEY = "/etc/grid-security/hostkey.pem";
@@ -36,6 +40,7 @@ public class Main {
 	
 	private static final String ARG_HOST = "host";
 	private static final String ARG_PORT = "port";
+	private static final String ARG_SHUTDOWN_PORT = "shutdown_port";
 	
 	private static final String ARG_CERT = "cert";
 	private static final String ARG_KEY = "key";
@@ -50,12 +55,16 @@ public class Main {
 	
 	private String host;
 	private String port;
+	private String shutdownPort;
 	
 	private String certFile;
 	private String keyFile;
 	private String trustDir;
 	
 	private Server server;
+	private JettyAdminService shutdownService;
+	
+	private WebAppContext vomsWebappContext;
 	
 	private void initOptions(){
 		cliOptions = new Options();
@@ -77,8 +86,13 @@ public class Main {
 				true, 
 				"The port this server will bind to.");
 		
+		Option shutdownPortOption = new Option(ARG_SHUTDOWN_PORT, 
+				true, 
+				"The port where the shutdown service will bind to.");
+		
 		cliOptions.addOption(hostOption);
 		cliOptions.addOption(portOption);
+		cliOptions.addOption(shutdownPortOption);
 		
 		Option confDirOption = new Option(ARG_CONFDIR, true, "The configuration directory where VOMS configuration is stored.");
 		
@@ -119,6 +133,7 @@ public class Main {
 			war = cmdLine.getOptionValue(ARG_WAR, DEFAULT_WAR);
 			host = cmdLine.getOptionValue(ARG_HOST, DEFAULT_HOST);
 			port = cmdLine.getOptionValue(ARG_PORT, DEFAULT_PORT);
+			shutdownPort = cmdLine.getOptionValue(ARG_SHUTDOWN_PORT, DEFAULT_SHUTDOWN_PORT);
 			
 			certFile = cmdLine.getOptionValue("cert", DEFAULT_CERT);
 			keyFile = cmdLine.getOptionValue("key", DEFAULT_KEY);
@@ -137,6 +152,7 @@ public class Main {
 		initOptions();
 		parseCommandLineOptions(args);
 		configureJettyServer();
+		configureShutdownService();
 		start();
 	}
 	
@@ -158,51 +174,52 @@ public class Main {
 				Integer.parseInt(port), 
 				setupSSLOptions());
 		
-		WebAppContext context = new WebAppContext();
-		context.setContextPath(String.format("/voms/%s", vo));
-		context.setWar(war);
-		context.setInitParameter("VO_NAME", vo);
-		context.setParentLoaderPriority(true);
+		vomsWebappContext = new WebAppContext();
+		vomsWebappContext.setContextPath(String.format("/voms/%s", vo));
+		vomsWebappContext.setWar(war);
+		vomsWebappContext.setInitParameter("VO_NAME", vo);
+		vomsWebappContext.setParentLoaderPriority(true);
 		
 		HandlerCollection handlers = new HandlerCollection();
 		
-		handlers.setHandlers(new Handler[]{context, new DefaultHandler()});
-		
+		handlers.setHandlers(new Handler[]{vomsWebappContext, new DefaultHandler()});
 		server.setHandler(handlers);
 		
 		
 	}
 	
+	protected void configureShutdownService(){
+		
+		// FIXME: Add support for secured shutdown service (i.e. which requires a password)
+		shutdownService = new JettyAdminService("localhost",  Integer.parseInt(shutdownPort), null);
+		shutdownService.registerShutdownTask(new JettyShutdownTask(server));
+		
+		
+	}
 	
 	private void checkStatus() throws Throwable{
 		
-		for (Handler h: server.getHandlers()){
-			
-			if (h instanceof WebAppContext){
-				
-				WebAppContext c = (WebAppContext)h;
-				
-				if (c.getUnavailableException() != null)
-					throw c.getUnavailableException();
-			}
-		}
+		if (vomsWebappContext.getUnavailableException() != null)
+			throw vomsWebappContext.getUnavailableException();
 	}
 	
 	private void start() {
 		
+		JettyRunThread vomsService =  new JettyRunThread(server);
+		
+		vomsService.start();
+		
 		try{
 			
-			server.start();
 			checkStatus();
-			server.join();
+			shutdownService.start();
+			
 		
 		} catch(Throwable t){
 			
 			log.error("Error starting VOMS server {}", t.getClass().getName(), t);
 			System.exit(-1);
 		}
-		
-		
 	}
 
 
