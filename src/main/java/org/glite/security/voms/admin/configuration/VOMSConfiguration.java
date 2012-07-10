@@ -897,7 +897,7 @@ public final class VOMSConfiguration {
 
 	}
 
-	private void loadServiceProperties() {
+	public void loadServiceProperties() {
 
 		String fileName = getVomsServicePropertiesFileName();
 
@@ -1078,6 +1078,14 @@ public final class VOMSConfiguration {
 				
 				config.setProperty(VOMSConfigurationConstants.VO_NAME, systemConfig.getProperty("DEFAULT_VO_NAME"));
 				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
+				
+			}
+			
+			if (context.getInitParameter("VO_NAME")!= null){
+				log.info("Setting VO name from init parameter: {}", context.getInitParameter("VO_NAME"));
+				
+				config.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
+				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
 				
 			}
 			

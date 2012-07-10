@@ -40,6 +40,10 @@ public interface VOMSConfigurationConstants {
 	public static final String AUDITING_INSERTS = "voms.auditing.inserts";
 	public static final String AUDITING_UPDATES = "voms.auditing.updates";
 	public static final String AUDITING_DELETIONS = "voms.auditing.deletions";
+	
+	/** Shutdown properties **/
+	public static final String SHUTDOWN_PORT = "voms.shutdown_port";
+	public static final String SHUTDOWN_PASSWORD = "voms.shutdown_password";
 
 	public static final String SERVICE_EMAIL_ADDRESS = "voms.notification.email-address";
 	public static final String SERVICE_SMTP_SERVER = "voms.notification.smtp-server";

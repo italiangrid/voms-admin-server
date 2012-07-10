@@ -168,6 +168,11 @@ public class Main {
 		
 	}
 	
+	protected void setupVOName(){
+		
+		System.setProperty("VO_NAME", vo);
+		
+	}
 	protected void configureJettyServer(){
 		
 		server = ServerFactory.newServer(host, 
