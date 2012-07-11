@@ -2,7 +2,7 @@
 %define __jar_repack 0
 
 Name: voms-admin-server
-Version: 2.7.0
+Version: 2.7.1
 Release: 1%{?dist}
 Summary: The VOMS Administration service
 
