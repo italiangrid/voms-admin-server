@@ -337,7 +337,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		Criteria crit = getSession().createCriteria(CertificateRequest.class);
 		
 		crit.add(Restrictions.eq("certificateSubject", certificateSubject));
-		crit.add(Restrictions.eq("caSubject", certificateIssuer));
+		crit.add(Restrictions.eq("certificateIssuer", certificateIssuer));
 		
 		crit.add(Restrictions.disjunction().
 				add(Restrictions.eq("status", STATUS.SUBMITTED)).
