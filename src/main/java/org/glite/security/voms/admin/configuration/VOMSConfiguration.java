@@ -105,16 +105,27 @@ public final class VOMSConfiguration {
 		config = new CompositeConfiguration();
 
 		loadVersionProperties();
-		loadSysconfig();
-
-		if (config.getString(SYSCONFIG_CONF_DIR) == null){
+		
+		if(ctxt != null && ctxt.getInitParameter("CONF_DIR") != null) {
 			
-			log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
-			log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
-			config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
+			config.setProperty(SYSCONFIG_CONF_DIR, ctxt.getInitParameter("CONF_DIR"));
+			
+		} else {
+		
+			loadSysconfig();
+
+			if (config.getString(SYSCONFIG_CONF_DIR) == null){
+			
+				log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
+				log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
+				config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
+		
+			}
+			
 		}
 		
 		if (ctxt != null) {
+			
 			context = ctxt;
 			
 			loadVOName();

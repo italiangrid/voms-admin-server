@@ -1,8 +1,16 @@
 ## The VOMS service hostname
 voms.hostname = @HOSTNAME@
+voms.port = @PORT@
+voms.shutdown_port = @SHUTDOWN_PORT@
+voms.shutdown_password = @SHUTDOWN_PASSWORD@
+
 
 ## Should the registration service be enabled?
 voms.request.webui.enabled = @WEBUI.ENABLED@
+
+## the service certificate and key
+voms.service.cert = @VOMS_SERVICE_CERT@
+voms.service.key = @VOMS_SERVICE_KEY@
 
 ## Which files should VOMS Admin consider as trust anchors
 voms.cafiles = @CA.FILES@

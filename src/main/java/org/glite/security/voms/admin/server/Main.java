@@ -12,6 +12,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.italiangrid.utils.https.JettyAdminService;
 import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.JettyShutdownTask;
@@ -33,33 +35,27 @@ public class Main {
 	public static final String DEFAULT_CERT = "/etc/grid-security/hostcert.pem";
 	public static final String DEFAULT_KEY = "/etc/grid-security/hostkey.pem";
 	public static final String DEFAULT_TRUSTSTORE_DIR = "/etc/grid-security/certificates";
-	
-	private static final String ARG_VO = "vo";
+
 	private static final String ARG_WAR = "war";
+	private static final String ARG_VO = "vo";
 	private static final String ARG_CONFDIR = "confdir";
-	
-	private static final String ARG_HOST = "host";
-	private static final String ARG_PORT = "port";
-	private static final String ARG_SHUTDOWN_PORT = "shutdown_port";
-	
-	private static final String ARG_CERT = "cert";
-	private static final String ARG_KEY = "key";
-	private static final String ARG_TRUSTDIR = "trustdir";
 	
 	
 	private Options cliOptions;
 	private CommandLineParser parser = new GnuParser();
-	
-	private String vo;
+
 	private String war;
+	private String vo;
+	private String confDir;
 	
 	private String host;
 	private String port;
 	private String shutdownPort;
-	
+	        
 	private String certFile;
 	private String keyFile;
 	private String trustDir;
+	private long trustDirRefreshIntervalInMsec;
 	
 	private Server server;
 	private JettyAdminService shutdownService;
@@ -67,78 +63,53 @@ public class Main {
 	private WebAppContext vomsWebappContext;
 	
 	private void initOptions(){
+		
 		cliOptions = new Options();
+
+		Option warOption = new Option(ARG_WAR, true, "The WAR used to start this server.");
+		
+		cliOptions.addOption(warOption);
 		
 		Option voOption = new Option(ARG_VO, true,"The VO this server will run for.");
 		voOption.setRequired(true);
 		
 		cliOptions.addOption(voOption);
 		
-		Option warOption = new Option(ARG_WAR, true, "The WAR used to start this server.");
-		
-		cliOptions.addOption(warOption);
-		
-		Option hostOption = new Option(ARG_HOST, 
-				true, 
-				"the host this server will bind to.");
-		
-		Option portOption = new Option(ARG_PORT, 
-				true, 
-				"The port this server will bind to.");
-		
-		Option shutdownPortOption = new Option(ARG_SHUTDOWN_PORT, 
-				true, 
-				"The port where the shutdown service will bind to.");
-		
-		cliOptions.addOption(hostOption);
-		cliOptions.addOption(portOption);
-		cliOptions.addOption(shutdownPortOption);
-		
 		Option confDirOption = new Option(ARG_CONFDIR, true, "The configuration directory where VOMS configuration is stored.");
 		
 		cliOptions.addOption(confDirOption);
-		
-		Option certOption = new Option(ARG_CERT, true, "The X.509 certificate (in PEM format) used by the VOMS server.");
-		Option keyOption = new Option(ARG_KEY, true, "The X.509 key (in PEM format) used by the VOMS server.");
-		Option trustDir = new Option(ARG_TRUSTDIR, true, "The trust store directory");
-		
-		cliOptions.addOption(certOption);
-		cliOptions.addOption(keyOption);
-		cliOptions.addOption(trustDir);
 		
 	}
 	
 	private void failAndExit(String errorMessage, Throwable t){
 		
-		if (t != null){
+		if (t != null) {
+
 			log.error(errorMessage+": {}", t.getMessage());
-		}else{
+		
+		} else {
 			
 			log.error(errorMessage);
 			
 		}
+		
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("Main", cliOptions);
 		
 		System.exit(1);
 		
 	}
+	
 	private void parseCommandLineOptions(String[] args){
 		
 		try {
 			
 			CommandLine cmdLine = parser.parse(cliOptions, args);
-			
-			vo = cmdLine.getOptionValue(ARG_VO);
+
 			war = cmdLine.getOptionValue(ARG_WAR, DEFAULT_WAR);
-			host = cmdLine.getOptionValue(ARG_HOST, DEFAULT_HOST);
-			port = cmdLine.getOptionValue(ARG_PORT, DEFAULT_PORT);
-			shutdownPort = cmdLine.getOptionValue(ARG_SHUTDOWN_PORT, DEFAULT_SHUTDOWN_PORT);
+			vo = cmdLine.getOptionValue(ARG_VO);
+			confDir = cmdLine.getOptionValue(ARG_CONFDIR);
 			
-			certFile = cmdLine.getOptionValue("cert", DEFAULT_CERT);
-			keyFile = cmdLine.getOptionValue("key", DEFAULT_KEY);
-			trustDir = cmdLine.getOptionValue("trustDir", DEFAULT_TRUSTSTORE_DIR);
-		
 		} catch (ParseException e) {
 			
 			failAndExit("Error parsing command line arguments", e);
@@ -146,11 +117,29 @@ public class Main {
 		}
 	}
 	
+	private void loadConfiguration() {
+		
+		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
+		
+		VOMSConfiguration conf = VOMSConfiguration.load(null);
+		conf.loadServiceProperties();
+		
+		host = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, DEFAULT_HOST);
+		port = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_PORT, DEFAULT_PORT);
+		shutdownPort = conf.getString(VOMSConfigurationConstants.SHUTDOWN_PORT, DEFAULT_SHUTDOWN_PORT);
+		
+		certFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_CERT, DEFAULT_CERT);
+		keyFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_KEY, DEFAULT_KEY);
+		trustDir = conf.getString(VOMSConfigurationConstants.CAFILES, DEFAULT_TRUSTSTORE_DIR);
+		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, 60000L);
+		
+	}
 	
 	public Main(String[] args) {
 		
 		initOptions();
 		parseCommandLineOptions(args);
+		loadConfiguration();
 		configureJettyServer();
 		configureShutdownService();
 		start();
@@ -163,6 +152,7 @@ public class Main {
 		options.setCertificateFile(certFile);
 		options.setKeyFile(keyFile);
 		options.setTrustStoreDirectory(trustDir);
+		options.setTrustStoreRefreshIntervalInMsec(trustDirRefreshIntervalInMsec);
 		
 		return options;
 		
@@ -183,6 +173,7 @@ public class Main {
 		vomsWebappContext.setContextPath(String.format("/voms/%s", vo));
 		vomsWebappContext.setWar(war);
 		vomsWebappContext.setInitParameter("VO_NAME", vo);
+		vomsWebappContext.setInitParameter("CONF_DIR", confDir);
 		vomsWebappContext.setParentLoaderPriority(true);
 		
 		HandlerCollection handlers = new HandlerCollection();

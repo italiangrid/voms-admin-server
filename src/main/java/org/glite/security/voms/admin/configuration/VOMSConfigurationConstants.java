@@ -31,6 +31,8 @@ public interface VOMSConfigurationConstants {
 
 	public static final String READONLY = "voms.readonly";
 
+	public static final String VOMS_SERVICE_CERT = "voms.service.cert";
+	public static final String VOMS_SERVICE_KEY = "voms.service.key";
 	public static final String CAFILES = "voms.cafiles";
 	public static final String CAFILES_PERIOD = "voms.cafiles.period";
 
@@ -143,6 +145,8 @@ public interface VOMSConfigurationConstants {
 	 * address when sending out email notifications.
 	 */
 	public static final String VOMS_SERVICE_HOSTNAME = "voms.hostname";
+	public static final String VOMS_SERVICE_PORT = "voms.port";
+
 	
 	/**
 	 * The local path where monitored stats properties will be stored. 
