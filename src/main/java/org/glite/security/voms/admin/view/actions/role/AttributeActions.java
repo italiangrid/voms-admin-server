@@ -33,7 +33,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
 		@Result(name = BaseAction.INPUT, location = "attributes.jsp"),
 		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="attributes.jsp")		

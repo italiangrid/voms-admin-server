@@ -19,11 +19,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -34,7 +30,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
 		@Result(name = BaseAction.INPUT, location = "certificates.jsp"),
 		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="certificates.jsp")

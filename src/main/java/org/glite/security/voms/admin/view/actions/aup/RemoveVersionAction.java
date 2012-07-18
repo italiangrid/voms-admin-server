@@ -20,13 +20,12 @@
 package org.glite.security.voms.admin.view.actions.aup;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.aup.RemoveVersionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( {
 		@Result(name = BaseAction.INPUT, location = "aups"),
 		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })

@@ -23,13 +23,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.RequestValidationResult;
 import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
+import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -41,7 +40,7 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( { 
 		@Result(name = BaseAction.INPUT, location = "register"),
 		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),

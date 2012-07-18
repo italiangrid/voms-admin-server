@@ -22,9 +22,6 @@ package org.glite.security.voms.admin.view.actions.user;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
@@ -36,11 +33,13 @@ import org.glite.security.voms.admin.persistence.model.request.MembershipRemoval
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 public class UserActionSupport extends BaseAction implements
 		ModelDriven<VOMSUser>, Preparable, SessionAware {
 

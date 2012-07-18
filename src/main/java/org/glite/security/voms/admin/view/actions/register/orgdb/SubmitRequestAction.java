@@ -43,7 +43,7 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( { 
 		@Result(name = BaseAction.INPUT, location = "orgdbRegister"),
 		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),

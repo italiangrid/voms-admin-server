@@ -20,7 +20,6 @@
 package org.glite.security.voms.admin.view.actions.user;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.users.CreateUserOperation;
@@ -33,7 +32,7 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results({
 	@Result(name=UserActionSupport.INPUT, location="userCreate" ),
 	@Result(name=UserActionSupport.SUCCESS, location="load", type="redirectAction")

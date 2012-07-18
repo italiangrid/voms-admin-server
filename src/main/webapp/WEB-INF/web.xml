@@ -25,20 +25,13 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>VOMS-ADMIN 2.5</display-name>
+	<display-name>VOMS Web Services</display-name>
     
-    <!-- Struts 2 filter -->
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
-        
-        <init-param>
-            <param-name>actionPackages</param-name>
-            <param-value>org.glite.security.voms.admin.view.actions</param-value>
-        </init-param>
-        
     </filter>
-	
+     
     <filter>
       <filter-name>struts-hibernate-session-filter</filter-name>
       <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
@@ -54,11 +47,14 @@
         <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
     </filter>
     
+    <!-- 
     <filter>
         <filter-name>rest-security-context-filter</filter-name>
         <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
     </filter>
-	
+	 -->
+   
+   
 	<filter-mapping>
 		<filter-name>axis-hibernate-session-filter</filter-name>
 		<url-pattern>/services/*</url-pattern>
@@ -75,22 +71,28 @@
         <url-pattern>*.action</url-pattern>
     </filter-mapping>
    	 
+     <!-- 
     <filter-mapping>
         <filter-name>rest-security-context-filter</filter-name>
         <url-pattern>/generate-ac</url-pattern>
     </filter-mapping>
-    
+     -->
+     
+     
     <filter-mapping>
         <filter-name>rest-hibernate-session-filter</filter-name>
         <url-pattern>/generate-ac</url-pattern>
     </filter-mapping>
   
     <!-- Third party plain text restful service -->
+    
+    <!-- 
     <filter-mapping>
         <filter-name>rest-security-context-filter</filter-name>
         <url-pattern>/get-attributes</url-pattern>
     </filter-mapping>
-    
+     -->
+     
     <filter-mapping>
         <filter-name>rest-hibernate-session-filter</filter-name>
         <url-pattern>/get-attributes</url-pattern>

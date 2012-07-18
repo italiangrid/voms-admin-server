@@ -30,7 +30,7 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "searchMember.jsp"),
 		@Result(name = BaseAction.INPUT, location = "searchMemberError.jsp") })
 public class SearchMemberAction extends BaseSearchAction implements

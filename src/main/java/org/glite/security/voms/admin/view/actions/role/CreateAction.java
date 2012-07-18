@@ -33,7 +33,7 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
 		@Result(name = BaseAction.INPUT, location = "roleCreate"),

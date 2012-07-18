@@ -19,11 +19,8 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -34,8 +31,10 @@ import org.glite.security.voms.admin.operations.users.DismissRoleOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "mappings.jsp"),
 		@Result(name = BaseAction.INPUT, location = "mappings.jsp"),
 		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="mappings.jsp")})

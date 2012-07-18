@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 public abstract class ACLActionSupport extends BaseAction implements
 		Preparable, ModelDriven<ACL> {
 	

@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.view.actions.admin;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -27,7 +26,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 public class AdminActionSupport extends BaseAction implements
 		ModelDriven<VOMSAdmin>, Preparable {
 

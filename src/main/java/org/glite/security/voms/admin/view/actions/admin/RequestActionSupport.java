@@ -21,7 +21,6 @@ package org.glite.security.voms.admin.view.actions.admin;
 
 import java.util.List;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
@@ -31,7 +30,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 @Results( {})
 public class RequestActionSupport extends BaseAction implements Preparable,
 		ModelDriven<Request> {

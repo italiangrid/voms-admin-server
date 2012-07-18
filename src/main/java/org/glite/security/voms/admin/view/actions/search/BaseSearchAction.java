@@ -21,7 +21,6 @@ package org.glite.security.voms.admin.view.actions.search;
 
 import java.util.Map;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.SessionAware;
 import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
 import org.glite.security.voms.admin.persistence.dao.SearchResults;
@@ -31,7 +30,7 @@ import org.glite.security.voms.admin.view.actions.SearchData;
 
 import com.opensymphony.xwork2.validator.annotations.VisitorFieldValidator;
 
-@ParentPackage("base")
+
 public abstract class BaseSearchAction extends BaseAction implements SessionAware{
 
 	/**

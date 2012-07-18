@@ -36,9 +36,7 @@
 
 				<requestFlow>
 						<handler
-								type="java:org.glite.security.voms.admin.service.CSRFGuardHandler" />
-                        <handler 
-                                type="java:org.glite.security.voms.admin.service.SecurityContextHandler"/>
+								type="java:org.glite.security.voms.admin.service.CSRFGuardHandler" />                       
 				</requestFlow>
 
 		</globalConfiguration>

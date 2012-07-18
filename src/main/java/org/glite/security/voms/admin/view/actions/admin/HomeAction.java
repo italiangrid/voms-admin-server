@@ -21,14 +21,13 @@ package org.glite.security.voms.admin.view.actions.admin;
 
 import java.util.List;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Result(name = BaseAction.SUCCESS, location = "adminHome")
 public class HomeAction extends AdminActionSupport {
 

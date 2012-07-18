@@ -29,7 +29,7 @@ import org.glite.security.voms.admin.operations.SingleArgumentOperationCollectio
 import org.glite.security.voms.admin.operations.roles.DeleteRoleOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results({
 	
 	@Result(name = BaseAction.SUCCESS, location = "/role/search.action", type = "redirect"),

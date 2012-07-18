@@ -23,19 +23,23 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 @Result(name=BaseAction.SUCCESS, location="siblings")
 public class SiblingsAction extends BaseAction implements Preparable{
 	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public static Logger log = LoggerFactory.getLogger(SiblingsAction.class);
 	

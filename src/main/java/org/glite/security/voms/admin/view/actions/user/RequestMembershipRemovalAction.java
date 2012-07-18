@@ -20,7 +20,6 @@
 package org.glite.security.voms.admin.view.actions.user;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -38,7 +37,7 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "userHome"),
 		@Result(name = BaseAction.INPUT, location = "requestMembershipRemoval"),
 		@Result(name = "registrationDisabled", location = "userHome")

@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -42,7 +41,7 @@ import org.glite.security.voms.admin.util.DNUtil;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@ParentPackage("base")
+
 
 @Results({
 	

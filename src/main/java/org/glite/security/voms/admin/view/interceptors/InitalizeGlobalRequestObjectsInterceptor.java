@@ -25,52 +25,25 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
-import org.glite.security.voms.admin.core.VOMSServiceConstants;
-import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
-import org.glite.security.voms.admin.servlets.InitSecurityContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
-public class AuthenticatedAccessInterceptor extends AbstractInterceptor
+public class InitalizeGlobalRequestObjectsInterceptor extends AbstractInterceptor
 		implements StrutsStatics {
 
 	/**
      * 
      */
 	private static final long serialVersionUID = 1L;
-
-	private static final Logger log = LoggerFactory
-			.getLogger(AuthenticatedAccessInterceptor.class);
-	
-	
-	public void destroy() {
-
-		
-
-	}
-
-	public void init() {
-
-		
-		
-
-	}
 	
 	protected void setupGlobalObjects(HttpServletRequest req){
 		
 		if (!VOMSConfiguration.instance().getVOName().equals("siblings")){
 			
 			AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
-			
-			req.setAttribute("voName", VOMSConfiguration.instance().getVOName());
-			
-			req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
-				.instance());
 			
 			req.setAttribute("registrationEnabled", VOMSConfiguration.instance().getBoolean(
 					VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
@@ -92,10 +65,7 @@ public class AuthenticatedAccessInterceptor extends AbstractInterceptor
 
 	public String intercept(ActionInvocation ai) throws Exception {
 		
-		
 		HttpServletRequest req = ServletActionContext.getRequest(); 
-		
-		InitSecurityContext.setContextFromRequest(req);
 		
 		setupGlobalObjects(req);
 

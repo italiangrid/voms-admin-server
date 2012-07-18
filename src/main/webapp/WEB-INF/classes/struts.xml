@@ -34,7 +34,9 @@
 	<constant name="struts.ui.theme" value="css_xhtml" />
 	<constant name="struts.convention.classes.reload" value="true" />
 	
-	<constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
+    <constant name="struts.convention.default.parent.package" value="base"/>
+    <constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
+    
 	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
 	
 	<package name="base" extends="struts-default">
@@ -47,6 +49,9 @@
 		<interceptors>
 			<interceptor name="authnInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.AuthenticatedAccessInterceptor" />
+        
+            <interceptor name="initGlobalReqPropsInterceptor"
+                class="org.glite.security.voms.admin.view.interceptors.InitalizeGlobalRequestObjectsInterceptor" />
           
 			<interceptor name="hibernateInterceptor"
 				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
@@ -65,17 +70,18 @@
                 <interceptor-ref name="createSession"/>
                 <interceptor-ref name="servletConfig"/>
                 
+                
                 <interceptor-ref name="exception">
                   <param name="logEnabled">true</param>
                   <param name="logLevel">debug</param>
                 </interceptor-ref>
                 
+                <interceptor-ref name="initGlobalReqPropsInterceptor" />
+                
                 <interceptor-ref name="authzExceptionMappingInterceptor"/>
                 <interceptor-ref name="searchAwareInterceptor"/>
                 <interceptor-ref name="logger"/>
-                
-                <interceptor-ref name="authnInterceptor" />
-                
+                 
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>
                 <interceptor-ref name="params">

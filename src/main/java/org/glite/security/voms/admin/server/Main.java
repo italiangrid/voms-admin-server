@@ -1,5 +1,7 @@
 package org.glite.security.voms.admin.server;
 
+import java.io.File;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -7,13 +9,15 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
+import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.italiangrid.utils.https.JettyAdminService;
 import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.JettyShutdownTask;
@@ -35,6 +39,9 @@ public class Main {
 	public static final String DEFAULT_CERT = "/etc/grid-security/hostcert.pem";
 	public static final String DEFAULT_KEY = "/etc/grid-security/hostkey.pem";
 	public static final String DEFAULT_TRUSTSTORE_DIR = "/etc/grid-security/certificates";
+	public static final String DEFAULT_TMP_PREFIX = "/tmp";
+	
+	public static final long DEFAULT_TRUSTSTORE_REFRESH_INTERVAL = 60000L;
 
 	private static final String ARG_WAR = "war";
 	private static final String ARG_VO = "vo";
@@ -51,6 +58,7 @@ public class Main {
 	private String host;
 	private String port;
 	private String shutdownPort;
+	private String shutdownPassword;
 	        
 	private String certFile;
 	private String keyFile;
@@ -61,6 +69,9 @@ public class Main {
 	private JettyAdminService shutdownService;
 	
 	private WebAppContext vomsWebappContext;
+	
+	private File jettyTmpDir;
+	
 	
 	private void initOptions(){
 		
@@ -100,13 +111,28 @@ public class Main {
 		
 	}
 	
+	private void checkStartupConfiguration(){
+		
+		File warFile = new File(war);
+		
+		if (!warFile.canRead() || !warFile.isFile()){
+			log.error("Web archive file is not readable or is not a regular file!");
+			System.exit(1);
+		}
+		
+		
+	}
 	private void parseCommandLineOptions(String[] args){
 		
 		try {
 			
 			CommandLine cmdLine = parser.parse(cliOptions, args);
-
-			war = cmdLine.getOptionValue(ARG_WAR, DEFAULT_WAR);
+			
+			String installationPrefix = SysconfigUtil.getInstallationPrefix();
+			
+			String defaultPrefixedWarPath = String.format("%s/%s",installationPrefix,DEFAULT_WAR).replaceAll("/+", "/"); 
+			
+			war = cmdLine.getOptionValue(ARG_WAR, defaultPrefixedWarPath);
 			vo = cmdLine.getOptionValue(ARG_VO);
 			confDir = cmdLine.getOptionValue(ARG_CONFDIR);
 			
@@ -122,17 +148,31 @@ public class Main {
 		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
 		
 		VOMSConfiguration conf = VOMSConfiguration.load(null);
+		
 		conf.loadServiceProperties();
 		
 		host = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, DEFAULT_HOST);
 		port = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_PORT, DEFAULT_PORT);
 		shutdownPort = conf.getString(VOMSConfigurationConstants.SHUTDOWN_PORT, DEFAULT_SHUTDOWN_PORT);
+		shutdownPassword = conf.getString(VOMSConfigurationConstants.SHUTDOWN_PASSWORD, null);
 		
 		certFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_CERT, DEFAULT_CERT);
 		keyFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_KEY, DEFAULT_KEY);
-		trustDir = conf.getString(VOMSConfigurationConstants.CAFILES, DEFAULT_TRUSTSTORE_DIR);
-		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, 60000L);
 		
+		trustDir = DEFAULT_TRUSTSTORE_DIR;
+		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, DEFAULT_TRUSTSTORE_REFRESH_INTERVAL);
+		
+		VOMSConfiguration.dispose();
+		
+	}
+	
+	private void logStartupConfiguration(){
+		log.info("Starting VOMS web services for VO {} binding on {}:{}", new Object[]{vo,host, port});
+		log.info("Web archive location: {}", war);
+		log.info("Service credentials: {}, {}", certFile, keyFile);
+		log.info("Trust anchors directory: {}", trustDir);
+		log.info("Trust anchors directory refresh interval (in msecs): {}", trustDirRefreshIntervalInMsec);
+		log.info("Jetty temporary directory: {}", jettyTmpDir.toString());
 	}
 	
 	public Main(String[] args) {
@@ -140,12 +180,33 @@ public class Main {
 		initOptions();
 		parseCommandLineOptions(args);
 		loadConfiguration();
+		initJettyTmpDir();
+		logStartupConfiguration();
+		checkStartupConfiguration();
 		configureJettyServer();
 		configureShutdownService();
 		start();
 	}
 	
-	
+	/**
+	 * Initializes the Jetty temp directory as the default directory created by Jetty confuses
+	 * xwork which has a bug and doesn't find classes when the WAR is expanded in the tmp directory.
+	 * 
+	 * TODO: check if recent versions of xwork solve this.
+	 */
+	protected void initJettyTmpDir(){
+				
+		String baseDirPath = String.format("%s/%s/%s", DEFAULT_TMP_PREFIX,"voms", vo).replaceAll("/+", "/");
+		
+		File basePath = new File(baseDirPath);
+		
+		if (!basePath.exists()){
+			basePath.mkdirs();
+		}
+		
+		jettyTmpDir=basePath;
+	}
+
 	protected SSLOptions setupSSLOptions(){
 		SSLOptions options = new SSLOptions();
 		
@@ -163,33 +224,41 @@ public class Main {
 		System.setProperty("VO_NAME", vo);
 		
 	}
+			
+	protected void configureWebApp(){
+		
+		vomsWebappContext = new WebAppContext();
+		vomsWebappContext.setContextPath(String.format("/voms/%s", vo));
+		vomsWebappContext.setTempDirectory(jettyTmpDir);
+		vomsWebappContext.setWar(war);
+		vomsWebappContext.setParentLoaderPriority(true);
+		
+		vomsWebappContext.setInitParameter("VO_NAME", vo);
+		vomsWebappContext.setInitParameter("CONF_DIR", confDir);
+	}
+		
 	protected void configureJettyServer(){
 		
 		server = ServerFactory.newServer(host, 
 				Integer.parseInt(port), 
 				setupSSLOptions());
 		
-		vomsWebappContext = new WebAppContext();
-		vomsWebappContext.setContextPath(String.format("/voms/%s", vo));
-		vomsWebappContext.setWar(war);
-		vomsWebappContext.setInitParameter("VO_NAME", vo);
-		vomsWebappContext.setInitParameter("CONF_DIR", confDir);
-		vomsWebappContext.setParentLoaderPriority(true);
 		
+		configureWebApp();
 		HandlerCollection handlers = new HandlerCollection();
 		
-		handlers.setHandlers(new Handler[]{vomsWebappContext, new DefaultHandler()});
-		server.setHandler(handlers);
+		handlers.setHandlers(new Handler[]{ 
+				new VOMSSecurityContextHandler(), 
+				vomsWebappContext});
 		
+		server.setHandler(handlers);
 		
 	}
 	
 	protected void configureShutdownService(){
-		
-		// FIXME: Add support for secured shutdown service (i.e. which requires a password)
-		shutdownService = new JettyAdminService("localhost",  Integer.parseInt(shutdownPort), null);
+		 
+		shutdownService = new JettyAdminService("localhost",  Integer.parseInt(shutdownPort), shutdownPassword);
 		shutdownService.registerShutdownTask(new JettyShutdownTask(server));
-		
 		
 	}
 	
@@ -215,6 +284,7 @@ public class Main {
 			
 			log.error("Error starting VOMS server {}", t.getClass().getName(), t);
 			System.exit(-1);
+		
 		}
 	}
 

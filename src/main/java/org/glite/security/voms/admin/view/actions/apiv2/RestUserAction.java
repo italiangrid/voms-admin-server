@@ -1,7 +1,5 @@
 package org.glite.security.voms.admin.view.actions.apiv2;
 
-import java.util.Collection;
-
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;

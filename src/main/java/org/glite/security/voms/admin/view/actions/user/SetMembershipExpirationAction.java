@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.view.actions.user;
 import java.util.Date;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.users.SetMembershipExpirationOperation;
@@ -32,7 +31,7 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
-@ParentPackage("base")
+
 @Results({
 	@Result(name=UserActionSupport.SUCCESS,location = "membershipExpiration.jsp"),
 	@Result(name=UserActionSupport.INPUT, location="membershipExpiration.jsp")

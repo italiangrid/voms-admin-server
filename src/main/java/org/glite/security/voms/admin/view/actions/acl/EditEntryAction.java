@@ -23,14 +23,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.acls.SaveACLEntryOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
 		@Result(name = BaseAction.INPUT, location = "editACLEntry") })

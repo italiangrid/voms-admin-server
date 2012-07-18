@@ -22,14 +22,13 @@ package org.glite.security.voms.admin.view.actions.configuration;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 @Result(name=BaseAction.SUCCESS, location="configuration")
 public class ConfigurationAction extends BaseAction implements Preparable{
 

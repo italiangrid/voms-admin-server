@@ -19,14 +19,13 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail.jsp"),
 		@Result(name = BaseAction.INPUT, location = "aclManage.jsp") })
 public class AjaxLoadAction extends ACLActionSupport {

@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.view.actions.aup;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
@@ -30,7 +29,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
+
 @Results( { @Result(name = BaseAction.INPUT, location = "aupVersionDetail"),
 		@Result(name = BaseAction.SUCCESS, location = "aupVersionDetail") })
 public class VersionAction extends BaseAction implements

@@ -20,7 +20,6 @@
 package org.glite.security.voms.admin.view.actions.user;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -35,7 +34,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-@ParentPackage("base")
+
 @Results({
 	
 	@Result(name=UserActionSupport.SUCCESS,location="mappingsRequest.jsp"),

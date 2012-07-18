@@ -28,7 +28,7 @@ import org.glite.security.voms.admin.operations.roles.DeleteRoleOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
 		@Result(name = BaseAction.INPUT, location = "roles"),

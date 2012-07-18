@@ -20,7 +20,7 @@
 package org.glite.security.voms.admin.configuration;
 
 import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_CONF_DIR;
-import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_FILE;
+import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_DEFAULT_FILE_PATH;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,6 +56,7 @@ import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +81,14 @@ public final class VOMSConfiguration {
 
 	}
 
+	public synchronized static void dispose(){
+		
+		if (instance != null){
+			instance.clear();
+			instance = null;
+		}
+	}
+	
 	public static VOMSConfiguration instance() {
 
 		if (instance == null)
@@ -100,31 +109,36 @@ public final class VOMSConfiguration {
 
 	private PrivateKey servicePrivateKey;
 
+	
+	private void loadConfDir(){
+		
+		loadSysconfig();
+		
+		if (config.getString(SYSCONFIG_CONF_DIR) == null){
+			
+			log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
+			log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
+			
+			config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
+		}
+		
+		if (context != null && context.getInitParameter(SYSCONFIG_CONF_DIR) != null){
+			
+			log.info("Setting {} from context: {}", SYSCONFIG_CONF_DIR, context.getInitParameter(SYSCONFIG_CONF_DIR));
+			config.setProperty(SYSCONFIG_CONF_DIR, context.getInitParameter(SYSCONFIG_CONF_DIR));
+		}
+	}
+	
 	private VOMSConfiguration(ServletContext ctxt) {
 
+		this.context = ctxt;
+		
 		config = new CompositeConfiguration();
 
 		loadVersionProperties();
+		loadConfDir();
 		
-		if(ctxt != null && ctxt.getInitParameter("CONF_DIR") != null) {
-			
-			config.setProperty(SYSCONFIG_CONF_DIR, ctxt.getInitParameter("CONF_DIR"));
-			
-		} else {
-		
-			loadSysconfig();
-
-			if (config.getString(SYSCONFIG_CONF_DIR) == null){
-			
-				log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
-				log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
-				config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
-		
-			}
-			
-		}
-		
-		if (ctxt != null) {
+		if (context != null) {
 			
 			context = ctxt;
 			
@@ -935,34 +949,19 @@ public final class VOMSConfiguration {
 
 	private void loadSysconfig() {
 
-		String sysconfigFilePath = SYSCONFIG_FILE;
+		String sysconfigFilePath = SYSCONFIG_DEFAULT_FILE_PATH;
 		
-		try {
+		try{
 			
-			Properties packagingProps = new Properties();
-
-			packagingProps.load(this.getClass().getClassLoader()
-					.getResourceAsStream("packaging.properties"));
-
-			String prefix = packagingProps.getProperty("package.prefix");
-
-			if (prefix != null) {
-
-				sysconfigFilePath = String.format(
-						"%s/etc/sysconfig/voms-admin", prefix);
-				log.info("SYSCONFIG file: {}", sysconfigFilePath);
-
-			} else {
-
-				log.warn("Packaging properties do not specify package.prefix property...using default value for sysconfig location");
-			}
-
+			sysconfigFilePath = SysconfigUtil.getSysconfigFilePath();
+				
+			
 			PropertiesConfiguration sysconf = new PropertiesConfiguration(
 					sysconfigFilePath);
 			config.addConfiguration(sysconf);
+			
+			log.debug("Loaded sysconfig from: {}", sysconfigFilePath);
 
-		} catch (IOException e1) {
-			log.warn("Packaging properties not found in classloader... using default value for sysconfig location");
 		
 		} catch (ConfigurationException e) {
 			log.error("Error parsing VOMS Admin system configuration file "
@@ -970,7 +969,7 @@ public final class VOMSConfiguration {
 		
 			throw new VOMSConfigurationException(
 					"Error parsing VOMS Admin system configuration file "
-							+ SYSCONFIG_FILE, e);
+							+ SYSCONFIG_DEFAULT_FILE_PATH, e);
 		}	
 		
 	}
@@ -1073,7 +1072,7 @@ public final class VOMSConfiguration {
 		
 		if (!config.containsKey("VO_NAME")){
 			
-			log.warn("VO_NAME not found in JNDI context");
+			log.debug("VO_NAME not found in JNDI context");
 			if (config.containsKey("DEFAULT_VO_NAME")){
 				
 				log.info("DEFAULT_VO_NAME found, using {} for VO_NAME", config.getString("DEFAULT_VO_NAME"));
@@ -1093,7 +1092,7 @@ public final class VOMSConfiguration {
 			}
 			
 			if (context.getInitParameter("VO_NAME")!= null){
-				log.info("Setting VO name from init parameter: {}", context.getInitParameter("VO_NAME"));
+				log.debug("Setting VO name from init parameter: {}", context.getInitParameter("VO_NAME"));
 				
 				config.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
 				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));

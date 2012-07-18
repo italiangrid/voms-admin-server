@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.view.actions.user;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -32,7 +31,6 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 
 import com.opensymphony.xwork2.Preparable;
 
-@ParentPackage("base")
 @Results( {
 
 @Result(name = BaseAction.SUCCESS, location = "users"),

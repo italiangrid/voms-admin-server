@@ -19,17 +19,16 @@
  */
 package org.glite.security.voms.admin.view.actions.register;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@ParentPackage("base")
+
 @Results({
 	@Result(name=BaseAction.SUCCESS,location="registrationCancelled"),
 	@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")

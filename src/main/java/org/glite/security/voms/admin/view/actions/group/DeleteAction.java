@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.view.actions.group;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -31,7 +30,7 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( { 
 	@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"), 
 	@Result(name = BaseAction.INPUT, location = "search", type = "chain"),

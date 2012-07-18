@@ -19,11 +19,10 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 
-@ParentPackage("base")
+
 public abstract class CertificateActionSupport extends UserActionSupport {
     
     /**

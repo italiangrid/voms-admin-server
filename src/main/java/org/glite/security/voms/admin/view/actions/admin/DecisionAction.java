@@ -20,7 +20,6 @@
 package org.glite.security.voms.admin.view.actions.admin;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -29,17 +28,13 @@ import org.glite.security.voms.admin.operations.requests.HandleCertificateReques
 import org.glite.security.voms.admin.operations.requests.HandleGroupRequestOperation;
 import org.glite.security.voms.admin.operations.requests.HandleMembershipRemovalRequest;
 import org.glite.security.voms.admin.operations.requests.HandleRoleMembershipRequestOperation;
-import org.glite.security.voms.admin.operations.requests.HandleVOMembershipRequest;
-import org.glite.security.voms.admin.operations.users.FindUserOperation;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
-import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@ParentPackage("base")
+
 @Results( {
 		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
 		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),

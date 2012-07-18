@@ -112,21 +112,13 @@
         </file>
         
         <file>
-            <source>resources/scripts/init-voms-admin.py</source>
+            <source>resources/init/init-voms-admin.sh</source>
             <outputDirectory>/etc/rc.d/init.d</outputDirectory>
             <destName>voms-admin</destName>
             <fileMode>0755</fileMode>
             <filtered>true</filtered>
         </file>
         
-        <!--  Keep traditional init script location for backward compatibility -->
-        <file>
-            <source>resources/scripts/init-voms-admin.py</source>
-            <outputDirectory>/usr/sbin</outputDirectory>
-            <fileMode>0755</fileMode>
-            <filtered>true</filtered>
-        </file>
-
         <file>
             <source>src/main/resources/logback.deployer.xml</source>
             <destName>logback.xml</destName>
