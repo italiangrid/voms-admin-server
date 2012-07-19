@@ -357,19 +357,24 @@ class UpgradeVO(ConfigureAction):
 
     
     def write_service_properties(self):
-                
-        m = {'NOTIFICATION.EMAIL_ADDRESS': self.mail_from,
-             'NOTIFICATION.SMTP_SERVER': self.mail_host,
+        
+        m = {'NOTIFICATION.EMAIL_ADDRESS': self.user_options['mail-from'],
+             'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')).lower(),
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
              'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
-             'HOSTNAME' : self.user_options['hostname']
+             'HOSTNAME' : self.user_options['hostname'],
+             'PORT' : self.user_options['service-port'],
+             'SHUTDOWN_PORT' : self.user_options['shutdown-port'],
+             'SHUTDOWN_PASSWORD' : self.user_options['shutdown-password'],
+             'VOMS_SERVICE_CERT' : self.user_options['service-cert'],
+             'VOMS_SERVICE_KEY' : self.user_options['service-key']
              }
-        
+                
         t = Template(open(VomsConstants.service_props_template,"r").read())
         
         service_props_file = open(vo_service_properties_file(self.user_options['vo']),"w")
@@ -536,8 +541,10 @@ class InstallVOAction(ConfigureAction):
                                   "dbusername", 
                                   "dbpassword", 
                                   "mail-from", 
-                                  "smtp-host"
-                                  ],  
+                                  "smtp-host",
+                                  "service-port",
+                                  "shutdown-port",
+                                  "shutdown-password"],  
                                  user_options)
         
         
@@ -659,7 +666,12 @@ class InstallVOAction(ConfigureAction):
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
              'SAML.MAX_ASSERTION_LIFETIME' : self.user_options['saml-max-assertion-lifetime'],
-             'HOSTNAME' : self.user_options['hostname']
+             'HOSTNAME' : self.user_options['hostname'],
+             'PORT' : self.user_options['service-port'],
+             'SHUTDOWN_PORT' : self.user_options['shutdown-port'],
+             'SHUTDOWN_PASSWORD' : self.user_options['shutdown-password'],
+             'VOMS_SERVICE_CERT' : self.user_options['service-cert'],
+             'VOMS_SERVICE_KEY' : self.user_options['service-key']
              }
         
         t = Template(open(VomsConstants.service_props_template,"r").read())
@@ -1166,7 +1178,12 @@ class VomsConstants:
               "aa-cert=",
               "aa-key=",
               "saml-max-assertion-lifetime=",
-              "skip-ca-check"]              
+              "skip-ca-check",
+              "service-port=",
+              "shutdown-port=",
+              "shutdown-password=",
+              "service-cert=",
+              "service-key="]              
 
     short_options = "hvV";
 

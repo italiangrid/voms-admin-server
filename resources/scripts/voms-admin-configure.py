@@ -76,6 +76,9 @@ def setup_defaults():
     
     set_default(options,"hostname",socket.gethostname())
     
+    set_default(options,"service-cert", "/etc/grid-security/hostcert.pem")
+    set_default(options,"service-key", "/etc/grid-security/hostkey.pem")
+    
     set_default(options,"libdir", voms_lib_dir())
     set_default(options,"logdir", voms_log_dir())
     
@@ -169,7 +172,8 @@ def usage():
 
     Usage:
     
-        voms-admin-configure install --vo foobar.example.org --dbtype mysql
+        voms-admin-configure install --vo foobar.example.org -- service-port 8443 --shutdown-port 15001
+                            --shutdown-password pippo --dbtype mysql
                             --dbusername foobar --dbpassword secret --dbname foobar
                             
         voms-admin-configure remove --vo <vo name>
@@ -187,6 +191,17 @@ def usage():
      --vo VONAME           Install or delete the named VO.
 
     Options for configuring the admin service (ignored for "remove"):
+     --service-port PORT   The port on which the service will bind.
+     
+     --shutdown-port PORT  The port on which the service will bind for receiving a shutdown command.
+     
+     --shutdown-password PWD  The password needed to be authorized to shutdown the service.
+      
+     --service-cert CERT   The location of the certificate the service will use for the HTTPS connection. Defaults
+                           to /etc/grid-security/hostcert.pem
+                           
+     --service-key  KEY    The location of the private key the service will use for the HTTPS connection.
+      
      --admincert CERTFILE  The certificate file of an initial VO administrator.
                            The VO will be set up so that this user has full
                            VO administration privileges.
