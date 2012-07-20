@@ -17,10 +17,9 @@
     limitations under the License.
 
     Authors:
-    	Andrea Ceccanti (INFN)
+        Andrea Ceccanti (INFN)
 
 -->
-
 
 <configuration scan="true" scanPeriod="60 seconds">
     
@@ -29,12 +28,6 @@
         for maximum detail.  
      -->
     <logger name="org.glite.security.voms.admin" level="INFO" />
-    
-    <!--
-         This logger controls the main validation service VOMS Admin log messages.
-         Set the level to DEBUG for maximum detail.
-    -->
-    <logger name="org.glite.security.voms.admin.core.validation" level="DEBUG"/>
     
     <!-- 
         This logger controls the log messages produced when exceptions are raised by a call to the voms admin
@@ -56,32 +49,25 @@
      -->
     <logger name="org.hibernate" level="ERROR" />
     
-    
     <logger name="org.apache.struts2" level="WARN" />
     <logger name="com.opensymphony.xwork2" level="WARN" />
-    <logger name="com.opensymphony.xwork2.config.providers.XmlConfigurationProvider" level="ERROR" />
     
+    <!-- 
+        Set the level to DEBUG below to see information about struts and xwork configuration
+    -->
+    <logger name="org.apache.struts2.convention" level="ERROR" /> 
+    <logger name="com.opensymphony.xwork2.config.providers.XmlConfigurationProvider" level="ERROR" />
+     
     
     <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
-    <appender name="FILE"
-        class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${catalina.base}/logs/voms-admin-${voms.vo.name}.log</File>
-                
-        <ImmediateFlush>true</ImmediateFlush>
-        
-        <rollingPolicy
-            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${catalina.base}/logs/voms-admin-${voms.vo.name}-%d{yyyy-MM-dd}.log
-            </FileNamePattern>
-        </rollingPolicy>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
 
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</Pattern>
-        </layout>
-    </appender>    
-    
-    <root level="WARN">
-        <appender-ref ref="FILE" />
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE" />
     </root>
-
+    
 </configuration>

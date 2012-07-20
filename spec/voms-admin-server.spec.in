@@ -2,7 +2,7 @@
 %define __jar_repack 0
 
 Name: voms-admin-server
-Version: 2.7.1
+Version: 2.8.0
 Release: 1%{?dist}
 Summary: The VOMS Administration service
 
@@ -22,7 +22,6 @@ BuildRequires:  oracle-instantclient-basic
 Requires: emi-trustmanager
 Requires: emi-trustmanager-tomcat
 Requires: bouncycastle >= 1.39
-Requires: tomcat@@TOMCAT_VERSION@@
 Requires: java
 
 %description
@@ -42,7 +41,7 @@ administration tasks.
 %setup -q -n voms-admin
 
 %build
-mvn -B -s @@BUILD_SETTINGS@@ -P EMI -P tomcat@@TOMCAT_VERSION@@ package
+mvn -B -s @@BUILD_SETTINGS@@ -P EMI package
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -80,9 +79,8 @@ exit 0
 
 %{_sbindir}/*
 
-%{_javadir}/glite-security-voms-admin.jar
-%{_datadir}/webapps/glite-security-voms-admin.war
-%{_datadir}/webapps/glite-security-voms-siblings.war
+%{_javadir}/voms-admin.jar
+%{_datadir}/webapps/voms-admin.war
 
 %doc resources/doc/*
 
@@ -90,7 +88,7 @@ exit 0
 
 %changelog
 * Wed Jul 11 2012 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.8.0-1
-- VOMS now runs as a process in an embedded container 
+- VOMS admin now runs as a process in an embedded container 
 
 * Fri Dec 16 2011 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.7.0-1
 - Self-managed packaging

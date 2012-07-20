@@ -1,16 +1,14 @@
 package org.glite.security.voms.admin.server;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -26,11 +24,15 @@ import org.italiangrid.utils.https.ServerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+
 public class Main {
 
 	public static final Logger log = LoggerFactory.getLogger(Main.class);
 	
-	public static final String DEFAULT_WAR = "/usr/share/webapps/glite-security-voms-admin.war";
+	public static final String DEFAULT_WAR = "/usr/share/webapps/voms-admin.war";
 	
 	public static final String DEFAULT_HOST = "localhost";
 	public static final String DEFAULT_PORT = "15000";
@@ -72,7 +74,6 @@ public class Main {
 	
 	private File jettyTmpDir;
 	
-	
 	private void initOptions(){
 		
 		cliOptions = new Options();
@@ -96,16 +97,15 @@ public class Main {
 		
 		if (t != null) {
 
-			log.error(errorMessage+": {}", t.getMessage());
+			System.err.format("%s: %s", errorMessage, t.getMessage());
+			t.printStackTrace(System.err);
+			
 		
 		} else {
 			
-			log.error(errorMessage);
+			System.err.println(errorMessage);
 			
 		}
-		
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("Main", cliOptions);
 		
 		System.exit(1);
 		
@@ -122,12 +122,14 @@ public class Main {
 		
 		
 	}
+	
 	private void parseCommandLineOptions(String[] args){
 		
 		try {
 			
 			CommandLine cmdLine = parser.parse(cliOptions, args);
 			
+			Properties sysconfigProperties = SysconfigUtil.loadSysconfig();
 			String installationPrefix = SysconfigUtil.getInstallationPrefix();
 			
 			String defaultPrefixedWarPath = String.format("%s/%s",installationPrefix,DEFAULT_WAR).replaceAll("/+", "/"); 
@@ -136,6 +138,12 @@ public class Main {
 			vo = cmdLine.getOptionValue(ARG_VO);
 			confDir = cmdLine.getOptionValue(ARG_CONFDIR);
 			
+			if (confDir == null)
+				confDir = sysconfigProperties.getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
+			
+			System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
+			
+			
 		} catch (ParseException e) {
 			
 			failAndExit("Error parsing command line arguments", e);
@@ -143,9 +151,39 @@ public class Main {
 		}
 	}
 	
-	private void loadConfiguration() {
+	private void configureLogging() {
 		
-		System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
+		String loggingConf = String.format("%s/%s/%s", confDir, vo, "logback.xml");
+		
+		File f = new File(loggingConf);
+
+		if (!f.exists())
+			failAndExit(String.format("Logging configuration not found at path '%s'",loggingConf), null);
+		
+		if (!f.canRead())
+			failAndExit(String.format("Logging configuration is not readable: '%s'", loggingConf), null);
+		
+		LoggerContext lc = (LoggerContext) LoggerFactory
+				.getILoggerFactory();
+		
+		JoranConfigurator configurator = new JoranConfigurator();
+		
+		configurator.setContext(lc);
+		lc.reset();
+		
+		try {
+			configurator.doConfigure(f);
+		
+		} catch (JoranException e) {
+			
+			failAndExit("Error setting up the logging system",e);
+		
+		}
+		
+	}
+	
+	
+	private void loadConfiguration() {
 		
 		VOMSConfiguration conf = VOMSConfiguration.load(null);
 		
@@ -175,14 +213,18 @@ public class Main {
 		log.info("Jetty temporary directory: {}", jettyTmpDir.toString());
 	}
 	
+	
 	public Main(String[] args) {
 		
 		initOptions();
 		parseCommandLineOptions(args);
+		configureLogging();
+		
 		loadConfiguration();
 		initJettyTmpDir();
 		logStartupConfiguration();
 		checkStartupConfiguration();
+		
 		configureJettyServer();
 		configureShutdownService();
 		start();

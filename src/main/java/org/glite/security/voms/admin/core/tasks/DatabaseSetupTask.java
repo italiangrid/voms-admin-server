@@ -176,7 +176,7 @@ public class DatabaseSetupTask extends TimerTask {
 
 		if (ttDAO.findAll().isEmpty()) {
 			
-			log.info("Setting up voms-admin 2.5 task infrastructure...");
+			log.info("Setting up voms-admin task infrastructure...");
 
 			TaskType signAupTaskType = new TaskType();
 
@@ -202,7 +202,7 @@ public class DatabaseSetupTask extends TimerTask {
 
 		if (dao.findAll().isEmpty()) {
 
-			log.info("Setting up voms-admin 2.5 aup infrastructure...");
+			log.info("Setting up voms-admin aup infrastructure...");
 			// Setup VO AUP
 			String voAUPUrlString = VOMSConfiguration.instance().getString(
 					VOMSConfigurationConstants.VO_AUP_URL,

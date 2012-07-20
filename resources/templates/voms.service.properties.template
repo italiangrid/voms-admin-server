@@ -1,15 +1,22 @@
-## The VOMS service hostname
+## The service hostname
 voms.hostname = @HOSTNAME@
-voms.port = @PORT@
-voms.shutdown_port = @SHUTDOWN_PORT@
-voms.shutdown_password = @SHUTDOWN_PASSWORD@
 
+## The port the service will bind to
+voms.port = @PORT@
+
+## The port the service shutdown hook will bind to
+voms.shutdown_port = @SHUTDOWN_PORT@
+
+## The password used to authorize the shutdown
+voms.shutdown_password = @SHUTDOWN_PASSWORD@
 
 ## Should the registration service be enabled?
 voms.request.webui.enabled = @WEBUI.ENABLED@
 
-## the service certificate and key
+## The service certificate 
 voms.service.cert = @VOMS_SERVICE_CERT@
+
+## The service key
 voms.service.key = @VOMS_SERVICE_KEY@
 
 ## Which files should VOMS Admin consider as trust anchors
@@ -117,7 +124,6 @@ voms.aup.sign_aup_task_lifetime = 15
 ## Set this to false to have a standard SAML AA behaviour.
 # voms.aa.compulsory_group_membership = true
 
-
 ## Screen pagination options
 
 voms.pagination.user.max.results.per.page = 50
@@ -126,3 +132,4 @@ voms.pagination.role.max.results.per.page = 50
 voms.pagination.attributes.max.results.per.page = 50
 
 #### Add other options after this line
+

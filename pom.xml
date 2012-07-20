@@ -3,23 +3,25 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.glite.voms</groupId>
+  <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-server</artifactId>
   <packaging>war</packaging>
   <name>VOMS web services</name>
   <version>2.8.0</version>
   <properties>
-    <age>1</age>
+        
     <server-version>${project.version}</server-version>
     <interface-version>2.0.2</interface-version>
+    
     <glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
+    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-    <tomcat.version>5</tomcat.version>
+    
     <build.settings>src/config/emi-build-settings.xml</build.settings>
+    <log.dir>var/log/voms-admin</log.dir>
 
-    <!-- Dependencies versions -->
+    <!-- Main moving dependencies versions -->
     <struts.version>2.2.1</struts.version>
     <hibernate.version>3.2.6.ga</hibernate.version>
     <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
@@ -30,7 +32,7 @@
     <opensaml.version>2.4.1</opensaml.version>
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.6</logback.version>
-    <package.catalina_home>${env.CATALINA_HOME}</package.catalina_home>
+    
   </properties>
 
   <developers>
@@ -103,61 +105,22 @@
               <goal>jar</goal>
             </goals>
           </execution>
-        </executions> 
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.1.1</version>
         <executions>
-
-          <!-- Siblings WAR -->
-          <execution>
-            <id>VOMS-Admin siblings war creation</id>
-            <goals>
-              <goal>war</goal>
-            </goals>
-            <configuration>
-              <warName>glite-security-voms-siblings
-              </warName>
-              <webappDirectory>
-                ${project.build.directory}/glite-security-voms-siblings
-              </webappDirectory>
-              <webXml>resources/templates/siblings/web.xml
-              </webXml>
-              <packagingExcludes>WEB-INF/lib/resolver-*.jar,
-                WEB-INF/lib/serializer-*.jar,
-                WEB-INF/lib/xercesImpl-*.jar,
-                WEB-INF/lib/xml-apis-*.jar,
-                WEB-INF/lib/xalan-*.jar
-              </packagingExcludes>
-              <warSourceIncludes>
-                style/*,
-                common/**,
-                img/**,
-                WEB-INF/p/sibling/welcome.jsp,
-                WEB-INF/lib/jstl*.jar
-              </warSourceIncludes>
-              <webResources>
-                <resource>
-                  <directory>resources/templates/siblings
-                  </directory>
-                  <includes>
-                    <include>web.xml</include>
-                  </includes>
-                  <targetPath>WEB-INF</targetPath>
-                </resource>
-              </webResources>
-            </configuration>
-          </execution>
-
-          <!-- Main VOMS-Admin server war -->
+          <!-- VOMS WS war -->
           <execution>
             <id>VOMS-Admin server war creation</id>
             <goals>
               <goal>war</goal>
             </goals>
             <configuration>
+              <!-- JARs in WEB-INF/lib are not included due to Jetty embedded 
+                deployment -->
               <packagingIncludes>
                 WEB-INF/classes/**/*,
                 common/**/*,
@@ -266,8 +229,7 @@
           </execution>
         </executions>
       </plugin>
-
-
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -316,7 +278,7 @@
       </plugin>
     </plugins>
 
-    <finalName>glite-security-voms-admin</finalName>
+    <finalName>voms-admin</finalName>
   </build>
 
   <repositories>
@@ -349,7 +311,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
-      <!-- <scope>test</scope> -->
     </dependency>
 
     <dependency>
@@ -381,6 +342,12 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -439,10 +406,6 @@
       <version>5.0.7</version>
     </dependency>
 
-    <!-- <dependency> <groupId>taglibs</groupId> <artifactId>standard</artifactId> 
-      <version>1.1.2</version> <scope>runtime</scope> </dependency> -->
-
-
     <dependency>
       <groupId>emi</groupId>
       <artifactId>trustmanager</artifactId>
@@ -454,7 +417,6 @@
       <artifactId>trustmanager-axis</artifactId>
       <version>${trustmanager-axis.version}</version>
     </dependency>
-
 
     <!-- Struts 2.x dependencies -->
     <dependency>
@@ -468,8 +430,6 @@
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
-    <!-- <dependency> <groupId>org.apache.struts</groupId> <artifactId>struts2-rest-plugin 
-      </artifactId> <version>${struts.version}</version> </dependency> -->
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-tiles-plugin</artifactId>
@@ -481,8 +441,6 @@
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
-
-
     <dependency>
       <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
@@ -584,16 +542,8 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
-    <!-- 
-    <dependency>
-      <groupId>org.apache.struts</groupId>
-      <artifactId>struts2-config-browser-plugin</artifactId>
-      <version>${struts.version}</version>
-    </dependency>
-    -->
   </dependencies>
- 
+
   <profiles>
     <profile>
       <id>EMI</id>
@@ -606,7 +556,6 @@
       </properties>
       <build>
         <plugins>
-
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <configuration>
@@ -636,28 +585,16 @@
         <package.confdir>/opt/voms/etc/voms-admin</package.confdir>
       </properties>
     </profile>
-
-    <profile>
-      <id>tomcat5</id>
-      <properties>
-        <package.catalina_home>/usr/share/tomcat5</package.catalina_home>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>tomcat6</id>
-      <properties>
-        <package.catalina_home>/usr/share/tomcat6</package.catalina_home>
-      </properties>
-    </profile>
   </profiles>
+
   <scm>
-    <url>https://github.com/andreaceccanti/voms-admin-server</url>
+    <url>https://github.com/italiangrid/voms-admin-server</url>
   </scm>
+  
   <url>https://wiki.italiangrid.it/twiki/bin/view/VOMS</url>
+  
   <issueManagement>
     <system>jira</system>
     <url>http://issues.cnaf.infn.it</url>
   </issueManagement>
-
 </project>

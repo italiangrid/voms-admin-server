@@ -157,7 +157,6 @@ def check_installed_setup():
     vlog("Checking local installation...")
     checked_paths = [ 
                      VomsConstants.db_props_template,
-                     VomsConstants.context_template,
                      VomsConstants.service_props_template,
                      VomsConstants.voms_admin_war,
                      VomsConstants.voms_admin_jar
@@ -172,7 +171,7 @@ def usage():
 
     Usage:
     
-        voms-admin-configure install --vo foobar.example.org -- service-port 8443 --shutdown-port 15001
+        voms-admin-configure install --vo foobar.example.org --service-port 8443 --shutdown-port 15001
                             --shutdown-password pippo --dbtype mysql
                             --dbusername foobar --dbpassword secret --dbname foobar
                             
@@ -468,7 +467,6 @@ def do_install():
     print Template("""
 VO @voname@ installation finished.\n 
 You can start the voms services using the following commands:
-    @prefix@/etc/init.d/voms start @voname@
     @prefix@/etc/init.d/voms-admin start @voname@""").sub({'voname':options['vo'], 'prefix': voms_prefix()})
     
     

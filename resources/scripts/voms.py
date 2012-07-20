@@ -125,9 +125,6 @@ def vo_service_properties(vo):
     f = os.path.join(vo_config_dir(vo),"voms.service.properties")
     return PropertyHelper(f)
 
-def vo_context_file(vo):
-    return os.path.join(vo_config_dir(vo),"voms-admin-%s.xml"%vo)
-
 def vomses_file(vo):
     return os.path.join(vo_config_dir(vo),"vomses")
 
@@ -295,13 +292,6 @@ class UpgradeVO(ConfigureAction):
         
         self.write_service_properties()
         
-        ## salve old context
-        os.rename(vo_context_file(self.user_options['vo']),
-                  vo_context_file(self.user_options['vo'])+".old")
-        
-        self.write_context_file()
-        self.write_siblings_context()
-        
         pass
     
     def upgrade_configuration_2_0_x(self):
@@ -362,7 +352,7 @@ class UpgradeVO(ConfigureAction):
              'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')).lower(),
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
@@ -381,30 +371,8 @@ class UpgradeVO(ConfigureAction):
         service_props_file.write(t.sub(m))
         service_props_file.close()
         
-    def write_context_file(self):
-        war_file = VomsConstants.voms_admin_war
-        
-        if self.user_options.has_key('use-skinny-war'):
-            war_file = VomsConstants.voms_admin_war_nodeps
-        
-        m = {'VO_NAME': self.user_options['vo'], 'WAR_FILE': war_file} 
-             
-        t = Template(open(VomsConstants.context_template,"r").read())
-        
-        context_file = open(vo_context_file(self.user_options['vo']),"w")
-        context_file.write(t.sub(m))
-        context_file.close()
-    
-    def write_siblings_context(self):
-        m = {'WAR_FILE': VomsConstants.voms_siblings_war }
-        
-        t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
-        ConfigureAction.write_and_close(self, 
-                                        VomsConstants.voms_siblings_context, 
-                                        t.sub(m))
-        
-        setup_permissions(VomsConstants.voms_siblings_context, 
-                          0644, 
+        setup_permissions(vo_service_properties_file(self.user_options['vo']), 
+                          0640, 
                           self.user_options['tomcat-group-id'])
     
     def upgrade_database(self):
@@ -612,16 +580,12 @@ class InstallVOAction(ConfigureAction):
         
         self.write_database_properties()
         self.write_service_properties()
-        self.write_context()
         
         shutil.copy(VomsConstants.vo_aup_template, vo_conf_dir)
         
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
                           0644, 
                           self.user_options['tomcat-group-id'])
-        
-        if not os.path.exists(VomsConstants.voms_siblings_context):
-            self.write_siblings_context()
         
         self.write_vomses()
         
@@ -661,7 +625,7 @@ class InstallVOAction(ConfigureAction):
              'NOTIFICATION.SMTP_SERVER': self.user_options['smtp-host'],
              'WEBUI.ENABLED': self.user_options['webui-enabled'],
              'CA.FILES': self.user_options['ca-files'],
-             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')),
+             'READ_ACCESS' : str(self.user_options.has_key('read-access-for-authenticated-clients')).lower(),
              'VO_AUP_URL': self.user_options['vo-aup-url'],
              'AA.CERT' : self.user_options['aa-cert'],
              'AA.KEY' : self.user_options['aa-key'],
@@ -680,41 +644,8 @@ class InstallVOAction(ConfigureAction):
                                         t.sub(m))
         
         setup_permissions(vo_service_properties_file(self.user_options['vo']), 
-                          0644, 
+                          0640, 
                           self.user_options['tomcat-group-id'])
-    
-    
-    def write_siblings_context(self):
-        m = {'WAR_FILE': VomsConstants.voms_siblings_war }
-        
-        t = Template(open(VomsConstants.voms_siblings_context_template,"r").read())
-        ConfigureAction.write_and_close(self, 
-                                        VomsConstants.voms_siblings_context, 
-                                        t.sub(m))
-        
-        setup_permissions(VomsConstants.voms_siblings_context, 
-                          0644, 
-                          self.user_options['tomcat-group-id'])
-        
-    def write_context(self):
-        
-        war_file = VomsConstants.voms_admin_war
-        
-        if self.user_options.has_key('use-skinny-war'):
-            war_file = VomsConstants.voms_admin_war_nodeps
-
-        m = {'VO_NAME': self.user_options['vo'],
-             'WAR_FILE': war_file }
-             
-        t = Template(open(VomsConstants.context_template,"r").read())
-        ConfigureAction.write_and_close(self,
-                                        vo_context_file(self.user_options['vo']), 
-                                        t.sub(m))
-        
-        setup_permissions(vo_context_file(self.user_options['vo']),
-                          0644, 
-                          self.user_options['tomcat-group-id'])
-        
     
     def write_voms_properties(self):
         
@@ -1091,30 +1022,25 @@ def catalina_home():
 class VomsConstants:
     
     version = voms_admin_server_version
-      
+    
     db_props_template = os.path.join(template_prefix(),"voms.database.properties.template")
     service_props_template = os.path.join(template_prefix(),"voms.service.properties.template")
     
-    context_template = os.path.join(template_prefix(),"context.xml.template")
     voms_template = os.path.join(template_prefix(),"voms.conf.template")
     
     voms_admin_conf_dir = voms_admin_conf_dir()
     voms_conf_dir = voms_conf_dir() 
     
-    voms_siblings_context_template = os.path.join(template_prefix(),"siblings-context.xml.template")
-    voms_siblings_context = os.path.join(voms_admin_conf_dir,"voms-siblings.xml")
-    
     vo_aup_template = os.path.join(template_prefix(),"aup", "vo-aup.txt")
-    logging_conf_template = os.path.join(template_prefix(), "logback.runtime.xml")
+    logging_conf_template = os.path.join(template_prefix(), "logback.xml")
     
-    voms_admin_war = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-admin.war")
-    voms_admin_war_nodeps = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-admin-nodeps.war")
+    voms_admin_war = os.path.join(voms_admin_prefix(), "share","webapps","voms-admin.war")
     
-    voms_siblings_war = os.path.join(voms_admin_prefix(), "share","webapps","glite-security-voms-siblings.war")
+    voms_siblings_war = os.path.join(voms_admin_prefix(), "share","webapps","voms-siblings.war")
     
     voms_admin_libs = glob.glob(os.path.join(voms_admin_prefix(),"share","voms-admin","tools","lib")+"/*.jar")
     voms_admin_classes = os.path.join(voms_admin_prefix(),"share","voms-admin","tools", "classes")
-    voms_admin_jar = os.path.join(voms_admin_prefix(), "share","java","glite-security-voms-admin.jar")
+    voms_admin_jar = os.path.join(voms_admin_prefix(), "share","java","voms-admin.jar")
        
     voms_db_deploy = os.path.join(voms_admin_prefix(),"sbin","voms-db-deploy.py")
     

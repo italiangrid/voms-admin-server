@@ -28,8 +28,7 @@
 	 
 	<constant name="struts.mapper.class" value="org.glite.security.voms.admin.view.mapper.PrefixBasedActionMapper"/>
 	<constant name="struts.mapper.prefixMapping" value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
-	
-	<constant name="struts.devMode" value="false" />
+    
 	<constant name="struts.configuration.xml.reload" value="false" />
 	<constant name="struts.ui.theme" value="css_xhtml" />
 	<constant name="struts.convention.classes.reload" value="true" />
@@ -47,10 +46,8 @@
 		</result-types>
 		
 		<interceptors>
-			<interceptor name="authnInterceptor"
-				class="org.glite.security.voms.admin.view.interceptors.AuthenticatedAccessInterceptor" />
         
-            <interceptor name="initGlobalReqPropsInterceptor"
+            <interceptor name="globalPropsInterceptor"
                 class="org.glite.security.voms.admin.view.interceptors.InitalizeGlobalRequestObjectsInterceptor" />
           
 			<interceptor name="hibernateInterceptor"
@@ -76,7 +73,7 @@
                   <param name="logLevel">debug</param>
                 </interceptor-ref>
                 
-                <interceptor-ref name="initGlobalReqPropsInterceptor" />
+                <interceptor-ref name="globalPropsInterceptor" />
                 
                 <interceptor-ref name="authzExceptionMappingInterceptor"/>
                 <interceptor-ref name="searchAwareInterceptor"/>
@@ -165,10 +162,9 @@
                 
                 <interceptor-ref name="jsonExceptionReporting"/>               
                 
+                <interceptor-ref name="globalPropsInterceptor"/>
                 <interceptor-ref name="searchAwareInterceptor"/>
                 <interceptor-ref name="logger"/>
-                
-                <interceptor-ref name="authnInterceptor" />
                 
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>
@@ -244,10 +240,9 @@
                 
                 <interceptor-ref name="csrfHeaderCheck"/>
                 
+                <interceptor-ref name="globalPropsInterceptor"/>
                 <interceptor-ref name="searchAwareInterceptor"/>
                 <interceptor-ref name="logger"/>
-                
-                <interceptor-ref name="authnInterceptor" />
                 
                 <interceptor-ref name="alias"/>
                 <interceptor-ref name="i18n"/>

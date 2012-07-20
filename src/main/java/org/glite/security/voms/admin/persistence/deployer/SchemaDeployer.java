@@ -415,7 +415,7 @@ public class SchemaDeployer {
 		}
 
 		if (foundACL2 && foundAUP) {
-			log.info("Found existing voms-admin 2.5.x database...");
+			log.info("Found existing voms-admin > 2.5.x database...");
 			return 3;
 		}
 		if (foundACL2) {
@@ -598,7 +598,7 @@ public class SchemaDeployer {
 
 			ArrayList<Exception> exceptions = new ArrayList<Exception>();
 
-			log.info("Upgrading voms 2.5 database...");
+			log.info("Upgrading voms database...");
 
 			Statement statement = HibernateFactory.getSession().connection()
 					.createStatement();
@@ -617,7 +617,7 @@ public class SchemaDeployer {
 			}
 
 			if (!exceptions.isEmpty()) {
-				log.error("Error upgrading voms 2.5 database!");
+				log.error("Error upgrading voms database!");
 				printExceptions(exceptions);
 				System.exit(2);
 			}
@@ -676,13 +676,13 @@ public class SchemaDeployer {
 		}
 
 		if (existingDB == 1) {
-			log.info("Upgrading voms-admin 1.2.x database to the voms-admin 2.5.x structure.");
+			log.info("Upgrading voms-admin 1.2.x database to the voms-admin > 2.5.x structure.");
 			doUpgrade1_2_19(hibernateConfig);
 
 		}
 
 		if (existingDB == 2) {
-			log.info("Upgrading voms-admin 2.0.x database to the voms-admin 2.5.x structure.");
+			log.info("Upgrading voms-admin 2.0.x database to the voms-admin > 2.5.x structure.");
 			doUpgrade2_0_x(hibernateConfig);
 		}
 
