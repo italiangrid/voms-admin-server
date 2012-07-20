@@ -1,7 +1,7 @@
 # set -x
 
 ## voms installation prefix
-PREFIX="/opt/voms"
+PREFIX="${package.prefix}"
 
 ## jar file locations
 VOMS_WS_LIBS="$PREFIX/usr/share/voms-admin/tools/lib"
