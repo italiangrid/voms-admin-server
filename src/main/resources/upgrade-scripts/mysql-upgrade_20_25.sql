@@ -62,3 +62,4 @@ alter table user_request_task add index FKACB7D29FA2EA7DB (task_id), add constra
 alter table user_request_task add index FKACB7D29732B75C4 (req_id), add constraint FKACB7D29732B75C4 foreign key (req_id) references req (request_id)
 alter table usr add index FK1C594BF9754C3 (ca), add constraint FK1C594BF9754C3 foreign key (ca) references ca (cid)
 alter table vo_membership_req add index FK28EE8AFBAD152A33 (request_id), add constraint FK28EE8AFBAD152A33 foreign key (request_id) references req (request_id)
+update usr set suspended = false

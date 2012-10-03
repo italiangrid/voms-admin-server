@@ -61,3 +61,4 @@ alter table task_log_record add constraint FK77673CA6FA2EA7DB foreign key (task_
 alter table user_request_task add constraint FKACB7D29FA2EA7DB foreign key (task_id) references task
 alter table user_request_task add constraint FKACB7D29732B75C4 foreign key (req_id) references req
 alter table vo_membership_req add constraint FK28EE8AFBAD152A33 foreign key (request_id) references req
+update usr set suspended = false

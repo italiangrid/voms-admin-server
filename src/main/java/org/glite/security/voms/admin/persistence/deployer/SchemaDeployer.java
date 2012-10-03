@@ -21,7 +21,6 @@ package org.glite.security.voms.admin.persistence.deployer;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
@@ -76,7 +75,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.exception.GenericJDBCException;
@@ -1475,6 +1473,9 @@ public class SchemaDeployer {
 		s.createSQLQuery(
 				"insert into usr(userid,dn,ca,cn,mail,cauri) select userid, dn, ca, cn, mail, cauri from usr_old")
 				.executeUpdate();
+		
+		// Fix for http://issues.cnaf.infn.it/browse/VOMS-76
+		s.createSQLQuery("update usr set suspended = false").executeUpdate();
 
 		s.createSQLQuery("insert into version values('3')").executeUpdate();
 
