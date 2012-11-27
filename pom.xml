@@ -7,7 +7,7 @@
   <artifactId>voms-admin-server</artifactId>
   <packaging>war</packaging>
   <name>VOMS web services</name>
-  <version>2.8.0</version>
+  <version>3.0.0</version>
   <properties>
         
     <server-version>${project.version}</server-version>

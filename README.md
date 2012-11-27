@@ -1,5 +1,5 @@
-The VOMS Administrative service
--------------------------------
+The VOMS Administration Service
+===============================
 
 The Virtual Organization Membership Service is a Grid attribute authority which
 serves as central repository for VO user authorization information, providing
@@ -17,4 +17,3 @@ If you have problems, questions, ideas or suggestions, please contact us at
 the following URLs
 
 * GGUS (official support channel): http://www.ggus.eu
-* VOMS Product Team list: voms-product-team@cnaf.infn.it
