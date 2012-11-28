@@ -969,16 +969,16 @@ class X509Helper:
         
           
 def template_prefix():
-    return os.path.join(voms_admin_prefix(),"share","voms-admin","templates")
+    return os.path.join(voms_admin_prefix(),"usr", "share","voms-admin","templates")
 
 def voms_log_dir():
     return os.path.join(voms_prefix(),"var","log","voms")
     
 def voms_admin_prefix():
     if voms_admin_sysconfig_props.has_key('PREFIX'):
-        return voms_admin_sysconfig_props['PREFIX']+"/usr"
+        return voms_admin_sysconfig_props['PREFIX']
     
-    return "/usr" 
+    return "/" 
 
 def voms_admin_conf_dir():
     if voms_admin_sysconfig_props.has_key('CONF_DIR'):
@@ -1034,15 +1034,15 @@ class VomsConstants:
     vo_aup_template = os.path.join(template_prefix(),"aup", "vo-aup.txt")
     logging_conf_template = os.path.join(template_prefix(), "logback.xml")
     
-    voms_admin_war = os.path.join(voms_admin_prefix(), "share","webapps","voms-admin.war")
+    voms_admin_war = os.path.join(voms_admin_prefix(), "usr","share","webapps","voms-admin.war")
     
-    voms_siblings_war = os.path.join(voms_admin_prefix(), "share","webapps","voms-siblings.war")
+    voms_siblings_war = os.path.join(voms_admin_prefix(),"usr", "share","webapps","voms-siblings.war")
     
-    voms_admin_libs = glob.glob(os.path.join(voms_admin_prefix(),"share","voms-admin","tools","lib")+"/*.jar")
-    voms_admin_classes = os.path.join(voms_admin_prefix(),"share","voms-admin","tools", "classes")
-    voms_admin_jar = os.path.join(voms_admin_prefix(), "share","java","voms-admin.jar")
+    voms_admin_libs = glob.glob(os.path.join(voms_admin_prefix(),"var", "lib","voms-admin","lib")+"/*.jar")
+    voms_admin_classes = os.path.join(voms_admin_prefix(),"var", "lib","voms-admin","tools")
+    voms_admin_jar = os.path.join(voms_admin_prefix(), "usr", "share","java","voms-admin.jar")
        
-    voms_db_deploy = os.path.join(voms_admin_prefix(),"sbin","voms-db-deploy.py")
+    voms_db_deploy = os.path.join(voms_admin_prefix(),"usr", "sbin","voms-db-deploy.py")
     
     schema_deployer_class = "org.glite.security.voms.admin.persistence.deployer.SchemaDeployer"
     

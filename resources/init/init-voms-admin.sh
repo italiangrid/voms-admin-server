@@ -4,7 +4,7 @@
 PREFIX="${package.prefix}"
 
 ## jar file locations
-VOMS_WS_LIBS="$PREFIX/usr/share/voms-admin/tools/lib"
+VOMS_WS_LIBS="$PREFIX/var/lib/voms-admin/lib"
 
 ## VOMS Java otpions
 if [ -z $VOMS_WS_JAVA_OPTS ]; then

@@ -63,7 +63,7 @@
         
         <fileSet>
             <directory>resources/doc</directory>
-            <outputDirectory>/usr/share/doc/voms-admin-server-${version}</outputDirectory>
+            <outputDirectory>/usr/share/doc/voms-admin-server</outputDirectory>
         </fileSet>
 
         <fileSet>
@@ -85,7 +85,7 @@
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>/usr/share/voms-admin/tools/lib</outputDirectory>
+            <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
         </dependencySet>
     </dependencySets>
 
@@ -121,7 +121,7 @@
         
         <file>
             <source>src/main/resources/c3p0.properties</source>
-            <outputDirectory>/usr/share/voms-admin/tools/classes</outputDirectory>
+            <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
         </file>
         
         <file>
@@ -137,7 +137,7 @@
         <file>
             <source>src/config/logback.cli.xml</source>
             <destName>logback.xml</destName>
-            <outputDirectory>/usr/share/voms-admin/tools/classes</outputDirectory>
+            <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
             <fileMode>0755</fileMode>
         </file>
         
