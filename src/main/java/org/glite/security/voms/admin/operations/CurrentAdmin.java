@@ -23,9 +23,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
@@ -34,6 +31,9 @@ import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CurrentAdmin {
 
@@ -53,7 +53,7 @@ public class CurrentAdmin {
 
 	public static CurrentAdmin instance() {
 
-		SecurityContext theContext = SecurityContext.getCurrentContext();
+		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
 
 		String adminDN = theContext.getClientName();
 		String caDN = theContext.getIssuerName();
@@ -253,7 +253,7 @@ public class CurrentAdmin {
 
 	public String getRealSubject() {
 
-		SecurityContext theContext = SecurityContext.getCurrentContext();
+		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
 
 		return theContext.getClientName();
 
@@ -261,7 +261,7 @@ public class CurrentAdmin {
 
 	public String getRealIssuer() {
 
-		SecurityContext theContext = SecurityContext.getCurrentContext();
+		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
 
 		return theContext.getIssuerName();
 
@@ -269,11 +269,11 @@ public class CurrentAdmin {
 
 	public String getRealCN() {
 
-		SecurityContext theContext = SecurityContext.getCurrentContext();
+		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
 		if (theContext.getClientCert() ==  null)
 			return null;
 		
-		String name = DNUtil.getBCasX500(theContext.getClientCert()
+		String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
 				.getSubjectX500Principal());
 
 		Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
@@ -284,12 +284,12 @@ public class CurrentAdmin {
 	}
 
 	public String getRealEmailAddress() {
-		SecurityContext theContext = SecurityContext.getCurrentContext();
+		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
 		
 		if (theContext.getClientCert() ==  null)
 			return null;
 		
-		String name = DNUtil.getBCasX500(theContext.getClientCert()
+		String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
 				.getSubjectX500Principal());
 
 		String candidateEmail = DNUtil.getEmailAddressFromDN(DNUtil

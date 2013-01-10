@@ -19,92 +19,88 @@
  */
 package org.glite.security.voms.admin.core.tasks;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.security.cert.CertificateException;
-import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
-import java.util.Iterator;
-import java.util.Vector;
 
-import org.glite.security.util.FileCertReader;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
-import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.emi.security.authn.x509.impl.CertificateUtils;
+import eu.emi.security.authn.x509.impl.CertificateUtils.Encoding;
+
 /**
- * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
- * @author <a href="mailto:Akos.Frohner@cern.ch">Akos Frohner</a>
- * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
- * 
- * 
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a> 
  */
-public final class UpdateCATask implements Runnable{
+public final class UpdateCATask implements Runnable {
 
 	static final Logger log = LoggerFactory.getLogger(UpdateCATask.class);
-	
-	public void run(){
-		
-		String caFiles = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.CAFILES,
-				"/etc/grid-security/certificates/*.0");
 
-		log.debug("Updating CAs from: " + caFiles);
+	private void directorySanityChecks(File directory) {
+		if (!directory.exists())
+			throw new VOMSException("Local trust directory does not exists:"
+					+ directory.getAbsolutePath());
 
-		if (caFiles != null) {
+		if (!directory.isDirectory())
+			throw new VOMSException("Local trust directory is not a directory:"
+					+ directory.getAbsolutePath());
+
+		if (!directory.canRead())
+			throw new VOMSException("Local trust directory is not readable:"
+					+ directory.getAbsolutePath());
+
+		if (!directory.canExecute())
+			throw new VOMSException("Local trust directory is not traversable:"
+					+ directory.getAbsolutePath());
+	}
+
+	public void run() {
+
+		String trustAnchorsDir = VOMSConfiguration.instance().getString(
+				VOMSConfigurationConstants.TRUST_ANCHORS_DIR,
+				"/etc/grid-security/certificates");
+
+		log.debug("Updating CAs from: " + trustAnchorsDir);
+
+		VOMSCADAO dao = VOMSCADAO.instance();
+
+		File dir = new File(trustAnchorsDir);
+		directorySanityChecks(dir);
+
+		File[] certFiles = dir.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.matches(".*\\.\\d");
+			}
+		});
+
+		for (File caFile : certFiles) {
+			log.debug("Parsing CA certificate from {}.", caFile);
+
+			X509Certificate caCert;
 
 			try {
-
-				VOMSCADAO dao = VOMSCADAO.instance();
-				FileCertReader certReader = new FileCertReader();
-
-				Vector cas = certReader.readAnchors(caFiles);
-
-				Iterator caIter = cas.iterator();
-
-				while (caIter.hasNext()) {
-									
-					TrustAnchor anchor = (TrustAnchor) caIter.next();
-					X509Certificate caCert = anchor.getTrustedCert();
-
-					String caDN = DNUtil.getBCasX500(caCert
-							.getSubjectX500Principal());
-
-					log.debug("Checking CA: " + caDN);					
-					dao.createIfMissing(caDN, null);
-
-				}
-
-			} catch (CertificateException e) {
-
-				log
-						.error(
-								"Certificate parsing error while updating trusted CA database!",
-								e);
-				throw new VOMSException(
-						"Certificate parsing error while updating trusted CA database!",
-						e);
-
+				caCert = CertificateUtils.loadCertificate(new FileInputStream(
+						caFile), Encoding.PEM);
+				
 			} catch (IOException e) {
-				log
-						.error(
-								"File access error while updating trusted CA database!",
-								e);
-				throw new VOMSException(
-						"File access error while updating trusted CA database!",
-						e);
-
-			} catch (VOMSDatabaseException e) {
-
-				log.error("Error updating trusted CA database!", e);
-				throw e;
+				log.error(e.getMessage(), e);
+				continue;
 			}
 
-		}
+			String caDN = DNUtil.getOpenSSLSubject(caCert
+					.getSubjectX500Principal());
 
+			log.debug("Checking CA: " + caDN);
+
+			dao.createIfMissing(caDN, null);
+
+		}
 	}
 }

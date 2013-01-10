@@ -49,7 +49,7 @@ public class VOMSCA implements Serializable {
 
 		assert cert != null : "X509Certificate is null!";
 
-		subjectString = DNUtil.getBCasX500(cert.getSubjectX500Principal());
+		subjectString = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
 		creationTime = new Date();
 
 		this.description = description;

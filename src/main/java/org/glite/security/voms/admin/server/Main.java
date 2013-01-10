@@ -21,12 +21,15 @@ import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.JettyShutdownTask;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
+import org.italiangrid.utils.https.impl.canl.CANLListener;
+import org.italiangrid.voms.util.CertificateValidatorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import eu.emi.security.authn.x509.X509CertChainValidatorExt;
 
 public class Main {
 
@@ -41,10 +44,13 @@ public class Main {
 	public static final String DEFAULT_CERT = "/etc/grid-security/hostcert.pem";
 	public static final String DEFAULT_KEY = "/etc/grid-security/hostkey.pem";
 	public static final String DEFAULT_TRUSTSTORE_DIR = "/etc/grid-security/certificates";
-	public static final String DEFAULT_TMP_PREFIX = "/tmp";
+	public static final String DEFAULT_TMP_PREFIX = "/var/tmp";
 	
 	public static final long DEFAULT_TRUSTSTORE_REFRESH_INTERVAL = 60000L;
 
+	public static final int DEFAULT_MAX_CONNECTIONS = 50;
+	public static final int DEFAULT_MAX_REQUEST_QUEUE_SIZE = 200;
+	
 	private static final String ARG_WAR = "war";
 	private static final String ARG_VO = "vo";
 	private static final String ARG_CONFDIR = "confdir";
@@ -98,9 +104,7 @@ public class Main {
 		if (t != null) {
 
 			System.err.format("%s: %s", errorMessage, t.getMessage());
-			t.printStackTrace(System.err);
 			
-		
 		} else {
 			
 			System.err.println(errorMessage);
@@ -238,7 +242,7 @@ public class Main {
 	 */
 	protected void initJettyTmpDir(){
 				
-		String baseDirPath = String.format("%s/%s/%s", DEFAULT_TMP_PREFIX,"voms", vo).replaceAll("/+", "/");
+		String baseDirPath = String.format("%s/%s/%s", DEFAULT_TMP_PREFIX,"voms-webapp", vo).replaceAll("/+", "/");
 		
 		File basePath = new File(baseDirPath);
 		
@@ -249,8 +253,11 @@ public class Main {
 		jettyTmpDir=basePath;
 	}
 
-	protected SSLOptions setupSSLOptions(){
+	protected SSLOptions getSSLOptions(){
 		SSLOptions options = new SSLOptions();
+		
+//		options.setNeedClientAuth(true);
+//		options.setWantClientAuth(true);
 		
 		options.setCertificateFile(certFile);
 		options.setKeyFile(keyFile);
@@ -281,16 +288,27 @@ public class Main {
 		
 	protected void configureJettyServer(){
 		
-		server = ServerFactory.newServer(host, 
-				Integer.parseInt(port), 
-				setupSSLOptions());
+		SSLOptions options = getSSLOptions();
 		
+		CANLListener l = new CANLListener();
+		
+		X509CertChainValidatorExt validator = CertificateValidatorBuilder.
+				buildCertificateValidator(options.getTrustStoreDirectory(),
+						l,
+						l,
+						options.getTrustStoreRefreshIntervalInMsec());
+		
+		server = ServerFactory.newServer(host, 
+				Integer.parseInt(port),
+				getSSLOptions(),
+				validator,
+				DEFAULT_MAX_CONNECTIONS,
+				DEFAULT_MAX_REQUEST_QUEUE_SIZE);
 		
 		configureWebApp();
 		HandlerCollection handlers = new HandlerCollection();
 		
 		handlers.setHandlers(new Handler[]{ 
-				new VOMSSecurityContextHandler(), 
 				vomsWebappContext});
 		
 		server.setHandler(handlers);

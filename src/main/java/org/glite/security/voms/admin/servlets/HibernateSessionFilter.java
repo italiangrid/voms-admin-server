@@ -38,11 +38,13 @@ public class HibernateSessionFilter implements Filter {
 			.getLogger(HibernateSessionFilter.class);
 
 	public void init(FilterConfig arg0) throws ServletException {
-
+		log.debug("Initializing HibernateSessionFilter {}", this);
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
+
+		log.debug("Executing HibernateSessionFilter {}", this);
 
 		chain.doFilter(req, res);
 
@@ -60,10 +62,7 @@ public class HibernateSessionFilter implements Filter {
 
 	public void destroy() {
 
-	}
-
-	public HibernateSessionFilter() {
-
+		log.debug("Destroying HibernateSessionFilter {}", this);
 	}
 
 }

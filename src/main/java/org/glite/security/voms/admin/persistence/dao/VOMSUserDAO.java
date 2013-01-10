@@ -332,7 +332,7 @@ public class VOMSUserDAO {
 		// Assume the certificate have been already validated
 		// at this stage.
 
-		String caDN = DNUtil.getBCasX500(x509Cert.getIssuerX500Principal());
+		String caDN = DNUtil.getOpenSSLSubject(x509Cert.getIssuerX500Principal());
 		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
 		if (ca == null)
@@ -345,7 +345,7 @@ public class VOMSUserDAO {
 
 		cert = new Certificate();
 
-		String subjectString = DNUtil.getBCasX500(x509Cert
+		String subjectString = DNUtil.getOpenSSLSubject(x509Cert
 				.getSubjectX500Principal());
 		cert.setSubjectString(subjectString);
 		cert.setCreationTime(new Date());

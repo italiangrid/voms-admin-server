@@ -92,8 +92,8 @@ public class RequestCertificateAction extends UserActionSupport {
 				addFieldError("certificateFile","Certificate already bound!");
 			
 			
-			subject = DNUtil.getBCasX500(cert.getSubjectX500Principal());
-			caSubject = DNUtil.getBCasX500(cert.getIssuerX500Principal());
+			subject = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
+			caSubject = DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal());
 			
 			if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)){
 			    addFieldError("certificateFile", "You already have a pending request for this certificate!");

@@ -79,7 +79,7 @@ public class CertificateDAO {
 
 		assert cert != null : "Null certificate passed as argument!";
 
-		String subjectString = DNUtil.getBCasX500(cert
+		String subjectString = DNUtil.getOpenSSLSubject(cert
 				.getSubjectX500Principal());
 
 		String query = "from Certificate where subjectString = :subjectString";

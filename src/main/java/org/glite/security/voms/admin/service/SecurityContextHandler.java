@@ -91,6 +91,7 @@ public class SecurityContextHandler extends BasicHandler {
 
 		} else {
 			InitSecurityContext.setContextFromRequest(req);
+			InitSecurityContext.logConnection();
 		}
 	}
 

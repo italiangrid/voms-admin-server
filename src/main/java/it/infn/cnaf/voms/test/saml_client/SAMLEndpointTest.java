@@ -1,17 +1,16 @@
 package it.infn.cnaf.voms.test.saml_client;
 
+import it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType;
+
 import java.rmi.RemoteException;
 
-import it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.glite.security.util.DNHandler;
 import org.glite.security.voms.User;
 import org.glite.security.voms.VOMSException;
-import org.glite.security.voms.admin.operations.users.CreateUserOperation;
 import org.glite.security.voms.service.admin.VOMSAdmin;
 import org.glite.security.voms.service.attributes.VOMSAttributes;
 import org.opensaml.DefaultBootstrap;

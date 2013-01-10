@@ -15,8 +15,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.glite.security.util.DN;
-import org.glite.security.util.DNHandler;
 import org.glite.security.voms.service.admin.VOMSAdmin;
 import org.glite.security.voms.service.admin.VOMSAdminServiceLocator;
 import org.glite.security.voms.service.attributes.VOMSAttributes;
@@ -37,8 +35,9 @@ import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.MarshallingException;
 import org.w3c.dom.Element;
+
+import eu.emi.security.authn.x509.impl.OpensslNameUtils;
 
 public class SAMLTestUtils {
 
@@ -107,10 +106,9 @@ public class SAMLTestUtils {
 		Issuer issuer = issuerBuilder.buildObject();
 
 		// Convert to rfc2253
+		String opensslDn = OpensslNameUtils.opensslToRfc2253(userDn);
 
-		DN dn = DNHandler.getDNRFC2253(userDn);
-
-		issuer.setValue(dn.getRFCDN());
+		issuer.setValue(opensslDn);
 		issuer.setFormat(NameID.X509_SUBJECT);
 
 		query.setIssuer(issuer);
@@ -124,7 +122,7 @@ public class SAMLTestUtils {
 
 		NameID requester = nameIdBuilder.buildObject();
 		requester.setFormat(NameID.X509_SUBJECT);
-		requester.setValue(dn.getRFCDN());
+		requester.setValue(opensslDn);
 
 		subject.setNameID(requester);
 

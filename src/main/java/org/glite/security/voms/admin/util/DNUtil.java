@@ -30,6 +30,9 @@ import javax.security.auth.x500.X500Principal;
 
 import org.glite.security.voms.admin.error.VOMSException;
 
+import eu.emi.security.authn.x509.impl.OpensslNameUtils;
+import eu.emi.security.authn.x509.impl.X500NameUtils;
+
 /**
  * Utility class to convert principal names to convenient format.
  * 
@@ -37,19 +40,7 @@ import org.glite.security.voms.admin.error.VOMSException;
  * 
  */
 public class DNUtil {
-
-	// Fixed to allow numeric CN fields in the DN
-	private static final String PROXY_PATTERN = "^CN=((limited )*proxy)$";
-
-	private static final String[] OID_REGEX = { "^OID.1.2.840.113549.1.9.1=",
-			"^OID.0.9.2342.19200300.100.1.25=",
-			"^OID.0.9.2342.19200300.100.1.1=" };
-
-	private static final String[] OID_NAME = { "Email=", // Email or
-			// emailAddress
-			"DC=", "UID=" // UID or UserID
-	};
-
+	
 	/**
 	 * Converts BouncyCastle's X500 principal to something, which is used in the
 	 * Globus libraries by default (whatever it is).
@@ -58,20 +49,9 @@ public class DNUtil {
 	 *            the subject's or the issuer's X500 principal
 	 * @return the proper string represetnation
 	 */
-	public static String getBCasX500(X500Principal principal) {
+	public static String getOpenSSLSubject(X500Principal principal) {
 
-		String[] rdns = principal.getName(X500Principal.RFC1779).split(", ");
-
-		StringBuffer name = new StringBuffer();
-		for (int i = rdns.length - 1; i >= 0; i--) {
-			if (rdns[i].matches(PROXY_PATTERN))
-				continue;
-			for (int o = 0; o < OID_REGEX.length; o++) {
-				rdns[i] = rdns[i].replaceFirst(OID_REGEX[o], OID_NAME[o]);
-			}
-			name.append("/").append(rdns[i]);
-		}
-		return name.toString();
+		return OpensslNameUtils.convertFromRfc2253(X500NameUtils.getReadableForm(principal), false);
 	}
 
 	public static String normalizeEmailAddressInDN(String dn) {
@@ -148,7 +128,7 @@ public class DNUtil {
 	
 	public static String getBCasX500( String principalString){
         
-        return getBCasX500( new X500Principal(principalString ));
+        return getOpenSSLSubject( new X500Principal(principalString ));
         
     }
 }

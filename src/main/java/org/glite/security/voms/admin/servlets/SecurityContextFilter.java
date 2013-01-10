@@ -27,10 +27,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.italiangrid.utils.voms.SecurityContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,32 +44,56 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityContextFilter implements Filter {
 
+	public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
+	public static final int SESSION_LIFETIME_IN_SECONDS = 600;
+	
 	protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
-
-	public SecurityContextFilter() {
-		super();
-	}
 
 	public void init(FilterConfig arg0) throws ServletException {
 
+		log.debug("Initializing SecurityContextFilter {}", this);
+		
 	}
 
+	protected void initContext(HttpServletRequest request){
+		
+		HttpSession s = request.getSession(true);
+		s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
+		
+		SecurityContextImpl sc = (SecurityContextImpl) s.getAttribute(SECURITY_CONTEXT_SESSION_KEY);
+		
+		if (sc == null){
+			InitSecurityContext.setContextFromRequest(request);
+			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, SecurityContextImpl.getCurrentContext());
+		}else
+			SecurityContextImpl.setCurrentContext(sc);
+		
+		InitSecurityContext.logConnection();
+		
+	}
+	
+	protected void initWebappProperties(HttpServletRequest request){
+		String voName = VOMSConfiguration.instance().getVOName();
+		request.setAttribute("voName", voName);
+		request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
+				.instance());
+	}
+	
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 
-		InitSecurityContext.setContextFromRequest(req);
-
-		String voName = VOMSConfiguration.instance().getVOName();
-		req.setAttribute("voName", voName);
-		req.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
-				.instance());
-
+		log.debug("SecurityContextFilter {}", this);
+		
+		HttpServletRequest request=  (HttpServletRequest)req;
+		
+		initContext(request);
+		initWebappProperties(request);
+		
 		chain.doFilter(req, res);
-
 	}
 
 	public void destroy() {
-
+		log.debug("Destroying SecurityContextFilter {}", this);
 	}
 
 }

@@ -41,10 +41,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.bouncycastle.x509.X509V2AttributeCertificate;
-import org.glite.security.SecurityContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.VOMSException;
@@ -54,6 +51,10 @@ import org.glite.security.voms.admin.persistence.error.NoSuchCertificateExceptio
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.error.SuspendedCertificateException;
 import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
+import org.italiangrid.utils.voms.SecurityContext;
+import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 
@@ -275,7 +276,7 @@ public class ACServlet extends BaseServlet implements VOMSErrorCodes {
             // Ignore rubbish in lifetime parameter
         }
         
-        SecurityContext ctxt = SecurityContext.getCurrentContext();
+        SecurityContextImpl ctxt = SecurityContextImpl.getCurrentContext();
         
         // Handle unauthenticated clients here
         if (ctxt.getClientCert() == null)

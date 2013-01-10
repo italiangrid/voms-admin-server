@@ -78,7 +78,7 @@ public class VOMSCADAO implements Searchable {
 						VOMSConfigurationConstants.CREATE_EXPIRED_CAS, false))) {
 
 			log.warn("CA '"
-					+ DNUtil.getBCasX500(caCert.getSubjectX500Principal())
+					+ DNUtil.getOpenSSLSubject(caCert.getSubjectX500Principal())
 					+ "' certificate has expired on " + caCert.getNotAfter()
 					+ " so it will not be added to the voms database!");
 			return null;

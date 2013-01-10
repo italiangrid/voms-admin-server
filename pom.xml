@@ -25,12 +25,10 @@
     <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
     <c3p0.version>0.9.1</c3p0.version>
     <axis.version>1.2.1</axis.version>
-    <trustmanager.version>3.0.5</trustmanager.version>
-    <trustmanager-axis.version>1.0.0</trustmanager-axis.version>
     <opensaml.version>2.5.3</opensaml.version>
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.6</logback.version>
-    <https-utils.version>0.5-SNAPSHOT</https-utils.version>
+    <https-utils.version>0.2-SNAPSHOT</https-utils.version>
     
   </properties>
 
@@ -403,18 +401,6 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.0.7</version>
-    </dependency>
-
-    <dependency>
-      <groupId>emi</groupId>
-      <artifactId>trustmanager</artifactId>
-      <version>${trustmanager.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>emi</groupId>
-      <artifactId>trustmanager-axis</artifactId>
-      <version>${trustmanager-axis.version}</version>
     </dependency>
 
     <!-- Struts 2.x dependencies -->

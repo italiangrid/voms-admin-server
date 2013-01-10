@@ -76,7 +76,7 @@ public class SecurityContextHelper
       throw new Error("Not authenticated.");
     
     logger.info("Authenticated subject " + 
-                DNUtil.getBCasX500(certificateChain[0].getSubjectX500Principal()));
+                DNUtil.getOpenSSLSubject(certificateChain[0].getSubjectX500Principal()));
   }
   
   /* (non-Javadoc)

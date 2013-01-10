@@ -28,76 +28,42 @@
 	<display-name>VOMS Web Services</display-name>
     
     <filter>
+        <filter-name>security-context-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>hibernate-session-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
+    </filter>
+    
+    <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
     </filter>
      
-    <filter>
-      <filter-name>struts-hibernate-session-filter</filter-name>
-      <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
-    </filter>
-    
-	<filter>
-		<filter-name>axis-hibernate-session-filter</filter-name>
-		<filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
-	</filter>
-  
-    <filter>
-        <filter-name>rest-hibernate-session-filter</filter-name>
-        <filter-class>org.glite.security.voms.admin.servlets.HibernateSessionFilter</filter-class>
-    </filter>
-    
-    <!-- 
-    <filter>
-        <filter-name>rest-security-context-filter</filter-name>
-        <filter-class>org.glite.security.voms.admin.servlets.SecurityContextFilter</filter-class>
-    </filter>
-	 -->
-   
-   
 	<filter-mapping>
-		<filter-name>axis-hibernate-session-filter</filter-name>
+		<filter-name>hibernate-session-filter</filter-name>
 		<url-pattern>/services/*</url-pattern>
 	</filter-mapping>
 	
     <!-- Struts 2 filter mapping -->
+    
     <filter-mapping>
-        <filter-name>struts-hibernate-session-filter</filter-name>
-        <url-pattern>*.action</url-pattern>
+        <filter-name>security-context-filter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>hibernate-session-filter</filter-name>
+        <url-pattern>*</url-pattern>
     </filter-mapping>
     
     <filter-mapping>
         <filter-name>struts2</filter-name>
         <url-pattern>*.action</url-pattern>
     </filter-mapping>
-   	 
-     <!-- 
-    <filter-mapping>
-        <filter-name>rest-security-context-filter</filter-name>
-        <url-pattern>/generate-ac</url-pattern>
-    </filter-mapping>
-     -->
-     
-     
-    <filter-mapping>
-        <filter-name>rest-hibernate-session-filter</filter-name>
-        <url-pattern>/generate-ac</url-pattern>
-    </filter-mapping>
-  
-    <!-- Third party plain text restful service -->
-    
-    <!-- 
-    <filter-mapping>
-        <filter-name>rest-security-context-filter</filter-name>
-        <url-pattern>/get-attributes</url-pattern>
-    </filter-mapping>
-     -->
-     
-    <filter-mapping>
-        <filter-name>rest-hibernate-session-filter</filter-name>
-        <url-pattern>/get-attributes</url-pattern>
-    </filter-mapping>
-    	    
+   	      
     <listener>
         <display-name>VOMSContextListener</display-name>
         <listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
@@ -115,16 +81,6 @@
 			org.apache.axis.transport.http.AxisServlet
 		</servlet-class>
 	</servlet>
-	
-  
-    <!-- VOMS X509 Restful AC servlet -->
-    <servlet>
-        <servlet-name>voms-ac-servlet</servlet-name>
-        <servlet-class>
-            it.infn.cnaf.voms.x509.ACServlet
-        </servlet-class>
-    </servlet>
-
  
 	<servlet>
 		<servlet-name>register-alias</servlet-name>
@@ -157,13 +113,8 @@
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
 	</servlet-mapping>
-  
-    <servlet-mapping>
-        <servlet-name>voms-ac-servlet</servlet-name>
-        <url-pattern>/generate-ac</url-pattern>
-    </servlet-mapping>
     
-	<!-- The Usual Welcome File List -->
+	<!-- Welcome file -->
 	<welcome-file-list>
 		<welcome-file>/WEB-INF/p/welcome.jsp</welcome-file>
 	</welcome-file-list>

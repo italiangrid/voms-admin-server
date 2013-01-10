@@ -33,15 +33,15 @@ public interface VOMSConfigurationConstants {
 
 	public static final String VOMS_SERVICE_CERT = "voms.service.cert";
 	public static final String VOMS_SERVICE_KEY = "voms.service.key";
+	
 	public static final String CAFILES = "voms.cafiles";
 	public static final String CAFILES_PERIOD = "voms.cafiles.period";
-
+	
+	public static final String TRUST_ANCHORS_DIR = "voms.trust_anchors_dir";
+	public static final String TRUST_ANCHORS_REFRESH_PERIOD = "voms.trust_anchors_refresh_period";
+	
 	public static final String CREATE_EXPIRED_CAS = "voms.ca.create-when-expired";
 	public static final String DROP_EXPIRED_CAS = "voms.ca.drop-when-expired";
-	public static final String AUDITING = "voms.auditing";
-	public static final String AUDITING_INSERTS = "voms.auditing.inserts";
-	public static final String AUDITING_UPDATES = "voms.auditing.updates";
-	public static final String AUDITING_DELETIONS = "voms.auditing.deletions";
 	
 	/** Shutdown properties **/
 	public static final String SHUTDOWN_PORT = "voms.shutdown_port";

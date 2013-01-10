@@ -208,8 +208,6 @@ function eyeCandy(){
 		$(this).fadeOut('normal');
 	});
 	
-	$('#membershipExpirationField[readonly!=readonly]').datepicker({ dateFormat: 'mm/dd/yy', constrainInput: true });
-	
 	$('#userSelectorTrigger').change(function(){
 		
 		var checked = $(this).attr("checked");

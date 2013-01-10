@@ -881,7 +881,7 @@ public final class VOMSConfiguration {
 		}
 
 		log.info("SAML service credential's DN: "
-				+ DNUtil.getBCasX500(serviceCertificate
+				+ DNUtil.getOpenSSLSubject(serviceCertificate
 						.getSubjectX500Principal()));
 
 		/* load private key */

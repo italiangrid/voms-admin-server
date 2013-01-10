@@ -21,16 +21,18 @@ package org.glite.security.voms.admin.servlets;
 
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.apache.axis.transport.http.HTTPSender;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
+import org.glite.security.voms.admin.error.VOMSException;
+import org.italiangrid.utils.voms.SecurityContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.SecurityContext;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.core.VOMSServiceConstants;
-import org.glite.security.voms.admin.error.VOMSSecurityException;
-import org.glite.security.voms.admin.util.DNUtil;
 
 /**
  * The InitSecurityContext is and AXIS handler that can be put in a
@@ -67,7 +69,8 @@ import org.glite.security.voms.admin.util.DNUtil;
  */
 public class InitSecurityContext {
 
-	protected static Logger log = LoggerFactory.getLogger(InitSecurityContext.class);
+	protected static Logger log = LoggerFactory
+			.getLogger(InitSecurityContext.class);
 
 	/**
 	 * Sets up the client's credentials. This method sets the current
@@ -86,77 +89,74 @@ public class InitSecurityContext {
 	public static void setContextFromRequest(final ServletRequest req) {
 
 		log.debug("Creating a new security context");
-		SecurityContext sc = new SecurityContext();
-		SecurityContext.setCurrentContext(sc);
-
+		SecurityContextImpl sc = new SecurityContextImpl();
 		// Store remote address.
 		String remote = req.getRemoteAddr();
-		sc.setProperty(VOMSServiceConstants.SECURITY_CONTEXT_REMOTE_ADDRESS,
-				remote);
+		sc.setRemoteAddr(remote);
 
 		X509Certificate[] cert = null;
 		try {
 			// Interpret the client's certificate.
 			cert = (X509Certificate[]) req
 					.getAttribute("javax.servlet.request.X509Certificate");
-		} catch (Exception e) {
-			log.warn("Exception during certificate chain retrieval: " + e);
-			// We swallow the exception and continue processing.
+		} catch (Throwable t) {
+			throw new VOMSException(t.getMessage(), t);
 		}
 
 		if (cert == null) {
-			// No certificate.
-			log.info("Unauthenticated connection from \"" + remote + "\"");
 
 			sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 			sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-			
 
 		} else {
 			// Client certificate found.
 			sc.setClientCertChain(cert);
 
-			// Convert the DNs to the old format that we use in the
-			// org.glite.security.voms.admin.persistence.error.
-			if (sc.getClientName() != null)
-				sc.setClientName(DNUtil.getBCasX500(sc.getClientCert()
-						.getSubjectX500Principal()));
-
-			if (sc.getIssuerName() != null)
-				sc.setIssuerName(DNUtil.getBCasX500(sc.getClientCert()
-						.getIssuerX500Principal()));
-
-			String clientName = sc.getClientName();
-			String issuerName = sc.getIssuerName();
-			BigInteger sn = sc.getClientCert().getSerialNumber();
-
-			String serialNumber = (sn == null) ? "NULL" : sn.toString();
-
-			log.info("Connection from \"" + remote + "\" by " + clientName
-					+ " (issued by \"" + issuerName + "\", " + "serial "
-					+ serialNumber + ")");
-
 			// Do not allow internal credentials coming from an external source.
 			if (sc.getClientName() != null
 					&& sc.getClientName().startsWith(
 							VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
-				log
-						.error("Client name starts with internal prefix, discarding credentials: "
-								+ sc.getClientName());
+				log.error("Client name starts with internal prefix, discarding credentials: "
+						+ sc.getClientName());
 				sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 			} else if (sc.getIssuerName() != null
 					&& sc.getIssuerName().startsWith(
 							VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
-				log
-						.error("Client issuer starts with internal prefix, discarding credentials: "
-								+ sc.getClientName());
+				log.error("Client issuer starts with internal prefix, discarding credentials: "
+						+ sc.getClientName());
 				sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 			}
 		}
+
+		SecurityContextImpl.setCurrentContext(sc);
+
 	}
 
+	public static void logConnection() {
+
+		SecurityContextImpl sc = SecurityContextImpl.getCurrentContext();
+
+		if (sc.getClientCert() == null) {
+
+			log.info("Unauthenticated connection from \"{}\"",
+					sc.getRemoteAddr());
+
+		} else {
+
+			String clientName = sc.getClientName();
+			String issuerName = sc.getIssuerName();
+
+			BigInteger sn = sc.getClientCert().getSerialNumber();
+
+			String serialNumber = (sn == null) ? "NULL" : sn.toString();
+
+			log.info("Connection from \"" + sc.getRemoteAddr() + "\" by "
+					+ clientName + " (issued by \"" + issuerName + "\", "
+					+ "serial " + serialNumber + ")");
+		}
+	}
 
 	/**
 	 * Initialize a clear security context, which will fail on all security
@@ -165,10 +165,10 @@ public class InitSecurityContext {
 	public static void setClearContext() {
 
 		log.info("Clearing the security context");
-		SecurityContext sc = new SecurityContext();
-		SecurityContext.setCurrentContext(sc);
+		SecurityContextImpl sc = new SecurityContextImpl();
+		SecurityContextImpl.setCurrentContext(sc);
+
 		sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 		sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 	}
 }
-
