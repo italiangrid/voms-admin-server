@@ -28,11 +28,18 @@ import org.glite.security.voms.admin.persistence.model.AUPVersion;
 public class SaveVersionOperation extends
 	GenericSaveOrUpdateOperation<AUPVersion> {
 
+    String newURL;
     
-    public SaveVersionOperation(AUPVersion theModel) {
-	super(theModel);
+    public SaveVersionOperation(AUPVersion theModel, String url) {
+    	super(theModel);
+    	this.newURL = url;
     }
 
+    @Override
+    protected Object doExecute() {
+    	model.setUrl(newURL);
+    	return super.doExecute();
+    }
     @Override
     protected void setupPermissions() {
 	addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());

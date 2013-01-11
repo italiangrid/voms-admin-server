@@ -82,7 +82,7 @@ public class SecurityContextFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 
-		log.debug("SecurityContextFilter {}", this);
+		log.debug("Executing SecurityContextFilter {}", this);
 		
 		HttpServletRequest request=  (HttpServletRequest)req;
 		

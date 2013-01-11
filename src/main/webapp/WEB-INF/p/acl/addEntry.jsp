@@ -90,7 +90,7 @@ Add an entry to the
     <s:if test="not model.defaultACL and model.context.groupContext">
       <tr>
         <td><h1 id="propagateHandle" class="clickable">Propagate entry to children contexts:</h1></td>
-        <td><s:checkbox name="propagate" theme="simple" id="propagateCheckbox"/></td>
+        <td><s:checkbox name="propagate" theme="simple" id="propagateCheckbox" value="true"/></td>
       </tr>
     </s:if>
     <tr>

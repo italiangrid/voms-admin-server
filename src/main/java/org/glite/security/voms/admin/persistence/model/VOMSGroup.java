@@ -238,6 +238,10 @@ public class VOMSGroup implements Serializable, Auditable, Comparable {
 
 	}
 
+	public boolean isDescendant(VOMSGroup g){
+		return name.startsWith(g.getName());
+	}
+	
 	public Set getMappings() {
 
 		return mappings;

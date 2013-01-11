@@ -19,11 +19,11 @@
  */
 package org.glite.security.voms.admin.persistence.dao;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -31,50 +31,44 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class DAOUtils {
 
-	private static final Logger log = LoggerFactory.getLogger(DAOUtils.class);
-
-	public static boolean hasPermissionOnPath(VOMSGroup g,
-			VOMSPermission requiredPermission) {
-
-		VOMSGroup parent = g.getParent();
+	public static List<VOMSGroup> filterUnvisibleGroups(List<VOMSGroup> groups){
+		
+		Set<VOMSGroup> visiblePaths = new TreeSet<VOMSGroup>();
+		Set<VOMSGroup> bannedPaths = new TreeSet<VOMSGroup>();
+		
+		List<VOMSGroup> filteredGroups = new ArrayList<VOMSGroup>();
+		
 		CurrentAdmin admin = CurrentAdmin.instance();
-
-		do {
-
-			if (!admin.hasPermissions(VOMSContext.instance(parent),
-					requiredPermission))
-				return false;
-
-			parent = parent.getParent();
-
-		} while (!parent.isRootGroup());
-
-		return true;
-	}
-
-	public static List filterGroupList(List results,
-			VOMSPermission requiredPermission) {
-
-		Iterator i = results.iterator();
-
-		while (i.hasNext()) {
-
-			VOMSGroup group = (VOMSGroup) i.next();
-
-			if (!hasPermissionOnPath(group, requiredPermission)) {
-				log
-						.debug("Filtering out \""
-								+ group
-								+ "\" from search results since current admin doesn't have "
-								+ requiredPermission
-								+ " permissions in the parent group.");
-				i.remove();
+		
+		for (VOMSGroup g: groups){
+			
+			VOMSGroup parent = g.getParent();
+			
+			if (visiblePaths.contains(parent)){
+				filteredGroups.add(g);
+				continue;
 			}
-
+			
+			boolean descendsFromBannedPath = false;
+			for (VOMSGroup bannedPath: bannedPaths){
+				if (g.isDescendant(bannedPath)){
+					descendsFromBannedPath = true;
+					break;
+				}
+			}
+				
+			if (descendsFromBannedPath)
+				continue;
+				
+			if (admin.hasPermissions(VOMSContext.instance(parent), VOMSPermission.getContainerReadPermission())){
+				visiblePaths.add(parent);
+				filteredGroups.add(g);
+			}else{
+				bannedPaths.add(parent);
+			}
 		}
-
-		return results;
-
+		
+		return filteredGroups;
 	}
 
 }

@@ -44,12 +44,10 @@ public class HibernateSessionFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 
-		log.debug("Executing HibernateSessionFilter {}", this);
-
 		chain.doFilter(req, res);
 
 		try {
-
+			log.debug("Executing HibernateSessionFilter {}", this);
 			HibernateFactory.commitTransaction();
 
 		} finally {

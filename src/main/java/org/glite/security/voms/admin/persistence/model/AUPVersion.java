@@ -25,6 +25,7 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.glite.security.voms.admin.util.URLContentFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,47 +201,7 @@ public class AUPVersion implements Serializable, Comparable<AUPVersion> {
 	}
 
 	public String getURLContent() {
-
-		if (getUrl() == null)
-			return null;
-
-		try {
-
-			URL daURL = new URL(getUrl());
-			URLConnection conn = daURL.openConnection();
-
-			conn.connect();
-
-			String contentType = conn.getContentType();
-
-			if (!contentType.startsWith("text")) {
-				log.error("Unsupported content type for AUP: " + contentType);
-				return null;
-
-			} else {
-
-				// FIXME: leverage CONTENT length,
-				StringBuilder text = new StringBuilder();
-
-				int c;
-				// FIXME: implement more efficient AUP fetching
-				while ((c = conn.getInputStream().read()) != -1) {
-					text.append((char) c);
-				}
-
-				return text.toString();
-
-			}
-
-		} catch (Throwable e) {
-			log.error("Error in opening AUP version url: " + e.getMessage());
-			if (log.isDebugEnabled())
-				log.error(
-						"Error in opening AUP version url: " + e.getMessage(),
-						e);
-			return null;
-		}
-
+		return URLContentFetcher.fetchTextFromURL(getUrl());
 	}
 
 	public Boolean getActive() {

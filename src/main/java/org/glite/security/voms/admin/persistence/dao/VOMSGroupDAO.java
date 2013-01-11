@@ -56,15 +56,15 @@ public class VOMSGroupDAO {
 		HibernateFactory.beginTransaction();
 	}
 
-	public List getAll() {
+	public List<VOMSGroup> getAll() {
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup order by name asc";
+		String query = "from VOMSGroup order by name asc";
 
 		Query q = HibernateFactory.getSession().createQuery(query);
-		List res = q.list();
+		@SuppressWarnings("unchecked")
+		List<VOMSGroup> res = q.list();
 
-		return DAOUtils.filterGroupList(res, VOMSPermission
-				.getContainerReadPermission());
+		return DAOUtils.filterUnvisibleGroups(res);
 
 	}
 
@@ -114,8 +114,7 @@ public class VOMSGroupDAO {
 		q.setFirstResult(firstResult);
 		q.setMaxResults(maxResults);
 
-		List res = DAOUtils.filterGroupList(q.list(), VOMSPermission
-				.getContainerReadPermission());
+		List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
 
 		results.setCount(countGroups());
 		results.setFirstResult(firstResult);
@@ -143,8 +142,7 @@ public class VOMSGroupDAO {
 		q.setFirstResult(firstResult);
 		q.setMaxResults(maxResults);
 
-		List res = DAOUtils.filterGroupList(q.list(), VOMSPermission
-				.getContainerReadPermission());
+		List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
 
 		results.setSearchString(searchString);
 		results.setResults(res);

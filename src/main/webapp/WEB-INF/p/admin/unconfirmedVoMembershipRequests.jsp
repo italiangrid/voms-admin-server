@@ -55,12 +55,27 @@
 				</td>
 
 				<td style="vertical-align: bottom; text-align: right;">
-				<s:form
-					action="drop-request" onsubmit="ajaxSubmit($(this),'pending-req-content'); return false;">
-					<s:token/>
-					<s:hidden name="requestId" value="%{id}" />
-					<s:submit value="%{'Drop this request'}"/>
-				</s:form>
+				<div>
+					<s:form
+						action="drop-request" 
+						onsubmit="ajaxSubmit($(this),'pending-req-content'); return false;"
+						cssStyle="float:right"
+						>
+						<s:token/>
+						<s:hidden name="requestId" value="%{id}" />
+						<s:submit value="%{'Drop this request'}"/>
+					</s:form>
+					
+					<s:form
+	                    action="set-confirmed-request" 
+	                    onsubmit="ajaxSubmit($(this),'pending-req-content'); return false;"
+	                    cssStyle="float:right"
+	                    >
+	                    <s:token/>
+	                    <s:hidden name="requestId" value="%{id}" />
+	                    <s:submit value="%{'Confirm this request'}"/>
+	                </s:form>
+				</div>
 				</td>
 			</tr>
 		</s:iterator>

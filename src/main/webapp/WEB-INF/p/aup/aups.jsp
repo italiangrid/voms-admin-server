@@ -89,9 +89,9 @@
         		<s:param name="version" value="version"/>
         	</s:url>
         	
-        	<s:a href="%{#editAUPVersionURL}" cssClass="changeAUPURL">change</s:a>
-        	
-        	 
+        	<s:if test="#attr.canModify">
+        	   <s:a href="%{#editAUPVersionURL}" cssClass="changeAUPURL">change</s:a>
+        	</s:if>
         	 
         	<s:if test="versions.size > 1">
         		<span id="showAUPContent" class="clickable" onclick="showAUPContent(this)">show content</span>

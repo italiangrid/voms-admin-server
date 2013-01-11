@@ -21,13 +21,9 @@ package org.glite.security.voms.admin.servlets;
 
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.axis.transport.http.HTTPSender;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.italiangrid.utils.voms.SecurityContextImpl;

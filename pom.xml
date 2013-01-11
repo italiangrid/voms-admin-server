@@ -254,9 +254,11 @@
             <exclude>**/*.spec</exclude>
             <exclude>**/*.pydevproject</exclude>
             <exclude>**/*.js</exclude>
+            <exclude>**/rebel.xml</exclude>
             <exclude>bin/**</exclude>
             <exclude>src/main/webapp/common/struts/**</exclude>
             <exclude>src/main/webapp/struts/**</exclude>
+            <exclude>src/main/webapp/style/**</exclude>
             <exclude>resources/doc/**</exclude>
             <exclude>resources/scripts/voms-admin-ping</exclude>
             <exclude>resources/templates/aup/**</exclude>

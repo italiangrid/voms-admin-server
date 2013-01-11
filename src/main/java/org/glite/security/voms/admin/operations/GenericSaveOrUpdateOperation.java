@@ -24,7 +24,7 @@ import org.glite.security.voms.admin.persistence.HibernateFactory;
 
 public abstract class GenericSaveOrUpdateOperation<T> extends BaseVomsOperation {
 
-    T model;
+    protected T model;
     
     @Override
     protected Object doExecute() {

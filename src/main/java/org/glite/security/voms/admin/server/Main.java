@@ -1,6 +1,27 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ * 	Andrea Ceccanti (INFN)
+ */
+
 package org.glite.security.voms.admin.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -9,6 +30,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -52,6 +74,7 @@ public class Main {
 	public static final int DEFAULT_MAX_REQUEST_QUEUE_SIZE = 200;
 	
 	private static final String ARG_WAR = "war";
+	private static final String ARG_WAR_DIR = "wardir";
 	private static final String ARG_VO = "vo";
 	private static final String ARG_CONFDIR = "confdir";
 	
@@ -60,6 +83,7 @@ public class Main {
 	private CommandLineParser parser = new GnuParser();
 
 	private String war;
+	private String warDirectory;
 	private String vo;
 	private String confDir;
 	
@@ -84,18 +108,14 @@ public class Main {
 		
 		cliOptions = new Options();
 
-		Option warOption = new Option(ARG_WAR, true, "The WAR used to start this server.");
-		
-		cliOptions.addOption(warOption);
+		cliOptions.addOption(ARG_WAR, true, "The WAR used to start this server.");
+		cliOptions.addOption(ARG_WAR_DIR, true, "The directory where the unpacked VOMS Admin war lives.");
+		cliOptions.addOption(ARG_CONFDIR, true, "The configuration directory where VOMS configuration is stored.");
 		
 		Option voOption = new Option(ARG_VO, true,"The VO this server will run for.");
 		voOption.setRequired(true);
 		
 		cliOptions.addOption(voOption);
-		
-		Option confDirOption = new Option(ARG_CONFDIR, true, "The configuration directory where VOMS configuration is stored.");
-		
-		cliOptions.addOption(confDirOption);
 		
 	}
 	
@@ -117,14 +137,14 @@ public class Main {
 	
 	private void checkStartupConfiguration(){
 		
-		File warFile = new File(war);
+		if (warDirectory == null){
+			File warFile = new File(war);
 		
-		if (!warFile.canRead() || !warFile.isFile()){
-			log.error("Web archive file is not readable or is not a regular file!");
-			System.exit(1);
+			if (!warFile.canRead() || !warFile.isFile()){
+				log.error("Web archive file is not readable or is not a regular file!");
+				System.exit(1);
+			}
 		}
-		
-		
 	}
 	
 	private void parseCommandLineOptions(String[] args){
@@ -139,6 +159,8 @@ public class Main {
 			String defaultPrefixedWarPath = String.format("%s/%s",installationPrefix,DEFAULT_WAR).replaceAll("/+", "/"); 
 			
 			war = cmdLine.getOptionValue(ARG_WAR, defaultPrefixedWarPath);
+			warDirectory = cmdLine.getOptionValue(ARG_WAR_DIR);
+			
 			vo = cmdLine.getOptionValue(ARG_VO);
 			confDir = cmdLine.getOptionValue(ARG_CONFDIR);
 			
@@ -210,7 +232,13 @@ public class Main {
 	
 	private void logStartupConfiguration(){
 		log.info("Starting VOMS web services for VO {} binding on {}:{}", new Object[]{vo,host, port});
-		log.info("Web archive location: {}", war);
+		
+		if (warDirectory != null){
+			log.info("Unpacked web archive location: {}", warDirectory);
+		}else{
+			log.info("Web archive location: {}", war);
+		}
+		
 		log.info("Service credentials: {}, {}", certFile, keyFile);
 		log.info("Trust anchors directory: {}", trustDir);
 		log.info("Trust anchors directory refresh interval (in msecs): {}", trustDirRefreshIntervalInMsec);
@@ -255,10 +283,7 @@ public class Main {
 
 	protected SSLOptions getSSLOptions(){
 		SSLOptions options = new SSLOptions();
-		
-//		options.setNeedClientAuth(true);
-//		options.setWantClientAuth(true);
-		
+
 		options.setCertificateFile(certFile);
 		options.setKeyFile(keyFile);
 		options.setTrustStoreDirectory(trustDir);
@@ -279,7 +304,14 @@ public class Main {
 		vomsWebappContext = new WebAppContext();
 		vomsWebappContext.setContextPath(String.format("/voms/%s", vo));
 		vomsWebappContext.setTempDirectory(jettyTmpDir);
-		vomsWebappContext.setWar(war);
+		
+		if (warDirectory != null){
+			String webXMLPath = String.format("%s/WEB-INF/web.xml", warDirectory);
+			vomsWebappContext.setDescriptor(webXMLPath);
+			vomsWebappContext.setResourceBase(warDirectory);
+		}else
+			vomsWebappContext.setWar(war);
+		
 		vomsWebappContext.setParentLoaderPriority(true);
 		
 		vomsWebappContext.setInitParameter("VO_NAME", vo);

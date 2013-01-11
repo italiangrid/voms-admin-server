@@ -67,7 +67,7 @@
       <td>
       <h1>Propagate to children contexts?</h1>
       </td>
-      <td><s:checkbox name="propagate" theme="simple"/></td>
+      <td><s:checkbox name="propagate" theme="simple" value="true"/></td>
     </tr>
     </s:if>
     <s:else>
