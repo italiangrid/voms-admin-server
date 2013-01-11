@@ -29,11 +29,14 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
+import org.glite.security.voms.admin.view.actions.register.SubmitRequestAction;
 
 public class HandleVOMembershipRequest extends
 		BaseHandleRequestOperation<NewVOMembershipRequest> {
@@ -60,9 +63,18 @@ public class HandleVOMembershipRequest extends
 
 		request.approve();
 
-		// Add a sign aup record for the user
-		VOMSUserDAO.instance().signAUP(user,
-				DAOFactory.instance().getAUPDAO().getVOAUP());
+		// Check if signed AUP is the same version as the current one
+		// and if so add an AUP signature record for the user
+		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+		AUPVersion currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
+		
+		String signedAUPVersion = request.getRequesterInfo().getInfo(SubmitRequestAction.SIGNED_AUP_VERSION_KEY);
+		if (signedAUPVersion == null || currentAUPVersion.getVersion().equals(signedAUPVersion)){
+			// 	Add a sign aup record for the user
+			VOMSUserDAO.instance().signAUP(user,
+					aupDAO.getVOAUP());
+		}
 		
 		if (approvedGroups != null){
 			VOMSGroupDAO groupDAO = VOMSGroupDAO.instance();

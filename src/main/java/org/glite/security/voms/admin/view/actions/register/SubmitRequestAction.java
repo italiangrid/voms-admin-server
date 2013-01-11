@@ -32,6 +32,7 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
@@ -56,6 +57,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String SIGNED_AUP_VERSION_KEY = "signedAUPVersion";
 
 	String name;
 	String surname;
@@ -85,6 +87,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 		requester.setAddress(address);
 		requester.setPhoneNumber(phoneNumber);
 		requester.setEmailAddress(emailAddress);
+		requester.addInfo(SIGNED_AUP_VERSION_KEY, 
+				currentAUPVersion.getVersion());
 
 		request = DAOFactory.instance().getRequestDAO()
 				.createVOMembershipRequest(requester, expirationDate);
