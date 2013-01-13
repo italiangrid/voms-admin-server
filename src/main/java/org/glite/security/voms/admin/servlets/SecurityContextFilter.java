@@ -65,10 +65,11 @@ public class SecurityContextFilter implements Filter {
 		if (sc == null){
 			InitSecurityContext.setContextFromRequest(request);
 			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, SecurityContextImpl.getCurrentContext());
+			InitSecurityContext.logConnection();
 		}else
 			SecurityContextImpl.setCurrentContext(sc);
 		
-		InitSecurityContext.logConnection();
+		
 		
 	}
 	

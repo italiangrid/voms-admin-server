@@ -22,10 +22,7 @@ package org.glite.security.voms.admin.service;
 import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.VOMSException;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -50,6 +47,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.acl.VOMSACL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VOMSACLService implements VOMSACL {
 

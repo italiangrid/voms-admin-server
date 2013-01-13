@@ -17,11 +17,26 @@
 # Authors:
 # 	Andrea Ceccanti (INFN)
 #
-
-# set -x
+### BEGIN INIT INFO
+# Provides:          voms-admin
+# Required-Start:    $network $remote_fs
+# Required-Stop:     $network $remote_fs
+# Default-Start:     3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: The voms-admin service 
+# Description:       The voms-admin service 
+### END INIT INFO
+#
+### Chkconfig section
+#
+# chkconfig: 345 97 97
+# description: VOMS Admin service startup script
+# processname: voms-admin
+###
+#set -x
 
 ## voms installation prefix
-PREFIX="${package.prefix}"
+PREFIX="/opt/voms"
 
 ## jar file locations
 VOMS_WS_LIBS="$PREFIX/var/lib/voms-admin/lib"
@@ -62,10 +77,23 @@ fi
 
 configured_vos=`ls $CONF_DIR`
 
+
+check_vo_name() {
+
+	if [[ $configured_vos =~ (^| )$1($| ) ]]; then
+		return 0
+	else
+		echo "VO $1 is not configured on this host!"
+		exit 1
+	fi
+
+}
+
 start() {
 	if [ -z $1 ]; then
 		vos=$configured_vos
 	else
+		check_vo_name $1
 		vos=$1
 	fi
 	
@@ -87,11 +115,23 @@ start() {
             fi
 		else
 			## Start the service
-			$VOMS_WS_START_CMD --vo $vo &
+			start_cmd="$VOMS_WS_START_CMD --vo $vo"
+			
+			if [ -n "$VOMS_USER" ]; then
+				
+				if [ `id -u` -ne 0 ]; then
+					failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
+				else
+					start_cmd="su -c \"$VOMS_WS_START_CMD --vo $vo\" $VOMS_USER"
+				fi
+			fi
+			
+			## Start the service 
+			$start_cmd &
 			pid=$!
 			
 			[ $pid -eq 0 ] && failure "(startup failed.)"
-            create_pid_file "$pid" "$vo" && sleep 5 && success
+			create_pid_file "$pid" "$vo" && sleep 1 && success
 		fi
 	done
 }
@@ -155,11 +195,12 @@ find_pid(){
 
 
 stop() {
-
+	
 	if [ -z $1 ]; then
 		## Stop all configured VOs
 		vos=$configured_vos
 	else
+		check_vo_name $1
 		vos=$1
 	fi
 	
@@ -193,12 +234,38 @@ stop() {
 }
 
 restart() {
-	echo "To be implemented"
+	if [ -z $1 ]; then
+		vos=$configured_vos
+	else
+		vos=$1
+		check_vo_name $1
+	fi
+	
+	for vo in $vos ; do
+		stop  $vo && sleep 5 && start $vo
+	done
 }
 
 status() {
-
-	echo "To be implemented"
+	if [ -z $1 ]; then
+		vos=$configured_vos
+	else
+		check_vo_name $1
+		vos=$1
+	fi
+	
+	for vo in $vos ; do
+		echo -n "Checking voms-admin status( $vo ): "
+		
+		pid=$(find_pid $vo)
+		
+		if [ -z $pid ]; then
+			failure "(not running)"
+			continue
+		else
+			success "running ($pid)"
+		fi
+	done
 }
 
 success()
@@ -252,11 +319,11 @@ case "$1" in
 		;;
 	
 	status)
-		status
+		status "$2"
 		;;
 	
 	restart)
-		restart
+		restart "$2"
 		;;
 	*)
 		echo "Usage: $0 {start|stop|restart|status}"

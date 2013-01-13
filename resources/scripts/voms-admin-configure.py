@@ -17,11 +17,6 @@
 #
 # Authors:
 #     Andrea Ceccanti (INFN)
-
-# Help message about command line options by:
-#
-#     Karoly Lorentey - karoly.lorentey@cern.ch
-
 from os import environ
 from voms import *
 import os.path
@@ -40,6 +35,8 @@ command = None
 
 supported_commands = ("install", "remove", "upgrade")
 
+option_parser = None
+    
 def vlog(msg):
     global options
     if options.has_key("verbose"):
@@ -54,13 +51,13 @@ def setup_aa_defaults():
     set_default(options, "saml-max-assertion-lifetime", "720")
     
     ## AA Certificate defaults
-    tomcat_cert = "/etc/grid-security/tomcat-cert.pem"
-    tomcat_key = "/etc/grid-security/tomcat-key.pem"
+    voms_cert = "/etc/grid-security/voms-cert.pem"
+    voms_key = "/etc/grid-security/voms-key.pem"
     
-    if os.path.exists(tomcat_cert) and os.path.exists(tomcat_key):
-        set_default(options, "aa-cert", tomcat_cert)
-        set_default(options, "aa-key", tomcat_key)
-        vlog("AA certificates settings:\ncert:%s\nkey:%s" % (tomcat_cert, tomcat_key))
+    if os.path.exists(voms_cert) and os.path.exists(voms_key):
+        set_default(options, "aa-cert", voms_cert)
+        set_default(options, "aa-key", voms_key)
+        vlog("AA certificates settings:\ncert:%s\nkey:%s" % (voms_cert, voms_key))
         return
     
     host_cert =  "/etc/grid-security/hostcert.pem"
@@ -85,7 +82,7 @@ def setup_defaults():
     set_default(options, "mysql-command", "mysql")
     set_default(options, "openssl","openssl")
     set_default(options, "dbauser", "root")    
-    
+    set_default(options, "config-owner", "voms")
 
 def setup_identity():
 
@@ -94,6 +91,7 @@ def setup_identity():
     vlog("Setting up user credentials...")
     
     user_id = os.geteuid()
+    user_name = os.getlogin()
     
     if options.has_key("config-owner"):
         if user_id != 0:
@@ -103,40 +101,15 @@ def setup_identity():
         except KeyError:
             raise VomsConfigureError, "User unknown: %s" % options['config-owner']        
         
-        user_id = pwd_info[2]
+        user_name = options['config-owner'] 
+        options['config-owner-id'] = pwd_info[2]
     
-    tomcat_group = None
     
-    if not options.has_key("tomcat-group"):
-        if user_id == 0:
-            for group in ['tomcat5','tomcat4','tomcat']:
-                try:
-                    
-                    if grp.getgrnam(group):
-                        (gr_name,gr_passwd, gr_gid,gr_mem) = grp.getgrnam(group)
-                        options['tomcat-group-id']=gr_gid
-                        break
-                
-                except KeyError, k:
-                    continue
-                    
-            if not options.has_key('tomcat-group-id'):
-                raise VomsConfigureError,"Please specify the --tomcat-group option. The default 'tomcat5', 'tomcat4', 'tomcat' are not applicable to your system."
-        else:
-            options['tomcat-group-id'] = os.getgid()
-    else:
-        try:
-            (gr_name,gr_passwd, gr_gid,gr_mem) =  grp.getgrnam(options['tomcat-group'])
-            options['tomcat-group-id']=gr_gid
-            
-        except KeyError, k:
-            raise VomsConfigureError, "The tomcat-group passed as argument (%s) does not exist on this system!" % options['tomcat-group']
+    vlog("Configuration will be owned by user %s (%d)" % (user_name, user_id))
         
     if options.has_key('cert'):
-    
         vlog("Using credentials specified with the --cert command line option.")
         certificate = X509Helper(options['cert'],options['openssl'])
-    
     elif os.environ.has_key("X509_USER_CERT"):
         vlog("Using credentials specified in X509_USER_CERT environment variable")
         certificate = X509Helper(os.environ.get("X509_USER_CERT", None),options['openssl'])
@@ -149,7 +122,6 @@ def setup_identity():
 
     options['ta.subject']=certificate.subject
     options['ta.ca']=certificate.issuer
-
  
     
 def check_installed_setup():

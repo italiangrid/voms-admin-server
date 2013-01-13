@@ -75,10 +75,11 @@ def exit_status(status):
     ## FIXME: No op
     return status
 
-def setup_permissions(f,perms,tomcat_group):
+def setup_permissions(f,perms,group_id):
     
+    ## Change ownership only if running as root
     if os.getgid() == 0:
-        os.chown(f, 0, tomcat_group)
+        os.chown(f, 0, group_id)
     
     os.chmod(f,perms)
 
@@ -117,6 +118,9 @@ def vo_dababase_properties_file(vo):
 def vo_database_properties(vo):
     f = os.path.join(vo_config_dir(vo),"voms.database.properties")
     return PropertyHelper(f)
+
+def vo_endpoint_file(vo):
+    return os.path.join(vo_config_dir(vo),"service-endpoint")
 
 def vo_service_properties_file(vo):
     return os.path.join(vo_config_dir(vo),"voms.service.properties")
@@ -303,7 +307,7 @@ class UpgradeVO(ConfigureAction):
         
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
                           0644, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
         
     
     def upgrade_configuration(self):
@@ -329,7 +333,7 @@ class UpgradeVO(ConfigureAction):
         shutil.copy(VomsConstants.logging_conf_template, vo_config_dir(self.user_options['vo']))
         setup_permissions(os.path.join(vo_config_dir(self.user_options['vo']), os.path.basename(VomsConstants.logging_conf_template)), 
                           0644, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
         
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -373,7 +377,7 @@ class UpgradeVO(ConfigureAction):
         
         setup_permissions(vo_service_properties_file(self.user_options['vo']), 
                           0640, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
     
     def upgrade_database(self):
         upgrade_cmd = "%s  upgrade --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
@@ -580,12 +584,13 @@ class InstallVOAction(ConfigureAction):
         
         self.write_database_properties()
         self.write_service_properties()
+        self.write_endpoint_info()
         
         shutil.copy(VomsConstants.vo_aup_template, vo_conf_dir)
         
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
                           0644, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
         
         self.write_vomses()
         
@@ -598,7 +603,7 @@ class InstallVOAction(ConfigureAction):
         shutil.copy(VomsConstants.logging_conf_template, vo_conf_dir)
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.logging_conf_template)), 
                           0644, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
     
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -616,9 +621,24 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(vo_dababase_properties_file(self.user_options['vo']),
                           0640, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
         
-    
+    def write_endpoint_info(self):
+        
+        admin_endpoint_file = vo_endpoint_file(self.user_options['vo'])
+        
+        admin_endpoint_url = "%s:%s" % (self.user_options['hostname'],
+                                        self.user_options['service-port'])
+        
+        ConfigureAction.write_and_close(self, 
+                                        admin_endpoint_file, 
+                                        admin_endpoint_url)
+        
+        setup_permissions(admin_endpoint_file, 
+                          0644, 
+                          self.user_options['config-owner-id'])
+        
+        
     def write_service_properties(self):
                             
         m = {'NOTIFICATION.EMAIL_ADDRESS': self.user_options['mail-from'],
@@ -645,7 +665,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(vo_service_properties_file(self.user_options['vo']), 
                           0640, 
-                          self.user_options['tomcat-group-id'])
+                          self.user_options['config-owner-id'])
     
     def write_voms_properties(self):
         
@@ -682,8 +702,13 @@ class InstallVOAction(ConfigureAction):
         self.write_and_close(voms_pass_file(self.user_options['vo']), 
                              self.user_options['dbpassword']+"\n")
      
-        os.chmod(voms_config_file(self.user_options['vo']),0640)
-        os.chmod(voms_pass_file(self.user_options['vo']), 0640)
+        setup_permissions(voms_config_file(self.user_options['vo']),
+                          0640, 
+                          self.user_options['config-owner-id'])
+        
+        setup_permissions(voms_pass_file(self.user_options['vo']), 
+                          0640,
+                          self.user_options['config-owner-id'])
         
     
     def write_vomses(self):
@@ -697,6 +722,10 @@ class InstallVOAction(ConfigureAction):
                                                          )
         
         self.write_and_close(vomses_file(self.user_options['vo']), vomses_string)
+        
+        setup_permissions(vomses_file(self.user_options['vo']), 
+                          0644, 
+                          self.user_options['config-owner-id'])
     
     def deploy_db(self):
         print "Deploying database for %s vo" % self.user_options['vo']
@@ -1052,64 +1081,81 @@ class VomsConstants:
     mysql_driver_class = "org.gjt.mm.mysql.Driver"
     mysql_dialect = "org.hibernate.dialect.MySQLInnoDBDialect"
     
-    long_options=["help",
+    long_options=[
+              
+              "help",
               "version",
               "verbose",
               "command=",
               "vo=",
-              "admincert=",
+              "config-owner=",
+              
               "mail-from=",
               "smtp-host=",
-              "port=",
+              
               "dbtype=",
+              
               "dbname=",
+              
               "dbusername=",
               "dbpassword=",
+              
               "dbhost=",
               "dbport=",
+              
               "deploy-database",
               "undeploy-database",
               "skip-database",
+              
+              ## Oracle specifics
               "oracle-tns-alias=",
               "use-oci-driver",
+              "use-thin-driver",
+              
+              ## MySQL specifics
               "createdb",
               "dropdb",
               "dbauser=",
               "dbapwd=",
               "dbapwdfile=",
               "mysql-command=",
-              "mysql-host=",
-              "mysql-port=",
+              
+              ## VOMS core configuration options
               "cert=",
               "key=",
               "certdir=",
+              "port=",
               "code=",
               "libdir=",
               "logdir=",
               "sqlloc=",
-              "config-owner=",
-              "tomcat-group=",
-              "voms-group=",
-              "hostname=",
-              "openssl=",
-              "use-thin-driver",
-              "disable-webui-requests",
               "uri=",
               "timeout=",
               "shortfqans",
+              "skip-ca-check",
+              
+              "hostname=",
+              "openssl=",
+              
+              "disable-webui-requests",
               "read-access-for-authenticated-clients",
+              
               "skip-voms-core",
+              
               "vo-aup-url=",
-              "use-skinny-war",
               "aa-cert=",
               "aa-key=",
               "saml-max-assertion-lifetime=",
-              "skip-ca-check",
+              
+              "admincert=",
+              
               "service-port=",
               "shutdown-port=",
               "shutdown-password=",
               "service-cert=",
-              "service-key="]              
+              "service-key="
+              
+              ]              
 
     short_options = "hvV";
 
