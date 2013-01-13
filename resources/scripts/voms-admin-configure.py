@@ -92,20 +92,21 @@ def setup_identity():
     
     user_id = os.geteuid()
     user_name = os.getlogin()
+    group_owner_name = os.getlogin()
     
     if options.has_key("config-owner"):
         if user_id != 0:
             raise VomsConfigureError, "I need to run as root for config-owner to work!"
         try:
-            pwd_info = pwd.getpwnam(options['config-owner'])
+            pwd_info = grp.getgrnam(options['config-owner'])
         except KeyError:
             raise VomsConfigureError, "User unknown: %s" % options['config-owner']        
         
-        user_name = options['config-owner'] 
+        group_owner_name = options['config-owner'] 
         options['config-owner-id'] = pwd_info[2]
     
     
-    vlog("Configuration will be owned by user %s (%d)" % (user_name, user_id))
+    vlog("Configuration will be owned by user %s and group %s" % (user_name, group_owner_name))
         
     if options.has_key('cert'):
         vlog("Using credentials specified with the --cert command line option.")

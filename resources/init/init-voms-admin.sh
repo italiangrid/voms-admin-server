@@ -122,7 +122,7 @@ start() {
 				if [ `id -u` -ne 0 ]; then
 					failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
 				else
-					start_cmd="su -c \"$VOMS_WS_START_CMD --vo $vo\" $VOMS_USER"
+					start_cmd="su $VOMS_USER -s /bin/bash -c '$start_cmd' $VOMS_USER"
 				fi
 			fi
 			
