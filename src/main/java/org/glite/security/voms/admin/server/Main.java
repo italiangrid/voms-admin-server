@@ -121,7 +121,7 @@ public class Main {
 		
 		if (t != null) {
 
-			System.err.format("%s: %s", errorMessage, t.getMessage());
+			System.err.format("%s: %s\n", errorMessage, t.getMessage());
 			
 		} else {
 			
@@ -372,7 +372,7 @@ public class Main {
 		
 		} catch(Throwable t){
 			
-			log.error("Error starting VOMS server {}", t.getClass().getName(), t);
+			log.error("Error starting VOMS admin server: {}", t.getClass().getName(), t);
 			System.exit(-1);
 		
 		}

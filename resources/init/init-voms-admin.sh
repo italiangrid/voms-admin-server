@@ -38,45 +38,15 @@
 ## voms installation prefix
 PREFIX="${package.prefix}"
 
-## jar file locations
-VOMS_WS_LIBS="$PREFIX/var/lib/voms-admin/lib"
+source "$PREFIX/usr/share/voms-admin/scripts/voms-admin-server-env.sh"
 
-## VOMS Java otpions
-if [ -z $VOMS_WS_JAVA_OPTS ]; then
-	VOMS_WS_JAVA_OPTS="-Xmx256m"
-fi
-
-## The VOMS service main class 
-VOMS_WS_MAIN_CLASS="org.glite.security.voms.admin.server.Main"
-
-## The VOMS service jar
-VOMS_WS_JAR="$PREFIX/usr/share/java/voms-admin.jar"
-
-## The VOMS service shutdown class
-VOMS_WS_SHUTDOWN_CLASS="org.glite.security.voms.admin.server.ShutdownClient"
-
-## ':' separated list of VOMS dependencies
-VOMS_WS_DEPS="`ls -x $VOMS_WS_LIBS/*.jar | tr '\n' ':'`$VOMS_WS_JAR"
-
-## The VOMS web service classpath
-VOMS_WS_CP="$VOMS_WS_DEPS"
-
-## Base VOMS startup command 
-VOMS_WS_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_DEPS $VOMS_WS_MAIN_CLASS"
-
-## Base VOMS shutdown command
-VOMS_WS_SHUTDOWN_CMD="java -cp $VOMS_WS_DEPS $VOMS_WS_SHUTDOWN_CLASS"
-
-if [ -r "$PREFIX/etc/sysconfig/voms-admin" ]; then
-	source "$PREFIX/etc/sysconfig/voms-admin"
-fi
+voms_start_cmd="$PREFIX/usr/sbin/voms-admin-server"
 
 if [ ! -d "$PREFIX/var/lock/subsys" ]; then
     mkdir -p $PREFIX/var/lock/subsys
 fi
 
 configured_vos=`ls $CONF_DIR`
-
 
 check_vo_name() {
 
@@ -115,14 +85,14 @@ start() {
             fi
 		else
 			## Start the service
-			start_cmd="$VOMS_WS_START_CMD --vo $vo"
+			start_cmd="$voms_start_cmd --vo $vo"
 			
 			if [ -n "$VOMS_USER" ]; then
 				
 				if [ `id -u` -ne 0 ]; then
 					failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
 				else
-					start_cmd="su $VOMS_USER -s /bin/bash -c '$start_cmd' $VOMS_USER"
+					start_cmd="su $VOMS_USER -s /bin/bash -c '$voms_start_cmd' $VOMS_USER"
 				fi
 			fi
 			

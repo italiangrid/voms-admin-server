@@ -78,7 +78,7 @@ def exit_status(status):
 def setup_permissions(f,perms,group_id):
     
     ## Change ownership only if running as root
-    if os.getgid() == 0:
+    if os.getgid() == 0 and group_id != None:
         os.chown(f, 0, group_id)
     
     os.chmod(f,perms)

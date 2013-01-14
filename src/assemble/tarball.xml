@@ -34,17 +34,13 @@
     <fileSets>
     	<!--
     	
-    		Package scripts. voms.py and init-voms-admin.py are excluded as
-    		they need filtering.
+   
     	 -->
         <fileSet>
             <directory>resources/scripts</directory>
-            <excludes>
-                <exclude>*.pyc</exclude>
-                <exclude>*.pyo</exclude>
-                <exclude>voms.py</exclude>
-                <exclude>init-voms-admin.py</exclude>
-            </excludes>
+            <includes>
+                <include>voms-db-deploy.py</include>
+            </includes>
             <outputDirectory>/usr/sbin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
@@ -58,7 +54,7 @@
                 <exclude>siblings</exclude>
             </excludes>
             <outputDirectory>/usr/share/voms-admin/templates</outputDirectory>
-            <fileMode>0755</fileMode>
+            <fileMode>0644</fileMode>
         </fileSet>
         
         <fileSet>
@@ -86,6 +82,7 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
+            <fileMode>0644</fileMode>
         </dependencySet>
     </dependencySets>
 
@@ -109,6 +106,7 @@
             <source>resources/scripts/voms.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <filtered>true</filtered>
+            <fileMode>0644</fileMode>
         </file>
         
         <file>
@@ -120,34 +118,52 @@
         </file>
         
         <file>
+            <source>resources/init/voms-admin-server-env.sh</source>
+            <outputDirectory>/usr/share/voms-admin/scripts</outputDirectory>
+            <destName>voms-admin-server-env.sh</destName>
+            <fileMode>0644</fileMode>
+            <filtered>true</filtered>
+        </file>
+        
+        <file>
+            <source>resources/init/voms-admin-server.sh</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-admin-server</destName>
+            <fileMode>0755</fileMode>
+            <filtered>true</filtered>
+        </file>
+        
+        <file>
             <source>src/main/resources/c3p0.properties</source>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
+            <fileMode>0644</fileMode>
         </file>
         
         <file>
             <source>target/voms-admin.jar</source>
             <outputDirectory>/usr/share/java</outputDirectory>
+            <fileMode>0644</fileMode>
         </file>
 
         <file>
             <source>target/voms-admin.war</source>
             <outputDirectory>/usr/share/webapps</outputDirectory>
+            <fileMode>0644</fileMode>
         </file>
         
         <file>
             <source>src/config/logback.cli.xml</source>
             <destName>logback.xml</destName>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
-            <fileMode>0755</fileMode>
+            <fileMode>0644</fileMode>
         </file>
         
         <file>
             <source>src/config/logback.service.xml</source>
             <destName>logback.xml</destName>
             <outputDirectory>/usr/share/voms-admin/templates</outputDirectory>
-            <fileMode>0755</fileMode>
+            <fileMode>0644</fileMode>
             <filtered>true</filtered>
         </file>
-        
     </files>
 </assembly>

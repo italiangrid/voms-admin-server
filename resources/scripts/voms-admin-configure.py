@@ -26,6 +26,8 @@ import exceptions
 import pwd
 import grp
 import socket
+import string
+import random
 
 options = {}
 
@@ -42,6 +44,9 @@ def vlog(msg):
     if options.has_key("verbose"):
         print msg
 
+def generate_password(length=8, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(length))
+    
 def setup_aa_defaults():
     global certificate, options
     
@@ -73,6 +78,9 @@ def setup_defaults():
     
     set_default(options,"hostname",socket.gethostname())
     
+    if options['hostname'] != "localhost" and options.has_key('service-port'):
+        set_default(options, "shutdown-port", options['service-port'])
+    
     set_default(options,"service-cert", "/etc/grid-security/hostcert.pem")
     set_default(options,"service-key", "/etc/grid-security/hostkey.pem")
     
@@ -83,6 +91,8 @@ def setup_defaults():
     set_default(options, "openssl","openssl")
     set_default(options, "dbauser", "root")    
     set_default(options, "config-owner", "voms")
+    
+    set_default(options, "shutdown-password", generate_password())
 
 def setup_identity():
 
@@ -94,17 +104,16 @@ def setup_identity():
     user_name = os.getlogin()
     group_owner_name = os.getlogin()
     
-    if options.has_key("config-owner"):
-        if user_id != 0:
-            raise VomsConfigureError, "I need to run as root for config-owner to work!"
+    if options.has_key("config-owner") and user_id == 0:
         try:
             pwd_info = grp.getgrnam(options['config-owner'])
         except KeyError:
-            raise VomsConfigureError, "User unknown: %s" % options['config-owner']        
+            raise VomsConfigureError, "Group unknown: %s" % options['config-owner']        
         
         group_owner_name = options['config-owner'] 
         options['config-owner-id'] = pwd_info[2]
-    
+    else:
+        options['config-owner-id'] = None
     
     vlog("Configuration will be owned by user %s and group %s" % (user_name, group_owner_name))
         
