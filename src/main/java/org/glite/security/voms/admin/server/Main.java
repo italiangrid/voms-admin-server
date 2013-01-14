@@ -245,19 +245,31 @@ public class Main {
 	
 	
 	public Main(String[] args) {
+		try{
+			
+			initOptions();
+			parseCommandLineOptions(args);
+			configureLogging();
+		}catch (Throwable t){
+			// Here we print the error to standard error as the logging setup could be incomplete
+			System.err.println("Error starting voms-admin server: "+t.getMessage());
+			t.printStackTrace(System.err);
+			System.exit(1);
+		}
 		
-		initOptions();
-		parseCommandLineOptions(args);
-		configureLogging();
+		try{
+			loadConfiguration();
+			initJettyTmpDir();
+			logStartupConfiguration();
+			checkStartupConfiguration();
 		
-		loadConfiguration();
-		initJettyTmpDir();
-		logStartupConfiguration();
-		checkStartupConfiguration();
-		
-		configureJettyServer();
-		configureShutdownService();
-		start();
+			configureJettyServer();
+			configureShutdownService();
+			start();
+		}catch(Throwable t){
+			log.error("Error starting voms-admin server:"+t.getMessage(), t);
+			System.exit(1);
+		}
 	}
 	
 	/**

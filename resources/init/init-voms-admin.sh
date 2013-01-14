@@ -85,19 +85,19 @@ start() {
             fi
 		else
 			## Start the service
-			start_cmd="$voms_start_cmd --vo $vo"
+			start_cmd="$voms_start_cmd --vo $vo &"
 			
 			if [ -n "$VOMS_USER" ]; then
 				
 				if [ `id -u` -ne 0 ]; then
 					failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
 				else
-					start_cmd="su $VOMS_USER -s /bin/bash -c '$voms_start_cmd' $VOMS_USER"
+					start_cmd="su $VOMS_USER -s /bin/bash -c '$voms_start_cmd --vo $vo' &"
 				fi
 			fi
 			
 			## Start the service 
-			$start_cmd &
+			eval $start_cmd
 			pid=$!
 			
 			[ $pid -eq 0 ] && failure "(startup failed.)"

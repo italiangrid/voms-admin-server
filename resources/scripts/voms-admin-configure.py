@@ -47,6 +47,40 @@ def vlog(msg):
 def generate_password(length=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(length))
     
+def setup_service_certificate():
+    global options
+    vlog("Setting up service certificate permissions")
+    
+    if options.has_key('service-cert') and options.has_key('service-key'):
+        if not os.path.exists(options['service-cert']) or not os.path.exists(options['service-key']):
+            raise VomsConfigureError, "service cert and key not found: %s, %s" % (options['service-cert'],
+                                                                                  options['service-key'])
+        return
+    
+    host_cert =  "/etc/grid-security/hostcert.pem"
+    host_key = "/etc/grid-security/hostkey.pem"
+    
+    if not os.path.exits(host_cert) and not os.path.exists(host_key):
+        raise VomsConfigureError, "Host certificates not found! %s, %s" % (host_cert, host_key)
+    
+    if not options.has_key('service-cert') and not options.has_key('service-key'):
+        if os.getgid() == 0:
+            
+            voms_cert = "/etc/grid-security/voms-cert.pem"
+            voms_key = "/etc/grid-security/voms-key.pem"
+            
+            vlog("Setting up voms service certificate %s, %s" % (voms_cert, voms_key))
+            
+            shutil.copy(host_cert, voms_cert)
+            shutil.copy(host_key, voms_key)
+            os.chown(voms_cert, options['config-owner-user-id'])
+            os.chmod(voms_cert,0644)
+            os.chown(voms_key, options['config-owner-user-id'])
+            os.chmod(voms_key,0400)
+    else:
+        set_default(options,"service-cert", host_cert)
+        set_default(options,"service-key", host_key)      
+        
 def setup_aa_defaults():
     global certificate, options
     
@@ -81,9 +115,6 @@ def setup_defaults():
     if options['hostname'] != "localhost" and options.has_key('service-port'):
         set_default(options, "shutdown-port", options['service-port'])
     
-    set_default(options,"service-cert", "/etc/grid-security/hostcert.pem")
-    set_default(options,"service-key", "/etc/grid-security/hostkey.pem")
-    
     set_default(options,"libdir", voms_lib_dir())
     set_default(options,"logdir", voms_log_dir())
     
@@ -106,14 +137,17 @@ def setup_identity():
     
     if options.has_key("config-owner") and user_id == 0:
         try:
-            pwd_info = grp.getgrnam(options['config-owner'])
+            pwd_info = pwd.getpwnam(options['config-owner'])
         except KeyError:
-            raise VomsConfigureError, "Group unknown: %s" % options['config-owner']        
+            raise VomsConfigureError, "User not defined in this system: %s" % options['config-owner']        
         
-        group_owner_name = options['config-owner'] 
-        options['config-owner-id'] = pwd_info[2]
+        group_owner_name = options['config-owner']
+        
+        options['config-owner-user-id'] = pwd_info[2] 
+        options['config-owner-group-id'] = pwd_info[3]
     else:
-        options['config-owner-id'] = None
+        options['config-owner-user-id'] = None
+        options['config-owner-group-id'] = None
     
     vlog("Configuration will be owned by user %s and group %s" % (user_name, group_owner_name))
         
@@ -508,6 +542,7 @@ def main():
         
         setup_defaults()
         setup_identity()
+        setup_service_certificate()
         setup_aa_defaults()
         
         vlog("Prefix: %s" % voms_admin_prefix())

@@ -307,7 +307,7 @@ class UpgradeVO(ConfigureAction):
         
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
     
     def upgrade_configuration(self):
@@ -333,7 +333,7 @@ class UpgradeVO(ConfigureAction):
         shutil.copy(VomsConstants.logging_conf_template, vo_config_dir(self.user_options['vo']))
         setup_permissions(os.path.join(vo_config_dir(self.user_options['vo']), os.path.basename(VomsConstants.logging_conf_template)), 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -377,7 +377,7 @@ class UpgradeVO(ConfigureAction):
         
         setup_permissions(vo_service_properties_file(self.user_options['vo']), 
                           0640, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
     
     def upgrade_database(self):
         upgrade_cmd = "%s  upgrade --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
@@ -590,7 +590,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.vo_aup_template)), 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
         self.write_vomses()
         
@@ -603,7 +603,7 @@ class InstallVOAction(ConfigureAction):
         shutil.copy(VomsConstants.logging_conf_template, vo_conf_dir)
         setup_permissions(os.path.join(vo_conf_dir, os.path.basename(VomsConstants.logging_conf_template)), 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
     
     def write_database_properties(self):
         m = {'DRIVER_CLASS':self.driver_class,
@@ -621,7 +621,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(vo_dababase_properties_file(self.user_options['vo']),
                           0640, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
     def write_endpoint_info(self):
         
@@ -636,7 +636,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(admin_endpoint_file, 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
         
     def write_service_properties(self):
@@ -665,7 +665,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(vo_service_properties_file(self.user_options['vo']), 
                           0640, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
     
     def write_voms_properties(self):
         
@@ -704,11 +704,11 @@ class InstallVOAction(ConfigureAction):
      
         setup_permissions(voms_config_file(self.user_options['vo']),
                           0640, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
         setup_permissions(voms_pass_file(self.user_options['vo']), 
                           0640,
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
         
     
     def write_vomses(self):
@@ -725,7 +725,7 @@ class InstallVOAction(ConfigureAction):
         
         setup_permissions(vomses_file(self.user_options['vo']), 
                           0644, 
-                          self.user_options['config-owner-id'])
+                          self.user_options['config-owner-group-id'])
     
     def deploy_db(self):
         print "Deploying database for %s vo" % self.user_options['vo']
