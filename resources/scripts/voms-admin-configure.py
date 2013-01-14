@@ -48,7 +48,7 @@ def generate_password(length=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(length))
     
 def setup_service_certificate():
-    global options
+    global options, command
     vlog("Setting up service certificate permissions")
     
     if options.has_key('service-cert') and options.has_key('service-key'):
@@ -60,7 +60,7 @@ def setup_service_certificate():
     host_cert =  "/etc/grid-security/hostcert.pem"
     host_key = "/etc/grid-security/hostkey.pem"
     
-    if not os.path.exits(host_cert) and not os.path.exists(host_key):
+    if not os.path.exists(host_cert) and not os.path.exists(host_key):
         raise VomsConfigureError, "Host certificates not found! %s, %s" % (host_cert, host_key)
     
     if not options.has_key('service-cert') and not options.has_key('service-key'):
@@ -73,9 +73,9 @@ def setup_service_certificate():
             
             shutil.copy(host_cert, voms_cert)
             shutil.copy(host_key, voms_key)
-            os.chown(voms_cert, options['config-owner-user-id'])
+            os.chown(voms_cert, options['config-owner-user-id'], options['config-owner-group-id'])
             os.chmod(voms_cert,0644)
-            os.chown(voms_key, options['config-owner-user-id'])
+            os.chown(voms_key, options['config-owner-user-id'], options['config-owner-group-id'])
             os.chmod(voms_key,0400)
     else:
         set_default(options,"service-cert", host_cert)
@@ -474,6 +474,9 @@ def do_install():
     
     print "Installing vo", options['vo']
     
+    setup_aa_defaults()
+    setup_service_certificate()
+    
     action.install_vo()
     
     vlog("VO %s configured correctly." % options['vo'])
@@ -542,8 +545,7 @@ def main():
         
         setup_defaults()
         setup_identity()
-        setup_service_certificate()
-        setup_aa_defaults()
+        
         
         vlog("Prefix: %s" % voms_admin_prefix())
         vlog("Configuration dir: %s" % voms_admin_conf_dir())
