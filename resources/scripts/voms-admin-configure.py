@@ -77,6 +77,8 @@ def setup_service_certificate():
             os.chmod(voms_cert,0644)
             os.chown(voms_key, options['config-owner-user-id'], options['config-owner-group-id'])
             os.chmod(voms_key,0400)
+            options['service-cert']=voms_cert
+            options['service-key']=voms_key
     else:
         set_default(options,"service-cert", host_cert)
         set_default(options,"service-key", host_key)      
@@ -474,9 +476,8 @@ def do_install():
     
     print "Installing vo", options['vo']
     
-    setup_aa_defaults()
     setup_service_certificate()
-    
+    setup_aa_defaults()
     action.install_vo()
     
     vlog("VO %s configured correctly." % options['vo'])
