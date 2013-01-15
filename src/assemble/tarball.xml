@@ -32,19 +32,7 @@
     </formats>
 
     <fileSets>
-    	<!--
-    	
-   
-    	 -->
-        <fileSet>
-            <directory>resources/scripts</directory>
-            <includes>
-                <include>voms-db-deploy.py</include>
-            </includes>
-            <outputDirectory>/usr/sbin</outputDirectory>
-            <fileMode>0755</fileMode>
-        </fileSet>
-        
+    	     
         <fileSet>
             <directory>resources/templates</directory>
             <excludes>
@@ -96,9 +84,23 @@
         </file>
         
         <file>
-            <source>resources/scripts/voms-admin-configure.py</source>
+            <source>resources/scripts/voms_admin_configure.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-admin-configure</destName>
+            <fileMode>0755</fileMode>
+        </file>
+        
+        <file>
+            <source>resources/scripts/voms_db_util.py</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-db-util</destName>
+            <fileMode>0755</fileMode>
+        </file>
+        
+        <file>
+            <source>resources/scripts/voms_mysql_util.py</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-mysql-util</destName>
             <fileMode>0755</fileMode>
         </file>
         

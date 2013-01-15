@@ -27,7 +27,6 @@ import re
 import shutil
 import socket
 import string
-import subprocess
 import time
 
 voms_admin_server_version = "${server-version}"
@@ -135,6 +134,28 @@ def vomses_file(vo):
 def set_default(d,key,value):
     if not d.has_key(key):
         d[key]=value
+        
+def mysql_util_command(command, options):
+    db_cmd = "%s %s --dbauser %s --dbusername %s --dbpassword %s --dbname %s --dbhost %s --dbport %s --mysql-command %s" % (VomsConstants.voms_mysql_util,
+                                                                                                                            command,
+                                                                                                                            options['dbauser'],
+                                                                                                                            options['dbusername'],
+                                                                                                                            options['dbpassword'],
+                                                                                                                            options['dbname'],
+                                                                                                                            options['dbhost'],
+                                                                                                                            options['dbport'],
+                                                                                                                            options['mysql-command'])
+    
+    if options.has_key('dbapwdfile'):
+        dbapwd = open(options['dbapwdfile']).read()
+        options['dbapwd']=dbapwd
+    
+    if options.has_key("dbapwd"):
+        db_cmd += " --dbapwd=%s" % options['dbapwd']
+    
+    return db_cmd
+
+    
 """
 This methods returns a tuple containing host, port, database name 
 extracted from the mysql connection string"""
@@ -380,7 +401,7 @@ class UpgradeVO(ConfigureAction):
                           self.user_options['config-owner-group-id'])
     
     def upgrade_database(self):
-        upgrade_cmd = "%s  upgrade --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+        upgrade_cmd = "%s  upgrade --vo %s" % (VomsConstants.voms_db_util,self.user_options['vo'])
         
         status = os.system(upgrade_cmd)
         
@@ -425,7 +446,7 @@ class RemoveVOAction(ConfigureAction):
     
     def undeploy_db(self):
         
-        deploy_cmd = "%s  undeploy --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+        deploy_cmd = "%s  undeploy --vo %s" % (VomsConstants.voms_db_util,self.user_options['vo'])
         
         status = os.system(deploy_cmd)
         
@@ -463,37 +484,11 @@ class RemoveMySQLVO(RemoveVOAction):
         if self.user_options.has_key('dropdb'):
                         
             print "Dropping mysql db..."
-            
-            if self.user_options.has_key('dbapwdfile'):
-                dbapwd = open(self.user_options['dbapwdfile']).read()
-                self.user_options['dbapwd'] = dbapwd
-            
-            ## Support for mysql admin empty password (VDT request).
-            if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
-                print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
-                mysql_cmd = "%s -u%s --host %s --port %s" % (self.user_options['mysql-command'],
-                                         self.user_options['dbauser'],
-                                         self.user_options['dbhost'],
-                                         self.user_options['dbport'])
-            else:
-                mysql_cmd = "%s -u%s -p%s --host %s --port %s" % (self.user_options['mysql-command'],
-                                              self.user_options['dbauser'],
-                                              self.user_options['dbapwd'],
-                                              self.user_options['dbhost'],
-                                              self.user_options['dbport'])
-                
-                
-            mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-                        
-            ## Drop database 
-            print >>mysql_proc.stdin, "drop database %s;" % self.user_options['dbname']
-            mysql_proc.stdin.close()
-            
-            status = exit_status(mysql_proc.wait())
-            
+            dropdb_cmd = mysql_util_command("drop_db", self.user_options)
+            status = os.system(dropdb_cmd)
+        
             if status != 0:
-                err_msg = mysql_proc.stderr.read()
-                raise VomsConfigureError, "Error dropping mysql database! "+err_msg
+                raise VomsConfigureError, "Error dropping MySQL voms database!"
         else:
             RemoveVOAction.undeploy_db(self)
             
@@ -730,7 +725,7 @@ class InstallVOAction(ConfigureAction):
     def deploy_db(self):
         print "Deploying database for %s vo" % self.user_options['vo']
         
-        deploy_cmd = "%s  deploy --vo %s" % (VomsConstants.voms_db_deploy,self.user_options['vo'])
+        deploy_cmd = "%s  deploy --vo %s" % (VomsConstants.voms_db_util,self.user_options['vo'])
     
         status = os.system(deploy_cmd)
         
@@ -739,7 +734,7 @@ class InstallVOAction(ConfigureAction):
         
     def enable_readonly_access(self):
         print "Adding read access for authenticated clients..."
-        add_cmd = "%s --vo %s grant-read-only-access" % (VomsConstants.voms_db_deploy, 
+        add_cmd = "%s --vo %s grant-read-only-access" % (VomsConstants.voms_db_util, 
                                                         self.user_options['vo'])
         
         status = os.system(add_cmd)
@@ -749,7 +744,7 @@ class InstallVOAction(ConfigureAction):
     def add_default_admin(self):
         print "Adding default admin for %s vo" % self.user_options['vo']
         
-        add_cmd = "%s --vo %s --cert %s add-admin " % (VomsConstants.voms_db_deploy,
+        add_cmd = "%s --vo %s --cert %s add-admin " % (VomsConstants.voms_db_util,
                                                        self.user_options['vo'],
                                                        self.user_options['admincert'])
         status = os.system(add_cmd)
@@ -817,94 +812,17 @@ class InstallMySqlVO(InstallVOAction):
     def deploy_db(self):
         
         print "Deploying database for %s vo" % self.user_options['vo']
-        
         if self.user_options.has_key('createdb'):
+            createdb_cmd = mysql_util_command("create_db", self.user_options)
             
-            print "Creating mysql db..."
-            
-            if self.user_options.has_key('dbapwdfile'):
-                dbapwd = open(self.user_options['dbapwdfile']).read()
-                self.user_options['dbapwd'] = dbapwd
-             
-            
-            ## Support for mysql admin empty password (VDT request).
             if (not self.user_options.has_key('dbapwd')) or len(self.user_options['dbapwd']) == 0:
                 print "WARNING: No password has been specified for the mysql root account! I will continue the db deployment assuming no password has been set for such account."
-                mysql_cmd = "%s -u%s --host %s --port %s" % (self.user_options['mysql-command'],
-                                         self.user_options['dbauser'],
-                                         ## Fix for http://savannah.cern.ch/bugs/?54613
-                                         self.user_options['dbhost'],
-                                         self.user_options['dbport'])
-            else:
-                mysql_cmd = "%s -u%s -p%s --host %s --port %s" % (self.user_options['mysql-command'],
-                                              self.user_options['dbauser'],
-                                              self.user_options['dbapwd'],
-                                              ## Fix for http://savannah.cern.ch/bugs/?54613
-                                              self.user_options['dbhost'],
-                                              self.user_options['dbport'])
             
-            
-            if len(self.user_options['dbusername']) > 16:
-                raise VomsConfigureError, "MYSQL usernames can be up to 16 characters long! Choose a shorter username"
-            
-            
-            mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-            
-            ## Check if database already exists
-            print >>mysql_proc.stdin, "use %s;" % self.user_options['dbname']
-            mysql_proc.stdin.close()
-            
-            status = exit_status(mysql_proc.wait())
-            
-            if status == 0:
-                print "Schema for database '%s' already exists... will not create it" % self.user_options['dbname']
-            else:          
-                
-                ## We received an error from the mysql command line client
-                err_msg = mysql_proc.stderr.read()
-                match = re.match("ERROR 1049", string.strip(err_msg))
-                if match:
-                    
-                    ## The database for this vo is not there, let's create it
-                    mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE)
-                    print >>mysql_proc.stdin, "create database %s;" % self.user_options['dbname']
-                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
-                                                                                                                       self.user_options['dbusername'],
-                                                                                                                       socket.gethostname(),
-                                                                                                                       self.user_options['dbpassword'])
-                    
-                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
-                                                                                                                       self.user_options['dbusername'],
-                                                                                                                       socket.getfqdn(),
-                                                                                                                       self.user_options['dbpassword'])
-            
-                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
-                                                                                                                       self.user_options['dbusername'],
-                                                                                                                        'localhost',
-                                                                                                                        self.user_options['dbpassword'])
-            
-                    print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (self.user_options['dbname'],
-                                                                                                                       self.user_options['dbusername'],
-                                                                                                                     'localhost.%',
-                                                                                                                     self.user_options['dbpassword'])
-                    print >>mysql_proc.stdin, "flush privileges;"
-                    
-                    mysql_proc.stdin.close()
-                    status = exit_status(mysql_proc.wait())
-                    
-                    if status != 0:
-                        raise VomsConfigureError, "Error creating mysql database! " + mysql_proc.stdout.read()
-                
-                else:
-                    
-                    ## We received an unexpected error from mysql, just report it and fail
-                    raise VomsConfigureError, "Error checking mysql database existence!\nMysql error:\n" + err_msg
-                    
-                                
-                
-            
-               
+            status = os.system(createdb_cmd)  
         
+            if status != 0:
+                raise VomsConfigureError, "Error creating MySQL database!"
+            
         InstallVOAction.deploy_db(self)
 
     
@@ -1071,7 +989,8 @@ class VomsConstants:
     voms_admin_classes = os.path.join(voms_admin_prefix(),"var", "lib","voms-admin","tools")
     voms_admin_jar = os.path.join(voms_admin_prefix(), "usr", "share","java","voms-admin.jar")
        
-    voms_db_deploy = os.path.join(voms_admin_prefix(),"usr", "sbin","voms-db-deploy.py")
+    voms_db_util = os.path.join(voms_admin_prefix(),"usr", "sbin","voms-db-util")
+    voms_mysql_util = os.path.join(voms_admin_prefix(), "usr", "sbin", "voms-mysql-util")
     
     schema_deployer_class = "org.glite.security.voms.admin.persistence.deployer.SchemaDeployer"
     

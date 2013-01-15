@@ -29,7 +29,7 @@
 #
 ### Chkconfig section
 #
-# chkconfig: 345 97 97
+# chkconfig: 2345 97 97
 # description: VOMS Admin service startup script
 # processname: voms-admin
 ###

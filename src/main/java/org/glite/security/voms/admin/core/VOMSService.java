@@ -68,7 +68,7 @@ public final class VOMSService {
 						.error("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
 								+ version);
 				log
-						.error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-deploy.py commands!");
+						.error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-util commands!");
 				throw new VOMSFatalException(
 						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
 								+ "', while it should be '"
