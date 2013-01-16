@@ -110,6 +110,13 @@
             <filtered>true</filtered>
             <fileMode>0644</fileMode>
         </file>
+
+        <file>
+            <source>resources/scripts/voms-config-info-providers.sh</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-config-info-providers</destName>
+            <fileMode>0755</fileMode>
+        </file>
         
         <file>
             <source>resources/init/init-voms-admin.sh</source>
