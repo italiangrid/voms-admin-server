@@ -98,9 +98,9 @@ def db_exists(options):
         
 def create_db(options):
     print "Creating database %s" % options.dbname
+    
     if db_exists(options):
-        print "Schema for database %s already exists, exiting..." % options.dbname
-        exit(0)
+        print "Schema for database %s already exists, will not create it..." % options.dbname
     else:
         mysql_cmd = build_mysql_command_preamble(options)
         ## The database is not there, let's create it
@@ -111,7 +111,7 @@ def create_db(options):
         if status != 0:
             error_and_exit("Error creating MySQL database %s: %s" % (options.dbname, mysql_proc.stdout.read()))
         
-        grant_rw_access(options)
+    grant_rw_access(options)
     
     print "Done."
 
@@ -162,6 +162,18 @@ supported_commands = {'create_db': create_db,
 
 required_options = [ "username", "password", "dbname"]
 
+def check_mysql_command(options):
+    test_cmd = "%s --version" % options.command
+    proc = subprocess.Popen(test_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = proc.communicate()
+    
+    combined_output = "%s %s" % (out, err)
+    
+    status = proc.wait()
+    
+    if status != 0:
+        error_and_exit("Error executing %s: %s. Check your MySQL client installation." % (options.command, combined_output.strip()))
+    
 def check_args_and_options(options, args):
     if len(args) != 1 or args[0] not in supported_commands.keys():
         error_and_exit("Please specify a single command among the following:\n\t%s" % "\n\t".join(supported_commands.keys()))
@@ -182,6 +194,7 @@ def main():
     setup_cl_options()
     (options, args) = parser.parse_args()
     check_args_and_options(options,args)
+    check_mysql_command(options)
     
     supported_commands[args[0]](options)
     

@@ -78,7 +78,7 @@ public class PluginManager {
 			
 			String pluginConfClassName = conf.getExternalValidatorConfigClass(pluginName);
 			if (pluginConfClassName == null || "".equals(pluginConfClassName.trim())){
-				log.error("No configuration class defined for plugin '{}'. Please specify a class using the '{}' property in the voms.service.properties file.");
+				log.error("No configuration class defined for plugin '{}'. Please specify a class using the '{}' property in the service.properties file.");
 				continue;
 			}
 			

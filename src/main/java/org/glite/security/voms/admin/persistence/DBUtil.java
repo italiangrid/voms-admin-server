@@ -60,7 +60,7 @@ public class DBUtil {
 	
 	public static Configuration loadHibernateConfiguration(String configurationDir, String voName) {
 
-		String f = String.format("%s/%s/%s", configurationDir, voName, "voms.database.properties");
+		String f = String.format("%s/%s/%s", configurationDir, voName, "database.properties");
 		return loadHibernateConfiguration(f);
 	}
 	

@@ -21,7 +21,7 @@
 import sys,string,os
 from sys import stderr, exit
 from optparse import OptionParser
-from voms import VomsConstants,X509Helper
+from voms_shared import VOMSDefaults, X509Helper
 
 usage="""%prog [options] command
 
@@ -55,19 +55,19 @@ def error_and_exit(msg):
 
 def build_classpath():
     
-    jars = VomsConstants.voms_admin_libs
+    jars = VOMSDefaults.voms_admin_libs
     
     if len(jars) == 0:
         raise ValueError, "voms-admin jar files not found!"
     
-    jars.append(VomsConstants.voms_admin_jar)
-    jars.append(VomsConstants.voms_admin_classes)
+    jars.append(VOMSDefaults.voms_admin_jar)
+    jars.append(VOMSDefaults.voms_admin_classes)
     
     return string.join(jars,":") 
 
 def do_basic_command(options,command):
     cmd = "java -cp %s %s --command %s --vo %s" % (build_classpath(),
-                                                   VomsConstants.schema_deployer_class,
+                                                   VOMSDefaults.schema_deployer_class,
                                                    command,
                                                    options.vo)
     status = os.system(cmd)
@@ -75,6 +75,8 @@ def do_basic_command(options,command):
 
 
 def do_add_admin(options):
+    
+    email = None
         
     if options.admin_cert:
         cert = X509Helper(options.admin_cert)
@@ -92,7 +94,7 @@ def do_add_admin(options):
         print "WARNING: No email was specified for this administrator! The new administrator will not receive VOMS Admin notifications"
     
     cmd = "java -cp %s %s --command add-admin --vo %s --dn '%s' --ca '%s'" % (build_classpath(),
-                                                                              VomsConstants.schema_deployer_class,
+                                                                              VOMSDefaults.schema_deployer_class,
                                                                               options.vo,
                                                                               dn,
                                                                               ca)
@@ -113,7 +115,7 @@ def do_remove_admin(options):
         ca = options.admin_ca
         
     cmd = "java -cp %s %s --command remove-admin --vo %s --dn '%s' --ca '%s' " % (build_classpath(),
-                                                                                  VomsConstants.schema_deployer_class,
+                                                                                  VOMSDefaults.schema_deployer_class,
                                                                                   options.vo,
                                                                                   dn,
                                                                                   ca)

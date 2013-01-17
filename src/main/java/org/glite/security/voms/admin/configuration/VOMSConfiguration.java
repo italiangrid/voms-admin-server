@@ -52,6 +52,7 @@ import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.JNDIConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -408,7 +409,7 @@ public final class VOMSConfiguration {
 	public Properties getDatabaseProperties() {
 
 		String propFileName = getConfigurationDirectoryPath()
-				+ "/voms.database.properties";
+				+ "/database.properties";
 
 		Properties props = new Properties();
 
@@ -791,7 +792,7 @@ public final class VOMSConfiguration {
 
 	private String getVomsServicePropertiesFileName() {
 
-		String fileName = getConfigurationDirectoryPath() + "/voms.service.properties";
+		String fileName = getConfigurationDirectoryPath() + "/service.properties";
 
 		return fileName;
 
@@ -995,27 +996,34 @@ public final class VOMSConfiguration {
 		}
 	}
 
+	private String loadLSCConfigurationString(){
+		
+		String lscConfFileName = getConfigurationDirectoryPath() + "/lsc";
+		try {
+			String lscConf = FileUtils.readFileToString(new File(lscConfFileName));
+			return lscConf;
+			
+		} catch (IOException e) {
+			log.error("Error loading LSC configuration file:"+e.getMessage(), e);
+			throw new VOMSException(e.getMessage(),e);
+		}
+		
+	}
+	
 	private String loadVomsesConfigurationString() {
 
 		String vomsesConfFileName = getConfigurationDirectoryPath() + "/vomses";
 
 		try {
 
-			StringBuffer vomsesContent = new StringBuffer();
-			FileReader vomsesFileReader = new FileReader(vomsesConfFileName);
-
-			int c;
-			while ((c = vomsesFileReader.read()) != -1)
-				vomsesContent.append((char) c);
-
-			return vomsesContent.toString();
+			String vomsesConf = FileUtils.readFileToString(new File(vomsesConfFileName));
+			return vomsesConf;
 
 		} catch (IOException e) {
 
 			log.error("Error loading vomses configuration file:"
 					+ e.getMessage(), e);
-			throw new VOMSException("Error loading vomses configuration file:"
-					+ e.getMessage(), e);
+			throw new VOMSException(e.getMessage(), e);
 		}
 
 	}
@@ -1238,6 +1246,10 @@ public final class VOMSConfiguration {
 			}
 		
 		return i;
+	}
+	
+	public String getLSCConfiguration(){
+		return loadLSCConfigurationString();
 	}
 	
 	public void dump(PrintStream stream){

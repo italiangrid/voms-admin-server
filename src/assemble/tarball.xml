@@ -84,9 +84,9 @@
         </file>
         
         <file>
-            <source>resources/scripts/voms_admin_configure.py</source>
+            <source>resources/scripts/voms_configure.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
-            <destName>voms-admin-configure</destName>
+            <destName>voms-configure</destName>
             <fileMode>0755</fileMode>
         </file>
         
@@ -105,7 +105,7 @@
         </file>
         
         <file>
-            <source>resources/scripts/voms.py</source>
+            <source>resources/scripts/voms_shared.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <filtered>true</filtered>
             <fileMode>0644</fileMode>

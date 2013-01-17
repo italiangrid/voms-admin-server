@@ -70,7 +70,7 @@ public interface VOMSConfigurationConstants {
 	public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
 	public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
 	public static final String ROLE_MAX_RESULTS_PER_PAGE = "voms.pagination.role.max.results.per.page";
-	public static final String REGISTRATION_SERVICE_ENABLED = "voms.request.webui.enabled";
+	public static final String REGISTRATION_SERVICE_ENABLED = "voms.registration.enabled";
 	public static final String READ_ACCESS_FOR_AUTHENTICATED_CLIENTS = "voms.read-access-for-authenticated-clients";
 	/**
 	 * VERSION Properties
