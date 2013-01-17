@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2.6
 #
 # Copyright (c) Members of the EGEE Collaboration. 2006-2009.
 # See http://www.eu-egee.org/partners/ for details on the copyright holders.
@@ -25,7 +25,7 @@ from voms_shared import voms_version, admin_conf_dir, VOMSDefaults,\
     voms_ro_auth_clients_cmd, voms_add_admin_cmd, mysql_util_cmd,\
     admin_service_properties_path, voms_undeploy_database_cmd
 
-from sys import exit, stdout, stderr,exc_info
+from sys import exit, stdout, stderr
 import socket
 import logging
 import re
