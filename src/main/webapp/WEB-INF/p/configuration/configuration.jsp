@@ -40,6 +40,11 @@ VOMSES string for this vo:
 <s:textarea value="%{vomsesConf}" readonly="true" rows="2" cols="100%" cssClass="configurationInfo"/>
 
 <h2>
+LSC configuration for this VOMS server:
+</h2>
+<s:textarea value="%{lsc}" readonly="true" rows="4" cols="100%" cssClass="configurationInfo"/>
+
+<h2>
 Example Mkgridmap configuration for this vo:
 </h2>
 <s:textarea value="%{mkGridmapConf}" readonly="true" rows="2" cols="100%" cssClass="configurationInfo"/>

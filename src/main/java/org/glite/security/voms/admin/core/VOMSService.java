@@ -136,8 +136,8 @@ public final class VOMSService {
 		
 		VOMSExecutorService es = VOMSExecutorService.instance();
 		
-		es.startBackgroundTask(new UpdateCATask(), 
-				VOMSConfigurationConstants.CAFILES_PERIOD);
+		es.startBackgroundTask(new UpdateCATask(),
+				VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 				
 		es.startBackgroundTask(new TaskStatusUpdater(), 
 				null, 

@@ -43,6 +43,8 @@ public class ConfigurationAction extends BaseAction implements Preparable{
 	
 	String contactString;
 	
+	String lsc;
+	
 	
 	public void prepare() throws Exception {
 		
@@ -59,6 +61,8 @@ public class ConfigurationAction extends BaseAction implements Preparable{
             + request.getServerName() + ":" 
             + request.getServerPort() + "/voms/" + VOMSConfiguration.instance().getVOName()
             + "   ."+VOMSConfiguration.instance().getVOName();
+        
+        lsc = VOMSConfiguration.instance().getLSCConfiguration();
 
 	}
 
@@ -86,6 +90,16 @@ public class ConfigurationAction extends BaseAction implements Preparable{
 		this.contactString = contactString;
 	}
 	
+	public String getLSC(){
+		return lsc;
+	}
 
-	
+	public String getLsc() {
+		return lsc;
+	}
+
+	public void setLsc(String lsc) {
+		this.lsc = lsc;
+	}
+
 }

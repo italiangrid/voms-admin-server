@@ -375,7 +375,8 @@ def check_install_options(options):
 
 
 def check_remove_options(options):
-    pass
+    if not options.vo:
+        error_and_exit("Please set the VO option")
 
 def check_upgrade_options(options):
     pass
@@ -590,6 +591,13 @@ def create_voms_conf(options):
     template = string.Template(open(VOMSDefaults.voms_template,"r").read())
     all_core_opts = dict(core_opts.items() + options.__dict__.items())
     voms_props = template.substitute(**all_core_opts)
+    
+    if options.skip_ca_check:
+        voms_props+="\n--skipcacheck"
+    
+    if options.shortfqans:
+        voms_props+="\n--shortfqans"
+        
     logger.debug("VOMS Core configuration:\n%s" % voms_props)
     if not options.dry_run:
         ## Core configuration
@@ -600,7 +608,7 @@ def create_voms_conf(options):
         ## Core password file
         write_and_set_permissions(options,
                                   voms_pass_path(options.vo),
-                                  options.dbpassword,
+                                  options.dbpassword+"\n",
                                   0640)
     
     logger.info("VOMS core service configured succesfully.")
@@ -716,6 +724,7 @@ def do_core_install(options):
 
 def do_install(options):
     check_install_options(options)
+    setup_defaults(options)
     
     if not options.skip_voms_admin:
         do_admin_install(options)
@@ -744,6 +753,7 @@ def remove_dir_and_contents(directory):
 
 def do_remove(options):
     check_remove_options(options)
+    setup_defaults(options)
     
     if not options.skip_voms_admin:
         if not os.path.exists(admin_conf_dir(options.vo)):
@@ -780,8 +790,6 @@ def main():
     check_args_and_options(options, args)
     command = args[0]
     
-    setup_defaults(options)
-    
     try:
         if command == "install":
             do_install(options)
@@ -789,6 +797,8 @@ def main():
             do_remove(options)
         elif command == "upgrade":
             do_upgrade(options)
+    except SystemExit, e:
+        exit(e)
     except:
         logger.exception("Unexpected error caught!") 
 
