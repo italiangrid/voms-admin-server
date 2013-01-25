@@ -29,13 +29,13 @@
     	<property name="hibernate.bytecode.provider">cglib</property>
     	
     	<!-- Cache Configurations -->
-    
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+        
         <property name="hibernate.cache.provider_class">
           net.sf.ehcache.hibernate.SingletonEhCacheProvider
         </property>
-    
+        
         <property name="hibernate.cache.use_minimal_puts">false</property>
-        <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.use_structured_entries">true</property>
     	
     	<mapping resource="model/VOMSDBVersion.hbm.xml" />
