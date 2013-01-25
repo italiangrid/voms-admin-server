@@ -221,8 +221,9 @@ public class Main {
 		certFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_CERT, DEFAULT_CERT);
 		keyFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_KEY, DEFAULT_KEY);
 		
-		trustDir = DEFAULT_TRUSTSTORE_DIR;
-		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.CAFILES_PERIOD, DEFAULT_TRUSTSTORE_REFRESH_INTERVAL);
+		trustDir = conf.getString(VOMSConfigurationConstants.TRUST_ANCHORS_DIR);
+		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD, 
+				DEFAULT_TRUSTSTORE_REFRESH_INTERVAL);
 		
 		VOMSConfiguration.dispose();
 		
