@@ -604,7 +604,7 @@ def create_voms_conf(options):
         write_and_set_permissions(options, 
                                   voms_conf_path(options.vo),
                                   voms_props, 
-                                  0640)
+                                  0644)
         ## Core password file
         write_and_set_permissions(options,
                                   voms_pass_path(options.vo),
