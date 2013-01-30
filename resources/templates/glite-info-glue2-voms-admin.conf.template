@@ -50,7 +50,7 @@ get_WSDL = echo -e "https://$VOMS_ADMIN_HOST:$VOMS_ADMIN_PORT/voms/$VOMS_VO/serv
 # A URL to a web page defining the service semantics, e.g. a manual
 # If the string does not start with "http" this will be omitted
 
-semantics_URL = https://github.com/italiangrid/voms-admin-server/wiki
+semantics_URL = https://github.com/italiangrid/voms/wiki
 
 # StartTime: A command to return the service start time.
 # This should be a unix timestamp, the info provider converts it to ISO8601
