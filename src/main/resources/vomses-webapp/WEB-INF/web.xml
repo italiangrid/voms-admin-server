@@ -32,11 +32,21 @@
         <filter-class>org.glite.security.voms.admin.servlets.vomses.VOMSESFilter</filter-class>
     </filter>
     
+    <filter>
+        <filter-name>voms-status-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.vomses.VOMSStatusFilter</filter-class>
+    </filter>
+    
     <filter-mapping>
         <filter-name>security-context-filter</filter-name>
         <url-pattern>*</url-pattern>
     </filter-mapping>
   
+    <filter-mapping>
+        <filter-name>voms-status-filter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+    
     <servlet>
         <description>The Index servlet</description>
         <servlet-name>index</servlet-name>

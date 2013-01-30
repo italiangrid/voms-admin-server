@@ -1,56 +1,124 @@
 <%-- JSTL tags --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>VOMSES Web application</title>
-        <!-- <link rel="stylesheet" href="css/main.css"/> -->
-        <link rel="stylesheet" href="css/bootstrap.min.css"/>
-        
-        <style type="text/css">
-            html,body { text-align: center }
-            
-            #footer {
-                text-align: center;
-                padding-top: .5em;
-            }
-            
-        </style>
-    </head>
-    <body>
-         
-        <div class="container">
-            <h3>VOMS Admin service endpoints</h3>
-            
-            <table class="table table-striped table-hover">
-                <tbody>
-                    <c:forEach var="endpoint" items="${endpoints}">
-	                    <tr>
-	                        <a href="https://${endpoint.host}:${endpoint.port}/voms/${endpoint.voName}">${endpoint.voName}</a>
-	                    </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-            
-        </div>
-        
-        <div class="navbar navbar-fixed-bottom">
-            <div class="navbar-inner">
-                <div class="container">
-                    <div id="footer">
-                        <small>
-                            VOMS Admin version ${version}
-                        </small>    
-                    </div>
-                </div>
-            </div>
-        </div>
-                
-    </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>VOMSES Web application</title>
+<!-- <link rel="stylesheet" href="css/main.css"/> -->
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+
+<style type="text/css">
+html,body {
+	text-align: center
+}
+
+#footer {
+	text-align: center;
+	padding-top: .5em;
+	color: white;
+}
+
+.endpoint {
+	float: left;
+}
+
+.status {
+	float: right;
+}
+
+.vo-info {
+	font-size: smaller;
+	font-weight: bold;
+}
+
+.vo-info-down {
+	color: #b94a48;
+}
+
+.vo-info-active {
+	color: #468847;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="page-header">
+			<h1>VOMS Admin endpoints</h1>
+			<h3 class="muted">${host}</h3>
+			<small>This page lists the locally configured Virtual
+				Organizations</small>
+		</div>
+		<p></p>
+	</div>
+	<c:choose>
+		<c:when test="${empty endpoints}">
+			<div class="container">
+				<div class="row">
+					<div class="span6 offset3">
+						<div class="alert alert-warning">No locally configured VOs.
+						</div>
+					</div>
+				</div>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="container">
+
+				<div class="row">
+					<div class="span6 offset3">
+						<div class="alert alert-info">
+							<small>Status information is computed checking the VOMS
+								admin services state</small>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span6 offset3">
+						<table class="table table-hover table-bordered center-table">
+							<tbody>
+								<c:forEach var="endpoint" items="${endpoints}">
+									<tr>
+										<td>
+											<div class="endpoint">
+												<a
+													href="https://${endpoint.host}:${endpoint.port}/voms/${endpoint.voName}">${endpoint.voName}</a>
+											</div>
+											<div class="status">
+												<c:choose>
+													<c:when test="${statusMap[endpoint.voName]}">
+														<span class="vo-info vo-info-active">active</span>
+													</c:when>
+													<c:otherwise>
+														<span class="vo-info vo-info-down">currently down</span>
+													</c:otherwise>
+												</c:choose>
+											</div>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</c:otherwise>
+	</c:choose>
+
+	<div class="navbar navbar-fixed-bottom navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<div id="footer">
+					<small> VOMS Admin version ${version} </small>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
 </html>

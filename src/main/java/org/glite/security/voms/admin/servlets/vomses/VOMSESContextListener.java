@@ -20,13 +20,17 @@
 
 package org.glite.security.voms.admin.servlets.vomses;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.servlets.VOMSContextListener;
 import org.glite.security.voms.admin.util.AdminServiceContactInfo;
 import org.glite.security.voms.admin.util.AdminServiceContactUtil;
@@ -44,8 +48,20 @@ public class VOMSESContextListener implements ServletContextListener {
 
 	private void initVersion(ServletContextEvent sce){
 		
-		// TBD!
-		sce.getServletContext().setAttribute(VERSION_KEY, "3.0.0");
+		InputStream versionPropStream = this.getClass().getClassLoader()
+				.getResourceAsStream("version.properties");
+		
+		Properties versionProps = new Properties();
+		
+		try {
+			versionProps.load(versionPropStream);
+		
+		} catch (IOException e) {
+			log.error("Error loading version properties: "+e.getMessage(),e);
+			throw new VOMSException(e);
+		}
+		
+		sce.getServletContext().setAttribute(VERSION_KEY, versionProps.get("voms-admin.server.version"));
 		
 	}
 	
@@ -56,7 +72,7 @@ public class VOMSESContextListener implements ServletContextListener {
 		log.info("Loading VOMS service endpoints from {}", confDir);
 		endpoints = AdminServiceContactUtil.getAdminServiceContactInfo(confDir);
 		Collections.sort(endpoints);
-		log.debug("Endpoint informqtion loaded: {}", endpoints);
+		log.debug("Endpoint information loaded: {}", endpoints);
 		
 		sce.getServletContext().setAttribute(ENDPOINTS_KEY, endpoints);
 	}
@@ -67,6 +83,7 @@ public class VOMSESContextListener implements ServletContextListener {
 		log.info("VOMSES webapp starting...");
 		initVersion(sce);
 		initEndpoints(sce);
+		sce.getServletContext().setAttribute("host", sce.getServletContext().getInitParameter("host"));
 		log.info("VOMSES succesfully initialized.");
 	}
 

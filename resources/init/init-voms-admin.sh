@@ -50,12 +50,12 @@ configured_vos=`ls $CONF_DIR`
 
 check_vo_name() {
 
-	if [[ $configured_vos =~ (^| )$1($| ) ]]; then
-		return 0
-	else
-		echo "VO $1 is not configured on this host!"
-		exit 1
-	fi
+	for v in $configured_vos; do
+		[ "$v" = "$1" ] && return 0
+	done
+	
+	echo "VO $1 is not configured on this host!"
+	exit 1
 
 }
 
@@ -221,6 +221,7 @@ status() {
 		vos=$1
 	fi
 	
+	found_failure=0
 	for vo in $vos ; do
 		echo -n "Checking voms-admin status( $vo ): "
 		
@@ -228,11 +229,14 @@ status() {
 		
 		if [ -z $pid ]; then
 			failure "(not running)"
+			found_failure=1
 			continue
 		else
 			success "running ($pid)"
 		fi
 	done
+	
+	[ $found_failure -eq 0 ] || exit 1
 }
 
 success()

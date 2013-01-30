@@ -147,7 +147,7 @@ public class VomsesMain {
 		if (t != null) {
 
 			System.err.format("%s: %s\n", errorMessage, t.getMessage());
-			
+			t.printStackTrace(System.err);
 		} else {
 			
 			System.err.println(errorMessage);
@@ -227,6 +227,8 @@ public class VomsesMain {
 		context.setResourceBase(webappResourceDir);
 		context.setParentLoaderPriority(true);
 		context.setInitParameter("confdir", confDir);
+		context.setInitParameter("host", host);
+		context.setThrowUnavailableOnStartupException(true);
 		
 	}
 	protected SSLOptions getSSLOptions(){
