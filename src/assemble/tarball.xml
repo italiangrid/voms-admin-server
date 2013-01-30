@@ -119,6 +119,14 @@
         </file>
         
         <file>
+            <source>resources/init/vomses.sh</source>
+            <outputDirectory>/etc/rc.d/init.d</outputDirectory>
+            <destName>vomses</destName>
+            <fileMode>0755</fileMode>
+            <filtered>true</filtered>
+        </file>
+        
+        <file>
             <source>resources/init/init-voms-admin.sh</source>
             <outputDirectory>/etc/rc.d/init.d</outputDirectory>
             <destName>voms-admin</destName>

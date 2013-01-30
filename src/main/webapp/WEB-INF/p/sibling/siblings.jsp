@@ -28,11 +28,11 @@
 	</h1>
 	
 	<table class="table">
-		<s:iterator value="configuredVOs" var="voURL">
+		<s:iterator value="endpoints">
 			<tr class="tableRow">
 				<td>
-					<a href="<s:property value='#voURL'/>">
-						<s:property value="#voURL.substring(#voURL.lastIndexOf('/')+1)"/>
+					<a href="<s:property value='URL'/>">
+						<s:property value='voName'/>
 					</a>
 				</td>
 			</tr>

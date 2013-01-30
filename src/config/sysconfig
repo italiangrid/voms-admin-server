@@ -7,3 +7,6 @@ CONF_DIR=${package.confdir}
 
 # The user under which the VOMS Admin process will run
 VOMS_USER=${package.vomsuser}
+
+# The port under which the vomses webapp is running
+VOMSES_PORT=8443

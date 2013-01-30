@@ -382,6 +382,7 @@ public class Main {
 			checkStatus();
 			shutdownService.start();
 			
+			vomsService.join();
 		
 		} catch(Throwable t){
 			

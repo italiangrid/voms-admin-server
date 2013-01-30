@@ -21,6 +21,9 @@ package org.glite.security.voms.admin.core;
 
 import it.infn.cnaf.voms.x509.X509ACGenerator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -49,12 +52,17 @@ import org.glite.security.voms.admin.notification.RoleMembershipNotificationDisp
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.util.AdminServiceContactInfo;
+import org.glite.security.voms.admin.util.AdminServiceContactUtil;
+import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class VOMSService {
 
+	public static final String ENDPOINTS_KEY = "__voms_endpoints";
+	
 	static final Logger log = LoggerFactory.getLogger(VOMSService.class);
 
 	protected static void checkDatabaseVersion() {
@@ -173,6 +181,15 @@ public final class VOMSService {
 
 	}
 
+	protected static void configureLocalEndpointsInformation(ServletContext ctxt){
+		List<AdminServiceContactInfo> endpoints= new ArrayList<AdminServiceContactInfo>();
+		String confDir = ctxt.getInitParameter("CONF_DIR");
+		endpoints = AdminServiceContactUtil.getAdminServiceContactInfo(confDir);
+		Collections.sort(endpoints);
+		log.debug("Endpoint informqtion loaded: {}", endpoints);
+		ctxt.setAttribute(ENDPOINTS_KEY, endpoints);
+	}
+	
 	public static void start(ServletContext ctxt) {
 
 		Thread
@@ -192,6 +209,8 @@ public final class VOMSService {
 		log.info("VOMS-Admin starting for VO: " + conf.getVOName());
 
 		checkDatabaseVersion();
+		
+		configureLocalEndpointsInformation(ctxt);
 
 		configureVelocity();
 

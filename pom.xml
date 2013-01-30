@@ -59,38 +59,12 @@
         <includes>
           <include>version.properties</include>
           <include>packaging.properties</include>
+          <include>logback.vomses.xml</include>
         </includes>
         <filtering>true</filtering>
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <id>generate-specfile</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/src/spec/</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/spec</directory>
-                  <includes>
-                    <include>
-                      voms-admin-server.spec.in
-                    </include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -259,9 +233,12 @@
             <exclude>src/main/webapp/common/struts/**</exclude>
             <exclude>src/main/webapp/struts/**</exclude>
             <exclude>src/main/webapp/style/**</exclude>
+            <exclude>src/main/resources/vomses-webapp/**</exclude>
+            <exclude>**/*.gitignore</exclude>
             <exclude>resources/doc/**</exclude>
             <exclude>resources/scripts/voms-admin-ping</exclude>
             <exclude>resources/templates/aup/**</exclude>
+            <exclude>resources/templates/**</exclude>
           </excludes>
           <useDefaultExcludes>true</useDefaultExcludes>
         </configuration>

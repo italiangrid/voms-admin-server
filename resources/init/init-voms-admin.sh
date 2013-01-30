@@ -74,7 +74,7 @@ start() {
         pid=$(find_pid $vo)
 
         if test "x$pid" != "x"; then
-            check_pid $pid
+            check_pid "$pid" "$vo"
             value=$?
 
             if [ $value -eq 0 ]; then
@@ -111,10 +111,7 @@ check_pid(){
     
     ps -p $1 > /dev/null 2>&1
 
-    if [ $? -eq 0 ]; then
-        ps -p $1 | grep "$VOMS_WS_MAIN_CLASS --vo $__vo" > /dev/null 2>&1
-        [ $? -eq 0 ] && return 0
-    fi
+	[ $? -eq 0 ] && return 0
 
     return 1  
 }

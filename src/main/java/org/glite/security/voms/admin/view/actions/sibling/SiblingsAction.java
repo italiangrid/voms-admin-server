@@ -20,11 +20,15 @@
 package org.glite.security.voms.admin.view.actions.sibling;
 
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
+import javax.servlet.ServletContext;
+
 import org.apache.struts2.convention.annotation.Result;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.apache.struts2.interceptor.ApplicationAware;
+import org.apache.struts2.util.ServletContextAware;
+import org.glite.security.voms.admin.core.VOMSService;
+import org.glite.security.voms.admin.util.AdminServiceContactInfo;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +37,7 @@ import com.opensymphony.xwork2.Preparable;
 
 
 @Result(name=BaseAction.SUCCESS, location="siblings")
-public class SiblingsAction extends BaseAction implements Preparable{
+public class SiblingsAction extends BaseAction implements Preparable, ApplicationAware{
 	
 	
 	/**
@@ -43,39 +47,32 @@ public class SiblingsAction extends BaseAction implements Preparable{
 	
 	public static Logger log = LoggerFactory.getLogger(SiblingsAction.class);
 	
-	class VONameTransformer implements Transformer{
-        String prefix;
-        
-        
-        public VONameTransformer(String prefix) {
-            this.prefix = prefix;
-        }
-
-
-        public Object transform( Object obj ) {
-            return (String)prefix+(String)obj;
-        }
-        
-    }
-
-
-	List<String> configuredVOs;
-
-	public List<String> getConfiguredVOs() {
-		return configuredVOs;
-	}
-
-	public void setConfiguredVOs(List<String> configuredVOs) {
-		this.configuredVOs = configuredVOs;
-	}
+	private List<AdminServiceContactInfo> endpoints;
 
 	public void prepare() throws Exception {
-		List<String> vos = VOMSConfiguration.instance().getLocallyConfiguredVOs();
-		log.info("Locally configured vos: " + configuredVOs);
-		CollectionUtils.transform(vos, new VONameTransformer(getAllVOsBaseURL()));
-		setConfiguredVOs(vos);
 		
 	}
-	
+
+
+	/**
+	 * @return the endpoints
+	 */
+	public synchronized List<AdminServiceContactInfo> getEndpoints() {
+		return endpoints;
+	}
+
+	/**
+	 * @param endpoints the endpoints to set
+	 */
+	public synchronized void setEndpoints(List<AdminServiceContactInfo> endpoints) {
+		this.endpoints = endpoints;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setApplication(Map<String, Object> application) {
+		endpoints = (List<AdminServiceContactInfo>) application.get(VOMSService.ENDPOINTS_KEY);
+	}
 	
 }

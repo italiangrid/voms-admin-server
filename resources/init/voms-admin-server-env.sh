@@ -34,6 +34,9 @@ fi
 ## The VOMS service main class 
 VOMS_WS_MAIN_CLASS="org.glite.security.voms.admin.server.Main"
 
+## The VOMSES index service main class
+VOMSES_MAIN_CLASS="org.glite.security.voms.admin.server.vomses.VomsesMain"
+
 ## The VOMS service jar
 VOMS_WS_JAR="$PREFIX/usr/share/java/voms-admin.jar"
 
@@ -48,6 +51,9 @@ VOMS_WS_CP="$VOMS_WS_DEPS"
 
 ## Base VOMS startup command 
 VOMS_WS_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_DEPS $VOMS_WS_MAIN_CLASS"
+
+## VOMSES app startup command
+VOMSES_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_DEPS $VOMSES_MAIN_CLASS"
 
 ## Base VOMS shutdown command
 VOMS_WS_SHUTDOWN_CMD="java -cp $VOMS_WS_DEPS $VOMS_WS_SHUTDOWN_CLASS"

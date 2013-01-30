@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Authors:
+    	Andrea Ceccanti (INFN)
+
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+
+	<display-name>VOMSES service index</display-name>
+    
+    <filter>
+        <filter-name>security-context-filter</filter-name>
+        <filter-class>org.glite.security.voms.admin.servlets.vomses.VOMSESFilter</filter-class>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>security-context-filter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+  
+    <servlet>
+        <description>The Index servlet</description>
+        <servlet-name>index</servlet-name>
+        <jsp-file>/index.jsp</jsp-file>
+    </servlet>
+    
+    <listener>
+        <listener-class>org.glite.security.voms.admin.servlets.vomses.VOMSESContextListener</listener-class>
+    </listener>
+    
+    <servlet>
+        <description>The Redirect servlet</description>
+        <servlet-name>redirect</servlet-name>
+        <servlet-class>org.glite.security.voms.admin.servlets.vomses.RedirectServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/vomses</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/vomses/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>redirect</servlet-name>
+        <url-pattern>/voms/*</url-pattern>
+    </servlet-mapping>
+    
+</web-app>
