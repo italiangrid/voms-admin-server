@@ -209,5 +209,17 @@
             <fileMode>0644</fileMode>
         </file>
 
+        <file>
+            <source>resources/templates/glite-info-service-voms.conf.template</source>
+            <outputDirectory>/usr/share/voms-admin/info-providers</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+
+        <file>
+            <source>resources/templates/glite-info-glue2-voms.conf.template</source>
+            <outputDirectory>/usr/share/voms-admin/info-providers</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+
     </files>
 </assembly>
