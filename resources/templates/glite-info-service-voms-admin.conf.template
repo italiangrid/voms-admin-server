@@ -1,0 +1,73 @@
+
+# This is the configuration file for the GlueService information provider
+# for the voms-admin service (if running) on a VOMS server
+
+# Many of the entries are commands which will be executed
+# using backquotes in perl. They should write to stdout - the return
+# code is not relevant except for init and status.
+
+# The init command allows any setup command to be executed
+# A non-zero return code will abort the provider
+# Environment variables can be set by writing to stdout (x=y)
+
+init = glite-info-service-voms-admin-init $GLITE_INFO_SERVICE_VO
+
+# The service type should follow the official list in
+# http://glueschema.forge.cnaf.infn.it/V12/ServiceType
+
+service_type = org.glite.voms-admin
+
+# This should be a command which returns the service interface version
+# in the format 3[.2[.1]]. Set to the RPM version of the interface (WSDL)
+# RPM
+
+get_version = rpm -q voms-admin-server --queryformat '%{version}\n'
+
+# A command to return the service endpoint to stdout (uses variables set
+# in the init script)
+
+get_endpoint = echo https://$VOMS_ADMIN_HOST:$VOMS_ADMIN_PORT/vomses/
+
+# A command to check the status of the service. The status message should be
+# returned to stdout - it can be multi-line, the output will be massaged
+# and truncated if necessary. 
+# The return code should indicate the status:
+# 0 = OK, 1 = Critical, 2 = Warning, 3 = Unknown, other = Other
+
+get_status = glite-info-service-test VOMS_ADMIN && service voms-admin status $GLITE_INFO_SERVICE_VO
+
+# The URL of a WSDL document describing the service
+# If the string does not start with "http" this will be omitted
+# This seems a bit silly, but it's the best I can find
+
+WSDL_URL = http://svn.research-infrastructures.eu/public/d4science/gcube/trunk/vo-management/VOMS-ADMIN/schema/glite-security-voms-admin-2.0.2.wsdl
+
+# A URL to a web page defining the service semantics, e.g. a manual
+# If the string does not start with "http" this will be omitted
+
+semantics_URL = https://twiki.cern.ch/twiki/bin/view/EMI/EMIVomsAdminUserGuide261
+
+# StartTime: A command to return the service start time.
+# This should be a unix timestamp, the info provider converts it to ISO8601
+
+get_starttime = perl -e '@st=stat($ENV{VOMS_ADMIN_PID_FILE});print "@st[10]\n";'
+
+# Owner: this should return a list of owner VO names, one per line
+# Null entries will be omitted
+
+get_owner = cat /etc/voms/*/voms.conf | grep [\-]-vo | cut -d= -f2
+
+# A list of AccessControlBaseRule strings to indicate who is allowed to
+# have access to the service - at the simplest this is the same as the
+# Owner but with the VO names prefixed by "VO:"
+
+get_acbr = cat /etc/voms/*/voms.conf | grep [\-]-vo | cut -d= -f2 | xargs -i echo VO:{}
+
+# ServiceData entries if any, as a list of key=value pairs
+# This should create a ServiceData entry giving the endpoint for each VO
+
+get_data = cat /etc/voms/*/voms.conf | grep [\-]-vo | cut -d= -f2 | xargs -i echo Endpoint-{}=https://$VOMS_ADMIN_HOST:$VOMS_ADMIN_PORT/voms/{}/
+
+# Associated services - not used here
+
+get_services = echo

@@ -117,6 +117,20 @@
             <destName>voms-config-info-providers</destName>
             <fileMode>0755</fileMode>
         </file>
+
+        <file>
+            <source>resources/scripts/glite-info-service-voms-admin-init.sh</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>glite-info-service-voms-admin-init</destName>
+            <fileMode>0755</fileMode>
+        </file>
+
+        <file>
+            <source>resources/scripts/glite-info-service-voms-admin-wrapper.sh</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>glite-info-service-voms-admin-wrapper</destName>
+            <fileMode>0755</fileMode>
+        </file>
         
         <file>
             <source>resources/init/vomses.sh</source>
@@ -182,5 +196,18 @@
             <fileMode>0644</fileMode>
             <filtered>true</filtered>
         </file>
+
+        <file>
+            <source>resources/templates/glite-info-glue2-voms-admin.conf.template</source>
+            <outputDirectory>/usr/share/voms-admin/info-providers</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+
+        <file>
+            <source>resources/templates/glite-info-service-voms-admin.conf.template</source>
+            <outputDirectory>/usr/share/voms-admin/info-providers</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+
     </files>
 </assembly>

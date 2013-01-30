@@ -19,16 +19,20 @@
 # determine the hostname
 SERVICE_HOST=`hostname`
  
-# configuration template and files
+# configuration template
 INFO_SERVICE_CONFIG=/etc/glite/info/service
-GLUE2_VOMS_CORE_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms.conf.template"
-GLUE2_VOMS_CORE_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms.conf"
-GLUE2_VOMS_ADMIN_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms-admin.conf.template"
-GLUE2_VOMS_ADMIN_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms-admin.conf"
+INFO_PROVIDER_CONF_TEMPLATE_DIR="/usr/share/voms-admin/info-providers"
 GLUE_VOMS_CORE_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-service-voms.conf.template"
+GLUE_VOMS_ADMIN_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-service-voms-admin.conf.template"
+GLUE2_VOMS_CORE_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms.conf.template"
+GLUE2_VOMS_ADMIN_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-glue2-voms-admin.conf.template"
+
+# configuration files
+INFO_SERVICE_CONFIG=/etc/glite/info/service
 GLUE_VOMS_CORE_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-service-voms.conf"
-GLUE_VOMS_ADMIN_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-service-voms-admin.conf.template"
 GLUE_VOMS_ADMIN_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-service-voms-admin.conf"
+GLUE2_VOMS_CORE_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms.conf"
+GLUE2_VOMS_ADMIN_CONF_FILE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms-admin.conf"
  
 # info providers files
 INFO_PROVIDER_PATH=/var/lib/bdii/gip/provider
@@ -101,10 +105,10 @@ if [ "x${VOMS_ADMIN_INSTALL}" == "xtrue" ]; then
  
 	# create conf files for voms admin
 	echo "Creating conf file ${GLUE2_VOMS_ADMIN_CONF_FILE}"
- 	rm -rf ${GLUE2_VOMS_ADMIN_CONF_FILE} && cp ${GLUE2_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE2_VOMS_ADMIN_CONF_FILE}
+	rm -rf ${GLUE2_VOMS_ADMIN_CONF_FILE} && cp ${GLUE2_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE2_VOMS_ADMIN_CONF_FILE}
 	echo "Creating conf file ${GLUE_VOMS_ADMIN_CONF_FILE}"
 	rm -rf ${GLUE_VOMS_ADMIN_CONF_FILE} && cp ${GLUE_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE_VOMS_ADMIN_CONF_FILE}
- 
+
 	PROVIDER_CONF_FILES=${PROVIDER_CONF_FILES}","${GLUE2_VOMS_ADMIN_CONF_FILE}
  
 fi
@@ -141,7 +145,7 @@ if [ "x${VOMS_ADMIN_INSTALL}" == "xtrue" ]; then
 #!/bin/sh
 export PATH=$PATH:${INFO_SERVICE_SCRIPT}
 export VOMS_ADMIN_HOST=${SERVICE_HOST}
-${INFO_SERVICE_BIN_PATH}/glite-info-service ${GLUE_VOMS_ADMIN_CONF_FILE} $SITE_NAME
+glite-info-service-voms-admin-wrapper ${GLUE_VOMS_ADMIN_CONF_FILE} $SITE_NAME
 EOF
 	chmod +x ${GLUE_VOMS_ADMIN_INFO_PROVIDER} 
 fi
