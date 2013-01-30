@@ -101,10 +101,14 @@ if [ "x${VOMS_ADMIN_INSTALL}" == "xtrue" ]; then
  
 	# create conf files for voms admin
 	echo "Creating conf file ${GLUE2_VOMS_ADMIN_CONF_FILE}"
- 	rm -rf ${GLUE2_VOMS_ADMIN_CONF_FILE} && cp ${GLUE2_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE2_VOMS_ADMIN_CONF_FILE}
+	rm -rf ${GLUE2_VOMS_ADMIN_CONF_FILE} && cp ${GLUE2_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE2_VOMS_ADMIN_CONF_FILE}
+	sed -i 's/glite-info-service-status tomcat5/service voms-admin status $VOMS_VO/g' ${GLUE2_VOMS_ADMIN_CONF_FILE}
+	sed -i 's/glite-info-service-voms-admin/glite-info-service-voms-admin-init $GLITE_INFO_SERVICE_VO/g'
 	echo "Creating conf file ${GLUE_VOMS_ADMIN_CONF_FILE}"
 	rm -rf ${GLUE_VOMS_ADMIN_CONF_FILE} && cp ${GLUE_VOMS_ADMIN_CONF_TEMPLATE} ${GLUE_VOMS_ADMIN_CONF_FILE}
- 
+	sed -i 's/\/sbin\/service tomcat5 status/service voms-admin status $VOMS_VO/g' ${GLUE_VOMS_ADMIN_CONF_FILE}
+	sed -i 's/glite-info-service-voms-admin/glite-info-service-voms-admin-init $GLITE_INFO_SERVICE_VO/g'
+
 	PROVIDER_CONF_FILES=${PROVIDER_CONF_FILES}","${GLUE2_VOMS_ADMIN_CONF_FILE}
  
 fi
@@ -141,7 +145,7 @@ if [ "x${VOMS_ADMIN_INSTALL}" == "xtrue" ]; then
 #!/bin/sh
 export PATH=$PATH:${INFO_SERVICE_SCRIPT}
 export VOMS_ADMIN_HOST=${SERVICE_HOST}
-${INFO_SERVICE_BIN_PATH}/glite-info-service ${GLUE_VOMS_ADMIN_CONF_FILE} $SITE_NAME
+glite-info-service-voms-admin-wrapper ${GLUE_VOMS_ADMIN_CONF_FILE} $SITE_NAME
 EOF
 	chmod +x ${GLUE_VOMS_ADMIN_INFO_PROVIDER} 
 fi
