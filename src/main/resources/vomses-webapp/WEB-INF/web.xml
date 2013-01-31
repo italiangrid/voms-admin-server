@@ -53,6 +53,12 @@
         <jsp-file>/index.jsp</jsp-file>
     </servlet>
     
+    <servlet>
+        <description>The JSON index servlet</description>
+        <servlet-name>json-index</servlet-name>
+        <jsp-file>/WEB-INF/json-index.jsp</jsp-file>
+    </servlet>
+    
     <listener>
         <listener-class>org.glite.security.voms.admin.servlets.vomses.VOMSESContextListener</listener-class>
     </listener>
@@ -69,6 +75,11 @@
     </servlet-mapping>
     
     <servlet-mapping>
+        <servlet-name>json-index</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
         <servlet-name>index</servlet-name>
         <url-pattern>/vomses/*</url-pattern>
     </servlet-mapping>
@@ -78,4 +89,8 @@
         <url-pattern>/voms/*</url-pattern>
     </servlet-mapping>
     
+    <error-page>
+      <error-code>404</error-code>
+      <location>/WEB-INF/404.jsp</location>
+    </error-page>
 </web-app>

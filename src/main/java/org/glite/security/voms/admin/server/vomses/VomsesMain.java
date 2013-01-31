@@ -238,7 +238,8 @@ public class VomsesMain {
 		options.setKeyFile(keyFile);
 		options.setTrustStoreDirectory(trustDir);
 		options.setTrustStoreRefreshIntervalInMsec(trustDirRefreshIntervalInMsec);
-		
+		options.setNeedClientAuth(false);
+		options.setWantClientAuth(false);
 		return options;
 		
 	}

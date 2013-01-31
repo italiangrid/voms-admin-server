@@ -329,6 +329,7 @@ public class Main {
 		vomsWebappContext.setInitParameter("CONF_DIR", confDir);
 	}
 		
+	
 	protected void configureJettyServer(){
 		
 		SSLOptions options = getSSLOptions();
@@ -349,9 +350,10 @@ public class Main {
 				DEFAULT_MAX_REQUEST_QUEUE_SIZE);
 		
 		configureWebApp();
+		
 		HandlerCollection handlers = new HandlerCollection();
 		
-		handlers.setHandlers(new Handler[]{ 
+		handlers.setHandlers(new Handler[]{
 				vomsWebappContext});
 		
 		server.setHandler(handlers);
@@ -382,7 +384,6 @@ public class Main {
 			checkStatus();
 			shutdownService.start();
 			
-			vomsService.join();
 		
 		} catch(Throwable t){
 			
