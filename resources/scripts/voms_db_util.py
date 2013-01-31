@@ -21,7 +21,7 @@
 import sys,string,os
 from sys import stderr, exit
 from optparse import OptionParser
-from voms_shared import VOMSDefaults, X509Helper
+from voms_shared import VOMSDefaults, X509Helper, get_oracle_env
 
 usage="""%prog [options] command
 
@@ -66,10 +66,11 @@ def build_classpath():
     return string.join(jars,":") 
 
 def do_basic_command(options,command):
-    cmd = "java -cp %s %s --command %s --vo %s" % (build_classpath(),
-                                                   VOMSDefaults.schema_deployer_class,
-                                                   command,
-                                                   options.vo)
+    cmd = "%s java -cp %s %s --command %s --vo %s" % (get_oracle_env(),
+                                                      build_classpath(),
+                                                      VOMSDefaults.schema_deployer_class,
+                                                      command,
+                                                      options.vo)
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
 
@@ -93,7 +94,8 @@ def do_add_admin(options):
     if not email:
         print "WARNING: No email was specified for this administrator! The new administrator will not receive VOMS Admin notifications"
     
-    cmd = "java -cp %s %s --command add-admin --vo %s --dn '%s' --ca '%s'" % (build_classpath(),
+    cmd = "%s java -cp %s %s --command add-admin --vo %s --dn '%s' --ca '%s'" % (get_oracle_env(),
+                                                                              build_classpath(),
                                                                               VOMSDefaults.schema_deployer_class,
                                                                               options.vo,
                                                                               dn,
@@ -114,11 +116,12 @@ def do_remove_admin(options):
         dn = options.admin_dn
         ca = options.admin_ca
         
-    cmd = "java -cp %s %s --command remove-admin --vo %s --dn '%s' --ca '%s' " % (build_classpath(),
-                                                                                  VOMSDefaults.schema_deployer_class,
-                                                                                  options.vo,
-                                                                                  dn,
-                                                                                  ca)
+    cmd = "%s java -cp %s %s --command remove-admin --vo %s --dn '%s' --ca '%s' " % (get_oracle_env(),
+                                                                                     build_classpath(),
+                                                                                     VOMSDefaults.schema_deployer_class,
+                                                                                     options.vo,
+                                                                                     dn,
+                                                                                     ca)
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
 

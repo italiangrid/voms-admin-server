@@ -9,4 +9,10 @@ CONF_DIR=${package.confdir}
 VOMS_USER=${package.vomsuser}
 
 # The port under which the vomses webapp is running
-VOMSES_PORT=8443
+VOMSES_PORT=${package.vomses_port}
+
+# Oracle library path
+ORACLE_LIBRARY_PATH=${package.oracle_library_path}
+
+# Default oracle tnsnames.ora location
+TNS_ADMIN=${package.tns_admin}

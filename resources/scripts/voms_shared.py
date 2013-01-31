@@ -16,6 +16,7 @@
 # Authors:
 #     Andrea Ceccanti (INFN)
 #
+import string
 __voms_version__ = "${pom.version}"
 __voms_prefix__ = "${package.prefix}"
 
@@ -152,6 +153,21 @@ class VOMSDefaults:
     mysql_driver_class = "org.gjt.mm.mysql.Driver"
     mysql_dialect = "org.hibernate.dialect.MySQLInnoDBDialect"
 
+
+
+def parse_sysconfig():
+    sysconfig_filename = os.path.join(voms_prefix(), 
+                                      "etc", "sysconfig", "voms-admin")
+    
+    helper = PropertyHelper(sysconfig_filename)
+    return helper
+
+def get_oracle_env():
+    sysconfig = parse_sysconfig()
+    template_str = "LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
+    template = string.Template(template_str)
+    return template.substitute(sysconfig)
+    
 class VOMSError(exceptions.RuntimeError):   
     pass
 
@@ -188,6 +204,8 @@ class PropertyHelper(dict):
         f.truncate()
         f.close()
 
+ 
+       
 class X509Helper:
     def __init__(self,filename, openssl_cmd=None):    
         self.filename= filename

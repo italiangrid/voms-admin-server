@@ -42,6 +42,8 @@ source "$PREFIX/usr/share/voms-admin/scripts/voms-admin-server-env.sh"
 
 voms_start_cmd="$PREFIX/usr/sbin/voms-admin-server"
 
+ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
+
 if [ ! -d "$PREFIX/var/lock/subsys" ]; then
     mkdir -p $PREFIX/var/lock/subsys
 fi
@@ -85,14 +87,14 @@ start() {
             fi
 		else
 			## Start the service
-			start_cmd="$voms_start_cmd --vo $vo &"
+			start_cmd="$ORACLE_ENV $voms_start_cmd --vo $vo &"
 			
 			if [ -n "$VOMS_USER" ]; then
 				
 				if [ `id -u` -ne 0 ]; then
 					failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
 				else
-					start_cmd="su $VOMS_USER -s /bin/bash -c '$voms_start_cmd --vo $vo' &"
+					start_cmd="su $VOMS_USER -s /bin/bash -c '$ORACLE_ENV $voms_start_cmd --vo $vo' &"
 				fi
 			fi
 			

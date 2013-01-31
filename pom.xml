@@ -535,6 +535,9 @@
         <package.prefix>/</package.prefix>
         <package.confdir>/etc/voms-admin</package.confdir>
         <package.vomsuser>voms</package.vomsuser>
+        <package.vomses_port>8443</package.vomses_port>
+        <package.oracle_library_path>/usr/lib64/oracle/11.2.0.3.0/client/lib64</package.oracle_library_path>
+        <package.tns_admin>/etc/voms</package.tns_admin>
       </properties>
       <build>
         <plugins>
@@ -565,6 +568,9 @@
         <package.prefix>/opt/voms</package.prefix>
         <package.confdir>/opt/voms/etc/voms-admin</package.confdir>
         <package.vomsuser></package.vomsuser>
+        <package.vomses_port>8443</package.vomses_port>
+        <package.oracle_library_path></package.oracle_library_path>
+        <package.tns_admin></package.tns_admin>
       </properties>
     </profile>
   </profiles>
