@@ -41,7 +41,7 @@ get_status = glite-info-service-test VOMS_ADMIN && service voms-admin status $GL
 # If the string does not start with "http" this will be omitted
 # This seems a bit silly, but it's the best I can find
 
-#WSDL_URL = http://svn.research-infrastructures.eu/public/d4science/gcube/trunk/vo-management/VOMS-ADMIN/schema/glite-security-voms-admin-2.0.2.wsdl
+WSDL_URL = https://github.com/italiangrid/voms-admin-server/tree/3.x/resources/wsdls
 
 # It seems that voms-admin now has several WSDLs
 
@@ -50,7 +50,7 @@ get_WSDL = echo -e "https://$VOMS_ADMIN_HOST:$VOMS_ADMIN_PORT/voms/$VOMS_VO/serv
 # A URL to a web page defining the service semantics, e.g. a manual
 # If the string does not start with "http" this will be omitted
 
-semantics_URL = https://github.com/italiangrid/voms-admin-server/wiki
+semantics_URL = https://github.com/italiangrid/voms/wiki
 
 # StartTime: A command to return the service start time.
 # This should be a unix timestamp, the info provider converts it to ISO8601
@@ -96,3 +96,10 @@ get_qualitylevel = echo 4
 
 get_servingstate = echo 4
 
+# Other information on the endpoint. According to the GLUE Schema V2.0, the 
+# OtherInfo attribute of the Entity object is a 'placeholder to publish info that 
+# does not fit in any other attribute.' VOMS uses this to publish information regarding
+# the number of users in the vo.
+# The value is a shell command. Each lines of output will be published as a value of a
+# GLUE2EntityOtherInfo attribute.
+get_otherinfo = tail -n +2 /var/tmp/voms-admin/$GLITE_INFO_SERVICE_VO/stats.properties

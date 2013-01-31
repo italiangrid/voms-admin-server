@@ -20,11 +20,10 @@
 SERVICE_HOST=`hostname`
  
 # configuration template
-INFO_SERVICE_CONFIG=/etc/glite/info/service
 INFO_PROVIDER_CONF_TEMPLATE_DIR="/usr/share/voms-admin/info-providers"
-GLUE_VOMS_CORE_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-service-voms.conf.template"
+GLUE_VOMS_CORE_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-service-voms.conf.template"
 GLUE_VOMS_ADMIN_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-service-voms-admin.conf.template"
-GLUE2_VOMS_CORE_CONF_TEMPLATE="${INFO_SERVICE_CONFIG}/glite-info-glue2-voms.conf.template"
+GLUE2_VOMS_CORE_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-glue2-voms.conf.template"
 GLUE2_VOMS_ADMIN_CONF_TEMPLATE="${INFO_PROVIDER_CONF_TEMPLATE_DIR}/glite-info-glue2-voms-admin.conf.template"
 
 # configuration files
