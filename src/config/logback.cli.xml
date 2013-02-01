@@ -24,40 +24,24 @@
 <configuration scan="true" scanPeriod="60 seconds">
     
     <!-- 
+        This logger controls the messages releated to the sql connection pool used to 
+        connect to the VOMS database. Set the level to DEBUG if you have problems
+        connecting to the database or need more information about how the connection
+        pool is handled.
+     -->
+    <logger name="com.mchange" level="ERROR" />
+    
+    <!-- 
+        This logger controls the log messages of the voms admin schema deployer tool.
+        Set the level to DEBUG for maximum detail.
+     -->
+    <logger name="org.glite.security.voms.admin.persistence.deployer" level="INFO" />
+
+    <!-- 
         This logger controls the MAIN voms admin log messages. Set the level to DEBUG 
         for maximum detail.  
      -->
-    <logger name="org.glite.security.voms.admin" level="INFO" />
-    
-    <!-- 
-        This logger controls the log messages produced when exceptions are raised by a call to the voms admin
-        web services. Set the level to DEBUG for maximum detail.  
-     -->
-    <logger
-        name="org.glite.security.voms.admin.service.ServiceExceptionHelper"
-        level="DEBUG" />
-    
-    <!-- 
-        The loggers below control the amount of logging produced by the main frameworks used by voms admin. Normally
-        you shouldn't change the defaults listed here.
-     -->
-    <logger name="org.opensaml" level="ERROR" />
-    
-    <!-- 
-        Set the level to INFO (or DEBUG) for the hibernate logging if you want to have more detailed log messages regarding
-        the persistence management in voms-admin.
-     -->
-    <logger name="org.hibernate" level="ERROR" />
-    
-    <logger name="org.apache.struts2" level="WARN" />
-    <logger name="com.opensymphony.xwork2" level="WARN" />
-    
-    <!-- 
-        Set the level to DEBUG below to see information about struts and xwork configuration
-    -->
-    <logger name="org.apache.struts2.convention" level="ERROR" /> 
-    <logger name="com.opensymphony.xwork2.config.providers.XmlConfigurationProvider" level="ERROR" />
-     
+    <logger name="org.glite.security.voms.admin" level="WARN"/>     
     
     <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

@@ -371,6 +371,9 @@ def check_install_options(options):
     if not options.skip_voms_core:
         required_opts += ["core_port"]
     
+    if options.dbtype == ORACLE:
+        required_opts += ["dbname"]
+    
     check_required_options(options, required_opts)
 
 
