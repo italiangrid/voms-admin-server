@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.server.Handler;
@@ -38,6 +39,7 @@ import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
 import org.italiangrid.voms.util.CertificateValidatorBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -46,6 +48,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import eu.emi.security.authn.x509.X509CertChainValidatorExt;
 
 public class VomsesMain {
+	
+	private static final Logger log = LoggerFactory.getLogger(VomsesMain.class);
 
 	static enum OptionArgs{
 		
@@ -163,8 +167,10 @@ public class VomsesMain {
 		
 		cliOptions = new Options();
 
-		for (OptionArgs o: OptionArgs.values())
-			cliOptions.addOption(o.getOptionName(), o.isRequired(), o.getDescription());
+		for (OptionArgs o: OptionArgs.values()){
+			cliOptions.addOption(null, o.getOptionName(), true, o.getDescription());
+		}
+			
 		
 	}
 	
@@ -173,6 +179,7 @@ public class VomsesMain {
 			initOptions();
 			parseCommandLineOptions(args);
 			configureLogging();
+			logConfiguration();
 			configureJettyServer();
 			start();
 			
@@ -195,7 +202,7 @@ public class VomsesMain {
 		
 		server = ServerFactory.newServer(host, 
 				Integer.parseInt(port),
-				getSSLOptions(),
+				options,
 				validator,
 				50,
 				10);
@@ -274,7 +281,14 @@ public class VomsesMain {
 		}
 	}
 	
-	
+	private void logConfiguration(){
+		log.info("VOMSES startup configuration:");
+		log.info("host: {}", host);
+		log.info("port: {}", port);
+		log.info("certFile: {}", certFile);
+		log.info("keyFile: {}", keyFile);
+		log.info("trustDir: {}", trustDir);
+	}
 	private void start(){
 		
 		

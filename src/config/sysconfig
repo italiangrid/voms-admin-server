@@ -20,5 +20,8 @@ VOMSES_PORT=${package.vomses_port}
 # The cert used by the vomses webapp to setup the SSL connector
 VOMSES_CERT=${package.vomses_cert} 
 
-# The keu used by the vomses webapp to setup the SSL connector
+# The key used by the vomses webapp to setup the SSL connector
 VOMSES_KEY=${package.vomses_key}
+
+# The trust anchors dir used by the vomses webapp to setup the SSL connector
+VOMSES_TRUST_DIR=${package.vomses_trustdir}
