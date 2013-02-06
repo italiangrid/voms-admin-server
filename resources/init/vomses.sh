@@ -104,8 +104,8 @@ start(){
 	else
 	   
 		## Start the service
-		host=`hostname -f`
-		start_cmd="$VOMSES_START_CMD --host $host --port $VOMSES_PORT &"
+		localhost=$(hostname -f)
+		start_cmd="$VOMSES_START_CMD --host $localhost --port $VOMSES_PORT --cert $VOMSES_CERT --key $VOMSES_KEY &"
 		
 		if [ -n "$VOMS_USER" ]; then
 			if [ `id -u` -ne 0 ]; then
