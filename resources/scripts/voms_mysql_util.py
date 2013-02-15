@@ -40,6 +40,7 @@ def setup_cl_options():
     parser.add_option("--dbapwd", dest="dbapwd", help="Sets MySQL administrator password to PWD", metavar="PWD")
     parser.add_option("--dbapwdfile", dest="dbapwdfile", help="Reads MySQL administrator password from FILE", metavar="FILE")
     parser.add_option("--dbusername", dest="username", help="Sets the VOMS MySQL username to be created as USER", metavar="USER")
+    parser.add_option("--vomshost", dest="voms_host", help="Sets the HOST where VOMS is running", metavar="HOST")
     parser.add_option("--dbpassword", dest="password", help="Sets the VOMS MySQL password for the user to be created as PWD", metavar="PWD")
     parser.add_option("--dbname", dest="dbname", help="Sets the VOMS database name to DBNAME", metavar="DBNAME")
     parser.add_option("--dbhost",dest="host", help="Sets the HOST where MySQL is running", metavar="HOST", default="localhost")
@@ -139,7 +140,12 @@ def grant_rw_access(options):
     
     if db_exists(options):
         mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE)
-        for host in ['localhost','localhost.%',socket.gethostname(),socket.getfqdn()]:
+        hosts = ['localhost','localhost.%',socket.gethostname(),socket.getfqdn()]
+        
+        if options.voms_host:
+            hosts = [options.voms_host,options.voms_host + '.%']
+            
+        for host in hosts:
             print >>mysql_proc.stdin, "grant all privileges on %s.* to '%s'@'%s' identified by '%s' with grant option;" % (options.dbname,
                                                                                                                        options.username,
                                                                                                                        host,
@@ -153,7 +159,33 @@ def grant_rw_access(options):
                                                                                                mysql_proc.stdout.read()))
 
 def grant_ro_access():
-    print "Still unimplemented"
+    print "Granting user %s read-only access on database %s" % (options.username, options.dbname)
+    mysql_cmd = build_mysql_command_preamble(options)
+    
+    if len(options.username) > 16:
+        error_and_exit("MySQL database accont names cannot be longer than 16 characters.")
+    
+    if db_exists(options):
+        mysql_proc = subprocess.Popen(mysql_cmd, shell=True, stdin=subprocess.PIPE)
+        hosts = ['localhost','localhost.%',socket.gethostname(),socket.getfqdn()]
+        
+        if options.voms_host:
+            hosts = [options.voms_host,options.voms_host + '.%']
+        
+        for host in hosts:
+            print >>mysql_proc.stdin, "grant select on %s.* to '%s'@'%s' identified by '%s';" % (options.dbname,
+                                                                                                 options.username,
+                                                                                                 host,
+                                                                                                 options.password)
+        print >>mysql_proc.stdin, "flush privileges;"
+        mysql_proc.stdin.close()
+        status = mysql_proc.wait()
+        
+        if status != 0:
+            error_and_exit("Error granting read-only access to user %s on database %s: %s" % (options.username, 
+                                                                                              options.dbname,
+                                                                                              mysql_proc.stdout.read()))
+        
 
 supported_commands = {'create_db': create_db, 
                       'drop_db': drop_db, 

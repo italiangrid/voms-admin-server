@@ -212,7 +212,6 @@ def setup_cl_options():
     voms_core_opt_group.add_option("--socktimeout", dest="socktimeout", type="int", help="Sets the amount of time in seconds after which the server will drop an inactive connection. The default is 60 seconds", metavar="SECS", default=60)
     voms_core_opt_group.add_option("--shortfqans", dest="shortfqans", action="store_true", help="Configures VOMS to use the short fqans syntax", default=False)
     voms_core_opt_group.add_option("--skip-ca-check", dest="skip_ca_check", action="store_true", help="Configures VOMS to only consider a certificate subject when checking VO user membership", default=False)
-    voms_core_opt_group.add_option("--contact-string", dest="contact_string", help="Configures VOMS database contact string explicitly.")
     voms_core_opt_group.add_option("--max-reqs", type="int", dest="max_reqs", help="Sets the maximum number of concurrent request that the VOMS service can handle.", default=50)
     parser.add_option_group(voms_core_opt_group)
     
@@ -569,7 +568,7 @@ def create_admin_configuration(options):
         ## is not meant as a replica
         if not options.skip_database:
             options.deploy_database = True
-            options.createdb = True
+            # options.createdb = True
         
         ## FIXME: set permissions
         if not options.dry_run:
@@ -600,7 +599,7 @@ def create_voms_conf(options):
     
     if options.shortfqans:
         voms_props+="\n--shortfqans"
-        
+    
     logger.debug("VOMS Core configuration:\n%s" % voms_props)
     if not options.dry_run:
         ## Core configuration
