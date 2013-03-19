@@ -26,7 +26,6 @@ import java.util.Properties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.server.Handler;
@@ -293,11 +292,12 @@ public class VomsesMain {
 		
 		
 		JettyRunThread service =  new JettyRunThread(server);
+		service.start();
 		try{
 			
-			service.start();
+			
 			checkStatus();
-			service.join();
+			
 			
 		}catch (Throwable t){
 			failAndExit("Error starting VOMSES service", t);
