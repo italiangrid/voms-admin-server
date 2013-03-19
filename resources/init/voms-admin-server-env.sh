@@ -46,7 +46,6 @@ VOMS_WS_JAR="$PREFIX/usr/share/java/voms-admin.jar"
 ## The VOMS service shutdown class
 VOMS_WS_SHUTDOWN_CLASS="org.glite.security.voms.admin.server.ShutdownClient"
 
-
 ## The VOMS web service classpath
 VOMS_WS_CP="$VOMS_WS_JARS:$VOMS_WS_JAR"
 
@@ -57,7 +56,7 @@ VOMS_WS_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_CP $VOMS_WS_MAIN_CLASS"
 VOMSES_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_CP $VOMSES_MAIN_CLASS"
 
 ## Base VOMS shutdown command
-VOMS_WS_SHUTDOWN_CMD="java -cp $VOMS_WS_DEPS $VOMS_WS_SHUTDOWN_CLASS"
+VOMS_WS_SHUTDOWN_CMD="java -cp $VOMS_WS_CP $VOMS_WS_SHUTDOWN_CLASS"
 
 if [ -r "$PREFIX/etc/sysconfig/voms-admin" ]; then
 	source "$PREFIX/etc/sysconfig/voms-admin"

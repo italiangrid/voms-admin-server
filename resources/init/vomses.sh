@@ -28,6 +28,4 @@ source "$PREFIX/usr/share/voms-admin/scripts/voms-admin-server-env.sh"
 localhost=$(hostname -f)
 
 $VOMSES_START_CMD --host $localhost --port $VOMSES_PORT --cert $VOMSES_CERT \
-  --key $VOMSES_KEY \ 
-  --shutdown_port $VOMSES_SHUTDOWN_PORT \
-  --shutdown_password $VOMSES_SHUTDOWN_PASSWORD
+  --key $VOMSES_KEY

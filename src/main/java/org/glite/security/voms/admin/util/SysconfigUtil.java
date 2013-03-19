@@ -37,6 +37,9 @@ public class SysconfigUtil {
 	public static final String SYSCONFIG_CONF_DIR = "CONF_DIR";
 	public static final String SYSCONFIG_DEFAULT_VO_NAME = "DEFAULT_VO_NAME";
 	
+	public static final String SYCONFIG_VOMSES_SHUTDOWN_PORT = "VOMSES_SHUTDOWN_PORT";
+	public static final String SYCONFIG_VOMSES_SHUTDOWN_PASSWORD = "VOMSES_SHUTDOWN_PASSWORD";
+	
 	public static final String DEFAULT_PREFIX = "/";
 	public static final String PREFIX_PROP_NAME =  "package.prefix";
 	

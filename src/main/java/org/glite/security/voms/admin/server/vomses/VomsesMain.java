@@ -278,12 +278,13 @@ public class VomsesMain {
 			
 			host = cmdLine.getOptionValue(OptionArgs.HOST.getOptionName(),"localhost");
 			port = cmdLine.getOptionValue(OptionArgs.PORT.getOptionName(), "8443");
-			shutdownPort = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PORT.getOptionName(),"9000");
-			shutdownPassword = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PASSWORD.getOptionName(), "shutdown");
 			
 			certFile = cmdLine.getOptionValue(OptionArgs.CERT.getOptionName(), "/etc/grid-security/hostcert.pem");
 			keyFile = cmdLine.getOptionValue(OptionArgs.KEY.getOptionName(), "/etc/grid-security/hostkey.pem");
 			trustDir = cmdLine.getOptionValue(OptionArgs.TRUSTDIR.getOptionName(), "/etc/grid-security/certificates");
+			
+			shutdownPort = (String) sysconfigProperties.get(SysconfigUtil.SYCONFIG_VOMSES_SHUTDOWN_PORT);
+			shutdownPassword = (String) sysconfigProperties.get(SysconfigUtil.SYCONFIG_VOMSES_SHUTDOWN_PASSWORD);
 			
 			
 		} catch (ParseException e) {
@@ -310,6 +311,7 @@ public class VomsesMain {
 			
 			
 			checkStatus();
+			shutdownService.start();
 			
 			
 		}catch (Throwable t){
