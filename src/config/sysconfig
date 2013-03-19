@@ -21,7 +21,7 @@ VOMSES_PORT=${package.vomses_port}
 VOMSES_SHUTDOWN_PORT=${package.vomses_shutdown_port}
 
 # The password used to shutdown the vomses webapp
-VOMSES_SHUTDOWN_PASSWORD=${packages.vomses_shutdown_password}
+VOMSES_SHUTDOWN_PASSWORD=${package.vomses_shutdown_password}
 
 # The cert used by the vomses webapp to setup the SSL connector
 VOMSES_CERT=${package.vomses_cert} 

@@ -57,6 +57,7 @@ public class VomsesMain {
 		HOST("host","The host where the service is running", true),
 		PORT("port", "The service will listen on this port", true),
 		SHUTDOWN_PORT("shutdown_port", "The service can be shut down contacting this port.", false),
+		SHUTDOWN_PASSWORD("shutdown_password", "The service can be shut down using this password.", false),
 		CERT("cert", "The certificate used to setup the SSL context."),
 		KEY("key", "The key used to setup the SSL context."),
 		TRUSTDIR("trustdir", "The directory where IGTF trust anchors are found."),
@@ -278,7 +279,7 @@ public class VomsesMain {
 			host = cmdLine.getOptionValue(OptionArgs.HOST.getOptionName(),"localhost");
 			port = cmdLine.getOptionValue(OptionArgs.PORT.getOptionName(), "8443");
 			shutdownPort = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PORT.getOptionName(),"9000");
-			shutdownPassword = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PORT.getOptionName(), "shutdown");
+			shutdownPassword = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PASSWORD.getOptionName(), "shutdown");
 			
 			certFile = cmdLine.getOptionValue(OptionArgs.CERT.getOptionName(), "/etc/grid-security/hostcert.pem");
 			keyFile = cmdLine.getOptionValue(OptionArgs.KEY.getOptionName(), "/etc/grid-security/hostkey.pem");
