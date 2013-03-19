@@ -144,12 +144,22 @@ stop() {
     return 1
   fi 
   
-  kill -KILL $pid
+  ## Stop the service 
+  $VOMS_WS_SHUTDOWN_CMD --port $VOMSES_SHUTDOWN_PORT --password $VOMSES_SHUTDOWN_PASSWORD
+  
   if [ $? -ne 0 ]; then
-    failure "(shutdown error)"
+    kill -KILL $pid
+    
+    if [ $? -ne 0 ]; then
+      failure "(shutdown error)"
+    else
+      remove_pid_file
+      success
+    fi
+    
   else
     remove_pid_file
-    success
+    success  
   fi 
 }
 

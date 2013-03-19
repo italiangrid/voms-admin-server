@@ -33,7 +33,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glite.security.voms.admin.util.SysconfigUtil;
+import org.italiangrid.utils.https.JettyAdminService;
 import org.italiangrid.utils.https.JettyRunThread;
+import org.italiangrid.utils.https.JettyShutdownTask;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
@@ -118,6 +120,7 @@ public class VomsesMain {
 	
 	private Server server;
 	private WebAppContext context;
+	private JettyAdminService shutdownService;
 		
 	private int trustDirRefreshIntervalInMsec = 10 * 60 * 1000;
 	
@@ -180,6 +183,7 @@ public class VomsesMain {
 			configureLogging();
 			logConfiguration();
 			configureJettyServer();
+			configureShutdownServer();
 			start();
 			
 		}catch (Throwable t){
@@ -187,6 +191,13 @@ public class VomsesMain {
 		}
 	}
 	
+	private void configureShutdownServer(){
+		
+		shutdownService = new JettyAdminService("localhost",  
+				Integer.parseInt(shutdownPort), shutdownPassword);
+		
+		shutdownService.registerShutdownTask(new JettyShutdownTask(server));
+	}
 	
 	private void configureJettyServer(){
 		
@@ -267,6 +278,7 @@ public class VomsesMain {
 			host = cmdLine.getOptionValue(OptionArgs.HOST.getOptionName(),"localhost");
 			port = cmdLine.getOptionValue(OptionArgs.PORT.getOptionName(), "8443");
 			shutdownPort = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PORT.getOptionName(),"9000");
+			shutdownPassword = cmdLine.getOptionValue(OptionArgs.SHUTDOWN_PORT.getOptionName(), "shutdown");
 			
 			certFile = cmdLine.getOptionValue(OptionArgs.CERT.getOptionName(), "/etc/grid-security/hostcert.pem");
 			keyFile = cmdLine.getOptionValue(OptionArgs.KEY.getOptionName(), "/etc/grid-security/hostkey.pem");

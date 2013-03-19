@@ -538,6 +538,8 @@
         <package.oracle_library_path>/usr/lib64/oracle/11.2.0.3.0/client/lib64</package.oracle_library_path>
         <package.tns_admin>/etc/voms</package.tns_admin>
         <package.vomses_port>8443</package.vomses_port>
+        <package.vomses_shutdown_port>9000</package.vomses_shutdown_port>
+        <package.vomses_shutdown_password>shutdown</package.vomses_shutdown_password>
         <package.vomses_cert>/etc/grid-security/vomscert.pem</package.vomses_cert>
         <package.vomses_key>/etc/grid-security/vomskey.pem</package.vomses_key>
         <package.vomses_trustdir>/etc/grid-security</package.vomses_trustdir>
@@ -572,6 +574,8 @@
         <package.confdir>/opt/voms/etc/voms-admin</package.confdir>
         <package.vomsuser></package.vomsuser>
         <package.vomses_port>8443</package.vomses_port>
+        <package.vomses_shutdown_port>9000</package.vomses_shutdown_port>
+        <package.vomses_shutdown_password>shutdown</package.vomses_shutdown_password>
         <package.vomses_cert>/etc/grid-security/hostcert.pem</package.vomses_cert>
         <package.vomses_key>/etc/grid-security/hostkey.pem</package.vomses_key>
         <package.vomses_trustdir>/etc/grid-security</package.vomses_trustdir>
