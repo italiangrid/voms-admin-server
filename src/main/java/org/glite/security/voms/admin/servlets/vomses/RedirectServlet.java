@@ -81,8 +81,10 @@ public class RedirectServlet extends HttpServlet {
 		
 		String url = getRedirectFromVOConfiguration(req);
 		
-		if (url != null)	
+		if (url != null){	
 			resp.sendRedirect(url);
+			return;
+		}
 		
 		super.doGet(req, resp);
 	}
