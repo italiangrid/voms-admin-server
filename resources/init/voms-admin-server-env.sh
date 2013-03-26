@@ -31,7 +31,12 @@ VOMS_WS_JARS=$PREFIX'/var/lib/voms-admin/lib/*'
 
 ##  VOMS Java otpions
 if [ -z $VOMS_WS_JAVA_OPTS ]; then
-	VOMS_WS_JAVA_OPTS="-Xmx256m"
+	VOMS_WS_JAVA_OPTS="-Xmx48m -XX:MaxPermSize=75m"
+fi
+
+## VOMSES Java options
+if [ -z $VOMSES_JAVA_OPTS ]; then
+  VOMSES_JAVA_OPTS="-Xmx32m -XX:MaxPermSize=32m"
 fi
 
 ## The VOMS service main class 
@@ -53,7 +58,7 @@ VOMS_WS_CP="$VOMS_WS_JARS:$VOMS_WS_JAR"
 VOMS_WS_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_CP $VOMS_WS_MAIN_CLASS"
 
 ## VOMSES app startup command
-VOMSES_START_CMD="java $VOMS_WS_JAVA_OPTS -cp $VOMS_WS_CP $VOMSES_MAIN_CLASS"
+VOMSES_START_CMD="java $VOMSES_JAVA_OPTS -cp $VOMS_WS_CP $VOMSES_MAIN_CLASS"
 
 ## Base VOMS shutdown command
 VOMS_WS_SHUTDOWN_CMD="java -cp $VOMS_WS_CP $VOMS_WS_SHUTDOWN_CLASS"

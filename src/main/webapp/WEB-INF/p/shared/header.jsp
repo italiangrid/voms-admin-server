@@ -21,10 +21,11 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<a href="<s:url value="/home/login.action"/>" id="logo-img">
-  <img src="<s:url value="/img/va-logo.png"/>" alt="VOMS Admin" /> 
-</a>
-
+  <div id="logo-img">
+    <a href="<s:url value="/home/login.action"/>" id="logo-img">
+      <img src="<s:url value="/img/va-logo.png"/>" alt="VOMS Admin" /> 
+    </a>
+  </div>
   
   
   <div id="vo-info">

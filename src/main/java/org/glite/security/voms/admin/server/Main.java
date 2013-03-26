@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.server;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -66,7 +67,8 @@ public class Main {
 	public static final String DEFAULT_TRUSTSTORE_DIR = "/etc/grid-security/certificates";
 	public static final String DEFAULT_TMP_PREFIX = "/var/tmp";
 	
-	public static final long DEFAULT_TRUSTSTORE_REFRESH_INTERVAL = 60000L;
+	/** Default truststore refresh interval in seconds **/
+	public static final long DEFAULT_TRUSTSTORE_REFRESH_INTERVAL_IN_SECS = 21600L;
 
 	public static final int DEFAULT_MAX_CONNECTIONS = 50;
 	public static final int DEFAULT_MAX_REQUEST_QUEUE_SIZE = 200;
@@ -222,8 +224,12 @@ public class Main {
 		keyFile = conf.getString(VOMSConfigurationConstants.VOMS_SERVICE_KEY, DEFAULT_KEY);
 		
 		trustDir = conf.getString(VOMSConfigurationConstants.TRUST_ANCHORS_DIR);
-		trustDirRefreshIntervalInMsec = conf.getLong(VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD, 
-				DEFAULT_TRUSTSTORE_REFRESH_INTERVAL);
+		
+		long refreshIntervalInSeconds = conf.getLong(VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD, 
+				DEFAULT_TRUSTSTORE_REFRESH_INTERVAL_IN_SECS);
+		
+		trustDirRefreshIntervalInMsec = TimeUnit.SECONDS
+				.toMillis(refreshIntervalInSeconds);
 		
 		VOMSConfiguration.dispose();
 		
