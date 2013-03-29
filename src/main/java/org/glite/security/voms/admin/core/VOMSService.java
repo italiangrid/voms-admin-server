@@ -21,6 +21,7 @@ package org.glite.security.voms.admin.core;
 
 import it.infn.cnaf.voms.x509.X509ACGenerator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,10 +55,14 @@ import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.util.AdminServiceContactInfo;
 import org.glite.security.voms.admin.util.AdminServiceContactUtil;
-import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public final class VOMSService {
 
@@ -180,20 +185,53 @@ public final class VOMSService {
 		X509ACGenerator.instance(conf.getServiceCertificate(), conf.getServicePrivateKey());
 
 	}
-
-	protected static void configureLocalEndpointsInformation(ServletContext ctxt){
-		List<AdminServiceContactInfo> endpoints= new ArrayList<AdminServiceContactInfo>();
+	
+	protected static void configureLogging(ServletContext ctxt){
+		
 		String confDir = ctxt.getInitParameter("CONF_DIR");
-		endpoints = AdminServiceContactUtil.getAdminServiceContactInfo(confDir);
-		Collections.sort(endpoints);
-		log.debug("Endpoint informqtion loaded: {}", endpoints);
-		ctxt.setAttribute(ENDPOINTS_KEY, endpoints);
+		String vo = ctxt.getInitParameter("VO_NAME");
+		
+		String loggingConf = String.format("%s/%s/%s", confDir, vo, "logback.xml");
+		
+		File f = new File(loggingConf);
+
+		if (!f.exists())
+			throw new VOMSFatalException(String.format("Logging configuration " +
+					"not found at path '%s'",loggingConf));
+		
+		if (!f.canRead())
+			throw new VOMSFatalException(String.format("Logging configuration " +
+					"is not readable: %s",loggingConf));
+		
+		LoggerContext lc = (LoggerContext) LoggerFactory
+				.getILoggerFactory();
+		
+		JoranConfigurator configurator = new JoranConfigurator();
+		
+		configurator.setContext(lc);
+		lc.reset();
+		
+		lc.putProperty(VOMSConfigurationConstants.VO_NAME, vo);
+		
+		try {
+			configurator.doConfigure(f);
+		
+		} catch (JoranException e) {
+			
+			throw new VOMSFatalException("Error setting up the logging system",
+					e);
+		
+		}
+		
+		StatusPrinter.printIfErrorsOccured(lc);
 	}
 	
 	public static void start(ServletContext ctxt) {
 
 		Thread
 				.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+	
+		configureLogging(ctxt);
 		
 		VOMSConfiguration conf;
 
@@ -210,8 +248,6 @@ public final class VOMSService {
 
 		checkDatabaseVersion();
 		
-		configureLocalEndpointsInformation(ctxt);
-
 		configureVelocity();
 
 		configureEventManager();

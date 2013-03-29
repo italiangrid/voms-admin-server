@@ -3,46 +3,33 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.italiangrid</groupId>
+  <parent>
+    <groupId>org.italiangrid</groupId>
+    <artifactId>voms-admin-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  
   <artifactId>voms-admin-server</artifactId>
   <packaging>war</packaging>
-  <name>VOMS web services</name>
+  <name>VOMS Admin Server</name>
   <version>3.0.1</version>
-  <properties>    
+  
+  <properties>
     <server-version>${project.version}</server-version>
     <interface-version>2.0.2</interface-version>
-    
+
     <glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
     
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <container.version>3.0.1-SNAPSHOT</container.version>
     
-    <log.dir>var/log/voms-admin</log.dir>
-
-    <!-- Main moving dependencies versions -->
     <struts.version>2.2.1</struts.version>
     <hibernate.version>3.2.6.ga</hibernate.version>
     <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
     <c3p0.version>0.9.1</c3p0.version>
     <axis.version>1.2.1</axis.version>
     <opensaml.version>2.5.3</opensaml.version>
-    <slf4j.version>1.6.6</slf4j.version>
-    <logback.version>1.0.6</logback.version>
-    <https-utils.version>0.2.1</https-utils.version>
-    
-  </properties>
 
-  <developers>
-    <developer>
-      <id>andreac</id>
-      <name>Andrea Ceccanti</name>
-      <email>andrea.ceccanti@cnaf.infn.it</email>
-      <organization>INFN CNAF</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
+  </properties>
 
   <build>
     <resources>
@@ -68,7 +55,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -90,20 +76,17 @@
               <goal>war</goal>
             </goals>
             <configuration>
-              <!-- JARs in WEB-INF/lib are not included due to Jetty embedded 
-                deployment -->
-              <packagingIncludes>
-                WEB-INF/classes/**/*,
-                common/**/*,
-                img/**/*,
-                struts/**/*,
-                style/**/*,
-                META-INF/**/*,
-                WEB-INF/p/**/*,
-                WEB-INF/*
-              </packagingIncludes>
+              <!-- Exclude JETTY server libraries that we need here
+                   just because we create the tarball in this project
+              -->
               <packagingExcludes>
-                WEB-INF/classes/logback*.xml
+                WEB-INF/classes/logback*.xml,
+                WEB-INF/lib/javax*.jar,
+                WEB-INF/lib/jetty-*.jar,
+                WEB-INF/lib/https-utils-*.jar,
+                WEB-INF/lib/org.apache.jasper.*.jar,
+                WEB-INF/lib/org.eclipse.jdt.core*.jar,
+                WEB-INF/lib/voms-container*.jar
               </packagingExcludes>
               <webResources>
                 <resource>
@@ -202,17 +185,6 @@
       </plugin>
       
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-
-
-      <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
         <version>1.5.1</version>
@@ -255,40 +227,22 @@
     </plugins>
 
     <finalName>voms-admin</finalName>
+    
   </build>
 
-  <repositories>
-    <repository>
-      <id>cnaf-snapshots</id>
-      <url>http://radiohead.cnaf.infn.it:8081/nexus/content/repositories/cnaf-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-
-    <repository>
-      <id>cnaf-releases</id>
-      <url>http://radiohead.cnaf.infn.it:8081/nexus/content/repositories/cnaf-releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <dependencies>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.italiangrid</groupId>
+      <artifactId>voms-container</artifactId>
+      <version>${container.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
@@ -323,7 +277,6 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jsp</artifactId>
-      <version>8.1.4.v20120524</version>
     </dependency>
 
     <dependency>
@@ -359,7 +312,6 @@
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.1</version>
     </dependency>
 
     <dependency>
@@ -487,41 +439,35 @@
     </dependency>
 
     <!-- LOGGING STUFF -->
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>${logback.version}</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.italiangrid</groupId>
       <artifactId>https-utils</artifactId>
-      <version>${https-utils.version}</version>
     </dependency>
   </dependencies>
 
@@ -537,12 +483,6 @@
         <package.vomsuser>voms</package.vomsuser>
         <package.oracle_library_path>/usr/lib64/oracle/11.2.0.3.0/client/lib64</package.oracle_library_path>
         <package.tns_admin>/etc/voms</package.tns_admin>
-        <package.vomses_port>8443</package.vomses_port>
-        <package.vomses_shutdown_port>9000</package.vomses_shutdown_port>
-        <package.vomses_shutdown_password>shutdown</package.vomses_shutdown_password>
-        <package.vomses_cert>/etc/grid-security/vomscert.pem</package.vomses_cert>
-        <package.vomses_key>/etc/grid-security/vomskey.pem</package.vomses_key>
-        <package.vomses_trustdir>/etc/grid-security</package.vomses_trustdir>
       </properties>
       <build>
         <plugins>
@@ -566,21 +506,14 @@
         </plugins>
       </build>
     </profile>
-
     <profile>
       <id>local</id>
       <properties>
         <package.prefix>/opt/voms</package.prefix>
         <package.confdir>/opt/voms/etc/voms-admin</package.confdir>
         <package.vomsuser></package.vomsuser>
-        <package.vomses_port>8443</package.vomses_port>
-        <package.vomses_shutdown_port>9000</package.vomses_shutdown_port>
-        <package.vomses_shutdown_password>shutdown</package.vomses_shutdown_password>
-        <package.vomses_cert>/etc/grid-security/hostcert.pem</package.vomses_cert>
-        <package.vomses_key>/etc/grid-security/hostkey.pem</package.vomses_key>
-        <package.vomses_trustdir>/etc/grid-security</package.vomses_trustdir>
-        <package.oracle_library_path></package.oracle_library_path>
-        <package.tns_admin></package.tns_admin>
+        <package.oracle_library_path>/usr/lib64/oracle/11.2.0.3.0/client/lib64</package.oracle_library_path>
+        <package.tns_admin>/opt/voms/etc/voms</package.tns_admin>
       </properties>
     </profile>
   </profiles>
@@ -588,11 +521,11 @@
   <scm>
     <url>https://github.com/italiangrid/voms-admin-server</url>
   </scm>
-  
-  <url>https://wiki.italiangrid.it/twiki/bin/view/VOMS</url>
-  
+
+  <url>https://github.com/italiangrid/voms-admin-server</url>
+
   <issueManagement>
     <system>jira</system>
-    <url>http://issues.cnaf.infn.it</url>
+    <url>http://issues.infn.it</url>
   </issueManagement>
 </project>

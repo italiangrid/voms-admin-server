@@ -18,7 +18,7 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.server;
+package org.glite.security.voms.admin.util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

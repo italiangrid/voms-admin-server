@@ -64,13 +64,39 @@
           </excludes>
           <directoryMode>0750</directoryMode>
         </fileSet>
+        
+        <!-- Empty fileset to create empty directory -->
+        <fileSet>
+          <directory>src</directory>
+          <outputDirectory>/usr/share/voms-admin/vo.d</outputDirectory>
+          <excludes>
+            <exclude>**/*</exclude>
+          </excludes>
+          <directoryMode>0755</directoryMode>
+        </fileSet>
+        
     </fileSets>
 
+    
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
             <fileMode>0644</fileMode>
+            <excludes>
+              <exclude>org.italiangrid:voms-container</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>/usr/share/java</outputDirectory>
+            <fileMode>0644</fileMode>
+            <includes>
+              <include>org.italiangrid:voms-container</include>
+            </includes>
+            <outputFileNameMapping>
+              ${artifact.artifactId}.${artifact.extension}
+            </outputFileNameMapping>
         </dependencySet>
     </dependencySets>
 
@@ -84,94 +110,61 @@
         </file>
         
         <file>
-            <source>resources/scripts/voms_configure.py</source>
+            <source>resources/scripts/configure/voms_configure.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-configure</destName>
             <fileMode>0755</fileMode>
         </file>
         
         <file>
-            <source>resources/scripts/voms_db_util.py</source>
+            <source>resources/scripts/configure/voms_db_util.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-db-util</destName>
             <fileMode>0755</fileMode>
         </file>
         
         <file>
-            <source>resources/scripts/voms_mysql_util.py</source>
+            <source>resources/scripts/configure/voms_mysql_util.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-mysql-util</destName>
             <fileMode>0755</fileMode>
         </file>
         
         <file>
-            <source>resources/scripts/voms_shared.py</source>
+            <source>resources/scripts/configure/voms_shared.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <filtered>true</filtered>
             <fileMode>0644</fileMode>
         </file>
 
         <file>
-            <source>resources/scripts/voms-config-info-providers.sh</source>
+            <source>resources/scripts/info-providers/voms-config-info-providers.sh</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-config-info-providers</destName>
             <fileMode>0755</fileMode>
         </file>
 
         <file>
-            <source>resources/scripts/glite-info-service-voms-admin-init.sh</source>
+            <source>resources/scripts/info-providers/glite-info-service-voms-admin-init.sh</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>glite-info-service-voms-admin-init</destName>
             <fileMode>0755</fileMode>
         </file>
 
         <file>
-            <source>resources/scripts/glite-info-service-voms-admin-wrapper.sh</source>
+            <source>resources/scripts/info-providers/glite-info-service-voms-admin-wrapper.sh</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>glite-info-service-voms-admin-wrapper</destName>
             <fileMode>0755</fileMode>
         </file>
-        
+           
         <file>
-            <source>resources/init/vomses.sh</source>
-            <outputDirectory>/usr/sbin</outputDirectory>
-            <destName>vomses</destName>
-            <fileMode>0755</fileMode>
-            <filtered>true</filtered>
-        </file>
-        
-        <file>
-            <source>resources/init/init-vomses.sh</source>
-            <outputDirectory>/etc/rc.d/init.d</outputDirectory>
-            <destName>vomses</destName>
-            <fileMode>0755</fileMode>
-            <filtered>true</filtered>
-        </file>
-        
-        <file>
-            <source>resources/init/init-voms-admin.sh</source>
+            <source>resources/scripts/init/init-voms-admin.sh</source>
             <outputDirectory>/etc/rc.d/init.d</outputDirectory>
             <destName>voms-admin</destName>
             <fileMode>0755</fileMode>
             <filtered>true</filtered>
         </file>
-        
-        <file>
-            <source>resources/init/voms-admin-server-env.sh</source>
-            <outputDirectory>/usr/share/voms-admin/scripts</outputDirectory>
-            <destName>voms-admin-server-env.sh</destName>
-            <fileMode>0644</fileMode>
-            <filtered>true</filtered>
-        </file>
-        
-        <file>
-            <source>resources/init/voms-admin-server.sh</source>
-            <outputDirectory>/usr/sbin</outputDirectory>
-            <destName>voms-admin-server</destName>
-            <fileMode>0755</fileMode>
-            <filtered>true</filtered>
-        </file>
-        
         <file>
             <source>src/main/resources/c3p0.properties</source>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
@@ -204,6 +197,21 @@
             <fileMode>0644</fileMode>
             <filtered>true</filtered>
         </file>
+        
+        <file>
+            <source>src/config/voms-admin-server.properties</source>
+            <destName>voms-admin-server.properties</destName>
+            <outputDirectory>/etc/voms-admin</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+        
+        <file>
+            <source>src/config/logback.container.xml</source>
+            <destName>voms-admin-server.logback</destName>
+            <outputDirectory>/etc/voms-admin</outputDirectory>
+            <fileMode>0644</fileMode>
+            <filtered>true</filtered>
+        </file>
 
         <file>
             <source>resources/templates/glite-info-glue2-voms-admin.conf.template</source>
@@ -228,6 +236,5 @@
             <outputDirectory>/usr/share/voms-admin/info-providers</outputDirectory>
             <fileMode>0644</fileMode>
         </file>
-
     </files>
 </assembly>

@@ -115,9 +115,6 @@ def setup_cl_options():
     
     ## Admin service options
     admin_opt_group = OptionGroup(parser, "VOMS admin options", "These options drive the basic configuration of the VOMS admin service.")
-    admin_opt_group.add_option("--admin-port", dest="admin_port", type="int", help="the PORT on which the admin service will bind", metavar="PORT")
-    admin_opt_group.add_option("--admin-shutdown-port", type="int", dest="admin_shutdown_port", help="the admin service shutdown PORT", metavar="PORT")
-    admin_opt_group.add_option("--admin-shutdown-password", dest="admin_shutdown_password", help="the admin service shutdown password PWD", metavar="PWD")
     admin_opt_group.add_option("--admin-cert", dest="admin_cert", help="Grants CERT full administrator privileges in the VO", metavar="CERT")
     admin_opt_group.add_option("--read-only", dest="read_only", action="store_true", help="Sets the VOMS admin service as read-only", default=False)
     admin_opt_group.add_option("--disable-ro-access-for-authenticated-clients", 
@@ -363,8 +360,7 @@ def check_install_options(options):
     required_opts = ["vo", "dbusername", "dbpassword"]
     
     if not options.skip_voms_admin:
-        required_opts += ["admin_port",
-                          "mail_from",
+        required_opts += ["mail_from",
                           "smtp_host"]
         
     if not options.skip_voms_core:
@@ -503,17 +499,6 @@ def create_admin_service_properties(options):
                                   service_props, 
                                   0640)
 
-def create_endpoint_info(options):
-    
-    endpoint_path = admin_service_endpoint_path(options.vo)
-    url = "%s:%s" % (options.hostname, options.admin_port)
-    logger.debug("Admin service endpoint: %s" % url)
-    if not options.dry_run:
-        write_and_set_permissions(options, 
-                                  endpoint_path, 
-                                  url, 
-                                  0644)
-
 def create_vomses(options):    
     cert = X509Helper(options.cert, openssl_cmd=options.openssl)
     vomses = '"%s" "%s" "%s" "%s" "%s"\n' % (options.vo,
@@ -576,7 +561,6 @@ def create_admin_configuration(options):
     
     create_admin_db_properties(options)
     create_admin_service_properties(options)
-    create_endpoint_info(options)
     create_vomses(options)
     create_lsc(options)
     create_aup(options)
@@ -664,15 +648,6 @@ def setup_defaults(options):
             error_and_exit("Please set at least the --dbapwd option when attempting MySQL schema creation/removal.")
 
 def setup_admin_defaults(options):
-    
-    if not options.admin_shutdown_port:
-        if options.hostname != "localhost":
-            options.admin_shutdown_port = options.admin_port
-        else:
-            error_and_exit("Please specify a shutdown port for the voms-admin service as you're configuring it to listen on localhost")
-    
-    if not options.admin_shutdown_password:
-        options.admin_shutdown_password = generate_password()
     
     if not options.aup_url:
         options.aup_url = "file:%s" % aup_path(options.vo)

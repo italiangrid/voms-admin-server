@@ -13,21 +13,3 @@ ORACLE_LIBRARY_PATH=${package.oracle_library_path}
 
 # Default oracle tnsnames.ora location
 TNS_ADMIN=${package.tns_admin}
-
-# The port under which the vomses webapp is running
-VOMSES_PORT=${package.vomses_port}
-
-# The port used to shutdown the vomses webapp
-VOMSES_SHUTDOWN_PORT=${package.vomses_shutdown_port}
-
-# The password used to shutdown the vomses webapp
-VOMSES_SHUTDOWN_PASSWORD=${package.vomses_shutdown_password}
-
-# The cert used by the vomses webapp to setup the SSL connector
-VOMSES_CERT=${package.vomses_cert} 
-
-# The key used by the vomses webapp to setup the SSL connector
-VOMSES_KEY=${package.vomses_key}
-
-# The trust anchors dir used by the vomses webapp to setup the SSL connector
-VOMSES_TRUST_DIR=${package.vomses_trustdir}

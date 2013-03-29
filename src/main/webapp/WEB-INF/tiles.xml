@@ -254,10 +254,6 @@
       <put-attribute name="content" value="/WEB-INF/p/exception/notFoundException.jsp"/>
     </definition>
     
-    <definition name="siblings" extends="user-layout">
-      <put-attribute name="content" value="/WEB-INF/p/sibling/siblings.jsp"/>
-    </definition>
-    
     <definition name="configuration" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/configuration/configuration.jsp"/>
     </definition>
@@ -267,7 +263,6 @@
     <definition name="tokenError" extends="empty-layout">
         <put-attribute name="content" value="/WEB-INF/p/exception/tokenError.jsp"/>
     </definition>
-    
     
     <definition name="requestMembershipRemoval" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>

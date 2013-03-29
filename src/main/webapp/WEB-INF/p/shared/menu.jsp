@@ -40,7 +40,7 @@
   		</li>
   </s:if>
   <li class="last-menu-item">
-    <a href="<s:url action="siblings" namespace="/sibling"/>">Other VOs on this server</a>
+    <a href="/">Other VOs on this server</a>
   </li>
 
 

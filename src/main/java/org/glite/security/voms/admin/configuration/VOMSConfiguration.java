@@ -25,7 +25,6 @@ import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_DEFAULT
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -42,14 +41,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.ConfigurationUtils;
-import org.apache.commons.configuration.JNDIConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -60,10 +57,6 @@ import org.glite.security.voms.admin.util.DNUtil;
 import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 
 public final class VOMSConfiguration {
 	
@@ -138,6 +131,7 @@ public final class VOMSConfiguration {
 
 		loadVersionProperties();
 		loadConfDir();
+		loadHostAndPort();
 		
 		if (context != null) {
 			
@@ -163,6 +157,18 @@ public final class VOMSConfiguration {
 
 		log.debug("VOMS-Admin configuration loaded!");
 
+	}
+
+	private void loadHostAndPort() {
+
+		if (context != null){
+			
+			config.setProperty(VOMSConfigurationConstants.VOMS_SERVICE_PORT, 
+				context.getInitParameter("PORT"));
+			
+			config.setProperty(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, 
+				context.getInitParameter("HOST"));
+		}
 	}
 
 	/*
@@ -197,58 +203,6 @@ public final class VOMSConfiguration {
 	public void clearProperty(String arg0) {
 
 		config.clearProperty(arg0);
-	}
-
-	private void configureLogback() {
-
-		if (context != null) {
-
-			InputStream is = null;
-			try {
-
-				is = getExternalLogbackConfiguration();
-
-			} catch (FileNotFoundException f) {
-
-				log.warn(f.getMessage());
-				if (log.isDebugEnabled()) {
-
-					log.warn(f.getMessage(), f);
-					log
-							.warn("External logging configuration not found, will use internal configuration instead.");
-
-				}
-			}
-
-			if (is == null)
-				is = context
-						.getResourceAsStream("/WEB-INF/classes/logback.runtime.xml");
-
-			if (is == null)
-				throw new VOMSConfigurationException(
-						"Error configuring logging system: logback.runtime.xml not found in application context!");
-
-			try {
-				LoggerContext lc = (LoggerContext) LoggerFactory
-						.getILoggerFactory();
-				JoranConfigurator configurator = new JoranConfigurator();
-
-			
-				configurator.setContext(lc);
-				lc.reset();
-
-				configurator.doConfigure(is);
-				
-
-			} catch (JoranException e) {
-				e.printStackTrace();
-				throw new VOMSConfigurationException(
-						"Error configuring logging system: " + e.getMessage(),
-						e);
-
-			}
-
-		}
 	}
 
 	/*
@@ -1031,89 +985,27 @@ public final class VOMSConfiguration {
 	
 	private void loadVOName() {
 		
-		JNDIConfiguration jndiConfig;
-
-		try {
-
-			jndiConfig = new JNDIConfiguration();
-
-		} catch (NamingException e) {
-			log.error("Error accessing JNDI configuration properties: "
-					+ e.getMessage());
-			if (log.isDebugEnabled())
-				log.error(e.getMessage(), e);
-
-			throw new VOMSConfigurationException(
-					"Error accessing JNDI configuration properties: "
-							+ e.getMessage(), e);
-
-		}
-		
 		SystemConfiguration systemConfig = new SystemConfiguration();
-
-		if (log.isDebugEnabled()) {
-
-			log.debug("JNDI Configuration contents: ");
-			Iterator jndiKeysIter = jndiConfig.getKeys();
-
-			while (jndiKeysIter.hasNext()) {
-
-				String key = (String) jndiKeysIter.next();
-				log.debug(key + " = " + jndiConfig.getProperty(key));
-
-			}
-
-			log.debug("System Configuration contents: ");
-			Iterator systemKeysIter = systemConfig.getKeys();
-
-			while (systemKeysIter.hasNext()) {
-
-				String key = (String) systemKeysIter.next();
-				log.debug(key + " = " + systemConfig.getProperty(key));
-			}
-		}
-		
-		jndiConfig.setPrefix("java:comp/env");
-
-		// Add values coming from JNDI context
-		config.addConfiguration(jndiConfig);
 		
 		if (!config.containsKey("VO_NAME")){
 			
-			log.debug("VO_NAME not found in JNDI context");
-			if (config.containsKey("DEFAULT_VO_NAME")){
-				
-				log.info("DEFAULT_VO_NAME found, using {} for VO_NAME", config.getString("DEFAULT_VO_NAME"));
-				
-				config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
-				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
-				
-			}
-			
-			if (systemConfig.containsKey("DEFAULT_VO_NAME")){
-				
-				log.info("DEFAULT_VO_NAME found in system config, using {} for VO_NAME", systemConfig.getString("DEFAULT_VO_NAME"));
-				
-				config.setProperty(VOMSConfigurationConstants.VO_NAME, systemConfig.getProperty("DEFAULT_VO_NAME"));
-				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("DEFAULT_VO_NAME"));
-				
-			}
-			
 			if (context.getInitParameter("VO_NAME")!= null){
-				log.debug("Setting VO name from init parameter: {}", context.getInitParameter("VO_NAME"));
+				log.debug("Setting VO name from init parameter: {}", 
+						context.getInitParameter("VO_NAME"));
 				
-				config.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
-				systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
+				config.setProperty(VOMSConfigurationConstants.VO_NAME, 
+						context.getInitParameter("VO_NAME"));
 				
 			}
 			
 			if (!config.containsKey(VOMSConfigurationConstants.VO_NAME)){
 				throw new VOMSConfigurationException("VO_NAME property not found!");
 			}
+		
 		}else{
 		
-			config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("VO_NAME"));
-			systemConfig.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("VO_NAME"));
+			config.setProperty(VOMSConfigurationConstants.VO_NAME, 
+					config.getProperty("VO_NAME"));
 			
 		}
 	}

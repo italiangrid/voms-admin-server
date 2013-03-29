@@ -64,9 +64,6 @@
     <appender name="FILE"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${package.prefix}/${log.dir}/voms-admin-${voms.vo.name}.log</File>
-                
-        <ImmediateFlush>true</ImmediateFlush>
-        
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${package.prefix}/${log.dir}/voms-admin-${voms.vo.name}-%d{yyyy-MM-dd}.log</FileNamePattern>
