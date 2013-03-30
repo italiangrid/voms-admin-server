@@ -38,42 +38,126 @@
 ## voms installation prefix
 PREFIX="${package.prefix}"
 
-## Oracle environment
-
-ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
+if [ -r "$PREFIX/etc/sysconfig/voms-admin" ]; then
+	source "$PREFIX/etc/sysconfig/voms-admin"
+fi
 
 ## Server startup Java options
-if [ -z $VOMS_JAVA_OPTS ]; then
+if [ -z "$VOMS_JAVA_OPTS" ]; then
   VOMS_JAVA_OPTS="-Xmx256m -XX:MaxPermSize=512m"
 fi
 
 ## The VOMS container jar
 VOMS_SERVER_JAR="$PREFIX/usr/share/java/voms-container.jar"
 
+if [ -z "$VOMS_DEBUG_PORT" ]; then
+	VOMS_DEBUG_PORT=8998
+fi
+
+if [ -z "$VOMS_DEBUG_SUSPEND" ]; then
+	VOMS_DEBUG_SUSPEND="n"
+fi
+
+if [ ! -z "$VOMS_DEBUG" ]; then
+	VOMS_JAVA_OPTS="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=$VOMS_DEBUG_PORT,suspend=$VOMS_DEBUG_SUSPEND $VOMS_JAVA_OPTS"
+fi
+
 ## Base VOMS startup command 
 VOMS_START_CMD="java $VOMS_JAVA_OPTS -jar $VOMS_SERVER_JAR"
 
-if [ -r "$PREFIX/etc/sysconfig/voms-admin" ]; then
-	source "$PREFIX/etc/sysconfig/voms-admin"
-fi
+## Oracle environment
+ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
 
 if [ ! -d "$PREFIX/var/lock/subsys" ]; then
     mkdir -p $PREFIX/var/lock/subsys
+fi
+
+if [ -z "$VOMS_STATUS_PORT" ]; then
+	VOMS_STATUS_PORT=8088
 fi
 
 pid_file="$PREFIX/var/lock/subsys/voms-container"
 deploy_dir="$PREFIX/usr/share/voms-admin/vo.d"
 configured_vos=`find $CONF_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \;`
 
+print_vo_status(){
+	status_vo=$(echo $1 | tr -d ' ')
+	
+	vo_status=$(curl -s http://localhost:$VOMS_STATUS_PORT/status)
+	
+	if [ $? -ne 0 ]; then
+		failure "error getting vo status"
+		exit 1
+	fi
+	
+	if [ ! -z "$status_vo" ]; then
+		echo -n "VO($status_vo): ";
+		check_vo_name "$status_vo"
+	fi
+
+	while read -r line; do
+		IFS=":" read -ra vo_entry <<< "$line";
+		vo_name=$(echo "${vo_entry[0]}" | tr -d ' ');
+		vo_state=$(echo "${vo_entry[1]}" | tr -d ' ');
+		if [ -z "$status_vo" ]; then
+			echo -n "VO ($vo_name):";
+			[ "$vo_state" == "active" ] && up || down ;
+		else
+			if [ "$vo_name" == "$status_vo" ]; then
+				[ "$vo_state" == "active" ] && up || down;
+			fi
+		fi
+	done <<< "$vo_status"
+}
+
 deploy_vos() {
-	for vo in $1; do
-		touch $deploy_dir/$vo
+	vos=$1
+	
+	if [ -z "$vos" ]; then
+		vos=$configured_vos
+	fi
+	
+	for vo in $vos; do
+		if [ $# -gt 1 ]; then
+			echo -n "Deploying vo($vo): "
+		fi
+		check_vo_name "$vo"
+		if [ -f $deploy_dir/$vo ]; then
+			if [ $# -gt 1 ]; then
+				success "already deployed"
+			fi
+			return 0
+		else
+			touch $deploy_dir/$vo
+			if [ $# -gt 1 ]; then
+				success
+			fi
+		fi
 	done
 }
 
 undeploy_vos() {
-	for vo in $1; do
-		rm -f $deploy_dir/$vo
+	vos=$1
+	
+	if [ -z "$vos" ]; then
+		vos=$configured_vos
+	fi
+	
+	for vo in $vos; do
+		if [ $# -gt 1 ]; then
+			echo -n "Undeploying vo($vo): "
+		fi
+		if [ -f $deploy_dir/$vo ]; then
+			rm -f $deploy_dir/$vo
+			if [ $# -gt 1 ]; then
+				success
+			fi
+		else
+			if [ $# -gt 1 ]; then
+				success "was not deployed"
+			fi
+			return 0
+		fi
 	done
 }
 
@@ -83,7 +167,7 @@ check_vo_name() {
 		[ "$v" = "$1" ] && return 0
 	done
 	
-	echo "VO $1 is not configured on this host!"
+	failure "not configured"
 	exit 1
 
 }
@@ -234,7 +318,32 @@ restart() {
 }
 
 status() {
-	success "not implemented"
+	echo -n "VOMS admin container: "
+	check_container_is_running
+	if [ $? -eq 0 ]; then
+		success 
+		print_vo_status "$1"
+	else
+		failure "(not running)"
+	fi
+}
+
+down() {
+    if [ ! -z "$1" ]; then
+        echo -n "$1"
+    fi
+    
+    RES_COL=60
+    echo -en "\\033[${RES_COL}G"
+    echo -n "[ "
+    echo -en "\\033[1;31m"
+    echo -n DOWN
+    echo -en "\\033[0;39m"
+    echo -n " ]"
+    echo -ne "\r"
+    echo
+    
+    return 0
 }
 
 success()
@@ -249,6 +358,26 @@ success()
     echo -n "[  "
     echo -en "\\033[1;32m"
     echo -n OK
+    echo -en "\\033[0;39m"
+    echo -n "  ]"
+    echo -ne "\r"
+    echo
+    
+    return 0
+}
+
+up()
+{
+
+    if [ ! -z "$1" ]; then
+        echo -n "$1"
+    fi
+    
+    RES_COL=60
+    echo -en "\\033[${RES_COL}G"
+    echo -n "[  "
+    echo -en "\\033[1;32m"
+    echo -n UP
     echo -en "\\033[0;39m"
     echo -n "  ]"
     echo -ne "\r"
@@ -296,11 +425,11 @@ case "$1" in
 		;;
 	
 	deploy)
-	  deploy "$2"
+	  deploy_vos "$2" "verbose"
 	  ;;
 	
 	undeploy)
-	  undeploy "$2"
+	  undeploy_vos "$2" "verbose"
 	  ;;
 	   
 	*)
