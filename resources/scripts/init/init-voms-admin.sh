@@ -38,8 +38,8 @@
 ## voms installation prefix
 PREFIX="${package.prefix}"
 
-if [ -r "$PREFIX/etc/sysconfig/voms-admin" ]; then
-	source "$PREFIX/etc/sysconfig/voms-admin"
+if [ -r "${PREFIX%/}/etc/sysconfig/voms-admin" ]; then
+	source "{PREFIX%/}/etc/sysconfig/voms-admin"
 fi
 
 ## Server startup Java options
@@ -48,7 +48,7 @@ if [ -z "$VOMS_JAVA_OPTS" ]; then
 fi
 
 ## The VOMS container jar
-VOMS_SERVER_JAR="$PREFIX/usr/share/java/voms-container.jar"
+VOMS_SERVER_JAR="${PREFIX%/}/usr/share/java/voms-container.jar"
 
 if [ -z "$VOMS_DEBUG_PORT" ]; then
 	VOMS_DEBUG_PORT=8998
@@ -68,16 +68,16 @@ VOMS_START_CMD="java $VOMS_JAVA_OPTS -jar $VOMS_SERVER_JAR"
 ## Oracle environment
 ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
 
-if [ ! -d "$PREFIX/var/lock/subsys" ]; then
-    mkdir -p $PREFIX/var/lock/subsys
+if [ ! -d "${PREFIX%/}/var/lock/subsys" ]; then
+    mkdir -p ${PREFIX%/}/var/lock/subsys
 fi
 
 if [ -z "$VOMS_STATUS_PORT" ]; then
 	VOMS_STATUS_PORT=8088
 fi
 
-pid_file="$PREFIX/var/lock/subsys/voms-container"
-deploy_dir="$PREFIX/usr/share/voms-admin/vo.d"
+pid_file="${PREFIX%/}/var/lock/subsys/voms-container"
+deploy_dir="${PREFIX%/}/usr/share/voms-admin/vo.d"
 configured_vos=`find $CONF_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \;`
 
 print_vo_status(){
@@ -186,20 +186,19 @@ check_container_is_running() {
 start_container(){
 	
 	## Start the container
-	start_cmd="$ORACLE_ENV $VOMS_START_CMD"
+	start_cmd="$ORACLE_ENV $VOMS_START_CMD &"
 	
 	if [ -n "$VOMS_USER" ]; then
 		if [ `id -u` -ne 0 ]; then
 			failure "(you need to be root to start voms-admin service as the user $VOMS_USER)"
 		else
-			start_cmd="su $VOMS_USER -s /bin/bash -c '$ORACLE_ENV $VOMS_START_CMD'"
+			start_cmd="su $VOMS_USER -s /bin/bash -c '$ORACLE_ENV $VOMS_START_CMD &'"
 		fi
 	fi
 	
-	eval "$start_cmd &"
-	pid=$!
+	eval "$start_cmd"
+	pid=$(find_pid)
 	[ $pid -eq 0 ] && failure "(container startup failed.)"
-	create_pid_file "$pid"
 	return 0
 }
 
@@ -209,7 +208,7 @@ stop_container(){
 	if [ -z $pid ]; then
 		failure "(not running)"
 	else
-		kill $pid
+		kill $pid 2>&1 >/dev/null
 		if [ $? -ne 0 ]; then
 			failure "(shutdown error)"
 		else

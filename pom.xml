@@ -478,6 +478,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
+        <!-- Always keep trailing slashes in package.prefix -->
         <package.prefix>/</package.prefix>
         <package.confdir>/etc/voms-admin</package.confdir>
         <package.vomsuser>voms</package.vomsuser>
@@ -509,7 +510,8 @@
     <profile>
       <id>local</id>
       <properties>
-        <package.prefix>/opt/voms</package.prefix>
+        <!-- Always keep trailing slashes in package.prefix -->
+        <package.prefix>/opt/voms/</package.prefix>
         <package.confdir>/opt/voms/etc/voms-admin</package.confdir>
         <package.vomsuser></package.vomsuser>
         <package.oracle_library_path>/usr/lib64/oracle/11.2.0.3.0/client/lib64</package.oracle_library_path>
