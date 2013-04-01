@@ -86,6 +86,9 @@
             <excludes>
               <exclude>org.italiangrid:voms-container</exclude>
             </excludes>
+            <outputFileNameMapping>
+              ${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
+            </outputFileNameMapping>
         </dependencySet>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
