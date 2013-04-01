@@ -39,7 +39,7 @@
 PREFIX="${package.prefix}"
 
 if [ -r "${PREFIX%/}/etc/sysconfig/voms-admin" ]; then
-	source "{PREFIX%/}/etc/sysconfig/voms-admin"
+	source "${PREFIX%/}/etc/sysconfig/voms-admin"
 fi
 
 ## Server startup Java options
