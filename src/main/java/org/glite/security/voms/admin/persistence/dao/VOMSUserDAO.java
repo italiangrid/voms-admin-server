@@ -1015,6 +1015,57 @@ public class VOMSUserDAO {
 		return res;
 	}
 	
+	public SearchResults searchWithPendingAUPRequest(String searchString, 
+		int firstResults,
+		int maxResults) {
+		
+		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+		
+		String queryString = "from VOMSUser u join u.tasks as t join u.certificates as cert " +
+			"where t.class = SignAUPTask and t.status != 'COMPLETED' " +
+			"and t.aup = :aup";
+		
+		String commonSearchString = "and (lower(u.surname) like lower(:searchString) "
+			+ "or lower(u.name) like lower(:searchString) " 
+			+ "or u.emailAddress like :searchString "
+			+ "or lower(u.institution) like lower(:searchString) "
+			+ "or cert.subjectString like(:searchString) "
+			+ "or cert.ca.subjectString like(:searchString))";
+		
+		if (searchStringEmpty(searchString)){
+			
+			
+			Query q = HibernateFactory.getSession()
+				.createQuery("select distinct u "+queryString)
+				.setEntity("aup", aup);
+			
+			String countQuery = String.format("select count(u) %s", queryString);
+			Query countQ = HibernateFactory.getSession()
+				.createQuery(countQuery)
+				.setEntity("aup", aup);
+			
+			return paginatedFind(q, countQ,null,firstResults, maxResults);
+		}else{
+			String sString = "%" + searchString + "%";
+			String commonQueryPart = String.format("%s %s", 
+				queryString, commonSearchString);
+			
+			Query q = HibernateFactory.getSession()
+					.createQuery(String.format("select distinct u %s", commonQueryPart))
+					.setEntity("aup", aup);
+			
+			Query count = HibernateFactory.getSession()
+				.createQuery(String.format("select count(u) %s", commonQueryPart))
+				.setEntity("aup", aup);
+			
+			q.setString("searchString", sString);
+			count.setString("searchString", sString);
+			
+			return paginatedFind(q, count, searchString, firstResults, maxResults);
+		}
+		
+	}
+	
 	public SearchResults searchSuspended(String searchString, int firstResults,
 			int maxResults) {
 

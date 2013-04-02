@@ -39,7 +39,16 @@
     <s:submit value="%{'Search users'}" cssClass="submitButton"/>
     <span>Limit to:</span>
     <s:label for="limitToSuspendedUsers"><span class="blabel blabel-important baseline">Suspended</span></s:label>
-    <s:checkbox name="limitToSuspendedUsers" onclick="this.form.submit()"/>
+    <s:checkbox id="limitToSuspendedCheck" 
+      name="limitToSuspendedUsers" 
+      onclick="$('#limitToAupCheck').attr('checked', false); this.form.submit()"/>
+      
+    <s:label for="limitToSuspendedUsers"><span class="blabel blabel-warning baseline">Pending sign AUP request</span></s:label>
+    <s:checkbox 
+      id="limitToAupCheck" 
+      name="limitToUsersWithPendingSignAUPRequest" 
+      onclick="$('#limitToSuspendedCheck').attr('checked', false); this.form.submit()"/>
+      
     <s:label for="searchData.maxResults">Show:</s:label>
     <s:select name="searchData.maxResults" list="{'10','50','100'}"  
       value="%{#session.searchData.maxResults}" 

@@ -65,7 +65,7 @@
         <strong>You have a pending request to sign the current version of the Acceptable Usage Policy (AUP) !</strong><br/>
         <s:iterator value="tasks.{? (#this instanceof org.glite.security.voms.admin.persistence.model.task.SignAUPTask 
         and #this.status.toString() != 'COMPLETED')}">
-          <div>
+          <div style="padding-top: 1em">
             <s:url action="sign" namespace="/aup" method="input" var="signAUPURL">
               <s:param name="aupId" value="aup.id"/>
             </s:url>

@@ -16,7 +16,7 @@
     limitations under the License.
 
     Authors:
-    	Andrea Ceccanti (INFN)
+      Andrea Ceccanti (INFN)
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
