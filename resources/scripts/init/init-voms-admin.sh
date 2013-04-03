@@ -155,7 +155,6 @@ undeploy_vos() {
 			if [ $# -gt 1 ]; then
 				success "was not deployed"
 			fi
-			return 0
 		fi
 	done
 }
@@ -220,9 +219,9 @@ stop_container(){
 deploy_dir_is_empty(){
 	deployed_vos=`find $deploy_dir -maxdepth 1 -mindepth 1 -type f -exec basename {} \;`
 	if [ -z $deploy_vos ]; then
-		return 1;
-	else
 		return 0;
+	else
+		return 1;
 	fi
 }
 
