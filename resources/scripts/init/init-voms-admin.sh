@@ -126,7 +126,6 @@ deploy_vos() {
 			if [ $# -gt 1 ]; then
 				success "already deployed"
 			fi
-			return 0
 		else
 			touch $deploy_dir/$vo
 			if [ $# -gt 1 ]; then
@@ -219,7 +218,8 @@ stop_container(){
 }
 
 deploy_dir_is_empty(){
-	if [ -e "$deploy_dir/*" ]; then
+	deployed_vos=`find $deploy_dir -maxdepth 1 -mindepth 1 -type f -exec basename {} \;`
+	if [ -z $deploy_vos ]; then
 		return 1;
 	else
 		return 0;
@@ -228,32 +228,36 @@ deploy_dir_is_empty(){
 
 start() {
   
-  vos=$1
-
 	if [ -z "$configured_vos" ]; then
-	  echo -n "Starting voms-admin: "
+	  	echo -n "Starting voms-admin: "
 		failure "(no vos configured)"
 		return $?
 	fi
 	
 	check_container_is_running
 	if [ $? -eq 0 ]; then
-    if [ -z "$1" ]; then
-	    echo -n "Starting voms-admin: "
-		  failure "(already running)"
-    else
-      deploy_vos "$vos" "verbose"
-    fi
+    	if [ -z "$1" ]; then
+	    	echo -n "Starting voms-admin: "
+		  	failure "(already running)"
+    	else
+      		deploy_vos "$1" "verbose"
+    	fi
 	else
-    if [ ! -z "$vos" ]; then
-      deploy_vos "$vos" "verbose"
-    else
-      deploy_dir_is_empty
-		  if [ $? -eq 0 ]; then
+		if [  ! -z "$1" ]; then
+      		deploy_vos "$1" "verbose"
+    	else
+      		deploy_dir_is_empty
+		  	if [ $? -eq 0 ]; then
 			  deploy_vos "$configured_vos" "verbose"
-		  fi 
-    fi
-	  echo -n "Starting voms-admin: "
+		  	else
+				deployed_vos=`find $deploy_dir -maxdepth 1 -mindepth 1 -type f -exec basename {} \; | sort`
+				echo "Deployed VOs:"
+				for v in $deployed_vos; do
+					echo "	$v" 
+				done
+			fi
+    	fi
+	  	echo -n "Starting voms-admin: "
 		start_container && success
 	fi 
 }
@@ -318,19 +322,19 @@ stop() {
 	check_container_is_running
 	
 	if [ $? -eq 0 ]; then
-    if [ ! -z "$vos" ]; then
-      undeploy_vos "$vos" "verbose"
-    else
-	    echo -n "Stopping voms-admin: "
-		  stop_container || failure "(error stopping container)"
-		  success
-    fi
+    	if [ ! -z "$vos" ]; then
+      		undeploy_vos "$vos" "verbose"
+    	else
+	    	echo -n "Stopping voms-admin: "
+		  	stop_container || failure "(error stopping container)"
+		  	success
+    	fi
 	else 
-    if [ ! -z "$vos" ]; then
-      undeploy_vos "$vos" "verbose"
-	    echo -n "Stopping voms-admin: "
-		  failure "(not running)"
-    fi
+    	if [ ! -z "$vos" ]; then
+      		undeploy_vos "$vos" "verbose"
+    	fi
+	 	echo -n "Stopping voms-admin: "
+		failure "(not running)"
 	fi
 }
 
