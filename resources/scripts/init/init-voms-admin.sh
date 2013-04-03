@@ -227,21 +227,33 @@ deploy_dir_is_empty(){
 }
 
 start() {
-	
-	echo -n "Starting voms-admin: "
+  
+  vos=$1
+
 	if [ -z "$configured_vos" ]; then
+	  echo -n "Starting voms-admin: "
 		failure "(no vos configured)"
 		return $?
 	fi
 	
 	check_container_is_running
 	if [ $? -eq 0 ]; then
-		failure "(already running)"
+    if [ -z "$1" ]; then
+	    echo -n "Starting voms-admin: "
+		  failure "(already running)"
+    else
+      deploy_vos "$vos" "verbose"
+    fi
 	else
-		deploy_dir_is_empty
-		if [ $? -eq 0 ]; then
-			deploy_vos "$configured_vos"
-		fi 
+    if [ ! -z "$vos" ]; then
+      deploy_vos "$vos" "verbose"
+    else
+      deploy_dir_is_empty
+		  if [ $? -eq 0 ]; then
+			  deploy_vos "$configured_vos" "verbose"
+		  fi 
+    fi
+	  echo -n "Starting voms-admin: "
 		start_container && success
 	fi 
 }
@@ -301,14 +313,24 @@ find_pid(){
 
 stop() {
 	
-	echo -n "Stopping voms-admin: "
+  vos=$1
+
 	check_container_is_running
 	
 	if [ $? -eq 0 ]; then
-		stop_container || failure "(error stopping container)"
-		success
+    if [ ! -z "$vos" ]; then
+      undeploy_vos "$vos" "verbose"
+    else
+	    echo -n "Stopping voms-admin: "
+		  stop_container || failure "(error stopping container)"
+		  success
+    fi
 	else 
-		failure "(not running)"
+    if [ ! -z "$vos" ]; then
+      undeploy_vos "$vos" "verbose"
+	    echo -n "Stopping voms-admin: "
+		  failure "(not running)"
+    fi
 	fi
 }
 
@@ -408,11 +430,11 @@ failure()
 
 case "$1" in
 	start)
-		start 
+		start "$2"
 		;;
 	
 	stop)
-		stop
+		stop "$2"
 		;;
 	
 	status)
