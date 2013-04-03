@@ -44,7 +44,7 @@ fi
 
 ## Server startup Java options
 if [ -z "$VOMS_JAVA_OPTS" ]; then
-  VOMS_JAVA_OPTS="-Xmx256m -XX:MaxPermSize=512m"
+  VOMS_JAVA_OPTS="-Xms256m -Xmx512m -XX:MaxPermSize=512m"
 fi
 
 ## The VOMS container jar
