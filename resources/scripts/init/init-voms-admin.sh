@@ -338,7 +338,11 @@ stop() {
 }
 
 restart() {
-	stop_container && sleep 5 && start_container
+	echo -n "Stopping VOMS Admin:"
+	stop_container && success
+	sleep 5
+	echo -n "Starting VOMS Admin:"
+	start_container && success
 }
 
 status() {

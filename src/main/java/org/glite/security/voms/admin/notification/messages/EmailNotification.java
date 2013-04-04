@@ -180,7 +180,7 @@ public abstract class EmailNotification {
 			e.setTLS(useTLS);
 
 			if (recipientList.isEmpty())
-				throw new VOMSNotificationException("Empty reicipient list!");
+				throw new VOMSNotificationException("Empty recipient list!");
 
 			Iterator i = recipientList.iterator();
 			while (i.hasNext())
