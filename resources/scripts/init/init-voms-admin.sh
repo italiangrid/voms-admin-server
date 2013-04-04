@@ -218,7 +218,7 @@ stop_container(){
 
 deploy_dir_is_empty(){
 	deployed_vos=`find $deploy_dir -maxdepth 1 -mindepth 1 -type f -exec basename {} \;`
-	if [ -z $deploy_vos ]; then
+	if [ -z "$deployed_vos" ]; then
 		return 0;
 	else
 		return 1;
