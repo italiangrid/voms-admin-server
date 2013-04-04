@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1</version>
   </parent>
 
   <artifactId>voms-admin-server</artifactId>
@@ -23,7 +23,7 @@
 
     <glite-services-namespace>http://glite.org/wsdl/services</glite-services-namespace>
 
-    <container.version>3.0.1-SNAPSHOT</container.version>
+    <container.version>3.0.1</container.version>
 
     <struts.version>2.2.1</struts.version>
     <hibernate.version>3.2.6.ga</hibernate.version>
