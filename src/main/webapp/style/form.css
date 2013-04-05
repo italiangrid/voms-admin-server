@@ -52,6 +52,8 @@ input[type="submit"]{
 	-moz-border-radius-topleft:11px;
 	-moz-border-radius-topright:11px;
 	
+	border-radius: 11px;
+	
 	-webkit-border-radius: 11px;
 	-moz-box-sizing:content-box;
 	border-style:solid;
@@ -154,6 +156,8 @@ input.activeTextField, textarea.activeTextField{
 	
 	-webkit-border-bottom-right-radius: 6px;
 	-webkit-border-bottom-left-radius: 6px;
+	
+	border-radius: 6px;
 }
 
 .userFormButtons{

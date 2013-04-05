@@ -45,6 +45,7 @@ body{
 	-webkit-border-top-right-radius: 10px;
 	-webkit-border-top-left-radius: 10px;
 	
+	border-radius: 10px 10px 0 0;
 	
 	background-color:#1B5790;
 	

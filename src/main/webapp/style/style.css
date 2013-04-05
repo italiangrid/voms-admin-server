@@ -251,6 +251,7 @@ h3,.header3 {
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-right-radius: 6px;
 	-webkit-border-top-left-radius: 6px;
+	border-radius: 6px 6px 0 0;
 	float: left;
 	font-weight: bold;
 	width: 100%;
@@ -452,6 +453,7 @@ dl dt {
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-left-radius: 6px;
 	-webkit-border-top-right-radius: 6px;
+	border-radius: 6px 6px 0 0;
 	margin-bottom: 2em;
 }
 
@@ -463,6 +465,7 @@ dl dt {
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-left-radius: 6px;
 	-webkit-border-top-right-radius: 6px;
+	border-radius: 6px 6px 0 0;
 	margin: 0;
 	padding: 1em 0;
 }
@@ -588,6 +591,7 @@ th.permissionName {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	-webkit-border-bottom-left-radius: 6px;
+	border-radius: 6px 6px 0 0;
 }
 
 #showACLHelpHandle:hover {
@@ -604,6 +608,7 @@ th.permissionName {
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-right-radius: 6px;
 	-webkit-border-top-left-radius: 6px;
+	border-radius: 6px 6px 0 0;
 }
 
 #aclHelpPane p {
@@ -820,6 +825,7 @@ tr.userBulkOperations {
 	-webkit-border-top-right-radius: 6px;
 	-webkit-border-top-left-radius: 6px;
 	
+	border-radius: 6px 6px 0 0;
 	border: 1px solid #f5f5f5;
 	vertical-align: bottom;
 	background-color: #f5f5f5;
