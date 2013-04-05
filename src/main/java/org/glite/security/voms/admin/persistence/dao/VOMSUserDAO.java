@@ -1039,7 +1039,7 @@ public class VOMSUserDAO {
 				.createQuery("select distinct u "+queryString)
 				.setEntity("aup", aup);
 			
-			String countQuery = String.format("select count(u) %s", queryString);
+			String countQuery = String.format("select count(distinct u) %s", queryString);
 			Query countQ = HibernateFactory.getSession()
 				.createQuery(countQuery)
 				.setEntity("aup", aup);
@@ -1055,7 +1055,7 @@ public class VOMSUserDAO {
 					.setEntity("aup", aup);
 			
 			Query count = HibernateFactory.getSession()
-				.createQuery(String.format("select count(u) %s", commonQueryPart))
+				.createQuery(String.format("select count(distinct u) %s", commonQueryPart))
 				.setEntity("aup", aup);
 			
 			q.setString("searchString", sString);
