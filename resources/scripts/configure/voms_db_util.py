@@ -152,7 +152,7 @@ def main():
 
     if command == "add-admin":
         do_add_admin(options)
-    elif command == "remove=admin":
+    elif command == "remove-admin":
         do_remove_admin(options)
     else:
         do_basic_command(options, command)
