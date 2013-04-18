@@ -25,7 +25,11 @@ else
     exit 2
 fi
 
+# the pid file
+VOMS_ADMIN_PID_FILE=/var/lock/subsys/voms-container
+
 # Write to stdout - will be imported by the info provider
 echo VOMS_ADMIN_HOST=$VOMS_ADMIN_HOST
 echo VOMS_ADMIN_PORT=$VOMS_ADMIN_PORT
+echo VOMS_ADMIN_PID_FILE=$VOMS_ADMIN_PID_FILE
 echo VOMS_VO=$VOMS_VO
