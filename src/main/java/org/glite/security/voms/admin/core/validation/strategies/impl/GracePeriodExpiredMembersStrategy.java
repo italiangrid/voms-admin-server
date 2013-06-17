@@ -28,7 +28,9 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.strategies.ExpiredMembersLookupStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMembersStrategy;
 import org.glite.security.voms.admin.notification.ConditionalSendNotificationStrategy;
+import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationUtil;
+import org.glite.security.voms.admin.notification.PeriodicNotificationsTimeStorage;
 import org.glite.security.voms.admin.notification.TimeIntervalNotificationStrategy;
 import org.glite.security.voms.admin.notification.messages.ExpiredMembersWarning;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -44,22 +46,29 @@ public class GracePeriodExpiredMembersStrategy implements
 	
 	public static final long DEFAULT_GRACE_PERIOD_IN_DAYS = 7;
 	
+	public static final String EXPIRED_MEMBERS_KEY = "expired-members";
+	
 	ConditionalSendNotificationStrategy notificationStrategy;
 	
 	long gracePeriod = DEFAULT_GRACE_PERIOD_IN_DAYS;
-	
-	
 	
 	public GracePeriodExpiredMembersStrategy(long gracePeriod, int notificationInterval) {
 		
 		this.gracePeriod = gracePeriod;
 		
-		this.notificationStrategy = new TimeIntervalNotificationStrategy(notificationInterval);
-		
+		this.notificationStrategy = new TimeIntervalNotificationStrategy(
+			new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
+			NotificationService.instance(),
+			(long)notificationInterval,
+			TimeUnit.DAYS);
 	}
 	
 	public GracePeriodExpiredMembersStrategy(int notificationInterval) {
-		this.notificationStrategy = new TimeIntervalNotificationStrategy(notificationInterval);
+		this.notificationStrategy = new TimeIntervalNotificationStrategy(
+			new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
+			NotificationService.instance(),
+			(long)notificationInterval,
+			TimeUnit.DAYS);
 	}
 	
 	public List<VOMSUser> findExpiredMembers() {
@@ -73,7 +82,6 @@ public class GracePeriodExpiredMembersStrategy implements
 			return;
 		
 		if (notificationStrategy.notificationRequired()){
-			
 			log.info("Sending out notification about EXPIRED VO members.");
 			ExpiredMembersWarning m = new ExpiredMembersWarning(expiredMembers);
 			m.addRecipients(NotificationUtil.getAdministratorsEmailList());

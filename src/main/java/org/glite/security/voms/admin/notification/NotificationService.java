@@ -26,18 +26,18 @@ import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
-import org.glite.security.voms.admin.notification.messages.EmailNotification;
+import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NotificationService {
+public class NotificationService implements NotificationServiceIF{
 
 	private static final Logger log = LoggerFactory
 		.getLogger(NotificationService.class);
 
-	private static NotificationService singleton = null;
+	private static NotificationServiceIF singleton = null;
 
-	private LinkedBlockingQueue<EmailNotification> outgoingMessages = new LinkedBlockingQueue<EmailNotification>();
+	private LinkedBlockingQueue<VOMSNotification> outgoingMessages = new LinkedBlockingQueue<VOMSNotification>();
 
 	private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -64,7 +64,7 @@ public class NotificationService {
 
 	}
 
-	public synchronized static NotificationService instance() {
+	public synchronized static NotificationServiceIF instance() {
 
 		if (singleton == null)
 			singleton = new NotificationService();
@@ -72,7 +72,7 @@ public class NotificationService {
 		return singleton;
 	}
 
-	public void send(EmailNotification n) {
+	public void send(VOMSNotification n) {
 
 		log.debug("Adding notification '" + n + "' to outgoing message queue.");
 		if (!VOMSConfiguration.instance().getBoolean(
@@ -89,10 +89,10 @@ public class NotificationService {
 
 	class NotificationRunner implements Runnable {
 
-		final LinkedBlockingQueue<EmailNotification> outgoingQueue;
+		final LinkedBlockingQueue<VOMSNotification> outgoingQueue;
 
 		public NotificationRunner(
-			LinkedBlockingQueue<EmailNotification> outgoingQueue) {
+			LinkedBlockingQueue<VOMSNotification> outgoingQueue) {
 
 			this.outgoingQueue = outgoingQueue;
 		}
@@ -105,7 +105,7 @@ public class NotificationService {
 
 				try {
 
-					EmailNotification n = outgoingQueue.take();
+					VOMSNotification n = outgoingQueue.take();
 					log.debug("Fetched outgoing message " + n);
 
 					try {
@@ -153,7 +153,7 @@ public class NotificationService {
 	 * @return
 	 * @see java.util.concurrent.ExecutorService#shutdownNow()
 	 */
-	protected List<Runnable> shutdownNow() {
+	public List<Runnable> shutdownNow() {
 
 		return executorService.shutdownNow();
 	}

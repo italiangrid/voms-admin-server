@@ -23,8 +23,18 @@ import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.glite.security.voms.admin.util.DNUtil;
 
+@Entity
+@Table(name="ca")
 public class VOMSCA implements Serializable {
 
 	/**
@@ -32,12 +42,18 @@ public class VOMSCA implements Serializable {
      */
 	private static final long serialVersionUID = -2633375466574044765L;
 
+	@Id
+	@Column(name="cid")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_CA_SEQ")
+	@SequenceGenerator(name="VOMS_CA_SEQ", sequenceName="VOMS_CA_SEQ")
 	Short id;
 
+	@Column(name="subject_string", unique=true, nullable=false)
 	String subjectString;
-
+	
 	String description;
-
+	
+	@Column(name="creation_time", nullable=false)
 	Date creationTime;
 
 	public VOMSCA() {

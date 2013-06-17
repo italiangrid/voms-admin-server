@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.glite.security.voms.admin.persistence.Auditable;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 
 /**
@@ -35,7 +34,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
  * @author andrea
  * 
  */
-public class VOMSRole implements Serializable, Auditable, Comparable {
+public class VOMSRole implements Serializable, Comparable {
 
 	private static final long serialVersionUID = -5063337678658382573L;
 

@@ -381,17 +381,4 @@ public class VOMSAdminDAO {
 
 	}
 
-	public void assignTagInAllGroups(VOMSAdmin a, Tag t) {
-
-		List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
-
-		for (VOMSGroup g : groups) {
-
-			if (!a.getTagsInGroup(g).contains(t))
-				a.assignTagInGroup(g, t);
-		}
-
-		update(a);
-	}
-
 }

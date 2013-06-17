@@ -27,10 +27,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.Auditable;
-import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 
 /**
  * 
@@ -38,7 +37,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
  * @author andrea
  * 
  */
-public class VOMSGroup implements Serializable, Auditable, Comparable {
+public class VOMSGroup implements Serializable, Comparable {
 
 	public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
 

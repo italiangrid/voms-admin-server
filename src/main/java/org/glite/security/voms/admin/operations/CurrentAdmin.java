@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
-import org.glite.security.voms.admin.persistence.model.Tag;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
@@ -235,15 +234,6 @@ public class CurrentAdmin {
 							+ roleName + "'.");
 				}
 			}
-		}
-
-		for (Tag t : admin.getTagsInContext(c)) {
-
-			log.debug("Adding permissions '" + t.getPermissions()
-					+ "' from tag '" + t.getName()
-					+ "' to admin's permission set.");
-			adminPerms.addPermission(t.getPermissions());
-
 		}
 
 		log.debug("Admin permissions: " + adminPerms);

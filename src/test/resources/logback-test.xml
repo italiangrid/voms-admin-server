@@ -17,20 +17,24 @@
     limitations under the License.
 
     Authors:
-    	Andrea Ceccanti (INFN)
+        Andrea Ceccanti (INFN)
 
 -->
 
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<configuration scan="true">
     
-    <hibernate-mapping>
-    	
-    		<class name="org.glite.security.voms.admin.persistence.model.VOMSSeqNumber" table="seqnumber">
-    			
-    			<id name="seq" column="seq" type="string"/>
-    			
-    		</class>
     
-    </hibernate-mapping>
+    <logger name="org.glite.security.voms.admin" level="DEBUG"/>     
+    
+    <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE" />
+    </root>
+    
+</configuration>

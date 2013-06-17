@@ -27,6 +27,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.PeriodicNotificationsDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequesterInfoDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TagDAO;
@@ -158,6 +159,11 @@ public class HibernateDAOFactory extends DAOFactory {
 
 	public UserDAO getUserDAO() {
 		return (UserDAO) instantiateDAO(UserDAOHibernate.class);
+	}
+	
+	public PeriodicNotificationsDAO getPeriodicNotificationsDAO(){
+		return (PeriodicNotificationsDAO) 
+			instantiateDAO(PeriodicNotificationDAOHibernate.class);
 	}
 
 	private GenericHibernateDAO instantiateDAO(Class daoClass) {

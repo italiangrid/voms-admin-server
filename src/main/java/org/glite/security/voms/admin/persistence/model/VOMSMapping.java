@@ -21,10 +21,9 @@ package org.glite.security.voms.admin.persistence.model;
 
 import java.io.Serializable;
 
+import org.glite.security.voms.admin.error.IllegalStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.error.IllegalStateException;
-import org.glite.security.voms.admin.persistence.Auditable;
 
 /**
  * 
@@ -34,7 +33,7 @@ import org.glite.security.voms.admin.persistence.Auditable;
  * @author andrea
  * 
  */
-public class VOMSMapping implements Serializable, Auditable, Comparable {
+public class VOMSMapping implements Serializable, Comparable {
 
 	private static final Logger log = LoggerFactory.getLogger(VOMSMapping.class);
 

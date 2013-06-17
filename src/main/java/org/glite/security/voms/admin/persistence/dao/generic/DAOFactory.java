@@ -85,5 +85,7 @@ public abstract class DAOFactory {
 	public abstract GroupDAO getGroupDAO();
 
 	public abstract UserDAO getUserDAO();
+	
+	public abstract PeriodicNotificationsDAO getPeriodicNotificationsDAO();
 
 }

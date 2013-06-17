@@ -28,20 +28,15 @@
     
     	<property name="hibernate.bytecode.provider">cglib</property>
     	
-    	<!-- Cache Configurations -->
-        <property name="hibernate.cache.use_second_level_cache">false</property>
-        
-        <property name="hibernate.cache.provider_class">
+    	  <property name="hibernate.cache.provider_class">
           net.sf.ehcache.hibernate.SingletonEhCacheProvider
         </property>
         
+        <property name="hibernate.cache.use_second_level_cache">false</property>
         <property name="hibernate.cache.use_minimal_puts">false</property>
         <property name="hibernate.cache.use_structured_entries">true</property>
     	
-    	<mapping resource="model/VOMSDBVersion.hbm.xml" />
-    	<mapping resource="model/VOMSSeqNumber.hbm.xml" />
-        <mapping resource="model/VOMSAdmin.hbm.xml" />
-        <mapping resource="model/VOMSCA.hbm.xml" />
+        <mapping resource="model/VOMSDBVersion.hbm.xml" />
         
         <mapping resource="model/VOMSUserAttribute.hbm.xml" />
         <mapping resource="model/VOMSGroup.hbm.xml" />
@@ -60,7 +55,9 @@
         <mapping resource="model/Tag.hbm.xml"/>
         <mapping resource="model/TagMapping.hbm.xml"/>
         
-        <!--  NEW MAPPINGS -->
+        <!-- Annotated classes -->
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAdmin"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSCA"/>
         
         <!--  VOMS USER & CERTIFICATE -->
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUser"/>
@@ -86,5 +83,6 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationType"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
         
+        <mapping class="org.glite.security.voms.admin.persistence.model.PeriodicNotifications"/>
     </session-factory>
 </hibernate-configuration>

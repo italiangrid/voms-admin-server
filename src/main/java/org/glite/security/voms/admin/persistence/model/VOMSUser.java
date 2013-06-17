@@ -51,15 +51,12 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
-import org.glite.security.voms.admin.persistence.Auditable;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
@@ -72,6 +69,8 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -83,7 +82,7 @@ import org.hibernate.annotations.SortType;
 
 @Entity
 @Table(name = "usr")
-public class VOMSUser implements Serializable, Auditable, Comparable {
+public class VOMSUser implements Serializable, Comparable {
 
 	private static final long serialVersionUID = -3815869585264835046L;
 

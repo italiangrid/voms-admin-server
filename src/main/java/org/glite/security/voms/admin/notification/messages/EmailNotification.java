@@ -37,17 +37,17 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
-public abstract class EmailNotification {
+public abstract class EmailNotification implements VOMSNotification{
 
 	private static final Logger log = LoggerFactory.getLogger(EmailNotification.class);
 
-	List recipientList = new ArrayList();
+	private List<String> recipientList = new ArrayList<String>();
 
-	String subject;
+	private String subject;
 
-	String message;
+	private String message;
 
-	int deliveryAttemptCount = 0;
+	private int deliveryAttemptCount = 0;
 
 	public EmailNotification() {
 
@@ -64,12 +64,12 @@ public abstract class EmailNotification {
 		this.message = message;
 	}
 
-	public List getRecipientList() {
+	public List<String> getRecipientList() {
 
 		return recipientList;
 	}
 
-	public void setRecipientList(List recipientList) {
+	public void setRecipientList(List<String> recipientList) {
 
 		this.recipientList = recipientList;
 	}
@@ -90,12 +90,12 @@ public abstract class EmailNotification {
 			recipientList.add(recipientAddress);
 	}
 
-	public void addRecipients(Collection c) {
+	public void addRecipients(Collection<String> c) {
 
-		Iterator i = c.iterator();
+		Iterator<String> i = c.iterator();
 
 		while (i.hasNext()) {
-			addRecipient((String) i.next());
+			addRecipient(i.next());
 		}
 	}
 
@@ -182,9 +182,9 @@ public abstract class EmailNotification {
 			if (recipientList.isEmpty())
 				throw new VOMSNotificationException("Empty recipient list!");
 
-			Iterator i = recipientList.iterator();
+			Iterator<String> i = recipientList.iterator();
 			while (i.hasNext())
-				e.addTo((String) i.next());
+				e.addTo(i.next());
 
 			e.send();
 
@@ -195,21 +195,13 @@ public abstract class EmailNotification {
 		}
 	}
 
+	@Override
 	/**
 	 * @return the deliveryAttemptCount
 	 */
 	public int getDeliveryAttemptCount() {
 
 		return deliveryAttemptCount;
-	}
-
-	/**
-	 * @param deliveryAttemptCount
-	 *            the deliveryAttemptCount to set
-	 */
-	public void setDeliveryAttemptCount(int deliveryAttemptCount) {
-
-		this.deliveryAttemptCount = deliveryAttemptCount;
 	}
 
 }

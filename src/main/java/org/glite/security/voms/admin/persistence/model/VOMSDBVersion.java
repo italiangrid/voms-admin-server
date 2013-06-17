@@ -21,9 +21,7 @@ package org.glite.security.voms.admin.persistence.model;
 
 import java.io.Serializable;
 
-import org.glite.security.voms.admin.persistence.Auditable;
-
-public class VOMSDBVersion implements Serializable, Auditable {
+public class VOMSDBVersion implements Serializable{
 
 	/**
      * 

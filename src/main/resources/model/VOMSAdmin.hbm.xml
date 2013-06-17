@@ -34,20 +34,21 @@
 			</generator>
 		</id>
 		
-		<property name="dn" type="string" column="dn" not-null="true" unique-key="true"/>
-		<property name="emailAddress" type="string" column="email_address"/>
+		<property name="dn" 
+      type="string" 
+      column="dn" 
+      not-null="true" 
+      unique-key="true"/>
 		
-		<many-to-one name="ca" column="ca" class="org.glite.security.voms.admin.persistence.model.VOMSCA" not-null="true" unique-key="true"/>
+    <property name="emailAddress" type="string" column="email_address"/>
+		
+		<many-to-one name="ca" 
+      column="ca" 
+      class="org.glite.security.voms.admin.persistence.model.VOMSCA" 
+      not-null="true" 
+      unique-key="true"/>
     
-        <set name="tagMappings" inverse="true" cascade="all-delete-orphan">
-          <key column="admin_id" on-delete="cascade"/>
-          <one-to-many class="org.glite.security.voms.admin.persistence.model.TagMapping"/>
-        </set>
-        
-        <set name="tasks" cascade="all-delete-orphan" lazy="false">
-          <key column="admin_id"/>
-          <one-to-many class="org.glite.security.voms.admin.persistence.model.task.Task"/>        
-        </set>
+    
         
 	</class>
 </hibernate-mapping>

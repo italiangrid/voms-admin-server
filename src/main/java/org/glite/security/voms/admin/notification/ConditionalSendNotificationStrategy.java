@@ -20,9 +20,9 @@
 
 package org.glite.security.voms.admin.notification;
 
-import org.glite.security.voms.admin.notification.messages.EmailNotification;
+import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 
 public interface ConditionalSendNotificationStrategy {
-	public void sendNotification(EmailNotification n);
+	public void sendNotification(VOMSNotification n);
 	public boolean notificationRequired();
 }
