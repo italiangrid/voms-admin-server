@@ -24,8 +24,7 @@
 <configuration>    
 
     <logger name="org.eclipse.jetty" level="ERROR" />
-        
-    <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
+    
     <appender name="FILE"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${package.prefix}/${log.dir}/server.log</File>
@@ -38,8 +37,27 @@
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</pattern>
         </encoder>
     </appender>
+    
+    <appender name="AUTHN"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${package.prefix}/${log.dir}/server-authn.log</File>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${package.prefix}/${log.dir}/server-authn-%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
 
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    
+    <logger name="org.italiangrid.utils.https.impl.canl.CANLListener" level="INFO" additivity="false">
+       <appender-ref ref="AUTHN" />
+    </logger>
+    
     <root level="INFO">
         <appender-ref ref="FILE" />
     </root>
+    
 </configuration>
