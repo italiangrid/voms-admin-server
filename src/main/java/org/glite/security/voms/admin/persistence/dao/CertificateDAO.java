@@ -79,16 +79,13 @@ public class CertificateDAO {
 
 		assert cert != null : "Null certificate passed as argument!";
 
-		String subjectString = DNUtil.getOpenSSLSubject(cert
-				.getSubjectX500Principal());
+		String subjectString = DNUtil.normalizeDN(
+			DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal()));
 
-		String query = "from Certificate where subjectString = :subjectString";
-
-		Certificate dbCert = (Certificate) HibernateFactory.getSession()
-				.createQuery(query).setString("subjectString", subjectString)
-				.uniqueResult();
-
-		return dbCert;
+		String issuerString = DNUtil.normalizeDN(
+			DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal()));
+		
+		return findByDNCA(subjectString, issuerString);
 
 	}
 
