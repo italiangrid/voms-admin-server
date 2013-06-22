@@ -26,33 +26,29 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="org.glite.security.voms.admin.persistence.model.VOMSMapping" table="m">
-
-		<id name="id" column="mapping_id">
-			<generator class="native">
-				<param name="sequence">VOMS_M_SEQ</param>
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSRole" table="roles">
+		<id name="id" column="rid" type="long">
+			<generator class="native" >
+				<param name="sequence">VOMS_ROLE_SEQ</param>
 			</generator>
 		</id>
 		
-		<natural-id>
-			<many-to-one name="user" class="org.glite.security.voms.admin.persistence.model.VOMSUser"
-				column="userid" 
-				foreign-key="fk_m_usr"
-				not-null="true" 
-			/>		
-	
-			<many-to-one name="group" class="org.glite.security.voms.admin.persistence.model.VOMSGroup"
-				column="gid" 
-				foreign-key="fk_m_groups"
-				not-null="true" 
-			/>	
+		<property name="name" type="string" update="true" insert="true"
+			column="role" not-null="true" unique="true" />
 
-			<many-to-one name="role" class="org.glite.security.voms.admin.persistence.model.VOMSRole" 
-				column="rid"
-				foreign-key="fk_m_roles" 
-				not-null="false"		
-			/>					
+		<set name="mappings" sort="natural" inverse="true">
+			<key column="rid" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
+		</set>
+
+		<set name="attributes" inverse="true" cascade="all-delete-orphan" lazy="false">
+			<key column="r_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute"/>
+		</set>
 				
-		</natural-id>
+		<set name="acls" inverse="true" cascade="all-delete-orphan">
+			<key column="role_id" on-delete="cascade"/>			
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.ACL"/>
+		</set>
 	</class>
 </hibernate-mapping>

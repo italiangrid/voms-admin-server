@@ -7,6 +7,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.group_manager.CreateGroupManagerOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -46,6 +47,12 @@ public class CreateAction extends BaseAction implements Preparable{
 		
 		if (group == null)
 			addFieldError("groupId", "'"+getGroupId()+"' is not a valid group id!");
+		
+		GroupManager managerWithSameName = DAOFactory.instance().getGroupManagerDAO().findByName(name);
+		
+		if (managerWithSameName != null)
+			addFieldError("name", "Name is already taken, please choose a different name!");
+		
 		
 	}
 	

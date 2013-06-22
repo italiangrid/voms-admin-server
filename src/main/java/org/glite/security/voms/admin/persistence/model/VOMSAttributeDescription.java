@@ -21,8 +21,18 @@ package org.glite.security.voms.admin.persistence.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.glite.security.voms.service.attributes.AttributeClass;
 
+@Entity
+@Table(name="attributes")
 public class VOMSAttributeDescription implements Serializable {
 
 	/**
@@ -30,12 +40,19 @@ public class VOMSAttributeDescription implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name = "a_id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ATTR_DESC_SEQ")
+	@SequenceGenerator(name="VOMS_ATTR_DESC_SEQ", sequenceName="VOMS_ATTR_DESC_SEQ")
 	Long id;
 
+	@Column(name="a_name", nullable=false, unique=true)
 	String name;
 
+	@Column(name="a_desc", columnDefinition="text")
 	String description;
-
+	
+	@Column(name="a_uniq", nullable=false)
 	Boolean unique = new Boolean(false);
 
 	public Long getId() {

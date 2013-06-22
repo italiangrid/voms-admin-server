@@ -19,8 +19,16 @@
  */
 package org.glite.security.voms.admin.persistence.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.glite.security.voms.admin.operations.VOMSContext;
 
+@Entity
+@Table(name="role_attrs")
 public class VOMSRoleAttribute extends VOMSGroupAttribute {
 
 	/**
@@ -28,6 +36,9 @@ public class VOMSRoleAttribute extends VOMSGroupAttribute {
      */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@ManyToOne
+	@JoinColumn(name="r_id")
 	VOMSRole role;
 
 	public VOMSRole getRole() {

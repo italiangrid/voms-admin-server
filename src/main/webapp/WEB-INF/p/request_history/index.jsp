@@ -30,9 +30,11 @@
 <s:if test="not #attr.isVOAdmin">
   You don't have sufficient privileges to access this information.  
 </s:if>
-<s:else>
-  <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
-  
+<s:else>  
+  <s:if test="closedRequests.size() == 0">
+    No requests found.
+  </s:if>
+  <s:else>
   <table class="table">
     <tr>
       <th>Request type</th>
@@ -105,5 +107,5 @@
       </tr>
     </s:iterator>
   </table>
-
+  </s:else>
 </s:else>

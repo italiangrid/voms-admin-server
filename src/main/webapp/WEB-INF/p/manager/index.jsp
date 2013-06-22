@@ -60,7 +60,7 @@
       </tr>
       
       <s:iterator value="groupManagers">
-      <tr>
+      <tr class="tableRow">
         <td width="20%"> <!-- Name field -->
           <s:property value="name"/>
         </td>
@@ -81,11 +81,6 @@
           </s:iterator>
           </div>
           
-          <s:form>
-            <s:submit 
-              action="manager-add-group" 
-              theme="simple" value="Add managed group"/>
-          </s:form>
         </td>
         <td>
           <s:form>

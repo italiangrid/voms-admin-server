@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Authors:
+    	Andrea Ceccanti (INFN)
+
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.glite.security.voms.admin.persistence.model.VOMSGroup" table="groups">
+
+		<id name="id" column="gid" type="long">
+			<generator class="native" >
+				<param name="sequence">VOMS_GROUP_SEQ</param>
+			</generator>
+		</id>
+
+		<property name="name" type="string" update="true" insert="true"
+			column="dn" not-null="true" unique="true" />
+      
+        <property name="description" type="string" update="true" insert="true"
+          column="description"/>
+			
+		<many-to-one name="parent" column="parent"
+			class="org.glite.security.voms.admin.persistence.model.VOMSGroup" not-null="false" />
+			
+		<property name="must" type="boolean" column="must" not-null="true"/>
+      
+        <property name="restricted" type="boolean" column="restricted" not-null="false"/>
+
+		<set name="attributes" cascade="all-delete-orphan" inverse="true" lazy="false">
+			<key column="g_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute"/>
+		</set>
+		
+		<!--  was cascade="delete,delete-orphan" -->
+		<set name="mappings" sort="natural" inverse="true">
+			<key column="gid" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
+		</set>
+		
+		<set name="acls" cascade="all-delete-orphan" inverse="true">
+			<key column="group_id" on-delete="cascade"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.ACL"/>
+		</set>
+		
+	</class>
+
+</hibernate-mapping>

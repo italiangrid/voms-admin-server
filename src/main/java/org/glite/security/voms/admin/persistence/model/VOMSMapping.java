@@ -21,18 +21,24 @@ package org.glite.security.voms.admin.persistence.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.glite.security.voms.admin.error.IllegalStateException;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.NaturalId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- * 
- * 
- * 
- * @author andrea
- * 
- */
+@Entity
+@Table(name="m")
 public class VOMSMapping implements Serializable, Comparable<VOMSMapping> {
 
 	private static final Logger log = LoggerFactory.getLogger(VOMSMapping.class);
@@ -42,12 +48,28 @@ public class VOMSMapping implements Serializable, Comparable<VOMSMapping> {
      */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name = "mapping_id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_M_SEQ")
+	@SequenceGenerator(name="VOMS_M_SEQ", sequenceName="VOMS_M_SEQ")
 	private Long id;
 
+	@ManyToOne
+	@JoinColumn(name="userid", nullable=false)
+	@ForeignKey(name="fk_m_usr")
+	@NaturalId
 	private VOMSUser user;
 
+	@ManyToOne
+	@JoinColumn(name="gid", nullable=false)
+	@ForeignKey(name="fk_m_groups")
+	@NaturalId
 	private VOMSGroup group;
 
+	@ManyToOne
+	@JoinColumn(name="rid", nullable=true)
+	@ForeignKey(name="fk_m_roles")
+	@NaturalId
 	private VOMSRole role;
 
 	public VOMSMapping() {

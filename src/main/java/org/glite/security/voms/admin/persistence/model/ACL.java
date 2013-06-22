@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ACL implements Serializable {
 
@@ -43,8 +43,9 @@ public class ACL implements Serializable {
 
 	private static final Logger log = LoggerFactory.getLogger(ACL.class);
 
+	
 	Long id;
-
+	
 	VOMSGroup group = null;
 
 	Boolean defaultACL;

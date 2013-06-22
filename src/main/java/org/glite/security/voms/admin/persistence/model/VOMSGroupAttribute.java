@@ -19,12 +19,26 @@
  */
 package org.glite.security.voms.admin.persistence.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="group_attrs")
+@MappedSuperclass
 public class VOMSGroupAttribute extends VOMSBaseAttribute {
 
 	/**
      * 
      */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@ManyToOne
+	@JoinColumn(name="g_id")
 	VOMSGroup group;
 
 	public VOMSGroupAttribute() {
