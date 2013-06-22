@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.Preparable;
@@ -48,21 +49,19 @@ public class ConfigurationAction extends BaseAction implements Preparable{
 	
 	public void prepare() throws Exception {
 		
-		contactString = getBaseURL();
+		contactString = URLBuilder.baseVOMSURLFromConfiguration();
 		
 		vomsesConf = VOMSConfiguration.instance().getVomsesConfigurationString();
 		
 		HttpServletRequest request = ServletActionContext.getRequest();
 		
 		// Build mkgridmap configuration
-		
-
-        mkGridmapConf = "group vomss://"
+		mkGridmapConf = "group vomss://"
             + request.getServerName() + ":" 
             + request.getServerPort() + "/voms/" + VOMSConfiguration.instance().getVOName()
             + "   ."+VOMSConfiguration.instance().getVOName();
         
-        lsc = VOMSConfiguration.instance().getLSCConfiguration();
+		lsc = VOMSConfiguration.instance().getLSCConfiguration();
 
 	}
 

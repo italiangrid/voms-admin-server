@@ -49,8 +49,10 @@ public class RequesterInfo implements Serializable {
      * 
      */
 	private static final long serialVersionUID = 1L;
-	public static final String MULTIVALUE_COUNT_PREFIX = "num_";
-
+	public static final String MULTIVALUE_COUNT_PREFIX = "num_";	
+	public static final String MANAGER_EMAIL_ADDRESS = "managerEmail"; 
+	public static final String MANAGER_ID = "managerId";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_REQ_INFO_SEQ")
 	@SequenceGenerator(name="VOMS_REQ_INFO_SEQ", sequenceName="VOMS_REQ_INFO_SEQ")
@@ -303,6 +305,16 @@ public class RequesterInfo implements Serializable {
 		return Collections.EMPTY_LIST;
 	}
 
+	
+	public String getManagerEmail(){
+		
+		return getInfo(MANAGER_EMAIL_ADDRESS);
+	}
+	
+	public void setManagerEmail(String emailAddress){
+		addInfo(MANAGER_EMAIL_ADDRESS, emailAddress);
+	}
+	
 	public static RequesterInfo fromVOUser(VOMSUser user){
 		
 		RequesterInfo ri = new RequesterInfo();

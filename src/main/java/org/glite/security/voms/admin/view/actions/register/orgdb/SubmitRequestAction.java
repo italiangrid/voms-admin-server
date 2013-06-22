@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.core.validation.RequestValidationResult.Out
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.register.RegisterActionSupport;
 
@@ -121,28 +122,12 @@ public class SubmitRequestAction extends
 		}
 		
 		EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
-				buildConfirmURL(), 
-				buildCancelURL()));
+				URLBuilder.buildRequestConfirmURL(getModel()),
+				URLBuilder.buildRequestCancelURL(getModel())));
 
 		return SUCCESS;
 	}
 
-
-	private String buildCancelURL() {
-
-		return getBaseURL() + "/register/cancel-request.action?requestId="
-				+ getModel().getId() + "&confirmationId="
-				+ getModel().getConfirmId();
-
-	}
-
-	private String buildConfirmURL() {
-
-		return getBaseURL() + "/register/confirm-request.action?requestId="
-				+ getModel().getId() + "&confirmationId="
-				+ getModel().getConfirmId();
-
-	}
 	/**
 	 * @return the name
 	 */

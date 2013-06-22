@@ -49,7 +49,7 @@ public class HandleGroupRequestOperation extends BaseHandleRequestOperation<Grou
 		if (!u.isMember(g))
 		    AddMemberOperation.instance(u, g).execute();
 		
-		request.approve();
+		approveRequest();
 		
 		EventManager.dispatch(new GroupMembershipApprovedEvent(request));
 		
@@ -60,7 +60,7 @@ public class HandleGroupRequestOperation extends BaseHandleRequestOperation<Grou
 	protected void reject() {
 		
 		checkRequestStatus(STATUS.SUBMITTED);
-		request.reject();
+		rejectRequest();
 		EventManager.dispatch(new GroupMembershipRejectedEvent(request));
 	}
 

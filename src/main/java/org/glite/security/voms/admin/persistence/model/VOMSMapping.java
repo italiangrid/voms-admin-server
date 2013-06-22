@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author andrea
  * 
  */
-public class VOMSMapping implements Serializable, Comparable {
+public class VOMSMapping implements Serializable, Comparable<VOMSMapping> {
 
 	private static final Logger log = LoggerFactory.getLogger(VOMSMapping.class);
 
@@ -49,8 +49,6 @@ public class VOMSMapping implements Serializable, Comparable {
 	private VOMSGroup group;
 
 	private VOMSRole role;
-
-	private VOMSCapability capability = null;
 
 	public VOMSMapping() {
 
@@ -74,16 +72,6 @@ public class VOMSMapping implements Serializable, Comparable {
 
 		return instance(u, g, null);
 
-	}
-
-	public VOMSCapability getCapability() {
-
-		return capability;
-	}
-
-	public void setCapability(VOMSCapability capability) {
-
-		this.capability = capability;
 	}
 
 	public VOMSGroup getGroup() {
@@ -220,21 +208,19 @@ public class VOMSMapping implements Serializable, Comparable {
 		if (getRole() != null)
 			result = 29 * result + getRole().hashCode();
 
-		if (getCapability() != null)
-			result = 29 * result + getCapability().hashCode();
-
 		return result;
 	}
 
+	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
 
-		StringBuffer buf = new StringBuffer();
-		if (getUser() != null)
-			buf.append(getUser() + ",");
-
-		buf.append(getFQAN());
-
-		return buf.toString();
+		return "VOMSMapping [id=" + id + ", user=" + user.getId() + ", group=" + group.getName()
+			+ ", role=" + role + "]";
 	}
 
 	public String getFQAN() {
@@ -251,14 +237,12 @@ public class VOMSMapping implements Serializable, Comparable {
 
 	}
 
-	public int compareTo(Object o) {
+	public int compareTo(VOMSMapping that) {
 
-		if (this.equals(o))
+		if (this.equals(that))
 			return 0;
 
-		log.debug("Comparing mappings. this=" + this + ", other=" + o);
-
-		VOMSMapping that = (VOMSMapping) o;
+		log.debug("Comparing mappings. this=" + this + ", that=" + that);
 
 		if (!getUser().equals(that.getUser())) {
 			log.debug("Different users.");

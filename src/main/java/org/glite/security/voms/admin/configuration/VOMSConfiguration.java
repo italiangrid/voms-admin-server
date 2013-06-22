@@ -1144,6 +1144,11 @@ public final class VOMSConfiguration {
 		return loadLSCConfigurationString();
 	}
 	
+	public String getHostname(){
+		return config.getString("voms.hostname");
+	}
+	
+	
 	public void dump(PrintStream stream){
 		
 		for (int i=0; i < config.getNumberOfConfigurations(); i++)

@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -36,9 +36,10 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
 @Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
+		@Result(name = BaseAction.SUCCESS, type="chain", location="set-request-confirmed"),
 		@Result(name = BaseAction.ERROR, location = "registrationConfirmationError"),
-		@Result(name = ConfirmRequestAction.REQUEST_ATTRIBUTES, location = "requestAttributes")
+		@Result(name = ConfirmRequestAction.REQUEST_ATTRIBUTES, location = "requestAttributes"),
+		@Result(name = ConfirmRequestAction.SELECT_MANAGER, location="selectManager")
 })
 public class ConfirmRequestAction extends RegisterActionSupport {
 
@@ -47,9 +48,8 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String REQUEST_ATTRIBUTES = "REQUEST_ATTRIBUTES";
-
 	String confirmationId;
+	
 
 	@Override
 	public String execute() throws Exception {
@@ -63,18 +63,27 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 		}
 		
 		List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
+		List<GroupManager> managers = DAOFactory.instance()
+			.getGroupManagerDAO().findAll();
+		
+		if (managers.size() > 0){
+			
+			ServletActionContext.getRequest().setAttribute("groupManagers", managers);
+			return SELECT_MANAGER;
+		}
+		
 		
 		// Enable group selection only if configured to do so
 		// and if there's more than one group in the VO
 		if (attributeRequestsEnabled() && groups.size() > 1){
 			
 			// All members are included in the root group by default, so
-			// it is removed from the list of groups that could be requested
+			// the root group is removed from the list of groups that could be 
+			// requested
 			if (groups.size() > 1)
 				groups = groups.subList(1, groups.size());
 			
 			ServletActionContext.getRequest().setAttribute("voGroups", groups);
-			
 			return REQUEST_ATTRIBUTES;
 		}
 
@@ -85,10 +94,6 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			return ERROR;
 		}
 		
-		String manageURL = getBaseURL() + "/home/login.action";
-
-		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
-				manageURL));
 		return SUCCESS;
 	}
 

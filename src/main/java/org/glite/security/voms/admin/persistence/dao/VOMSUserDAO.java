@@ -950,7 +950,7 @@ public class VOMSUserDAO {
 
 		u.removeFromGroup(g);
 
-		HibernateFactory.getSession().save(u);
+		// HibernateFactory.getSession().save(u);
 	}
 
 	public List<VOMSUser> findSuspendedUsers(){

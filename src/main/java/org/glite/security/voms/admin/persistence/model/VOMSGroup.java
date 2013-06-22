@@ -27,43 +27,67 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- * 
- * @author andrea
- * 
- */
-public class VOMSGroup implements Serializable, Comparable {
+@Entity
+@Table(name="groups")
+public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
 
 	public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
 
 	private static final long serialVersionUID = -4693441755811017977L;
 
 	public VOMSGroup() {
-
 		must = new Boolean(true);
 	}
 
+	@Id
+	@Column(name = "gid")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_GROUP_SEQ")
+	@SequenceGenerator(name="VOMS_GROUP_SEQ", sequenceName="VOMS_GROUP_SEQ")
 	Long id;
 
+	@Column(name="dn",nullable=false, unique=true)
 	String name;
 
+	@ManyToOne(optional=true)
 	VOMSGroup parent;
 
+	@Column(nullable=false)
 	Boolean must;
+	
+	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group")
+	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
 
-	Set attributes = new HashSet();
+	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group", 
+		fetch = FetchType.EAGER)
+	@Sort(type = SortType.NATURAL)
+	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-	Set mappings = new TreeSet();
-
-	Set acls = new HashSet();
-
-	Set<TagMapping> tagMappings = new HashSet<TagMapping>();
-
+	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group")
+	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	Set<ACL> acls = new HashSet<ACL>();
+	
+	@ManyToMany(cascade={CascadeType.ALL}, mappedBy="managedGroups")
+	Set<GroupManager> managers = new HashSet<GroupManager>();
 	Boolean restricted;
 
 	String description;
@@ -129,12 +153,12 @@ public class VOMSGroup implements Serializable, Comparable {
 		this.parent = parent;
 	}
 
-	public Set getAttributes() {
+	public Set<VOMSGroupAttribute> getAttributes() {
 
 		return attributes;
 	}
 
-	public void setAttributes(Set attributes) {
+	public void setAttributes(Set<VOMSGroupAttribute> attributes) {
 
 		this.attributes = attributes;
 	}
@@ -150,10 +174,10 @@ public class VOMSGroup implements Serializable, Comparable {
 
 	public VOMSGroupAttribute getAttributeByName(String name) {
 
-		Iterator i = attributes.iterator();
+		Iterator<VOMSGroupAttribute> i = attributes.iterator();
 
 		while (i.hasNext()) {
-			VOMSGroupAttribute tmp = (VOMSGroupAttribute) i.next();
+			VOMSGroupAttribute tmp = i.next();
 
 			if (tmp.getName().equals(name))
 				return tmp;
@@ -178,11 +202,7 @@ public class VOMSGroup implements Serializable, Comparable {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	
 	public boolean equals(Object other) {
 
 		if (this == other)
@@ -207,13 +227,13 @@ public class VOMSGroup implements Serializable, Comparable {
 
 	}
 
-	public Set getMembers() {
+	public Set<VOMSUser> getMembers() {
 
-		SortedSet res = new TreeSet();
+		SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
 
-		Iterator mIter = mappings.iterator();
+		Iterator<VOMSMapping> mIter = mappings.iterator();
 		while (mIter.hasNext()) {
-			VOMSMapping m = (VOMSMapping) mIter.next();
+			VOMSMapping m = mIter.next();
 			if (m.isGroupMapping())
 				res.add(m.getUser());
 		}
@@ -222,13 +242,14 @@ public class VOMSGroup implements Serializable, Comparable {
 
 	}
 
-	public Set getMembersEmailAddresses() {
+	public Set<String> getMembersEmailAddresses() {
 
-		SortedSet res = new TreeSet();
+		SortedSet<String> res = new TreeSet<String>();
 
-		Iterator mIter = mappings.iterator();
+		Iterator<VOMSMapping> mIter = mappings.iterator();
+		
 		while (mIter.hasNext()) {
-			VOMSMapping m = (VOMSMapping) mIter.next();
+			VOMSMapping m = mIter.next();
 			if (m.isGroupMapping())
 				res.add(m.getUser().getEmailAddress());
 		}
@@ -241,21 +262,17 @@ public class VOMSGroup implements Serializable, Comparable {
 		return name.startsWith(g.getName());
 	}
 	
-	public Set getMappings() {
+	public Set<VOMSMapping> getMappings() {
 
 		return mappings;
 	}
 
-	public void setMappings(Set mappings) {
+	public void setMappings(Set<VOMSMapping> mappings) {
 
 		this.mappings = mappings;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	
 	public int hashCode() {
 
 		return getName().hashCode();
@@ -266,12 +283,10 @@ public class VOMSGroup implements Serializable, Comparable {
 		return getName();
 	}
 
-	public int compareTo(Object o) {
+	public int compareTo(VOMSGroup that) {
 
-		if (this.equals(o))
+		if (this.equals(that))
 			return 0;
-
-		VOMSGroup that = (VOMSGroup) o;
 
 		if (that == null)
 			return 1;
@@ -279,12 +294,12 @@ public class VOMSGroup implements Serializable, Comparable {
 		return this.getName().compareTo(that.getName());
 	}
 
-	public Set getAcls() {
+	public Set<ACL> getAcls() {
 
 		return acls;
 	}
 
-	public void setAcls(Set acls) {
+	public void setAcls(Set<ACL> acls) {
 
 		this.acls = acls;
 	}
@@ -294,9 +309,9 @@ public class VOMSGroup implements Serializable, Comparable {
 		if (getAcls().isEmpty())
 			return null;
 
-		Iterator i = getAcls().iterator();
+		Iterator<ACL> i = getAcls().iterator();
 		while (i.hasNext()) {
-			ACL a = (ACL) i.next();
+			ACL a = i.next();
 			if (a.getDefaultACL().booleanValue() == defaultACL
 					&& a.getContext().isGroupContext())
 				return a;
@@ -325,23 +340,6 @@ public class VOMSGroup implements Serializable, Comparable {
 
 	}
 
-	/**
-	 * @return the tagMappings
-	 */
-	public Set<TagMapping> getTagMappings() {
-
-		return tagMappings;
-	}
-
-	/**
-	 * @param tagMappings
-	 *            the tagMappings to set
-	 */
-	public void setTagMappings(Set<TagMapping> tagMappings) {
-
-		this.tagMappings = tagMappings;
-	}
-
 	public Boolean getRestricted() {
 		return restricted;
 	}
@@ -358,4 +356,29 @@ public class VOMSGroup implements Serializable, Comparable {
 		this.description = description;
 	}
 
+	
+	/**
+	 * @return the managers
+	 */
+	public Set<GroupManager> getManagers() {
+	
+		return managers;
+	}
+
+	
+	/**
+	 * @param managers the managers to set
+	 */
+	public void setManagers(Set<GroupManager> managers) {
+	
+		this.managers = managers;
+	}
+
+	public void addMapping(VOMSMapping m){
+		getMappings().add(m);
+	}
+	public boolean removeMapping(VOMSMapping m){
+		return getMappings().remove(m);
+	}
+	
 }

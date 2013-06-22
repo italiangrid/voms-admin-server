@@ -61,7 +61,7 @@ public class HandleVOMembershipRequest extends
 		VOMSUserDAO.instance().create(user,
 					request.getRequesterInfo().getCertificateIssuer());
 
-		request.approve();
+		approveRequest();
 
 		// Check if signed AUP is the same version as the current one
 		// and if so add an AUP signature record for the user
@@ -96,7 +96,7 @@ public class HandleVOMembershipRequest extends
 
 	@Override
 	protected void reject() {
-		request.reject();
+		rejectRequest();
 
 		EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
 				REJECT_MOTIVATION));

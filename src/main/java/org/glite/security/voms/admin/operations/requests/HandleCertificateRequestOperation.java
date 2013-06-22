@@ -23,6 +23,7 @@ package org.glite.security.voms.admin.operations.requests;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.CertificateRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.CertificateRequestRejectedEvent;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
@@ -43,8 +44,13 @@ public class HandleCertificateRequestOperation extends BaseHandleRequestOperatio
 		checkRequestStatus(STATUS.SUBMITTED);
 		VOMSUser u = getRequesterAsVomsUser();
 		
-		AddUserCertificateOperation.instance(u, request.getCertificateSubject(), request.getCertificateIssuer(), null).execute();
-		request.approve();
+		AddUserCertificateOperation.instance(u, 
+			request.getCertificateSubject(), 
+			request.getCertificateIssuer(), 
+			null).execute();
+		
+		approveRequest();
+		
 		EventManager.dispatch(new CertificateRequestApprovedEvent(request));
 		
 		
@@ -54,7 +60,7 @@ public class HandleCertificateRequestOperation extends BaseHandleRequestOperatio
 	protected void reject() {
 		
 		checkRequestStatus(STATUS.SUBMITTED);
-		request.reject();
+		rejectRequest();
 		EventManager.dispatch(new CertificateRequestRejectedEvent(request));
 		
 	}

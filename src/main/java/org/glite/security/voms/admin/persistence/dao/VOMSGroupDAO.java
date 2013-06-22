@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -43,9 +44,11 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class VOMSGroupDAO {
 
@@ -93,7 +96,17 @@ public class VOMSGroupDAO {
 
 	}
 
-	public List findAll() {
+	
+	public List<VOMSGroup> findAllWithoutRootGroup(){
+		
+		String query = "from VOMSGroup g where g != g.parent";
+		Query q = HibernateFactory.getSession().createQuery(query);
+		
+		return q.list();
+	}
+	
+	
+	public List<VOMSGroup> findAll() {
 
 		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup";
 
@@ -278,8 +291,10 @@ public class VOMSGroupDAO {
 
 	public VOMSGroup findById(Long id) {
 
-		VOMSGroup g = (VOMSGroup) HibernateFactory.getSession().load(
+		
+		VOMSGroup g = (VOMSGroup) HibernateFactory.getSession().get(
 				VOMSGroup.class, id);
+		
 		return g;
 
 	}

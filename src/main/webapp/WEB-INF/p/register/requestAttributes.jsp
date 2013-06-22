@@ -26,7 +26,8 @@ Group selection
 </h1>
 <p>
 Please select the VO groups you would like to be member of.<br/>
-<span class="strong">Note that your selection will be assessed by the VO manager which could reject some of your choices.</span>
+<span class="strong">Note that your selection will be assessed by the VO or group
+manager (where applicable) which could reject some of your choices.</span>
 </p>
 
 <s:form action="request-attributes" namespace="/register">

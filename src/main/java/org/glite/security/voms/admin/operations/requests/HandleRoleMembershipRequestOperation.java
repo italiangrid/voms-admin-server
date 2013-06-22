@@ -55,7 +55,7 @@ public class HandleRoleMembershipRequestOperation extends
 		
 		AssignRoleOperation.instance(u, g, r).execute();
 		
-		request.approve();
+		approveRequest();
 		
 		EventManager.dispatch(new RoleMembershipApprovedEvent(request));
 		
@@ -69,7 +69,7 @@ public class HandleRoleMembershipRequestOperation extends
 		
 		checkRequestStatus(STATUS.SUBMITTED);
 		
-		request.reject();
+		rejectRequest();
 		EventManager.dispatch(new RoleMembershipRejectedEvent(request));
 		
 		

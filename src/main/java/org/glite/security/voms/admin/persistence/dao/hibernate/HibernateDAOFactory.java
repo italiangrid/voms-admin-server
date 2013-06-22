@@ -21,16 +21,14 @@ package org.glite.security.voms.admin.persistence.dao.hibernate;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.PeriodicNotificationsDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequesterInfoDAO;
-import org.glite.security.voms.admin.persistence.dao.generic.TagDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskLogRecordDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskTypeDAO;
@@ -43,6 +41,8 @@ import org.glite.security.voms.admin.persistence.model.task.LogRecord;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Returns Hibernate-specific instances of DAOs.
@@ -133,13 +133,6 @@ public class HibernateDAOFactory extends DAOFactory {
 	}
 
 	@Override
-	public TagDAO getTagDAO() {
-
-		return (TagDAO) instantiateDAO(TagDAOHibernate.class);
-
-	}
-
-	@Override
 	public TaskDAO getTaskDAO() {
 
 		return (TaskDAO) instantiateDAO(TaskDAOHibernate.class);
@@ -174,6 +167,12 @@ public class HibernateDAOFactory extends DAOFactory {
 			throw new RuntimeException("Can not instantiate DAO: " + daoClass,
 					ex);
 		}
+	}
+
+	@Override
+	public GroupManagerDAO getGroupManagerDAO() {
+		return (GroupManagerDAO) instantiateDAO(GroupManagerDAOHibernate.class);
+		
 	}
 
 }

@@ -73,6 +73,12 @@ public abstract class Request implements Serializable, NamedType {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	STATUS status;
+	
+	@Column(name="approver_dn")
+	String approverDN;
+	
+	@Column(name="approver_ca")
+	String approverCA;
 
 	/**
 	 * @return the id
@@ -209,17 +215,20 @@ public abstract class Request implements Serializable, NamedType {
 		return builder.toHashCode();
 	}
 
-	public void approve() {
+	public void approve(String approverDN, String approverCA) {
 
 		setStatus(STATUS.APPROVED);
 		setCompletionDate(new Date());
+		setApproverDN(approverDN);
+		setApproverCA(approverCA);
 	}
 
-	public void reject() {
+	public void reject(String approverDN, String approverCA) {
 
 		setStatus(STATUS.REJECTED);
 		setCompletionDate(new Date());
-
+		setApproverDN(approverDN);
+		setApproverCA(approverCA);
 	}
 
 	@Override
@@ -233,4 +242,42 @@ public abstract class Request implements Serializable, NamedType {
 		
 		return builder.toString();
 	}
+
+	
+	/**
+	 * @return the approverDN
+	 */
+	public String getApproverDN() {
+	
+		return approverDN;
+	}
+
+	
+	/**
+	 * @param approverDN the approverDN to set
+	 */
+	public void setApproverDN(String approverDN) {
+	
+		this.approverDN = approverDN;
+	}
+
+	
+	/**
+	 * @return the approverCA
+	 */
+	public String getApproverCA() {
+	
+		return approverCA;
+	}
+
+	
+	/**
+	 * @param approverCA the approverCA to set
+	 */
+	public void setApproverCA(String approverCA) {
+	
+		this.approverCA = approverCA;
+	}
+	
+	public abstract String getTypeName();
 }

@@ -192,52 +192,6 @@
 		</service>
 		
 		<service
-				name="VOMSRegistration"
-				provider="java:RPC">
-				<parameter
-						name="wsdlTargetNamespace"
-						value="http://glite.org/wsdl/services/org.glite.security.voms.service.registration" />
-				<parameter
-						name="wsdlServiceElement"
-						value="VOMSRegistrationService" />
-
-				<parameter
-						name="schemaUnqualified"
-						value="http://glite.org/wsdl/services/org.glite.security.voms,http://glite.org/wsdl/services/org.glite.security.voms.service.registration" />
-
-				<parameter
-						name="wsdlServicePort"
-						value="VOMSRegistration" />
-				<parameter
-						name="className"
-						value="org.glite.security.voms.admin.service.VOMSRegistrationService" />
-				<parameter
-						name="wsdlPortType"
-						value="VOMSRegistration" />
-
-				<parameter
-						name="allowedMethods"
-						value="*" />
-
-				<beanMapping
-						qname="ns:VOMSException"
-						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms"
-						languageSpecificType="java:org.glite.security.voms.VOMSException" />
-
-				
-				<beanMapping
-						qname="ns:RegistrationRequest"
-						xmlns:ns="http://glite.org/wsdl/services/org.glite.security.voms.service.registration"
-						languageSpecificType="java:org.glite.security.voms.service.registration.RegistrationRequest"/>
-						
-				<!-- Comment it out to enable logging of generated soap responses
-						<responseFlow>
-						<handler type="java:service.SoapMonitorHandler"/>
-						</responseFlow> 
-				-->
-		</service>
-
-		<service
 				name="VOMSACL"
 				provider="java:RPC">
 				<parameter

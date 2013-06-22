@@ -19,39 +19,58 @@
  */
 package org.glite.security.voms.admin.util;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.error.VOMSFatalException;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
 public class URLBuilder {
 
-	public static String baseVOMSURL() {
-
-		InetAddress addr;
-		try {
-
-			addr = InetAddress.getLocalHost();
-
-		} catch (UnknownHostException e) {
-			throw new VOMSFatalException(
-					"Error getting local host inet address!", e);
-		}
-
-		String voName = VOMSConfiguration.instance().getVOName();
-		String hostName;
-
-		if (addr.getCanonicalHostName().startsWith("localhost"))
-			hostName = addr.getHostAddress();
-		else
-			hostName = addr.getCanonicalHostName();
-
-		String portNumber = "8443";
-
-		return String.format("https://%s:%s/voms/%s", hostName, portNumber,
-				voName);
-
+	public static String buildAdminServiceBaseURL(String host, String portNumber, String vo){
+		
+		return String.format("https://%s:%s/voms/%s", host, portNumber, vo);
+	}
+	
+	public static String baseVOMSURLFromConfiguration(){
+		
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		return buildAdminServiceBaseURL(conf.getHostname(),
+			"8443", conf.getVOName());
+		
+	}
+	
+	public static String buildRequestConfirmURL(NewVOMembershipRequest r){
+		return buildRequestConfirmURL(baseVOMSURLFromConfiguration(), r);
 	}
 
+	public static String buildRequestCancelURL(NewVOMembershipRequest r){
+		return buildRequestCancelURL(baseVOMSURLFromConfiguration(), r);
+	}
+	
+	private static String buildRequestURL(String op, 
+		String baseURL, NewVOMembershipRequest r){
+		
+		return String.format("%s/register/%s-request.action?requestId=%d"
+			+"&confirmationId=%s",
+			baseURL,
+			op,
+			r.getId(),
+			r.getConfirmId());
+	}
+	
+	public static String buildRequestConfirmURL(String baseURL, 
+		NewVOMembershipRequest r){
+		
+		return buildRequestURL("confirm", baseURL, r);
+	}
+	
+	public static String buildRequestCancelURL(String baseURL, 
+		NewVOMembershipRequest r){
+		
+		return buildRequestURL("cancel", baseURL, r);	
+	}
+	
+	public static String buildLoginURL(){
+		
+		return String.format("%s/home/login.action", baseVOMSURLFromConfiguration());
+		
+	}
 }

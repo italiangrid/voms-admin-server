@@ -36,25 +36,21 @@
         <property name="hibernate.cache.use_minimal_puts">false</property>
         <property name="hibernate.cache.use_structured_entries">true</property>
     	
-        <mapping resource="model/VOMSDBVersion.hbm.xml" />
         
-        <mapping resource="model/VOMSUserAttribute.hbm.xml" />
-        <mapping resource="model/VOMSGroup.hbm.xml" />
-        <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
-        <mapping resource="model/VOMSRole.hbm.xml" />
-        <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
         <mapping resource="model/VOMSAttributeDescription.hbm.xml" />
-        <mapping resource="model/VOMSCapability.hbm.xml" />
+        <mapping resource="model/VOMSUserAttribute.hbm.xml" /> 
+        <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
+        <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
+        
+        
         <mapping resource="model/VOMSMapping.hbm.xml" />
+        
         <mapping resource="model/ACL.hbm.xml" />
-        <mapping resource="model/VOMembershipRequest.hbm.xml" />
         
         <mapping resource="model/AUP.hbm.xml"/>
         <mapping resource="model/AUPVersion.hbm.xml"/>
         <mapping resource="model/AUPAcceptanceRecord.hbm.xml"/>
-        <mapping resource="model/Tag.hbm.xml"/>
-        <mapping resource="model/TagMapping.hbm.xml"/>
-        
+         
         <!-- Annotated classes -->
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAdmin"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSCA"/>
@@ -84,5 +80,9 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
         
         <mapping class="org.glite.security.voms.admin.persistence.model.PeriodicNotifications"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSRole"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSGroup"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.GroupManager"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSDBVersion"/>
     </session-factory>
 </hibernate-configuration>

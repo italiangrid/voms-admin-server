@@ -56,10 +56,7 @@ public class MembershipActions extends UserActionSupport {
 	@Action("add-to-group")
 	
 	public String addToGroup() throws Exception {
-
-		// log.debug(String.format("userId: %d, groupId: %d, roleId: %d",
-		// userId, groupId, roleId));
-
+		
 		VOMSGroup g = groupById(groupId);
 
 		AddMemberOperation.instance(getModel(), g).execute();
@@ -72,9 +69,6 @@ public class MembershipActions extends UserActionSupport {
 
 	@Action(value = "remove-from-group")
 	public String removeFromGroup() throws Exception {
-
-		// log.debug(String.format("userId: %d, groupId: %d, roleId: %d",
-		// userId, groupId, roleId));
 
 		VOMSGroup g = groupById(groupId);
 
@@ -90,8 +84,6 @@ public class MembershipActions extends UserActionSupport {
 	@Action(value = "assign-role")
 	public String assignRole() throws Exception {
 
-		// log.debug(String.format("userId: %d, groupId: %d, roleId: %d",
-		// userId, groupId, roleId));
 
 		VOMSGroup g = groupById(groupId);
 		VOMSRole r = roleById(roleId);

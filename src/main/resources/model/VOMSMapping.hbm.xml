@@ -53,11 +53,6 @@
 				not-null="false"		
 			/>					
 				
-		</natural-id>		
-
-		<many-to-one name="capability" class="org.glite.security.voms.admin.persistence.model.VOMSCapability"
-			column="cid" 
-			foreign-key="fk_m_cap" not-null="false"/>
-		
+		</natural-id>
 	</class>
 </hibernate-mapping>

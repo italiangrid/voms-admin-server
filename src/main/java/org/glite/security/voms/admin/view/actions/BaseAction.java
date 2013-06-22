@@ -30,12 +30,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.operations.attributes.FindAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.util.URLBuilder;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ValidationAware;
@@ -80,6 +84,15 @@ public class BaseAction extends ActionSupport implements ValidationAware{
 
 	}
 
+	protected VOMSAdmin adminById(Long id){
+		if (id == null)
+			throw new NullArgumentException("'id' cannot be null!");
+		
+		return VOMSAdminDAO.instance().getById(id);
+		
+	}
+	
+	
 	protected VOMSGroup groupById(Long id) {
 		if (id == null)
 			throw new NullArgumentException("'id' cannot be null!");
@@ -104,29 +117,7 @@ public class BaseAction extends ActionSupport implements ValidationAware{
 	
 	protected String getHomeURL(){
 		
-		// FIXME: should actually look into the action mapping configuration
-		return getBaseURL()+"/admin/home.action";
-	}
-
-	protected String getBaseURL() {
-
-		HttpServletRequest req = ServletActionContext.getRequest();
-
-		String result = req.getScheme() + "://" + req.getServerName() + ":"
-				+ req.getServerPort() + "/voms/"
-				+ VOMSConfiguration.instance().getVOName();
-
-		return result;
-	}
-
-	protected String getAllVOsBaseURL() {
-
-		HttpServletRequest req = ServletActionContext.getRequest();
-
-		String result = req.getScheme() + "://" + req.getServerName() + ":"
-				+ req.getServerPort() + "/voms/";
-
-		return result;
+		return URLBuilder.baseVOMSURLFromConfiguration()+"/admin/home.action";
 	}
 	
 	protected Date getFutureDate(Date initialDate, int field, int increment) {

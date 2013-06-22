@@ -45,7 +45,7 @@ public class HandleMembershipRemovalRequest extends
 		VOMSUser u = getRequesterAsVomsUser();
 		DeleteUserOperation.instance(u).execute();
 		
-		request.approve();
+		approveRequest();
 		
 		EventManager.dispatch(new MembershipRemovalApprovedEvent(request));
 		
@@ -55,7 +55,9 @@ public class HandleMembershipRemovalRequest extends
 	@Override
 	protected void reject() {
 		checkRequestStatus(STATUS.SUBMITTED);
-		request.reject();
+		
+		rejectRequest();
+		
 		EventManager.dispatch(new MembershipRemovalRejectedEvent(request));
 	}
 

@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
@@ -46,6 +47,20 @@ public abstract class BaseHandleRequestOperation<T extends Request> extends Base
 
 	protected abstract void approve();
 
+	protected void approveRequest(){
+		
+		CurrentAdmin admin = CurrentAdmin.instance();
+		request.approve(admin.getRealSubject(), admin.getRealIssuer());
+		
+	}
+	
+	protected void rejectRequest(){
+		
+		CurrentAdmin admin = CurrentAdmin.instance();
+		request.reject(admin.getRealSubject(), admin.getRealIssuer());
+	}
+	
+	
 	protected void checkRequestStatus(STATUS status){
 		if (!request.getStatus().equals(status))
 			throw new IllegalRequestStateException(

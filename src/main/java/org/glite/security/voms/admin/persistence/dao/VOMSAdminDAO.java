@@ -22,18 +22,14 @@ package org.glite.security.voms.admin.persistence.dao;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.NoSuchCAException;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
-import org.glite.security.voms.admin.persistence.model.Tag;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
-import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
@@ -41,6 +37,8 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VOMSAdminDAO {
 
@@ -375,10 +373,6 @@ public class VOMSAdminDAO {
 	public void update(VOMSAdmin a) {
 
 		HibernateFactory.getSession().update(a);
-	}
-
-	public void assignTagInGroup(VOMSAdmin a, Tag t, VOMSGroup g) {
-
 	}
 
 }

@@ -63,6 +63,8 @@ public interface RequestDAO extends GenericDAO<Request, Long> {
 	
 	public List<Request> findPendingRequests();
 	
+	public List<Request> findClosedRequests(); 
+	
 	public List<RoleMembershipRequest> findPendingRoleMembershipRequests();
 	
 	public List<CertificateRequest> findPendingUserCertificateRequests(VOMSUser u);

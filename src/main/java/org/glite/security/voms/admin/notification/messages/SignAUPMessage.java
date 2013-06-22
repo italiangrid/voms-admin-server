@@ -59,7 +59,7 @@ public class SignAUPMessage extends AbstractVelocityNotification {
 		context.put("aup", aup);
 		context.put("user", user);
 		context.put("recipient", getRecipientList().get(0));
-		context.put("signAUPURL", URLBuilder.baseVOMSURL()
+		context.put("signAUPURL", URLBuilder.baseVOMSURLFromConfiguration()
 				+ "/aup/sign!input.action?aupId=" + aup.getId());
 		context.put("expirationDate", expirationDate);
 

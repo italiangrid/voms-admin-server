@@ -45,13 +45,19 @@ public abstract class RegisterActionSupport extends BaseAction implements
 	public static final String CONFIRMATION_NEEDED = "needToConfirm";
 	public static final String PLEASE_WAIT = "pleaseWait";
 	public static final String ALREADY_MEMBER = "alreadyAMember";
+	
 	public static final String REGISTRATION_DISABLED = "registrationDisabled";
 	public static final String UNAUTHENTICATED_CLIENT = "unauthenticatedClient";
 	public static final String PLUGIN_VALIDATION_ERROR = "pluginValidationError";
+	
+	public static final String REQUEST_ATTRIBUTES = "requestAttributes";
+	public static final String SELECT_MANAGER = "selectManager";
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 
 	Long requestId = -1L;
 

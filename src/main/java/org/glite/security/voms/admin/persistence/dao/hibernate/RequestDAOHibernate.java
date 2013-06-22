@@ -244,6 +244,8 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 		
 		return result;
 	}
+	
+	
 
 	public List<RoleMembershipRequest> findPendingRoleMembershipRequests() {
 		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
@@ -411,8 +413,31 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 	}
 
 	
-	
+	@Override
+	public List<Request> findClosedRequests() {
 
-	
-
+		List<Request> closedRequests = new ArrayList<Request>();
+		
+		Class<?>[] classes = new Class[]{
+			NewVOMembershipRequest.class,
+			GroupMembershipRequest.class,
+			RoleMembershipRequest.class,
+			CertificateRequest.class,
+			MembershipRemovalRequest.class
+		};
+		
+		for (Class<?> c: classes){
+			Criteria crit = getSession().createCriteria(
+				c);
+			
+			crit.add(Restrictions.disjunction()
+				.add(Restrictions.eq("status", STATUS.APPROVED))
+				.add(Restrictions.eq("status", STATUS.REJECTED)));
+			
+			closedRequests.addAll(crit.list());
+			
+		}
+		
+		return closedRequests;
+	}
 }

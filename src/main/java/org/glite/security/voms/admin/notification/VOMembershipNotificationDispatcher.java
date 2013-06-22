@@ -20,6 +20,7 @@
 
 package org.glite.security.voms.admin.notification;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
@@ -54,7 +55,18 @@ public class VOMembershipNotificationDispatcher extends
 		super(new EventMask(EventType.VOMembershipRequestEvent));
 		
 	}
-
+	
+	public List<String> resolveEmailAddresses(VOMembershipRequestConfirmedEvent e){
+		if (e.getRequest().getRequesterInfo().getManagerEmail() == null){
+			return NotificationUtil.getAdministratorsEmailList(
+				VOMSContext.getVoContext(),
+				VOMSPermission.getRequestsRWPermissions());
+		}
+		
+		return Arrays.asList(e.getRequest().getRequesterInfo().getManagerEmail());
+		
+	}
+	
 	public void fire(Event e) {
 		
 		if (e instanceof VOMembershipRequestSubmittedEvent) {
@@ -71,8 +83,7 @@ public class VOMembershipNotificationDispatcher extends
 
 			VOMembershipRequestConfirmedEvent ee = (VOMembershipRequestConfirmedEvent) e;
 			
-			List<String> admins = NotificationUtil.getAdministratorsEmailList(VOMSContext.getVoContext(),
-					VOMSPermission.getRequestsRWPermissions()); 
+			List<String> admins =	resolveEmailAddresses(ee); 
 			
 			HandleRequest msg = new HandleRequest(ee.getRequest(), 
 					ee.getUrl(), admins );

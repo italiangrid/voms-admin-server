@@ -59,7 +59,7 @@ public class VOMSAdmin implements Serializable, Cloneable {
 
 	@Column(name="email_address", nullable=true)
 	String emailAddress;
-
+	
 	public VOMSAdmin() {
 
 	}

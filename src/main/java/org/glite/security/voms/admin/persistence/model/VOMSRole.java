@@ -1,21 +1,20 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009. See
+ * http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ * 
+ * Authors: Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.model;
 
@@ -27,14 +26,24 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
-/**
- * 
- * @author andrea
- * 
- */
-public class VOMSRole implements Serializable, Comparable {
+import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
+
+@Entity
+@Table(name="roles")
+public class VOMSRole implements Serializable, Comparable<VOMSRole> {
 
 	private static final long serialVersionUID = -5063337678658382573L;
 
@@ -47,17 +56,27 @@ public class VOMSRole implements Serializable, Comparable {
 		this.name = name;
 	}
 
+	@Id
+	@Column(name = "rid")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ROLE_SEQ")
+	@SequenceGenerator(name="VOMS_ROLE_SEQ", sequenceName="VOMS_ROLE_SEQ")
 	Long id;
 
+	@Column(name="role", nullable=false, unique=true)
 	String name;
 
-	Set attributes = new HashSet();
+	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="role")
+	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	Set<VOMSRoleAttribute> attributes = new HashSet<VOMSRoleAttribute>();
 
-	Set mappings = new TreeSet();
+	@OneToMany(cascade={ CascadeType.REMOVE }, mappedBy="role", 
+		fetch = FetchType.EAGER)
+	@Sort(type = SortType.NATURAL)
+	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-	Set acls = new HashSet();
-
-	Set<TagMapping> tagMappings = new HashSet<TagMapping>();
+	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="role")
+	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	Set<ACL> acls = new HashSet<ACL>();
 
 	/**
 	 * @return Returns the id.
@@ -69,7 +88,7 @@ public class VOMSRole implements Serializable, Comparable {
 
 	/**
 	 * @param id
-	 *            The id to set.
+	 *          The id to set.
 	 */
 	public void setId(Long id) {
 
@@ -86,7 +105,7 @@ public class VOMSRole implements Serializable, Comparable {
 
 	/**
 	 * @param name
-	 *            The name to set.
+	 *          The name to set.
 	 */
 	public void setName(String name) {
 
@@ -114,12 +133,11 @@ public class VOMSRole implements Serializable, Comparable {
 		return getName().hashCode();
 	}
 
-	public int compareTo(Object o) {
+	public int compareTo(VOMSRole that) {
 
-		if (this.equals(o))
+		if (this.equals(that))
 			return 0;
-		VOMSRole that = (VOMSRole) o;
-
+		
 		if ((that.name == null) && (this.name == null))
 			return 1;
 
@@ -134,24 +152,24 @@ public class VOMSRole implements Serializable, Comparable {
 		return "Role=" + name;
 	}
 
-	public Set getMappings() {
+	public Set<VOMSMapping> getMappings() {
 
 		return mappings;
 	}
 
-	public void setMappings(Set mappings) {
+	public void setMappings(Set<VOMSMapping> mappings) {
 
 		this.mappings = mappings;
 	}
 
-	public Set getUsers(VOMSGroup g) {
+	public Set<VOMSUser> getUsers(VOMSGroup g) {
 
-		SortedSet res = new TreeSet();
-		Iterator mIter = mappings.iterator();
+		SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
+		Iterator<VOMSMapping> mIter = mappings.iterator();
 
 		while (mIter.hasNext()) {
 
-			VOMSMapping m = (VOMSMapping) mIter.next();
+			VOMSMapping m = mIter.next();
 			if (m.getGroup().equals(g))
 				res.add(m.getUser());
 		}
@@ -159,14 +177,14 @@ public class VOMSRole implements Serializable, Comparable {
 		return Collections.unmodifiableSortedSet(res);
 	}
 
-	public Set getMembersEmailAddresses(VOMSGroup g) {
+	public Set<String> getMembersEmailAddresses(VOMSGroup g) {
 
-		SortedSet res = new TreeSet();
-		Iterator mIter = mappings.iterator();
+		SortedSet<String> res = new TreeSet<String>();
+		Iterator<VOMSMapping> mIter = mappings.iterator();
 
 		while (mIter.hasNext()) {
 
-			VOMSMapping m = (VOMSMapping) mIter.next();
+			VOMSMapping m = mIter.next();
 			if (m.getGroup().equals(g))
 				res.add(m.getUser().getEmailAddress());
 		}
@@ -188,9 +206,9 @@ public class VOMSRole implements Serializable, Comparable {
 
 	public VOMSRoleAttribute getAttributeByName(VOMSGroup g, String attrName) {
 
-		Iterator i = attributes.iterator();
+		Iterator<VOMSRoleAttribute> i = attributes.iterator();
 		while (i.hasNext()) {
-			VOMSRoleAttribute rav = (VOMSRoleAttribute) i.next();
+			VOMSRoleAttribute rav = i.next();
 			if (rav.getGroup().equals(g) && rav.getName().equals(attrName))
 				return rav;
 		}
@@ -198,13 +216,13 @@ public class VOMSRole implements Serializable, Comparable {
 		return null;
 	}
 
-	public Set getAttributesInGroup(VOMSGroup g) {
+	public Set<VOMSRoleAttribute> getAttributesInGroup(VOMSGroup g) {
 
-		HashSet result = new HashSet();
-		Iterator i = attributes.iterator();
+		Set<VOMSRoleAttribute> result = new HashSet<VOMSRoleAttribute>();
+		Iterator<VOMSRoleAttribute> i = attributes.iterator();
 
 		while (i.hasNext()) {
-			VOMSRoleAttribute rav = (VOMSRoleAttribute) i.next();
+			VOMSRoleAttribute rav = i.next();
 			if (rav.getGroup().equals(g))
 				result.add(rav);
 		}
@@ -223,29 +241,37 @@ public class VOMSRole implements Serializable, Comparable {
 
 		if (!attributes.contains(val))
 			throw new NoSuchAttributeException("Attribute \"" + val.getName()
-					+ "\" not defined for \"" + this + "\" in group \""
-					+ val.getGroup() + "\".");
+				+ "\" not defined for \"" + this + "\" in group \"" + val.getGroup()
+				+ "\".");
 
 		attributes.remove(val);
 
 	}
+	
+	public void addMapping(VOMSMapping m){
+		getMappings().add(m);
+	}
+	
+	public boolean removeMapping(VOMSMapping m){
+		return getMappings().remove(m);
+	}
 
-	public Set getAttributes() {
+	public Set<VOMSRoleAttribute> getAttributes() {
 
 		return attributes;
 	}
 
-	public void setAttributes(Set attributes) {
+	public void setAttributes(Set<VOMSRoleAttribute> attributes) {
 
 		this.attributes = attributes;
 	}
 
-	public Set getAcls() {
+	public Set<ACL> getAcls() {
 
 		return acls;
 	}
 
-	public void setAcls(Set acls) {
+	public void setAcls(Set<ACL> acls) {
 
 		this.acls = acls;
 	}
@@ -254,13 +280,12 @@ public class VOMSRole implements Serializable, Comparable {
 
 		ACL result = null;
 
-		Iterator i = getAcls().iterator();
+		Iterator<ACL> i = getAcls().iterator();
 
 		while (i.hasNext()) {
 
-			ACL tmp = (ACL) i.next();
-			if (tmp.getGroup().equals(g)
-					&& (!tmp.getContext().isGroupContext())) {
+			ACL tmp = i.next();
+			if (tmp.getGroup().equals(g) && (!tmp.getContext().isGroupContext())) {
 
 				result = tmp;
 				break;
@@ -286,23 +311,6 @@ public class VOMSRole implements Serializable, Comparable {
 
 		getAcls().add(newACL);
 
-	}
-
-	/**
-	 * @return the tagMappings
-	 */
-	public Set<TagMapping> getTagMappings() {
-
-		return tagMappings;
-	}
-
-	/**
-	 * @param tagMappings
-	 *            the tagMappings to set
-	 */
-	public void setTagMappings(Set<TagMapping> tagMappings) {
-
-		this.tagMappings = tagMappings;
 	}
 
 }

@@ -20,6 +20,7 @@
 
 package org.glite.security.voms.admin.notification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
@@ -34,6 +35,7 @@ import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class RoleMembershipNotificationDispatcher extends BaseNotificationDispatcher{
@@ -64,12 +66,19 @@ public class RoleMembershipNotificationDispatcher extends BaseNotificationDispat
 			RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent)e;
 			
 			VOMSContext context = VOMSContext.instance(ee.getRequest().getFQAN());
-			List<String> admins = NotificationUtil.getAdministratorsEmailList(context, VOMSPermission.getRequestsRWPermissions());
+			
+			List<String> admins;
+			
+			if (context.getGroup().getManagers().size() !=  0){
+				admins =  new ArrayList<String>();
+				for (GroupManager gm: context.getGroup().getManagers())
+					admins.add(gm.getEmailAddress());
+			}else
+				admins = NotificationUtil.getAdministratorsEmailList(context, 
+					VOMSPermission.getRequestsRWPermissions());
 			
 			
 			HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
-			
-			
 			NotificationService.instance().send(msg);
 			
 		}

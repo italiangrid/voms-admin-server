@@ -55,7 +55,15 @@
     <li>
       <a href="<s:url action="load" namespace="/aup"/>"class="vomsLink">AUPs</a>
     </li>
-  
+    
+    <li>
+      <a href="<s:url action="index" namespace="/manager"/>"class="vomsLink">Group managers</a>
+    </li>
+    
+    <li>
+      <a href="<s:url action="index" namespace="/request_history"/>"class="vomsLink">Request log</a>
+    </li>
+    
   </s:if>
 
 </ul>

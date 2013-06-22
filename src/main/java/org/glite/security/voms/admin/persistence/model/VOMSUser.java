@@ -167,7 +167,7 @@ public class VOMSUser implements Serializable, Comparable {
 	Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
 
 	/** Membership mappings **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", fetch = FetchType.EAGER)
 	@Sort(type = SortType.NATURAL)
 	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
@@ -363,7 +363,7 @@ public class VOMSUser implements Serializable, Comparable {
 
 		if (getMappings().contains(m)) {
 			getMappings().remove(m);
-			g.getMappings().remove(m);
+			g.removeMapping(m);
 
 		} else
 			throw new NoSuchMappingException("User \"" + this
@@ -416,7 +416,8 @@ public class VOMSUser implements Serializable, Comparable {
 			if (m.isRoleMapping()) {
 				if (m.getGroup().equals(g) && m.getRole().equals(r)) {
 					i.remove();
-					r.getMappings().remove(m);
+					boolean removedFromRole = r.removeMapping(m);
+					boolean removedFromGroup = g.removeMapping(m);
 					removed = true;
 				}
 			}
@@ -424,7 +425,7 @@ public class VOMSUser implements Serializable, Comparable {
 
 		if (!removed)
 			throw new VOMSInconsistentDatabaseException(
-					"Error removing exiting role mapping!");
+					"Error removing existing role mapping!");
 		return m;
 
 	}
@@ -440,8 +441,11 @@ public class VOMSUser implements Serializable, Comparable {
 		while (i.hasNext()) {
 
 			VOMSMapping m = (VOMSMapping) i.next();
-			if (m.getGroup().equals(g) && m.isRoleMapping())
+			
+			if (m.getGroup().equals(g) && m.isRoleMapping()){
 				i.remove();
+				m.getRole().removeMapping(m);
+			}
 		}
 
 		return;

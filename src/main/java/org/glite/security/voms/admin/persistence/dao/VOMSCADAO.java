@@ -220,7 +220,7 @@ public class VOMSCADAO implements Searchable {
 	}
 
 	
-	public List getValid() {
+	public List<VOMSCA> getValid() {
 
 		String query = "from VOMSCA where subjectString not like '/O=VOMS%' order by subjectString";
 
