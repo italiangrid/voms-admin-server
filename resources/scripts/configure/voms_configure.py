@@ -23,7 +23,7 @@ from voms_shared import voms_version, admin_conf_dir, VOMSDefaults,\
     aup_path, admin_logging_conf_path, X509Helper, core_conf_dir, voms_conf_path, voms_pass_path,\
     voms_log_path, voms_lib_dir, voms_deploy_database_cmd,\
     voms_ro_auth_clients_cmd, voms_add_admin_cmd, mysql_util_cmd,\
-    admin_service_properties_path, voms_undeploy_database_cmd
+    admin_service_properties_path, voms_undeploy_database_cmd, voms_upgrade_database_cmd
 
 from sys import exit, stdout, stderr
 import socket
@@ -379,8 +379,8 @@ def check_remove_options(options):
         error_and_exit("Please set the VO option")
 
 def check_upgrade_options(options):
-    pass
-
+    if not options.vo:
+        error_and_exit("Please set the VO option")
 
 def service_cert_sanity_checks(options):
     if not os.path.exists(options.cert):
@@ -724,6 +724,10 @@ def do_install(options):
     
     logger.info("VO %s configuration completed succesfully.", options.vo)
         
+
+def upgrade_database(options):
+    execute_cmd(voms_upgrade_database_cmd(options.vo))
+    
   
 def undeploy_database(options):
     logger.warning("Undeploying database for VO %s. The database contents will be lost.", options.vo)
@@ -767,7 +771,16 @@ def do_remove(options):
     
 
 def do_upgrade(options):
-    logger.info("No upgrade path implemented currently.")
+    check_upgrade_options(options)
+    setup_defaults(options)
+    
+    if not os.path.exists(admin_conf_dir(options.vo)):
+        logger.error("The VOMS Admin service for VO %s is not configured on this host.", options.vo)
+    else:
+        logger.info("Upgrading database for VO %s to the latest version.", 
+                    options.vo)    
+        upgrade_database(options)    
+        logger.info("Upgrade completed successfully.")
 
 def error_and_exit(msg):
     logger.critical(msg)

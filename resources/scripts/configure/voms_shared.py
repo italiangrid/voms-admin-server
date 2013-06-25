@@ -57,6 +57,9 @@ def voms_deploy_database_cmd(vo):
 def voms_undeploy_database_cmd(vo):
     return __voms_db_util_base_cmd(vo, "undeploy")
 
+def voms_upgrade_database_cmd(vo):
+    return __voms_db_util_base_cmd(vo, "upgrade")
+
 def __voms_db_util_base_cmd(vo, command):
     return "%s %s --vo %s" % (VOMSDefaults.voms_db_util, command, vo)
 
