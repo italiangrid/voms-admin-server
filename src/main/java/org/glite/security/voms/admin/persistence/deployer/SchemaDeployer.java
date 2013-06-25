@@ -529,7 +529,9 @@ public class SchemaDeployer {
 		HibernateFactory.beginTransaction();
 		VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
 		
-		if ( version.getAdminVersion().equals("3.1.0")){
+		String adminVersion = version.getAdminVersion();
+		
+		if ( adminVersion.equals("3.1.0") || adminVersion.matches("3\\.0\\..?")){
 			try{
 				log.info("Upgrading database schema to move to VOMS Admin >= 3.2.0...");
 				
