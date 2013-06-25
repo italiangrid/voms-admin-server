@@ -504,7 +504,7 @@ public class SchemaDeployer {
 		HibernateFactory.beginTransaction();
 		VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
 		HibernateFactory.commitTransaction();
-		
+		log.info("Found VOMS Admin database version {}", version.getAdminVersion());
 		
 		if (isOracleBackend() && ( version.getAdminVersion().equals("2.6.1") || 
 				version.getAdminVersion().equals("2.5.5"))){
