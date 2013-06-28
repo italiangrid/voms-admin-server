@@ -86,13 +86,6 @@ public class ConfirmRequestAction extends RegisterActionSupport {
 			ServletActionContext.getRequest().setAttribute("voGroups", groups);
 			return REQUEST_ATTRIBUTES;
 		}
-
-		if (getModel().getConfirmId().equals(confirmationId))
-			request.setStatus(STATUS.CONFIRMED);
-		else{
-			addActionError("Wrong confirmation id!");
-			return ERROR;
-		}
 		
 		return SUCCESS;
 	}
