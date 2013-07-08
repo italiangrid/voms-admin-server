@@ -497,7 +497,7 @@ public class SchemaDeployer {
 		
 	}
 	
-	private void doUpgrade2_5(Configuration hibernateConfig){
+	private boolean doUpgrade2_5(Configuration hibernateConfig){
 		
 		
 		
@@ -513,6 +513,7 @@ public class SchemaDeployer {
 				log.info("Fixing oracle sequences...");
 				fixHibernateSequences261(hibernateConfig);
 				HibernateFactory.commitTransaction();
+				return true;
 				
 			}catch (Exception e) {
 				
@@ -521,11 +522,11 @@ public class SchemaDeployer {
 			}
 		}
 		
-		
+		return false;
 		
 	}
 
-	private void doUpgradeTo3_2(Configuration hibernateConfig){
+	private boolean doUpgradeTo3_2(Configuration hibernateConfig){
 		HibernateFactory.beginTransaction();
 		VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
 		
@@ -534,9 +535,25 @@ public class SchemaDeployer {
 			.VOMS_ADMIN_SERVER_VERSION);
 		
 		String adminVersion = version.getAdminVersion().trim();
+		String[] versionsToBeUpgraded = {"2.5.5", 
+		                                 "2.6.1", 
+		                                 "2.7.0", 
+		                                 "2.7.1",
+		                                 "3.0.0",
+		                                 "3.0.1",
+		                                 "3.1.0"};
+		boolean needsUpgrade = false;
 		
-		if ( adminVersion.matches("^2\\.[567]\\.?") ||	
-				 adminVersion.matches("^3\\[01]\\.?")){
+		for (String v: versionsToBeUpgraded){
+			if (adminVersion.equals(v)){
+				log.debug("Database version {} matches {}", adminVersion, v);
+				needsUpgrade = true;
+				break;
+
+			}
+		}
+		
+		if ( needsUpgrade ){
 			
 			try{		 
 				
@@ -571,12 +588,15 @@ public class SchemaDeployer {
 				VOMSVersionDAO.instance().setupVersion();
 				
 				HibernateFactory.commitTransaction();
+				return true;
 				
 			}catch (Exception e){
 				log.error("Error upgrading VOMS database to latest schema: {}", e.getMessage(), e);
 				HibernateFactory.rollbackTransaction();
 			}
 		}
+		
+		return false;
 	}
 
 	private void doUpgrade() {
@@ -603,8 +623,15 @@ public class SchemaDeployer {
 		}
 
 		if (existingDB == 3){
-			doUpgrade2_5(hibernateConfig);
-			doUpgradeTo3_2(hibernateConfig);
+			boolean upgradePerformed = false;
+			
+			upgradePerformed = doUpgrade2_5(hibernateConfig);
+			upgradePerformed = doUpgradeTo3_2(hibernateConfig);
+			
+			if (upgradePerformed)
+				log.info("The upgrade procedure has changed the VOMS database.");
+			else
+				log.info("The upgrade procedure has NOT changed the VOMS database.");
 		}
 	}
 
