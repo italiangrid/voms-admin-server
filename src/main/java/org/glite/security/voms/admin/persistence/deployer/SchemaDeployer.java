@@ -525,15 +525,24 @@ public class SchemaDeployer {
 		
 	}
 
-	private void doUpgrade3_1(Configuration hibernateConfig){
+	private void doUpgradeTo3_2(Configuration hibernateConfig){
 		HibernateFactory.beginTransaction();
 		VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
 		
+		VOMSConfiguration conf = VOMSConfiguration.instance();
+		String targetVersion = conf.getString(VOMSConfigurationConstants
+			.VOMS_ADMIN_SERVER_VERSION);
+		
 		String adminVersion = version.getAdminVersion();
 		
-		if ( adminVersion.equals("3.1.0") || adminVersion.matches("3\\.0\\..?")){
-			try{
-				log.info("Upgrading database schema to move to VOMS Admin >= 3.2.0...");
+		if ( adminVersion.matches("2\\.[567]\\.?") || 
+				
+			adminVersion.matches("3\\[01]\\.?")){
+			
+			try{		 
+				
+				log.info("Upgrading database schema from version {} to version {}",
+					adminVersion, targetVersion);
 				
 				List<String> upgradeScript = loadUpgradeScript31_32();
 				ArrayList<Exception> exceptions = new ArrayList<Exception>();
@@ -596,7 +605,7 @@ public class SchemaDeployer {
 
 		if (existingDB == 3){
 			doUpgrade2_5(hibernateConfig);
-			doUpgrade3_1(hibernateConfig);
+			doUpgradeTo3_2(hibernateConfig);
 		}
 	}
 
