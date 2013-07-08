@@ -533,11 +533,10 @@ public class SchemaDeployer {
 		String targetVersion = conf.getString(VOMSConfigurationConstants
 			.VOMS_ADMIN_SERVER_VERSION);
 		
-		String adminVersion = version.getAdminVersion();
+		String adminVersion = version.getAdminVersion().trim();
 		
-		if ( adminVersion.matches("2\\.[567]\\.?") || 
-				
-			adminVersion.matches("3\\[01]\\.?")){
+		if ( adminVersion.matches("^2\\.[567]\\.?") ||	
+				 adminVersion.matches("^3\\[01]\\.?")){
 			
 			try{		 
 				
