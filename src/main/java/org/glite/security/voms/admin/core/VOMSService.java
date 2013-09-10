@@ -19,12 +19,8 @@
  */
 package org.glite.security.voms.admin.core;
 
-import it.infn.cnaf.voms.x509.X509ACGenerator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -53,8 +49,7 @@ import org.glite.security.voms.admin.notification.RoleMembershipNotificationDisp
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
-import org.glite.security.voms.admin.util.AdminServiceContactInfo;
-import org.glite.security.voms.admin.util.AdminServiceContactUtil;
+import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +155,9 @@ public final class VOMSService {
 				VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 
 				300L);
 		
-		es.startBackgroundTask(new UserStatsTask(), VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+		es.startBackgroundTask(new UserStatsTask(), 
+			VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, 
+			UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
 	}
 
 	protected static void bootstrapAttributeAuthorityServices() {
@@ -182,7 +179,17 @@ public final class VOMSService {
 					false);
 		}
 		
-		X509ACGenerator.instance(conf.getServiceCertificate(), conf.getServicePrivateKey());
+		boolean x509AcEndpointEnabled =  conf.getBoolean(
+			VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT,false);
+		
+		if (x509AcEndpointEnabled){
+				log.info("Bootstrapping VOMS X.509 attribute authority.");
+				ACGeneratorFactory.newACGenerator().configure(
+					conf.getServiceCredential());
+				
+			}else{
+				log.info("X.509 attribute authority is disabled.");
+			}
 
 	}
 	

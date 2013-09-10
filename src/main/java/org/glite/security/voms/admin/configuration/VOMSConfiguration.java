@@ -30,11 +30,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,13 +46,14 @@ import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.ssl.PKCS8Key;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.emi.security.authn.x509.impl.PEMCredential;
 
 public final class VOMSConfiguration {
 	
@@ -99,10 +96,7 @@ public final class VOMSConfiguration {
 
 	Logger log = LoggerFactory.getLogger(VOMSConfiguration.class);
 
-	private X509Certificate serviceCertificate;
-
-	private PrivateKey servicePrivateKey;
-
+	private PEMCredential serviceCredential;
 	
 	private void loadConfDir(){
 		
@@ -138,16 +132,9 @@ public final class VOMSConfiguration {
 			context = ctxt;
 			
 			loadVOName();
-
-			if (!getVOName().equals("siblings")) {
-
-				loadServiceProperties();
-				if (getBoolean(
-						VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
-						false))
-					loadServiceCredentials();
-
-			}
+			loadServiceProperties();	
+			loadServiceCredentials();
+						
 
 		} else {
 
@@ -648,12 +635,16 @@ public final class VOMSConfiguration {
 	}
 
 	public X509Certificate getServiceCertificate() {
-		return serviceCertificate;
+		if (serviceCredential == null)
+			return null;
+		return serviceCredential.getCertificate();
 	}
 
 	public PrivateKey getServicePrivateKey() {
-
-		return servicePrivateKey;
+		if (serviceCredential == null)
+			return null;
+		
+		return serviceCredential.getKey();
 	}
 
 	public ServletContext getServletContext() {
@@ -780,100 +771,21 @@ public final class VOMSConfiguration {
 		/* load certificate */
 		log.info("Loading credentials for VOMS Attribute authority from:"
 				+ certificateFileName + "," + privateKeyFileName);
-
-		InputStream certificateInputStream;
+		
 		try {
-
-			certificateInputStream = new FileInputStream(certificateFileName);
-
-		} catch (FileNotFoundException e) {
-
-			log
-					.error("Error loading service credentials: "
-							+ e.getMessage(), e);
-			throw new VOMSException("Error loading service credentials: "
-					+ e.getMessage(), e);
-
+			serviceCredential = new PEMCredential(
+				new FileInputStream(privateKeyFileName), 
+				new FileInputStream(certificateFileName), 
+				(char[])null);
+		
+		} catch (Throwable t) {
+			log.error("Error loading service credentials: {}", t.getMessage(), t);
+			throw new VOMSException(t.getMessage(),t);
 		}
-
-		CertificateFactory certificateFactory;
-
-		try {
-			certificateFactory = CertificateFactory.getInstance("X509", "BC");
-
-		} catch (CertificateException e) {
-			log.error("Error instantiating X509 certificate factory: "
-					+ e.getMessage(), e);
-			throw new VOMSException(
-					"Error instantiating X509 certificate factory: "
-							+ e.getMessage(), e);
-		} catch (NoSuchProviderException e) {
-			throw new VOMSException(
-					"Error instantiating X509 certificate factory: "
-							+ e.getMessage(), e);
-		}
-
-		try {
-			serviceCertificate = (X509Certificate) certificateFactory
-					.generateCertificate(certificateInputStream);
-		} catch (CertificateException e) {
-			log.error("Error generating X509 certificate from input stream: "
-					+ e.getMessage(), e);
-			throw new VOMSException(
-					"Error generating X509 certificate from input stream: "
-							+ e.getMessage(), e);
-		}
-
-		try {
-
-			certificateInputStream.close();
-
-		} catch (IOException e) {
-			log.error("Error closing certificate input stream:"
-					+ e.getMessage(), e);
-			throw new VOMSException("Error closing certificate input stream:"
-					+ e.getMessage(), e);
-		}
-
-		log.info("SAML service credential's DN: "
-				+ DNUtil.getOpenSSLSubject(serviceCertificate
+		
+		log.info("VOMS AA service credential's DN: "
+				+ DNUtil.getOpenSSLSubject(serviceCredential.getCertificate()
 						.getSubjectX500Principal()));
-
-		/* load private key */
-		FileInputStream fileInputStream = null;
-
-		try {
-			fileInputStream = new FileInputStream(privateKeyFileName);
-
-		} catch (FileNotFoundException e) {
-
-			log.error("Error opening private key file:" + e.getMessage(), e);
-			throw new VOMSException("Error opening private key file:"
-					+ e.getMessage(), e);
-		}
-
-		PKCS8Key pkcs8 = null;
-
-		try {
-			pkcs8 = new PKCS8Key(fileInputStream, "".toCharArray());
-
-		} catch (GeneralSecurityException e) {
-
-			log.error("Error parsing private key from input stream:"
-					+ e.getMessage(), e);
-			throw new VOMSException(
-					"Error parsing private key from input stream:"
-							+ e.getMessage(), e);
-
-		} catch (IOException e) {
-
-			log.error("Error opening private key file:" + e.getMessage(), e);
-			throw new VOMSException("Error opening private key file:"
-					+ e.getMessage(), e);
-
-		}
-
-		servicePrivateKey = pkcs8.getPrivateKey();
 
 	}
 
@@ -1148,6 +1060,9 @@ public final class VOMSConfiguration {
 		return config.getString("voms.hostname");
 	}
 	
+	public PEMCredential getServiceCredential(){
+		return serviceCredential;
+	}
 	
 	public void dump(PrintStream stream){
 		

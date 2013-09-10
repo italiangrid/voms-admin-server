@@ -74,8 +74,16 @@
 			org.apache.axis.transport.http.AxisServlet
 		</servlet-class>
 	</servlet>
- 
-	<servlet>
+  
+  
+  <servlet>
+    <servlet-name>voms-ac-servlet</servlet-name>
+    <servlet-class>
+      org.italiangrid.voms.aa.x509.ACServlet
+    </servlet-class>
+  </servlet> 
+	
+  <servlet>
 		<servlet-name>register-alias</servlet-name>
 		<jsp-file>/WEB-INF/p/register.jsp</jsp-file>
 	</servlet>
@@ -104,7 +112,13 @@
 		<servlet-name>axis</servlet-name>
 		<url-pattern>/servlet/axis</url-pattern>
 	</servlet-mapping>
-    
+  
+  <servlet-mapping>
+    <servlet-name>voms-ac-servlet</servlet-name>
+    <url-pattern>/generate-ac</url-pattern>
+  </servlet-mapping>
+  
+  
 	<!-- Welcome file -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>

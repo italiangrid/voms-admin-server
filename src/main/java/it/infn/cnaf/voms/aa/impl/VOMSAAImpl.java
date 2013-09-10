@@ -25,6 +25,7 @@ import it.infn.cnaf.voms.aa.VOMSAttributes;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
@@ -43,7 +44,8 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
 
 	protected void checkCertificateValidity(String dn, String ca) {
 
-		assert dn != null : "Please specify a DN for the certificate!";
+		if (dn == null)
+			throw new NullArgumentException("dn cannot be null!");
 
 		CertificateDAO dao = CertificateDAO.instance();
 		Certificate cert = null;
@@ -63,7 +65,8 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
 		if (user.isSuspended())
 			throw new SuspendedUserException("User identified by '"
 					+ dn + "' " + ((ca != null) ? ",'" + ca + "' " : "")
-					+ "is currently suspended!");
+					+ "is currently suspended for the following reason: "
+					+user.getSuspensionReason());
 		
 		if (cert.isSuspended())
 			throw new SuspendedCertificateException("Certificate '"
@@ -75,81 +78,59 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
 	}
 
 	public VOMSAttributes getAllVOMSAttributes(String dn) {
-
-		checkCertificateValidity(dn, null);
-		VOMSUser u = VOMSUserDAO.instance().findBySubject(dn);
-
-		if (u == null)
-			throw new NoSuchUserException("User '" + dn
-					+ "' not found in database!");
-
-		return VOMSAttributesImpl.getAllFromUser(u);
-
+		return getAllVOMSAttributes(dn, null);
 	}
 
 	public VOMSAttributes getAllVOMSAttributes(String dn, String ca) {
-		checkCertificateValidity(dn, ca);
-		VOMSUser u = VOMSUserDAO.instance().findByDNandCA(dn, ca);
-		if (u == null)
-			throw new NoSuchUserException("User '" + dn + ",'" + ca
-					+ "' not found in database!");
-
+		
+		VOMSUser u = findUser(dn, ca);
 		return VOMSAttributesImpl.getAllFromUser(u);
 	}
 
 	public VOMSAttributes getVOMSAttributes(String dn) {
-
-		checkCertificateValidity(dn, null);
-
-		VOMSUser u = VOMSUserDAO.instance().findBySubject(dn);
-
-		if (u == null)
-			throw new NoSuchUserException("User '" + dn
-					+ "' not found in database!");
-
-		return VOMSAttributesImpl.fromUser(u);
-
+		return getVOMSAttributes(dn,(List<String>)null);
 	}
 
 	public VOMSAttributes getVOMSAttributes(String dn,
 			List<String> requestedFQANs) {
 
-		checkCertificateValidity(dn, null);
-
-		VOMSUser u = VOMSUserDAO.instance().findBySubject(dn);
-
-		if (u == null)
-			throw new NoSuchUserException("User '" + dn
-					+ "' not found in database!");
-
+		VOMSUser u = findUser(dn);
 		return VOMSAttributesImpl.fromUser(u, requestedFQANs);
 
 	}
 
 	public VOMSAttributes getVOMSAttributes(String dn, String ca) {
-
-		checkCertificateValidity(dn, ca);
-		VOMSUser u = VOMSUserDAO.instance().findByDNandCA(dn, ca);
-
-		if (u == null)
-			throw new NoSuchUserException("User '" + dn + ",'" + ca
-					+ "' not found in database!");
-
-		return VOMSAttributesImpl.fromUser(u);
+		return getVOMSAttributes(dn,ca, null);
 	}
-
+	
 	public VOMSAttributes getVOMSAttributes(String dn, String ca,
 			List<String> requestedFQANs) {
+		
+		VOMSUser u = findUser(dn, ca);
+		return VOMSAttributesImpl.fromUser(u, requestedFQANs);
 
+	}
+	
+	protected VOMSUser findUser(String dn){
+		return findUser(dn, null);
+	}
+	
+	protected VOMSUser findUser(String dn, String ca){
+		
 		checkCertificateValidity(dn, ca);
-
-		VOMSUser u = VOMSUserDAO.instance().findByDNandCA(dn, ca);
+		
+		VOMSUser u = null;
+		
+		if (ca != null)
+			u = VOMSUserDAO.instance().findByDNandCA(dn, ca);
+		else
+			u = VOMSUserDAO.instance().findBySubject(dn);
+		
 		if (u == null)
 			throw new NoSuchUserException("User '" + dn + ",'" + ca
 					+ "' not found in database!");
-
-		return VOMSAttributesImpl.fromUser(u, requestedFQANs);
-
+		
+		return u;
 	}
 
 }
