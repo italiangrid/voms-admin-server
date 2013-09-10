@@ -761,11 +761,11 @@ public final class VOMSConfiguration {
 	private void loadServiceCredentials() {
 
 		String certificateFileName = getString(
-				VOMSConfigurationConstants.VOMS_AA_CERT_FILE,
+				VOMSConfigurationConstants.VOMS_SERVICE_CERT_FILE,
 				"/etc/grid-security/hostcert.pem");
 
 		String privateKeyFileName = getString(
-				VOMSConfigurationConstants.VOMS_AA_KEY_FILE,
+				VOMSConfigurationConstants.VOMS_SERVICE_KEY_FILE,
 				"/etc/grid-security/hostkey.pem");
 
 		/* load certificate */

@@ -103,8 +103,8 @@ public interface VOMSConfigurationConstants {
 	/**
 	 * Attribute Authority Properties
 	 */
-	public static final String VOMS_AA_CERT_FILE = "voms.aa.certificate";
-	public static final String VOMS_AA_KEY_FILE = "voms.aa.key";
+	public static final String VOMS_SERVICE_CERT_FILE = "voms.service.cert";
+	public static final String VOMS_SERVICE_KEY_FILE = "voms.service.key";
 	public static final String VOMS_SAML_MAX_ASSERTION_LIFETIME = "voms.saml.max_assertion_lifetime";
 	public static final String VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP = "voms.aa.compulsory_group_membership";
 	public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
