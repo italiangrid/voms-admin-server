@@ -33,6 +33,7 @@
     <axis.version>1.2.1</axis.version>
     <opensaml.version>2.5.3</opensaml.version>
     <tiles.version>2.0.6</tiles.version>
+    <commons-math.version>3.2</commons-math.version>
 
   </properties>
 
@@ -323,6 +324,11 @@
       <version>1.5</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>${commons-math.version}</version>
+    </dependency>
     <!-- AXIS -->
     <dependency>
       <groupId>axis</groupId>

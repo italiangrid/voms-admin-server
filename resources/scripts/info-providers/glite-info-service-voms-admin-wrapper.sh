@@ -15,9 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors:
-# 	Andrea Ceccanti (INFN)
-#
 
 
 # This is a wrapper for use on a voms-admin server; it calls the info provider

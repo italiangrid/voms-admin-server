@@ -17,6 +17,7 @@
 #
 # Authors:
 #     Andrea Ceccanti (INFN)
+
 from optparse import OptionParser, OptionGroup
 from voms_shared import voms_version, admin_conf_dir, VOMSDefaults,\
     admin_db_properties_path, admin_service_endpoint_path, vomses_path, lsc_path,\

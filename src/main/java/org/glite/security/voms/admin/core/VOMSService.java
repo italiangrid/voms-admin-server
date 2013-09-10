@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.core;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
@@ -30,6 +31,7 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
+import org.glite.security.voms.admin.core.tasks.PrintX509AAStatsTask;
 import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
@@ -158,6 +160,7 @@ public final class VOMSService {
 		es.startBackgroundTask(new UserStatsTask(), 
 			VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, 
 			UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+		
 	}
 
 	protected static void bootstrapAttributeAuthorityServices() {
@@ -183,9 +186,16 @@ public final class VOMSService {
 			VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT,false);
 		
 		if (x509AcEndpointEnabled){
+			
 				log.info("Bootstrapping VOMS X.509 attribute authority.");
 				ACGeneratorFactory.newACGenerator().configure(
 					conf.getServiceCredential());
+				
+				VOMSExecutorService es = VOMSExecutorService.instance();
+				es.scheduleAtFixedRate(new PrintX509AAStatsTask(),
+					PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS,
+					PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, 
+					TimeUnit.SECONDS);
 				
 			}else{
 				log.info("X.509 attribute authority is disabled.");

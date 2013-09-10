@@ -16,6 +16,7 @@
 # Authors:
 #     Andrea Ceccanti (INFN)
 #
+
 import string
 __voms_version__ = "${pom.version}"
 __voms_prefix__ = "${package.prefix}"

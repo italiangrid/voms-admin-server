@@ -17,6 +17,8 @@
 # Authors:
 # 	Andrea Ceccanti (INFN)
 #
+
+
 ### BEGIN INIT INFO
 # Provides:          voms-admin
 # Required-Start:    $network $remote_fs
