@@ -528,9 +528,14 @@ def create_endpoint_info(options):
                                   0644)
 def create_vomses(options):    
     cert = X509Helper(options.cert, openssl_cmd=options.openssl)
+    
+    vomses_port = options.core_port
+    if vomses_port is None:
+        vomses_port = options.x509_aa_port
+        
     vomses = '"%s" "%s" "%s" "%s" "%s"\n' % (options.vo,
                                              options.hostname,
-                                             options.core_port,
+                                             vomses_port,
                                              cert.subject,
                                              options.vo)
     
