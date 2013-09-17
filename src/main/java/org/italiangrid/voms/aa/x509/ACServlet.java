@@ -244,10 +244,10 @@ public class ACServlet extends HttpServlet {
 		String fqansString = request.getParameter("fqans");
 
 		if (fqansString == null)
-			return null;
+			return Collections.emptyList();
 
 		List<String> requestedFQANs = new ArrayList<String>();
-
+		
 		if (fqansString.contains(",")) {
 
 			for (String s : StringUtils.split(fqansString, ","))
