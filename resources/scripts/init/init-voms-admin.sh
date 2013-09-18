@@ -37,6 +37,9 @@
 ###
 #set -x
 
+## return value
+RETVAL=0
+
 ## voms installation prefix
 PREFIX="${package.prefix}"
 
@@ -103,10 +106,10 @@ print_vo_status(){
 		vo_state=$(echo "${vo_entry[1]}" | tr -d ' ');
 		if [ -z "$status_vo" ]; then
 			echo -n "VO ($vo_name):";
-			[ "$vo_state" == "active" ] && up || down ;
+			[ "$vo_state" == "active" ] && up "(running)" || down "(not running)" ;
 		else
 			if [ "$vo_name" == "$status_vo" ]; then
-				[ "$vo_state" == "active" ] && up || down;
+				[ "$vo_state" == "active" ] && up "(running)" || down "(not running)" ;
 			fi
 		fi
 	done <<< "$vo_status"
@@ -348,13 +351,15 @@ restart() {
 }
 
 status() {
-	echo -n "VOMS admin container: "
 	check_container_is_running
 	if [ $? -eq 0 ]; then
-		success 
+		if[ -z $1 ]; then
+			success "VOMS admin container"
+		fi 
 		print_vo_status "$1"
 	else
-		failure "(not running)"
+		RETVAL=1
+		failure "VOMS admin container:(not running)"
 	fi
 }
 
@@ -373,6 +378,8 @@ down() {
     echo -ne "\r"
     echo
     
+		RETVAL=1
+
     return 0
 }
 
