@@ -209,7 +209,7 @@ public class ACServlet extends HttpServlet {
 			VOMSConfigurationConstants.VOMS_AA_X509_LEGACY_FQAN_ENCODING,
 			true);
 		
-		return AttributeAuthorityFactory.newAttributeAuthority(maximumValidity);
+		return AttributeAuthorityFactory.newAttributeAuthority(maximumValidity, legacyFQANEncoding);
 	}
 	
 	/**
