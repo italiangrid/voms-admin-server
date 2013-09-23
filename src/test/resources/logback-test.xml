@@ -23,7 +23,9 @@
 
 <configuration scan="true">
     
-    
+    <logger name="org.italiangrid.voms.aa.x509.stats"
+      level="DEBUG"/>
+      
     <logger name="org.glite.security.voms.admin" level="DEBUG"/>     
     
     <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
