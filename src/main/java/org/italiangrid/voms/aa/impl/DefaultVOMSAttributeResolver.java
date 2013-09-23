@@ -51,6 +51,10 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 		r.getErrorMessages().add(e);
 	}
 
+	protected String formatFQAN(String fqan) {
+		return fqan;
+	}
+	
 	protected void resolveRequestedFQANs(RequestContext context){
 		
 		VOMSRequest request = context.getRequest();
@@ -60,7 +64,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 		for (String fqan : request.getRequestedFQANs()) {
 			if (PathNamingScheme.isQualifiedRole(fqan)) {
 				if (u.hasRole(fqan)) {
-					response.getIssuedFQANs().add(fqan);
+					response.getIssuedFQANs().add(formatFQAN(fqan));
 				} else {
 					failResponse(response, 
 						VOMSErrorMessage.noSuchAttribute(fqan));
@@ -70,7 +74,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
 			} else if (PathNamingScheme.isGroup(fqan)) {
 				if (u.isMember(fqan)) {
-					response.getIssuedFQANs().add(fqan);
+					response.getIssuedFQANs().add(formatFQAN(fqan));
 				} else {
 					failResponse(response, 
 						VOMSErrorMessage.noSuchAttribute(fqan));
@@ -94,7 +98,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 				String fqan = mapping.getFQAN();
 
 				if (!response.getIssuedFQANs().contains(fqan))
-					response.getIssuedFQANs().add(fqan);
+					response.getIssuedFQANs().add(formatFQAN(fqan));
 			}
 		}
 	}

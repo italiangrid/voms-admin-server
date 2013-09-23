@@ -18,22 +18,31 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.italiangrid.voms.aa;
+package org.italiangrid.voms.aa.impl;
 
-import org.italiangrid.voms.aa.impl.AAImpl;
-import org.italiangrid.voms.aa.impl.DefaultVOMSAttributeResolver;
-import org.italiangrid.voms.aa.impl.LegacyVOMSAttributeResolver;
+import org.glite.security.voms.admin.util.PathNamingScheme;
 
-public class AttributeAuthorityFactory {
+public class LegacyVOMSAttributeResolver extends DefaultVOMSAttributeResolver {
 
-	private AttributeAuthorityFactory(){}
+	private final String NULL_CAPABILITY = "Capability=NULL";
+	private final String NULL_ROLE = "Role=NULL";
 	
-	public static AttributeAuthority newAttributeAuthority(long maxAttrsValidityInSecs,
-		boolean legacyFQANEncoding) {
+	public LegacyVOMSAttributeResolver() {
+
+	}
+	
+	@Override
+	protected String formatFQAN(String fqan) {
 		
-		if (legacyFQANEncoding)
-			return new AAImpl(new LegacyVOMSAttributeResolver(), maxAttrsValidityInSecs);
-		return new AAImpl(new DefaultVOMSAttributeResolver(), maxAttrsValidityInSecs);
+		String result = null;
+		
+		if (PathNamingScheme.isQualifiedRole(fqan)) {
+			result = String.format("%s/%s", fqan, NULL_CAPABILITY);
+		} else if (PathNamingScheme.isGroup(fqan)) {
+			result = String.format("%s/%s/%s", fqan, NULL_ROLE, NULL_CAPABILITY);
+		}
+		
+		return result;
 	}
 	
 }
