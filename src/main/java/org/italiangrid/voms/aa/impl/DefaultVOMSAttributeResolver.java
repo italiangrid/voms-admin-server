@@ -94,10 +94,10 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 			VOMSMapping mapping = mappingIter.next();
 
 			if (mapping.isGroupMapping()) {
-				String fqan = mapping.getFQAN();
+				String fqan = formatFQAN(mapping.getFQAN());
 
 				if (!response.getIssuedFQANs().contains(fqan))
-					response.getIssuedFQANs().add(formatFQAN(fqan));
+					response.getIssuedFQANs().add(fqan);
 			}
 		}
 	}
