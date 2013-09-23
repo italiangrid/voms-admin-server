@@ -27,8 +27,15 @@ public class LegacyVOMSAttributeResolver extends DefaultVOMSAttributeResolver {
 	private final String NULL_CAPABILITY = "Capability=NULL";
 	private final String NULL_ROLE = "Role=NULL";
 	
-	public LegacyVOMSAttributeResolver() {
-
+	@Override
+	protected String normalizeFQAN(String fqan) {
+	
+		int index = fqan.indexOf("/"+NULL_ROLE); 
+		
+		if ( index > 0)
+			return fqan.substring(0, index);
+		
+		return fqan.substring(0, fqan.indexOf("/"+NULL_CAPABILITY));
 	}
 	
 	@Override
