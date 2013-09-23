@@ -111,6 +111,7 @@ public interface VOMSConfigurationConstants {
 	public static final String VOMS_AA_X509_ACTIVATE_ENDPOINT = "voms.aa.x509.activate_endpoint";
 	public static final String VOMS_AA_X509_MAX_AC_VALIDITY = "voms.aa.x509.max_ac_validity";
 	public static final String VOMS_AA_X509_PRINT_STATS_PERIOD = "voms.aa.x509.print_stats_period";
+	public static final String VOMS_AA_X509_LEGACY_FQAN_ENCODING = "voms.aa.x509.legacy_fqan_encoding";
 	
 	public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
 

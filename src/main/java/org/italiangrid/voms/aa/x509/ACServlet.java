@@ -204,6 +204,10 @@ public class ACServlet extends HttpServlet {
 			VOMSConfigurationConstants.VOMS_AA_X509_MAX_AC_VALIDITY,
 			TimeUnit.HOURS.toSeconds(12));
 
+		boolean legacyFQANEncoding = VOMSConfiguration.instance().getBoolean(
+			VOMSConfigurationConstants.VOMS_AA_X509_LEGACY_FQAN_ENCODING,
+			true);
+		
 		return AttributeAuthorityFactory.newAttributeAuthority(maximumValidity);
 	}
 	

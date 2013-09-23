@@ -287,6 +287,12 @@ def setup_cl_options():
                                 help="Defines the maximum validity (in hours) for the attribute certificates issued by this VOMS server. The default is 12 hours",
                                 metavar="HOURS", default=12)
     
+    x509aa_opt_group.add_option("--disable-legacy-fqan-encoding", 
+                                dest="legacy_fqan_encoding", 
+                                action="store_false", 
+                                help="FQANs will be encoded in issued ACs following the old, deprecated format (i.e. the one including Role=NULL/Capability=NULL).", 
+                                default=True)
+    
     parser.add_option_group(x509aa_opt_group)
     
     notification_opt_group = OptionGroup(parser, "Notification service options", "These options configure the VOMS Admin notification service")
