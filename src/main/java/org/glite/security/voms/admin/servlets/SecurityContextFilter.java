@@ -34,6 +34,11 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.VOMSSecurityContext;
+import org.italiangrid.voms.VOMSValidators;
+import org.italiangrid.voms.ac.VOMSACValidator;
+import org.italiangrid.voms.ac.VOMSValidationResult;
+import org.italiangrid.voms.ac.ValidationResultListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,17 +47,19 @@ import org.slf4j.LoggerFactory;
  * @author andrea
  * 
  */
-public class SecurityContextFilter implements Filter {
+public class SecurityContextFilter implements Filter, ValidationResultListener {
 
 	public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
 	public static final int SESSION_LIFETIME_IN_SECONDS = 600;
 	
 	protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
+	private VOMSACValidator validator;
+	
 	public void init(FilterConfig arg0) throws ServletException {
 
 		log.debug("Initializing SecurityContextFilter {}", this);
-		
+		validator = VOMSValidators.newValidator(this);
 	}
 
 	protected void initContext(HttpServletRequest request){
@@ -60,16 +67,16 @@ public class SecurityContextFilter implements Filter {
 		HttpSession s = request.getSession(true);
 		s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
 		
-		SecurityContextImpl sc = (SecurityContextImpl) s.getAttribute(SECURITY_CONTEXT_SESSION_KEY);
+		VOMSSecurityContext sc = (VOMSSecurityContext) 
+			s.getAttribute(SECURITY_CONTEXT_SESSION_KEY);
 		
 		if (sc == null){
-			InitSecurityContext.setContextFromRequest(request);
-			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, SecurityContextImpl.getCurrentContext());
+			InitSecurityContext.setContextFromRequest(request, validator);
+			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, 
+				VOMSSecurityContext.getCurrentContext());
 			InitSecurityContext.logConnection();
 		}else
-			SecurityContextImpl.setCurrentContext(sc);
-		
-		
+			VOMSSecurityContext.setCurrentContext(sc);
 		
 	}
 	
@@ -95,6 +102,12 @@ public class SecurityContextFilter implements Filter {
 
 	public void destroy() {
 		log.debug("Destroying SecurityContextFilter {}", this);
+	}
+
+	@Override
+	public void notifyValidationResult(VOMSValidationResult result) {
+		
+		
 	}
 
 }

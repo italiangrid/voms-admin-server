@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.operations;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +31,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
-import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.VOMSSecurityContext;
+import org.italiangrid.voms.VOMSAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ public class CurrentAdmin {
 
 	public static CurrentAdmin instance() {
 
-		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
 
 		String adminDN = theContext.getClientName();
 		String caDN = theContext.getIssuerName();
@@ -243,7 +245,7 @@ public class CurrentAdmin {
 
 	public String getRealSubject() {
 
-		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
 
 		return theContext.getClientName();
 
@@ -251,7 +253,7 @@ public class CurrentAdmin {
 
 	public String getRealIssuer() {
 
-		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
 
 		return theContext.getIssuerName();
 
@@ -259,7 +261,7 @@ public class CurrentAdmin {
 
 	public String getRealCN() {
 
-		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
 		if (theContext.getClientCert() ==  null)
 			return null;
 		
@@ -274,7 +276,7 @@ public class CurrentAdmin {
 	}
 
 	public String getRealEmailAddress() {
-		SecurityContextImpl theContext = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
 		
 		if (theContext.getClientCert() ==  null)
 			return null;
@@ -293,6 +295,16 @@ public class CurrentAdmin {
 
 	}
 
+	public List<VOMSAttribute> getVOMSAttributes(){
+		
+		VOMSSecurityContext theContext = VOMSSecurityContext.getCurrentContext();
+		if (theContext.getClientCert() ==  null)
+			return null;
+		
+		return theContext.getVOMSAttributes();
+	}
+	
+	
 	public String toString() {
 
 		return admin.toString();

@@ -117,7 +117,7 @@ public enum VOMSResponseBuilderImpl implements VOMSResponseBuilder {
 		Document response = docBuilder.newDocument();
 		VOMSResponseFragment frag = new VOMSResponseFragment(response);
 
-		frag.buildACElement(Base64.encodeBytes(acBytes));
+		frag.buildACElement(Base64.encodeBytes(acBytes), warnings);
 		response.appendChild(frag.getFragment());
 
 		return xmlDocAsString(response);
@@ -160,7 +160,8 @@ class VOMSResponseFragment {
 
 	}
 
-	void buildACElement(String base64EncodedACString) {
+	void buildACElement(String base64EncodedACString, 
+		List<VOMSWarningMessage> warnings) {
 
 		Element root = doc.createElement("voms");
 		fragment.appendChild(root);
@@ -168,6 +169,12 @@ class VOMSResponseFragment {
 		Element ac = doc.createElement("ac");
 		appendTextChild(ac, base64EncodedACString);
 		root.appendChild(ac);
+		
+		for (VOMSWarningMessage w: warnings){
+			Element warningElement = doc.createElement("warning");
+			appendTextChild(warningElement, w.getMessage());
+			root.appendChild(warningElement);
+		}
 
 	}
 

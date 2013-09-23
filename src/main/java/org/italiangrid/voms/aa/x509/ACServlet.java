@@ -35,6 +35,7 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.VOMSSecurityContext;
 import org.italiangrid.voms.aa.AttributeAuthority;
 import org.italiangrid.voms.aa.AttributeAuthorityFactory;
 import org.italiangrid.voms.aa.RequestContext;
@@ -320,7 +321,7 @@ public class ACServlet extends HttpServlet {
 	private void populateRequest(HttpServletRequest request,
 		RequestContext context) {
 
-		SecurityContextImpl ctxt = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext ctxt = VOMSSecurityContext.getCurrentContext();
 		
 		context.getRequest().setHolderCert(ctxt.getClientCert());
 		

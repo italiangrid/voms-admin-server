@@ -27,66 +27,23 @@ import javax.servlet.ServletRequest;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.VOMSSecurityContext;
+import org.italiangrid.voms.ac.VOMSACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * The InitSecurityContext is and AXIS handler that can be put in a
- * <i>org.glite.security.voms.admin.request flow</i> in front of an actual SOAP
- * endpoint that it initializes the SecurityContext.
- * <p>
- * <p>
- * Currently, only the case of SOAP over HTTPS with client authentication is
- * supported.
- * <p>
- * <b>Configuration (Tomcat)</b><br>
- * The handler is invoked by first defining a <code>handler</code> in the
- * <code>.wsdd</code> file:
- * 
- * <pre>
- *   &lt;handler name=&quot;initSC&quot;
- *       type=&quot;java:org.glite.security.voms.service.InitSecurityContext&quot;&gt;
- *   &lt;/handler&gt;
- * </pre>
- * 
- * For the org.glite.security.voms.admin.servlets in question, a
- * org.glite.security.voms.admin.request flow is the defined:
- * 
- * <pre>
- *   &lt;org.glite.security.voms.admin.service name=&quot;TestService&quot; ...&gt;
- *      &lt;requestFlow&gt;
- *          &lt;handler type=&quot;initSC&quot;/&gt;
- *      &lt;/requestFlow&gt;
- *      ...
- *   &lt;/org.glite.security.voms.admin.service&gt;
- * </pre>
- * 
- * @author Karoly Lorentey <Karoly.Lorentey@cern.ch>
- */
 public class InitSecurityContext {
 
 	protected static Logger log = LoggerFactory
 			.getLogger(InitSecurityContext.class);
 
-	/**
-	 * Sets up the client's credentials. This method sets the current
-	 * <code>SecurityContext</code> to a new instance and initializes it from
-	 * the client's certificate. It also sets the
-	 * {@linkplain VOMSServiceConstants#SECURITY_CONTEXT_REMOTE_ADDRESS remote
-	 * IP address property}.
-	 * 
-	 * <p>
-	 * If the certificate is invalid, or there is some other problem with the
-	 * client's credentials, then the distinguished name and CA will be set to
-	 * <code>null</code>.
-	 * 
-	 * @see org.glite.security.SecurityContext
-	 */
-	public static void setContextFromRequest(final ServletRequest req) {
+	
+	public static void setContextFromRequest(final ServletRequest req,
+		final VOMSACValidator validator) {
 
 		log.debug("Creating a new security context");
-		SecurityContextImpl sc = new SecurityContextImpl();
-		// Store remote address.
+		VOMSSecurityContext sc = new VOMSSecurityContext();
+	
 		String remote = req.getRemoteAddr();
 		sc.setRemoteAddr(remote);
 
@@ -100,10 +57,8 @@ public class InitSecurityContext {
 		}
 
 		if (cert == null) {
-
 			sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 			sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-
 		} else {
 			// Client certificate found.
 			sc.setClientCertChain(cert);
@@ -126,13 +81,12 @@ public class InitSecurityContext {
 			}
 		}
 
-		SecurityContextImpl.setCurrentContext(sc);
-
+		VOMSSecurityContext.setCurrentContext(sc);
 	}
 
 	public static void logConnection() {
 
-		SecurityContextImpl sc = SecurityContextImpl.getCurrentContext();
+		VOMSSecurityContext sc = VOMSSecurityContext.getCurrentContext();
 
 		if (sc.getClientCert() == null) {
 
@@ -161,8 +115,8 @@ public class InitSecurityContext {
 	public static void setClearContext() {
 
 		log.info("Clearing the security context");
-		SecurityContextImpl sc = new SecurityContextImpl();
-		SecurityContextImpl.setCurrentContext(sc);
+		VOMSSecurityContext sc = new VOMSSecurityContext();
+		VOMSSecurityContext.setCurrentContext(sc);
 
 		sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
 		sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
