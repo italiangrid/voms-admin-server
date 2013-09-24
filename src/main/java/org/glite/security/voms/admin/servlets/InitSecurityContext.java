@@ -26,7 +26,8 @@ import javax.servlet.ServletRequest;
 
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSException;
-import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.CurrentSecurityContext;
+import org.italiangrid.utils.voms.SecurityContextFactory;
 import org.italiangrid.utils.voms.VOMSSecurityContext;
 import org.italiangrid.voms.ac.VOMSACValidator;
 import org.slf4j.Logger;
@@ -36,20 +37,19 @@ public class InitSecurityContext {
 
 	protected static Logger log = LoggerFactory
 			.getLogger(InitSecurityContext.class);
-
 	
 	public static void setContextFromRequest(final ServletRequest req,
 		final VOMSACValidator validator) {
 
 		log.debug("Creating a new security context");
-		VOMSSecurityContext sc = new VOMSSecurityContext();
-	
+		VOMSSecurityContext sc = SecurityContextFactory
+			.newVOMSSecurityContext(validator);
+		
 		String remote = req.getRemoteAddr();
 		sc.setRemoteAddr(remote);
 
 		X509Certificate[] cert = null;
 		try {
-			// Interpret the client's certificate.
 			cert = (X509Certificate[]) req
 					.getAttribute("javax.servlet.request.X509Certificate");
 		} catch (Throwable t) {
@@ -81,12 +81,12 @@ public class InitSecurityContext {
 			}
 		}
 
-		VOMSSecurityContext.setCurrentContext(sc);
+		CurrentSecurityContext.set(sc);
 	}
 
 	public static void logConnection() {
 
-		VOMSSecurityContext sc = VOMSSecurityContext.getCurrentContext();
+		VOMSSecurityContext sc = (VOMSSecurityContext) CurrentSecurityContext.get();
 
 		if (sc.getClientCert() == null) {
 
@@ -107,18 +107,5 @@ public class InitSecurityContext {
 					+ "serial " + serialNumber + ")");
 		}
 	}
-
-	/**
-	 * Initialize a clear security context, which will fail on all security
-	 * checks. It is intended for non-authenticated requests.
-	 */
-	public static void setClearContext() {
-
-		log.info("Clearing the security context");
-		VOMSSecurityContext sc = new VOMSSecurityContext();
-		VOMSSecurityContext.setCurrentContext(sc);
-
-		sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
-		sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-	}
+	
 }

@@ -83,6 +83,10 @@
             WEB-INF/classes/logback*.xml,
             WEB-INF/lib/javax*.jar,
             WEB-INF/lib/jetty-*.jar,
+            WEB-INF/lib/bcmail-*.jar,
+            WEB-INF/lib/bcprov-*.jar,
+            WEB-INF/lib/canl-*.jar,
+            WEB-INF/lib/voms-api-java-*.jar,
             WEB-INF/lib/https-utils-*.jar,
             WEB-INF/lib/org.apache.jasper.*.jar,
             WEB-INF/lib/org.eclipse.jdt.core*.jar,
@@ -206,7 +210,7 @@
             <exclude>src/main/resources/vomses-webapp/**</exclude>
             <exclude>**/*.gitignore</exclude>
             <exclude>resources/doc/**</exclude>
-            <exclude>resources/scripts/voms-admin-ping</exclude>
+            <exclude>resources/scripts/**</exclude>
             <exclude>resources/templates/aup/**</exclude>
             <exclude>resources/templates/**</exclude>
           </excludes>

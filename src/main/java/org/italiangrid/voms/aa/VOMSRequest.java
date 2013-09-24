@@ -23,6 +23,8 @@ package org.italiangrid.voms.aa;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import org.italiangrid.voms.VOMSAttribute;
+
 
 public interface VOMSRequest {
 
@@ -43,6 +45,9 @@ public interface VOMSRequest {
 	
 	public List<String> getRequestedFQANs();
 	public void setRequestedFQANs(List<String> fqans);
+	
+	public List<VOMSAttribute> getOwnedAttributes();
+	public void setOwnedAttributes(List<VOMSAttribute> attrs);
 	
 	public long getRequestedValidity();
 	public void setRequestedValidity(long validity);

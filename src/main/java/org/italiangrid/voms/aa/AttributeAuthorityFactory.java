@@ -22,7 +22,9 @@ package org.italiangrid.voms.aa;
 
 import org.italiangrid.voms.aa.impl.AAImpl;
 import org.italiangrid.voms.aa.impl.DefaultVOMSAttributeResolver;
-import org.italiangrid.voms.aa.impl.LegacyVOMSAttributeResolver;
+import org.italiangrid.voms.aa.impl.LegacyFQANEncoding;
+import org.italiangrid.voms.aa.impl.LimitToOwnedFQANsPolicy;
+import org.italiangrid.voms.aa.impl.NullFQANEncoding;
 
 public class AttributeAuthorityFactory {
 
@@ -32,8 +34,14 @@ public class AttributeAuthorityFactory {
 		boolean legacyFQANEncoding) {
 		
 		if (legacyFQANEncoding)
-			return new AAImpl(new LegacyVOMSAttributeResolver(), maxAttrsValidityInSecs);
-		return new AAImpl(new DefaultVOMSAttributeResolver(), maxAttrsValidityInSecs);
+			return new AAImpl(new DefaultVOMSAttributeResolver(
+				new LegacyFQANEncoding(),
+				new LimitToOwnedFQANsPolicy()), maxAttrsValidityInSecs);
+			
+		return new AAImpl(new DefaultVOMSAttributeResolver(
+			new NullFQANEncoding(),
+			new LimitToOwnedFQANsPolicy())
+			,maxAttrsValidityInSecs);
 	}
 	
 }

@@ -31,6 +31,7 @@ import org.italiangrid.voms.aa.RequestContext;
 import org.italiangrid.voms.aa.VOMSErrorMessage;
 import org.italiangrid.voms.aa.VOMSRequest;
 import org.italiangrid.voms.aa.VOMSResponse.Outcome;
+import org.italiangrid.voms.aa.VOMSWarning;
 import org.italiangrid.voms.aa.VOMSWarningMessage;
 
 public class AAImpl implements AttributeAuthority {
@@ -62,7 +63,7 @@ public class AAImpl implements AttributeAuthority {
 		
 		if (requestedValidity > maxAttrValidityInSecs){
 			context.getResponse().getWarnings().add(
-				VOMSWarningMessage.ShortenedAttributeValidity);
+				VOMSWarningMessage.shortenedAttributeValidity(context.getVOName()));
 		}
 		
 		Calendar cal = Calendar.getInstance();

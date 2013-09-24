@@ -23,6 +23,7 @@ package org.italiangrid.voms.aa.impl;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import org.italiangrid.voms.VOMSAttribute;
 import org.italiangrid.voms.aa.VOMSRequest;
 
 
@@ -38,6 +39,9 @@ public class RequestImpl implements VOMSRequest {
 	private String holderIssuer;
 	
 	private List<String> requestedFQANs;
+	
+	private List<VOMSAttribute> ownedAttributes;
+	
 	private List<String> targets;
 	private long requestedValidity = -1L;
 	
@@ -141,16 +145,34 @@ public class RequestImpl implements VOMSRequest {
 		this.holderCert = holderCert;	
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	
+	/**
+	 * @return the ownedAttributes
 	 */
+	public List<VOMSAttribute> getOwnedAttributes() {
+	
+		return ownedAttributes;
+	}
+
+	
+	/**
+	 * @param ownedAttributes the ownedAttributes to set
+	 */
+	public void setOwnedAttributes(List<VOMSAttribute> ownedAttributes) {
+	
+		this.ownedAttributes = ownedAttributes;
+	}
+
 	@Override
 	public String toString() {
+
 		return "RequestImpl [requesterSubject=" + requesterSubject
 			+ ", requesterIssuer=" + requesterIssuer + ", holderSubject="
 			+ holderSubject + ", holderIssuer=" + holderIssuer + ", requestedFQANs="
-			+ requestedFQANs + ", targets=" + targets + ", requestedValidity="
-			+ requestedValidity + "]";
+			+ requestedFQANs + ", ownedAttributes=" + ownedAttributes + ", targets="
+			+ targets + ", requestedValidity=" + requestedValidity + ", holderCert="
+			+ holderCert + "]";
 	}
+		
 }
 	

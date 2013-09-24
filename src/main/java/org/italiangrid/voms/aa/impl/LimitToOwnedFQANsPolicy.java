@@ -20,36 +20,33 @@
 
 package org.italiangrid.voms.aa.impl;
 
-import org.glite.security.voms.admin.util.PathNamingScheme;
+import org.italiangrid.voms.VOMSAttribute;
+import org.italiangrid.voms.aa.RequestContext;
 
-public class LegacyVOMSAttributeResolver extends DefaultVOMSAttributeResolver {
 
-	private final String NULL_CAPABILITY = "Capability=NULL";
-	private final String NULL_ROLE = "Role=NULL";
+public class LimitToOwnedFQANsPolicy implements FQANFilteringPolicy {
 	
+	public LimitToOwnedFQANsPolicy() {}
+
 	@Override
-	protected String normalizeFQAN(String fqan) {
-	
-		int index = fqan.indexOf("/"+NULL_ROLE); 
+	public boolean filterIssuedFQANs(RequestContext context) {
+
+		if (context.getRequest().getOwnedAttributes().isEmpty())
+			return false;
 		
-		if ( index > 0)
-			return fqan.substring(0, index);
+		boolean modified = false;
 		
-		return fqan.substring(0, fqan.indexOf("/"+NULL_CAPABILITY));
-	}
-	
-	@Override
-	protected String formatFQAN(String fqan) {
-		
-		String result = null;
-		
-		if (PathNamingScheme.isQualifiedRole(fqan)) {
-			result = String.format("%s/%s", fqan, NULL_CAPABILITY);
-		} else if (PathNamingScheme.isGroup(fqan)) {
-			result = String.format("%s/%s/%s", fqan, NULL_ROLE, NULL_CAPABILITY);
+		for (VOMSAttribute a: context.getRequest().getOwnedAttributes()){
+			
+			// Only consider valid VOMS attributes for this VO
+			if (!a.getVO().equals(context.getVOName()))
+				continue;
+			
+			// Limit issued FQANs to the owned attributes
+			modified = context.getResponse().getIssuedFQANs().retainAll(a.getFQANs());
 		}
 		
-		return result;
+		return modified;
 	}
-	
+
 }

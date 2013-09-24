@@ -20,32 +20,59 @@
 
 package org.italiangrid.voms.aa;
 
-public enum VOMSWarningMessage {
 
-	OrderNotSatisfied(1,
-		"The requested order could not be satisfied."),
-	ShortenedAttributeValidity(2,
-		"The validity period of the issued attributes has been "
-			+ "shortened to the maximum allowed by this VOMS server configuration."),
-	AttributeSubset(3,
-		"Only a subset of the requested attributes has been returned.");
+public class VOMSWarningMessage {
 
-	private int code;
-	private String message;
+	private final VOMSWarning warning;
+	private final String vo;
+	private final String message;
+	
+	private VOMSWarningMessage(VOMSWarning warning, String vo) {
+		this.warning = warning;
+		this.vo = vo;
+		this.message = null;
+	}
 
-	private VOMSWarningMessage(int legacyCode, String message) {
-		this.code = legacyCode;
+	private VOMSWarningMessage(VOMSWarning warning, String vo, String message){
+		this.warning = warning;
+		this.vo = vo;
 		this.message = message;
 	}
-
-	public int getCode() {
-
-		return code;
+	
+	/**
+	 * @return the vo
+	 */
+	public String getVo() {
+		return vo;
 	}
 
+	
+	/**
+	 * @return the message
+	 */
 	public String getMessage() {
-
+		if (message == null)
+			return warning.getDefaultMessage();
 		return message;
 	}
-
+	
+	/**
+	 * @return the warning
+	 */
+	public VOMSWarning getWarning() {
+		return warning;
+	}
+	
+	public static VOMSWarningMessage orderingNotSatisfied(String vo){
+		return new VOMSWarningMessage(VOMSWarning.OrderNotSatisfied,vo);
+	}
+	
+	public static VOMSWarningMessage shortenedAttributeValidity(String vo){
+		return new VOMSWarningMessage(VOMSWarning.ShortenedAttributeValidity,vo);
+	}
+	
+	public static VOMSWarningMessage attributeSubset(String vo){
+		return new VOMSWarningMessage(VOMSWarning.AttributeSubset,vo);
+	}
+	
 }

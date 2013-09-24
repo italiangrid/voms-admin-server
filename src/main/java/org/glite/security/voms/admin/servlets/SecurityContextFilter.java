@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
-import org.italiangrid.utils.voms.SecurityContextImpl;
+import org.italiangrid.utils.voms.CurrentSecurityContext;
 import org.italiangrid.utils.voms.VOMSSecurityContext;
 import org.italiangrid.voms.VOMSValidators;
 import org.italiangrid.voms.ac.VOMSACValidator;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 public class SecurityContextFilter implements Filter, ValidationResultListener {
 
 	public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
-	public static final int SESSION_LIFETIME_IN_SECONDS = 600;
+	public static final int SESSION_LIFETIME_IN_SECONDS = 120;
 	
 	protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
@@ -73,10 +73,10 @@ public class SecurityContextFilter implements Filter, ValidationResultListener {
 		if (sc == null){
 			InitSecurityContext.setContextFromRequest(request, validator);
 			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, 
-				VOMSSecurityContext.getCurrentContext());
+				CurrentSecurityContext.get());
 			InitSecurityContext.logConnection();
 		}else
-			VOMSSecurityContext.setCurrentContext(sc);
+			CurrentSecurityContext.set(sc);
 		
 	}
 	
@@ -106,8 +106,10 @@ public class SecurityContextFilter implements Filter, ValidationResultListener {
 
 	@Override
 	public void notifyValidationResult(VOMSValidationResult result) {
-		
-		
+		if (!result.isValid())
+			log.warn("VOMS attributes validation result: {}", result);
+		else
+			log.debug("VOMS attributes validation result: {}", result);
 	}
 
 }

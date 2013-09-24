@@ -37,23 +37,27 @@ import org.italiangrid.voms.aa.RequestContext;
 import org.italiangrid.voms.aa.VOMSErrorMessage;
 import org.italiangrid.voms.aa.VOMSRequest;
 import org.italiangrid.voms.aa.VOMSResponse;
+import org.italiangrid.voms.aa.VOMSWarning;
 import org.italiangrid.voms.aa.VOMSResponse.Outcome;
+import org.italiangrid.voms.aa.VOMSWarningMessage;
 
 public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
-	public DefaultVOMSAttributeResolver() {
-
+	protected FQANEncoding fqanEncoding;
+	
+	protected FQANFilteringPolicy fqanFilteringPolicy;
+	
+	public DefaultVOMSAttributeResolver(FQANEncoding encoding, 
+		FQANFilteringPolicy filteringPolicy) {
+		
+		fqanEncoding = encoding;
+		fqanFilteringPolicy = filteringPolicy;
 	}
 
 	protected void failResponse(VOMSResponse r, VOMSErrorMessage e) {
 
 		r.setOutcome(Outcome.FAILURE);
 		r.getErrorMessages().add(e);
-	}
-
-	protected String formatFQAN(String fqan) {
-
-		return fqan;
 	}
 
 	protected void resolveRequestedFQANs(RequestContext context) {
@@ -65,7 +69,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 		for (String fqan : request.getRequestedFQANs()) {
 			if (PathNamingScheme.isQualifiedRole(fqan)) {
 				if (u.hasRole(fqan)) {
-					response.getIssuedFQANs().add(formatFQAN(fqan));
+					response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
 				} else {
 					failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
 					context.setHandled(true);
@@ -74,7 +78,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
 			} else if (PathNamingScheme.isGroup(fqan)) {
 				if (u.isMember(fqan)) {
-					response.getIssuedFQANs().add(formatFQAN(fqan));
+					response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
 				} else {
 					failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
 					context.setHandled(true);
@@ -94,7 +98,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 			VOMSMapping mapping = mappingIter.next();
 
 			if (mapping.isGroupMapping()) {
-				String fqan = formatFQAN(mapping.getFQAN());
+				String fqan = fqanEncoding.encodeFQAN(mapping.getFQAN());
 
 				if (!response.getIssuedFQANs().contains(fqan))
 					response.getIssuedFQANs().add(fqan);
@@ -107,18 +111,24 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
 		resolveRequestedFQANs(context);
 		resolveCompulsoryGroupFQANs(context);
+		filterFQANs(context);
 
 	}
-	
-	protected String normalizeFQAN(String fqan){
-		return fqan;
+
+	protected void filterFQANs(RequestContext context) {
+		
+		boolean filtered = fqanFilteringPolicy.filterIssuedFQANs(context);
+		
+		if (filtered)
+			context.getResponse().getWarnings()
+			.add(VOMSWarningMessage.attributeSubset(context.getVOName()));
 	}
 
 	protected void addContainerGAs(RequestContext context) {
 
 		for (String f : context.getResponse().getIssuedFQANs()) {
 
-			String fqan=normalizeFQAN(f);
+			String fqan = fqanEncoding.decodeFQAN(f);
 			
 			if (PathNamingScheme.isGroup(fqan)) {
 				VOMSGroup g = VOMSGroupDAO.instance().findByName(fqan);
