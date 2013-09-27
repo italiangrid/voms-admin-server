@@ -353,7 +353,7 @@ restart() {
 status() {
 	check_container_is_running
 	if [ $? -eq 0 ]; then
-		if[ -z $1 ]; then
+		if [ -z "$1" ]; then
 			success "VOMS admin container"
 		fi 
 		print_vo_status "$1"
