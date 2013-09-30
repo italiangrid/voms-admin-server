@@ -285,7 +285,7 @@ def setup_cl_options():
     
     x509aa_opt_group.add_option("--ac-validity", dest="ac_validity", type="int", 
                                 help="Defines the maximum validity (in hours) for the attribute certificates issued by this VOMS server. The default is 12 hours",
-                                metavar="HOURS", default=12)
+                                metavar="HOURS", default=24)
     
     x509aa_opt_group.add_option("--disable-legacy-fqan-encoding", 
                                 dest="legacy_fqan_encoding", 
