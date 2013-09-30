@@ -59,7 +59,7 @@ public class VOMSErrorMessage {
 	
 	public static VOMSErrorMessage noSuchUser(String userDN, String userCA){
 		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.NoSuchUser);
-		m.setMessage(String.format("No such user: subject='%s', issuer='%s'", 
+		m.setMessage(String.format("User unknown to this VO: '%s' (issued by '%s')", 
 			userDN, userCA));
 		return m;
 	}
