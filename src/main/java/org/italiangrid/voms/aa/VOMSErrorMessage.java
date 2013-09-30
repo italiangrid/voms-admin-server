@@ -37,6 +37,9 @@ public class VOMSErrorMessage {
 	}
 
 	public String getMessage() {
+		if (message == null)
+			return error.getDefaultMessage();
+		
 		return message;
 	}
 

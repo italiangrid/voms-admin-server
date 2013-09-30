@@ -35,7 +35,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.glite.security.voms.admin.error.VOMSException;
 import org.italiangrid.voms.aa.VOMSErrorMessage;
-import org.italiangrid.voms.aa.VOMSWarning;
 import org.italiangrid.voms.aa.VOMSWarningMessage;
 import org.italiangrid.voms.aa.x509.VOMSResponseBuilder;
 import org.opensaml.xml.util.Base64;
@@ -221,10 +220,13 @@ class VOMSResponseFragment {
 		Element errorMessageElement = doc.createElement("message");
 
 		appendTextChild(errorMessageElement, m.getMessage());
+		
 		appendTextChild(errorCodeElement, Integer.toString(m.getError()
 			.getLegacyErrorCode()));
+		
 		error.appendChild(errorCodeElement);
 		error.appendChild(errorMessageElement);
+		
 		root.appendChild(error);
 		fragment.appendChild(root);
 	}
