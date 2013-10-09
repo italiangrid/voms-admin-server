@@ -34,11 +34,23 @@
   <s:a href="%{editACLURL}" cssClass="actionLink" cssStyle="margin-left:1em">View ACL</s:a>
   </voms:authorized>
 </h1>
+
 <s:if test="description != null">
   <h2>Description:</h2>
 	<div class="alert alert-block">
 		<s:property value="description"/>
 	</div>
+</s:if>
+
+<s:if test="managers.size() != 0">
+  <h2>Group managers:</h2>
+  <div class="alert alert-block">
+    <ul>
+    <s:iterator value="managers">
+      <li><s:property value="name"/> - <s:property value="emailAddress"/></li>
+    </s:iterator>
+    </ul>
+  </div>
 </s:if>
 <div class="info-tab">
   <h2><span>Membership information</span></h2>

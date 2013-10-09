@@ -45,7 +45,7 @@
 			
 		<property name="must" type="boolean" column="must" not-null="true"/>
       
-        <property name="restricted" type="boolean" column="restricted" not-null="false"/>
+    <property name="restricted" type="boolean" column="restricted" not-null="false"/>
 
 		<set name="attributes" cascade="all-delete-orphan" inverse="true" lazy="false">
 			<key column="g_id" on-delete="cascade"/>
@@ -63,6 +63,16 @@
 			<one-to-many class="org.glite.security.voms.admin.persistence.model.ACL"/>
 		</set>
 		
+    <set 
+      name="managers" 
+      table="managers_groups"
+      cascade="save-update" 
+      inverse="true">
+      <key column="group_id" />
+      <many-to-many 
+        class="org.glite.security.voms.admin.persistence.model.GroupManager"
+        column="manager_id" />
+    </set>
 	</class>
 
 </hibernate-mapping>
