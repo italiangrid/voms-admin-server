@@ -31,9 +31,9 @@ public class EventManager {
 
 	final List<EventListener> listeners = new ArrayList<EventListener>();
 
-	static private EventManager instance = null;
+	static private volatile EventManager instance = null;
 
-	public static final EventManager instance() {
+	public static synchronized EventManager instance() {
 		if (instance == null)
 			instance = new EventManager();
 		return instance;
@@ -43,21 +43,21 @@ public class EventManager {
 
 	}
 
-	public void register(EventListener listener) {
+	public synchronized void register(EventListener listener) {
 
 		listeners.add(listener);
 	}
 
-	public void unRegister(EventListener listener) {
+	public synchronized void unRegister(EventListener listener) {
 
 		listeners.remove(listener);
 	}
 
-	public List<EventListener> getListeners() {
+	public synchronized List<EventListener> getListeners() {
 		return listeners;
 	}
 
-	public void fireEvent(Event e) {
+	public synchronized void fireEvent(Event e) {
 		try {
 			for (EventListener l : getListeners()) {
 
@@ -72,7 +72,7 @@ public class EventManager {
 		}
 	}
 
-	public static void dispatch(Event e) {
+	public synchronized static void dispatch(Event e) {
 		if (instance == null)
 			log
 					.debug("Event manager has not been initialized! The event will be lost...");

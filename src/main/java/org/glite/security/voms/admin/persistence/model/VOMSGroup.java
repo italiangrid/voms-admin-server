@@ -83,8 +83,8 @@ public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
 	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	Set<ACL> acls = new HashSet<ACL>();
 	
-	@ManyToMany(cascade={CascadeType.ALL}, mappedBy="managedGroups")
 	Set<GroupManager> managers = new HashSet<GroupManager>();
+	
 	Boolean restricted;
 
 	String description;

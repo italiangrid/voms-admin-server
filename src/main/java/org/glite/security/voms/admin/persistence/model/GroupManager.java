@@ -23,8 +23,10 @@ package org.glite.security.voms.admin.persistence.model;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,7 +54,7 @@ public class GroupManager {
 	@Column(name="email_address", nullable=false)
 	String emailAddress;
 	
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER, cascade={ CascadeType.PERSIST })
 	@JoinTable(
 		name="managers_groups",
 		joinColumns={@JoinColumn(name="manager_id", referencedColumnName="id")},
