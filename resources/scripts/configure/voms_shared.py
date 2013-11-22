@@ -155,7 +155,7 @@ class VOMSDefaults:
     oracle_dialect = "org.hibernate.dialect.Oracle9Dialect"
     
     mysql_driver_class = "org.gjt.mm.mysql.Driver"
-    mysql_dialect = "org.hibernate.dialect.MySQLInnoDBDialect"
+    mysql_dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
 
 
 
