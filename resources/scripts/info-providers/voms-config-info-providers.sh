@@ -45,12 +45,13 @@ INFO_SERVICE_BIN_PATH=/usr/bin
 GLUE2_SCRIPT="${INFO_SERVICE_BIN_PATH}/glite-info-glue2-voms"
  
 # parse options
-while getopts s:e name
+while getopts s:ep: name
 do
 	case $name in
 		s) SITE_NAME=$OPTARG;;
 		e) VOMS_ADMIN_INSTALL=true;;
-		?) printf "Usage: %s: -s SITE_NAME [-e]\n" $0
+                p) SERVICE_HOST=$OPTARG;;
+		?) printf "Usage: %s: -s SITE_NAME [-e] [-p <service end point hostname>]\n" $0
 			exit 2;;
   esac
 done
@@ -58,7 +59,7 @@ done
 # options -s is mandatory
 if [ "x${SITE_NAME}" == "x" ]; then
 	printf "$0: option s is mandatory"'\n'
-	printf "Usage: %s: -s SITE_NAME [-e]\n" $0
+	printf "Usage: %s: -s SITE_NAME [-e] [-p <service end point hostname>]\n" $0
 	exit 1
 fi
  
