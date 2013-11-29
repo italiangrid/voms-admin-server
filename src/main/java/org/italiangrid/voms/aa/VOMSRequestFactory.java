@@ -18,14 +18,17 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package it.infn.cnaf.voms.x509;
+package org.italiangrid.voms.aa;
 
-public interface VOMSErrorCodes {
-	
-	public static final String VOMS_ERROR_NO_SUCH_USER = "NoSuchUser";
-	public static final String VOMS_ERROR_SUSPENDED_USER = "SuspendedUser";
-	public static final String VOMS_ERROR_SUSPENDED_CERTIFICATE = "SuspendedCertificate";
-	public static final String VOMS_ERROR_BAD_REQUEST = "BadRequest";
-	public static final String VOMS_ERROR_INTERNAL_ERROR = "InternalError";
-	
+import org.italiangrid.voms.aa.impl.RequestImpl;
+
+
+public class VOMSRequestFactory {
+
+	private VOMSRequestFactory() {}
+
+	public static VOMSRequest newRequest(){
+		return new RequestImpl();
+	}
+
 }

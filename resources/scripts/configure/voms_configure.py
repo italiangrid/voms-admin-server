@@ -17,6 +17,7 @@
 #
 # Authors:
 #     Andrea Ceccanti (INFN)
+
 from optparse import OptionParser, OptionGroup
 from voms_shared import voms_version, admin_conf_dir, VOMSDefaults,\
     admin_db_properties_path, admin_service_endpoint_path, vomses_path, lsc_path,\
@@ -274,6 +275,26 @@ def setup_cl_options():
 
     parser.add_option_group(saml_opt_group)
     
+    
+    x509aa_opt_group = OptionGroup(parser, "X.509 AC Attribute Authority options", "These options configure the VOMS X.509 attribute authority service")
+    x509aa_opt_group.add_option("--enable-x509-aa", dest="enable_x509_aa", action="store_true", help="Turns on the X.509 Attribute authority", default=False)
+    x509aa_opt_group.add_option("--x509-aa-port", dest="x509_aa_port", 
+                                type="int", 
+                                help="An additional port used to serve VOMS legacy request.",
+                                metavar="PORT", default=-1)
+    
+    x509aa_opt_group.add_option("--ac-validity", dest="ac_validity", type="int", 
+                                help="Defines the maximum validity (in hours) for the attribute certificates issued by this VOMS server. The default is 12 hours",
+                                metavar="HOURS", default=24)
+    
+    x509aa_opt_group.add_option("--disable-legacy-fqan-encoding", 
+                                dest="legacy_fqan_encoding", 
+                                action="store_false", 
+                                help="FQANs will be encoded in issued ACs following the old, deprecated format (i.e. the one including Role=NULL/Capability=NULL).", 
+                                default=True)
+    
+    parser.add_option_group(x509aa_opt_group)
+    
     notification_opt_group = OptionGroup(parser, "Notification service options", "These options configure the VOMS Admin notification service")
     notification_opt_group.add_option("--mail-from", dest="mail_from",help="The EMAIL address used for VOMS Admin notification messages.", metavar="EMAIL")
     notification_opt_group.add_option("--smtp-host", dest="smtp_host",help="The HOST where VOMS Admin will deliver notification messages.", metavar="HOST")
@@ -513,9 +534,14 @@ def create_endpoint_info(options):
                                   0644)
 def create_vomses(options):    
     cert = X509Helper(options.cert, openssl_cmd=options.openssl)
+    
+    vomses_port = options.core_port
+    if vomses_port is None:
+        vomses_port = options.x509_aa_port
+        
     vomses = '"%s" "%s" "%s" "%s" "%s"\n' % (options.vo,
                                              options.hostname,
-                                             options.core_port,
+                                             vomses_port,
                                              cert.subject,
                                              options.vo)
     
@@ -628,6 +654,9 @@ def generate_password(length=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(length))
 
 def setup_core_defaults(options):
+    if not options.uri:
+        options.uri = "%s:%d" % (options.hostname, options.core_port)
+    
     if not options.logdir:
         options.logdir = voms_log_path()
     
@@ -664,10 +693,6 @@ def setup_admin_defaults(options):
     
     if not options.aup_url:
         options.aup_url = "file:%s" % aup_path(options.vo)
-    
-    if not options.uri:
-        options.uri = "%s:%d" % (options.hostname, options.core_port)
-
 
 def create_mysql_db(options):
     createdb_cmd = mysql_util_cmd("create_db", options)

@@ -77,7 +77,9 @@ public class GroupMembershipNotificationDispatcher extends BaseNotificationDispa
 				admins = NotificationUtil.getAdministratorsEmailList(context, 
 					VOMSPermission.getRequestsRWPermissions());
 			
-			HandleRequest msg = new HandleRequest(req,ee.getManagementURL());
+			HandleRequest msg = new HandleRequest(req,
+				ee.getManagementURL(),
+				admins);
 					
 			NotificationService.instance().send(msg);
 			

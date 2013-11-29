@@ -119,7 +119,7 @@ class VOMSAttributesImpl implements VOMSAttributes {
 
         // Check that all the user groups are actually in the fqans list
 
-        Iterator <VOMSMapping> mappingIter = user.getMappings().iterator();
+        Iterator<VOMSMapping> mappingIter = user.getMappings().iterator();
 
         while ( mappingIter.hasNext() ) {
 
@@ -138,9 +138,6 @@ class VOMSAttributesImpl implements VOMSAttributes {
 
     void getFQANsFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user,
             List <String> requestedFQANs ) {
-
-        assert user != null : "Cannot get FQANs from a NULL user!";
-        assert requestedFQANs != null && !requestedFQANs.isEmpty() : "Cannot select FQANs from a NULL of empty FQAN list!";
 
         for ( String fqan : requestedFQANs ) {
 

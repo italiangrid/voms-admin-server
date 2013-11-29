@@ -48,7 +48,6 @@ import it.infn.cnaf.voms.aa.VOMSAttributes;
 import it.infn.cnaf.voms.aa.VOMSFQAN;
 import it.infn.cnaf.voms.saml.emi.AttributeWizard;
 import it.infn.cnaf.voms.saml.emi.EMISAMLProfileConstants;
-import it.infn.cnaf.voms.saml.exceptions.UnsupportedQueryException;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -63,7 +62,6 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.util.DNUtil;
-import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Assertion;

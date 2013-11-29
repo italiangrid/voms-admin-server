@@ -18,26 +18,19 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package it.infn.cnaf.voms.x509;
+package org.italiangrid.voms.aa;
 
-import javax.servlet.http.HttpServlet;
+import org.italiangrid.voms.aa.impl.RequestContextImpl;
 
 
-public abstract class BaseServlet extends HttpServlet{
+public class RequestContextFactory {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+	private RequestContextFactory() {}
 
-    protected int parseInt(String intString){
-        
-        return new Integer(intString).intValue();
-    }
-    
-    protected long parseLong(String longString){
-        
-        return new Long(longString).longValue();
-    }
+
+	public static RequestContext newContext(){
+		return new RequestContextImpl(VOMSRequestFactory.newRequest(), 
+			VOMSResponseFactory.newResponse());
+	}
 
 }

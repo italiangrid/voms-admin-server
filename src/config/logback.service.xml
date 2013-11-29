@@ -36,9 +36,18 @@
     -->
     <logger name="org.glite.security.voms.admin.core.validation" level="INFO"/>
     
+    <!--  
+          This logger controls the verbosity of the VOMS X.509 attribute
+          authority service. 
+          The default configuration shows successfull and failed requests.
+          Set the level to OFF to turn this logging off.
+     -->
+    <logger name="VOMS-X509-AA" level="INFO" />
+    
     <!-- 
-        This logger controls the log messages produced when exceptions are raised by a call to the voms admin
-        web services. Set the level to DEBUG for maximum detail.  
+        This logger controls the log messages produced when exceptions are raised 
+        by a call to the voms admin web services. 
+        Set the level to DEBUG for maximum detail.  
      -->
     <logger
         name="org.glite.security.voms.admin.service.ServiceExceptionHelper"

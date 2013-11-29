@@ -25,9 +25,9 @@ import it.infn.cnaf.voms.aa.impl.VOMSAAImpl;
 
 public class VOMSAA {
     
-    private static VOMSAttributeAuthority vomsAAInstance = null;
+    private static volatile VOMSAttributeAuthority vomsAAInstance = null;
     
-    public static VOMSAttributeAuthority getVOMSAttributeAuthority(){
+    public static synchronized VOMSAttributeAuthority getVOMSAttributeAuthority(){
         
         if (vomsAAInstance == null)
             vomsAAInstance = new VOMSAAImpl();

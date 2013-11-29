@@ -219,22 +219,22 @@ public class VOMSUser implements Serializable, Comparable {
 		this.id = id;
 	}
 
-	public Set getAttributes() {
+	public Set<VOMSUserAttribute> getAttributes() {
 
 		return attributes;
 	}
 
-	public void setAttributes(Set attributes) {
+	public void setAttributes(Set<VOMSUserAttribute> attributes) {
 
 		this.attributes = attributes;
 	}
 
-	public Set getMappings() {
+	public Set<VOMSMapping> getMappings() {
 
 		return mappings;
 	}
 
-	public void setMappings(Set mappings) {
+	public void setMappings(Set<VOMSMapping> mappings) {
 
 		this.mappings = mappings;
 	}
@@ -793,6 +793,17 @@ public class VOMSUser implements Serializable, Comparable {
 		return false;
 	}
 
+	public Certificate getCertificate(String subject, String issuer){
+	
+		for (Certificate c: certificates){
+			if (c.getSubjectString().equals(subject) &&
+				c.getCa().getSubjectString().equals(issuer))
+				return c;
+		}
+		
+		return null;
+	}
+	
 	public List<Certificate> getCertificatesBySubject(String subject){
 		
 		List<Certificate> result = new ArrayList<Certificate>();
