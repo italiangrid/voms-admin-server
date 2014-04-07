@@ -264,6 +264,7 @@ def setup_cl_options():
                                     help="Time (in days) that should pass between consecutive warning expiration messages sent to VO administrators to inform about expired and expiring VO members.", 
                                     metavar="DAYS", default=1)
     
+    parser.add_option_group(membership_opt_group)
     
     saml_opt_group = OptionGroup(parser, "SAML Attribute Authority options", "These options configure the VOMS SAML attribute authority service")
     saml_opt_group.add_option("--enable-saml", dest="enable_saml", action="store_true", help="Turns on the VOMS SAML service.", default=False)
