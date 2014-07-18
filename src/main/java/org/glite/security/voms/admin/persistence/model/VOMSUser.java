@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "usr")
-public class VOMSUser implements Serializable, Comparable {
+public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
 	private static final long serialVersionUID = -3815869585264835046L;
 
@@ -714,42 +714,6 @@ public class VOMSUser implements Serializable, Comparable {
 		return builder.toHashCode();
 	}
 
-	public int compareTo(Object o) {
-
-		if (this.equals(o))
-			return 0;
-
-		if (o == null)
-			return 1;
-
-		VOMSUser that = (VOMSUser) o;
-
-		if (getName() != null && getSurname() != null) {
-
-			if (that.getName() != null && that.getSurname() != null) {
-
-				// Both users have name and surname defined,
-				// order by surname and then by name
-				if (getSurname().equals(that.getSurname()))
-					return getName().compareTo(that.getName());
-				else
-					return getSurname().compareTo(that.getSurname());
-
-			} else
-				// One user has name or surname undefined, compare certificates
-				return getDefaultCertificate().compareTo(
-						that.getDefaultCertificate());
-		}
-
-		if (getDefaultCertificate() != null)
-			// Both users have name and surname undefined, compare certificates
-			return getDefaultCertificate().compareTo(
-					that.getDefaultCertificate());
-
-		return -1;
-
-	}
-
 	public String getShortName() {
 		
 		if (name == null){
@@ -1275,5 +1239,37 @@ public class VOMSUser implements Serializable, Comparable {
 		u.setEmailAddress(ri.getEmailAddress());
 
 		return u;
+	}
+
+	@Override
+	public int compareTo(VOMSUser that) {
+
+		if (that == null)
+			return 1;
+
+		if (getName() != null && getSurname() != null) {
+
+			if (that.getName() != null && that.getSurname() != null) {
+
+				// Both users have name and surname defined,
+				// order by surname and then by name
+				if (getSurname().equals(that.getSurname()))
+					return getName().compareTo(that.getName());
+				else
+					return getSurname().compareTo(that.getSurname());
+
+			} else
+				// One user has name or surname undefined, compare certificates
+				return getDefaultCertificate().compareTo(
+						that.getDefaultCertificate());
+		}
+
+		if (getDefaultCertificate() != null)
+			// Both users have name and surname undefined, compare certificates
+			return getDefaultCertificate().compareTo(
+					that.getDefaultCertificate());
+
+		return -1;
+		
 	}
 }
