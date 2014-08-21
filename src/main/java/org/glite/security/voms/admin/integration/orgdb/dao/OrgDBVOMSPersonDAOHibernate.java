@@ -85,7 +85,7 @@ public class OrgDBVOMSPersonDAOHibernate extends OrgDBGenericHibernateDAO<VOMSOr
 		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
 			"lower(p.physicalEmail) = :email or lower(p.email) = :email";
 		
-		Query q = getSession().createQuery(query).setString("email", emailAddress);
+		Query q = getSession().createQuery(query).setString("email", emailAddress.toLowerCase());
 		
 		return (VOMSOrgDBPerson) q.uniqueResult();
 	}
