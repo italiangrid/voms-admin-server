@@ -35,6 +35,11 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @Table(name="COUNTRIES")
 public class Country implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name="ISO_CODE", length=2)
 	String isoCode;

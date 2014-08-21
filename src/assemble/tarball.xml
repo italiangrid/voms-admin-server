@@ -75,6 +75,16 @@
           <directoryMode>0755</directoryMode>
         </fileSet>
         
+        <!-- Empty fileset to create empty directory -->
+        <fileSet>
+          <directory>src</directory>
+          <outputDirectory>/usr/share/voms-admin/work</outputDirectory>
+          <excludes>
+            <exclude>**/*</exclude>
+          </excludes>
+          <directoryMode>0755</directoryMode>
+        </fileSet>
+        
     </fileSets>
 
     

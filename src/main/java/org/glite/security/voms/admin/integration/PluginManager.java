@@ -43,7 +43,7 @@ public class PluginManager {
 		configuredPluginsMap = new HashMap<String, PluginConfigurator>();
 	}
 	
-	public static final PluginManager instance(){
+	public synchronized static final PluginManager instance(){
 		
 		if (INSTANCE==null)
 			INSTANCE = new PluginManager();
@@ -53,7 +53,7 @@ public class PluginManager {
 	
 	
 	
-	public void configurePlugins(){
+	public synchronized void configurePlugins(){
 		
 		log.debug("Configuring external validation plugins.");
 		
@@ -120,7 +120,7 @@ public class PluginManager {
 		
 	}
 	
-	public PluginConfigurator getConfiguredPlugin(String pluginConfigurator){
+	public synchronized PluginConfigurator getConfiguredPlugin(String pluginConfigurator){
 		return configuredPluginsMap.get(pluginConfigurator);
 	}
 	

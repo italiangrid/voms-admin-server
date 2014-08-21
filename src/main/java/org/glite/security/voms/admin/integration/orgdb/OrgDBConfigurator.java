@@ -36,6 +36,7 @@ import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBSessionFactory;
+import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBEmailAddressValidationStrategy;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +52,14 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 	public static final String ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
 	public static final String ORGDB_REGISTRATION_TYPE= "orgdb";
 
+	public static final String ORGDB_EMAIL_VALIDATOR_CONFIG_KEY = "orgdb.email.validator";
+	
 	/**
 	 * Default ORGDB membership check period in seconds. (6 hours)
 	 */
 	private static final Long ORGDB_DEFAULT_CHECK_PERIOD = 26100L;
 	
+	private OrgDBEmailAddressValidationStrategy emailValidator;
 	
 	/**
 	 * Loads the OrgDB hibernate properties.
@@ -97,12 +101,12 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 			log.info("Connection to the OrgDB database is active.");
 		
 		}catch (HibernateException e) {
-			log.warn("Error contacting the OrgDB database.");
+			log.warn("Error contacting the OrgDB database: {}", e.getMessage(), e);
 		}		
 	}
 	
 	
-	public void configure() throws VOMSPluginConfigurationException {
+	public synchronized void configure() throws VOMSPluginConfigurationException {
 		
 		log.debug("OrgDB voms configuration started.");
 		try{
@@ -122,6 +126,7 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 		String experimentName= getPluginProperty(ORGDB_EXPERIMENT_NAME_PROPERTY, uppercaseVOName);
 		log.info("Setting OrgDB experiment name: {}", experimentName);
 		
+		emailValidator = new DefaultEmailValidationStrategy(experimentName);
 		OrgDBRequestValidator validator = new OrgDBRequestValidator(experimentName);
 		
 		ValidationManager.instance().setRequestValidationContext(validator);
@@ -158,4 +163,7 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator{
 		
 	}
 
+	public OrgDBEmailAddressValidationStrategy getEmailValidator(){
+		return emailValidator;
+	}
 }

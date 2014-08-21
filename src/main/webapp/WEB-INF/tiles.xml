@@ -88,7 +88,7 @@
     </definition>
     
     <definition name="userDetail" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
-      <put-attribute name="content" value="/WEB-INF/p/user/newUserDetail.jsp"/>
+      <put-attribute name="content" value="/WEB-INF/p/user/userDetail.jsp"/>
     </definition>
     
     <definition name="userSuspend" extends="admin-layout">
