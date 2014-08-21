@@ -61,7 +61,7 @@ public class OrgDBVOMSPersonDAOHibernate extends OrgDBGenericHibernateDAO<VOMSOr
 				")";
 		
 		Query q = getSession().createQuery(query)
-			.setString("email", emailAddress)
+			.setString("email", emailAddress.toLowerCase())
 			.setString("experimentName", experimentName);
 		
 		return (VOMSOrgDBPerson) q.uniqueResult();
