@@ -150,14 +150,15 @@ public class DefaultSyncStrategy implements
 			Participation p = orgDbPerson
 				.getValidParticipationForExperiment(experimentName);
 
-			if (u.getInstitution() == null || !u.getInstitution().equals(p.getInstitute().getOriginalName())) {
-
+			// The institute can be null sometimes
+			if (p.getInstitute() != null) {
+				if (u.getInstitution() == null || !u.getInstitution().equals(p.getInstitute().getOriginalName())) {
+					u.setInstitution(p.getInstitute().getOriginalName());
+				}
 				log
 					.debug(
 						"Institution for user {} and participation {} do not match. Updating VOMS institution field.",
 						u, p);
-				u.setInstitution(p.getInstitute().getOriginalName());
-
 			}
 		}
 	}
