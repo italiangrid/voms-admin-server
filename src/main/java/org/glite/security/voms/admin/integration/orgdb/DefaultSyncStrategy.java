@@ -150,7 +150,7 @@ public class DefaultSyncStrategy implements
 			Participation p = orgDbPerson
 				.getValidParticipationForExperiment(experimentName);
 
-			if (!u.getInstitution().equals(p.getInstitute().getOriginalName())) {
+			if (u.getInstitution() == null || !u.getInstitution().equals(p.getInstitute().getOriginalName())) {
 
 				log
 					.debug(
