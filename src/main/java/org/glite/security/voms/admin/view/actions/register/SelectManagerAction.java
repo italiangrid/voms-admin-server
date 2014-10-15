@@ -67,6 +67,7 @@ public class SelectManagerAction extends RegisterActionSupport {
 		}else{
 		  
 		  addActionError("Please select a group manager.");
+		 
 		}
 		
 		super.validate();

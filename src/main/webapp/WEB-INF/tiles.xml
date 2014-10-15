@@ -185,7 +185,8 @@
       <put-attribute name="content" value="/WEB-INF/p/register/requestAttributes.jsp"/>
     </definition>
     
-    <definition name="selectManager" extends="user-layout">
+    <definition name="selectManager" extends="user-layout" 
+      preparer="org.glite.security.voms.admin.view.preparers.register.SelectManagerViewPreparer">
       <put-attribute name="content" value="/WEB-INF/p/register/selectManager.jsp"/>
     </definition>
     

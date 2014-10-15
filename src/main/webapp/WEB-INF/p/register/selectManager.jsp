@@ -26,12 +26,16 @@ Manager selection
 </h1>
 <p>
 Please select the VO manager that will handle your VO membership request from
-the following list. <br/>
-<strong>Important:</strong> If you don't select any manager, your request will
-be forwarded to all VO managers that have the rights to handle it.
+the following list. 
 </p>
 
+<!-- Action errors -->
+<s:actionerror/>
+<!-- Action messages -->
+<s:actionmessage/>
+
 <s:form action="select-manager" namespace="/register">
+
     
   <s:hidden name="requestId" value="%{model.id}" />
   <s:hidden name="confirmationId" value="%{confirmationId}" />
