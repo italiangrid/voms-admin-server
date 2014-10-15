@@ -63,6 +63,10 @@ public class SelectManagerAction extends RegisterActionSupport {
 			if (manager == null){
 				addActionError("No manager found for id '"+managerId+"'.");
 			}
+			
+		}else{
+		  
+		  addActionError("Please select a group manager.");
 		}
 		
 		super.validate();
