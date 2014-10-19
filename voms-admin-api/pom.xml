@@ -8,9 +8,7 @@
     <version>3.3.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-api</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>VOMS Admin WS API</name>
@@ -148,6 +146,7 @@
         </configuration>
         <executions>
           <execution>
+            <phase>generate-sources</phase>
             <goals>
               <goal>wsdl2java</goal>
             </goals>

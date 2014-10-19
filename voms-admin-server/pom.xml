@@ -15,12 +15,10 @@
   <artifactId>voms-admin-server</artifactId>
   <packaging>war</packaging>
   <name>VOMS Admin Server</name>
-  <version>3.3.0-SNAPSHOT</version>
 
   <properties>
-    <container.version>${project.version}</container.version>
     <server-version>${project.version}</server-version>
-    <api.version>2.0.2-SNAPSHOT</api.version>
+    <api.version>${project.version}</api.version>
     <interface-version>2.0.2</interface-version>
 
     <struts.version>2.2.1</struts.version>
@@ -146,10 +144,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.italiangrid</groupId>
@@ -160,7 +154,12 @@
     <dependency>
       <groupId>org.italiangrid</groupId>
       <artifactId>voms-container</artifactId>
-      <version>${container.version}</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
 
     <dependency>
