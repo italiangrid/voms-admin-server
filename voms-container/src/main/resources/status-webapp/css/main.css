@@ -1,0 +1,171 @@
+/**
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Authors:
+ *  Andrea Ceccanti (INFN)
+ */
+body{
+    font-family: "Lucida Grande", verdana, lucida, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: white;
+    color: black;
+    max-width: 960px;
+    min-width: 960px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding:0;
+}
+
+
+#header, #body, #menu,#footer,#messages{
+    clear:both;
+    padding: 0;
+}
+
+#header{
+    color: #505050;
+    
+    -moz-border-radius-topleft:10px;
+    -moz-border-radius-topright:10px;
+    
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-top-left-radius: 10px;
+    
+    
+    background-color:#1B5790;
+    
+    text-align:left;
+    width:100%;
+    margin-top:5px;
+    float: left;
+}
+
+#header a{
+    float: left;    
+    padding: 5px 0 5px 5px;
+}
+
+#admin-info {
+    float:right;
+    font-size:smaller;
+    padding:25px 5px 0;
+}
+
+#vo-info, #admin-info {
+    color: #d2dcf3;
+    display:inline;
+    font-weight:bold;
+}
+
+#vo-info {
+    float:left;
+    font-size:smaller;
+    padding:25px 0 0 5px;
+}
+
+#admin-info span, #vo-info span{
+    font-weight: bold;
+    color: white;   
+}
+
+.voName{
+    color: #006600;
+    font-weight: bold;  
+}
+
+
+
+#messages{
+    font-size: 8pt;
+    font-weight: bold;
+    min-height: 2em; 
+    margin: 5px;
+    padding-top: 5px;
+}
+
+#body{
+    min-height: 480px;
+    text-align: left;
+    padding-left: 8px;
+}
+
+
+#footer{
+    margin-top: 40px;
+    border-top: 1px solid rgb(200,200,200); 
+    padding-top: 5px;
+    font-size: xx-small;
+    background-color: white;
+    color: #505050;
+}
+
+
+#content {
+    float: left;
+    position: relative;
+    display: block;
+    width: 100%;
+    padding-right: 0px;
+    text-align:left;
+}
+
+#oneColCenterPane{
+    min-height:520px;
+}
+
+
+#searchPane{
+    float: left;
+}
+
+#createPane{
+    float: right;
+    font-size: 8pt;
+    margin-bottom: 1ex;
+    max-width: 50%;
+}
+
+.searchResultsPane{
+    clear: both;
+    padding-top: 1em;
+}
+
+#listAttributeDescriptionsPane{
+    margin-top: 2em;    
+}
+
+.separator{
+    clear: both;    
+    height: 1em;
+}
+
+#addACLEntryBox, #addDefaultACLEntryBox, #addCertificateBox{
+    float:right;    
+}
+
+.wwgroup{
+
+    margin-bottom: 1em;
+}
+
+.membersSearchResults{
+    padding-top: 1em;
+}
+
+.membersSearchResults table tr th{
+    padding-left: 0;
+}

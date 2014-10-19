@@ -1,0 +1,159 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.italiangrid</groupId>
+    <artifactId>voms-admin-parent</artifactId>
+    <version>3.3.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.italiangrid</groupId>
+  <artifactId>voms-admin-api</artifactId>
+  <version>2.0.2-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>VOMS Admin WS API</name>
+  <description>Axis web service stubs and skeletons for the VOMS Admin service</description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <wsdl.namespace>http://glite.org/wsdl/services</wsdl.namespace>
+  </properties>
+
+  <developers>
+    <developer>
+      <id>andreac</id>
+      <name>Andrea Ceccanti</name>
+      <email>andrea.ceccanti@cnaf.infn.it</email>
+      <organization>INFN CNAF</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-saaj</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>axistools-maven-plugin
+        </artifactId>
+        <configuration>
+          <sourceDirectory>src/wsdl
+          </sourceDirectory>
+          <typeMappingVersion>1.2</typeMappingVersion>
+          <mappings>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.admin
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.admin
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.attributes
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.attributes
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.acl
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.acl
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.certificates
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.certificates
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.registration
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.registration
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms.service.compatibility
+              </namespace>
+              <targetPackage>
+                org.glite.security.voms.service.compatibility
+              </targetPackage>
+            </mapping>
+            <mapping>
+              <namespace>
+                ${wsdl.namespace}/org.glite.security.voms
+              </namespace>
+              <targetPackage>org.glite.security.voms
+              </targetPackage>
+            </mapping>
+          </mappings>
+          <serverSide>true</serverSide>
+          <skeletonDeploy>true</skeletonDeploy>
+          <helperGen>true</helperGen>
+          <useEmitter>true</useEmitter>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

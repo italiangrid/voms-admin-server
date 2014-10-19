@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://glite.org/wsdl/services/org.glite.security.voms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_soapenc_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="VOMSException">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getGridmapUsersResponse1">
+
+      <wsdl:part name="getGridmapUsersReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPatchVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getGridmapUsersResponse">
+
+      <wsdl:part name="getGridmapUsersReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMinorVersionNumberResponse">
+
+      <wsdl:part name="getMinorVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMinorVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="VOMSException">
+
+      <wsdl:part name="fault" type="tns2:VOMSException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGridmapUsersRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGridmapUsersRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getPatchVersionNumberResponse">
+
+      <wsdl:part name="getPatchVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMajorVersionNumberResponse">
+
+      <wsdl:part name="getMajorVersionNumberReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMajorVersionNumberRequest">
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSCompatibility">
+
+      <wsdl:operation name="getMajorVersionNumber">
+
+         <wsdl:input message="impl:getMajorVersionNumberRequest" name="getMajorVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getMajorVersionNumberResponse" name="getMajorVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMinorVersionNumber">
+
+         <wsdl:input message="impl:getMinorVersionNumberRequest" name="getMinorVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getMinorVersionNumberResponse" name="getMinorVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPatchVersionNumber">
+
+         <wsdl:input message="impl:getPatchVersionNumberRequest" name="getPatchVersionNumberRequest"/>
+
+         <wsdl:output message="impl:getPatchVersionNumberResponse" name="getPatchVersionNumberResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGridmapUsers">
+
+         <wsdl:input message="impl:getGridmapUsersRequest" name="getGridmapUsersRequest"/>
+
+         <wsdl:output message="impl:getGridmapUsersResponse" name="getGridmapUsersResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGridmapUsers" parameterOrder="in0">
+
+         <wsdl:input message="impl:getGridmapUsersRequest1" name="getGridmapUsersRequest1"/>
+
+         <wsdl:output message="impl:getGridmapUsersResponse1" name="getGridmapUsersResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSCompatibilitySoapBinding" type="impl:VOMSCompatibility">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getMajorVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMajorVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMajorVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMinorVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMinorVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMinorVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPatchVersionNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPatchVersionNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPatchVersionNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGridmapUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGridmapUsersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGridmapUsersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGridmapUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGridmapUsersRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGridmapUsersResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.compatibility" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSCompatibilityService">
+
+      <wsdl:port binding="impl:VOMSCompatibilitySoapBinding" name="VOMSCompatibility">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSCompatibility"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
