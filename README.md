@@ -12,7 +12,7 @@ administration tasks.
 
 ## Build instructions
 
-You will need maven to build this project.
+You will need maven 3 to build this project.
 
   mvn package
 
@@ -27,3 +27,8 @@ To import the project in Eclipse for development, do as follows:
 
 From Eclipse menu, select “Import Existing Maven projects...”, and
 point it to this project root directory.
+
+
+## RPM package build
+
+See README.md in ./package/centos directory.
