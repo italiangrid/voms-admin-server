@@ -52,10 +52,10 @@ popd
 
 rm -rf ${source_tmp_dir}
 
-rpm_build_command="rpmbuild --nodeps -v -ba ${spec} --define \"_topdir ${rpmbuild_dir}\""
+rpm_build_command="rpmbuild --nodeps -v -ba ${spec} --define \'_topdir ${rpmbuild_dir}\'"
 
-[ -n "${dist}" ] && ${rpm_build_command}="${rpm_build_command} --define \"dist ${dist}\""
-[ -n "${build_number}" ] && ${rpm_build_command}="${rpm_build_command} --define \"build_number ${build_number}\""
-
-echo "RPM build command: ${rpm_build_command}"
-eval ${rpm_build_command}
+if [ -n "${build_number}" ]; then 
+	rpmbuild --nodeps -v -ba ${spec} --define "_topdir ${rpmbuild_dir}" --define "build_number ${build_number}"
+else
+	rpmbuild --nodeps -v -ba ${spec} --define "_topdir ${rpmbuild_dir}"
+fi
