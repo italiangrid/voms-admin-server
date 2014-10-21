@@ -1,4 +1,5 @@
-# VOMS Admin server
+The VOMS Administration Service
+===============================
 
 The Virtual Organization Membership Service is a Grid attribute authority which
 serves as central repository for VO user authorization information, providing
@@ -10,25 +11,9 @@ The VOMS Admin service is a web application providing tools for administering
 the VOMS VO structure. It provides an intuitive web user interface for daily
 administration tasks.
 
-## Build instructions
+# Contact info
 
-You will need maven 3 to build this project.
+If you have problems, questions, ideas or suggestions, please contact us at
+the following URLs
 
-  mvn package
-
-will build the artifacts.
-
-### Eclipse import instructions
-
-To import the project in Eclipse for development, do as follows:
-
-  mvn clean eclipse:clean
-  mvn eclipse:eclipse
-
-From Eclipse menu, select “Import Existing Maven projects...”, and
-point it to this project root directory.
-
-
-## RPM package build
-
-See README.md in ./package/centos directory.
+* GGUS (official support channel): http://www.ggus.eu
