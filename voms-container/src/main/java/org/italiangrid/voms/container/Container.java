@@ -511,7 +511,14 @@ public class Container {
   private void logStartupConfiguration() {
 
     log.info("VOMS Admin version {}.", Version.version());
-    log.info("Binding on: {}:{}", host, port);
+    log.info("Hostname: {}", host);
+    
+    if (bindAddress != null){
+      log.info("Binding on: {}:{}", bindAddress, port);
+    } else{
+      log.info("Binding on all interfaces on port: {}", port);
+    }
+    
     log.info("HTTP status handler listening on: {}", statusPort);
     log.info("Service credentials: {}, {}", certFile, keyFile);
     log.info("Trust anchors directory: {}", trustDir);
