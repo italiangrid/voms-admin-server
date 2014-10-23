@@ -32,37 +32,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultUserSuspensionManagementBehaviour implements
-		SuspendUserStrategy, RestoreUserStrategy,
-		UserSuspensionManagementContext {
+  SuspendUserStrategy, RestoreUserStrategy, UserSuspensionManagementContext {
 
-	
-	public static final Logger log = LoggerFactory.getLogger(DefaultUserSuspensionManagementBehaviour.class);
-	
-	
-	public void suspendUser(VOMSUser user, SuspensionReason suspensionReason) {
-		if (!user.isSuspended()){
-			user.suspend(suspensionReason);
-			EventManager.instance().fireEvent(new UserSuspendedEvent(user, suspensionReason));
-		}
+  public static final Logger log = LoggerFactory
+    .getLogger(DefaultUserSuspensionManagementBehaviour.class);
 
-	}
+  public void suspendUser(VOMSUser user, SuspensionReason suspensionReason) {
 
-	public void restoreUser(VOMSUser user) {
-		
-		if (user.isSuspended()){
-			user.restore();
-			EventManager.instance().fireEvent(new UserRestoredEvent(user));
-		}
+    if (!user.isSuspended()) {
+      user.suspend(suspensionReason);
+      EventManager.instance().fireEvent(
+        new UserSuspendedEvent(user, suspensionReason));
+    }
 
-	}
+  }
 
-	public RestoreUserStrategy getRestoreUserStrategy() {
-		return this;
-	}
+  public void restoreUser(VOMSUser user) {
 
-	public SuspendUserStrategy getSuspendUserStrategy() {
-		
-		return this;
-	}
+    if (user.isSuspended()) {
+      user.restore();
+      EventManager.instance().fireEvent(new UserRestoredEvent(user));
+    }
+
+  }
+
+  public RestoreUserStrategy getRestoreUserStrategy() {
+
+    return this;
+  }
+
+  public SuspendUserStrategy getSuspendUserStrategy() {
+
+    return this;
+  }
 
 }

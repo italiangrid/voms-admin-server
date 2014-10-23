@@ -41,126 +41,136 @@ import org.glite.security.voms.admin.util.DNUtil;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-
 @Results({
-	
-	@Result(name=UserActionSupport.SUCCESS,location="userHome"),
-	@Result(name=UserActionSupport.ERROR,location="certificateRequest.jsp"),
-	@Result(name=UserActionSupport.INPUT,location="requestCertificate")
-})
 
+@Result(name = UserActionSupport.SUCCESS, location = "userHome"),
+  @Result(name = UserActionSupport.ERROR, location = "certificateRequest.jsp"),
+  @Result(name = UserActionSupport.INPUT, location = "requestCertificate") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class RequestCertificateAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	File certificateFile;
+  File certificateFile;
 
-	String subject;
-	String caSubject;
-	
-	
-		
-	public void validate(){
-		
-		CertificateDAO dao = CertificateDAO.instance();
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		if (certificateFile != null){
-			
-			X509Certificate cert = null;
-			
-			try {
-				cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
-				
-			} catch (Throwable e) {
-				
-				addFieldError("certificateFile","Error parsing certificate passed as argument. Please upload a valid X509, PEM encoded certificate.");
-				return;
-			}
-			
-			if (cert == null){
-				addFieldError("certificateFile", "Error parsing certificate passed as argument!");
-				return;
-			}
-			
-			if (dao.find(cert) != null)
-				addFieldError("certificateFile","Certificate already bound!");
-			
-			
-			subject = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
-			caSubject = DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal());
-			
-			if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)){
-			    addFieldError("certificateFile", "You already have a pending request for this certificate!");
-			    
-			}
-			
-		}else if (subject!= null && !"".equals(subject)){
-			
-			if (dao.findByDNCA(subject, caSubject) != null){
-				addFieldError("subject", "Certificate already bound!");
-				addFieldError("caSubject", "Certificate already bound!");
-				return;
-			}
-			
-			if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)){
-			    addFieldError("subject", "You already have a pending request for this certificate!");
-			    addFieldError("caSubject", "You already have a pending request for this certificate!");
-			}
-		}else{
-			
-			addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
-		}
-		
-		
-	}
-	
-	public File getCertificateFile() {
-		return certificateFile;
-	}
-	
-	public void setCertificateFile(File certificateFile) {
-		this.certificateFile = certificateFile;
-	}
-	
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
-	public String getSubject() {
-		return subject;
-	}
-	
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-	
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
-	public String getCaSubject() {
-		return caSubject;
-	}
-	
-	public void setCaSubject(String caSubject) {
-		this.caSubject = caSubject;
-	}
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return "registrationDisabled";
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		CertificateRequest req = reqDAO.createCertificateRequest(getModel(), getSubject(), getCaSubject(), getDefaultFutureDate());
-		EventManager.dispatch(new CertificateRequestSubmittedEvent(req, getHomeURL()));
-		
-		refreshPendingRequests();
-		
-		return SUCCESS;
-	}
-	
+  String subject;
+  String caSubject;
+
+  public void validate() {
+
+    CertificateDAO dao = CertificateDAO.instance();
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+    if (certificateFile != null) {
+
+      X509Certificate cert = null;
+
+      try {
+        cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
+
+      } catch (Throwable e) {
+
+        addFieldError(
+          "certificateFile",
+          "Error parsing certificate passed as argument. Please upload a valid X509, PEM encoded certificate.");
+        return;
+      }
+
+      if (cert == null) {
+        addFieldError("certificateFile",
+          "Error parsing certificate passed as argument!");
+        return;
+      }
+
+      if (dao.find(cert) != null)
+        addFieldError("certificateFile", "Certificate already bound!");
+
+      subject = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
+      caSubject = DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal());
+
+      if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)) {
+        addFieldError("certificateFile",
+          "You already have a pending request for this certificate!");
+
+      }
+
+    } else if (subject != null && !"".equals(subject)) {
+
+      if (dao.findByDNCA(subject, caSubject) != null) {
+        addFieldError("subject", "Certificate already bound!");
+        addFieldError("caSubject", "Certificate already bound!");
+        return;
+      }
+
+      if (reqDAO.userHasPendingCertificateRequest(model, subject, caSubject)) {
+        addFieldError("subject",
+          "You already have a pending request for this certificate!");
+        addFieldError("caSubject",
+          "You already have a pending request for this certificate!");
+      }
+    } else {
+
+      addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+    }
+
+  }
+
+  public File getCertificateFile() {
+
+    return certificateFile;
+  }
+
+  public void setCertificateFile(File certificateFile) {
+
+    this.certificateFile = certificateFile;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The subject field name contains illegal characters!",
+    expression = "^[^<>&;]*$")
+  public String getSubject() {
+
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+
+    this.subject = subject;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The subject field name contains illegal characters!",
+    expression = "^[^<>&;]*$")
+  public String getCaSubject() {
+
+    return caSubject;
+  }
+
+  public void setCaSubject(String caSubject) {
+
+    this.caSubject = caSubject;
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+      return "registrationDisabled";
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+
+    CertificateRequest req = reqDAO.createCertificateRequest(getModel(),
+      getSubject(), getCaSubject(), getDefaultFutureDate());
+    EventManager.dispatch(new CertificateRequestSubmittedEvent(req,
+      getHomeURL()));
+
+    refreshPendingRequests();
+
+    return SUCCESS;
+  }
+
 }

@@ -23,12 +23,13 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestRejectedEvent extends VOMembershipRequestEvent {
 
-	String reason;
+  String reason;
 
-	public VOMembershipRequestRejectedEvent(NewVOMembershipRequest r,
-			String reason) {
-		super(r);
-		this.reason = reason;
-	}
+  public VOMembershipRequestRejectedEvent(NewVOMembershipRequest r,
+    String reason) {
+
+    super(r);
+    this.reason = reason;
+  }
 
 }

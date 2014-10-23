@@ -23,7 +23,7 @@ package org.glite.security.voms.admin.core.validation.strategies;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface RestoreUserStrategy {
-	
-	public void restoreUser(VOMSUser user);
+
+  public void restoreUser(VOMSUser user);
 
 }

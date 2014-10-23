@@ -46,398 +46,407 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
-		implements RequestDAO {
+  implements RequestDAO {
 
-	
+  public CertificateRequest createCertificateRequest(VOMSUser u,
+    String certificateSubject, String certificateIssuer, Date expirationDate) {
 
-	public CertificateRequest createCertificateRequest(VOMSUser u,
-			String certificateSubject, String certificateIssuer,
-			Date expirationDate) {
-		
-		
-			if (userHasPendingCertificateRequest(u, certificateSubject, certificateIssuer))
-				throw new AlreadyExistsException("User '"+u+"' has a pending certificate request for '"+certificateSubject+","+certificateIssuer+"',");
-			
-		CertificateRequest req = new CertificateRequest();
-		req.setStatus(STATUS.SUBMITTED);
-		req.setRequesterInfo(RequesterInfo.fromVOUser(u));
-		req.setCreationDate(new Date());
-		req.setExpirationDate(expirationDate);
-		
-		req.setCertificateSubject(certificateSubject);
-		req.setCertificateIssuer(certificateIssuer);
-		
-		makePersistent(req);
-		
-		return req;
-	}
+    if (userHasPendingCertificateRequest(u, certificateSubject,
+      certificateIssuer))
+      throw new AlreadyExistsException("User '" + u
+        + "' has a pending certificate request for '" + certificateSubject
+        + "," + certificateIssuer + "',");
 
-	public GroupMembershipRequest createGroupMembershipRequest(VOMSUser usr,
-			VOMSGroup group, Date expirationDate) {
-		
-		if (usr.isMember(group))
-			throw new VOMSException("User '"+usr+"' is already member of group '"+group+"'!");
-		
-		if (userHasPendingGroupMembershipRequest(usr, group))
-			throw new AlreadyMemberException("User '"+usr+"' has a pending group membership request for group '"+group+"'!");
-		
-		GroupMembershipRequest req = new GroupMembershipRequest();
-		req.setStatus(STATUS.SUBMITTED);
-		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
-		req.setCreationDate(new Date());
-		req.setExpirationDate(expirationDate);
-		
-		req.setGroupName(group.getName());
-		
-		makePersistent(req);
-		
-		return req;
-	}
+    CertificateRequest req = new CertificateRequest();
+    req.setStatus(STATUS.SUBMITTED);
+    req.setRequesterInfo(RequesterInfo.fromVOUser(u));
+    req.setCreationDate(new Date());
+    req.setExpirationDate(expirationDate);
 
-	public MembershipRemovalRequest createMembershipRemovalRequest(
-			VOMSUser usr, String reason, Date expirationDate) {
-		
-		MembershipRemovalRequest req = new MembershipRemovalRequest();
-		req.setStatus(STATUS.SUBMITTED);
-		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
-		req.setCreationDate(new Date());
-		req.setExpirationDate(expirationDate);
-		req.setReason(reason);
-		
-		makePersistent(req);
-		
-		return req;
-	}
+    req.setCertificateSubject(certificateSubject);
+    req.setCertificateIssuer(certificateIssuer);
 
-	public RoleMembershipRequest createRoleMembershipRequest(VOMSUser usr,
-			VOMSGroup group, VOMSRole r, Date expirationDate) {
-		
-		if (usr.hasRole(group, r))
-			throw new AlreadyMemberException("User '"+usr+"' already has role '"+r.getName()+"' in group '"+group+"'!");
-		
-		RoleMembershipRequest req = new RoleMembershipRequest();
-		req.setStatus(STATUS.SUBMITTED);
-		req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
-		req.setCreationDate(new Date());
-		req.setExpirationDate(expirationDate);
-		
-		req.setGroupName(group.getName());
-		req.setRoleName(r.getName());
-		
-		makePersistent(req);
-		
-		return req;
-	}
-	
-	public NewVOMembershipRequest createVOMembershipRequest(
-			RequesterInfo requester, Date expirationDate) {
+    makePersistent(req);
 
-		NewVOMembershipRequest req = new NewVOMembershipRequest();
+    return req;
+  }
 
-		req.setStatus(STATUS.SUBMITTED);
-		req.setRequesterInfo(requester);
-		req.setCreationDate(new Date());
-		req.setExpirationDate(expirationDate);
+  public GroupMembershipRequest createGroupMembershipRequest(VOMSUser usr,
+    VOMSGroup group, Date expirationDate) {
 
-		req.setConfirmId(UUID.randomUUID().toString());
-		makePersistent(req);
+    if (usr.isMember(group))
+      throw new VOMSException("User '" + usr + "' is already member of group '"
+        + group + "'!");
 
-		return req;
-	}
+    if (userHasPendingGroupMembershipRequest(usr, group))
+      throw new AlreadyMemberException("User '" + usr
+        + "' has a pending group membership request for group '" + group + "'!");
 
-	public void deleteRequestFromUser(VOMSUser u) {
-		List<Request> userReqs = findRequestsFromUser(u);
-		
-		for (Request r: userReqs)	
-			makeTransient(r);
-		
-		
-	}
-	
-	public NewVOMembershipRequest findActiveVOMembershipRequest(
-			RequesterInfo requester) {
-		Criteria crit = getSession().createCriteria(
-				NewVOMembershipRequest.class);
-		
-		crit.add(Restrictions.ne("status", STATUS.APPROVED)).add(
-				Restrictions.ne("status", STATUS.REJECTED)).createCriteria(
-				"requesterInfo").add(
-				Restrictions.eq("certificateSubject", requester
-						.getCertificateSubject())).add(
-				Restrictions.eq("certificateIssuer", requester
-						.getCertificateIssuer()));
+    GroupMembershipRequest req = new GroupMembershipRequest();
+    req.setStatus(STATUS.SUBMITTED);
+    req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
+    req.setCreationDate(new Date());
+    req.setExpirationDate(expirationDate);
 
-		return (NewVOMembershipRequest) crit.uniqueResult();
+    req.setGroupName(group.getName());
 
-	}
-	
-	
-	public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests() {
+    makePersistent(req);
 
-		Criteria crit = getSession().createCriteria(
-				NewVOMembershipRequest.class);
+    return req;
+  }
 
-		crit.add(Restrictions.eq("status", STATUS.CONFIRMED));
+  public MembershipRemovalRequest createMembershipRemovalRequest(VOMSUser usr,
+    String reason, Date expirationDate) {
 
-		return crit.list();
+    MembershipRemovalRequest req = new MembershipRemovalRequest();
+    req.setStatus(STATUS.SUBMITTED);
+    req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
+    req.setCreationDate(new Date());
+    req.setExpirationDate(expirationDate);
+    req.setReason(reason);
 
-	}
-	
-	public List<NewVOMembershipRequest> findPendingVOMembershipRequests() {
+    makePersistent(req);
 
-		Criteria crit = getSession().createCriteria(
-				NewVOMembershipRequest.class);
+    return req;
+  }
 
-		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+  public RoleMembershipRequest createRoleMembershipRequest(VOMSUser usr,
+    VOMSGroup group, VOMSRole r, Date expirationDate) {
 
-		return crit.list();
+    if (usr.hasRole(group, r))
+      throw new AlreadyMemberException("User '" + usr + "' already has role '"
+        + r.getName() + "' in group '" + group + "'!");
 
-	}
-	
-	
+    RoleMembershipRequest req = new RoleMembershipRequest();
+    req.setStatus(STATUS.SUBMITTED);
+    req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
+    req.setCreationDate(new Date());
+    req.setExpirationDate(expirationDate);
 
-	public List<NewVOMembershipRequest> findExpiredVOMembershipRequests() {
-		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
-		
-		 Date now = new Date();
-		 crit.add(Restrictions.lt("expirationDate", now));
-		 crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
-		 
-		return crit.list();
-	}
-	
-	public List<CertificateRequest> findPendingCertificateRequests(){
-		Criteria crit = getSession().createCriteria(CertificateRequest.class);
-		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
-		
-		return crit.list();
-		
-	}
+    req.setGroupName(group.getName());
+    req.setRoleName(r.getName());
 
-	public List<GroupMembershipRequest> findPendingGroupMembershipRequests() {
-		
-		Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
-		
-		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
-		
-		return crit.list();
-	}
+    makePersistent(req);
 
-	
-	public List<MembershipRemovalRequest> findPendingMembershipRemovalRequests() {
-		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
-		
-		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
-		
-		return crit.list();
-	}
-	
-	public List<Request> findPendingRequests() {
-		List<Request> result = new ArrayList<Request>();
-		
-		result.addAll(findPendingVOMembershipRequests());
-		result.addAll(findConfirmedVOMembershipRequests());
-		result.addAll(findPendingGroupMembershipRequests());
-		result.addAll(findPendingRoleMembershipRequests());
-		result.addAll(findPendingCertificateRequests());
-		result.addAll(findPendingMembershipRemovalRequests());
-		
-		return result;
-	}
-	
-	
+    return req;
+  }
 
-	public List<RoleMembershipRequest> findPendingRoleMembershipRequests() {
-		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
-		
-		crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
-		return crit.list();
-	}
-	
+  public NewVOMembershipRequest createVOMembershipRequest(
+    RequesterInfo requester, Date expirationDate) {
 
-	public List<CertificateRequest> findPendingUserCertificateRequests(VOMSUser u){
-		
-		Criteria crit = getSession().createCriteria(CertificateRequest.class);
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
-				.add(getDnEqualityCheckConstraints(u));
-		
-		return crit.list();
-	}
-	
-	public List<GroupMembershipRequest> findPendingUserGroupMembershipRequests(VOMSUser u){
-		
-		Criteria crit = getSession().createCriteria(
-				GroupMembershipRequest.class);
-		
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
-				.add(getDnEqualityCheckConstraints(u));
-				
-		
-		return crit.list();
-	}
+    NewVOMembershipRequest req = new NewVOMembershipRequest();
 
-	public List<MembershipRemovalRequest> findPendingUserMembershipRemovalRequests(
-			VOMSUser u) {
-		
-		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
-				.add(getDnEqualityCheckConstraints(u));
-		
-		return crit.list();
-	}
+    req.setStatus(STATUS.SUBMITTED);
+    req.setRequesterInfo(requester);
+    req.setCreationDate(new Date());
+    req.setExpirationDate(expirationDate);
 
-	public List<RoleMembershipRequest> findPendingUserRoleMembershipRequests(VOMSUser u){
-		Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo")
-				.add(getDnEqualityCheckConstraints(u));
-		
-		return crit.list();
-	}
+    req.setConfirmId(UUID.randomUUID().toString());
+    makePersistent(req);
 
-	public List<NewVOMembershipRequest> findRejectedVOMembershipRequests() {
-		Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
-		crit.add(Restrictions.eq("status", STATUS.REJECTED));
-		 
-		return crit.list();
-	}
+    return req;
+  }
 
-	public List<Request> findRequestsFromUser(VOMSUser u) {
-		
-		Criteria crit = getSession().createCriteria(Request.class);
-		crit.addOrder(Order.desc("creationDate"));
-		crit.createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
-		
-		return crit.list();
-	}
+  public void deleteRequestFromUser(VOMSUser u) {
 
-	protected Disjunction getDnEqualityCheckConstraints(VOMSUser u){
-		
-		Disjunction dnEqualityChecks = Restrictions.disjunction();
-		
-		for (Certificate c: u.getCertificates())
-			dnEqualityChecks.add(Restrictions.eq("certificateSubject", c.getSubjectString()));
-		
-		return dnEqualityChecks;
-		
-	}
+    List<Request> userReqs = findRequestsFromUser(u);
 
-	public boolean userHasPendingCertificateRequest(VOMSUser u,
-			String certificateSubject, String certificateIssuer) {
-		
-		
-		Criteria crit = getSession().createCriteria(CertificateRequest.class);
-		
-		crit.add(Restrictions.eq("certificateSubject", certificateSubject));
-		crit.add(Restrictions.eq("certificateIssuer", certificateIssuer));
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));		
-		
-		List<CertificateRequest> reqs = crit.list();
-		
-		if (reqs ==  null || reqs.isEmpty())
-			return false;
-		
-		return true;
-	}
+    for (Request r : userReqs)
+      makeTransient(r);
 
-	public boolean userHasPendingGroupMembershipRequest(VOMSUser u, VOMSGroup g){
-		
-		
-		Criteria crit = getSession().createCriteria(
-				GroupMembershipRequest.class);
-		
-		
-		crit.add(Restrictions.eq("groupName", g.getName()));
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
-				
-		List<GroupMembershipRequest> reqs= crit.list();
-		
-		if (reqs ==  null || reqs.isEmpty())
-			return false;
-		
-		
-		return true;
-	}
+  }
 
-	public boolean userHasPendingMembershipRemovalRequest(VOMSUser u) {
-		Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
-		
-		List<MembershipRemovalRequest> reqs = crit.list();
-		
-		if (reqs ==  null || reqs.isEmpty())
-			return false;
-		
-		return true;
-	}
+  public NewVOMembershipRequest findActiveVOMembershipRequest(
+    RequesterInfo requester) {
 
-	public boolean userHasPendingRoleMembershipRequest(VOMSUser u, VOMSGroup g,
-			VOMSRole r) {
-		
-		Criteria crit = getSession().createCriteria(
-				RoleMembershipRequest.class);
-		
-		crit.add(Restrictions.eq("groupName", g.getName()));
-		crit.add(Restrictions.eq("roleName", r.getName()));
-		
-		crit.add(Restrictions.disjunction().
-				add(Restrictions.eq("status", STATUS.SUBMITTED)).
-				add(Restrictions.eq("status", STATUS.PENDING))).createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
-		
-		List<RoleMembershipRequest> reqs = crit.list();
-		
-		if (reqs ==  null || reqs.isEmpty())
-			return false;
-		
-		
-		return true;
-	}
+    Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
 
-	
-	@Override
-	public List<Request> findClosedRequests() {
+    crit
+      .add(Restrictions.ne("status", STATUS.APPROVED))
+      .add(Restrictions.ne("status", STATUS.REJECTED))
+      .createCriteria("requesterInfo")
+      .add(
+        Restrictions.eq("certificateSubject", requester.getCertificateSubject()))
+      .add(
+        Restrictions.eq("certificateIssuer", requester.getCertificateIssuer()));
 
-		List<Request> closedRequests = new ArrayList<Request>();
-		
-		Class<?>[] classes = new Class[]{
-			NewVOMembershipRequest.class,
-			GroupMembershipRequest.class,
-			RoleMembershipRequest.class,
-			CertificateRequest.class,
-			MembershipRemovalRequest.class
-		};
-		
-		for (Class<?> c: classes){
-			Criteria crit = getSession().createCriteria(
-				c);
-			
-			crit.add(Restrictions.disjunction()
-				.add(Restrictions.eq("status", STATUS.APPROVED))
-				.add(Restrictions.eq("status", STATUS.REJECTED)));
-			
-			closedRequests.addAll(crit.list());
-			
-		}
-		
-		return closedRequests;
-	}
+    return (NewVOMembershipRequest) crit.uniqueResult();
+
+  }
+
+  public List<NewVOMembershipRequest> findConfirmedVOMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
+
+    crit.add(Restrictions.eq("status", STATUS.CONFIRMED));
+
+    return crit.list();
+
+  }
+
+  public List<NewVOMembershipRequest> findPendingVOMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
+
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+    return crit.list();
+
+  }
+
+  public List<NewVOMembershipRequest> findExpiredVOMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
+
+    Date now = new Date();
+    crit.add(Restrictions.lt("expirationDate", now));
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+    return crit.list();
+  }
+
+  public List<CertificateRequest> findPendingCertificateRequests() {
+
+    Criteria crit = getSession().createCriteria(CertificateRequest.class);
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+    return crit.list();
+
+  }
+
+  public List<GroupMembershipRequest> findPendingGroupMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
+
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+    return crit.list();
+  }
+
+  public List<MembershipRemovalRequest> findPendingMembershipRemovalRequests() {
+
+    Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+
+    return crit.list();
+  }
+
+  public List<Request> findPendingRequests() {
+
+    List<Request> result = new ArrayList<Request>();
+
+    result.addAll(findPendingVOMembershipRequests());
+    result.addAll(findConfirmedVOMembershipRequests());
+    result.addAll(findPendingGroupMembershipRequests());
+    result.addAll(findPendingRoleMembershipRequests());
+    result.addAll(findPendingCertificateRequests());
+    result.addAll(findPendingMembershipRemovalRequests());
+
+    return result;
+  }
+
+  public List<RoleMembershipRequest> findPendingRoleMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
+
+    crit.add(Restrictions.eq("status", STATUS.SUBMITTED));
+    return crit.list();
+  }
+
+  public List<CertificateRequest> findPendingUserCertificateRequests(VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(CertificateRequest.class);
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    return crit.list();
+  }
+
+  public List<GroupMembershipRequest> findPendingUserGroupMembershipRequests(
+    VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    return crit.list();
+  }
+
+  public List<MembershipRemovalRequest> findPendingUserMembershipRemovalRequests(
+    VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    return crit.list();
+  }
+
+  public List<RoleMembershipRequest> findPendingUserRoleMembershipRequests(
+    VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    return crit.list();
+  }
+
+  public List<NewVOMembershipRequest> findRejectedVOMembershipRequests() {
+
+    Criteria crit = getSession().createCriteria(NewVOMembershipRequest.class);
+    crit.add(Restrictions.eq("status", STATUS.REJECTED));
+
+    return crit.list();
+  }
+
+  public List<Request> findRequestsFromUser(VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(Request.class);
+    crit.addOrder(Order.desc("creationDate"));
+    crit.createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    return crit.list();
+  }
+
+  protected Disjunction getDnEqualityCheckConstraints(VOMSUser u) {
+
+    Disjunction dnEqualityChecks = Restrictions.disjunction();
+
+    for (Certificate c : u.getCertificates())
+      dnEqualityChecks.add(Restrictions.eq("certificateSubject",
+        c.getSubjectString()));
+
+    return dnEqualityChecks;
+
+  }
+
+  public boolean userHasPendingCertificateRequest(VOMSUser u,
+    String certificateSubject, String certificateIssuer) {
+
+    Criteria crit = getSession().createCriteria(CertificateRequest.class);
+
+    crit.add(Restrictions.eq("certificateSubject", certificateSubject));
+    crit.add(Restrictions.eq("certificateIssuer", certificateIssuer));
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    List<CertificateRequest> reqs = crit.list();
+
+    if (reqs == null || reqs.isEmpty())
+      return false;
+
+    return true;
+  }
+
+  public boolean userHasPendingGroupMembershipRequest(VOMSUser u, VOMSGroup g) {
+
+    Criteria crit = getSession().createCriteria(GroupMembershipRequest.class);
+
+    crit.add(Restrictions.eq("groupName", g.getName()));
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    List<GroupMembershipRequest> reqs = crit.list();
+
+    if (reqs == null || reqs.isEmpty())
+      return false;
+
+    return true;
+  }
+
+  public boolean userHasPendingMembershipRemovalRequest(VOMSUser u) {
+
+    Criteria crit = getSession().createCriteria(MembershipRemovalRequest.class);
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    List<MembershipRemovalRequest> reqs = crit.list();
+
+    if (reqs == null || reqs.isEmpty())
+      return false;
+
+    return true;
+  }
+
+  public boolean userHasPendingRoleMembershipRequest(VOMSUser u, VOMSGroup g,
+    VOMSRole r) {
+
+    Criteria crit = getSession().createCriteria(RoleMembershipRequest.class);
+
+    crit.add(Restrictions.eq("groupName", g.getName()));
+    crit.add(Restrictions.eq("roleName", r.getName()));
+
+    crit
+      .add(
+        Restrictions.disjunction()
+          .add(Restrictions.eq("status", STATUS.SUBMITTED))
+          .add(Restrictions.eq("status", STATUS.PENDING)))
+      .createCriteria("requesterInfo").add(getDnEqualityCheckConstraints(u));
+
+    List<RoleMembershipRequest> reqs = crit.list();
+
+    if (reqs == null || reqs.isEmpty())
+      return false;
+
+    return true;
+  }
+
+  @Override
+  public List<Request> findClosedRequests() {
+
+    List<Request> closedRequests = new ArrayList<Request>();
+
+    Class<?>[] classes = new Class[] { NewVOMembershipRequest.class,
+      GroupMembershipRequest.class, RoleMembershipRequest.class,
+      CertificateRequest.class, MembershipRemovalRequest.class };
+
+    for (Class<?> c : classes) {
+      Criteria crit = getSession().createCriteria(c);
+
+      crit.add(Restrictions.disjunction()
+        .add(Restrictions.eq("status", STATUS.APPROVED))
+        .add(Restrictions.eq("status", STATUS.REJECTED)));
+
+      closedRequests.addAll(crit.list());
+
+    }
+
+    return closedRequests;
+  }
 }

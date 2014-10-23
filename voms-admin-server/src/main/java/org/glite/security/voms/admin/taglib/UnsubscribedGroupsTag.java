@@ -29,53 +29,53 @@ import org.glite.security.voms.admin.operations.users.FindUnsubscribedGroupsOper
 
 public class UnsubscribedGroupsTag extends javax.servlet.jsp.tagext.TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String userId;
+  String userId;
 
-	String var;
+  String var;
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		// FIXME: add some exception handling here!
-		List groups;
-		
-		try{
-			
-			groups = (List) FindUnsubscribedGroupsOperation.instance(
-				new Long(userId)).execute();
-		
-		}catch(VOMSAuthorizationException e){
-			
-			groups = Collections.EMPTY_LIST;
-		}
+    // FIXME: add some exception handling here!
+    List groups;
 
-		pageContext.setAttribute(var, groups);
+    try {
 
-		return SKIP_BODY;
-	}
+      groups = (List) FindUnsubscribedGroupsOperation
+        .instance(new Long(userId)).execute();
 
-	public String getUserId() {
+    } catch (VOMSAuthorizationException e) {
 
-		return userId;
-	}
+      groups = Collections.EMPTY_LIST;
+    }
 
-	public void setUserId(String userId) {
+    pageContext.setAttribute(var, groups);
 
-		this.userId = userId;
-	}
+    return SKIP_BODY;
+  }
 
-	public String getVar() {
+  public String getUserId() {
 
-		return var;
-	}
+    return userId;
+  }
 
-	public void setVar(String var) {
+  public void setUserId(String userId) {
 
-		this.var = var;
-	}
+    this.userId = userId;
+  }
+
+  public String getVar() {
+
+    return var;
+  }
+
+  public void setVar(String var) {
+
+    this.var = var;
+  }
 
 }

@@ -23,18 +23,18 @@ import org.glite.security.voms.service.attributes.AttributeValue;
 
 public interface VomsAttributeValue {
 
-	public VOMSAttributeDescription getAttributeDescription();
+  public VOMSAttributeDescription getAttributeDescription();
 
-	public void setAttributeDescription(VOMSAttributeDescription desc);
+  public void setAttributeDescription(VOMSAttributeDescription desc);
 
-	public String getValue();
+  public String getValue();
 
-	public void setValue(String value);
+  public void setValue(String value);
 
-	public String getContext();
+  public String getContext();
 
-	public void setContext(String context);
+  public void setContext(String context);
 
-	public AttributeValue asAttributeValue();
+  public AttributeValue asAttributeValue();
 
 }

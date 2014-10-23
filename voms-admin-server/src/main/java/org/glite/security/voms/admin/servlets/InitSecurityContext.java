@@ -35,77 +35,78 @@ import org.slf4j.LoggerFactory;
 
 public class InitSecurityContext {
 
-	protected static Logger log = LoggerFactory
-			.getLogger(InitSecurityContext.class);
-	
-	public static void setContextFromRequest(final ServletRequest req,
-		final VOMSACValidator validator) {
+  protected static Logger log = LoggerFactory
+    .getLogger(InitSecurityContext.class);
 
-		log.debug("Creating a new security context");
-		VOMSSecurityContext sc = SecurityContextFactory
-			.newVOMSSecurityContext(validator);
-		
-		String remote = req.getRemoteAddr();
-		sc.setRemoteAddr(remote);
+  public static void setContextFromRequest(final ServletRequest req,
+    final VOMSACValidator validator) {
 
-		X509Certificate[] cert = null;
-		try {
-			cert = (X509Certificate[]) req
-					.getAttribute("javax.servlet.request.X509Certificate");
-		} catch (Throwable t) {
-			throw new VOMSException(t.getMessage(), t);
-		}
+    log.debug("Creating a new security context");
+    VOMSSecurityContext sc = SecurityContextFactory
+      .newVOMSSecurityContext(validator);
 
-		if (cert == null) {
-			sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
-			sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-		} else {
-			// Client certificate found.
-			sc.setClientCertChain(cert);
+    String remote = req.getRemoteAddr();
+    sc.setRemoteAddr(remote);
 
-			// Do not allow internal credentials coming from an external source.
-			if (sc.getClientName() != null
-					&& sc.getClientName().startsWith(
-							VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
-				log.error("Client name starts with internal prefix, discarding credentials: "
-						+ sc.getClientName());
-				sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
-				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-			} else if (sc.getIssuerName() != null
-					&& sc.getIssuerName().startsWith(
-							VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
-				log.error("Client issuer starts with internal prefix, discarding credentials: "
-						+ sc.getClientName());
-				sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
-				sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
-			}
-		}
+    X509Certificate[] cert = null;
+    try {
+      cert = (X509Certificate[]) req
+        .getAttribute("javax.servlet.request.X509Certificate");
+    } catch (Throwable t) {
+      throw new VOMSException(t.getMessage(), t);
+    }
 
-		CurrentSecurityContext.set(sc);
-	}
+    if (cert == null) {
+      sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
+      sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
+    } else {
+      // Client certificate found.
+      sc.setClientCertChain(cert);
 
-	public static void logConnection() {
+      // Do not allow internal credentials coming from an external source.
+      if (sc.getClientName() != null
+        && sc.getClientName().startsWith(
+          VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
+        log
+          .error("Client name starts with internal prefix, discarding credentials: "
+            + sc.getClientName());
+        sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
+        sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
+      } else if (sc.getIssuerName() != null
+        && sc.getIssuerName().startsWith(
+          VOMSServiceConstants.INTERNAL_DN_PREFIX)) {
+        log
+          .error("Client issuer starts with internal prefix, discarding credentials: "
+            + sc.getClientName());
+        sc.setClientName(VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
+        sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
+      }
+    }
 
-		VOMSSecurityContext sc = (VOMSSecurityContext) CurrentSecurityContext.get();
+    CurrentSecurityContext.set(sc);
+  }
 
-		if (sc.getClientCert() == null) {
+  public static void logConnection() {
 
-			log.info("Unauthenticated connection from \"{}\"",
-					sc.getRemoteAddr());
+    VOMSSecurityContext sc = (VOMSSecurityContext) CurrentSecurityContext.get();
 
-		} else {
+    if (sc.getClientCert() == null) {
 
-			String clientName = sc.getClientName();
-			String issuerName = sc.getIssuerName();
+      log.info("Unauthenticated connection from \"{}\"", sc.getRemoteAddr());
 
-			BigInteger sn = sc.getClientCert().getSerialNumber();
+    } else {
 
-			String serialNumber = (sn == null) ? "NULL" : sn.toString();
+      String clientName = sc.getClientName();
+      String issuerName = sc.getIssuerName();
 
-			log.info("Connection from \"" + sc.getRemoteAddr() + "\" by "
-					+ clientName + " (issued by \"" + issuerName + "\", "
-					+ "serial " + serialNumber + ")");
-		}
-	}
-	
+      BigInteger sn = sc.getClientCert().getSerialNumber();
+
+      String serialNumber = (sn == null) ? "NULL" : sn.toString();
+
+      log.info("Connection from \"" + sc.getRemoteAddr() + "\" by "
+        + clientName + " (issued by \"" + issuerName + "\", " + "serial "
+        + serialNumber + ")");
+    }
+  }
+
 }

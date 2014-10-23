@@ -24,68 +24,83 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 public class SearchData {
 
-	String text;
+  String text;
 
-	String type;
+  String type;
 
-	int firstResult;
-	int maxResults;
+  int firstResult;
+  int maxResults;
 
-	Long groupId;
+  Long groupId;
 
-	Long roleId;
+  Long roleId;
 
-	public SearchData() {
-		// TODO Auto-generated constructor stub
-	}
+  public SearchData() {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "the search text field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getText() {
-		return text;
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "the search text field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getText() {
 
-	public String getType() {
-		return type;
-	}
+    return text;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setText(String text) {
 
-	public int getFirstResult() {
-		return firstResult;
-	}
+    this.text = text;
+  }
 
-	public void setFirstResult(int firstResult) {
-		this.firstResult = firstResult;
-	}
+  public String getType() {
 
-	public int getMaxResults() {
-		return maxResults;
-	}
+    return type;
+  }
 
-	public void setMaxResults(int maxResults) {
-		this.maxResults = maxResults;
-	}
+  public void setType(String type) {
 
-	public Long getGroupId() {
-		return groupId;
-	}
+    this.type = type;
+  }
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+  public int getFirstResult() {
 
-	public Long getRoleId() {
-		return roleId;
-	}
+    return firstResult;
+  }
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+  public void setFirstResult(int firstResult) {
+
+    this.firstResult = firstResult;
+  }
+
+  public int getMaxResults() {
+
+    return maxResults;
+  }
+
+  public void setMaxResults(int maxResults) {
+
+    this.maxResults = maxResults;
+  }
+
+  public Long getGroupId() {
+
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
+
+  public Long getRoleId() {
+
+    return roleId;
+  }
+
+  public void setRoleId(Long roleId) {
+
+    this.roleId = roleId;
+  }
 
 }

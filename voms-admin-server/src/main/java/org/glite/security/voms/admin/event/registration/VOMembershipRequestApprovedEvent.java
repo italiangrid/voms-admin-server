@@ -23,9 +23,10 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestApprovedEvent extends VOMembershipRequestEvent {
 
-	public VOMembershipRequestApprovedEvent(NewVOMembershipRequest r) {
-		super(r);
-		// TODO Auto-generated constructor stub
-	}
+  public VOMembershipRequestApprovedEvent(NewVOMembershipRequest r) {
+
+    super(r);
+    // TODO Auto-generated constructor stub
+  }
 
 }

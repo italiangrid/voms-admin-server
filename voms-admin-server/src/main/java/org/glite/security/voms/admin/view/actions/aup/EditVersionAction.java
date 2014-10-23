@@ -35,62 +35,69 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-		@Result(name = BaseAction.INPUT, location = "editAupVersion"),
-		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
+  @Result(name = BaseAction.INPUT, location = "editAupVersion"),
+  @Result(name = BaseAction.SUCCESS, location = "/aup/load.action",
+    type = "redirect") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class EditVersionAction extends AUPVersionActions {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String url;
+  String url;
 
-	@Override
-	public void prepare() throws Exception {
-		if (aup == null) {
+  @Override
+  public void prepare() throws Exception {
 
-			AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			aup = dao.findById(aupId, false);
-		}
+    if (aup == null) {
 
-		if (version != null) {
-			url = aup.getVersion(version).getUrl();
-		}
-	}
+      AUPDAO dao = DAOFactory.instance().getAUPDAO();
+      aup = dao.findById(aupId, false);
+    }
 
-	@Override
-	public void validate() {
+    if (version != null) {
+      url = aup.getVersion(version).getUrl();
+    }
+  }
 
-		String newAUPcontent = URLContentFetcher.fetchTextFromURL(url);
-		
-		if (newAUPcontent == null) {
-			addFieldError(
-					"url",
-					"Error fetching the content of the specified URL! Please provide a valid URL pointing to a text file!");
-		}
+  @Override
+  public void validate() {
 
-	}
+    String newAUPcontent = URLContentFetcher.fetchTextFromURL(url);
 
-	@Override
-	public String execute() throws Exception {
+    if (newAUPcontent == null) {
+      addFieldError(
+        "url",
+        "Error fetching the content of the specified URL! Please provide a valid URL pointing to a text file!");
+    }
 
-		AUPVersion aupVersion = aup.getVersion(version);
-		SaveVersionOperation op = new SaveVersionOperation(aupVersion, getUrl());
-		op.execute();
+  }
 
-		return SUCCESS;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The url field is required!")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getUrl() {
-		return url;
-	}
+    AUPVersion aupVersion = aup.getVersion(version);
+    SaveVersionOperation op = new SaveVersionOperation(aupVersion, getUrl());
+    op.execute();
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    return SUCCESS;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "The url field is required!")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The version field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getUrl() {
+
+    return url;
+  }
+
+  public void setUrl(String url) {
+
+    this.url = url;
+  }
 }

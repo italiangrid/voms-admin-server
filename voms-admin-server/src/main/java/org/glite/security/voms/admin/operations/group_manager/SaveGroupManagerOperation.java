@@ -22,19 +22,18 @@ package org.glite.security.voms.admin.operations.group_manager;
 
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 
-
 public class SaveGroupManagerOperation extends BaseGroupManagerOperation {
 
-	
-	protected SaveGroupManagerOperation(GroupManager m) {
-		super(m);
-	}
+  protected SaveGroupManagerOperation(GroupManager m) {
 
-	@Override
-	protected Object doExecute() {
+    super(m);
+  }
 
-		dao.makePersistent(getManager());
-		return getManager();
-	}
+  @Override
+  protected Object doExecute() {
+
+    dao.makePersistent(getManager());
+    return getManager();
+  }
 
 }

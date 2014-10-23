@@ -26,55 +26,59 @@ import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBEmailVali
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DefaultEmailValidationStrategy implements
-	OrgDBEmailAddressValidationStrategy {
+  OrgDBEmailAddressValidationStrategy {
 
-	private final String experimentName;
+  private final String experimentName;
 
-	public DefaultEmailValidationStrategy(String experiment) {
+  public DefaultEmailValidationStrategy(String experiment) {
 
-		experimentName = experiment;
-	}
+    experimentName = experiment;
+  }
 
-	private void sanityChecks(VOMSUser u, String emailAddress) {
+  private void sanityChecks(VOMSUser u, String emailAddress) {
 
-		if (u == null)
-			throw new IllegalArgumentException("null voms user");
+    if (u == null)
+      throw new IllegalArgumentException("null voms user");
 
-		if (emailAddress == null)
-			throw new IllegalArgumentException("null emailAddress");
+    if (emailAddress == null)
+      throw new IllegalArgumentException("null emailAddress");
 
-		if (emailAddress.isEmpty())
-			throw new IllegalArgumentException("Empty email address");
-	}
+    if (emailAddress.isEmpty())
+      throw new IllegalArgumentException("Empty email address");
+  }
 
-	@Override
-	public OrgDBEmailValidationResult validateEmailAddress(VOMSUser u, String emailAddress) {
-		sanityChecks(u, emailAddress);
-		
-		OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
-			.getVOMSPersonDAO();
-		
-		VOMSOrgDBPerson person = 
-			dao.findPersonWithValidExperimentParticipationByEmail(emailAddress,experimentName);
-		
-		if (person == null){
-			
-			String msg = String.format("No record found in OrgDB for emailAddress '%s' in experiment '%s'.",
-				emailAddress, experimentName);
-			
-			return OrgDBEmailValidationResult.invalid(msg);
-		}
-		
-		if (!person.getFirstName().equalsIgnoreCase(u.getName()) || 
-			!person.getName().equalsIgnoreCase(u.getSurname())){
-			
-			String msg = String.format("Name in OrgDB record linked with email '%s' does not match '%s'.",
-				emailAddress, u.getFullName());
-			
-			return OrgDBEmailValidationResult.invalid(msg);	
-			
-		}
-		
-		return OrgDBEmailValidationResult.valid();
-	}
+  @Override
+  public OrgDBEmailValidationResult validateEmailAddress(VOMSUser u,
+    String emailAddress) {
+
+    sanityChecks(u, emailAddress);
+
+    OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
+
+    VOMSOrgDBPerson person = dao
+      .findPersonWithValidExperimentParticipationByEmail(emailAddress,
+        experimentName);
+
+    if (person == null) {
+
+      String msg = String.format(
+        "No record found in OrgDB for emailAddress '%s' in experiment '%s'.",
+        emailAddress, experimentName);
+
+      return OrgDBEmailValidationResult.invalid(msg);
+    }
+
+    if (!person.getFirstName().equalsIgnoreCase(u.getName())
+      || !person.getName().equalsIgnoreCase(u.getSurname())) {
+
+      String msg = String.format(
+        "Name in OrgDB record linked with email '%s' does not match '%s'.",
+        emailAddress, u.getFullName());
+
+      return OrgDBEmailValidationResult.invalid(msg);
+
+    }
+
+    return OrgDBEmailValidationResult.valid();
+  }
 }

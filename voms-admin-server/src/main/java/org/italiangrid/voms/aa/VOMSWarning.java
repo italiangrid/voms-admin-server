@@ -22,30 +22,28 @@ package org.italiangrid.voms.aa;
 
 public enum VOMSWarning {
 
-	OrderNotSatisfied(1,
-		"The requested order could not be satisfied."),
-	ShortenedAttributeValidity(2,
-		"The validity period of the issued attributes has been "
-			+ "shortened to the maximum allowed by this VOMS server configuration."),
-	AttributeSubset(3,
-		"Only a subset of the requested attributes has been returned.");
+  OrderNotSatisfied(1, "The requested order could not be satisfied."), ShortenedAttributeValidity(
+    2, "The validity period of the issued attributes has been "
+      + "shortened to the maximum allowed by this VOMS server configuration."), AttributeSubset(
+    3, "Only a subset of the requested attributes has been returned.");
 
-	private int code;
-	private String message;
+  private int code;
+  private String message;
 
-	private VOMSWarning(int legacyCode, String message) {
-		this.code = legacyCode;
-		this.message = message;
-	}
+  private VOMSWarning(int legacyCode, String message) {
 
-	public int getCode() {
+    this.code = legacyCode;
+    this.message = message;
+  }
 
-		return code;
-	}
+  public int getCode() {
 
-	public String getDefaultMessage() {
+    return code;
+  }
 
-		return message;
-	}
+  public String getDefaultMessage() {
+
+    return message;
+  }
 
 }

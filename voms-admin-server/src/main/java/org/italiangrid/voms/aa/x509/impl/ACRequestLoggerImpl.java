@@ -27,28 +27,28 @@ import org.italiangrid.voms.aa.x509.ACRequestLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 public class ACRequestLoggerImpl implements ACRequestLogger {
 
-	public static final Logger log = LoggerFactory.getLogger("VOMS-X509-AA");
-	public static final String NULL_REQUESTED_FQANs="<unknown>";
-	
-	public ACRequestLoggerImpl() {}
+  public static final Logger log = LoggerFactory.getLogger("VOMS-X509-AA");
+  public static final String NULL_REQUESTED_FQANs = "<unknown>";
 
-	@Override
-	public void logSuccess(RequestContext context) {
-		log.info("Issued attribute certificate to '{}' for fqans: '{}'.", 
-			context.getRequest().getHolderSubject(), 
-			context.getResponse().getIssuedFQANs());
-	}
+  public ACRequestLoggerImpl() {
 
-	@Override
-	public void logFailure(RequestContext context, String errorMessage) {
-		log.warn("AC request error: {}. Client DN: '{}'. Requested fqans: '{}'",
-			new Object[]{errorMessage, 
-			context.getRequest().getHolderSubject(),
-			context.getRequest().getRequestedFQANs()});
-	}
+  }
+
+  @Override
+  public void logSuccess(RequestContext context) {
+
+    log.info("Issued attribute certificate to '{}' for fqans: '{}'.", context
+      .getRequest().getHolderSubject(), context.getResponse().getIssuedFQANs());
+  }
+
+  @Override
+  public void logFailure(RequestContext context, String errorMessage) {
+
+    log.warn("AC request error: {}. Client DN: '{}'. Requested fqans: '{}'",
+      new Object[] { errorMessage, context.getRequest().getHolderSubject(),
+        context.getRequest().getRequestedFQANs() });
+  }
 
 }

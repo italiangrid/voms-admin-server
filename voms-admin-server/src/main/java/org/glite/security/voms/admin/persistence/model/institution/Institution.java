@@ -35,78 +35,87 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Table(name = "institution")
 public class Institution {
 
-	@Id
-	@Column(name = "institution_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+  @Id
+  @Column(name = "institution_id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  Long id;
 
-	Date creationDate;
+  Date creationDate;
 
-	@Column(unique = true)
-	String name;
+  @Column(unique = true)
+  String name;
 
-	String description;
+  String description;
 
-	public Institution() {
-		// TODO Auto-generated constructor stub
-	}
+  public Institution() {
 
-	public Long getId() {
-		return id;
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public Long getId() {
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
+    return id;
+  }
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
+  public void setId(Long id) {
 
-	public String getName() {
-		return name;
-	}
+    this.id = id;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public Date getCreationDate() {
 
-	public String getDescription() {
-		return description;
-	}
+    return creationDate;
+  }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  public void setCreationDate(Date creationDate) {
 
-	@Override
-	public boolean equals(Object other) {
+    this.creationDate = creationDate;
+  }
 
-		if (this == other)
-			return true;
+  public String getName() {
 
-		if (!(other instanceof Institution))
-			return false;
+    return name;
+  }
 
-		if (other == null)
-			return false;
+  public void setName(String name) {
 
-		Institution that = (Institution) other;
+    this.name = name;
+  }
 
-		EqualsBuilder builder = new EqualsBuilder();
-		builder.append(name, that.name);
+  public String getDescription() {
 
-		return builder.isEquals();
-	}
+    return description;
+  }
 
-	@Override
-	public int hashCode() {
+  public void setDescription(String description) {
 
-		return new HashCodeBuilder(17, 35).append(name).toHashCode();
-	}
+    this.description = description;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+
+    if (this == other)
+      return true;
+
+    if (!(other instanceof Institution))
+      return false;
+
+    if (other == null)
+      return false;
+
+    Institution that = (Institution) other;
+
+    EqualsBuilder builder = new EqualsBuilder();
+    builder.append(name, that.name);
+
+    return builder.isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+
+    return new HashCodeBuilder(17, 35).append(name).toHashCode();
+  }
 
 }

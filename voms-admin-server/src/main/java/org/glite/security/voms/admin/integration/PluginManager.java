@@ -31,97 +31,102 @@ import org.slf4j.LoggerFactory;
 
 public class PluginManager {
 
-	public static final Logger log = LoggerFactory.getLogger(PluginManager.class);
-	
-	private static PluginManager INSTANCE;
-	
-	private Map<String, PluginConfigurator> configuredPluginsMap;
-	
-	
-	private PluginManager(){
-		
-		configuredPluginsMap = new HashMap<String, PluginConfigurator>();
-	}
-	
-	public synchronized static final PluginManager instance(){
-		
-		if (INSTANCE==null)
-			INSTANCE = new PluginManager();
-		
-		return INSTANCE;
-	}
-	
-	
-	
-	public synchronized void configurePlugins(){
-		
-		log.debug("Configuring external validation plugins.");
-		
-		boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
-		
-		if (!registrationEnabled){
-			log.info("Plugin configuration will be skipped since registration is DISABLED for this VO");
-			return;
-		}
-		
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();	
-		List<String> activePlugins = conf.getExternalValidators();
-		
-		if (activePlugins == null || activePlugins.isEmpty()){
-			log.debug("No external validation plugins found to configure.");
-			return;
-		}
-		
-		for (String pluginName: activePlugins){
-			
-			String pluginConfClassName = conf.getExternalValidatorConfigClass(pluginName);
-			if (pluginConfClassName == null || "".equals(pluginConfClassName.trim())){
-				log.error("No configuration class defined for plugin '{}'. Please specify a class using the '{}' property in the service.properties file.");
-				continue;
-			}
-			
-			try {
-				
-				Class<?> confClazz = Class.forName(pluginConfClassName);
-				
-				// I could have used a constructor method to pass down the pluginName
-				// to the actual plugin configurator, but the reflection constructor code
-				// is not somethin I really love...
-				PluginConfigurator pluginConfigurator = (PluginConfigurator) confClazz.newInstance();
-				
-				pluginConfigurator.setPluginName(pluginName);
-				
-				pluginConfigurator.configure();
-					 
-				configuredPluginsMap.put(pluginConfClassName, pluginConfigurator);
-			
-			}catch(VOMSPluginConfigurationException e){
-				
-				log.error("Error configuring '{}' plugin: {}", pluginName, e.getMessage());
-				log.error(e.getMessage(),e);
-				
-				log.error("{} plugin configuration ABORTED.", pluginName);
-				continue;
-				
-			}catch (Exception e) {
-				log.error("Cannot instantiate the configuration class '{}' for plugin '{}'", new String[]{pluginConfClassName,pluginName});
-				log.error(e.getMessage(),e);
-				log.error("{} plugin configuration ABORTED.", pluginName);
-				continue;
-			} 
-			
-			
-			log.info("'{}' plugin configured SUCCESSFULLY.", pluginName);
-		}
-		
-		log.debug("External validation plugin configuration done.");
-		
-	}
-	
-	public synchronized PluginConfigurator getConfiguredPlugin(String pluginConfigurator){
-		return configuredPluginsMap.get(pluginConfigurator);
-	}
-	
+  public static final Logger log = LoggerFactory.getLogger(PluginManager.class);
+
+  private static PluginManager INSTANCE;
+
+  private Map<String, PluginConfigurator> configuredPluginsMap;
+
+  private PluginManager() {
+
+    configuredPluginsMap = new HashMap<String, PluginConfigurator>();
+  }
+
+  public synchronized static final PluginManager instance() {
+
+    if (INSTANCE == null)
+      INSTANCE = new PluginManager();
+
+    return INSTANCE;
+  }
+
+  public synchronized void configurePlugins() {
+
+    log.debug("Configuring external validation plugins.");
+
+    boolean registrationEnabled = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
+
+    if (!registrationEnabled) {
+      log
+        .info("Plugin configuration will be skipped since registration is DISABLED for this VO");
+      return;
+    }
+
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    List<String> activePlugins = conf.getExternalValidators();
+
+    if (activePlugins == null || activePlugins.isEmpty()) {
+      log.debug("No external validation plugins found to configure.");
+      return;
+    }
+
+    for (String pluginName : activePlugins) {
+
+      String pluginConfClassName = conf
+        .getExternalValidatorConfigClass(pluginName);
+      if (pluginConfClassName == null || "".equals(pluginConfClassName.trim())) {
+        log
+          .error("No configuration class defined for plugin '{}'. Please specify a class using the '{}' property in the service.properties file.");
+        continue;
+      }
+
+      try {
+
+        Class<?> confClazz = Class.forName(pluginConfClassName);
+
+        // I could have used a constructor method to pass down the pluginName
+        // to the actual plugin configurator, but the reflection constructor
+        // code
+        // is not somethin I really love...
+        PluginConfigurator pluginConfigurator = (PluginConfigurator) confClazz
+          .newInstance();
+
+        pluginConfigurator.setPluginName(pluginName);
+
+        pluginConfigurator.configure();
+
+        configuredPluginsMap.put(pluginConfClassName, pluginConfigurator);
+
+      } catch (VOMSPluginConfigurationException e) {
+
+        log.error("Error configuring '{}' plugin: {}", pluginName,
+          e.getMessage());
+        log.error(e.getMessage(), e);
+
+        log.error("{} plugin configuration ABORTED.", pluginName);
+        continue;
+
+      } catch (Exception e) {
+        log.error(
+          "Cannot instantiate the configuration class '{}' for plugin '{}'",
+          new String[] { pluginConfClassName, pluginName });
+        log.error(e.getMessage(), e);
+        log.error("{} plugin configuration ABORTED.", pluginName);
+        continue;
+      }
+
+      log.info("'{}' plugin configured SUCCESSFULLY.", pluginName);
+    }
+
+    log.debug("External validation plugin configuration done.");
+
+  }
+
+  public synchronized PluginConfigurator getConfiguredPlugin(
+    String pluginConfigurator) {
+
+    return configuredPluginsMap.get(pluginConfigurator);
+  }
+
 }

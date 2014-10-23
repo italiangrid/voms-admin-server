@@ -23,19 +23,22 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 
 public class RoleMembershipSubmittedEvent extends RoleMembershipRequestEvent {
 
-	String managementURL;
-		
-	public RoleMembershipSubmittedEvent(RoleMembershipRequest req, String url) {
-		super(req);
-		this.managementURL = url;
-	}
+  String managementURL;
 
-	public String getManagementURL() {
-		return managementURL;
-	}
+  public RoleMembershipSubmittedEvent(RoleMembershipRequest req, String url) {
 
-	public void setManagementURL(String managementURL) {
-		this.managementURL = managementURL;
-	}
+    super(req);
+    this.managementURL = url;
+  }
+
+  public String getManagementURL() {
+
+    return managementURL;
+  }
+
+  public void setManagementURL(String managementURL) {
+
+    this.managementURL = managementURL;
+  }
 
 }

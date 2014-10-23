@@ -26,70 +26,71 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class FindUserOperation extends BaseUserAdministrativeOperation {
 
-	Long id;
+  Long id;
 
-	String dn = null;
+  String dn = null;
 
-	String caDN = null;
+  String caDN = null;
 
-	String emailAddress = null;
+  String emailAddress = null;
 
-	private FindUserOperation(Long userId) {
+  private FindUserOperation(Long userId) {
 
-		id = userId;
-		setAuthorizedUser(VOMSUserDAO.instance().findById(userId));
-		
-		
-	}
+    id = userId;
+    setAuthorizedUser(VOMSUserDAO.instance().findById(userId));
 
-	private FindUserOperation(String dn, String ca) {
+  }
 
-		this.dn = dn;
-		this.caDN = ca;
-		
-		setAuthorizedUser(VOMSUserDAO.instance().findByDNandCA(dn, caDN));
-		
-	}
+  private FindUserOperation(String dn, String ca) {
 
-	private FindUserOperation(String emailAddress) {
+    this.dn = dn;
+    this.caDN = ca;
 
-		this.emailAddress = emailAddress;
-	}
+    setAuthorizedUser(VOMSUserDAO.instance().findByDNandCA(dn, caDN));
 
-	protected Object doExecute() {
+  }
 
-		if (dn == null)
+  private FindUserOperation(String emailAddress) {
 
-			return VOMSUserDAO.instance().findById(id);
+    this.emailAddress = emailAddress;
+  }
 
-		else if (emailAddress == null)
+  protected Object doExecute() {
 
-			return VOMSUserDAO.instance().findByDNandCA(dn, caDN);
+    if (dn == null)
 
-		else
-			return VOMSUserDAO.instance().findByEmail(emailAddress);
+      return VOMSUserDAO.instance().findById(id);
 
-	}
+    else if (emailAddress == null)
 
-	public static FindUserOperation instance(Long id) {
+      return VOMSUserDAO.instance().findByDNandCA(dn, caDN);
 
-		return new FindUserOperation(id);
-	}
+    else
+      return VOMSUserDAO.instance().findByEmail(emailAddress);
 
-	public static FindUserOperation instance(String dn, String caDN) {
+  }
 
-		return new FindUserOperation(dn, caDN);
-	}
+  public static FindUserOperation instance(Long id) {
 
-	public static FindUserOperation instance(String emailAddress) {
+    return new FindUserOperation(id);
+  }
 
-		return new FindUserOperation(emailAddress);
-	}
+  public static FindUserOperation instance(String dn, String caDN) {
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerReadPermission().setMembershipReadPermission());
-		
-	}
+    return new FindUserOperation(dn, caDN);
+  }
+
+  public static FindUserOperation instance(String emailAddress) {
+
+    return new FindUserOperation(emailAddress);
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
+
+  }
 
 }

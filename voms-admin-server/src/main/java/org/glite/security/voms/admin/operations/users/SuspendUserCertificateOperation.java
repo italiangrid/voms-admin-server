@@ -31,57 +31,60 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 
 public class SuspendUserCertificateOperation extends BaseVomsOperation {
 
-	VOMSUser user;
-	Certificate certificate;
-	SuspensionReason reason;
+  VOMSUser user;
+  Certificate certificate;
+  SuspensionReason reason;
 
-	private SuspendUserCertificateOperation(VOMSUser u, Certificate c,
-			SuspensionReason r) {
-		user = u;
-		certificate = c;
-		reason = r;
+  private SuspendUserCertificateOperation(VOMSUser u, Certificate c,
+    SuspensionReason r) {
 
-	}
+    user = u;
+    certificate = c;
+    reason = r;
 
-	public static SuspendUserCertificateOperation instance(VOMSUser u,
-			Certificate c, SuspensionReason r) {
+  }
 
-		return new SuspendUserCertificateOperation(u, c, r);
-	}
+  public static SuspendUserCertificateOperation instance(VOMSUser u,
+    Certificate c, SuspensionReason r) {
 
-	
-	public static SuspendUserCertificateOperation instance(String dn, String ca, String suspensionReason){
-		
-		Certificate c = CertificateDAO.instance().findByDNCA(dn, ca);
-		SuspensionReason reason = SuspensionReason.OTHER;
-		reason.setMessage(suspensionReason);
-		return new SuspendUserCertificateOperation(c.getUser(), c, reason);
-	}
-	@Override
-	protected Object doExecute() {
+    return new SuspendUserCertificateOperation(u, c, r);
+  }
 
-		if (user == null)
-			throw new NullArgumentException("user cannot be null");
+  public static SuspendUserCertificateOperation instance(String dn, String ca,
+    String suspensionReason) {
 
-		if (certificate == null)
-			throw new NullArgumentException("certificate cannot be null");
+    Certificate c = CertificateDAO.instance().findByDNCA(dn, ca);
+    SuspensionReason reason = SuspensionReason.OTHER;
+    reason.setMessage(suspensionReason);
+    return new SuspendUserCertificateOperation(c.getUser(), c, reason);
+  }
 
-		if (reason == null)
-			throw new NullArgumentException("reason cannot be null");
+  @Override
+  protected Object doExecute() {
 
-		if (!user.hasCertificate(certificate))
-			throw new VOMSException("Certificate '" + certificate
-					+ "' is not bound to user '" + user + "'.");
+    if (user == null)
+      throw new NullArgumentException("user cannot be null");
 
-		certificate.suspend(reason);
-		return null;
-	}
+    if (certificate == null)
+      throw new NullArgumentException("certificate cannot be null");
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission()
-				.setSuspendPermission());
-	}
+    if (reason == null)
+      throw new NullArgumentException("reason cannot be null");
+
+    if (!user.hasCertificate(certificate))
+      throw new VOMSException("Certificate '" + certificate
+        + "' is not bound to user '" + user + "'.");
+
+    certificate.suspend(reason);
+    return null;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setSuspendPermission());
+  }
 
 }

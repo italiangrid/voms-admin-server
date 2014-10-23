@@ -31,24 +31,24 @@ import org.slf4j.LoggerFactory;
 
 public class TaskStatusUpdater implements Runnable, RegistrationServiceTask {
 
-	public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
-	
-	public void run() {
-		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
+  public static Logger log = LoggerFactory.getLogger(TaskStatusUpdater.class);
 
-		List<Task> activeTasks = taskDAO.getActiveTasks();
+  public void run() {
 
-		for (Task t : activeTasks) {
+    TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 
-			Date now = new Date();
+    List<Task> activeTasks = taskDAO.getActiveTasks();
 
-			if (t.getExpiryDate().before(now)) {
-				log.debug("Task " + t
-						+ " has expired, setting its status to EXPIRED.");
-				t.setStatus(TaskStatus.EXPIRED);
+    for (Task t : activeTasks) {
 
-			}
-		}
-	}
+      Date now = new Date();
+
+      if (t.getExpiryDate().before(now)) {
+        log.debug("Task " + t + " has expired, setting its status to EXPIRED.");
+        t.setStatus(TaskStatus.EXPIRED);
+
+      }
+    }
+  }
 
 }

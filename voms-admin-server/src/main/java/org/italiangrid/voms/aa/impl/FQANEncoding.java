@@ -20,10 +20,10 @@
 
 package org.italiangrid.voms.aa.impl;
 
-
 public interface FQANEncoding {
-	
-	public String encodeFQAN(String fqan);
-	public String decodeFQAN(String fqan);
+
+  public String encodeFQAN(String fqan);
+
+  public String decodeFQAN(String fqan);
 
 }

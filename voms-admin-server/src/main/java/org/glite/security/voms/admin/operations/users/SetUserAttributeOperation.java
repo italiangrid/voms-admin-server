@@ -32,66 +32,64 @@ import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetUserAttributeOperation extends BaseVomsOperation {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SetUserAttributeOperation.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(SetUserAttributeOperation.class);
 
-	VOMSUser user;
+  VOMSUser user;
 
-	String attributeName;
+  String attributeName;
 
-	String attributeDescription;
+  String attributeDescription;
 
-	String attributeValue;
+  String attributeValue;
 
-	private SetUserAttributeOperation(VOMSUser u, String aName, String aDesc,
-			String aValue) {
+  private SetUserAttributeOperation(VOMSUser u, String aName, String aDesc,
+    String aValue) {
 
-		user = u;
-		attributeName = aName;
-		attributeDescription = aDesc;
-		attributeValue = aValue;
-	}
+    user = u;
+    attributeName = aName;
+    attributeDescription = aDesc;
+    attributeValue = aValue;
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		log.debug("SetUserAttributeOperation::doExecute");
-		return VOMSUserDAO.instance().setAttribute(user, attributeName,
-				attributeValue);
+    log.debug("SetUserAttributeOperation::doExecute");
+    return VOMSUserDAO.instance().setAttribute(user, attributeName,
+      attributeValue);
 
-	}
+  }
 
-	public static SetUserAttributeOperation instance(VOMSUser u, String aName,
-			String aValue) {
+  public static SetUserAttributeOperation instance(VOMSUser u, String aName,
+    String aValue) {
 
-		return new SetUserAttributeOperation(u, aName, null, aValue);
-	}
+    return new SetUserAttributeOperation(u, aName, null, aValue);
+  }
 
-	public static SetUserAttributeOperation instance(VOMSUser u, String aName,
-			String aDesc, String aValue) {
+  public static SetUserAttributeOperation instance(VOMSUser u, String aName,
+    String aDesc, String aValue) {
 
-		return new SetUserAttributeOperation(u, aName, aDesc, aValue);
-	}
+    return new SetUserAttributeOperation(u, aName, aDesc, aValue);
+  }
 
-	public static SetUserAttributeOperation instance(User user,
-			AttributeValue val) {
+  public static SetUserAttributeOperation instance(User user, AttributeValue val) {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(user.getDN(),
-				user.getCA()).execute();
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(user.getDN(),
+      user.getCA()).execute();
 
-		if (u == null)
-			throw new NoSuchUserException("User '" + user.getDN() + ","
-					+ user.getCA() + "' not found in this vo.");
+    if (u == null)
+      throw new NoSuchUserException("User '" + user.getDN() + ","
+        + user.getCA() + "' not found in this vo.");
 
-		return new SetUserAttributeOperation(u, val.getAttributeClass()
-				.getName(), val.getAttributeClass().getDescription(), val
-				.getValue());
+    return new SetUserAttributeOperation(u, val.getAttributeClass().getName(),
+      val.getAttributeClass().getDescription(), val.getValue());
 
-	}
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getAttributesRWPermissions());
-	}
+    addRequiredPermission(VOMSContext.getVoContext(),
+      VOMSPermission.getAttributesRWPermissions());
+  }
 
 }

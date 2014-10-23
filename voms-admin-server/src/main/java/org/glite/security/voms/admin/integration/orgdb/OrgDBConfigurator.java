@@ -41,129 +41,148 @@ import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OrgDBConfigurator extends AbstractPluginConfigurator{
+public class OrgDBConfigurator extends AbstractPluginConfigurator {
 
-	public static final Logger log = LoggerFactory.getLogger(OrgDBConfigurator.class);
-	
-	public static final String DEFAULT_CONFIG_FILE_NAME = "orgdb.properties";
-	
-	
-	public static final String ORGDB_EXPERIMENT_NAME_PROPERTY = "experimentName";
-	public static final String ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
-	public static final String ORGDB_REGISTRATION_TYPE= "orgdb";
+  public static final Logger log = LoggerFactory
+    .getLogger(OrgDBConfigurator.class);
 
-	public static final String ORGDB_EMAIL_VALIDATOR_CONFIG_KEY = "orgdb.email.validator";
-	
-	/**
-	 * Default ORGDB membership check period in seconds. (6 hours)
-	 */
-	private static final Long ORGDB_DEFAULT_CHECK_PERIOD = 26100L;
-	
-	private OrgDBEmailAddressValidationStrategy emailValidator;
-	
-	/**
-	 * Loads the OrgDB hibernate properties.
-	 * 
-	 * @return the OrgDB hibernate properties
-	 * @throws VOMSPluginConfigurationException 
-	 */
-	Properties loadOrgDBDatabaseProperties() throws VOMSPluginConfigurationException{
-		
-		String defaultConfigFilePath = getVomsConfigurationDirectoryPath()+ "/" + DEFAULT_CONFIG_FILE_NAME;
-		String configFilePath = getPluginProperty("configFile", defaultConfigFilePath);
-		
-		Properties orgDbProps = new Properties();
-		
-		try {
-			orgDbProps.load(new FileInputStream(new File(configFilePath)));
-		
-		} catch (FileNotFoundException e) {
-			
-			String errorMessage = String.format("Configuration file '%s' for plugin '%s' does not exist!",configFilePath, getPluginName());
-			throw new VOMSPluginConfigurationException(errorMessage,e);
-			
-		} catch (IOException e) {
-			String errorMessage = String.format("Error reading configuration file '%s' for plugin '%s' does not exist!",configFilePath, getPluginName());
-			throw new VOMSPluginConfigurationException(errorMessage,e);
-		}
-		
-		return orgDbProps;
-	}
-	
-	public void checkOrgDBConnection(){
-		
-		log.debug("Running OrgDB connection check.");
-		
-		OrgDBVOMSPersonDAO personDAO = OrgDBDAOFactory.instance().getVOMSPersonDAO();
-		
-		try{
-			personDAO.findPersonByEmail("andrea.ceccanti@cnaf.infn.it");
-			log.info("Connection to the OrgDB database is active.");
-		
-		}catch (HibernateException e) {
-			log.warn("Error contacting the OrgDB database: {}", e.getMessage(), e);
-		}		
-	}
-	
-	
-	public synchronized void configure() throws VOMSPluginConfigurationException {
-		
-		log.debug("OrgDB voms configuration started.");
-		try{
-			
-			OrgDBSessionFactory.initialize(loadOrgDBDatabaseProperties());
-		
-		}catch (OrgDBError e) {
-			log.error("Error configuring OrgDB hibernate session factory!",e);
-			throw new VOMSPluginConfigurationException("Error initalizing OrgDB hibernate session factory!",e);
-		}
-		
-		log.debug("OrgDB Database properties loaded succesfully.");
-		
-		checkOrgDBConnection();
-		String uppercaseVOName = VOMSConfiguration.instance().getVOName().toUpperCase();
-		
-		String experimentName= getPluginProperty(ORGDB_EXPERIMENT_NAME_PROPERTY, uppercaseVOName);
-		log.info("Setting OrgDB experiment name: {}", experimentName);
-		
-		emailValidator = new DefaultEmailValidationStrategy(experimentName);
-		OrgDBRequestValidator validator = new OrgDBRequestValidator(experimentName);
-		
-		ValidationManager.instance().setRequestValidationContext(validator);
-		
-		VOMSConfiguration.instance().setRegistrationType(ORGDB_REGISTRATION_TYPE);
-		VOMSConfiguration.instance().setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.TRUE);
-		VOMSConfiguration.instance().setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE, Boolean.TRUE);
-		
-		log.info("OrgDB request validator registered SUCCESSFULLY.");
-		
-		Long checkPeriod;
-		
-		try {
-			
-			checkPeriod = Long.parseLong(getPluginProperty(OrgDBConfigurator.ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS, ORGDB_DEFAULT_CHECK_PERIOD.toString()));
-			
-		
-		}catch (NumberFormatException e) {
-			
-			log.error("Error parsing OrgDB membership check validity period: {}. Please provide an appropriate number for the OrgDb membership_check.period property!", 
-					e.getMessage());
-			
-			log.error("The default value of {} seconds will be used instead.", ORGDB_DEFAULT_CHECK_PERIOD);
-			checkPeriod = ORGDB_DEFAULT_CHECK_PERIOD;
-		}
-		
-		
-		OrgDBMembershipSynchronizationTask syncTask = new OrgDBMembershipSynchronizationTask(experimentName, 
-			new SuspendInvalidMembersStrategy(), 
-			new LogOnlyExpiredParticipationStrategy(), 
-			new DefaultSyncStrategy());
-		
-		VOMSExecutorService.instance().startBackgroundTask(syncTask, null,checkPeriod);
-		
-	}
+  public static final String DEFAULT_CONFIG_FILE_NAME = "orgdb.properties";
 
-	public OrgDBEmailAddressValidationStrategy getEmailValidator(){
-		return emailValidator;
-	}
+  public static final String ORGDB_EXPERIMENT_NAME_PROPERTY = "experimentName";
+  public static final String ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
+  public static final String ORGDB_REGISTRATION_TYPE = "orgdb";
+
+  public static final String ORGDB_EMAIL_VALIDATOR_CONFIG_KEY = "orgdb.email.validator";
+
+  /**
+   * Default ORGDB membership check period in seconds. (6 hours)
+   */
+  private static final Long ORGDB_DEFAULT_CHECK_PERIOD = 26100L;
+
+  private OrgDBEmailAddressValidationStrategy emailValidator;
+
+  /**
+   * Loads the OrgDB hibernate properties.
+   * 
+   * @return the OrgDB hibernate properties
+   * @throws VOMSPluginConfigurationException
+   */
+  Properties loadOrgDBDatabaseProperties()
+    throws VOMSPluginConfigurationException {
+
+    String defaultConfigFilePath = getVomsConfigurationDirectoryPath() + "/"
+      + DEFAULT_CONFIG_FILE_NAME;
+    String configFilePath = getPluginProperty("configFile",
+      defaultConfigFilePath);
+
+    Properties orgDbProps = new Properties();
+
+    try {
+      orgDbProps.load(new FileInputStream(new File(configFilePath)));
+
+    } catch (FileNotFoundException e) {
+
+      String errorMessage = String.format(
+        "Configuration file '%s' for plugin '%s' does not exist!",
+        configFilePath, getPluginName());
+      throw new VOMSPluginConfigurationException(errorMessage, e);
+
+    } catch (IOException e) {
+      String errorMessage = String
+        .format(
+          "Error reading configuration file '%s' for plugin '%s' does not exist!",
+          configFilePath, getPluginName());
+      throw new VOMSPluginConfigurationException(errorMessage, e);
+    }
+
+    return orgDbProps;
+  }
+
+  public void checkOrgDBConnection() {
+
+    log.debug("Running OrgDB connection check.");
+
+    OrgDBVOMSPersonDAO personDAO = OrgDBDAOFactory.instance()
+      .getVOMSPersonDAO();
+
+    try {
+      personDAO.findPersonByEmail("andrea.ceccanti@cnaf.infn.it");
+      log.info("Connection to the OrgDB database is active.");
+
+    } catch (HibernateException e) {
+      log.warn("Error contacting the OrgDB database: {}", e.getMessage(), e);
+    }
+  }
+
+  public synchronized void configure() throws VOMSPluginConfigurationException {
+
+    log.debug("OrgDB voms configuration started.");
+    try {
+
+      OrgDBSessionFactory.initialize(loadOrgDBDatabaseProperties());
+
+    } catch (OrgDBError e) {
+      log.error("Error configuring OrgDB hibernate session factory!", e);
+      throw new VOMSPluginConfigurationException(
+        "Error initalizing OrgDB hibernate session factory!", e);
+    }
+
+    log.debug("OrgDB Database properties loaded succesfully.");
+
+    checkOrgDBConnection();
+    String uppercaseVOName = VOMSConfiguration.instance().getVOName()
+      .toUpperCase();
+
+    String experimentName = getPluginProperty(ORGDB_EXPERIMENT_NAME_PROPERTY,
+      uppercaseVOName);
+    log.info("Setting OrgDB experiment name: {}", experimentName);
+
+    emailValidator = new DefaultEmailValidationStrategy(experimentName);
+    OrgDBRequestValidator validator = new OrgDBRequestValidator(experimentName);
+
+    ValidationManager.instance().setRequestValidationContext(validator);
+
+    VOMSConfiguration.instance().setRegistrationType(ORGDB_REGISTRATION_TYPE);
+    VOMSConfiguration.instance().setProperty(
+      VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
+      Boolean.TRUE);
+    VOMSConfiguration.instance().setProperty(
+      VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
+      Boolean.TRUE);
+
+    log.info("OrgDB request validator registered SUCCESSFULLY.");
+
+    Long checkPeriod;
+
+    try {
+
+      checkPeriod = Long.parseLong(getPluginProperty(
+        OrgDBConfigurator.ORGDB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS,
+        ORGDB_DEFAULT_CHECK_PERIOD.toString()));
+
+    } catch (NumberFormatException e) {
+
+      log
+        .error(
+          "Error parsing OrgDB membership check validity period: {}. Please provide an appropriate number for the OrgDb membership_check.period property!",
+          e.getMessage());
+
+      log.error("The default value of {} seconds will be used instead.",
+        ORGDB_DEFAULT_CHECK_PERIOD);
+      checkPeriod = ORGDB_DEFAULT_CHECK_PERIOD;
+    }
+
+    OrgDBMembershipSynchronizationTask syncTask = new OrgDBMembershipSynchronizationTask(
+      experimentName, new SuspendInvalidMembersStrategy(),
+      new LogOnlyExpiredParticipationStrategy(), new DefaultSyncStrategy());
+
+    VOMSExecutorService.instance().startBackgroundTask(syncTask, null,
+      checkPeriod);
+
+  }
+
+  public OrgDBEmailAddressValidationStrategy getEmailValidator() {
+
+    return emailValidator;
+  }
 }

@@ -61,116 +61,116 @@ import eu.emi.security.authn.x509.impl.OpensslNameUtils;
 
 public class SAMLTestUtils {
 
-	public static VOMSAdmin getVOMSAdminService(String host, String vo)
-			throws Exception {
+  public static VOMSAdmin getVOMSAdminService(String host, String vo)
+    throws Exception {
 
-		String url = String.format(
-				"https://%s:8443/voms/%s/services/VOMSAdmin", host, vo);
+    String url = String.format("https://%s:8443/voms/%s/services/VOMSAdmin",
+      host, vo);
 
-		VOMSAdminServiceLocator loc = new VOMSAdminServiceLocator();
-		return loc.getVOMSAdmin(new URL(url));
+    VOMSAdminServiceLocator loc = new VOMSAdminServiceLocator();
+    return loc.getVOMSAdmin(new URL(url));
 
-	}
+  }
 
-	public static VOMSAttributes getVOMSAttributesService(String host, String vo)
-			throws Exception {
-		String url = String.format(
-				"https://%s:8443/voms/%s/services/VOMSAttributes", host, vo);
+  public static VOMSAttributes getVOMSAttributesService(String host, String vo)
+    throws Exception {
 
-		VOMSAttributesServiceLocator loc = new VOMSAttributesServiceLocator();
-		return loc.getVOMSAttributes(new URL(url));
+    String url = String.format(
+      "https://%s:8443/voms/%s/services/VOMSAttributes", host, vo);
 
-	}
+    VOMSAttributesServiceLocator loc = new VOMSAttributesServiceLocator();
+    return loc.getVOMSAttributes(new URL(url));
 
-	public static AttributeAuthorityPortType getVOMSSAMLService(String host,
-			String vo) throws Exception {
+  }
 
-		String url = String.format("https://%s:8443/voms/%s/services/VOMSSaml",
-				host, vo);
+  public static AttributeAuthorityPortType getVOMSSAMLService(String host,
+    String vo) throws Exception {
 
-		AttributeAuthorityServiceLocator loc = new AttributeAuthorityServiceLocator();
-		TypeMapping typeMapping = loc.getTypeMappingRegistry()
-				.getDefaultTypeMapping();
+    String url = String.format("https://%s:8443/voms/%s/services/VOMSSaml",
+      host, vo);
 
-		typeMapping.register(AttributeQuery.class, AttributeQuery.TYPE_NAME,
-				new SerializerFactory(), new DeserializerFactory());
+    AttributeAuthorityServiceLocator loc = new AttributeAuthorityServiceLocator();
+    TypeMapping typeMapping = loc.getTypeMappingRegistry()
+      .getDefaultTypeMapping();
 
-		typeMapping.register(Response.class, Response.TYPE_NAME,
-				new SerializerFactory(), new DeserializerFactory());
+    typeMapping.register(AttributeQuery.class, AttributeQuery.TYPE_NAME,
+      new SerializerFactory(), new DeserializerFactory());
 
-		AttributeAuthorityPortType aa = loc
-				.getAttributeAuthorityPortType(new URL(url));
+    typeMapping.register(Response.class, Response.TYPE_NAME,
+      new SerializerFactory(), new DeserializerFactory());
 
-		return aa;
+    AttributeAuthorityPortType aa = loc.getAttributeAuthorityPortType(new URL(
+      url));
 
-	}
+    return aa;
 
-	public static AttributeQuery buildAttributeQuery(String userDn,
-			String voName) throws Exception {
+  }
 
-		XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
+  public static AttributeQuery buildAttributeQuery(String userDn, String voName)
+    throws Exception {
 
-		AttributeQueryBuilder qb = (AttributeQueryBuilder) bf
-				.getBuilder(AttributeQuery.DEFAULT_ELEMENT_NAME);
+    XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
 
-		AttributeQuery query = qb.buildObject();
+    AttributeQueryBuilder qb = (AttributeQueryBuilder) bf
+      .getBuilder(AttributeQuery.DEFAULT_ELEMENT_NAME);
 
-		query.setID(UUID.randomUUID().toString());
-		query.setVersion(SAMLVersion.VERSION_20);
+    AttributeQuery query = qb.buildObject();
 
-		query.setIssueInstant(new DateTime());
+    query.setID(UUID.randomUUID().toString());
+    query.setVersion(SAMLVersion.VERSION_20);
 
-		IssuerBuilder issuerBuilder = (IssuerBuilder) bf
-				.getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
+    query.setIssueInstant(new DateTime());
 
-		Issuer issuer = issuerBuilder.buildObject();
+    IssuerBuilder issuerBuilder = (IssuerBuilder) bf
+      .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
 
-		// Convert to rfc2253
-		String opensslDn = OpensslNameUtils.opensslToRfc2253(userDn);
+    Issuer issuer = issuerBuilder.buildObject();
 
-		issuer.setValue(opensslDn);
-		issuer.setFormat(NameID.X509_SUBJECT);
+    // Convert to rfc2253
+    String opensslDn = OpensslNameUtils.opensslToRfc2253(userDn);
 
-		query.setIssuer(issuer);
+    issuer.setValue(opensslDn);
+    issuer.setFormat(NameID.X509_SUBJECT);
 
-		SubjectBuilder subjectBuilder = (SubjectBuilder) bf
-				.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
-		Subject subject = subjectBuilder.buildObject();
+    query.setIssuer(issuer);
 
-		NameIDBuilder nameIdBuilder = (NameIDBuilder) bf
-				.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+    SubjectBuilder subjectBuilder = (SubjectBuilder) bf
+      .getBuilder(Subject.DEFAULT_ELEMENT_NAME);
+    Subject subject = subjectBuilder.buildObject();
 
-		NameID requester = nameIdBuilder.buildObject();
-		requester.setFormat(NameID.X509_SUBJECT);
-		requester.setValue(opensslDn);
+    NameIDBuilder nameIdBuilder = (NameIDBuilder) bf
+      .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
 
-		subject.setNameID(requester);
+    NameID requester = nameIdBuilder.buildObject();
+    requester.setFormat(NameID.X509_SUBJECT);
+    requester.setValue(opensslDn);
 
-		query.setSubject(subject);
+    subject.setNameID(requester);
 
-		return query;
-	}
+    query.setSubject(subject);
 
-	public static void printXMLObject(XMLObject xmlObject) throws Exception {
+    return query;
+  }
 
-		Element element;
+  public static void printXMLObject(XMLObject xmlObject) throws Exception {
 
-		MarshallerFactory marshallerFactory = Configuration
-				.getMarshallerFactory();
+    Element element;
 
-		Marshaller marshaller = marshallerFactory.getMarshaller(xmlObject);
-		element = marshaller.marshall(xmlObject);
+    MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
 
-		Transformer tr = TransformerFactory.newInstance().newTransformer();
+    Marshaller marshaller = marshallerFactory.getMarshaller(xmlObject);
+    element = marshaller.marshall(xmlObject);
 
-		tr.setOutputProperty(OutputKeys.INDENT, "yes");
-		tr.setOutputProperty(OutputKeys.METHOD, "xml");
+    Transformer tr = TransformerFactory.newInstance().newTransformer();
 
-		tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-				String.valueOf(4));
+    tr.setOutputProperty(OutputKeys.INDENT, "yes");
+    tr.setOutputProperty(OutputKeys.METHOD, "xml");
 
-		tr.transform(new DOMSource(element), new StreamResult(System.out));
+    tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+      String.valueOf(4));
 
-	}
+    tr.transform(new DOMSource(element), new StreamResult(System.out));
+
+  }
 
 }

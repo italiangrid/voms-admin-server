@@ -34,87 +34,104 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "/attribute/search.action",
+    type = "redirect"),
 
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "/attribute/search.action", type = "redirect"),
+  @Result(name = BaseAction.INPUT, location = "attributeManage"),
 
-		@Result(name = BaseAction.INPUT, location = "attributeManage"),
-
-		@Result(name = BaseAction.LIST, location = "attributeManage")
+  @Result(name = BaseAction.LIST, location = "attributeManage")
 
 })
 public class AttributeActions extends BaseAction {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long attributeId;
+  Long attributeId;
 
-	String attributeName;
-	String attributeDescription;
-	Boolean checkUniqueness;
-	
-	public void validateCreate(){
-		
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance().getAttributeDescriptionByName(attributeName);
-		if (desc!=null)
-			addFieldError("attributeName", "Attribute class '"+attributeName+"' already exists!");
-	}
+  String attributeName;
+  String attributeDescription;
+  Boolean checkUniqueness;
 
-	@Action(value = "create", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
-			"token.includeMethods", "create, delete" }) })
-	public String create() throws Exception {
+  public void validateCreate() {
 
-		CreateAttributeDescriptionOperation.instance(attributeName,
-				attributeDescription, checkUniqueness).execute();
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attributeName);
+    if (desc != null)
+      addFieldError("attributeName", "Attribute class '" + attributeName
+        + "' already exists!");
+  }
 
-		return LIST;
-	}
+  @Action(value = "create", interceptorRefs = { @InterceptorRef(
+    value = "authenticatedStack", params = { "token.includeMethods",
+      "create, delete" }) })
+  public String create() throws Exception {
 
-	@SkipValidation
-	@Action(value = "delete", interceptorRefs = { @InterceptorRef(value = "authenticatedStack", params = {
-			"token.includeMethods", "create, delete" }) })
-	public String delete() throws Exception {
+    CreateAttributeDescriptionOperation.instance(attributeName,
+      attributeDescription, checkUniqueness).execute();
 
-		DeleteAttributeDescriptionOperation.instance(attributeName).execute();
+    return LIST;
+  }
 
-		return LIST;
-	}
+  @SkipValidation
+  @Action(value = "delete", interceptorRefs = { @InterceptorRef(
+    value = "authenticatedStack", params = { "token.includeMethods",
+      "create, delete" }) })
+  public String delete() throws Exception {
 
-	public Long getAttributeId() {
-		return attributeId;
-	}
+    DeleteAttributeDescriptionOperation.instance(attributeName).execute();
 
-	public void setAttributeId(Long attributeId) {
-		this.attributeId = attributeId;
-	}
+    return LIST;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Attribute name is required.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute name field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getAttributeName() {
-		return attributeName;
-	}
+  public Long getAttributeId() {
 
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
-	}
+    return attributeId;
+  }
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The attribute description field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getAttributeDescription() {
-		return attributeDescription;
-	}
+  public void setAttributeId(Long attributeId) {
 
-	public void setAttributeDescription(String attributeDescription) {
-		this.attributeDescription = attributeDescription;
-	}
+    this.attributeId = attributeId;
+  }
 
-	public Boolean getCheckUniqueness() {
-		return checkUniqueness;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Attribute name is required.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The attribute name field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getAttributeName() {
 
-	public void setCheckUniqueness(Boolean checkUniqueness) {
-		this.checkUniqueness = checkUniqueness;
-	}
+    return attributeName;
+  }
+
+  public void setAttributeName(String attributeName) {
+
+    this.attributeName = attributeName;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The attribute description field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getAttributeDescription() {
+
+    return attributeDescription;
+  }
+
+  public void setAttributeDescription(String attributeDescription) {
+
+    this.attributeDescription = attributeDescription;
+  }
+
+  public Boolean getCheckUniqueness() {
+
+    return checkUniqueness;
+  }
+
+  public void setCheckUniqueness(Boolean checkUniqueness) {
+
+    this.checkUniqueness = checkUniqueness;
+  }
 }

@@ -31,47 +31,46 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
-public class HandleCertificateRequestOperation extends BaseHandleRequestOperation<CertificateRequest> {
-	
-	public HandleCertificateRequestOperation(CertificateRequest request,
-			DECISION decision) {
-		super(request, decision);
-	}
+public class HandleCertificateRequestOperation extends
+  BaseHandleRequestOperation<CertificateRequest> {
 
-	@Override
-	protected void approve() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		VOMSUser u = getRequesterAsVomsUser();
-		
-		AddUserCertificateOperation.instance(u, 
-			request.getCertificateSubject(), 
-			request.getCertificateIssuer(), 
-			null).execute();
-		
-		approveRequest();
-		
-		EventManager.dispatch(new CertificateRequestApprovedEvent(request));
-		
-		
-	}
+  public HandleCertificateRequestOperation(CertificateRequest request,
+    DECISION decision) {
 
-	@Override
-	protected void reject() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		rejectRequest();
-		EventManager.dispatch(new CertificateRequestRejectedEvent(request));
-		
-	}
+    super(request, decision);
+  }
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions().setMembershipRWPermission()
-				.setRequestsReadPermission().setRequestsWritePermission());
+  @Override
+  protected void approve() {
 
-	}
+    checkRequestStatus(STATUS.SUBMITTED);
+    VOMSUser u = getRequesterAsVomsUser();
 
-	
+    AddUserCertificateOperation.instance(u, request.getCertificateSubject(),
+      request.getCertificateIssuer(), null).execute();
+
+    approveRequest();
+
+    EventManager.dispatch(new CertificateRequestApprovedEvent(request));
+
+  }
+
+  @Override
+  protected void reject() {
+
+    checkRequestStatus(STATUS.SUBMITTED);
+    rejectRequest();
+    EventManager.dispatch(new CertificateRequestRejectedEvent(request));
+
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission()
+      .setRequestsReadPermission().setRequestsWritePermission());
+
+  }
+
 }

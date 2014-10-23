@@ -36,67 +36,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RestoreUserOperation extends BaseVomsOperation {
-	
-	public static final Logger log = LoggerFactory.getLogger(RestoreUserOperation.class);
 
-	VOMSUser user;
+  public static final Logger log = LoggerFactory
+    .getLogger(RestoreUserOperation.class);
 
-	protected RestoreUserOperation(Long userId){
-		
-		user = VOMSUserDAO.instance().findById(userId);
-	}
-	
-	protected RestoreUserOperation(VOMSUser u) {
-		user = u;
-	}
+  VOMSUser user;
 
-	public static RestoreUserOperation instance(Long id){
-		
-		return new RestoreUserOperation(id);
-	}
-	
-	public static RestoreUserOperation instance(VOMSUser u) {
+  protected RestoreUserOperation(Long userId) {
 
-		return new RestoreUserOperation(u);
-	}
+    user = VOMSUserDAO.instance().findById(userId);
+  }
 
-	@Override
-	protected Object doExecute() {
+  protected RestoreUserOperation(VOMSUser u) {
 
-		log.info("Restoring user {}.", user.getShortName());
-		
-		if (user.isSuspended()){
-			
-			if (user.getSuspensionReason().equals(SuspensionReason.FAILED_TO_SIGN_AUP.getMessage())){
-				AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-				
-				// Sign AUP on behalf of the user
-				VOMSUserDAO.instance().signAUP(user, aupDAO.getVOAUP());
-				log.debug("Creating AUP acceptance record for user {}", user);
-				
-				
-			}
-			
-			if (user.hasExpired()){
-				// Extend membership
-				Date expirationDate = ValidationUtil.membershipExpirationDateStartingFromNow();
-				log.debug("Extending membership for user {} to {}", user, expirationDate);
-				user.setEndTime(expirationDate);
-			}
-				
-			user.restore();	
-			
-			EventManager.dispatch(new UserRestoredEvent(user));
-			
-		}
-		return null;
-	}
+    user = u;
+  }
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission()
-				.setSuspendPermission());
-	}
+  public static RestoreUserOperation instance(Long id) {
+
+    return new RestoreUserOperation(id);
+  }
+
+  public static RestoreUserOperation instance(VOMSUser u) {
+
+    return new RestoreUserOperation(u);
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    log.info("Restoring user {}.", user.getShortName());
+
+    if (user.isSuspended()) {
+
+      if (user.getSuspensionReason().equals(
+        SuspensionReason.FAILED_TO_SIGN_AUP.getMessage())) {
+        AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+        // Sign AUP on behalf of the user
+        VOMSUserDAO.instance().signAUP(user, aupDAO.getVOAUP());
+        log.debug("Creating AUP acceptance record for user {}", user);
+
+      }
+
+      if (user.hasExpired()) {
+        // Extend membership
+        Date expirationDate = ValidationUtil
+          .membershipExpirationDateStartingFromNow();
+        log.debug("Extending membership for user {} to {}", user,
+          expirationDate);
+        user.setEndTime(expirationDate);
+      }
+
+      user.restore();
+
+      EventManager.dispatch(new UserRestoredEvent(user));
+
+    }
+    return null;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setSuspendPermission());
+  }
 
 }

@@ -27,33 +27,33 @@ import org.glite.security.voms.admin.error.VOMSException;
 
 public abstract class VelocityEmailNotification extends EmailNotification {
 
-	private String templateFile;
+  private String templateFile;
 
-	protected String subjectPrefix = "[VOMS Admin]";
+  protected String subjectPrefix = "[VOMS Admin]";
 
-	public String getTemplateFile() {
+  public String getTemplateFile() {
 
-		return templateFile;
-	}
+    return templateFile;
+  }
 
-	public void setTemplateFile(String templateFile) {
+  public void setTemplateFile(String templateFile) {
 
-		this.templateFile = templateFile;
-	}
+    this.templateFile = templateFile;
+  }
 
-	protected void buildMessageFromTemplate(VelocityContext context) {
+  protected void buildMessageFromTemplate(VelocityContext context) {
 
-		StringWriter w = new StringWriter();
+    StringWriter w = new StringWriter();
 
-		try {
+    try {
 
-			Velocity.mergeTemplate(templateFile, "UTF-8", context, w);
+      Velocity.mergeTemplate(templateFile, "UTF-8", context, w);
 
-		} catch (Exception e) {
-			throw new VOMSException(e);
-		}
+    } catch (Exception e) {
+      throw new VOMSException(e);
+    }
 
-		setMessage(w.toString());
-	}
+    setMessage(w.toString());
+  }
 
 }

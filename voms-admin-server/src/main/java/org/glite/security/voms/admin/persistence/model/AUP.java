@@ -31,194 +31,198 @@ import org.glite.security.voms.admin.persistence.error.NoSuchAUPVersionException
 
 public class AUP implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private static final Logger log = LoggerFactory.getLogger(AUP.class);
+  private static final Logger log = LoggerFactory.getLogger(AUP.class);
 
-	public static final String VO_AUP_NAME = "VO-AUP";
-	public static final String GRID_AUP_NAME = "GRID-AUP";
+  public static final String VO_AUP_NAME = "VO-AUP";
+  public static final String GRID_AUP_NAME = "GRID-AUP";
 
-	Long id;
-	String name;
-	String description;
+  Long id;
+  String name;
+  String description;
 
-	/** Reacceptance period in days **/
-	Integer reacceptancePeriod;
+  /** Reacceptance period in days **/
+  Integer reacceptancePeriod;
 
-	SortedSet<AUPVersion> versions = new TreeSet<AUPVersion>();
+  SortedSet<AUPVersion> versions = new TreeSet<AUPVersion>();
 
-	public AUP() {
+  public AUP() {
 
-		// TODO Auto-generated constructor stub
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	@Override
-	public boolean equals(Object other) {
+  @Override
+  public boolean equals(Object other) {
 
-		if (this == other)
-			return true;
+    if (this == other)
+      return true;
 
-		if (!(other instanceof AUP))
-			return false;
+    if (!(other instanceof AUP))
+      return false;
 
-		AUP that = (AUP) other;
+    AUP that = (AUP) other;
 
-		if (that == null)
-			return false;
+    if (that == null)
+      return false;
 
-		return (that.getName().equals(getName()));
-	}
+    return (that.getName().equals(getName()));
+  }
 
-	public AUPVersion getActiveVersion() {
+  public AUPVersion getActiveVersion() {
 
-		if (versions.isEmpty())
-			return null;
+    if (versions.isEmpty())
+      return null;
 
-		for (AUPVersion v : versions)
-			if (v.getActive())
-				return v;
+    for (AUPVersion v : versions)
+      if (v.getActive())
+        return v;
 
-		// No active version, this should never happen
-		return null;
-	}
+    // No active version, this should never happen
+    return null;
+  }
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
+  /**
+   * @return the description
+   */
+  public String getDescription() {
 
-		return description;
-	}
+    return description;
+  }
 
-	// Getters and setters
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  // Getters and setters
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		return id;
-	}
+    return id;
+  }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
+  /**
+   * @return the name
+   */
+  public String getName() {
 
-		return name;
-	}
+    return name;
+  }
 
-	public AUPVersion getOldestVersion() {
+  public AUPVersion getOldestVersion() {
 
-		if (versions.isEmpty())
-			return null;
+    if (versions.isEmpty())
+      return null;
 
-		return versions.first();
-	}
+    return versions.first();
+  }
 
-	public Integer getReacceptancePeriod() {
-		return reacceptancePeriod;
-	}
+  public Integer getReacceptancePeriod() {
 
-	public AUPVersion getVersion(String versionNumber) {
+    return reacceptancePeriod;
+  }
 
-		if (versions.isEmpty())
-			return null;
+  public AUPVersion getVersion(String versionNumber) {
 
-		for (AUPVersion v : versions)
-			if (v.getVersion().equals(versionNumber))
-				return v;
+    if (versions.isEmpty())
+      return null;
 
-		return null;
-	}
+    for (AUPVersion v : versions)
+      if (v.getVersion().equals(versionNumber))
+        return v;
 
-	/**
-	 * @return the versions
-	 */
-	public Set<AUPVersion> getVersions() {
+    return null;
+  }
 
-		return versions;
-	}
+  /**
+   * @return the versions
+   */
+  public Set<AUPVersion> getVersions() {
 
-	@Override
-	public int hashCode() {
+    return versions;
+  }
 
-		if (this.getId() != null)
-			return getId().hashCode();
+  @Override
+  public int hashCode() {
 
-		return super.hashCode();
-	}
+    if (this.getId() != null)
+      return getId().hashCode();
 
-	public void setActiveVersion(AUPVersion v) {
+    return super.hashCode();
+  }
 
-		if (versions.isEmpty())
-			throw new NoSuchAUPVersionException(
-					"This AUP has no versions defined currently, so you cannot set the 'active' version");
+  public void setActiveVersion(AUPVersion v) {
 
-		if (versions.contains(v))
-			v.setActive(true);
-		else
-			throw new NoSuchAUPVersionException(
-					"AUP version '"
-							+ v
-							+ "' not found among the currently defined versions for this AUP.");
+    if (versions.isEmpty())
+      throw new NoSuchAUPVersionException(
+        "This AUP has no versions defined currently, so you cannot set the 'active' version");
 
-		for (AUPVersion vv : versions)
-			if ((!vv.equals(v)) && vv.getActive())
-				vv.setActive(false);
+    if (versions.contains(v))
+      v.setActive(true);
+    else
+      throw new NoSuchAUPVersionException("AUP version '" + v
+        + "' not found among the currently defined versions for this AUP.");
 
-	}
+    for (AUPVersion vv : versions)
+      if ((!vv.equals(v)) && vv.getActive())
+        vv.setActive(false);
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(String description) {
+  }
 
-		this.description = description;
-	}
+  /**
+   * @param description
+   *          the description to set
+   */
+  public void setDescription(String description) {
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+    this.description = description;
+  }
 
-		this.id = id;
-	}
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
+    this.id = id;
+  }
 
-		this.name = name;
-	}
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
 
-	public void setReacceptancePeriod(Integer reacceptancePeriod) {
-		this.reacceptancePeriod = reacceptancePeriod;
-	}
+    this.name = name;
+  }
 
-	/**
-	 * @param versions
-	 *            the versions to set
-	 */
-	public void setVersions(SortedSet<AUPVersion> versions) {
+  public void setReacceptancePeriod(Integer reacceptancePeriod) {
 
-		this.versions = versions;
-	}
+    this.reacceptancePeriod = reacceptancePeriod;
+  }
 
-	@Override
-	public String toString() {
-		ToStringBuilder builder = new ToStringBuilder(this);
-		
-		builder.append("id",id).append("name",name).append("description", description).append("reacceptancePeriod", reacceptancePeriod).append("versions",versions);
-		
-		return builder.toString();
+  /**
+   * @param versions
+   *          the versions to set
+   */
+  public void setVersions(SortedSet<AUPVersion> versions) {
 
-	}
+    this.versions = versions;
+  }
+
+  @Override
+  public String toString() {
+
+    ToStringBuilder builder = new ToStringBuilder(this);
+
+    builder.append("id", id).append("name", name)
+      .append("description", description)
+      .append("reacceptancePeriod", reacceptancePeriod)
+      .append("versions", versions);
+
+    return builder.toString();
+
+  }
 
 }

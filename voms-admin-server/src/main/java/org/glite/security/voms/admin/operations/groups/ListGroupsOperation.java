@@ -25,19 +25,20 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 
 public final class ListGroupsOperation extends BaseContainerReadOperation {
 
-	private ListGroupsOperation() {
-		super(VOMSContext.getVoContext());
+  private ListGroupsOperation() {
 
-	}
+    super(VOMSContext.getVoContext());
 
-	public static ListGroupsOperation instance() {
+  }
 
-		return new ListGroupsOperation();
-	}
+  public static ListGroupsOperation instance() {
 
-	protected Object doExecute() {
+    return new ListGroupsOperation();
+  }
 
-		return VOMSGroupDAO.instance().getAll();
-	}
+  protected Object doExecute() {
+
+    return VOMSGroupDAO.instance().getAll();
+  }
 
 }

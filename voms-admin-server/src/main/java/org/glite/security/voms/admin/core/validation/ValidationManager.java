@@ -34,116 +34,124 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ValidationManager implements SuspendUserStrategy, RestoreUserStrategy, RequestValidationStrategy<NewVOMembershipRequest>{
-	
-	public static Logger log = LoggerFactory.getLogger(ValidationManager.class);
-	
-	private static volatile ValidationManager INSTANCE = null;
-	
-	protected RequestValidationContext requestValidationContext;
-	
-	protected MembershipValidationContext membershipValidationContext;
-	
-	protected UserSuspensionManagementContext userSuspensionManagementContext;
-	
-	private ValidationManager() {
-		
-		membershipValidationContext = new DefaultMembershipCheckBehaviour();
-		requestValidationContext = new DefaultRequestValidationBehaviour();
-		userSuspensionManagementContext = new DefaultUserSuspensionManagementBehaviour();
+public class ValidationManager implements SuspendUserStrategy,
+  RestoreUserStrategy, RequestValidationStrategy<NewVOMembershipRequest> {
 
-	}
-	
-	
-	public synchronized static ValidationManager instance(){
-		
-		if (INSTANCE == null)
-			INSTANCE = new ValidationManager();
-		
-		return INSTANCE;
-	}
+  public static Logger log = LoggerFactory.getLogger(ValidationManager.class);
 
+  private static volatile ValidationManager INSTANCE = null;
 
-	public void startMembershipChecker(){
-	    
-	    log.debug("Starting membership checker task.");
-	   
-	    MembershipCheckerTask checker = new MembershipCheckerTask(membershipValidationContext);
-	    VOMSExecutorService.instance().startBackgroundTask(checker, VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
-	    
-	    log.debug("Membership validation context: {}", membershipValidationContext);
-	    log.debug("Request validation context: {}", requestValidationContext);
-	    log.debug("User suspension management context: {}", userSuspensionManagementContext);
-	    
-	}
-	
-	/**
-	 * @return the requestValidationContext
-	 */
-	public RequestValidationContext getRequestValidationContext() {
-		return requestValidationContext;
-	}
+  protected RequestValidationContext requestValidationContext;
 
+  protected MembershipValidationContext membershipValidationContext;
 
-	/**
-	 * @param requestValidationContext the requestValidationContext to set
-	 */
-	public void setRequestValidationContext(
-			RequestValidationContext requestValidationContext) {
-		this.requestValidationContext = requestValidationContext;
-	}
+  protected UserSuspensionManagementContext userSuspensionManagementContext;
 
+  private ValidationManager() {
 
-	/**
-	 * @return the membershipValidationContext
-	 */
-	public MembershipValidationContext getMembershipValidationContext() {
-		return membershipValidationContext;
-	}
+    membershipValidationContext = new DefaultMembershipCheckBehaviour();
+    requestValidationContext = new DefaultRequestValidationBehaviour();
+    userSuspensionManagementContext = new DefaultUserSuspensionManagementBehaviour();
 
+  }
 
-	/**
-	 * @param membershipValidationContext the membershipValidationContext to set
-	 */
-	public void setMembershipValidationContext(
-			MembershipValidationContext membershipValidationContext) {
-		this.membershipValidationContext = membershipValidationContext;
-	}
+  public synchronized static ValidationManager instance() {
 
+    if (INSTANCE == null)
+      INSTANCE = new ValidationManager();
 
-	/**
-	 * @return the userSuspensionManagementContext
-	 */
-	public UserSuspensionManagementContext getUserSuspensionManagementContext() {
-		return userSuspensionManagementContext;
-	}
+    return INSTANCE;
+  }
 
+  public void startMembershipChecker() {
 
-	/**
-	 * @param userSuspensionManagementContext the userSuspensionManagementContext to set
-	 */
-	public void setUserSuspensionManagementContext(
-			UserSuspensionManagementContext userSuspensionManagementContext) {
-		this.userSuspensionManagementContext = userSuspensionManagementContext;
-	}
+    log.debug("Starting membership checker task.");
 
+    MembershipCheckerTask checker = new MembershipCheckerTask(
+      membershipValidationContext);
+    VOMSExecutorService.instance().startBackgroundTask(checker,
+      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
 
-	public void suspendUser(VOMSUser user, SuspensionReason suspensionReason) {
-		getUserSuspensionManagementContext().getSuspendUserStrategy().suspendUser(user, suspensionReason);
-		
-	}
+    log.debug("Membership validation context: {}", membershipValidationContext);
+    log.debug("Request validation context: {}", requestValidationContext);
+    log.debug("User suspension management context: {}",
+      userSuspensionManagementContext);
 
+  }
 
-	public void restoreUser(VOMSUser user) {
-		getUserSuspensionManagementContext().getRestoreUserStrategy().restoreUser(user);
-		
-	}
+  /**
+   * @return the requestValidationContext
+   */
+  public RequestValidationContext getRequestValidationContext() {
 
+    return requestValidationContext;
+  }
 
-	public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
-		
-		return getRequestValidationContext().getVOMembershipRequestValidationStrategy().validateRequest(r);
-		
-	}
-	
+  /**
+   * @param requestValidationContext
+   *          the requestValidationContext to set
+   */
+  public void setRequestValidationContext(
+    RequestValidationContext requestValidationContext) {
+
+    this.requestValidationContext = requestValidationContext;
+  }
+
+  /**
+   * @return the membershipValidationContext
+   */
+  public MembershipValidationContext getMembershipValidationContext() {
+
+    return membershipValidationContext;
+  }
+
+  /**
+   * @param membershipValidationContext
+   *          the membershipValidationContext to set
+   */
+  public void setMembershipValidationContext(
+    MembershipValidationContext membershipValidationContext) {
+
+    this.membershipValidationContext = membershipValidationContext;
+  }
+
+  /**
+   * @return the userSuspensionManagementContext
+   */
+  public UserSuspensionManagementContext getUserSuspensionManagementContext() {
+
+    return userSuspensionManagementContext;
+  }
+
+  /**
+   * @param userSuspensionManagementContext
+   *          the userSuspensionManagementContext to set
+   */
+  public void setUserSuspensionManagementContext(
+    UserSuspensionManagementContext userSuspensionManagementContext) {
+
+    this.userSuspensionManagementContext = userSuspensionManagementContext;
+  }
+
+  public void suspendUser(VOMSUser user, SuspensionReason suspensionReason) {
+
+    getUserSuspensionManagementContext().getSuspendUserStrategy().suspendUser(
+      user, suspensionReason);
+
+  }
+
+  public void restoreUser(VOMSUser user) {
+
+    getUserSuspensionManagementContext().getRestoreUserStrategy().restoreUser(
+      user);
+
+  }
+
+  public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
+
+    return getRequestValidationContext()
+      .getVOMembershipRequestValidationStrategy().validateRequest(r);
+
+  }
+
 }

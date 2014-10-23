@@ -32,36 +32,41 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 
 public class AddVersionOperation extends BaseVomsOperation {
 
-	AUP aup;
-	
-	String version;
-	
-	String url;
-	
-	public AddVersionOperation(AUP aup, String version, String url) {
-		this.aup = aup;
-		this.version = version;
-		this.url = url;
-	}
-	@Override
-	protected Object doExecute() {
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+  AUP aup;
 
-		try {
-			
-			dao.addVersion(aup, version, new URL(url));
-		
-		} catch (MalformedURLException e) {
-			
-			throw new VOMSException("Malformed URL passed as argument: "+url,e);
-		}
-		
-		return aup;
-	}
+  String version;
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-	}
+  String url;
+
+  public AddVersionOperation(AUP aup, String version, String url) {
+
+    this.aup = aup;
+    this.version = version;
+    this.url = url;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
+    try {
+
+      dao.addVersion(aup, version, new URL(url));
+
+    } catch (MalformedURLException e) {
+
+      throw new VOMSException("Malformed URL passed as argument: " + url, e);
+    }
+
+    return aup;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+  }
 
 }

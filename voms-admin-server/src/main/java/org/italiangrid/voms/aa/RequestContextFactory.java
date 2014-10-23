@@ -22,15 +22,16 @@ package org.italiangrid.voms.aa;
 
 import org.italiangrid.voms.aa.impl.RequestContextImpl;
 
-
 public class RequestContextFactory {
 
-	private RequestContextFactory() {}
+  private RequestContextFactory() {
 
+  }
 
-	public static RequestContext newContext(){
-		return new RequestContextImpl(VOMSRequestFactory.newRequest(), 
-			VOMSResponseFactory.newResponse());
-	}
+  public static RequestContext newContext() {
+
+    return new RequestContextImpl(VOMSRequestFactory.newRequest(),
+      VOMSResponseFactory.newResponse());
+  }
 
 }

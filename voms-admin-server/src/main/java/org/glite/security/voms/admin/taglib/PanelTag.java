@@ -42,317 +42,320 @@ import org.w3c.dom.Element;
 
 public class PanelTag extends TagSupport {
 
-	private static final Logger log = LoggerFactory.getLogger(PanelTag.class);
+  private static final Logger log = LoggerFactory.getLogger(PanelTag.class);
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String id;
-	String title;
+  String id;
+  String title;
 
-	String headerClass;
-	String contentClass;
-	String panelClass;
-	String titleClass;
-	String buttonClass;
+  String headerClass;
+  String contentClass;
+  String panelClass;
+  String titleClass;
+  String buttonClass;
 
-	protected boolean isActive() {
-		Map statusMap = (Map) pageContext
-				.findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
+  protected boolean isActive() {
 
-		log.debug("statusMap:" + statusMap);
-		if (statusMap == null)
-			return true;
+    Map statusMap = (Map) pageContext
+      .findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
 
-		Boolean status = (Boolean) statusMap.get(getId());
+    log.debug("statusMap:" + statusMap);
+    if (statusMap == null)
+      return true;
 
-		if (status == null)
-			return true;
+    Boolean status = (Boolean) statusMap.get(getId());
 
-		return status.booleanValue();
+    if (status == null)
+      return true;
 
-	}
+    return status.booleanValue();
 
-	protected String getUrl() {
+  }
 
-		HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+  protected String getUrl() {
 
-		return req.getContextPath() + "/UI.do";
+    HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 
-	}
+    return req.getContextPath() + "/UI.do";
 
-	protected String getGetStatusJs() {
+  }
 
-		return "getStatus('" + getUrl() + "','" + getId() + "','" + getImgUrl()
-				+ "')";
-	}
+  protected String getGetStatusJs() {
 
-	protected String getShowJs() {
-		if (isActive())
-			return "show('" + getUrl() + "','" + getContentId() + "',this,'"
-					+ getImgUrl() + "')";
-		else
-			return "hide('" + getUrl() + "','" + getContentId() + "',this,'"
-					+ getImgUrl() + "')";
-	}
+    return "getStatus('" + getUrl() + "','" + getId() + "','" + getImgUrl()
+      + "')";
+  }
 
-	protected String getJs() {
+  protected String getShowJs() {
 
-		return "toggleVisibility('" + getUrl() + "', '" + getId() + "','"
-				+ getImgUrl() + "')";
-	}
+    if (isActive())
+      return "show('" + getUrl() + "','" + getContentId() + "',this,'"
+        + getImgUrl() + "')";
+    else
+      return "hide('" + getUrl() + "','" + getContentId() + "',this,'"
+        + getImgUrl() + "')";
+  }
 
-	protected String getLoadJs() {
+  protected String getJs() {
 
-		return "load('" + getId() + "','" + getImgUrl() + "')";
-	}
+    return "toggleVisibility('" + getUrl() + "', '" + getId() + "','"
+      + getImgUrl() + "')";
+  }
 
-	protected String getImgUrl() {
+  protected String getLoadJs() {
 
-		HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+    return "load('" + getId() + "','" + getImgUrl() + "')";
+  }
 
-		return req.getContextPath() + "/img";
+  protected String getImgUrl() {
 
-	}
+    HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 
-	protected String getImgSrc() {
-		if (isActive())
-			return getImgUrl() + "/minimize.png";
-		else
-			return getImgUrl() + "/maximize.png";
+    return req.getContextPath() + "/img";
 
-	}
+  }
 
-	protected String getHeaderId() {
+  protected String getImgSrc() {
 
-		return id + "_header";
-	}
+    if (isActive())
+      return getImgUrl() + "/minimize.png";
+    else
+      return getImgUrl() + "/maximize.png";
 
-	protected String getContentId() {
+  }
 
-		return id + "_content";
-	}
+  protected String getHeaderId() {
 
-	protected String getButtonId() {
+    return id + "_header";
+  }
 
-		return id + "_button";
-	}
+  protected String getContentId() {
 
-	protected String getReloadId() {
+    return id + "_content";
+  }
 
-		return id + "_reload";
-	}
+  protected String getButtonId() {
 
-	protected String getTitleId() {
+    return id + "_button";
+  }
 
-		return id + "_title";
-	}
+  protected String getReloadId() {
 
-	protected void setCookie() {
+    return id + "_reload";
+  }
 
-		Cookie c = new Cookie(getId(), Boolean.toString(isActive()));
-		c.setMaxAge(60 * 60);
-		HttpServletResponse res = (HttpServletResponse) pageContext
-				.getResponse();
-		res.addCookie(c);
+  protected String getTitleId() {
 
-	}
+    return id + "_title";
+  }
 
-	public PanelTag() {
+  protected void setCookie() {
 
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    Cookie c = new Cookie(getId(), Boolean.toString(isActive()));
+    c.setMaxAge(60 * 60);
+    HttpServletResponse res = (HttpServletResponse) pageContext.getResponse();
+    res.addCookie(c);
 
-	protected void buildHeaderContent(Document doc) {
+  }
 
-		// Build title element
-		Element titleElement = doc.createElement("div");
-		titleElement.setAttribute("id", getTitleId());
-		titleElement.setAttribute("class", (titleClass == null ? ""
-				: titleClass));
-		titleElement.appendChild(doc.createTextNode(getTitle()));
+  public PanelTag() {
 
-		doc.getDocumentElement().appendChild(titleElement);
+    super();
+    // TODO Auto-generated constructor stub
+  }
 
-		// Build button element
-		Element buttonElement = doc.createElement("img");
-		buttonElement.setAttribute("id", getButtonId());
-		buttonElement.setAttribute("class", (buttonClass == null ? ""
-				: buttonClass));
-		buttonElement.setAttribute("src", getImgSrc());
-		// buttonElement.setAttribute("onclick",getJs());
-		buttonElement.setAttribute("style", "cursor:pointer;");
-		buttonElement.setAttribute("alt", "toggle");
+  protected void buildHeaderContent(Document doc) {
 
-		doc.getDocumentElement().appendChild(buttonElement);
+    // Build title element
+    Element titleElement = doc.createElement("div");
+    titleElement.setAttribute("id", getTitleId());
+    titleElement.setAttribute("class", (titleClass == null ? "" : titleClass));
+    titleElement.appendChild(doc.createTextNode(getTitle()));
 
-	}
+    doc.getDocumentElement().appendChild(titleElement);
 
-	public void write() throws JspException {
+    // Build button element
+    Element buttonElement = doc.createElement("img");
+    buttonElement.setAttribute("id", getButtonId());
+    buttonElement.setAttribute("class",
+      (buttonClass == null ? "" : buttonClass));
+    buttonElement.setAttribute("src", getImgSrc());
+    // buttonElement.setAttribute("onclick",getJs());
+    buttonElement.setAttribute("style", "cursor:pointer;");
+    buttonElement.setAttribute("alt", "toggle");
 
-		DocumentBuilder builder = null;
+    doc.getDocumentElement().appendChild(buttonElement);
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(false);
-		factory.setValidating(false);
+  }
 
-		try {
-			builder = factory.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
+  public void write() throws JspException {
 
-			log.error("Error creating XML parser!", e1);
+    DocumentBuilder builder = null;
 
-			throw new JspTagException("Error creating XML parser!", e1);
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(false);
+    factory.setValidating(false);
 
-		} catch (FactoryConfigurationError e1) {
-			log.error("Error creating XML parser!", e1);
+    try {
+      builder = factory.newDocumentBuilder();
+    } catch (ParserConfigurationException e1) {
 
-			throw new JspTagException("Error creating XML parser!", e1);
+      log.error("Error creating XML parser!", e1);
 
-		}
+      throw new JspTagException("Error creating XML parser!", e1);
 
-		Document doc = builder.getDOMImplementation().createDocument(
-				"http://c", "div", null);
+    } catch (FactoryConfigurationError e1) {
+      log.error("Error creating XML parser!", e1);
 
-		try {
-			// Write panel element
-			pageContext.getOut().write(
-					"<div id=\"" + getId() + "\" class='" + getPanelClass()
-							+ "' >");
+      throw new JspTagException("Error creating XML parser!", e1);
 
-			// Use dom to build quite complicated (and self contained) header
-			// element
-			// (don't want to get mad escaping all those attributes!)
+    }
 
-			doc.getDocumentElement().setAttribute("id", getHeaderId());
-			doc.getDocumentElement().setAttribute("class", getHeaderClass());
+    Document doc = builder.getDOMImplementation().createDocument("http://c",
+      "div", null);
 
-			buildHeaderContent(doc);
+    try {
+      // Write panel element
+      pageContext.getOut().write(
+        "<div id=\"" + getId() + "\" class='" + getPanelClass() + "' >");
 
-			doc.normalize();
+      // Use dom to build quite complicated (and self contained) header
+      // element
+      // (don't want to get mad escaping all those attributes!)
 
-			String headerString = DOM2Writer.nodeToString(doc, true);
+      doc.getDocumentElement().setAttribute("id", getHeaderId());
+      doc.getDocumentElement().setAttribute("class", getHeaderClass());
 
-			log.debug("Header XML: " + headerString);
+      buildHeaderContent(doc);
 
-			// Write header
-			pageContext.getOut().write(headerString);
+      doc.normalize();
 
-			// Write content
-			// 
+      String headerString = DOM2Writer.nodeToString(doc, true);
 
-			if (isActive())
-				pageContext.getOut().write(
-						"<div id=\""
-								+ getContentId()
-								+ "\" class='"
-								+ (getContentClass() == null ? ""
-										: getContentClass())
-								+ "' style='clear:both'>");
-			else
-				pageContext.getOut().write(
-						"<div id=\""
-								+ getContentId()
-								+ "\" class='"
-								+ (getContentClass() == null ? ""
-										: getContentClass())
-								+ "' style='clear: both; display: none'>");
+      log.debug("Header XML: " + headerString);
 
-			pageContext.getOut().write("<div class='separator'>&nbsp;</div>");
-			pageContext.getOut().write("<div>");
-		} catch (IOException e) {
+      // Write header
+      pageContext.getOut().write(headerString);
 
-			log.error("Error writing jsp page: " + e.getMessage(), e);
-			throw new JspException("Error writing jsp page: " + e.getMessage(),
-					e);
-		}
-	}
+      // Write content
+      //
 
-	public int doStartTag() throws JspException {
+      if (isActive())
+        pageContext.getOut().write(
+          "<div id=\"" + getContentId() + "\" class='"
+            + (getContentClass() == null ? "" : getContentClass())
+            + "' style='clear:both'>");
+      else
+        pageContext.getOut().write(
+          "<div id=\"" + getContentId() + "\" class='"
+            + (getContentClass() == null ? "" : getContentClass())
+            + "' style='clear: both; display: none'>");
 
-		write();
+      pageContext.getOut().write("<div class='separator'>&nbsp;</div>");
+      pageContext.getOut().write("<div>");
+    } catch (IOException e) {
 
-		return EVAL_BODY_INCLUDE;
-	}
+      log.error("Error writing jsp page: " + e.getMessage(), e);
+      throw new JspException("Error writing jsp page: " + e.getMessage(), e);
+    }
+  }
 
-	public int doEndTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		try {
-			pageContext.getOut().write("</div>");
-			pageContext.getOut().write(
-					"</div><!-- " + getContentId() + " --> </div> <!-- "
-							+ getId() + " -->");
-			pageContext.getOut().write("<div class='separator'>&nbsp;</div>");
-		} catch (IOException e) {
+    write();
 
-			log.error("Error writing jsp page: " + e.getMessage(), e);
-			throw new JspException("Error writing jsp page: " + e.getMessage(),
-					e);
-		}
-		return EVAL_PAGE;
-	}
+    return EVAL_BODY_INCLUDE;
+  }
 
-	public String getId() {
+  public int doEndTag() throws JspException {
 
-		return id;
-	}
+    try {
+      pageContext.getOut().write("</div>");
+      pageContext.getOut()
+        .write(
+          "</div><!-- " + getContentId() + " --> </div> <!-- " + getId()
+            + " -->");
+      pageContext.getOut().write("<div class='separator'>&nbsp;</div>");
+    } catch (IOException e) {
 
-	public void setId(String id) {
+      log.error("Error writing jsp page: " + e.getMessage(), e);
+      throw new JspException("Error writing jsp page: " + e.getMessage(), e);
+    }
+    return EVAL_PAGE;
+  }
 
-		this.id = id;
-	}
+  public String getId() {
 
-	public String getTitle() {
+    return id;
+  }
 
-		return title;
-	}
+  public void setId(String id) {
 
-	public void setTitle(String title) {
+    this.id = id;
+  }
 
-		this.title = title;
-	}
+  public String getTitle() {
 
-	public String getContentClass() {
-		return contentClass;
-	}
+    return title;
+  }
 
-	public void setContentClass(String contentClass) {
-		this.contentClass = contentClass;
-	}
+  public void setTitle(String title) {
 
-	public String getHeaderClass() {
-		return headerClass;
-	}
+    this.title = title;
+  }
 
-	public void setHeaderClass(String headerClass) {
-		this.headerClass = headerClass;
-	}
+  public String getContentClass() {
 
-	public String getPanelClass() {
-		return panelClass;
-	}
+    return contentClass;
+  }
 
-	public void setPanelClass(String panelClass) {
-		this.panelClass = panelClass;
-	}
+  public void setContentClass(String contentClass) {
 
-	public String getButtonClass() {
-		return buttonClass;
-	}
+    this.contentClass = contentClass;
+  }
 
-	public void setButtonClass(String buttonClass) {
-		this.buttonClass = buttonClass;
-	}
+  public String getHeaderClass() {
 
-	public String getTitleClass() {
-		return titleClass;
-	}
+    return headerClass;
+  }
 
-	public void setTitleClass(String titleClass) {
-		this.titleClass = titleClass;
-	}
+  public void setHeaderClass(String headerClass) {
+
+    this.headerClass = headerClass;
+  }
+
+  public String getPanelClass() {
+
+    return panelClass;
+  }
+
+  public void setPanelClass(String panelClass) {
+
+    this.panelClass = panelClass;
+  }
+
+  public String getButtonClass() {
+
+    return buttonClass;
+  }
+
+  public void setButtonClass(String buttonClass) {
+
+    this.buttonClass = buttonClass;
+  }
+
+  public String getTitleClass() {
+
+    return titleClass;
+  }
+
+  public void setTitleClass(String titleClass) {
+
+    this.titleClass = titleClass;
+  }
 
 }

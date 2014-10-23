@@ -24,14 +24,14 @@ import org.glite.security.voms.admin.error.VOMSException;
 
 public class SuspendedUserException extends VOMSException {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	
-	public SuspendedUserException(String message) {
-		super(message);
-	}
+  public SuspendedUserException(String message) {
+
+    super(message);
+  }
 
 }

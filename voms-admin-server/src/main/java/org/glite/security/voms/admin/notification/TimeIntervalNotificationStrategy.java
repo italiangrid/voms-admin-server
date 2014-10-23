@@ -40,120 +40,116 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class TimeIntervalNotificationStrategy extends
-	BaseConditionalNotificationStrategy {
+  BaseConditionalNotificationStrategy {
 
-	private static final Logger log = LoggerFactory
-		.getLogger(TimeIntervalNotificationStrategy.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(TimeIntervalNotificationStrategy.class);
 
-	protected static final long DEFAULT_NOTIFICATION_PERIOD = 1L;
-	protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.DAYS;
+  protected static final long DEFAULT_NOTIFICATION_PERIOD = 1L;
+  protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.DAYS;
 
-	protected long notificationPeriod = DEFAULT_NOTIFICATION_PERIOD;
-	protected TimeUnit timeUnit = DEFAULT_TIME_UNIT;
+  protected long notificationPeriod = DEFAULT_NOTIFICATION_PERIOD;
+  protected TimeUnit timeUnit = DEFAULT_TIME_UNIT;
 
-	public TimeIntervalNotificationStrategy(
-		NotificationTimeStorage notificationTimeStorage,
-		NotificationServiceIF notificationService, long notificationPeriod,
-		TimeUnit notificationTimeUnit) {
+  public TimeIntervalNotificationStrategy(
+    NotificationTimeStorage notificationTimeStorage,
+    NotificationServiceIF notificationService, long notificationPeriod,
+    TimeUnit notificationTimeUnit) {
 
-		super(notificationTimeStorage, notificationService);
+    super(notificationTimeStorage, notificationService);
 
-		this.notificationPeriod = notificationPeriod;
-		this.timeUnit = notificationTimeUnit;
+    this.notificationPeriod = notificationPeriod;
+    this.timeUnit = notificationTimeUnit;
 
-	}
+  }
 
-	public TimeIntervalNotificationStrategy(NotificationTimeStorage timeStorage,
-		NotificationServiceIF notificationService){
-		super(timeStorage, notificationService);
-	}
+  public TimeIntervalNotificationStrategy(NotificationTimeStorage timeStorage,
+    NotificationServiceIF notificationService) {
 
-	public synchronized boolean notificationRequired() {
+    super(timeStorage, notificationService);
+  }
 
-		if (notificationTimeStorage.getLastNotificationTime() == 0) {
-			log.debug("Notification required since no notification was ever sent.");
-			return true;
-		}
+  public synchronized boolean notificationRequired() {
 
-		long now = new Date().getTime();
+    if (notificationTimeStorage.getLastNotificationTime() == 0) {
+      log.debug("Notification required since no notification was ever sent.");
+      return true;
+    }
 
-		long nextNotificationTime = getNextNotificationMessageTime();
+    long now = new Date().getTime();
 
-		if (nextNotificationTime < now) {
+    long nextNotificationTime = getNextNotificationMessageTime();
 
-			if (log.isDebugEnabled()) {
+    if (nextNotificationTime < now) {
 
-				log.debug("Notification required since next scheduled "
-					+ "notification time {} is in the past. (time elapsed in msecs: {})",
-					nextNotificationTime, (now - nextNotificationTime));
-			}
+      if (log.isDebugEnabled()) {
 
-			return true;
-		}
+        log.debug("Notification required since next scheduled "
+          + "notification time {} is in the past. (time elapsed in msecs: {})",
+          nextNotificationTime, (now - nextNotificationTime));
+      }
 
-		if (log.isDebugEnabled()) {
+      return true;
+    }
 
-			log.debug("No notification required. "
-				+ "Next notification in the future and scheduled for {}.",
-				nextNotificationTime);
+    if (log.isDebugEnabled()) {
 
-		}
+      log.debug("No notification required. "
+        + "Next notification in the future and scheduled for {}.",
+        nextNotificationTime);
 
-		return false;
-	}
+    }
 
-	private long getNextNotificationMessageTime() {
+    return false;
+  }
 
-		long lastNotificationTime = notificationTimeStorage
-			.getLastNotificationTime();
-		long nextNotificationTime = lastNotificationTime
-			+ timeUnit.toMillis(notificationPeriod);
+  private long getNextNotificationMessageTime() {
 
-		log.debug("Computing next notification message time. "
-			+ "lastNotificationTime: {} nextNotificationTime: {}",
-			lastNotificationTime, nextNotificationTime);
+    long lastNotificationTime = notificationTimeStorage
+      .getLastNotificationTime();
+    long nextNotificationTime = lastNotificationTime
+      + timeUnit.toMillis(notificationPeriod);
 
-		return nextNotificationTime;
+    log.debug("Computing next notification message time. "
+      + "lastNotificationTime: {} nextNotificationTime: {}",
+      lastNotificationTime, nextNotificationTime);
 
-	}
+    return nextNotificationTime;
 
-	/**
-	 * @return the notificationPeriod
-	 */
-	public long getNotificationPeriod() {
+  }
 
-		return notificationPeriod;
-	}
+  /**
+   * @return the notificationPeriod
+   */
+  public long getNotificationPeriod() {
 
-	
+    return notificationPeriod;
+  }
 
-	/**
-	 * @param notificationPeriod
-	 *          the notificationPeriod to set
-	 */
-	public void setNotificationPeriod(int notificationPeriod) {
+  /**
+   * @param notificationPeriod
+   *          the notificationPeriod to set
+   */
+  public void setNotificationPeriod(int notificationPeriod) {
 
-		this.notificationPeriod = notificationPeriod;
-	}
+    this.notificationPeriod = notificationPeriod;
+  }
 
-	
-	/**
-	 * @return the timeUnit
-	 */
-	public TimeUnit getTimeUnit() {
-	
-		return timeUnit;
-	}
+  /**
+   * @return the timeUnit
+   */
+  public TimeUnit getTimeUnit() {
 
-	
-	/**
-	 * @param timeUnit the timeUnit to set
-	 */
-	public void setTimeUnit(TimeUnit timeUnit) {
-	
-		this.timeUnit = timeUnit;
-	}
-	
-	
+    return timeUnit;
+  }
+
+  /**
+   * @param timeUnit
+   *          the timeUnit to set
+   */
+  public void setTimeUnit(TimeUnit timeUnit) {
+
+    this.timeUnit = timeUnit;
+  }
 
 }

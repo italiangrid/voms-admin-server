@@ -26,30 +26,27 @@ import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.DeleteUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
-		@Result(name = BaseAction.INPUT, location = "usersDetail"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location="users")
-})
-		
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "usersDetail"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "users") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class DeleteAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		DeleteUserOperation.instance(getModel()).execute();
-		
-		
-		addActionMessage("User '"+getModel().getShortName()+"' deleted.");
+    DeleteUserOperation.instance(getModel()).execute();
 
-		return SUCCESS;
-	}
+    addActionMessage("User '" + getModel().getShortName() + "' deleted.");
+
+    return SUCCESS;
+  }
 
 }

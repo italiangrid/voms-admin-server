@@ -28,30 +28,32 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 
 public class SetActiveVersionOperation extends BaseVomsOperation {
 
-	AUP aup;
-	
-	String version;
-	
-	public SetActiveVersionOperation(AUP a, String v) {
-		this.aup = a;
-		this.version = v;
-		
-	}
-	@Override
-	protected Object doExecute() {
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+  AUP aup;
 
-		dao.setActiveVersion(aup, version);
-		return null;
-	}
+  String version;
 
-	
-	
+  public SetActiveVersionOperation(AUP a, String v) {
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
+    this.aup = a;
+    this.version = v;
 
-	}
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
+    dao.setActiveVersion(aup, version);
+    return null;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+
+  }
 
 }

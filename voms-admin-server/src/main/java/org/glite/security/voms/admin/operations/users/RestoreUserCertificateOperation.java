@@ -29,46 +29,51 @@ import org.glite.security.voms.admin.persistence.model.Certificate;
 
 public class RestoreUserCertificateOperation extends BaseVomsOperation {
 
-	Certificate certificate;
+  Certificate certificate;
 
-	private RestoreUserCertificateOperation(Certificate c) {
-		
-		certificate = c;
-	}
-	
-	private RestoreUserCertificateOperation(String subject, String issuerSubject){
-		
-		certificate = CertificateDAO.instance().findByDNCA(subject, issuerSubject);
-		if (certificate ==  null)
-			throw new NoSuchCertificateException("Certificate identified by '"+subject+"', '"+issuerSubject+"' not found!");
-		
-	}
+  private RestoreUserCertificateOperation(Certificate c) {
 
-	public static RestoreUserCertificateOperation instance(String subject, String issuerSubject){
-		
-		return new RestoreUserCertificateOperation(subject, issuerSubject);
-		
-	}
-	public static RestoreUserCertificateOperation instance(Certificate c) {
-		return new RestoreUserCertificateOperation(c);
-	}
+    certificate = c;
+  }
 
-	@Override
-	protected Object doExecute() {
+  private RestoreUserCertificateOperation(String subject, String issuerSubject) {
 
-		if (certificate == null)
-			throw new NullArgumentException("certificate cannot be null");
+    certificate = CertificateDAO.instance().findByDNCA(subject, issuerSubject);
+    if (certificate == null)
+      throw new NoSuchCertificateException("Certificate identified by '"
+        + subject + "', '" + issuerSubject + "' not found!");
 
-		certificate.restore();
-		return null;
-	}
+  }
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission()
-				.setSuspendPermission());
+  public static RestoreUserCertificateOperation instance(String subject,
+    String issuerSubject) {
 
-	}
+    return new RestoreUserCertificateOperation(subject, issuerSubject);
+
+  }
+
+  public static RestoreUserCertificateOperation instance(Certificate c) {
+
+    return new RestoreUserCertificateOperation(c);
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    if (certificate == null)
+      throw new NullArgumentException("certificate cannot be null");
+
+    certificate.restore();
+    return null;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setSuspendPermission());
+
+  }
 
 }

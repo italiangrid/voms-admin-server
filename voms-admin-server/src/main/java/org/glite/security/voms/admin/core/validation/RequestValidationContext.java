@@ -25,6 +25,6 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public interface RequestValidationContext {
 
-	RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy();
-	
+  RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy();
+
 }

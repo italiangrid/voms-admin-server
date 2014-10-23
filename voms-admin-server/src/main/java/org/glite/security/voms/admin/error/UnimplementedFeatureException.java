@@ -19,30 +19,29 @@
  */
 package org.glite.security.voms.admin.error;
 
-
 public class UnimplementedFeatureException extends IllegalStateException {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public UnimplementedFeatureException(String message) {
+  public UnimplementedFeatureException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
-	public UnimplementedFeatureException(String message, Throwable t) {
+  public UnimplementedFeatureException(String message, Throwable t) {
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+    super(message, t);
+    // TODO Auto-generated constructor stub
+  }
 
-	public UnimplementedFeatureException(Throwable t) {
+  public UnimplementedFeatureException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
-	}
+    super(t);
+    // TODO Auto-generated constructor stub
+  }
 
 }

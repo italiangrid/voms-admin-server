@@ -36,134 +36,143 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail"),
-		@Result(name = BaseAction.INPUT, location = "addCertificate") })
-		
+@Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail"),
+  @Result(name = BaseAction.INPUT, location = "addCertificate") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "deleteCertificate,saveCertificate" })
-public class CertificateActions extends UserActionSupport{
+  "token.includeMethods", "deleteCertificate,saveCertificate" })
+public class CertificateActions extends UserActionSupport {
 
-	public static final Logger log = LoggerFactory.getLogger(CertificateActions.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(CertificateActions.class);
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long certificateId;
+  Long certificateId;
 
-	File certificateFile;
+  File certificateFile;
 
-	String subject;
-	String caSubject;
+  String subject;
+  String caSubject;
 
-	@Action("delete-certificate")
-	public String deleteCertificate() throws Exception {
+  @Action("delete-certificate")
+  public String deleteCertificate() throws Exception {
 
-		
-		Certificate cert = CertificateDAO.instance().findById(
-				getCertificateId());
-		
-		// FIXME: create constructor that accepts a certificate
-		RemoveUserCertificateOperation.instance(cert.getSubjectString(), cert.getCa().getSubjectString()).execute();
+    Certificate cert = CertificateDAO.instance().findById(getCertificateId());
 
-		return SUCCESS;
+    // FIXME: create constructor that accepts a certificate
+    RemoveUserCertificateOperation.instance(cert.getSubjectString(),
+      cert.getCa().getSubjectString()).execute();
 
-	}
+    return SUCCESS;
 
-	@Action("add-certificate")
-	public String addCertificate() throws Exception {
-		return INPUT;
-	}
-	
-	@Action("save-certificate")
-	public String saveCertificate() throws Exception {
+  }
 
-		if (certificateFile != null) {
+  @Action("add-certificate")
+  public String addCertificate() throws Exception {
 
-			X509Certificate cert = CertUtil
-					.parseCertficate(new FileInputStream(certificateFile));
-			
-			AddUserCertificateOperation.instance(getModel(), cert).execute();
-			
+    return INPUT;
+  }
 
-		} else {
-			
-			// Fix for bug https://savannah.cern.ch/bugs/?88019
-			AddUserCertificateOperation.instance(getModel(), subject.trim(), caSubject.trim(), null).execute();
-			
+  @Action("save-certificate")
+  public String saveCertificate() throws Exception {
 
-		}
+    if (certificateFile != null) {
 
-		return SUCCESS;
-	}
+      X509Certificate cert = CertUtil.parseCertficate(new FileInputStream(
+        certificateFile));
 
-	public void validateSaveCertificate() {
-		
-		CertificateDAO dao = CertificateDAO.instance();
-		
-		if (certificateFile != null){
-			
-			X509Certificate cert = null;
-			
-			try {
-				cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
-			} catch (Throwable e) {
-				
-				addFieldError("certificateFile","Error parsing certificate passed as argument: "+e.getMessage()+". Please upload a valid X509, PEM encoded certificate.");
-				return;
-			}
-			
-			if (cert == null){
-				addFieldError("certificateFile", "Error parsing certificate passed as argument!");
-				return;
-			}
-			
-			if (dao.find(cert) != null)
-				addFieldError("certificateFile","Certificate already bound!");
-			
-		}else if (subject!= null && !"".equals(subject)){
-			
-			if (dao.findByDNCA(subject, caSubject) != null){
-				addFieldError("subject", "Certificate already bound!");
-				addFieldError("caSubject", "Certificate already bound!");
-			}
-		}else{
-			
-			addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
-		}
-	}
-	
-	public File getCertificateFile() {
-		return certificateFile;
-	}
+      AddUserCertificateOperation.instance(getModel(), cert).execute();
 
-	public void setCertificateFile(File certificateFile) {
-		this.certificateFile = certificateFile;
-	}
+    } else {
 
-	public String getSubject() {
-		return subject;
-	}
+      // Fix for bug https://savannah.cern.ch/bugs/?88019
+      AddUserCertificateOperation.instance(getModel(), subject.trim(),
+        caSubject.trim(), null).execute();
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+    }
 
-	public String getCaSubject() {
-		return caSubject;
-	}
+    return SUCCESS;
+  }
 
-	public void setCaSubject(String caSubject) {
-		this.caSubject = caSubject;
-	}
+  public void validateSaveCertificate() {
 
-	public Long getCertificateId() {
-		return certificateId;
-	}
+    CertificateDAO dao = CertificateDAO.instance();
 
-	public void setCertificateId(Long certificateId) {
-		this.certificateId = certificateId;
-	}	
+    if (certificateFile != null) {
+
+      X509Certificate cert = null;
+
+      try {
+        cert = CertUtil.parseCertficate(new FileInputStream(certificateFile));
+      } catch (Throwable e) {
+
+        addFieldError("certificateFile",
+          "Error parsing certificate passed as argument: " + e.getMessage()
+            + ". Please upload a valid X509, PEM encoded certificate.");
+        return;
+      }
+
+      if (cert == null) {
+        addFieldError("certificateFile",
+          "Error parsing certificate passed as argument!");
+        return;
+      }
+
+      if (dao.find(cert) != null)
+        addFieldError("certificateFile", "Certificate already bound!");
+
+    } else if (subject != null && !"".equals(subject)) {
+
+      if (dao.findByDNCA(subject, caSubject) != null) {
+        addFieldError("subject", "Certificate already bound!");
+        addFieldError("caSubject", "Certificate already bound!");
+      }
+    } else {
+
+      addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+    }
+  }
+
+  public File getCertificateFile() {
+
+    return certificateFile;
+  }
+
+  public void setCertificateFile(File certificateFile) {
+
+    this.certificateFile = certificateFile;
+  }
+
+  public String getSubject() {
+
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+
+    this.subject = subject;
+  }
+
+  public String getCaSubject() {
+
+    return caSubject;
+  }
+
+  public void setCaSubject(String caSubject) {
+
+    this.caSubject = caSubject;
+  }
+
+  public Long getCertificateId() {
+
+    return certificateId;
+  }
+
+  public void setCertificateId(Long certificateId) {
+
+    this.certificateId = certificateId;
+  }
 }

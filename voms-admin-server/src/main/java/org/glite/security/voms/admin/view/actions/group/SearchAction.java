@@ -26,21 +26,21 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 
 import com.opensymphony.xwork2.Preparable;
 
-
-@Results( {
+@Results({
 
 @Result(name = BaseAction.SUCCESS, location = "groups"),
-		@Result(name = BaseAction.INPUT, location = "groups") })
+  @Result(name = BaseAction.INPUT, location = "groups") })
 public class SearchAction extends BaseSearchAction implements Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public void prepare() throws Exception {
-		// TODO Auto-generated method stub
-		initSearchData(GROUP_SEARCH_NAME);
-	}
+  public void prepare() throws Exception {
+
+    // TODO Auto-generated method stub
+    initSearchData(GROUP_SEARCH_NAME);
+  }
 
 }

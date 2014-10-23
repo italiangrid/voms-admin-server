@@ -27,27 +27,27 @@ import org.glite.security.voms.admin.persistence.model.PeriodicNotifications;
 import org.hibernate.criterion.Restrictions;
 
 public class PeriodicNotificationDAOHibernate extends
-	GenericHibernateDAO<PeriodicNotifications, Long> implements
-	PeriodicNotificationsDAO {
+  GenericHibernateDAO<PeriodicNotifications, Long> implements
+  PeriodicNotificationsDAO {
 
-	public PeriodicNotifications findByNotificationType(String notificationType){
-		
-		return findByCriteriaUniqueResult(Restrictions.eq("notificationType", 
-			notificationType)); 
-	}
+  public PeriodicNotifications findByNotificationType(String notificationType) {
 
-	@Override
-	public void storeLastNotificationTime(String key, Date time) {
+    return findByCriteriaUniqueResult(Restrictions.eq("notificationType",
+      notificationType));
+  }
 
-		PeriodicNotifications pn = findByNotificationType(key);
-		
-		if (pn == null){
-			pn = new PeriodicNotifications();
-			pn.setNotificationType(key);
-		}
-		
-		pn.setLastNotificationTime(time);
-		makePersistent(pn);
-	}
-	
+  @Override
+  public void storeLastNotificationTime(String key, Date time) {
+
+    PeriodicNotifications pn = findByNotificationType(key);
+
+    if (pn == null) {
+      pn = new PeriodicNotifications();
+      pn.setNotificationType(key);
+    }
+
+    pn.setLastNotificationTime(time);
+    makePersistent(pn);
+  }
+
 }

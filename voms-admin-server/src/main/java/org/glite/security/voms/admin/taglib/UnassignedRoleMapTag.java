@@ -36,59 +36,63 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UnassignedRoleMapTag extends TagSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String userId;
-	String var;
+  String userId;
+  String var;
 
-	@Override
-	public int doStartTag() throws JspException {
+  @Override
+  public int doStartTag() throws JspException {
 
-		VOMSUser u = VOMSUserDAO.instance().findById(Long.parseLong(userId));
-		
-		Map unassignedRoles = new HashMap();
+    VOMSUser u = VOMSUserDAO.instance().findById(Long.parseLong(userId));
 
-		Iterator<VOMSGroup> groups = u.getGroups().iterator();
+    Map unassignedRoles = new HashMap();
 
-		while (groups.hasNext()) {
+    Iterator<VOMSGroup> groups = u.getGroups().iterator();
 
-			VOMSGroup g = (VOMSGroup) groups.next();
-			List roles;
-			
-			try{
-				
-				roles = (List) FindUnassignedRoles.instance(u.getId(),
-						g.getId()).execute();
-			
-			}catch(VOMSAuthorizationException e){
-				roles= Collections.EMPTY_LIST;
-			}
+    while (groups.hasNext()) {
 
-			unassignedRoles.put(g.getId(), roles);
-		}
+      VOMSGroup g = (VOMSGroup) groups.next();
+      List roles;
 
-		pageContext.setAttribute(var, unassignedRoles);
+      try {
 
-		return SKIP_BODY;
-	}
+        roles = (List) FindUnassignedRoles.instance(u.getId(), g.getId())
+          .execute();
 
-	public String getUserId() {
-		return userId;
-	}
+      } catch (VOMSAuthorizationException e) {
+        roles = Collections.EMPTY_LIST;
+      }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+      unassignedRoles.put(g.getId(), roles);
+    }
 
-	public String getVar() {
-		return var;
-	}
+    pageContext.setAttribute(var, unassignedRoles);
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+    return SKIP_BODY;
+  }
+
+  public String getUserId() {
+
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+
+    this.userId = userId;
+  }
+
+  public String getVar() {
+
+    return var;
+  }
+
+  public void setVar(String var) {
+
+    this.var = var;
+  }
 
 }

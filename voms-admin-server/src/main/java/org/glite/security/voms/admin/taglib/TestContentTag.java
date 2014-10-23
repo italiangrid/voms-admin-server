@@ -25,29 +25,31 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class TestContentTag extends TagSupport {
 
-	String context;
+  String context;
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		TestTag parent = (TestTag) getParent();
-		if (parent == null) {
+    TestTag parent = (TestTag) getParent();
+    if (parent == null) {
 
-			throw new JspTagException(
-					"TestContentTag may be used only inside TestTag!");
-		}
+      throw new JspTagException(
+        "TestContentTag may be used only inside TestTag!");
+    }
 
-		parent.contextList.add(context);
+    parent.contextList.add(context);
 
-		return SKIP_BODY;
+    return SKIP_BODY;
 
-	}
+  }
 
-	public String getContext() {
-		return context;
-	}
+  public String getContext() {
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+    return context;
+  }
+
+  public void setContext(String context) {
+
+    this.context = context;
+  }
 
 }

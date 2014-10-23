@@ -34,70 +34,77 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
-		@Result(name = BaseAction.INPUT, location ="attributes.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="attributes.jsp")})
-		
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
+  @Result(name = BaseAction.INPUT, location = "attributes.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "attributes.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "deleteAttribute" })
+  "token.includeMethods", "deleteAttribute" })
 public class AttributeActions extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String attributeName;
+  String attributeName;
 
-	String attributeValue;
+  String attributeValue;
 
-	List<VOMSAttributeDescription> attributeClasses;
+  List<VOMSAttributeDescription> attributeClasses;
 
+  @Action("delete-attribute")
+  public String deleteAttribute() throws Exception {
 
-	@Action("delete-attribute")
-	public String deleteAttribute() throws Exception {
+    DeleteUserAttributeOperation.instance(getModel(), attributeName).execute();
+    addActionMessage(getText("confirm.user.attribute_delete", new String[] {
+      attributeName, getModel().getShortName() }));
+    return SUCCESS;
+  }
 
-		DeleteUserAttributeOperation.instance(getModel(), attributeName)
-				.execute();
-		addActionMessage(getText("confirm.user.attribute_delete", new String[]{attributeName, getModel().getShortName()}));
-		return SUCCESS;
-	}
+  public String getAttributeName() {
 
-	public String getAttributeName() {
-		return attributeName;
-	}
+    return attributeName;
+  }
 
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
-	}
+  public void setAttributeName(String attributeName) {
 
-	@StringLengthFieldValidator(type = ValidatorType.FIELD, message="The value for this attribute is too long", maxLength="255")
-	// @RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getAttributeValue() {
-		return attributeValue;
-	}
+    this.attributeName = attributeName;
+  }
 
-	public void setAttributeValue(String attributeValue) {
-		this.attributeValue = attributeValue;
-	}
+  @StringLengthFieldValidator(type = ValidatorType.FIELD,
+    message = "The value for this attribute is too long", maxLength = "255")
+  // @RegexFieldValidator(type = ValidatorType.FIELD, message =
+  // "This field contains illegal characters!", expression = "^[^<>&=;]*$")
+  public String getAttributeValue() {
 
-	public List<VOMSAttributeDescription> getAttributeClasses() {
-		return attributeClasses;
-	}
+    return attributeValue;
+  }
 
-	public void setAttributeClasses(
-			List<VOMSAttributeDescription> attributeClasses) {
-		this.attributeClasses = attributeClasses;
-	}
+  public void setAttributeValue(String attributeValue) {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void prepare() throws Exception {
+    this.attributeValue = attributeValue;
+  }
 
-		super.prepare();
-		attributeClasses = VOMSAttributeDAO.instance()
-				.getAllAttributeDescriptions();
+  public List<VOMSAttributeDescription> getAttributeClasses() {
 
-	}
+    return attributeClasses;
+  }
+
+  public void setAttributeClasses(
+    List<VOMSAttributeDescription> attributeClasses) {
+
+    this.attributeClasses = attributeClasses;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void prepare() throws Exception {
+
+    super.prepare();
+    attributeClasses = VOMSAttributeDAO.instance()
+      .getAllAttributeDescriptions();
+
+  }
 }

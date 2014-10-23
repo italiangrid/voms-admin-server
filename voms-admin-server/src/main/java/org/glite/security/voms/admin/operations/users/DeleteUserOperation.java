@@ -26,47 +26,47 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DeleteUserOperation extends BaseVoRWOperation {
 
-	VOMSUser usr = null;
+  VOMSUser usr = null;
 
-	Long id;
+  Long id;
 
-	private DeleteUserOperation(VOMSUser u) {
+  private DeleteUserOperation(VOMSUser u) {
 
-		this.usr = u;
-	}
+    this.usr = u;
+  }
 
-	private DeleteUserOperation(Long id) {
+  private DeleteUserOperation(Long id) {
 
-		this.id = id;
-	}
+    this.id = id;
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		if (usr == null)
-			VOMSUserDAO.instance().delete(id);
-		else
-			VOMSUserDAO.instance().delete(usr);
+    if (usr == null)
+      VOMSUserDAO.instance().delete(id);
+    else
+      VOMSUserDAO.instance().delete(usr);
 
-		return null;
-	}
+    return null;
+  }
 
-	public static DeleteUserOperation instance(VOMSUser u) {
+  public static DeleteUserOperation instance(VOMSUser u) {
 
-		return new DeleteUserOperation(u);
-	}
+    return new DeleteUserOperation(u);
+  }
 
-	public static DeleteUserOperation instance(Long id) {
+  public static DeleteUserOperation instance(Long id) {
 
-		return new DeleteUserOperation(id);
-	}
+    return new DeleteUserOperation(id);
+  }
 
-	public static DeleteUserOperation instance(String username, String userCa) {
+  public static DeleteUserOperation instance(String username, String userCa) {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, userCa)
-				.execute();
-		if (u == null)
-			throw new NoSuchUserException("User '" + username + "," + userCa
-					+ "' not found in database!");
-		return new DeleteUserOperation(u);
-	}
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(username, userCa)
+      .execute();
+    if (u == null)
+      throw new NoSuchUserException("User '" + username + "," + userCa
+        + "' not found in database!");
+    return new DeleteUserOperation(u);
+  }
 }

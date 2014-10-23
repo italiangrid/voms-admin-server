@@ -24,17 +24,17 @@ import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 
 public class ListRolesOperation extends BaseVoReadOperation {
 
-	protected ListRolesOperation() {
+  protected ListRolesOperation() {
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return VOMSRoleDAO.instance().getAll();
-	}
+    return VOMSRoleDAO.instance().getAll();
+  }
 
-	public static ListRolesOperation instance() {
+  public static ListRolesOperation instance() {
 
-		return new ListRolesOperation();
-	}
+    return new ListRolesOperation();
+  }
 }

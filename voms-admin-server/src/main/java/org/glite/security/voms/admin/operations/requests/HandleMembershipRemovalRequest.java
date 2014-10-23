@@ -31,39 +31,42 @@ import org.glite.security.voms.admin.persistence.model.request.MembershipRemoval
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleMembershipRemovalRequest extends
-		BaseHandleRequestOperation<MembershipRemovalRequest> {
+  BaseHandleRequestOperation<MembershipRemovalRequest> {
 
-	public HandleMembershipRemovalRequest(MembershipRemovalRequest request,
-			DECISION decision) {
-		super(request, decision);
-	}
+  public HandleMembershipRemovalRequest(MembershipRemovalRequest request,
+    DECISION decision) {
 
-	@Override
-	protected void approve() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		VOMSUser u = getRequesterAsVomsUser();
-		DeleteUserOperation.instance(u).execute();
-		
-		approveRequest();
-		
-		EventManager.dispatch(new MembershipRemovalApprovedEvent(request));
-		
+    super(request, decision);
+  }
 
-	}
+  @Override
+  protected void approve() {
 
-	@Override
-	protected void reject() {
-		checkRequestStatus(STATUS.SUBMITTED);
-		
-		rejectRequest();
-		
-		EventManager.dispatch(new MembershipRemovalRejectedEvent(request));
-	}
+    checkRequestStatus(STATUS.SUBMITTED);
+    VOMSUser u = getRequesterAsVomsUser();
+    DeleteUserOperation.instance(u).execute();
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-	}
+    approveRequest();
+
+    EventManager.dispatch(new MembershipRemovalApprovedEvent(request));
+
+  }
+
+  @Override
+  protected void reject() {
+
+    checkRequestStatus(STATUS.SUBMITTED);
+
+    rejectRequest();
+
+    EventManager.dispatch(new MembershipRemovalRejectedEvent(request));
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+  }
 
 }

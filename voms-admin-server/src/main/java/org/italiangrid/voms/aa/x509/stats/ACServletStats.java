@@ -29,29 +29,34 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-
 public class ACServletStats implements Filter {
 
-	public ACServletStats() {}
+  public ACServletStats() {
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {}
+  }
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-		FilterChain chain) throws IOException, ServletException {
-		
-		long startTime = System.currentTimeMillis();
-		
-		chain.doFilter(request, response);
-		
-		long executionTime = System.currentTimeMillis() - startTime;
-		
-		ACEndpointStats.INSTANCE.addValue(executionTime);
-		
-	}
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
 
-	@Override
-	public void destroy() {}
+  }
+
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response,
+    FilterChain chain) throws IOException, ServletException {
+
+    long startTime = System.currentTimeMillis();
+
+    chain.doFilter(request, response);
+
+    long executionTime = System.currentTimeMillis() - startTime;
+
+    ACEndpointStats.INSTANCE.addValue(executionTime);
+
+  }
+
+  @Override
+  public void destroy() {
+
+  }
 
 }

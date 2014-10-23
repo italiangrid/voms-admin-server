@@ -30,13 +30,13 @@ import org.glite.security.voms.admin.persistence.model.VOMSCA;
 
 public class AddCertificatePreparer extends ViewPreparerSupport {
 
-	@Override
-	public void execute(TilesRequestContext tilesContext,
-			AttributeContext attributeContext) throws PreparerException {
+  @Override
+  public void execute(TilesRequestContext tilesContext,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSCA> trustedCas = VOMSCADAO.instance().getValid();
-		tilesContext.getRequestScope().put("trustedCas", trustedCas);
+    List<VOMSCA> trustedCas = VOMSCADAO.instance().getValid();
+    tilesContext.getRequestScope().put("trustedCas", trustedCas);
 
-	}
+  }
 
 }

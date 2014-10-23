@@ -27,27 +27,28 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class ListChildrenGroupsOperation extends BaseContainerReadOperation {
 
-	private ListChildrenGroupsOperation(VOMSGroup g) {
-		super(VOMSContext.instance(g));
-	}
+  private ListChildrenGroupsOperation(VOMSGroup g) {
 
-	protected Object doExecute() {
+    super(VOMSContext.instance(g));
+  }
 
-		return VOMSGroupDAO.instance().getChildren(__context.getGroup());
-	}
+  protected Object doExecute() {
 
-	public static ListChildrenGroupsOperation instance(VOMSGroup g) {
-		return new ListChildrenGroupsOperation(g);
-	}
+    return VOMSGroupDAO.instance().getChildren(__context.getGroup());
+  }
 
-	public static ListChildrenGroupsOperation instance(String groupName) {
+  public static ListChildrenGroupsOperation instance(VOMSGroup g) {
 
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' is not defined in database!");
-		return new ListChildrenGroupsOperation(g);
+    return new ListChildrenGroupsOperation(g);
+  }
 
-	}
+  public static ListChildrenGroupsOperation instance(String groupName) {
+
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' is not defined in database!");
+    return new ListChildrenGroupsOperation(g);
+
+  }
 }

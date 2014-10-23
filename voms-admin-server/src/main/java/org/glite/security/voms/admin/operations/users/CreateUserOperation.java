@@ -31,76 +31,85 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class CreateUserOperation extends BaseVomsOperation {
 
-	VOMSUser usr = null;
+  VOMSUser usr = null;
 
-	String caDN = null;
+  String caDN = null;
 
-	private CreateUserOperation(VOMSUser user, String caSubject) {
+  private CreateUserOperation(VOMSUser user, String caSubject) {
 
-		usr = user;
-		caDN = caSubject;
-	}
+    usr = user;
+    caDN = caSubject;
+  }
 
-	private CreateUserOperation(String username, String caName, String cn,
-			String certUri, String email) {
+  private CreateUserOperation(String username, String caName, String cn,
+    String certUri, String email) {
 
-		usr = new VOMSUser();
-		usr.setDn(username);
-		usr.setEmailAddress(email);
+    usr = new VOMSUser();
+    usr.setDn(username);
+    usr.setEmailAddress(email);
 
-		caDN = caName;
+    caDN = caName;
 
-	}
+  }
 
-	private CreateUserOperation(NewVOMembershipRequest request) {
-		usr = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
-		caDN = request.getRequesterInfo().getCertificateIssuer();
+  private CreateUserOperation(NewVOMembershipRequest request) {
 
-	}
+    usr = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
+    caDN = request.getRequesterInfo().getCertificateIssuer();
 
-	private CreateUserOperation(VOMSUserJSON user, String certSubject, String caSubject){
-		
-		usr = VOMSUser.fromVOMSUserJSON(user);
-		usr.setDn(certSubject);
-		caDN = caSubject;
-		
-		
-	}
-	protected Object doExecute() {
+  }
 
-	    VOMSUser user = VOMSUserDAO.instance().create(usr, caDN);
-	    
-	    // Create an AUP signature record for this user if the  automatically created users are not required to sign the AUP
-	    if (! VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS, false) )
-	    	VOMSUserDAO.instance().signAUP(user);
-	    
-	    return user;
-	}
+  private CreateUserOperation(VOMSUserJSON user, String certSubject,
+    String caSubject) {
 
-	public static CreateUserOperation instance(NewVOMembershipRequest request) {
-		return new CreateUserOperation(request);
-	}
+    usr = VOMSUser.fromVOMSUserJSON(user);
+    usr.setDn(certSubject);
+    caDN = caSubject;
 
-	public static CreateUserOperation instance(VOMSUser user, String caString) {
+  }
 
-		return new CreateUserOperation(user, caString);
-	}
-	
-	public static CreateUserOperation instance(VOMSUserJSON user, String certificateSubject, String caString) {
+  protected Object doExecute() {
 
-		return new CreateUserOperation(user, certificateSubject, caString);
-	}
+    VOMSUser user = VOMSUserDAO.instance().create(usr, caDN);
 
-	public static CreateUserOperation instance(String username, String caName,
-			String cn, String certUri, String email) {
-		return new CreateUserOperation(username, caName, cn, certUri, email);
-	}
+    // Create an AUP signature record for this user if the automatically created
+    // users are not required to sign the AUP
+    if (!VOMSConfiguration.instance()
+      .getBoolean(
+        VOMSConfigurationConstants.REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS,
+        false))
+      VOMSUserDAO.instance().signAUP(user);
 
-	protected void setupPermissions() {
+    return user;
+  }
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions().setMembershipRWPermission());
+  public static CreateUserOperation instance(NewVOMembershipRequest request) {
 
-	}
+    return new CreateUserOperation(request);
+  }
+
+  public static CreateUserOperation instance(VOMSUser user, String caString) {
+
+    return new CreateUserOperation(user, caString);
+  }
+
+  public static CreateUserOperation instance(VOMSUserJSON user,
+    String certificateSubject, String caString) {
+
+    return new CreateUserOperation(user, certificateSubject, caString);
+  }
+
+  public static CreateUserOperation instance(String username, String caName,
+    String cn, String certUri, String email) {
+
+    return new CreateUserOperation(username, caName, cn, certUri, email);
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+
+  }
 
 }

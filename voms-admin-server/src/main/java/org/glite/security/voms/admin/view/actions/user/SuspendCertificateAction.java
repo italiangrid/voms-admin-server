@@ -30,55 +30,57 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
+  @Result(name = BaseAction.INPUT, location = "certificates.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "certificates.jsp")
 
-@Results( { @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
-		@Result(name = BaseAction.INPUT, location = "certificates.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="certificates.jsp")
-		
 })
-		
-		@InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class SuspendCertificateAction extends CertificateActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	
-	String suspensionReason;
+  String suspensionReason;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		SuspensionReason r = SuspensionReason.OTHER;
-		r.setMessage(suspensionReason);
+    SuspensionReason r = SuspensionReason.OTHER;
+    r.setMessage(suspensionReason);
 
-		SuspendUserCertificateOperation.instance(getModel(), certificate, r)
-				.execute();
+    SuspendUserCertificateOperation.instance(getModel(), certificate, r)
+      .execute();
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
-	
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
-	public String getSuspensionReason() {
-		return suspensionReason;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters in the suspension reason field!")
+  public String getSuspensionReason() {
 
-	public void setSuspensionReason(String suspensionReason) {
-		this.suspensionReason = suspensionReason;
-	}
-	
-	@Override
-	public void validate() {
-	    
-	    // Actually this is needed for this action since the field is in a dialog that will be closed when the validation
-	    // returns...
-	    if (!getFieldErrors().isEmpty()){
-		addActionError("You entered invalid characters in the suspension reason field!");
-	    }
-	}
+    return suspensionReason;
+  }
+
+  public void setSuspensionReason(String suspensionReason) {
+
+    this.suspensionReason = suspensionReason;
+  }
+
+  @Override
+  public void validate() {
+
+    // Actually this is needed for this action since the field is in a dialog
+    // that will be closed when the validation
+    // returns...
+    if (!getFieldErrors().isEmpty()) {
+      addActionError("You entered invalid characters in the suspension reason field!");
+    }
+  }
 
 }

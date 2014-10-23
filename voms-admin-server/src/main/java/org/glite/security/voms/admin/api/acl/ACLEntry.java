@@ -22,9 +22,11 @@ package org.glite.security.voms.admin.api.acl;
 import java.io.Serializable;
 
 import org.glite.security.voms.admin.operations.VOMSPermission;
+
 /**
- * This class models an ACL entry in the VOMS database. It defines the mapping between an administrator identified by an X509 certificate and a set
- * of permission bits, as defined in the {@link VOMSPermission} class.
+ * This class models an ACL entry in the VOMS database. It defines the mapping
+ * between an administrator identified by an X509 certificate and a set of
+ * permission bits, as defined in the {@link VOMSPermission} class.
  * 
  * 
  * @author andreaceccanti
@@ -32,91 +34,91 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
  */
 public class ACLEntry implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The administrator X509 certificate subject.
-	 */
-	String adminSubject;
-	
-	/**
-	 * The administrator X509 certificate issuer subject.
-	 */
-	String adminIssuer;
+  /**
+   * The administrator X509 certificate subject.
+   */
+  String adminSubject;
 
-	/**
-	 * The permissions bits.
-	 */
-	int vomsPermissionBits = 0;
+  /**
+   * The administrator X509 certificate issuer subject.
+   */
+  String adminIssuer;
 
-	
-	/**
-	 * Returns the administrator X509 certificate issuer subject.
-	 * 
-	 * @return
-	 * A string representing the the administrator X509 certificate issuer subject.
-	 */
-	public String getAdminIssuer() {
+  /**
+   * The permissions bits.
+   */
+  int vomsPermissionBits = 0;
 
-		return adminIssuer;
-	}
+  /**
+   * Returns the administrator X509 certificate issuer subject.
+   * 
+   * @return A string representing the the administrator X509 certificate issuer
+   *         subject.
+   */
+  public String getAdminIssuer() {
 
-	/**
-	 * Sets the administrator X509 certificate issuer subject.
-	 * 
-	 * @param adminIssuer
-	 * A string representing the the administrator X509 certificate issuer subject.
-	 */
-	public void setAdminIssuer(String adminIssuer) {
+    return adminIssuer;
+  }
 
-		this.adminIssuer = adminIssuer;
-	}
+  /**
+   * Sets the administrator X509 certificate issuer subject.
+   * 
+   * @param adminIssuer
+   *          A string representing the the administrator X509 certificate
+   *          issuer subject.
+   */
+  public void setAdminIssuer(String adminIssuer) {
 
-	/**
-	 * Returns the administrator X509 certificate subject.
-	 * 
-	 * @return
-	 * A string representing the the administrator X509 certificate subject.
-	 */
-	public String getAdminSubject() {
+    this.adminIssuer = adminIssuer;
+  }
 
-		return adminSubject;
-	}
+  /**
+   * Returns the administrator X509 certificate subject.
+   * 
+   * @return A string representing the the administrator X509 certificate
+   *         subject.
+   */
+  public String getAdminSubject() {
 
-	/**
-	 * Sets the administrator X509 certificate subject.
-	 * 
-	 * @param adminSubject
-	 * A string representing the the administrator X509 certificate subject.
-	 */
-	public void setAdminSubject(String adminSubject) {
+    return adminSubject;
+  }
 
-		this.adminSubject = adminSubject;
-	}
+  /**
+   * Sets the administrator X509 certificate subject.
+   * 
+   * @param adminSubject
+   *          A string representing the the administrator X509 certificate
+   *          subject.
+   */
+  public void setAdminSubject(String adminSubject) {
 
-	/**
-	 * Returns the VOMS permission bits for this ACL entry.
-	 * 
-	 * @return
-	 * an integer representing the VOMS permission bits
-	 */
-	public int getVomsPermissionBits() {
+    this.adminSubject = adminSubject;
+  }
 
-		return vomsPermissionBits;
-	}
+  /**
+   * Returns the VOMS permission bits for this ACL entry.
+   * 
+   * @return an integer representing the VOMS permission bits
+   */
+  public int getVomsPermissionBits() {
 
-	/**
-	 * Sets the VOMS permissions bits for this ACL entry.
-	 * 
-	 * @param vomsPermissionBits
-	 * an integer representing the VOMS permission bits
-	 */
-	public void setVomsPermissionBits(int vomsPermissionBits) {
+    return vomsPermissionBits;
+  }
 
-		this.vomsPermissionBits = vomsPermissionBits;
-	}
+  /**
+   * Sets the VOMS permissions bits for this ACL entry.
+   * 
+   * @param vomsPermissionBits
+   *          an integer representing the VOMS permission bits
+   */
+  public void setVomsPermissionBits(int vomsPermissionBits) {
+
+    this.vomsPermissionBits = vomsPermissionBits;
+  }
 
 }

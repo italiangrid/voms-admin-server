@@ -32,154 +32,186 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
 @Results({
-	@Result(name=UserActionSupport.INPUT, location="userCreate" ),
-	@Result(name=UserActionSupport.SUCCESS, location="load", type="redirectAction")
-})
+  @Result(name = UserActionSupport.INPUT, location = "userCreate"),
+  @Result(name = UserActionSupport.SUCCESS, location = "load",
+    type = "redirectAction") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
-public class CreateAction extends UserActionSupport{
-	
-	/**
+  "token.includeMethods", "execute" })
+public class CreateAction extends UserActionSupport {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	String theName;
-	String theSurname;
-	String theInstitution;
-	String theAddress;
-	String thePhoneNumber;
-	String theEmailAddress;
-	
-	String subject;
-	String caSubject;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (getModel() != null)
-			return EDIT;
-		
-		VOMSUser newUser = new VOMSUser();
-		newUser.setName(theName);
-		newUser.setSurname(theSurname);
-		newUser.setInstitution(theInstitution);
-		newUser.setAddress(theAddress);
-		newUser.setPhoneNumber(thePhoneNumber);
-		newUser.setEmailAddress(theEmailAddress);
-		newUser.setDn(subject.trim());
-		
-		CreateUserOperation op = CreateUserOperation.instance(newUser, caSubject);
-		model= (VOMSUser) op.execute();
-		
-		// Add a Sign AUP record for this user
-		VOMSUserDAO.instance().signAUP(model, DAOFactory.instance().getAUPDAO().getVOAUP());
-		
-		theSession.put(LOAD_THIS_USER_KEY, model.getId());
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a name for the user.")
-	public String getTheName() {
-		return theName;
-	}
+  String theName;
+  String theSurname;
+  String theInstitution;
+  String theAddress;
+  String thePhoneNumber;
+  String theEmailAddress;
 
+  String subject;
+  String caSubject;
 
-	public void setTheName(String theName) {
-		this.theName = theName;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a family name for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The surname field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getTheSurname() {
-		return theSurname;
-	}
+    if (getModel() != null)
+      return EDIT;
 
+    VOMSUser newUser = new VOMSUser();
+    newUser.setName(theName);
+    newUser.setSurname(theSurname);
+    newUser.setInstitution(theInstitution);
+    newUser.setAddress(theAddress);
+    newUser.setPhoneNumber(thePhoneNumber);
+    newUser.setEmailAddress(theEmailAddress);
+    newUser.setDn(subject.trim());
 
-	public void setTheSurname(String theSurname) {
-		this.theSurname = theSurname;
-	}
+    CreateUserOperation op = CreateUserOperation.instance(newUser, caSubject);
+    model = (VOMSUser) op.execute();
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an institution for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getTheInstitution() {
-		return theInstitution;
-	}
+    // Add a Sign AUP record for this user
+    VOMSUserDAO.instance().signAUP(model,
+      DAOFactory.instance().getAUPDAO().getVOAUP());
 
+    theSession.put(LOAD_THIS_USER_KEY, model.getId());
 
-	public void setTheInstitution(String theInstitution) {
-		this.theInstitution = theInstitution;
-	}
+    return SUCCESS;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an address for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getTheAddress() {
-		return theAddress;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The name field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a name for the user.")
+  public String getTheName() {
 
+    return theName;
+  }
 
-	public void setTheAddress(String theAddress) {
-		this.theAddress = theAddress;
-	}
+  public void setTheName(String theName) {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a phoneNumber for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phoneNumber field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getThePhoneNumber() {
-		return thePhoneNumber;
-	}
+    this.theName = theName;
+  }
 
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a family name for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The surname field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheSurname() {
 
-	public void setThePhoneNumber(String thePhoneNumber) {
-		this.thePhoneNumber = thePhoneNumber;
-	}
+    return theSurname;
+  }
 
+  public void setTheSurname(String theSurname) {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter an email address for the user.")
-	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email field name contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getTheEmailAddress() {
-		return theEmailAddress;
-	}
+    this.theSurname = theSurname;
+  }
 
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter an institution for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The institution field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheInstitution() {
 
-	public void setTheEmailAddress(String theEmailAddress) {
-		this.theEmailAddress = theEmailAddress;
-	}
+    return theInstitution;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter a certificate subject for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The subject field name contains illegal characters!", expression = "^[^<>&;]*$")
-	public String getSubject() {	
-		return subject;
-	}
+  public void setTheInstitution(String theInstitution) {
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+    this.theInstitution = theInstitution;
+  }
 
-	public String getCaSubject() {
-		return caSubject;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter an address for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The address field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheAddress() {
 
-	public void setCaSubject(String caSubject) {
-		this.caSubject = caSubject;
-	}
+    return theAddress;
+  }
 
-	@Override
-	public void validate() {
-		VOMSUser candidate  = VOMSUserDAO.instance().findByDNandCA(subject, caSubject);
-		
-		if (candidate != null){
-			addFieldError("subject", "A user having this certificate already exists in the VO!");
-			addFieldError("caSubject", "A user having this certificate already exists in the VO!");
-		}
-		
-	}
-	
-	
-	
+  public void setTheAddress(String theAddress) {
+
+    this.theAddress = theAddress;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a phoneNumber for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The phoneNumber field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getThePhoneNumber() {
+
+    return thePhoneNumber;
+  }
+
+  public void setThePhoneNumber(String thePhoneNumber) {
+
+    this.thePhoneNumber = thePhoneNumber;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter an email address for the user.")
+  @EmailValidator(type = ValidatorType.FIELD,
+    message = "Please enter a valid email address.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The email field name contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheEmailAddress() {
+
+    return theEmailAddress;
+  }
+
+  public void setTheEmailAddress(String theEmailAddress) {
+
+    this.theEmailAddress = theEmailAddress;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a certificate subject for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The subject field name contains illegal characters!",
+    expression = "^[^<>&;]*$")
+  public String getSubject() {
+
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+
+    this.subject = subject;
+  }
+
+  public String getCaSubject() {
+
+    return caSubject;
+  }
+
+  public void setCaSubject(String caSubject) {
+
+    this.caSubject = caSubject;
+  }
+
+  @Override
+  public void validate() {
+
+    VOMSUser candidate = VOMSUserDAO.instance().findByDNandCA(subject,
+      caSubject);
+
+    if (candidate != null) {
+      addFieldError("subject",
+        "A user having this certificate already exists in the VO!");
+      addFieldError("caSubject",
+        "A user having this certificate already exists in the VO!");
+    }
+
+  }
 
 }

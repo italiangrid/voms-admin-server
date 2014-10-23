@@ -30,80 +30,85 @@ import org.glite.security.voms.admin.view.actions.SearchData;
 
 import com.opensymphony.xwork2.validator.annotations.VisitorFieldValidator;
 
+public abstract class BaseSearchAction extends BaseAction implements
+  SessionAware {
 
-public abstract class BaseSearchAction extends BaseAction implements SessionAware{
-
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String USER_SEARCH_NAME = "user";
-	public static final String GROUP_SEARCH_NAME = "group";
-	public static final String ROLE_SEARCH_NAME = "role";
-	public static final String ATTRIBUTE_SEARCH_NAME = "attribute";
+  public static final String USER_SEARCH_NAME = "user";
+  public static final String GROUP_SEARCH_NAME = "group";
+  public static final String ROLE_SEARCH_NAME = "role";
+  public static final String ATTRIBUTE_SEARCH_NAME = "attribute";
 
-	public static final String MEMBER_SEARCH_NAME = "member";
+  public static final String MEMBER_SEARCH_NAME = "member";
 
-	public static final String GROUP_MEMBER_SEARCH_NAME = "group-member";
-	public static final String ROLE_MEMBER_SEARCH_NAME = "role-member";
+  public static final String GROUP_MEMBER_SEARCH_NAME = "group-member";
+  public static final String ROLE_MEMBER_SEARCH_NAME = "role-member";
 
-	protected SearchData searchData;
+  protected SearchData searchData;
 
-	protected SearchResults searchResults;
+  protected SearchResults searchResults;
 
-	protected Map<String, Object> session;
-	
-	@VisitorFieldValidator(appendPrefix = true, message = "Invalid input:  ")
-	public SearchData getSearchData() {
-		return searchData;
-	}
+  protected Map<String, Object> session;
 
-	public void setSearchData(SearchData searchData) {
-		this.searchData = searchData;
-	}
+  @VisitorFieldValidator(appendPrefix = true, message = "Invalid input:  ")
+  public SearchData getSearchData() {
 
-	@Override
-	public String execute() throws Exception {
+    return searchData;
+  }
 
-		searchResults = (SearchResults) BaseSearchOperation.instance(
-				getSearchData()).execute();
+  public void setSearchData(SearchData searchData) {
 
-		session.put("searchData", getSearchData());
-		session.put("searchResults", searchResults);
-		
-		cleanupCustomFlags();
-		
-		return SUCCESS;
+    this.searchData = searchData;
+  }
 
-	}
+  @Override
+  public String execute() throws Exception {
 
-	public SearchResults getSearchResults() {
-		return searchResults;
-	}
+    searchResults = (SearchResults) BaseSearchOperation.instance(
+      getSearchData()).execute();
 
-	public void setSearchResults(SearchResults searchResults) {
-		this.searchResults = searchResults;
-	}
+    session.put("searchData", getSearchData());
+    session.put("searchResults", searchResults);
 
-	protected void initSearchData(String searchType) {
+    cleanupCustomFlags();
 
-		if (getSearchData() == null) {
-			SearchData sd = new SearchData();
-			sd.setType(searchType);
-			setSearchData(sd);
+    return SUCCESS;
 
-		} else
-			getSearchData().setType(searchType);
-	}
-	
-	
-	protected void cleanupCustomFlags(){
-		
-		session.remove(SearchNavBarTag.SEARCH_PARAMS_KEY);
-	}
-	public void setSession(Map<String, Object> session) {
-		this.session = session;
-	}
+  }
+
+  public SearchResults getSearchResults() {
+
+    return searchResults;
+  }
+
+  public void setSearchResults(SearchResults searchResults) {
+
+    this.searchResults = searchResults;
+  }
+
+  protected void initSearchData(String searchType) {
+
+    if (getSearchData() == null) {
+      SearchData sd = new SearchData();
+      sd.setType(searchType);
+      setSearchData(sd);
+
+    } else
+      getSearchData().setType(searchType);
+  }
+
+  protected void cleanupCustomFlags() {
+
+    session.remove(SearchNavBarTag.SEARCH_PARAMS_KEY);
+  }
+
+  public void setSession(Map<String, Object> session) {
+
+    this.session = session;
+  }
 
 }

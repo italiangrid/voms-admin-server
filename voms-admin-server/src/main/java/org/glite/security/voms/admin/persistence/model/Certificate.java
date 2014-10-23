@@ -48,240 +48,246 @@ import org.hibernate.annotations.NaturalId;
 @Table(name = "certificate")
 public class Certificate implements Serializable, Comparable<Certificate> {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_CERT_SEQ")
-	@SequenceGenerator(name="VOMS_CERT_SEQ", sequenceName="VOMS_CERT_SEQ")
-	protected Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_CERT_SEQ")
+  @SequenceGenerator(name = "VOMS_CERT_SEQ", sequenceName = "VOMS_CERT_SEQ")
+  protected Long id;
 
-	@Column(name = "subject_string", nullable = false)
-	@NaturalId
-	protected String subjectString;
+  @Column(name = "subject_string", nullable = false)
+  @NaturalId
+  protected String subjectString;
 
-	@ManyToOne(targetEntity = VOMSCA.class, optional = false)
-	@JoinColumn(name = "ca_id", nullable = false)
-	@NaturalId
-	protected VOMSCA ca;
+  @ManyToOne(targetEntity = VOMSCA.class, optional = false)
+  @JoinColumn(name = "ca_id", nullable = false)
+  @NaturalId
+  protected VOMSCA ca;
 
-	@Transient
-	protected String email;
+  @Transient
+  protected String email;
 
-	@Column(nullable = false)
-	protected boolean suspended;
+  @Column(nullable = false)
+  protected boolean suspended;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "suspension_reason_code")
-	protected VOMSUser.SuspensionReason suspensionReasonCode;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "suspension_reason_code")
+  protected VOMSUser.SuspensionReason suspensionReasonCode;
 
-	// FIXME: temporary change to suspended_reason to make it work
-	// with VOMS
-	@Column(name = "suspended_reason")
-	protected String suspensionReason;
+  // FIXME: temporary change to suspended_reason to make it work
+  // with VOMS
+  @Column(name = "suspended_reason")
+  protected String suspensionReason;
 
-	@Column(nullable = false, name = "creation_time")
-	protected Date creationTime;
+  @Column(nullable = false, name = "creation_time")
+  protected Date creationTime;
 
-	@ManyToOne
-	@JoinColumn(name = "usr_id", nullable = false)
-	protected VOMSUser user;
+  @ManyToOne
+  @JoinColumn(name = "usr_id", nullable = false)
+  protected VOMSUser user;
 
-	public Certificate() {
+  public Certificate() {
 
-		// TODO Auto-generated constructor stub
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	public VOMSCA getCa() {
+  public VOMSCA getCa() {
 
-		return ca;
-	}
+    return ca;
+  }
 
-	public void setCa(VOMSCA ca) {
+  public void setCa(VOMSCA ca) {
 
-		this.ca = ca;
-	}
+    this.ca = ca;
+  }
 
-	public Date getCreationTime() {
+  public Date getCreationTime() {
 
-		return creationTime;
-	}
+    return creationTime;
+  }
 
-	public void setCreationTime(Date creationTime) {
+  public void setCreationTime(Date creationTime) {
 
-		this.creationTime = creationTime;
-	}
+    this.creationTime = creationTime;
+  }
 
-	public String getEmail() {
+  public String getEmail() {
 
-		return email;
-	}
+    return email;
+  }
 
-	public void setEmail(String email) {
+  public void setEmail(String email) {
 
-		this.email = email;
-	}
+    this.email = email;
+  }
 
-	public Long getId() {
+  public Long getId() {
 
-		return id;
-	}
+    return id;
+  }
 
-	public void setId(Long id) {
+  public void setId(Long id) {
 
-		this.id = id;
-	}
+    this.id = id;
+  }
 
-	public String getSubjectString() {
+  public String getSubjectString() {
 
-		return subjectString;
-	}
+    return subjectString;
+  }
 
-	public void setSubjectString(String subjectString) {
+  public void setSubjectString(String subjectString) {
 
-		this.subjectString = subjectString;
-	}
+    this.subjectString = subjectString;
+  }
 
-	public boolean isSuspended() {
+  public boolean isSuspended() {
 
-		return suspended;
-	}
+    return suspended;
+  }
 
-	public void setSuspended(boolean suspended) {
+  public void setSuspended(boolean suspended) {
 
-		this.suspended = suspended;
-	}
+    this.suspended = suspended;
+  }
 
-	public boolean equals(Object other) {
+  public boolean equals(Object other) {
 
-		if (this == other)
-			return true;
-		
-		if (other == null)
-			return false;
+    if (this == other)
+      return true;
 
-		if (!(other instanceof Certificate))
-			return false;
+    if (other == null)
+      return false;
 
-		Certificate that = (Certificate) other;
-		
-		EqualsBuilder builder = new EqualsBuilder();
-		builder.append(getSubjectString(), that.getSubjectString()).append(getCa(),that.getCa());
+    if (!(other instanceof Certificate))
+      return false;
 
-		return builder.isEquals();
+    Certificate that = (Certificate) other;
 
-	}
+    EqualsBuilder builder = new EqualsBuilder();
+    builder.append(getSubjectString(), that.getSubjectString()).append(getCa(),
+      that.getCa());
 
-	public int hashCode() {
+    return builder.isEquals();
 
-		HashCodeBuilder builder = new HashCodeBuilder(7, 37);
-		builder.append(getSubjectString()).append(getCa());
+  }
 
-		return builder.toHashCode();
-	}
+  public int hashCode() {
 
-	public VOMSUser getUser() {
-		return user;
-	}
+    HashCodeBuilder builder = new HashCodeBuilder(7, 37);
+    builder.append(getSubjectString()).append(getCa());
 
-	public void setUser(VOMSUser user) {
-		this.user = user;
-	}
+    return builder.toHashCode();
+  }
 
-	@Override
-	public String toString() {
+  public VOMSUser getUser() {
 
-		ToStringBuilder builder = new ToStringBuilder(this);
-		builder.append("subject_string",subjectString).append("ca",ca);
-		
-		return builder.toString();
-		
-	}
+    return user;
+  }
 
-	private List dnAsList(String dn) {
+  public void setUser(VOMSUser user) {
 
-		String[] fields = dn.split("/");
-		List result = new ArrayList();
+    this.user = user;
+  }
 
-		for (String field : fields) {
+  @Override
+  public String toString() {
 
-			if (field.trim().length() == 0)
-				continue;
+    ToStringBuilder builder = new ToStringBuilder(this);
+    builder.append("subject_string", subjectString).append("ca", ca);
 
-			String[] val = field.split("=");
+    return builder.toString();
 
-			result.add(val);
+  }
 
-		}
+  private List dnAsList(String dn) {
 
-		return result;
-	}
+    String[] fields = dn.split("/");
+    List result = new ArrayList();
 
-	public List getSubjectAsList() {
+    for (String field : fields) {
 
-		return dnAsList(getSubjectString());
-	}
+      if (field.trim().length() == 0)
+        continue;
 
-	public List getIssuerAsList() {
+      String[] val = field.split("=");
 
-		return dnAsList(getCa().getSubjectString());
-	}
+      result.add(val);
 
-	public String getSuspensionReason() {
+    }
 
-		return suspensionReason;
-	}
+    return result;
+  }
 
-	public void setSuspensionReason(String suspensionReason) {
+  public List getSubjectAsList() {
 
-		this.suspensionReason = suspensionReason;
-	}
+    return dnAsList(getSubjectString());
+  }
 
-	public VOMSUser.SuspensionReason getSuspensionReasonCode() {
-		return suspensionReasonCode;
-	}
+  public List getIssuerAsList() {
 
-	public void setSuspensionReasonCode(
-			VOMSUser.SuspensionReason suspensionReasonCode) {
-		this.suspensionReasonCode = suspensionReasonCode;
-	}
+    return dnAsList(getCa().getSubjectString());
+  }
 
-	public void suspend(VOMSUser.SuspensionReason reason) {
+  public String getSuspensionReason() {
 
-		setSuspended(true);
-		setSuspensionReasonCode(reason);
-		setSuspensionReason(reason.getMessage());
-	}
+    return suspensionReason;
+  }
 
-	public void restore() {
+  public void setSuspensionReason(String suspensionReason) {
 
-		if (isSuspended()) {
-			setSuspended(false);
-			setSuspensionReasonCode(null);
-			setSuspensionReason(null);
-		}
+    this.suspensionReason = suspensionReason;
+  }
 
-	}
+  public VOMSUser.SuspensionReason getSuspensionReasonCode() {
 
-	public void restore(SuspensionReason reason) {
+    return suspensionReasonCode;
+  }
 
-		if (isSuspended() && getSuspensionReasonCode().equals(reason)) {
+  public void setSuspensionReasonCode(
+    VOMSUser.SuspensionReason suspensionReasonCode) {
 
-			setSuspended(false);
-			setSuspensionReasonCode(null);
-			setSuspensionReason(null);
+    this.suspensionReasonCode = suspensionReasonCode;
+  }
 
-		}
-	}
+  public void suspend(VOMSUser.SuspensionReason reason) {
 
-	public int compareTo(Certificate o) {
+    setSuspended(true);
+    setSuspensionReasonCode(reason);
+    setSuspensionReason(reason.getMessage());
+  }
 
-		CompareToBuilder builder = new CompareToBuilder();
-		
-		builder.append(subjectString, o.subjectString).append(ca.getSubjectString(), o.ca.getSubjectString());
+  public void restore() {
 
-		return builder.toComparison();
-	}
+    if (isSuspended()) {
+      setSuspended(false);
+      setSuspensionReasonCode(null);
+      setSuspensionReason(null);
+    }
+
+  }
+
+  public void restore(SuspensionReason reason) {
+
+    if (isSuspended() && getSuspensionReasonCode().equals(reason)) {
+
+      setSuspended(false);
+      setSuspensionReasonCode(null);
+      setSuspensionReason(null);
+
+    }
+  }
+
+  public int compareTo(Certificate o) {
+
+    CompareToBuilder builder = new CompareToBuilder();
+
+    builder.append(subjectString, o.subjectString).append(
+      ca.getSubjectString(), o.ca.getSubjectString());
+
+    return builder.toComparison();
+  }
 }

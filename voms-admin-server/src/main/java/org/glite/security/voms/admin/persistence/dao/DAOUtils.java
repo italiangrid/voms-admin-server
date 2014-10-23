@@ -31,44 +31,45 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class DAOUtils {
 
-	public static List<VOMSGroup> filterUnvisibleGroups(List<VOMSGroup> groups){
-		
-		Set<VOMSGroup> visiblePaths = new TreeSet<VOMSGroup>();
-		Set<VOMSGroup> bannedPaths = new TreeSet<VOMSGroup>();
-		
-		List<VOMSGroup> filteredGroups = new ArrayList<VOMSGroup>();
-		
-		CurrentAdmin admin = CurrentAdmin.instance();
-		
-		for (VOMSGroup g: groups){
-			
-			VOMSGroup parent = g.getParent();
-			
-			if (visiblePaths.contains(parent)){
-				filteredGroups.add(g);
-				continue;
-			}
-			
-			boolean descendsFromBannedPath = false;
-			for (VOMSGroup bannedPath: bannedPaths){
-				if (g.isDescendant(bannedPath)){
-					descendsFromBannedPath = true;
-					break;
-				}
-			}
-				
-			if (descendsFromBannedPath)
-				continue;
-				
-			if (admin.hasPermissions(VOMSContext.instance(parent), VOMSPermission.getContainerReadPermission())){
-				visiblePaths.add(parent);
-				filteredGroups.add(g);
-			}else{
-				bannedPaths.add(parent);
-			}
-		}
-		
-		return filteredGroups;
-	}
+  public static List<VOMSGroup> filterUnvisibleGroups(List<VOMSGroup> groups) {
+
+    Set<VOMSGroup> visiblePaths = new TreeSet<VOMSGroup>();
+    Set<VOMSGroup> bannedPaths = new TreeSet<VOMSGroup>();
+
+    List<VOMSGroup> filteredGroups = new ArrayList<VOMSGroup>();
+
+    CurrentAdmin admin = CurrentAdmin.instance();
+
+    for (VOMSGroup g : groups) {
+
+      VOMSGroup parent = g.getParent();
+
+      if (visiblePaths.contains(parent)) {
+        filteredGroups.add(g);
+        continue;
+      }
+
+      boolean descendsFromBannedPath = false;
+      for (VOMSGroup bannedPath : bannedPaths) {
+        if (g.isDescendant(bannedPath)) {
+          descendsFromBannedPath = true;
+          break;
+        }
+      }
+
+      if (descendsFromBannedPath)
+        continue;
+
+      if (admin.hasPermissions(VOMSContext.instance(parent),
+        VOMSPermission.getContainerReadPermission())) {
+        visiblePaths.add(parent);
+        filteredGroups.add(g);
+      } else {
+        bannedPaths.add(parent);
+      }
+    }
+
+    return filteredGroups;
+  }
 
 }

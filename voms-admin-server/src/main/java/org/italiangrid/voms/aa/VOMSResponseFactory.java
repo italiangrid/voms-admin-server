@@ -22,13 +22,15 @@ package org.italiangrid.voms.aa;
 
 import org.italiangrid.voms.aa.impl.ResponseImpl;
 
-
 public class VOMSResponseFactory {
 
-	private VOMSResponseFactory() {}
+  private VOMSResponseFactory() {
 
-	public static VOMSResponse newResponse(){
-		return new ResponseImpl();
-	}
+  }
+
+  public static VOMSResponse newResponse() {
+
+    return new ResponseImpl();
+  }
 
 }

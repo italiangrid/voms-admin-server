@@ -28,15 +28,16 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class DefaultAUPFailingMembersLookupStrategy implements AUPFailingMembersLookupStrategy{
+public class DefaultAUPFailingMembersLookupStrategy implements
+  AUPFailingMembersLookupStrategy {
 
-	public List<VOMSUser> findAUPFailingMembers() {
-		
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		VOMSUserDAO userDAO = VOMSUserDAO.instance();
-		
-		return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
-		
-	}
+  public List<VOMSUser> findAUPFailingMembers() {
+
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    VOMSUserDAO userDAO = VOMSUserDAO.instance();
+
+    return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
+
+  }
 
 }

@@ -19,7 +19,6 @@
 
 package org.italiangrid.voms.aa.x509.impl;
 
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -35,63 +34,58 @@ import org.slf4j.LoggerFactory;
 
 import eu.emi.security.authn.x509.impl.PEMCredential;
 
-public enum ACGeneratorImpl implements ACGenerator{
+public enum ACGeneratorImpl implements ACGenerator {
 
-	INSTANCE;
+  INSTANCE;
 
-	public static final Logger logger = LoggerFactory
-		.getLogger(ACGeneratorImpl.class);
+  public static final Logger logger = LoggerFactory
+    .getLogger(ACGeneratorImpl.class);
 
-	private volatile boolean configured = false;
+  private volatile boolean configured = false;
 
-	private VOMSACGenerator acGenerator;
-	
-	public synchronized void configure(PEMCredential aaCredential){
-		
-		if (!configured){
-			acGenerator = new VOMSACGenerator(aaCredential);		
-			configured = true;
-		}
+  private VOMSACGenerator acGenerator;
 
-	}
+  public synchronized void configure(PEMCredential aaCredential) {
 
-	private BigInteger computeSerialNumber() {
+    if (!configured) {
+      acGenerator = new VOMSACGenerator(aaCredential);
+      configured = true;
+    }
 
-		ByteBuffer buf = ByteBuffer.allocate(16);
+  }
 
-		UUID r = UUID.randomUUID();
+  private BigInteger computeSerialNumber() {
 
-		buf.putLong(r.getMostSignificantBits());
-		buf.putLong(r.getLeastSignificantBits());
+    ByteBuffer buf = ByteBuffer.allocate(16);
 
-		buf.flip();
+    UUID r = UUID.randomUUID();
 
-		BigInteger bi = new BigInteger(buf.array());
-		return bi.abs();
+    buf.putLong(r.getMostSignificantBits());
+    buf.putLong(r.getLeastSignificantBits());
 
-	}
+    buf.flip();
 
-	@Override
-	public byte[] generateVOMSAC(RequestContext context) throws IOException {
+    BigInteger bi = new BigInteger(buf.array());
+    return bi.abs();
 
-		if (!configured)
-			throw new IllegalStateException("AC generator is not configured!");
+  }
 
-		BigInteger serialNo = computeSerialNumber();
+  @Override
+  public byte[] generateVOMSAC(RequestContext context) throws IOException {
 
-		X509AttributeCertificateHolder ac = acGenerator
-			.generateVOMSAttributeCertificate(context.getResponse().getIssuedFQANs(), 
-				context.getResponse().getIssuedGAs(), 
-				context.getResponse().getTargets(), 
-				context.getRequest().getHolderCert(),
-				serialNo,
-				context.getResponse().getNotBefore(),
-				context.getResponse().getNotAfter(),
-				context.getVOName(),
-				context.getHost(),
-				context.getPort());
-				
+    if (!configured)
+      throw new IllegalStateException("AC generator is not configured!");
 
-		return ac.getEncoded();
-	}
+    BigInteger serialNo = computeSerialNumber();
+
+    X509AttributeCertificateHolder ac = acGenerator
+      .generateVOMSAttributeCertificate(context.getResponse().getIssuedFQANs(),
+        context.getResponse().getIssuedGAs(), context.getResponse()
+          .getTargets(), context.getRequest().getHolderCert(), serialNo,
+        context.getResponse().getNotBefore(), context.getResponse()
+          .getNotAfter(), context.getVOName(), context.getHost(), context
+          .getPort());
+
+    return ac.getEncoded();
+  }
 }

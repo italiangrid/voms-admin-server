@@ -19,7 +19,6 @@
  */
 package org.glite.security.voms.admin.core;
 
-
 import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -63,233 +62,220 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public final class VOMSService {
 
-	public static final String ENDPOINTS_KEY = "__voms_endpoints";
-	
-	static final Logger log = LoggerFactory.getLogger(VOMSService.class);
+  public static final String ENDPOINTS_KEY = "__voms_endpoints";
 
-	protected static void checkDatabaseVersion() {
+  static final Logger log = LoggerFactory.getLogger(VOMSService.class);
 
-		int version = VOMSVersionDAO.instance().getVersion().getVersion();
+  protected static void checkDatabaseVersion() {
 
-		if (version != VOMSServiceConstants.VOMS_DB_VERSION) {
+    int version = VOMSVersionDAO.instance().getVersion().getVersion();
 
-			if (version < VOMSServiceConstants.VOMS_DB_VERSION) {
-				log
-						.error("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
-								+ version);
-				log
-						.error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-util commands!");
-				throw new VOMSFatalException(
-						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
-								+ "', while it should be '"
-								+ VOMSServiceConstants.VOMS_DB_VERSION + "'");
-			} else {
+    if (version != VOMSServiceConstants.VOMS_DB_VERSION) {
 
-				log
-						.error("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
-								+ version);
-				throw new VOMSFatalException(
-						"INCOMPATIBLE DATABASE SCHEMA FOUND! Is '" + version
-								+ "', while it should be '"
-								+ VOMSServiceConstants.VOMS_DB_VERSION + "'");
-			}
-		}
-	}
+      if (version < VOMSServiceConstants.VOMS_DB_VERSION) {
+        log
+          .error("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
+            + version);
+        log
+          .error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-util commands!");
+        throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"
+          + version + "', while it should be '"
+          + VOMSServiceConstants.VOMS_DB_VERSION + "'");
+      } else {
 
-	protected static void configureVelocity() {
+        log.error("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
+          + version);
+        throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"
+          + version + "', while it should be '"
+          + VOMSServiceConstants.VOMS_DB_VERSION + "'");
+      }
+    }
+  }
 
-		try {
+  protected static void configureVelocity() {
 
-			Properties p = new Properties();
+    try {
 
-			p.put("resource.loader", "cpath");
-			p
-					.put("cpath.resource.loader.class",
-							"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+      Properties p = new Properties();
 
-			p.put("runtime.log.logsystem.class",
-			"org.glite.security.voms.admin.util.velocity.VelocityLogger");
+      p.put("resource.loader", "cpath");
+      p.put("cpath.resource.loader.class",
+        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-			Velocity.init(p);
-			log.debug("Velocity setup ok!");
+      p.put("runtime.log.logsystem.class",
+        "org.glite.security.voms.admin.util.velocity.VelocityLogger");
 
-		} catch (Exception e) {
+      Velocity.init(p);
+      log.debug("Velocity setup ok!");
 
-			log.error("Error initializing velocity template engine!");
-			throw new VOMSFatalException(e);
-		}
+    } catch (Exception e) {
 
-	}
+      log.error("Error initializing velocity template engine!");
+      throw new VOMSFatalException(e);
+    }
 
-	protected static void configureEventManager() {
+  }
 
-		EventManager.instance();
-		
-		DebugEventLogListener.instance();
-		
-		DefaultNotificationDispatcher.instance();
-		
-		GroupMembershipNotificationDispatcher.instance();
-		
-		RoleMembershipNotificationDispatcher.instance();
-		
-		VOMembershipNotificationDispatcher.instance();
-		
-		CertificateRequestsNotificationDispatcher.instance();
-		
-		MembershipRemovalNotificationDispatcher.instance();
-	}
-	
-	
-	protected static void startBackgroundTasks() {
-		
-		
-		VOMSExecutorService es = VOMSExecutorService.instance();
-		
-		es.startBackgroundTask(new UpdateCATask(),
-				VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
-				
-		es.startBackgroundTask(new TaskStatusUpdater(), 
-				null, 
-				30L);
-		
-		es.startBackgroundTask(new ExpiredRequestsPurgerTask(), 
-				VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 
-				300L);
-		
-		es.startBackgroundTask(new UserStatsTask(), 
-			VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD, 
-			UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
-		
-	}
+  protected static void configureEventManager() {
 
-	protected static void bootstrapAttributeAuthorityServices() {
+    EventManager.instance();
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+    DebugEventLogListener.instance();
 
-		try {
-			org.opensaml.DefaultBootstrap.bootstrap();
+    DefaultNotificationDispatcher.instance();
 
-		} catch (ConfigurationException e) {
+    GroupMembershipNotificationDispatcher.instance();
 
-			log.error("Error initializing OpenSAML:" + e.getMessage());
+    RoleMembershipNotificationDispatcher.instance();
 
-			if (log.isDebugEnabled())
-				log.error("Error initializing OpenSAML:" + e.getMessage(), e);
+    VOMembershipNotificationDispatcher.instance();
 
-			log.info("SAML endpoint will not be activated.");
-			conf.setProperty(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
-					false);
-		}
-		
-		boolean x509AcEndpointEnabled =  conf.getBoolean(
-			VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT,false);
-		
-		if (x509AcEndpointEnabled){
-			
-				log.info("Bootstrapping VOMS X.509 attribute authority.");
-				ACGeneratorFactory.newACGenerator().configure(
-					conf.getServiceCredential());
-				
-				VOMSExecutorService es = VOMSExecutorService.instance();
-				es.scheduleAtFixedRate(new PrintX509AAStatsTask(),
-					PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS,
-					PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, 
-					TimeUnit.SECONDS);
-				
-			}else{
-				log.info("X.509 attribute authority is disabled.");
-			}
+    CertificateRequestsNotificationDispatcher.instance();
 
-	}
-	
-	protected static void configureLogging(ServletContext ctxt){
-		
-		String confDir = ctxt.getInitParameter("CONF_DIR");
-		String vo = ctxt.getInitParameter("VO_NAME");
-		
-		String loggingConf = String.format("%s/%s/%s", confDir, vo, "logback.xml");
-		
-		File f = new File(loggingConf);
+    MembershipRemovalNotificationDispatcher.instance();
+  }
 
-		if (!f.exists())
-			throw new VOMSFatalException(String.format("Logging configuration " +
-					"not found at path '%s'",loggingConf));
-		
-		if (!f.canRead())
-			throw new VOMSFatalException(String.format("Logging configuration " +
-					"is not readable: %s",loggingConf));
-		
-		LoggerContext lc = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
-		
-		JoranConfigurator configurator = new JoranConfigurator();
-		
-		configurator.setContext(lc);
-		lc.reset();
-		
-		lc.putProperty(VOMSConfigurationConstants.VO_NAME, vo);
-		
-		try {
-			configurator.doConfigure(f);
-		
-		} catch (JoranException e) {
-			
-			throw new VOMSFatalException("Error setting up the logging system",
-					e);
-		
-		}
-		
-		StatusPrinter.printIfErrorsOccured(lc);
-	}
-	
-	public static void start(ServletContext ctxt) {
+  protected static void startBackgroundTasks() {
 
-		Thread
-				.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-	
-		configureLogging(ctxt);
-		
-		VOMSConfiguration conf;
+    VOMSExecutorService es = VOMSExecutorService.instance();
 
-		try {
+    es.startBackgroundTask(new UpdateCATask(),
+      VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
-			conf = VOMSConfiguration.load(ctxt);
+    es.startBackgroundTask(new TaskStatusUpdater(), null, 30L);
 
-		} catch (VOMSConfigurationException e) {
-			log.error("VOMS-Admin configuration failed!", e);
-			throw new VOMSFatalException(e);
-		}
+    es.startBackgroundTask(new ExpiredRequestsPurgerTask(),
+      VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
 
-		log.info("VOMS-Admin starting for VO: " + conf.getVOName());
+    es.startBackgroundTask(new UserStatsTask(),
+      VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
+      UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
 
-		checkDatabaseVersion();
-		
-		configureVelocity();
+  }
 
-		configureEventManager();
+  protected static void bootstrapAttributeAuthorityServices() {
 
-		startBackgroundTasks();
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		bootstrapAttributeAuthorityServices();
-		
-		PluginManager.instance().configurePlugins();
-		
-		ValidationManager.instance().startMembershipChecker();
+    try {
+      org.opensaml.DefaultBootstrap.bootstrap();
 
-		log.info("VOMS-Admin started succesfully.");
-	}
+    } catch (ConfigurationException e) {
 
-	public static void stop() {
-		
-		VOMSExecutorService.shutdown();
-		
-		NotificationService.shutdown();
-		
-		HibernateFactory.shutdown();
+      log.error("Error initializing OpenSAML:" + e.getMessage());
 
-		
-		log.info("VOMS admin stopped .");
-	}
+      if (log.isDebugEnabled())
+        log.error("Error initializing OpenSAML:" + e.getMessage(), e);
+
+      log.info("SAML endpoint will not be activated.");
+      conf.setProperty(
+        VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false);
+    }
+
+    boolean x509AcEndpointEnabled = conf.getBoolean(
+      VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT, false);
+
+    if (x509AcEndpointEnabled) {
+
+      log.info("Bootstrapping VOMS X.509 attribute authority.");
+      ACGeneratorFactory.newACGenerator()
+        .configure(conf.getServiceCredential());
+
+      VOMSExecutorService es = VOMSExecutorService.instance();
+      es.scheduleAtFixedRate(new PrintX509AAStatsTask(),
+        PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS,
+        PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, TimeUnit.SECONDS);
+
+    } else {
+      log.info("X.509 attribute authority is disabled.");
+    }
+
+  }
+
+  protected static void configureLogging(ServletContext ctxt) {
+
+    String confDir = ctxt.getInitParameter("CONF_DIR");
+    String vo = ctxt.getInitParameter("VO_NAME");
+
+    String loggingConf = String.format("%s/%s/%s", confDir, vo, "logback.xml");
+
+    File f = new File(loggingConf);
+
+    if (!f.exists())
+      throw new VOMSFatalException(String.format("Logging configuration "
+        + "not found at path '%s'", loggingConf));
+
+    if (!f.canRead())
+      throw new VOMSFatalException(String.format("Logging configuration "
+        + "is not readable: %s", loggingConf));
+
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    JoranConfigurator configurator = new JoranConfigurator();
+
+    configurator.setContext(lc);
+    lc.reset();
+
+    lc.putProperty(VOMSConfigurationConstants.VO_NAME, vo);
+
+    try {
+      configurator.doConfigure(f);
+
+    } catch (JoranException e) {
+
+      throw new VOMSFatalException("Error setting up the logging system", e);
+
+    }
+
+    StatusPrinter.printIfErrorsOccured(lc);
+  }
+
+  public static void start(ServletContext ctxt) {
+
+    Thread
+      .setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+
+    configureLogging(ctxt);
+
+    VOMSConfiguration conf;
+
+    try {
+
+      conf = VOMSConfiguration.load(ctxt);
+
+    } catch (VOMSConfigurationException e) {
+      log.error("VOMS-Admin configuration failed!", e);
+      throw new VOMSFatalException(e);
+    }
+
+    log.info("VOMS-Admin starting for VO: " + conf.getVOName());
+
+    checkDatabaseVersion();
+
+    configureVelocity();
+
+    configureEventManager();
+
+    startBackgroundTasks();
+
+    bootstrapAttributeAuthorityServices();
+
+    PluginManager.instance().configurePlugins();
+
+    ValidationManager.instance().startMembershipChecker();
+
+    log.info("VOMS-Admin started succesfully.");
+  }
+
+  public static void stop() {
+
+    VOMSExecutorService.shutdown();
+
+    NotificationService.shutdown();
+
+    HibernateFactory.shutdown();
+
+    log.info("VOMS admin stopped .");
+  }
 
 }

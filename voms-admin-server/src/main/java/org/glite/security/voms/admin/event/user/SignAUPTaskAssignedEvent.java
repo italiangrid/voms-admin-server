@@ -24,9 +24,10 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class SignAUPTaskAssignedEvent extends UserAUPEvent {
 
-	public SignAUPTaskAssignedEvent(VOMSUser user, AUP aup) {
-		super(user, aup);
+  public SignAUPTaskAssignedEvent(VOMSUser user, AUP aup) {
 
-	}
+    super(user, aup);
+
+  }
 
 }

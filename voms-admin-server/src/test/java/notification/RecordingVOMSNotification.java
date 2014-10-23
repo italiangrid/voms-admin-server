@@ -26,30 +26,29 @@ import java.util.List;
 
 import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 
-
 public class RecordingVOMSNotification implements VOMSNotification {
 
-	private List<Date> sendTimes = new ArrayList<Date>();
-	
-	public RecordingVOMSNotification() {
+  private List<Date> sendTimes = new ArrayList<Date>();
 
-	}
+  public RecordingVOMSNotification() {
 
-	@Override
-	public void send() {
+  }
 
-		sendTimes.add(new Date());
-	}
+  @Override
+  public void send() {
 
-	@Override
-	public int getDeliveryAttemptCount() {
+    sendTimes.add(new Date());
+  }
 
-		return sendTimes.size();
-	}
+  @Override
+  public int getDeliveryAttemptCount() {
 
-	public List<Date> getSendTimes(){
-		return sendTimes;
-	}
-	
-	
+    return sendTimes.size();
+  }
+
+  public List<Date> getSendTimes() {
+
+    return sendTimes;
+  }
+
 }

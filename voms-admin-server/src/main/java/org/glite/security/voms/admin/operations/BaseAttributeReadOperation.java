@@ -20,15 +20,17 @@
 package org.glite.security.voms.admin.operations;
 
 public abstract class BaseAttributeReadOperation extends
-		SingleContextVomsOperation {
+  SingleContextVomsOperation {
 
-	protected BaseAttributeReadOperation(VOMSContext context) {
-		super(context);
-	}
+  protected BaseAttributeReadOperation(VOMSContext context) {
 
-	protected void setupPermissions() {
-		addRequiredPermission(__context, VOMSPermission.getEmptyPermissions()
-				.setAttributesReadPermission());
+    super(context);
+  }
 
-	}
+  protected void setupPermissions() {
+
+    addRequiredPermission(__context, VOMSPermission.getEmptyPermissions()
+      .setAttributesReadPermission());
+
+  }
 }

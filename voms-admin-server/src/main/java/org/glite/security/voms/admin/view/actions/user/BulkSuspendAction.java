@@ -32,45 +32,43 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-
 @Results({
-	
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-	@Result(name = BaseAction.INPUT, location = "users")
-})
 
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "users") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class BulkSuspendAction extends UserBulkActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-		
-	String suspensionReason;
-	
+  private static final long serialVersionUID = 1L;
 
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the suspension reason field!")
-	public String getSuspensionReason() {
-		return suspensionReason;
-	}
+  String suspensionReason;
 
-	public void setSuspensionReason(String suspensionReason) {
-		this.suspensionReason = suspensionReason;
-	}
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		List<String> reasonsList = Collections.nCopies(userIds.size(), suspensionReason);
-		DoubleArgumentOperationCollection<Long, String> op = new DoubleArgumentOperationCollection<Long, String>(userIds, 
-				reasonsList,
-				SuspendUserOperation.class);
-		
-		op.execute();
-		return SUCCESS;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters in the suspension reason field!")
+  public String getSuspensionReason() {
+
+    return suspensionReason;
+  }
+
+  public void setSuspensionReason(String suspensionReason) {
+
+    this.suspensionReason = suspensionReason;
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    List<String> reasonsList = Collections.nCopies(userIds.size(),
+      suspensionReason);
+    DoubleArgumentOperationCollection<Long, String> op = new DoubleArgumentOperationCollection<Long, String>(
+      userIds, reasonsList, SuspendUserOperation.class);
+
+    op.execute();
+    return SUCCESS;
+  }
 }

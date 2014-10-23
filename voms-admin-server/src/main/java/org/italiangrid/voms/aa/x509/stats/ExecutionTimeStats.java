@@ -24,93 +24,92 @@ import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
 
 public class ExecutionTimeStats {
 
-	double min;
-	double max;
-	double mean;
-	long count;
-	
-	private ExecutionTimeStats() {}
+  double min;
+  double max;
+  double mean;
+  long count;
 
-	public static ExecutionTimeStats fromSummaryStats(StatisticalSummary stats){
-		
-		ExecutionTimeStats v = new ExecutionTimeStats();
-		
-		v.setMax(stats.getMax());
-		v.setMin(stats.getMin());
-		v.setMean(stats.getMean());
-		v.setCount(stats.getN());
-		return v;
-	}
-	
-	/**
-	 * @return the min
-	 */
-	public double getMin() {
-	
-		return min;
-	}
+  private ExecutionTimeStats() {
 
-	
-	/**
-	 * @param min the min to set
-	 */
-	public void setMin(double min) {
-	
-		this.min = min;
-	}
+  }
 
-	
-	/**
-	 * @return the max
-	 */
-	public double getMax() {
-	
-		return max;
-	}
+  public static ExecutionTimeStats fromSummaryStats(StatisticalSummary stats) {
 
-	
-	/**
-	 * @param max the max to set
-	 */
-	public void setMax(double max) {
-	
-		this.max = max;
-	}
+    ExecutionTimeStats v = new ExecutionTimeStats();
 
-	
-	/**
-	 * @return the mean
-	 */
-	public double getMean() {
-	
-		return mean;
-	}
+    v.setMax(stats.getMax());
+    v.setMin(stats.getMin());
+    v.setMean(stats.getMean());
+    v.setCount(stats.getN());
+    return v;
+  }
 
-	
-	/**
-	 * @param mean the mean to set
-	 */
-	public void setMean(double mean) {
-	
-		this.mean = mean;
-	}
+  /**
+   * @return the min
+   */
+  public double getMin() {
 
-	
-	/**
-	 * @return the count
-	 */
-	public long getCount() {
-	
-		return count;
-	}
+    return min;
+  }
 
-	
-	/**
-	 * @param count the count to set
-	 */
-	public void setCount(long count) {
-	
-		this.count = count;
-	}
-	
+  /**
+   * @param min
+   *          the min to set
+   */
+  public void setMin(double min) {
+
+    this.min = min;
+  }
+
+  /**
+   * @return the max
+   */
+  public double getMax() {
+
+    return max;
+  }
+
+  /**
+   * @param max
+   *          the max to set
+   */
+  public void setMax(double max) {
+
+    this.max = max;
+  }
+
+  /**
+   * @return the mean
+   */
+  public double getMean() {
+
+    return mean;
+  }
+
+  /**
+   * @param mean
+   *          the mean to set
+   */
+  public void setMean(double mean) {
+
+    this.mean = mean;
+  }
+
+  /**
+   * @return the count
+   */
+  public long getCount() {
+
+    return count;
+  }
+
+  /**
+   * @param count
+   *          the count to set
+   */
+  public void setCount(long count) {
+
+    this.count = count;
+  }
+
 }

@@ -31,77 +31,73 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddUserCertificateOperation extends BaseVomsOperation {
 
-	VOMSUser theUser;
-	X509Certificate theCert;
+  VOMSUser theUser;
+  X509Certificate theCert;
 
-	String subject;
-	String issuer;
+  String subject;
+  String issuer;
 
-	Date notAfter;
-	
+  Date notAfter;
 
+  protected AddUserCertificateOperation(VOMSUser u, X509Certificate cert) {
 
-	protected AddUserCertificateOperation(VOMSUser u, X509Certificate cert) {
+    if (u == null)
+      throw new NullArgumentException("User cannot be null!");
 
-		if (u == null)
-			throw new NullArgumentException("User cannot be null!");
+    if (cert == null)
+      throw new NullArgumentException("cert cannot be null!");
 
-		if (cert == null)
-			throw new NullArgumentException("cert cannot be null!");
+    theUser = u;
+    theCert = cert;
 
-		theUser = u;
-		theCert = cert;
+  }
 
-	}
+  protected AddUserCertificateOperation(VOMSUser u, String certSubject,
+    String certIssuer, String certNotAfter) {
 
-	protected AddUserCertificateOperation(VOMSUser u, String certSubject,
-			String certIssuer, String certNotAfter) {
+    if (u == null)
+      throw new NullArgumentException("User cannot be null!");
 
-		if (u == null)
-			throw new NullArgumentException("User cannot be null!");
+    if (certSubject == null)
+      throw new NullArgumentException("certSubject cannot be null!");
 
-		if (certSubject == null)
-			throw new NullArgumentException("certSubject cannot be null!");
+    if (certIssuer == null)
+      throw new NullArgumentException("certIssuer cannot be null!");
 
-		if (certIssuer == null)
-			throw new NullArgumentException("certIssuer cannot be null!");
+    theUser = u;
+    subject = certSubject;
+    issuer = certIssuer;
 
-		theUser = u;
-		subject = certSubject;
-		issuer = certIssuer;
+  }
 
-	}
+  public static AddUserCertificateOperation instance(VOMSUser u,
+    X509Certificate cert) {
 
-	public static AddUserCertificateOperation instance(VOMSUser u,
-			X509Certificate cert) {
+    return new AddUserCertificateOperation(u, cert);
+  }
 
-		return new AddUserCertificateOperation(u, cert);
-	}
+  public static AddUserCertificateOperation instance(VOMSUser u,
+    String certSubject, String certIssuer, String certNotAfter) {
 
-	public static AddUserCertificateOperation instance(VOMSUser u,
-			String certSubject, String certIssuer, String certNotAfter) {
+    return new AddUserCertificateOperation(u, certSubject, certIssuer,
+      certNotAfter);
+  }
 
-		return new AddUserCertificateOperation(u, certSubject, certIssuer,
-				certNotAfter);
-	}
+  protected Object doExecute() {
 
-	
-	
-	protected Object doExecute() {
+    if (theCert != null)
+      VOMSUserDAO.instance().addCertificate(theUser, theCert);
+    else
+      VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
 
-		if (theCert != null)
-			VOMSUserDAO.instance().addCertificate(theUser, theCert);
-		else
-			VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
+    return null;
+  }
 
-		return null;
-	}
+  protected void setupPermissions() {
 
-	protected void setupPermissions() {
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions().setMembershipRWPermission());
-
-	}
+  }
 
 }

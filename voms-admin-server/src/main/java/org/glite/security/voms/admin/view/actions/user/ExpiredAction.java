@@ -26,28 +26,27 @@ import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
+@Results({
 
 @Result(name = BaseAction.SUCCESS, location = "expiredUsers"),
-		@Result(name = BaseAction.INPUT, location = "expiredUsers") })
-
+  @Result(name = BaseAction.INPUT, location = "expiredUsers") })
 public class ExpiredAction extends SearchAction {
-	
-	/**
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		searchResults = SearchResults.fromList(VOMSUserDAO.instance().findExpiredUsers());
-		
-		session.put("searchData", getSearchData());
-		session.put("searchResults", searchResults);
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public String execute() throws Exception {
+
+    searchResults = SearchResults.fromList(VOMSUserDAO.instance()
+      .findExpiredUsers());
+
+    session.put("searchData", getSearchData());
+    session.put("searchResults", searchResults);
+
+    return SUCCESS;
+  }
 
 }

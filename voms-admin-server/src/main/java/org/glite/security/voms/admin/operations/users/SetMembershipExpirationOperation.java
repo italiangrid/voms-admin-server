@@ -30,33 +30,36 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 
 public class SetMembershipExpirationOperation extends BaseVomsOperation {
 
-	VOMSUser user;
-	Date expirationDate;
-	
-	public SetMembershipExpirationOperation(VOMSUser u, Date d) {
-		this.user = u;
-		this.expirationDate = d;
-	}
-	
-	@Override
-	protected Object doExecute() {
-		
-		user.setEndTime(expirationDate);
-		return user;
-	}
+  VOMSUser user;
+  Date expirationDate;
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
+  public SetMembershipExpirationOperation(VOMSUser u, Date d) {
 
-	}
-	
-	
-	public static SetMembershipExpirationOperation instance(Long userId, Date expirationDate){
-		
-		VOMSUser user = VOMSUserDAO.instance().findById(userId);
-		return new SetMembershipExpirationOperation(user, expirationDate);
-		
-	}
+    this.user = u;
+    this.expirationDate = d;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    user.setEndTime(expirationDate);
+    return user;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+
+  }
+
+  public static SetMembershipExpirationOperation instance(Long userId,
+    Date expirationDate) {
+
+    VOMSUser user = VOMSUserDAO.instance().findById(userId);
+    return new SetMembershipExpirationOperation(user, expirationDate);
+
+  }
 
 }

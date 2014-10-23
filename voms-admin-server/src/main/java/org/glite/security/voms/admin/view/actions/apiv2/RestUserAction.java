@@ -34,66 +34,73 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("json")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
-public class RestUserAction extends BaseAction 
-	implements Preparable, ModelDriven<VOMSUser>{
-	
-	
-	/**
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
+public class RestUserAction extends BaseAction implements Preparable,
+  ModelDriven<VOMSUser> {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	VOMSUser user;
-	
-	Long userId;
-	
-	String certificateSubject;
-	String caSubject;
-	
-	public VOMSUser getModel() {
-		
-		return user;
-	}
+  private static final long serialVersionUID = 1L;
 
-	public void prepare() throws Exception {
-				
-		if (getModel() == null){
-			
-			if ((certificateSubject == null) || (caSubject == null)){
-				return;
-			}
-			
-			user = VOMSUserDAO.instance().findByCertificate(certificateSubject, caSubject);
-		}
-	}
+  VOMSUser user;
 
-	@RequiredStringValidator(type=ValidatorType.FIELD, message="Please provide a DN for the user.")
-	public String getCertificateSubject() {
-		return certificateSubject;
-	}
+  Long userId;
 
-	@RequiredStringValidator(type=ValidatorType.FIELD, message="Please provide a CA for the user.")
-	public String getCaSubject() {
-		return caSubject;
-	}
-	
+  String certificateSubject;
+  String caSubject;
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+  public VOMSUser getModel() {
 
-	public void setCertificateSubject(String certificateSubject) {
-		this.certificateSubject = certificateSubject;
-	}
+    return user;
+  }
 
-	public void setCaSubject(String caSubject) {
-		this.caSubject = caSubject;
-	}
+  public void prepare() throws Exception {
 
-	@JSON(serialize=false)
-	public Long getUserId() {
-		return userId;
-	}
+    if (getModel() == null) {
+
+      if ((certificateSubject == null) || (caSubject == null)) {
+        return;
+      }
+
+      user = VOMSUserDAO.instance().findByCertificate(certificateSubject,
+        caSubject);
+    }
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a DN for the user.")
+  public String getCertificateSubject() {
+
+    return certificateSubject;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a CA for the user.")
+  public String getCaSubject() {
+
+    return caSubject;
+  }
+
+  public void setUserId(Long userId) {
+
+    this.userId = userId;
+  }
+
+  public void setCertificateSubject(String certificateSubject) {
+
+    this.certificateSubject = certificateSubject;
+  }
+
+  public void setCaSubject(String caSubject) {
+
+    this.caSubject = caSubject;
+  }
+
+  @JSON(serialize = false)
+  public Long getUserId() {
+
+    return userId;
+  }
 
 }

@@ -21,10 +21,10 @@ package org.glite.security.voms.admin.persistence.dao;
 
 public interface Searchable {
 
-	public SearchResults search(String text, int firstResult, int maxResults);
+  public SearchResults search(String text, int firstResult, int maxResults);
 
-	public SearchResults getAll(int firstResult, int maxResults);
+  public SearchResults getAll(int firstResult, int maxResults);
 
-	public int countMatches(String text);
+  public int countMatches(String text);
 
 }

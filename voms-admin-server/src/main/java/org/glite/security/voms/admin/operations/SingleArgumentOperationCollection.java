@@ -26,26 +26,27 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SingleArgumentOperationCollection<T> extends OperationCollection{
+public class SingleArgumentOperationCollection<T> extends OperationCollection {
 
-	public static final Logger log = LoggerFactory.getLogger(SingleArgumentOperationCollection.class);
-	List<T> args;
-	
-	
-	protected void instantiateOperations() throws Exception{
-		
-		operations = new ArrayList<VOMSOperation>();
-		
-		for (T arg: args){
-			
-			Method instanceMethod = opClazz.getMethod("instance", arg.getClass());
-			operations.add((VOMSOperation)instanceMethod.invoke(null, arg));
-		}
-	}
-	
-	public SingleArgumentOperationCollection(List<T> args, Class opClass) {
-		this.args = args;
-		this.opClazz = opClass;
-	}
-	
+  public static final Logger log = LoggerFactory
+    .getLogger(SingleArgumentOperationCollection.class);
+  List<T> args;
+
+  protected void instantiateOperations() throws Exception {
+
+    operations = new ArrayList<VOMSOperation>();
+
+    for (T arg : args) {
+
+      Method instanceMethod = opClazz.getMethod("instance", arg.getClass());
+      operations.add((VOMSOperation) instanceMethod.invoke(null, arg));
+    }
+  }
+
+  public SingleArgumentOperationCollection(List<T> args, Class opClass) {
+
+    this.args = args;
+    this.opClazz = opClass;
+  }
+
 }

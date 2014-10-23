@@ -33,110 +33,115 @@ import org.glite.security.voms.admin.util.DNUtil;
 
 public class CertificateDAO {
 
-	private CertificateDAO() {
-		HibernateFactory.beginTransaction();
-	}
+  private CertificateDAO() {
 
-	public Certificate findByDN(String dn){
-		
-		assert dn != null : "Null DN passed as argument!";
-		
-		String query = "From Certificate where subjectString = :subjectString";
-		
-		List<Certificate> dbCerts = (List<Certificate>) HibernateFactory.getSession()
-		.createQuery(query).setString("subjectString", dn).list();
-		
-		if (dbCerts.size() > 1)
-			throw new VOMSException("Multiple certificates found for the following dn '"+dn+"'. Please specify the CA dn!");
-		
-		if (dbCerts.size() == 0)
-			return null;
+    HibernateFactory.beginTransaction();
+  }
 
-		return dbCerts.get(0);
-		
-	}
-	public Certificate findByDNCA(String dn, String ca) {
+  public Certificate findByDN(String dn) {
 
-		assert dn != null : "Null DN passed as argument!";
-		assert ca != null : "Null ca passed as argument!";
+    assert dn != null : "Null DN passed as argument!";
 
-		String query = "From Certificate where subjectString = :subjectString and ca.subjectString = :ca";
+    String query = "From Certificate where subjectString = :subjectString";
 
-		Certificate dbCert = (Certificate) HibernateFactory.getSession()
-				.createQuery(query).setString("subjectString", dn).setString(
-						"ca", ca).uniqueResult();
+    List<Certificate> dbCerts = (List<Certificate>) HibernateFactory
+      .getSession().createQuery(query).setString("subjectString", dn).list();
 
-		return dbCert;
-	}
+    if (dbCerts.size() > 1)
+      throw new VOMSException(
+        "Multiple certificates found for the following dn '" + dn
+          + "'. Please specify the CA dn!");
 
-	public Certificate findById(long id) {
+    if (dbCerts.size() == 0)
+      return null;
 
-		return (Certificate) HibernateFactory.getSession().get(
-				Certificate.class, new Long(id));
-	}
+    return dbCerts.get(0);
 
-	public Certificate find(X509Certificate cert) {
+  }
 
-		assert cert != null : "Null certificate passed as argument!";
+  public Certificate findByDNCA(String dn, String ca) {
 
-		String subjectString = DNUtil.normalizeDN(
-			DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal()));
+    assert dn != null : "Null DN passed as argument!";
+    assert ca != null : "Null ca passed as argument!";
 
-		String issuerString = DNUtil.normalizeDN(
-			DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal()));
-		
-		return findByDNCA(subjectString, issuerString);
+    String query = "From Certificate where subjectString = :subjectString and ca.subjectString = :ca";
 
-	}
+    Certificate dbCert = (Certificate) HibernateFactory.getSession()
+      .createQuery(query).setString("subjectString", dn).setString("ca", ca)
+      .uniqueResult();
 
-	public boolean isAlreadyAssigned(X509Certificate cert) {
+    return dbCert;
+  }
 
-		Certificate dbCert = find(cert);
-		return (dbCert != null);
-	}
+  public Certificate findById(long id) {
 
-	public Certificate create(String dn, String ca) {
+    return (Certificate) HibernateFactory.getSession().get(Certificate.class,
+      new Long(id));
+  }
 
-		String normalizedCA = DNUtil.normalizeDN(ca);
+  public Certificate find(X509Certificate cert) {
 
-		VOMSCA dbCA = VOMSCADAO.instance().getByName(normalizedCA);
+    assert cert != null : "Null certificate passed as argument!";
 
-		if (dbCA == null)
-			throw new NoSuchCAException("CA '" + ca
-					+ "' not found in database!");
-		
-		Certificate cert = new Certificate();
+    String subjectString = DNUtil.normalizeDN(DNUtil.getOpenSSLSubject(cert
+      .getSubjectX500Principal()));
 
-		cert.setSubjectString(DNUtil.normalizeDN(dn));
-		cert.setCa(dbCA);
-		cert.setCreationTime(new Date());
+    String issuerString = DNUtil.normalizeDN(DNUtil.getOpenSSLSubject(cert
+      .getIssuerX500Principal()));
 
-		return cert;
-	}
-	
-	public Certificate create(VOMSUser u, String ca) {
+    return findByDNCA(subjectString, issuerString);
 
-		Certificate cert = create(u.getDn(), ca);
-		cert.setUser(u);
-		return cert;
-	}
+  }
 
-	public List<Certificate> getForCA(VOMSCA ca) {
-		assert ca != null : "null ca passed as argument!";
+  public boolean isAlreadyAssigned(X509Certificate cert) {
 
-		String query = "from Certificate where ca = :ca";
-		return HibernateFactory.getSession().createQuery(query).setEntity("ca",
-				ca).list();
-	}
+    Certificate dbCert = find(cert);
+    return (dbCert != null);
+  }
 
-	public List<Certificate> getAll() {
+  public Certificate create(String dn, String ca) {
 
-		String query = "from Certificate order by subjectString";
-		return HibernateFactory.getSession().createQuery(query).list();
+    String normalizedCA = DNUtil.normalizeDN(ca);
 
-	}
+    VOMSCA dbCA = VOMSCADAO.instance().getByName(normalizedCA);
 
-	public static CertificateDAO instance() {
-		return new CertificateDAO();
-	}
+    if (dbCA == null)
+      throw new NoSuchCAException("CA '" + ca + "' not found in database!");
+
+    Certificate cert = new Certificate();
+
+    cert.setSubjectString(DNUtil.normalizeDN(dn));
+    cert.setCa(dbCA);
+    cert.setCreationTime(new Date());
+
+    return cert;
+  }
+
+  public Certificate create(VOMSUser u, String ca) {
+
+    Certificate cert = create(u.getDn(), ca);
+    cert.setUser(u);
+    return cert;
+  }
+
+  public List<Certificate> getForCA(VOMSCA ca) {
+
+    assert ca != null : "null ca passed as argument!";
+
+    String query = "from Certificate where ca = :ca";
+    return HibernateFactory.getSession().createQuery(query).setEntity("ca", ca)
+      .list();
+  }
+
+  public List<Certificate> getAll() {
+
+    String query = "from Certificate order by subjectString";
+    return HibernateFactory.getSession().createQuery(query).list();
+
+  }
+
+  public static CertificateDAO instance() {
+
+    return new CertificateDAO();
+  }
 }

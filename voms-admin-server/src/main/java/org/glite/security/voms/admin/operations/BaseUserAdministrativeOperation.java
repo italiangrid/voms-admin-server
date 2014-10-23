@@ -25,39 +25,40 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public abstract class BaseUserAdministrativeOperation extends BaseVomsOperation {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(BaseUserAdministrativeOperation.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(BaseUserAdministrativeOperation.class);
 
-	protected VOMSUser authorizedUser;
+  protected VOMSUser authorizedUser;
 
-	@Override
-	final AuthorizationResponse isAllowed() {
+  @Override
+  final AuthorizationResponse isAllowed() {
 
-		CurrentAdmin admin = CurrentAdmin.instance();
+    CurrentAdmin admin = CurrentAdmin.instance();
 
-		if (!admin.isVoUser()) {
-			log
-					.debug("Current admin has no corresponding VO user, falling back to base authorization method.");
-			return super.isAllowed();
-		}
+    if (!admin.isVoUser()) {
+      log
+        .debug("Current admin has no corresponding VO user, falling back to base authorization method.");
+      return super.isAllowed();
+    }
 
-		boolean usersMatch = admin.getVoUser().equals(authorizedUser);
-		log.debug("Admin's user match with authorized user: " + usersMatch);
-		
-		if (usersMatch)
-			return AuthorizationResponse.permit();
-		
-		return super.isAllowed();
+    boolean usersMatch = admin.getVoUser().equals(authorizedUser);
+    log.debug("Admin's user match with authorized user: " + usersMatch);
 
-	}
+    if (usersMatch)
+      return AuthorizationResponse.permit();
 
-	public VOMSUser getAuthorizedUser() {
-		return authorizedUser;
-	}
+    return super.isAllowed();
 
-	public void setAuthorizedUser(VOMSUser authorizedUser) {
-		this.authorizedUser = authorizedUser;
-	}
+  }
 
-	
+  public VOMSUser getAuthorizedUser() {
+
+    return authorizedUser;
+  }
+
+  public void setAuthorizedUser(VOMSUser authorizedUser) {
+
+    this.authorizedUser = authorizedUser;
+  }
+
 }

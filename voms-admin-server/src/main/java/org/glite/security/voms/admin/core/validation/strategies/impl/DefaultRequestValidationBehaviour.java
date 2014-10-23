@@ -26,15 +26,16 @@ import org.glite.security.voms.admin.core.validation.strategies.RequestValidatio
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
 public class DefaultRequestValidationBehaviour implements
-		RequestValidationStrategy<NewVOMembershipRequest>, RequestValidationContext {
+  RequestValidationStrategy<NewVOMembershipRequest>, RequestValidationContext {
 
-	public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
-		return RequestValidationResult.success();
-	}
+  public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
 
-	public RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy() {
-		
-		return this;
-	}
+    return RequestValidationResult.success();
+  }
+
+  public RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy() {
+
+    return this;
+  }
 
 }

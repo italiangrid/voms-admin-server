@@ -31,73 +31,75 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "group_membership_req")
 public class GroupMembershipRequest extends Request {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Column(nullable = false)
-	private String groupName;
+  @Column(nullable = false)
+  private String groupName;
 
-	public GroupMembershipRequest() {
-		
-	}
+  public GroupMembershipRequest() {
 
-	/**
-	 * @return the groupName
-	 */
-	public String getGroupName() {
+  }
 
-		return groupName;
-	}
+  /**
+   * @return the groupName
+   */
+  public String getGroupName() {
 
-	/**
-	 * @param groupName
-	 *            the groupName to set
-	 */
-	public void setGroupName(String groupName) {
+    return groupName;
+  }
 
-		this.groupName = groupName;
-	}
+  /**
+   * @param groupName
+   *          the groupName to set
+   */
+  public void setGroupName(String groupName) {
 
-	public String getTypeName() {
+    this.groupName = groupName;
+  }
 
-		return "Group membership request";
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if (this == other)
-			return true;
+  public String getTypeName() {
 
-		if (!(other instanceof GroupMembershipRequest))
-			return false;
+    return "Group membership request";
+  }
 
-		if (other == null)
-			return false;
-		
-		GroupMembershipRequest that = (GroupMembershipRequest)other;
-		EqualsBuilder builder = new EqualsBuilder();
-		
-		return builder.appendSuper(super.equals(other)).append(groupName, that.groupName).isEquals();
-	}
-	
-	@Override
-	public int hashCode() {
-		
-		HashCodeBuilder builder = new HashCodeBuilder(5, 37);
-		builder.appendSuper(super.hashCode()).append(groupName);
-		return builder.toHashCode();
-		
-	}
-	
-	@Override
-	public String toString() {
-		ToStringBuilder builder = new ToStringBuilder(this);
-		
-		builder.appendSuper(super.toString()).append("groupName",groupName);
-		return builder.toString();
-	}
-	
+  @Override
+  public boolean equals(Object other) {
+
+    if (this == other)
+      return true;
+
+    if (!(other instanceof GroupMembershipRequest))
+      return false;
+
+    if (other == null)
+      return false;
+
+    GroupMembershipRequest that = (GroupMembershipRequest) other;
+    EqualsBuilder builder = new EqualsBuilder();
+
+    return builder.appendSuper(super.equals(other))
+      .append(groupName, that.groupName).isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+
+    HashCodeBuilder builder = new HashCodeBuilder(5, 37);
+    builder.appendSuper(super.hashCode()).append(groupName);
+    return builder.toHashCode();
+
+  }
+
+  @Override
+  public String toString() {
+
+    ToStringBuilder builder = new ToStringBuilder(this);
+
+    builder.appendSuper(super.toString()).append("groupName", groupName);
+    return builder.toString();
+  }
 
 }

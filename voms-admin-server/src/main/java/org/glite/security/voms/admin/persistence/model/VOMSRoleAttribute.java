@@ -28,92 +28,91 @@ import javax.persistence.Table;
 import org.glite.security.voms.admin.operations.VOMSContext;
 
 @Entity
-@Table(name="role_attrs")
+@Table(name = "role_attrs")
 public class VOMSRoleAttribute extends VOMSGroupAttribute {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@ManyToOne
-	@JoinColumn(name="r_id")
-	VOMSRole role;
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "r_id")
+  VOMSRole role;
 
-	public VOMSRole getRole() {
+  public VOMSRole getRole() {
 
-		return role;
-	}
+    return role;
+  }
 
-	public void setRole(VOMSRole role) {
+  public void setRole(VOMSRole role) {
 
-		this.role = role;
-	}
+    this.role = role;
+  }
 
-	public VOMSRoleAttribute() {
+  public VOMSRoleAttribute() {
 
-	}
+  }
 
-	private VOMSRoleAttribute(VOMSAttributeDescription desc, String value,
-			VOMSGroup g, VOMSRole r) {
+  private VOMSRoleAttribute(VOMSAttributeDescription desc, String value,
+    VOMSGroup g, VOMSRole r) {
 
-		super(desc, value, g);
+    super(desc, value, g);
 
-		this.role = r;
+    this.role = r;
 
-	}
+  }
 
-	public boolean equals(Object other) {
+  public boolean equals(Object other) {
 
-		if (this == other)
-			return true;
+    if (this == other)
+      return true;
 
-		if (!(other instanceof VOMSRoleAttribute))
-			return false;
+    if (!(other instanceof VOMSRoleAttribute))
+      return false;
 
-		VOMSRoleAttribute that = (VOMSRoleAttribute) other;
+    VOMSRoleAttribute that = (VOMSRoleAttribute) other;
 
-		if (super.equals(that)) {
+    if (super.equals(that)) {
 
-			if (getRole().equals(that.getRole()))
-				return true;
-		}
+      if (getRole().equals(that.getRole()))
+        return true;
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	public int hashCode() {
+  public int hashCode() {
 
-		int result = 14;
+    int result = 14;
 
-		result = 29 * result + attributeDescription.hashCode();
-		result = 29 * result + group.hashCode();
+    result = 29 * result + attributeDescription.hashCode();
+    result = 29 * result + group.hashCode();
 
-		return result;
-	}
+    return result;
+  }
 
-	public static VOMSRoleAttribute instance(VOMSAttributeDescription desc,
-			String value, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(VOMSAttributeDescription desc,
+    String value, VOMSGroup g, VOMSRole r) {
 
-		return new VOMSRoleAttribute(desc, value, g, r);
-	}
+    return new VOMSRoleAttribute(desc, value, g, r);
+  }
 
-	public static VOMSRoleAttribute instance(String attrName, String attrDesc,
-			String attrValue, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(String attrName, String attrDesc,
+    String attrValue, VOMSGroup g, VOMSRole r) {
 
-		VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
-				attrDesc);
-		VOMSRoleAttribute instance = new VOMSRoleAttribute(desc, attrValue, g,
-				r);
+    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
+      attrDesc);
+    VOMSRoleAttribute instance = new VOMSRoleAttribute(desc, attrValue, g, r);
 
-		return instance;
-	}
+    return instance;
+  }
 
-	public String getContext() {
+  public String getContext() {
 
-		return VOMSContext.instance(getGroup(), getRole()).toString();
+    return VOMSContext.instance(getGroup(), getRole()).toString();
 
-	}
+  }
 
 }

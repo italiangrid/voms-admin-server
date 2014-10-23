@@ -32,88 +32,98 @@ import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class OrgDBRequestValidator implements RequestValidationStrategy<NewVOMembershipRequest>, RequestValidationContext{
+public class OrgDBRequestValidator implements
+  RequestValidationStrategy<NewVOMembershipRequest>, RequestValidationContext {
 
-	String experimentName;
+  String experimentName;
 
-	public OrgDBRequestValidator(String experimentName) {
-		this.experimentName = experimentName;
-	}
+  public OrgDBRequestValidator(String experimentName) {
 
-	protected void propertyEqualsIgnoreCase(String value1, String value2, String propertyName, List<String> errors){
-		
-		if (!value1.equalsIgnoreCase(value2)){
-			
-			String errorMessage = String.format("Property '"+propertyName+"' does not match (ignoring case) the OrgDB VOMS person record. You entered  '%s', while  '%s' was expected.",
-					value1, value2);
-			errors.add(errorMessage);
-		}
-		
-	}
-	protected List<String> checkRequestAgainstParticipation(NewVOMembershipRequest r, VOMSOrgDBPerson p){
-		
-		List<String> errors = new Vector<String>();
-		
-		propertyEqualsIgnoreCase(r.getRequesterInfo().getName(), p.getFirstName(), "name", errors);
-		propertyEqualsIgnoreCase(r.getRequesterInfo().getSurname(), p.getName(), "surname", errors);
-				
-		return errors;
-		
-	}
-	public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
+    this.experimentName = experimentName;
+  }
 
-		try {
+  protected void propertyEqualsIgnoreCase(String value1, String value2,
+    String propertyName, List<String> errors) {
 
-			String email = r.getRequesterInfo().getEmailAddress();
-			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
-					.getVOMSPersonDAO();
+    if (!value1.equalsIgnoreCase(value2)) {
 
-			VOMSOrgDBPerson p = dao
-					.findPersonWithValidExperimentParticipationByEmail(email,
-							experimentName);
+      String errorMessage = String
+        .format(
+          "Property '"
+            + propertyName
+            + "' does not match (ignoring case) the OrgDB VOMS person record. You entered  '%s', while  '%s' was expected.",
+          value1, value2);
+      errors.add(errorMessage);
+    }
 
-			if (p != null) {
-				
-				List<String> errors = checkRequestAgainstParticipation(r, p);
-				
-				if (!errors.isEmpty()){
-					RequestValidationResult result = RequestValidationResult.failure("OrgDb validation failed. The OrgDb VOMS person record linked to email address '"+email+"' did not match the data you entered.");
-					result.setErrorMessages(errors);
-					return result;
-				}
-				else{
-					return RequestValidationResult.success();
-				}
-			
-			} else {
+  }
 
-				RequestValidationResult result = RequestValidationResult
-						.failure("No OrgDB participation found matching email '"
-								+ email
-								+ "' for experiment '"
-								+ experimentName
-								+ "'.");
-				
-				return result;
-			}
+  protected List<String> checkRequestAgainstParticipation(
+    NewVOMembershipRequest r, VOMSOrgDBPerson p) {
 
-		} catch (OrgDBError e) {
-			return RequestValidationResult.error(e.getMessage(), e);
-		}
-	}
+    List<String> errors = new Vector<String>();
 
-	public String getExperimentName() {
-		return experimentName;
-	}
+    propertyEqualsIgnoreCase(r.getRequesterInfo().getName(), p.getFirstName(),
+      "name", errors);
+    propertyEqualsIgnoreCase(r.getRequesterInfo().getSurname(), p.getName(),
+      "surname", errors);
 
-	public void setExperimentName(String experimentName) {
-		this.experimentName = experimentName;
-	}
+    return errors;
 
+  }
 
-	public RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy() {
-		
-		return this;
-	}
+  public RequestValidationResult validateRequest(NewVOMembershipRequest r) {
+
+    try {
+
+      String email = r.getRequesterInfo().getEmailAddress();
+      OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
+
+      VOMSOrgDBPerson p = dao
+        .findPersonWithValidExperimentParticipationByEmail(email,
+          experimentName);
+
+      if (p != null) {
+
+        List<String> errors = checkRequestAgainstParticipation(r, p);
+
+        if (!errors.isEmpty()) {
+          RequestValidationResult result = RequestValidationResult
+            .failure("OrgDb validation failed. The OrgDb VOMS person record linked to email address '"
+              + email + "' did not match the data you entered.");
+          result.setErrorMessages(errors);
+          return result;
+        } else {
+          return RequestValidationResult.success();
+        }
+
+      } else {
+
+        RequestValidationResult result = RequestValidationResult
+          .failure("No OrgDB participation found matching email '" + email
+            + "' for experiment '" + experimentName + "'.");
+
+        return result;
+      }
+
+    } catch (OrgDBError e) {
+      return RequestValidationResult.error(e.getMessage(), e);
+    }
+  }
+
+  public String getExperimentName() {
+
+    return experimentName;
+  }
+
+  public void setExperimentName(String experimentName) {
+
+    this.experimentName = experimentName;
+  }
+
+  public RequestValidationStrategy<NewVOMembershipRequest> getVOMembershipRequestValidationStrategy() {
+
+    return this;
+  }
 
 }

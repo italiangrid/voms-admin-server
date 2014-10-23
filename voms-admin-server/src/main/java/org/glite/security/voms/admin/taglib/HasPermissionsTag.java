@@ -27,67 +27,73 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class HasPermissionsTag extends TagSupport implements AuthorizableTag {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Map permissionMap = new HashMap();
+  Map permissionMap = new HashMap();
 
-	String context;
-	String permission;
-	String var;
+  String context;
+  String permission;
+  String var;
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		if (context != null && permission != null) {
-			boolean result = TagUtils.isAuthorized(pageContext, context,
-					permission);
-			pageContext.setAttribute(var, new Boolean(result));
-			return SKIP_BODY;
-		}
+    if (context != null && permission != null) {
+      boolean result = TagUtils.isAuthorized(pageContext, context, permission);
+      pageContext.setAttribute(var, new Boolean(result));
+      return SKIP_BODY;
+    }
 
-		return EVAL_BODY_INCLUDE;
-	}
+    return EVAL_BODY_INCLUDE;
+  }
 
-	public int doEndTag() throws JspException {
+  public int doEndTag() throws JspException {
 
-		if (context != null && permission != null)
-			return EVAL_PAGE;
+    if (context != null && permission != null)
+      return EVAL_PAGE;
 
-		boolean result = TagUtils.hasPermissions(pageContext, permissionMap);
+    boolean result = TagUtils.hasPermissions(pageContext, permissionMap);
 
-		pageContext.setAttribute(var, new Boolean(result));
-		return EVAL_PAGE;
+    pageContext.setAttribute(var, new Boolean(result));
+    return EVAL_PAGE;
 
-	}
+  }
 
-	public String getContext() {
-		return context;
-	}
+  public String getContext() {
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+    return context;
+  }
 
-	public String getPermission() {
-		return permission;
-	}
+  public void setContext(String context) {
 
-	public void setPermission(String permissions) {
-		this.permission = permissions;
-	}
+    this.context = context;
+  }
 
-	public String getVar() {
-		return var;
-	}
+  public String getPermission() {
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+    return permission;
+  }
 
-	public Map getPermissionMap() {
-		return permissionMap;
-	}
+  public void setPermission(String permissions) {
+
+    this.permission = permissions;
+  }
+
+  public String getVar() {
+
+    return var;
+  }
+
+  public void setVar(String var) {
+
+    this.var = var;
+  }
+
+  public Map getPermissionMap() {
+
+    return permissionMap;
+  }
 
 }

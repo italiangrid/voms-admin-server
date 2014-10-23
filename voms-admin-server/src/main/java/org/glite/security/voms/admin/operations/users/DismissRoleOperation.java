@@ -34,86 +34,85 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DismissRoleOperation extends BaseVomsOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	VOMSRole role;
-	
-	private DismissRoleOperation(Long userId, String roleFqan){
-		
-		user = (VOMSUser) FindUserOperation.instance(userId).execute();
-		
-		VOMSContext context = VOMSContext.instance(roleFqan);
-		
-		group = context.getGroup();
-		role = context.getRole();
-	}
+  VOMSRole role;
 
-	private DismissRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
+  private DismissRoleOperation(Long userId, String roleFqan) {
 
-		this.user = u;
-		this.group = g;
-		this.role = r;
-	}
+    user = (VOMSUser) FindUserOperation.instance(userId).execute();
 
-	public VOMSContext getContext() {
+    VOMSContext context = VOMSContext.instance(roleFqan);
 
-		return VOMSContext.instance(group);
-	}
+    group = context.getGroup();
+    role = context.getRole();
+  }
 
-	public VOMSPermission getRequiredPermission() {
+  private DismissRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-		return VOMSPermission.getContainerRWPermissions();
-	}
+    this.user = u;
+    this.group = g;
+    this.role = r;
+  }
 
-	public Object doExecute() {
+  public VOMSContext getContext() {
 
-		VOMSUserDAO.instance().dismissRole(user, group, role);
+    return VOMSContext.instance(group);
+  }
 
-		return null;
-	}
+  public VOMSPermission getRequiredPermission() {
 
-	public static DismissRoleOperation instance(String groupName,
-			String roleName, String userName, String caDn) {
+    return VOMSPermission.getContainerRWPermissions();
+  }
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
-				.execute();
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
-		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+  public Object doExecute() {
 
-		if (u == null)
-			throw new NoSuchUserException("User '" + userName + "," + caDn
-					+ "' not found in this vo.");
+    VOMSUserDAO.instance().dismissRole(user, group, role);
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' does not exist in this vo.");
+    return null;
+  }
 
-		if (r == null)
-			throw new NoSuchRoleException("Role '" + roleName
-					+ "' does not exists in this vo.");
+  public static DismissRoleOperation instance(String groupName,
+    String roleName, String userName, String caDn) {
 
-		return new DismissRoleOperation(u, g, r);
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
+      .execute();
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
+    VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
 
-	}
+    if (u == null)
+      throw new NoSuchUserException("User '" + userName + "," + caDn
+        + "' not found in this vo.");
 
-	public static DismissRoleOperation instance(VOMSUser u, VOMSGroup g,
-			VOMSRole r) {
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' does not exist in this vo.");
 
-		return new DismissRoleOperation(u, g, r);
-	}
+    if (r == null)
+      throw new NoSuchRoleException("Role '" + roleName
+        + "' does not exists in this vo.");
 
-	public static DismissRoleOperation instance(Long userId, String roleFqan){
-		
-		return new DismissRoleOperation(userId, roleFqan);
-	}
-	
-	protected void setupPermissions() {
+    return new DismissRoleOperation(u, g, r);
 
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
-				.getContainerReadPermission().setMembershipRWPermission());
+  }
 
-	}
+  public static DismissRoleOperation instance(VOMSUser u, VOMSGroup g,
+    VOMSRole r) {
+
+    return new DismissRoleOperation(u, g, r);
+  }
+
+  public static DismissRoleOperation instance(Long userId, String roleFqan) {
+
+    return new DismissRoleOperation(userId, roleFqan);
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+      .getContainerReadPermission().setMembershipRWPermission());
+
+  }
 }

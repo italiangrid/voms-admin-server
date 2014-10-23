@@ -29,32 +29,31 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
 @Results({
-		@Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
-		@Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "aupStatus.jsp")
-		})
+  @Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
+  @Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "aupStatus.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class CreateAcceptanceRecordAction extends UserActionSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
-		new CreateAcceptanceRecordOperation(aupDAO.getVOAUP(), getModel())
-				.execute();
+    new CreateAcceptanceRecordOperation(aupDAO.getVOAUP(), getModel())
+      .execute();
 
-		addActionMessage("AUP acceptance record created.");
+    addActionMessage("AUP acceptance record created.");
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
 }

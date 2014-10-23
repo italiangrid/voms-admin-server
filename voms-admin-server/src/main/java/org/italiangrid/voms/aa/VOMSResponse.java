@@ -25,31 +25,37 @@ import java.util.List;
 
 import org.italiangrid.voms.VOMSGenericAttribute;
 
-
 public interface VOMSResponse {
-	public enum Outcome {
-		SUCCESS,
-		FAILURE
-	};
-	
-	public Outcome getOutcome();
-	public void setOutcome(Outcome o);
-	
-	public List<VOMSWarningMessage> getWarnings();
-	public List<VOMSErrorMessage> getErrorMessages();
-	
-	public List<String> getIssuedFQANs();
-	public void setIssuedFQANs(List<String> issuedFQANs);
-	
-	public List<VOMSGenericAttribute> getIssuedGAs();
-	public void setIssuedGAs(List<VOMSGenericAttribute> issuedGAs);
-	
-	public List<String> getTargets();
-	public void setTargets(List<String> targets);
-	
-	public Date getNotAfter();
-	public void setNotAfter(Date notAfter);
-	
-	public Date getNotBefore();
-	public void setNotBefore(Date notBefore);
+
+  public enum Outcome {
+    SUCCESS, FAILURE
+  };
+
+  public Outcome getOutcome();
+
+  public void setOutcome(Outcome o);
+
+  public List<VOMSWarningMessage> getWarnings();
+
+  public List<VOMSErrorMessage> getErrorMessages();
+
+  public List<String> getIssuedFQANs();
+
+  public void setIssuedFQANs(List<String> issuedFQANs);
+
+  public List<VOMSGenericAttribute> getIssuedGAs();
+
+  public void setIssuedGAs(List<VOMSGenericAttribute> issuedGAs);
+
+  public List<String> getTargets();
+
+  public void setTargets(List<String> targets);
+
+  public Date getNotAfter();
+
+  public void setNotAfter(Date notAfter);
+
+  public Date getNotBefore();
+
+  public void setNotBefore(Date notBefore);
 }

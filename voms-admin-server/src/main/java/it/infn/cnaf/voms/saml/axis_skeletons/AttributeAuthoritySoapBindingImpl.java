@@ -43,57 +43,55 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 
 public class AttributeAuthoritySoapBindingImpl implements
-		it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType {
-	/**
+  it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType {
+
+  /**
    * 
    */
-	static private Logger logger = LoggerFactory
-			.getLogger(AttributeAuthoritySoapBindingImpl.class);
+  static private Logger logger = LoggerFactory
+    .getLogger(AttributeAuthoritySoapBindingImpl.class);
 
-	/**
+  /**
    * 
    */
-	private VOMSSAMLService vOMSSAMLService;
+  private VOMSSAMLService vOMSSAMLService;
 
-	/**
+  /**
    * 
    */
-	public AttributeAuthoritySoapBindingImpl() {
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+  public AttributeAuthoritySoapBindingImpl() {
 
-		/* instantiate the VomsSamlService object, if the service is active */
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		if (conf.getBoolean(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT,
-				false)) {
-			SAMLAssertionFactory sAMLAssertionFactory = new SAMLAssertionFactory(
-					conf.getServiceCertificate(), conf.getServicePrivateKey());
+    /* instantiate the VomsSamlService object, if the service is active */
 
-			SAMLResponseFactory sAMLResponseFactory = new SAMLResponseFactory(
-					conf.getServiceCertificate().getSubjectX500Principal());
+    if (conf.getBoolean(
+      VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false)) {
+      SAMLAssertionFactory sAMLAssertionFactory = new SAMLAssertionFactory(
+        conf.getServiceCertificate(), conf.getServicePrivateKey());
 
-			this.vOMSSAMLService = new VOMSSAMLService(sAMLAssertionFactory,
-					sAMLResponseFactory, conf.getInt(
-							VOMSConfigurationConstants.VOMS_SAML_MAX_ASSERTION_LIFETIME,
-							720));
-		}
+      SAMLResponseFactory sAMLResponseFactory = new SAMLResponseFactory(conf
+        .getServiceCertificate().getSubjectX500Principal());
 
-	}
+      this.vOMSSAMLService = new VOMSSAMLService(sAMLAssertionFactory,
+        sAMLResponseFactory, conf.getInt(
+          VOMSConfigurationConstants.VOMS_SAML_MAX_ASSERTION_LIFETIME, 720));
+    }
 
-	public org.opensaml.saml2.core.Response attributeQuery(
-			org.opensaml.saml2.core.AttributeQuery attributeQuery)
-			throws java.rmi.RemoteException {
-		
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
-			throw new RemoteException(
-					"SAML attribute authority is currently disabled on this VOMS Admin instance.");
+  }
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest) MessageContext
-				.getCurrentContext().getProperty(
-						HTTPConstants.MC_HTTP_SERVLETREQUEST);
+  public org.opensaml.saml2.core.Response attributeQuery(
+    org.opensaml.saml2.core.AttributeQuery attributeQuery)
+    throws java.rmi.RemoteException {
 
-		return vOMSSAMLService.attributeQuery(attributeQuery,
-				httpServletRequest);
-	}
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false))
+      throw new RemoteException(
+        "SAML attribute authority is currently disabled on this VOMS Admin instance.");
+
+    HttpServletRequest httpServletRequest = (HttpServletRequest) MessageContext
+      .getCurrentContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
+
+    return vOMSSAMLService.attributeQuery(attributeQuery, httpServletRequest);
+  }
 }

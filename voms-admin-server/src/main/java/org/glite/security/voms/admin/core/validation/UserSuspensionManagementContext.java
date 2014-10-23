@@ -25,7 +25,7 @@ import org.glite.security.voms.admin.core.validation.strategies.SuspendUserStrat
 
 public interface UserSuspensionManagementContext {
 
-	SuspendUserStrategy getSuspendUserStrategy();
-	
-	RestoreUserStrategy getRestoreUserStrategy();
+  SuspendUserStrategy getSuspendUserStrategy();
+
+  RestoreUserStrategy getRestoreUserStrategy();
 }

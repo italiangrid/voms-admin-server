@@ -30,58 +30,52 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.Preparable;
 
-@Results({
-		@Result(name=BaseAction.SUCCESS, location="index", type="redirectAction")
-})
+@Results({ @Result(name = BaseAction.SUCCESS, location = "index",
+  type = "redirectAction") })
+public class DeleteAction extends BaseAction implements Preparable {
 
-public class DeleteAction extends BaseAction implements Preparable{
-
-	
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long id;
-	GroupManager manager;
+  Long id;
+  GroupManager manager;
 
-	
-	@Override
-	public void prepare() throws Exception {
+  @Override
+  public void prepare() throws Exception {
 
-		GroupManagerDAO dao = DAOFactory.instance().getGroupManagerDAO();
-		manager = dao.findById(id, true);
-	}
+    GroupManagerDAO dao = DAOFactory.instance().getGroupManagerDAO();
+    manager = dao.findById(id, true);
+  }
 
-	@Override
-	public String execute() throws Exception {
-		
-		if (manager != null){
-			DeleteGroupManagerOperation op = new DeleteGroupManagerOperation(manager);
-			op.execute();
-		}
-				
-		addActionMessage("Manager succesfully deleted: "+manager.getName());
-		return SUCCESS;
-	}
-	
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-	
-		return id;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-	
-		this.id = id;
-	}
+    if (manager != null) {
+      DeleteGroupManagerOperation op = new DeleteGroupManagerOperation(manager);
+      op.execute();
+    }
 
-	
+    addActionMessage("Manager succesfully deleted: " + manager.getName());
+    return SUCCESS;
+  }
+
+  /**
+   * @return the id
+   */
+  public Long getId() {
+
+    return id;
+  }
+
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
+
+    this.id = id;
+  }
 
 }

@@ -27,37 +27,36 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class DeleteGroupAttributeOperation extends BaseAttributeRWOperation {
 
-	String attributeName;
+  String attributeName;
 
-	private DeleteGroupAttributeOperation(VOMSGroup g, String aName) {
-		super(VOMSContext.instance(g));
-		attributeName = aName;
-	}
+  private DeleteGroupAttributeOperation(VOMSGroup g, String aName) {
 
-	protected Object doExecute() {
+    super(VOMSContext.instance(g));
+    attributeName = aName;
+  }
 
-		VOMSGroupDAO.instance().deleteAttribute(__context.getGroup(),
-				attributeName);
-		return null;
-	}
+  protected Object doExecute() {
 
-	public static DeleteGroupAttributeOperation instance(VOMSGroup g,
-			String aName) {
+    VOMSGroupDAO.instance()
+      .deleteAttribute(__context.getGroup(), attributeName);
+    return null;
+  }
 
-		return new DeleteGroupAttributeOperation(g, aName);
-	}
+  public static DeleteGroupAttributeOperation instance(VOMSGroup g, String aName) {
 
-	public static DeleteGroupAttributeOperation instance(String groupName,
-			String aName) {
+    return new DeleteGroupAttributeOperation(g, aName);
+  }
 
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
+  public static DeleteGroupAttributeOperation instance(String groupName,
+    String aName) {
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' does not exist in this vo.");
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
 
-		return new DeleteGroupAttributeOperation(g, aName);
-	}
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' does not exist in this vo.");
+
+    return new DeleteGroupAttributeOperation(g, aName);
+  }
 
 }

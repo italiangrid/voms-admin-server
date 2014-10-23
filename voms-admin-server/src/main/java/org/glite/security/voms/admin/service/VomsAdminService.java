@@ -59,694 +59,669 @@ import org.glite.security.voms.service.admin.VOMSAdmin;
 
 public class VomsAdminService implements VOMSAdmin {
 
-	private static final Logger log = LoggerFactory.getLogger(VomsAdminService.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(VomsAdminService.class);
 
-	public VomsAdminService() {
+  public VomsAdminService() {
 
-		super();
+    super();
 
-	}
+  }
 
-	public User getUser(String username, String userca) throws RemoteException,
-			VOMSException {
+  public User getUser(String username, String userca) throws RemoteException,
+    VOMSException {
 
-		log.info("getUser("
-				+ StringUtils.join(new Object[] { username, userca }, ',')
-				+ ");");
+    log.info("getUser("
+      + StringUtils.join(new Object[] { username, userca }, ',') + ");");
 
-		try {
+    try {
 
-			VOMSUser u = (VOMSUser) FindUserOperation
-					.instance(username, userca).execute();
+      VOMSUser u = (VOMSUser) FindUserOperation.instance(username, userca)
+        .execute();
 
-			if (u == null)
-				return null;
-			else
-				return u.asUser();
+      if (u == null)
+        return null;
+      else
+        return u.asUser();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
+      ServiceExceptionHelper.handleServiceException(log, e);
 
-			throw e;
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void setUser(User user) throws RemoteException, VOMSException {
+  public void setUser(User user) throws RemoteException, VOMSException {
 
-		log.info("setUser(" + StringUtils.join(new Object[] { user }, ',')
-				+ ");");
+    log.info("setUser(" + StringUtils.join(new Object[] { user }, ',') + ");");
 
-		if (user == null)
-			throw new NullArgumentException("User passed as argument is null!");
+    if (user == null)
+      throw new NullArgumentException("User passed as argument is null!");
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(user.getDN(),
-				user.getCA()).execute();
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(user.getDN(),
+      user.getCA()).execute();
 
-		if (u == null)
-			throw new NoSuchUserException("User (" + user.getDN() + ","
-					+ user.getCA() + ") not found in database!");
+    if (u == null)
+      throw new NoSuchUserException("User (" + user.getDN() + ","
+        + user.getCA() + ") not found in database!");
 
-		Validator.validateUser(user);
+    Validator.validateUser(user);
 
-		u.fromUser(user);
+    u.fromUser(user);
 
-		UpdateUserOperation.instance(u).execute();
+    UpdateUserOperation.instance(u).execute();
 
-	}
+  }
 
-	public void createGroup(String parentname, String groupname)
-			throws RemoteException, VOMSException {
+  public void createGroup(String parentname, String groupname)
+    throws RemoteException, VOMSException {
 
-		log.info("createGroup("
-				+ StringUtils.join(new Object[] { parentname, groupname }, ',')
-				+ ");");
+    log.info("createGroup("
+      + StringUtils.join(new Object[] { parentname, groupname }, ',') + ");");
 
-		if (!groupname.startsWith("/"))
-			groupname = "/" + groupname;
+    if (!groupname.startsWith("/"))
+      groupname = "/" + groupname;
 
-		try {
+    try {
 
-			Validator.validateInputString(groupname,
-					"Invalid characters in group name!");
-			CreateGroupOperation.instance(groupname).execute();
+      Validator.validateInputString(groupname,
+        "Invalid characters in group name!");
+      CreateGroupOperation.instance(groupname).execute();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
+      ServiceExceptionHelper.handleServiceException(log, e);
 
-			throw e;
-		}
+      throw e;
+    }
 
-	}
+  }
 
-	public int getMajorVersionNumber() throws RemoteException {
+  public int getMajorVersionNumber() throws RemoteException {
 
-		log.info("getMajorVersionNumber("
-				+ StringUtils.join(new Object[] {}, ',') + ");");
+    log.info("getMajorVersionNumber(" + StringUtils.join(new Object[] {}, ',')
+      + ");");
 
-		return 2;
-	}
+    return 2;
+  }
 
-	public String getVOName() throws RemoteException, VOMSException {
+  public String getVOName() throws RemoteException, VOMSException {
 
-		log.info("getVOName(" + StringUtils.join(new Object[] {}, ',') + ");");
+    log.info("getVOName(" + StringUtils.join(new Object[] {}, ',') + ");");
 
-		try {
+    try {
 
-			return "/" + VOMSConfiguration.instance().getVOName();
+      return "/" + VOMSConfiguration.instance().getVOName();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public void createUser(User user) throws RemoteException, VOMSException {
+  public void createUser(User user) throws RemoteException, VOMSException {
 
-		log.info("createUser("
-				+ StringUtils.join(new Object[] { user.getDN(), user.getCA() },
-						',') + ");");
+    log.info("createUser("
+      + StringUtils.join(new Object[] { user.getDN(), user.getCA() }, ',')
+      + ");");
 
-		try {
+    try {
 
-			Validator.validateUser(user);
-			CreateUserOperation.instance(user.getDN(), user.getCA(),
-					user.getCN(), user.getCertUri(), user.getMail()).execute();
+      Validator.validateUser(user);
+      CreateUserOperation.instance(user.getDN(), user.getCA(), user.getCN(),
+        user.getCertUri(), user.getMail()).execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
 
-	}
+  }
 
-	public void deleteUser(String username, String userca)
-			throws RemoteException, VOMSException {
+  public void deleteUser(String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("deleteUser("
-				+ StringUtils.join(new Object[] { username, userca }, ',')
-				+ ");");
+    log.info("deleteUser("
+      + StringUtils.join(new Object[] { username, userca }, ',') + ");");
 
-		try {
+    try {
 
-			DeleteUserOperation.instance(username, userca).execute();
-			HibernateFactory.commitTransaction();
+      DeleteUserOperation.instance(username, userca).execute();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+    } catch (RuntimeException e) {
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void deleteGroup(String groupname) throws RemoteException,
-			VOMSException {
+  public void deleteGroup(String groupname) throws RemoteException,
+    VOMSException {
 
-		log.info("deleteGroup("
-				+ StringUtils.join(new Object[] { groupname }, ',') + ");");
+    log.info("deleteGroup(" + StringUtils.join(new Object[] { groupname }, ',')
+      + ");");
 
-		try {
+    try {
 
-			if (!groupname.startsWith("/"))
-				groupname = "/" + groupname;
+      if (!groupname.startsWith("/"))
+        groupname = "/" + groupname;
 
-			DeleteGroupOperation.instance(groupname).execute();
-			HibernateFactory.commitTransaction();
+      DeleteGroupOperation.instance(groupname).execute();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
 
-	}
+  }
 
-	public void createRole(String rolename) throws RemoteException,
-			VOMSException {
+  public void createRole(String rolename) throws RemoteException, VOMSException {
 
-		log.info("createRole("
-				+ StringUtils.join(new Object[] { rolename }, ',') + ");");
+    log.info("createRole(" + StringUtils.join(new Object[] { rolename }, ',')
+      + ");");
 
-		try {
+    try {
 
-			Validator.validateDN(rolename, "Invalid characters in role name!");
-			if (PathNamingScheme.isRole(rolename))
-				rolename = PathNamingScheme.getRoleName(rolename);
+      Validator.validateDN(rolename, "Invalid characters in role name!");
+      if (PathNamingScheme.isRole(rolename))
+        rolename = PathNamingScheme.getRoleName(rolename);
 
-			CreateRoleOperation.instance(rolename).execute();
-			HibernateFactory.commitTransaction();
+      CreateRoleOperation.instance(rolename).execute();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
 
-	}
+  }
 
-	public void deleteRole(String rolename) throws RemoteException,
-			VOMSException {
+  public void deleteRole(String rolename) throws RemoteException, VOMSException {
 
-		log.info("deleteRole("
-				+ StringUtils.join(new Object[] { rolename }, ',') + ");");
+    log.info("deleteRole(" + StringUtils.join(new Object[] { rolename }, ',')
+      + ");");
 
-		try {
-			if (PathNamingScheme.isRole(rolename))
-				rolename = PathNamingScheme.getRoleName(rolename);
+    try {
+      if (PathNamingScheme.isRole(rolename))
+        rolename = PathNamingScheme.getRoleName(rolename);
 
-			DeleteRoleOperation.instance(rolename).execute();
-			HibernateFactory.commitTransaction();
+      DeleteRoleOperation.instance(rolename).execute();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void createCapability(String capability) throws RemoteException,
-			VOMSException {
+  public void createCapability(String capability) throws RemoteException,
+    VOMSException {
 
-		log.info("createCapability("
-				+ StringUtils.join(new Object[] { capability }, ',') + ");");
+    log.info("createCapability("
+      + StringUtils.join(new Object[] { capability }, ',') + ");");
 
-		try {
+    try {
 
-			throw new UnimplementedFeatureException(
-					"createCapability(String s)");
+      throw new UnimplementedFeatureException("createCapability(String s)");
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
-	}
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
+  }
 
-	public void deleteCapability(String capability) throws RemoteException,
-			VOMSException {
+  public void deleteCapability(String capability) throws RemoteException,
+    VOMSException {
 
-		log.info("deleteCapability("
-				+ StringUtils.join(new Object[] { capability }, ',') + ");");
+    log.info("deleteCapability("
+      + StringUtils.join(new Object[] { capability }, ',') + ");");
 
-		throw new UnimplementedFeatureException("deleteCapability(String s)");
+    throw new UnimplementedFeatureException("deleteCapability(String s)");
 
-	}
+  }
 
-	public void addMember(String groupname, String username, String userca)
-			throws RemoteException, VOMSException {
+  public void addMember(String groupname, String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("addMember("
-				+ StringUtils.join(
-						new Object[] { groupname, username, userca }, ',')
-				+ ");");
+    log.info("addMember("
+      + StringUtils.join(new Object[] { groupname, username, userca }, ',')
+      + ");");
 
-		try {
+    try {
 
-			AddMemberOperation.instance(groupname, username, userca).execute();
+      AddMemberOperation.instance(groupname, username, userca).execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void removeMember(String groupname, String username, String userca)
-			throws RemoteException, VOMSException {
+  public void removeMember(String groupname, String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("removeMember("
-				+ StringUtils.join(
-						new Object[] { groupname, username, userca }, ',')
-				+ ");");
+    log.info("removeMember("
+      + StringUtils.join(new Object[] { groupname, username, userca }, ',')
+      + ");");
 
-		try {
+    try {
 
-			RemoveMemberOperation.instance(groupname, username, userca)
-					.execute();
+      RemoveMemberOperation.instance(groupname, username, userca).execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void assignRole(String groupname, String rolename, String username,
-			String userca) throws RemoteException, VOMSException {
+  public void assignRole(String groupname, String rolename, String username,
+    String userca) throws RemoteException, VOMSException {
 
-		log.info("assignRole("
-				+ StringUtils.join(new Object[] { groupname, rolename,
-						username, userca }, ',') + ");");
+    log.info("assignRole("
+      + StringUtils.join(
+        new Object[] { groupname, rolename, username, userca }, ',') + ");");
 
-		if (PathNamingScheme.isRole(rolename))
-			rolename = PathNamingScheme.getRoleName(rolename);
+    if (PathNamingScheme.isRole(rolename))
+      rolename = PathNamingScheme.getRoleName(rolename);
 
-		try {
+    try {
 
-			AssignRoleOperation.instance(groupname, rolename, username, userca)
-					.execute();
+      AssignRoleOperation.instance(groupname, rolename, username, userca)
+        .execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public void dismissRole(String groupname, String rolename, String username,
-			String userca) throws RemoteException, VOMSException {
+  public void dismissRole(String groupname, String rolename, String username,
+    String userca) throws RemoteException, VOMSException {
 
-		log.info("dismissRole("
-				+ StringUtils.join(new Object[] { groupname, rolename,
-						username, userca }, ',') + ");");
+    log.info("dismissRole("
+      + StringUtils.join(
+        new Object[] { groupname, rolename, username, userca }, ',') + ");");
 
-		if (PathNamingScheme.isRole(rolename))
-			rolename = PathNamingScheme.getRoleName(rolename);
+    if (PathNamingScheme.isRole(rolename))
+      rolename = PathNamingScheme.getRoleName(rolename);
 
-		try {
+    try {
 
-			DismissRoleOperation
-					.instance(groupname, rolename, username, userca).execute();
+      DismissRoleOperation.instance(groupname, rolename, username, userca)
+        .execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public void assignCapability(String capability, String username,
-			String userca) throws RemoteException, VOMSException {
+  public void assignCapability(String capability, String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("assignCapability("
-				+ StringUtils.join(
-						new Object[] { capability, username, userca }, ',')
-				+ ");");
+    log.info("assignCapability("
+      + StringUtils.join(new Object[] { capability, username, userca }, ',')
+      + ");");
 
-		throw new UnimplementedFeatureException("assignCapability(...)");
+    throw new UnimplementedFeatureException("assignCapability(...)");
 
-	}
+  }
 
-	public void dismissCapability(String capability, String username,
-			String userca) throws RemoteException, VOMSException {
+  public void dismissCapability(String capability, String username,
+    String userca) throws RemoteException, VOMSException {
 
-		log.info("dismissCapability("
-				+ StringUtils.join(
-						new Object[] { capability, username, userca }, ',')
-				+ ");");
+    log.info("dismissCapability("
+      + StringUtils.join(new Object[] { capability, username, userca }, ',')
+      + ");");
 
-		throw new UnimplementedFeatureException("dismissCapability(...)");
+    throw new UnimplementedFeatureException("dismissCapability(...)");
 
-	}
+  }
 
-	public User[] listMembers(String groupname) throws RemoteException,
-			VOMSException {
+  public User[] listMembers(String groupname) throws RemoteException,
+    VOMSException {
 
-		log.info("listMembers("
-				+ StringUtils.join(new Object[] { groupname }, ',') + ");");
+    log.info("listMembers(" + StringUtils.join(new Object[] { groupname }, ',')
+      + ");");
 
-		if (groupname == null || groupname.equals(""))
-			groupname = "/" + VOMSConfiguration.instance().getVOName();
+    if (groupname == null || groupname.equals(""))
+      groupname = "/" + VOMSConfiguration.instance().getVOName();
 
-		try {
+    try {
 
-			List members = (List) ListMembersOperation.instance(groupname)
-					.execute();
+      List members = (List) ListMembersOperation.instance(groupname).execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-			return VOMSUser.collectionAsUsers(members);
+      return VOMSUser.collectionAsUsers(members);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public User[] listUsersWithRole(String groupname, String rolename)
-			throws RemoteException, VOMSException {
+  public User[] listUsersWithRole(String groupname, String rolename)
+    throws RemoteException, VOMSException {
 
-		log.info("listUsersWithRole("
-				+ StringUtils.join(new Object[] { groupname, rolename }, ',')
-				+ ");");
-		try {
+    log.info("listUsersWithRole("
+      + StringUtils.join(new Object[] { groupname, rolename }, ',') + ");");
+    try {
 
-			if (!PathNamingScheme.isRole(rolename))
-				rolename = "Role=" + rolename;
+      if (!PathNamingScheme.isRole(rolename))
+        rolename = "Role=" + rolename;
 
-			String contextString = groupname + "/" + rolename;
+      String contextString = groupname + "/" + rolename;
 
-			List members = (List) ListMembersOperation.instance(contextString)
-					.execute();
+      List members = (List) ListMembersOperation.instance(contextString)
+        .execute();
 
-			HibernateFactory.commitTransaction();
-			return VOMSUser.collectionAsUsers(members);
+      HibernateFactory.commitTransaction();
+      return VOMSUser.collectionAsUsers(members);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public User[] listUsersWithCapability(String capability)
-			throws RemoteException, VOMSException {
+  public User[] listUsersWithCapability(String capability)
+    throws RemoteException, VOMSException {
 
-		log.info("listUsersWithCapability("
-				+ StringUtils.join(new Object[] { capability }, ',') + ");");
+    log.info("listUsersWithCapability("
+      + StringUtils.join(new Object[] { capability }, ',') + ");");
 
-		throw new UnimplementedFeatureException("listUsersWithCapability(...)");
+    throw new UnimplementedFeatureException("listUsersWithCapability(...)");
 
-	}
+  }
 
-	public String[] getGroupPath(String groupname) throws RemoteException,
-			VOMSException {
+  public String[] getGroupPath(String groupname) throws RemoteException,
+    VOMSException {
 
-		log.info("getGroupPath("
-				+ StringUtils.join(new Object[] { groupname }, ',') + ");");
+    log.info("getGroupPath("
+      + StringUtils.join(new Object[] { groupname }, ',') + ");");
 
-		try {
+    try {
 
-			String[] parentChain = PathNamingScheme
-					.getParentGroupChain(groupname);
-			String[] result = new String[parentChain.length + 1];
+      String[] parentChain = PathNamingScheme.getParentGroupChain(groupname);
+      String[] result = new String[parentChain.length + 1];
 
-			result[0] = groupname;
-			System.arraycopy(parentChain, 0, result, 1, parentChain.length);
+      result[0] = groupname;
+      System.arraycopy(parentChain, 0, result, 1, parentChain.length);
 
-			return result;
+      return result;
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public String[] listSubGroups(String groupname) throws RemoteException,
-			VOMSException {
+  public String[] listSubGroups(String groupname) throws RemoteException,
+    VOMSException {
 
-		log.info("listSubGroups("
-				+ StringUtils.join(new Object[] { groupname }, ',') + ");");
+    log.info("listSubGroups("
+      + StringUtils.join(new Object[] { groupname }, ',') + ");");
 
-		try {
+    try {
 
-			List childrenGroups;
+      List childrenGroups;
 
-			if (groupname == null) {
+      if (groupname == null) {
 
-				VOMSContext ctxt = VOMSContext.getVoContext();
-				childrenGroups = (List) ListChildrenGroupsOperation.instance(
-						ctxt.getGroup()).execute();
-			} else
-				childrenGroups = (List) ListChildrenGroupsOperation.instance(
-						groupname).execute();
+        VOMSContext ctxt = VOMSContext.getVoContext();
+        childrenGroups = (List) ListChildrenGroupsOperation.instance(
+          ctxt.getGroup()).execute();
+      } else
+        childrenGroups = (List) ListChildrenGroupsOperation.instance(groupname)
+          .execute();
 
-			HibernateFactory.commitTransaction();
-			return ServiceUtils.groupsToStringArray(childrenGroups);
+      HibernateFactory.commitTransaction();
+      return ServiceUtils.groupsToStringArray(childrenGroups);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public String[] listGroups(String username, String userca)
-			throws RemoteException, VOMSException {
+  public String[] listGroups(String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("listGroups("
-				+ StringUtils.join(new Object[] { username, userca }, ',')
-				+ ");");
-		try {
+    log.info("listGroups("
+      + StringUtils.join(new Object[] { username, userca }, ',') + ");");
+    try {
 
-			Set groups = (Set) ListUserGroupsOperation.instance(username,
-					userca).execute();
+      Set groups = (Set) ListUserGroupsOperation.instance(username, userca)
+        .execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-			return ServiceUtils.groupsToStringArray(groups);
+      return ServiceUtils.groupsToStringArray(groups);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public String[] listRoles(String username, String userca)
-			throws RemoteException, VOMSException {
+  public String[] listRoles(String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("listRoles("
-				+ StringUtils.join(new Object[] { username, userca }, ',')
-				+ ");");
-		try {
+    log.info("listRoles("
+      + StringUtils.join(new Object[] { username, userca }, ',') + ");");
+    try {
 
-			Set roles = (Set) ListUserRolesOperation.instance(username, userca)
-					.execute();
+      Set roles = (Set) ListUserRolesOperation.instance(username, userca)
+        .execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-			return ServiceUtils.toStringArray(roles);
+      return ServiceUtils.toStringArray(roles);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public String[] listRoles() throws RemoteException, VOMSException {
+  public String[] listRoles() throws RemoteException, VOMSException {
 
-		log.info("listRoles();");
+    log.info("listRoles();");
 
-		try {
+    try {
 
-			List roles = (List) ListRolesOperation.instance().execute();
+      List roles = (List) ListRolesOperation.instance().execute();
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-			return ServiceUtils.rolesToStringArray(roles);
+      return ServiceUtils.rolesToStringArray(roles);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
-	}
+    }
+  }
 
-	public String[] listCapabilities(String username, String userca)
-			throws RemoteException, VOMSException {
+  public String[] listCapabilities(String username, String userca)
+    throws RemoteException, VOMSException {
 
-		log.info("listCapabilities("
-				+ StringUtils.join(new Object[] { username, userca }, ',')
-				+ ");");
+    log.info("listCapabilities("
+      + StringUtils.join(new Object[] { username, userca }, ',') + ");");
 
-		throw new UnimplementedFeatureException("listCapabilities(...)");
-	}
+    throw new UnimplementedFeatureException("listCapabilities(...)");
+  }
 
-	public String[] listCapabilities() throws RemoteException, VOMSException {
+  public String[] listCapabilities() throws RemoteException, VOMSException {
 
-		log.info("listCapabilities(" + StringUtils.join(new Object[] {}, ',')
-				+ ");");
+    log.info("listCapabilities(" + StringUtils.join(new Object[] {}, ',')
+      + ");");
 
-		throw new UnimplementedFeatureException("listCapabilities(...)");
+    throw new UnimplementedFeatureException("listCapabilities(...)");
 
-	}
+  }
 
-	public String[] listCAs() throws RemoteException, VOMSException {
+  public String[] listCAs() throws RemoteException, VOMSException {
 
-		log.info("listCAs();");
+    log.info("listCAs();");
 
-		try {
+    try {
 
-			List cas = (List) ListCaOperation.instance().execute();
+      List cas = (List) ListCaOperation.instance().execute();
 
-			HibernateFactory.commitTransaction();
-			return ServiceUtils.casToStringArray(cas);
+      HibernateFactory.commitTransaction();
+      return ServiceUtils.casToStringArray(cas);
 
-		} catch (RuntimeException e) {
+    } catch (RuntimeException e) {
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
 
-		}
+    }
 
-	}
+  }
 
-	public ACLEntry[] getACL(String container) throws RemoteException,
-			VOMSException {
+  public ACLEntry[] getACL(String container) throws RemoteException,
+    VOMSException {
 
-		log.info("getACL(" + StringUtils.join(new Object[] { container }, ',')
-				+ ");");
+    log.info("getACL(" + StringUtils.join(new Object[] { container }, ',')
+      + ");");
 
-		throw new UnimplementedFeatureException("getACL(...)");
-	}
+    throw new UnimplementedFeatureException("getACL(...)");
+  }
 
-	public void setACL(String container, ACLEntry[] acl)
-			throws RemoteException, VOMSException {
+  public void setACL(String container, ACLEntry[] acl) throws RemoteException,
+    VOMSException {
 
-		log
-				.info("setACL("
-						+ StringUtils
-								.join(new Object[] { container, acl }, ',')
-						+ ");");
+    log.info("setACL(" + StringUtils.join(new Object[] { container, acl }, ',')
+      + ");");
 
-		throw new UnimplementedFeatureException("setACL(...)");
+    throw new UnimplementedFeatureException("setACL(...)");
 
-	}
+  }
 
-	public void addACLEntry(String container, ACLEntry aclEntry)
-			throws RemoteException, VOMSException {
+  public void addACLEntry(String container, ACLEntry aclEntry)
+    throws RemoteException, VOMSException {
 
-		log.info("addACLEntry("
-				+ StringUtils.join(new Object[] { container, aclEntry }, ',')
-				+ ");");
+    log.info("addACLEntry("
+      + StringUtils.join(new Object[] { container, aclEntry }, ',') + ");");
 
-		throw new UnimplementedFeatureException("addACLEntry(...)");
+    throw new UnimplementedFeatureException("addACLEntry(...)");
 
-	}
+  }
 
-	public void removeACLEntry(String container, ACLEntry aclEntry)
-			throws RemoteException, VOMSException {
+  public void removeACLEntry(String container, ACLEntry aclEntry)
+    throws RemoteException, VOMSException {
 
-		log.info("removeACLEntry("
-				+ StringUtils.join(new Object[] { container, aclEntry }, ',')
-				+ ");");
+    log.info("removeACLEntry("
+      + StringUtils.join(new Object[] { container, aclEntry }, ',') + ");");
 
-		throw new UnimplementedFeatureException("removeACLEntry(...)");
+    throw new UnimplementedFeatureException("removeACLEntry(...)");
 
-	}
+  }
 
-	public ACLEntry[] getDefaultACL(String groupname) throws RemoteException,
-			VOMSException {
+  public ACLEntry[] getDefaultACL(String groupname) throws RemoteException,
+    VOMSException {
 
-		log.info("getDefaultACL("
-				+ StringUtils.join(new Object[] { groupname }, ',') + ");");
+    log.info("getDefaultACL("
+      + StringUtils.join(new Object[] { groupname }, ',') + ");");
 
-		throw new UnimplementedFeatureException("getDefaultACL(...)");
-	}
+    throw new UnimplementedFeatureException("getDefaultACL(...)");
+  }
 
-	public void setDefaultACL(String groupname, ACLEntry[] aclEntry)
-			throws RemoteException, VOMSException {
+  public void setDefaultACL(String groupname, ACLEntry[] aclEntry)
+    throws RemoteException, VOMSException {
 
-		log.info("setDefaultACL("
-				+ StringUtils.join(new Object[] { groupname, aclEntry }, ',')
-				+ ");");
+    log.info("setDefaultACL("
+      + StringUtils.join(new Object[] { groupname, aclEntry }, ',') + ");");
 
-		throw new UnimplementedFeatureException("setDefaultACL(...)");
+    throw new UnimplementedFeatureException("setDefaultACL(...)");
 
-	}
+  }
 
-	public void addDefaultACLEntry(String groupname, ACLEntry aclEntry)
-			throws RemoteException, VOMSException {
+  public void addDefaultACLEntry(String groupname, ACLEntry aclEntry)
+    throws RemoteException, VOMSException {
 
-		log.info("addDefaultACLEntry("
-				+ StringUtils.join(new Object[] { groupname, aclEntry }, ',')
-				+ ");");
+    log.info("addDefaultACLEntry("
+      + StringUtils.join(new Object[] { groupname, aclEntry }, ',') + ");");
 
-		throw new UnimplementedFeatureException("addDefaultACLEntry(...)");
+    throw new UnimplementedFeatureException("addDefaultACLEntry(...)");
 
-	}
+  }
 
-	public void removeDefaultACLEntry(String groupname, ACLEntry aclEntry)
-			throws RemoteException, VOMSException {
+  public void removeDefaultACLEntry(String groupname, ACLEntry aclEntry)
+    throws RemoteException, VOMSException {
 
-		log.info("removeDefaultACLEntry("
-				+ StringUtils.join(new Object[] { groupname, aclEntry }, ',')
-				+ ");");
+    log.info("removeDefaultACLEntry("
+      + StringUtils.join(new Object[] { groupname, aclEntry }, ',') + ");");
 
-		throw new UnimplementedFeatureException("removeDefaultACLEntry(...)");
+    throw new UnimplementedFeatureException("removeDefaultACLEntry(...)");
 
-	}
+  }
 
-	public int getMinorVersionNumber() throws RemoteException {
+  public int getMinorVersionNumber() throws RemoteException {
 
-		log.info("getMinorVersionNumber()");
+    log.info("getMinorVersionNumber()");
 
-		return 0;
-	}
+    return 0;
+  }
 
-	public int getPatchVersionNumber() throws RemoteException {
+  public int getPatchVersionNumber() throws RemoteException {
 
-		log.info("getPatchVersionNumber()");
-		return 0;
-	}
+    log.info("getPatchVersionNumber()");
+    return 0;
+  }
 
 }

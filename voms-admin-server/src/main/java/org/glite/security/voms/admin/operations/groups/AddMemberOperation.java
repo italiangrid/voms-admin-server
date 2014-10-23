@@ -31,59 +31,60 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddMemberOperation extends BaseVomsOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	public AddMemberOperation(VOMSUser u, VOMSGroup g) {
-		this.user = u;
-		this.group = g;
-	}
+  public AddMemberOperation(VOMSUser u, VOMSGroup g) {
 
-	public Object doExecute() {
+    this.user = u;
+    this.group = g;
+  }
 
-		// Add user to parent groups (if any) if she's not already there
-		if (!group.isRootGroup()) {
+  public Object doExecute() {
 
-			if (!user.isMember(group.getParent())) {
-				instance(user, group.getParent()).execute();
-			}
-		}
+    // Add user to parent groups (if any) if she's not already there
+    if (!group.isRootGroup()) {
 
-		VOMSUserDAO.instance().addToGroup(user, group);
+      if (!user.isMember(group.getParent())) {
+        instance(user, group.getParent()).execute();
+      }
+    }
 
-		return null;
-	}
+    VOMSUserDAO.instance().addToGroup(user, group);
 
-	public static AddMemberOperation instance(VOMSUser u, VOMSGroup g) {
+    return null;
+  }
 
-		return new AddMemberOperation(u, g);
-	}
+  public static AddMemberOperation instance(VOMSUser u, VOMSGroup g) {
 
-	public static AddMemberOperation instance(String groupName,
-			String username, String caDn) {
+    return new AddMemberOperation(u, g);
+  }
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
-				.execute();
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
+  public static AddMemberOperation instance(String groupName, String username,
+    String caDn) {
 
-		if (u == null)
-			throw new NoSuchUserException("User '" + username + "," + caDn
-					+ "' not found in this vo.");
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
+      .execute();
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' does not exist in this vo.");
-		return new AddMemberOperation(u, g);
+    if (u == null)
+      throw new NoSuchUserException("User '" + username + "," + caDn
+        + "' not found in this vo.");
 
-	}
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' does not exist in this vo.");
+    return new AddMemberOperation(u, g);
 
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group.getParent()),
-				VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
-				.getMembershipRWPermissions());
+  }
 
-	}
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.instance(group.getParent()),
+      VOMSPermission.getContainerReadPermission());
+    addRequiredPermission(VOMSContext.instance(group),
+      VOMSPermission.getMembershipRWPermissions());
+
+  }
 }

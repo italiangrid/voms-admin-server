@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -52,565 +51,554 @@ import org.hibernate.Session;
 
 public class VOMSGroupDAO {
 
-	public static final Logger log = LoggerFactory.getLogger(VOMSGroupDAO.class);
+  public static final Logger log = LoggerFactory.getLogger(VOMSGroupDAO.class);
 
-	private VOMSGroupDAO() {
+  private VOMSGroupDAO() {
 
-		HibernateFactory.beginTransaction();
-	}
+    HibernateFactory.beginTransaction();
+  }
 
-	public List<VOMSGroup> getAll() {
+  public List<VOMSGroup> getAll() {
 
-		String query = "from VOMSGroup order by name asc";
+    String query = "from VOMSGroup order by name asc";
 
-		Query q = HibernateFactory.getSession().createQuery(query);
-		@SuppressWarnings("unchecked")
-		List<VOMSGroup> res = q.list();
+    Query q = HibernateFactory.getSession().createQuery(query);
+    @SuppressWarnings("unchecked")
+    List<VOMSGroup> res = q.list();
 
-		return DAOUtils.filterUnvisibleGroups(res);
+    return DAOUtils.filterUnvisibleGroups(res);
 
-	}
+  }
 
-	public int countMatches(String searchString) {
+  public int countMatches(String searchString) {
 
-		String sString = "%" + searchString + "%";
+    String sString = "%" + searchString + "%";
 
-		String cQueryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString";
+    String cQueryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString";
 
-		Long totalMatches = (Long) HibernateFactory.getSession().createQuery(
-				cQueryString).setString("searchString", sString).uniqueResult();
+    Long totalMatches = (Long) HibernateFactory.getSession()
+      .createQuery(cQueryString).setString("searchString", sString)
+      .uniqueResult();
 
-		return totalMatches.intValue();
+    return totalMatches.intValue();
 
-	}
+  }
 
-	public int countGroups() {
+  public int countGroups() {
 
-		Long count = (Long) HibernateFactory
-				.getSession()
-				.createQuery(
-						"select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup")
-				.uniqueResult();
+    Long count = (Long) HibernateFactory
+      .getSession()
+      .createQuery(
+        "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSGroup")
+      .uniqueResult();
 
-		return count.intValue();
+    return count.intValue();
 
-	}
+  }
 
-	
-	public List<VOMSGroup> findAllWithoutRootGroup(){
-		
-		String query = "from VOMSGroup g where g != g.parent";
-		Query q = HibernateFactory.getSession().createQuery(query);
-		
-		return q.list();
-	}
-	
-	
-	public List<VOMSGroup> findAll() {
+  public List<VOMSGroup> findAllWithoutRootGroup() {
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup";
+    String query = "from VOMSGroup g where g != g.parent";
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		Query q = HibernateFactory.getSession().createQuery(query);
+    return q.list();
+  }
 
-		return q.list();
+  public List<VOMSGroup> findAll() {
 
-	}
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup";
 
-	public SearchResults getAll(int firstResult, int maxResults) {
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		SearchResults results = SearchResults.instance();
+    return q.list();
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup order by name asc";
+  }
 
-		Query q = HibernateFactory.getSession().createQuery(query);
+  public SearchResults getAll(int firstResult, int maxResults) {
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    SearchResults results = SearchResults.instance();
 
-		List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup order by name asc";
 
-		results.setCount(countGroups());
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
-		results.setResults(res);
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		return results;
-	}
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-	public SearchResults search(String searchString, int firstResult,
-			int maxResults) {
+    List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
 
-		if (searchString == null || searchString.equals("")
-				|| searchString.length() == 0)
-			return getAll(firstResult, maxResults);
+    results.setCount(countGroups());
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
+    results.setResults(res);
 
-		SearchResults results = SearchResults.instance();
+    return results;
+  }
 
-		String sString = "%" + searchString + "%";
-		String queryString = "from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString order by name asc";
+  public SearchResults search(String searchString, int firstResult,
+    int maxResults) {
 
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setString("searchString", sString);
+    if (searchString == null || searchString.equals("")
+      || searchString.length() == 0)
+      return getAll(firstResult, maxResults);
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    SearchResults results = SearchResults.instance();
 
-		List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
+    String sString = "%" + searchString + "%";
+    String queryString = "from org.glite.security.voms.admin.persistence.model.VOMSGroup where name like :searchString order by name asc";
 
-		results.setSearchString(searchString);
-		results.setResults(res);
-		results.setCount(countMatches(searchString));
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setString("searchString", sString);
 
-		return results;
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-	}
+    List<VOMSGroup> res = DAOUtils.filterUnvisibleGroups(q.list());
 
-	public SearchResults getMembers(VOMSGroup g, int firstResult, int maxResults) {
+    results.setSearchString(searchString);
+    results.setResults(res);
+    results.setCount(countMatches(searchString));
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
 
-		Set groupMembers = g.getMembers();
-		// int count = g.getMembers().size(); // Maybe the HQL query is more
-		// efficient
+    return results;
 
-		int count = groupMembers.size();
+  }
 
-		SearchResults results = SearchResults.instance();
+  public SearchResults getMembers(VOMSGroup g, int firstResult, int maxResults) {
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
+    Set groupMembers = g.getMembers();
+    // int count = g.getMembers().size(); // Maybe the HQL query is more
+    // efficient
 
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setFirstResult(firstResult).setMaxResults(maxResults);
+    int count = groupMembers.size();
 
-		q.setEntity("group", g);
+    SearchResults results = SearchResults.instance();
 
-		List res = q.list();
+    String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
 
-		results.setSearchString(null);
-		results.setResults(res);
-		results.setCount(count);
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setFirstResult(firstResult).setMaxResults(maxResults);
 
-		return results;
+    q.setEntity("group", g);
 
-	}
+    List res = q.list();
 
-	public int countMatchingMembers(VOMSGroup g, String searchString) {
+    results.setSearchString(null);
+    results.setResults(res);
+    results.setCount(count);
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null group!");
+    return results;
 
-		String sString = "%" + searchString + "%";
+  }
 
-		String queryString = "select count(m.user) as u from VOMSMapping m join m.user.certificates as cert where "
-				+ "m.group = :group and m.role is null and "
-				+ "(cert.subjectString like :searchString "
-				+ "or cert.ca.subjectString like :searchString "
-				+ "or m.user.name like :searchString "
-				+ "or m.user.surname like :searchString "
-				+ "or m.user.emailAddress like :searchString "
-				+ "or m.user.institution like :searchString)";
+  public int countMatchingMembers(VOMSGroup g, String searchString) {
 
-		// String queryString =
-		// "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
-		// "and m.user.dn like :searchString";
+    if (g == null)
+      throw new NullArgumentException("Cannot search members in a null group!");
 
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setString("searchString", sString);
+    String sString = "%" + searchString + "%";
 
-		q.setEntity("group", g);
+    String queryString = "select count(m.user) as u from VOMSMapping m join m.user.certificates as cert where "
+      + "m.group = :group and m.role is null and "
+      + "(cert.subjectString like :searchString "
+      + "or cert.ca.subjectString like :searchString "
+      + "or m.user.name like :searchString "
+      + "or m.user.surname like :searchString "
+      + "or m.user.emailAddress like :searchString "
+      + "or m.user.institution like :searchString)";
 
-		return ((Long) q.uniqueResult()).intValue();
+    // String queryString =
+    // "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
+    // "and m.user.dn like :searchString";
 
-	}
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setString("searchString", sString);
 
-	public SearchResults searchMembers(VOMSGroup g, String searchString,
-			int firstResult, int maxResults) {
+    q.setEntity("group", g);
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null group!");
+    return ((Long) q.uniqueResult()).intValue();
 
-		if (searchString == null || searchString.equals("")
-				|| searchString.length() == 0)
-			return getMembers(g, firstResult, maxResults);
+  }
 
-		SearchResults results = SearchResults.instance();
-		String sString = "%" + searchString + "%";
+  public SearchResults searchMembers(VOMSGroup g, String searchString,
+    int firstResult, int maxResults) {
 
-		String queryString = "select m.user as u from VOMSMapping m join m.user.certificates as cert where "
-				+ "m.group = :group and m.role is null and "
-				+ "(cert.subjectString like :searchString "
-				+ "or cert.ca.subjectString like :searchString "
-				+ "or m.user.name like :searchString "
-				+ "or m.user.surname like :searchString "
-				+ "or m.user.emailAddress like :searchString "
-				+ "or m.user.institution like :searchString)";
+    if (g == null)
+      throw new NullArgumentException("Cannot search members in a null group!");
 
-		// String queryString =
-		// "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
-		// "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
+    if (searchString == null || searchString.equals("")
+      || searchString.length() == 0)
+      return getMembers(g, firstResult, maxResults);
 
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setString("searchString", sString);
+    SearchResults results = SearchResults.instance();
+    String sString = "%" + searchString + "%";
 
-		q.setEntity("group", g);
+    String queryString = "select m.user as u from VOMSMapping m join m.user.certificates as cert where "
+      + "m.group = :group and m.role is null and "
+      + "(cert.subjectString like :searchString "
+      + "or cert.ca.subjectString like :searchString "
+      + "or m.user.name like :searchString "
+      + "or m.user.surname like :searchString "
+      + "or m.user.emailAddress like :searchString "
+      + "or m.user.institution like :searchString)";
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    // String queryString =
+    // "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null "+
+    // "and (m.user.dn like :searchString or m.user.ca.subjectString like :searchString) order by m.user.dn asc";
 
-		List res = q.list();
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setString("searchString", sString);
 
-		results.setSearchString(searchString);
-		results.setResults(res);
-		results.setCount(countMatchingMembers(g, searchString));
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
+    q.setEntity("group", g);
 
-		return results;
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-	}
+    List res = q.list();
 
-	public VOMSGroup findByName(String name) {
+    results.setSearchString(searchString);
+    results.setResults(res);
+    results.setCount(countMatchingMembers(g, searchString));
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
 
-		if (!PathNamingScheme.isGroup(name))
-			throw new VOMSSyntaxException("Syntax error in group name: " + name);
+    return results;
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup as g where g.name =:groupName";
+  }
 
-		Query q = HibernateFactory.getSession().createQuery(query);
+  public VOMSGroup findByName(String name) {
 
-		q.setString("groupName", name);
+    if (!PathNamingScheme.isGroup(name))
+      throw new VOMSSyntaxException("Syntax error in group name: " + name);
 
-		VOMSGroup g = (VOMSGroup) q.uniqueResult();
-		return g;
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup as g where g.name =:groupName";
 
-	}
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-	public VOMSGroup findById(Long id) {
+    q.setString("groupName", name);
 
-		
-		VOMSGroup g = (VOMSGroup) HibernateFactory.getSession().get(
-				VOMSGroup.class, id);
-		
-		return g;
+    VOMSGroup g = (VOMSGroup) q.uniqueResult();
+    return g;
 
-	}
+  }
 
-	public VOMSGroup getVOGroup() {
+  public VOMSGroup findById(Long id) {
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+    VOMSGroup g = (VOMSGroup) HibernateFactory.getSession().get(
+      VOMSGroup.class, id);
 
-		String voName = conf.getString(VOMSConfigurationConstants.VO_NAME);
+    return g;
 
-		if (voName == null)
-			throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
-					+ "undefined in configuration!");
+  }
 
-		VOMSGroup g = findByName("/" + voName);
+  public VOMSGroup getVOGroup() {
 
-		if (g == null)
-			throw new VOMSInconsistentDatabaseException(
-					"VO root group undefined in database!");
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		return g;
+    String voName = conf.getString(VOMSConfigurationConstants.VO_NAME);
 
-	}
+    if (voName == null)
+      throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
+        + "undefined in configuration!");
 
-	public List getChildren(VOMSGroup parentGroup) {
+    VOMSGroup g = findByName("/" + voName);
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
-		Query q = HibernateFactory.getSession().createQuery(query);
+    if (g == null)
+      throw new VOMSInconsistentDatabaseException(
+        "VO root group undefined in database!");
 
-		q.setEntity("parentGroup", parentGroup);
+    return g;
 
-		return q.list();
+  }
 
-	}
+  public List getChildren(VOMSGroup parentGroup) {
 
-	public VOMSGroup create(String groupName){
-		return create(groupName, null, null);
-	}
-	
-	public VOMSGroup create(String groupName, String description, Boolean isRestricted) {
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		if (!PathNamingScheme.isGroup(groupName))
-			throw new VOMSSyntaxException("Syntax error in group name: "
-					+ groupName);
+    q.setEntity("parentGroup", parentGroup);
 
-		if (findByName(groupName) != null)
-			throw new AlreadyExistsException("Group \"" + groupName
-					+ "\" already defined!");
+    return q.list();
 
-		String[] parentGroupChain = PathNamingScheme
-				.getParentGroupChain(groupName);
-		String rootGroupName = getVOGroup().getName();
-		// The root group of the parent chain must be the root group defined for
-		// the VO
-		if (!parentGroupChain[0].equals(rootGroupName))
-			throw new IllegalArgumentException("The root group for \""
-					+ groupName
-					+ "\" must match the root group of the VO (i.e., "
-					+ rootGroupName + ")");
+  }
 
-		String parentGroupName = PathNamingScheme.getParentGroupName(groupName);
+  public VOMSGroup create(String groupName) {
 
-		VOMSGroup parentGroup = findByName(parentGroupName);
+    return create(groupName, null, null);
+  }
 
-		if (parentGroup == null)
-			throw new NoSuchGroupException(
-					"Parent group \""
-							+ parentGroupName
-							+ "\" not defined in database!");
+  public VOMSGroup create(String groupName, String description,
+    Boolean isRestricted) {
 
-		VOMSGroup newGroup = new VOMSGroup();
-		newGroup.setName(groupName);
-		newGroup.setParent(parentGroup);
-		
-		if (description != null)
-			newGroup.setDescription(description);
-		
-		if (isRestricted != null)
-			newGroup.setRestricted(isRestricted);
+    if (!PathNamingScheme.isGroup(groupName))
+      throw new VOMSSyntaxException("Syntax error in group name: " + groupName);
 
-		log.debug("Creating group \"" + newGroup + "\".");
+    if (findByName(groupName) != null)
+      throw new AlreadyExistsException("Group \"" + groupName
+        + "\" already defined!");
 
-		HibernateFactory.getSession().save(newGroup);
-		return newGroup;
+    String[] parentGroupChain = PathNamingScheme.getParentGroupChain(groupName);
+    String rootGroupName = getVOGroup().getName();
+    // The root group of the parent chain must be the root group defined for
+    // the VO
+    if (!parentGroupChain[0].equals(rootGroupName))
+      throw new IllegalArgumentException("The root group for \"" + groupName
+        + "\" must match the root group of the VO (i.e., " + rootGroupName
+        + ")");
 
-	}
+    String parentGroupName = PathNamingScheme.getParentGroupName(groupName);
 
-	public void delete(Long id) {
+    VOMSGroup parentGroup = findByName(parentGroupName);
 
-		VOMSGroup g = (VOMSGroup) findById(id);
-		if (g == null)
-			throw new NoSuchGroupException("Group with id \"" + id
-					+ "\" not defined!");
+    if (parentGroup == null)
+      throw new NoSuchGroupException("Parent group \"" + parentGroupName
+        + "\" not defined in database!");
 
-		try {
-			delete(g);
-		} catch (ObjectNotFoundException e) {
+    VOMSGroup newGroup = new VOMSGroup();
+    newGroup.setName(groupName);
+    newGroup.setParent(parentGroup);
 
-			throw new NoSuchGroupException("Group with id \"" + id
-					+ "\" not defined!");
-		}
+    if (description != null)
+      newGroup.setDescription(description);
 
-	}
+    if (isRestricted != null)
+      newGroup.setRestricted(isRestricted);
 
-	private void uncheckedDelete(VOMSGroup g) {
+    log.debug("Creating group \"" + newGroup + "\".");
 
-		if (!g.isRootGroup()) {
-			g.getMappings().clear();
-			g.getAttributes().clear();
-			HibernateFactory.getSession().delete(g);
-		}
+    HibernateFactory.getSession().save(newGroup);
+    return newGroup;
 
-	}
+  }
 
-	public void deleteAll() {
+  public void delete(Long id) {
 
-		Iterator groups = getAll().iterator();
-		while (groups.hasNext())
-			uncheckedDelete((VOMSGroup) groups.next());
+    VOMSGroup g = (VOMSGroup) findById(id);
+    if (g == null)
+      throw new NoSuchGroupException("Group with id \"" + id
+        + "\" not defined!");
 
-	}
+    try {
+      delete(g);
+    } catch (ObjectNotFoundException e) {
 
-	public void delete(VOMSGroup g) {
+      throw new NoSuchGroupException("Group with id \"" + id
+        + "\" not defined!");
+    }
 
-		if (!PathNamingScheme.isGroup(g.getName()))
-			throw new VOMSSyntaxException(
-					"Syntax error in group name for group: " + g);
+  }
 
-		if (g.isRootGroup() && g.equals(getVOGroup()))
-			throw new IllegalOperationException("VO root group \""
-					+ g.getName() + "\" cannot be deleted!");
+  private void uncheckedDelete(VOMSGroup g) {
 
-		if (findByName(g.getName()) == null)
-			throw new NoSuchGroupException("Group \"" + g + "\" not defined!");
+    if (!g.isRootGroup()) {
+      g.getMappings().clear();
+      g.getAttributes().clear();
+      HibernateFactory.getSession().delete(g);
+    }
 
-		List children = getChildren(g);
+  }
 
-		if (!children.isEmpty())
-			throw new IllegalOperationException(
-					"The group \""
-							+ g
-							+ "\" cannot be deleted since it contains subgroups. Delete subgroups first.");
+  public void deleteAll() {
 
-		log.debug("Deleting group " + g + "\".");
+    Iterator groups = getAll().iterator();
+    while (groups.hasNext())
+      uncheckedDelete((VOMSGroup) groups.next());
 
-		VOMSRoleDAO.instance().removeRoleAttributesForGroup(g);
+  }
 
-		g.getMappings().clear();
+  public void delete(VOMSGroup g) {
 
-		g.getAcls().clear();
+    if (!PathNamingScheme.isGroup(g.getName()))
+      throw new VOMSSyntaxException("Syntax error in group name for group: "
+        + g);
 
-		// Delete admins and ACL permissions that are related to this group
-		VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
-		VOMSAdmin groupAdmin = adminDAO.getByFQAN(g.getName());
+    if (g.isRootGroup() && g.equals(getVOGroup()))
+      throw new IllegalOperationException("VO root group \"" + g.getName()
+        + "\" cannot be deleted!");
 
-		if (groupAdmin != null) {
+    if (findByName(g.getName()) == null)
+      throw new NoSuchGroupException("Group \"" + g + "\" not defined!");
 
-			ACLDAO.instance().deletePermissionsForAdmin(groupAdmin);
-			adminDAO.delete(groupAdmin);
-		}
+    List children = getChildren(g);
 
-		HibernateFactory.getSession().delete(g);
-		HibernateFactory.getSession().flush();
+    if (!children.isEmpty())
+      throw new IllegalOperationException(
+        "The group \""
+          + g
+          + "\" cannot be deleted since it contains subgroups. Delete subgroups first.");
 
-	}
+    log.debug("Deleting group " + g + "\".");
 
-	public VOMSGroup createVOGroup() {
+    VOMSRoleDAO.instance().removeRoleAttributesForGroup(g);
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+    g.getMappings().clear();
 
-		String voName = conf.getVOName();
+    g.getAcls().clear();
 
-		if (voName == null)
-			throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
-					+ " undefined in configuration!");
+    // Delete admins and ACL permissions that are related to this group
+    VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
+    VOMSAdmin groupAdmin = adminDAO.getByFQAN(g.getName());
 
-		VOMSGroup g = findByName("/" + voName);
+    if (groupAdmin != null) {
 
-		if (g != null)
-			throw new VOMSDatabaseException(
-					"Root group already defined for vo " + voName);
+      ACLDAO.instance().deletePermissionsForAdmin(groupAdmin);
+      adminDAO.delete(groupAdmin);
+    }
 
-		g = new VOMSGroup();
-		g.setName("/" + voName);
-		g.setId(new Long(1));
+    HibernateFactory.getSession().delete(g);
+    HibernateFactory.getSession().flush();
 
-		try {
+  }
 
-			// The ugly transaction management code here is acceptable since
-			// the creation of the VO GROUP is performed only once during the
-			// lifetime of a VO.
-			HibernateFactory.getSession().save(g);
-			HibernateFactory.commitTransaction();
+  public VOMSGroup createVOGroup() {
 
-			HibernateFactory.beginTransaction();
-			g.setParent(g);
-			HibernateFactory.getSession().update(g);
-			HibernateFactory.commitTransaction();
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		} catch (HibernateException e) {
+    String voName = conf.getVOName();
 
-			throw new VOMSDatabaseException(
-					"Failed creation of VO root group!", e);
-		} finally {
+    if (voName == null)
+      throw new VOMSConfigurationException(VOMSConfigurationConstants.VO_NAME
+        + " undefined in configuration!");
 
-			HibernateFactory.commitTransaction();
-		}
+    VOMSGroup g = findByName("/" + voName);
 
-		return g;
+    if (g != null)
+      throw new VOMSDatabaseException("Root group already defined for vo "
+        + voName);
 
-	}
+    g = new VOMSGroup();
+    g.setName("/" + voName);
+    g.setId(new Long(1));
 
-	public VOMSGroupAttribute setAttribute(VOMSGroup g, String attrName,
-			String attrValue) {
+    try {
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+      // The ugly transaction management code here is acceptable since
+      // the creation of the VO GROUP is performed only once during the
+      // lifetime of a VO.
+      HibernateFactory.getSession().save(g);
+      HibernateFactory.commitTransaction();
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attrName
-					+ "' is not defined in this vo.");
+      HibernateFactory.beginTransaction();
+      g.setParent(g);
+      HibernateFactory.getSession().update(g);
+      HibernateFactory.commitTransaction();
 
-		VOMSGroupAttribute val = g.getAttributeByName(attrName);
+    } catch (HibernateException e) {
 
-		if (val != null)
-			val.setValue(attrValue);
+      throw new VOMSDatabaseException("Failed creation of VO root group!", e);
+    } finally {
 
-		else {
-			val = VOMSGroupAttribute.instance(desc, attrValue, g);
-			g.addAttribute(val);
-		}
+      HibernateFactory.commitTransaction();
+    }
 
-		HibernateFactory.getSession().update(g);
+    return g;
 
-		return val;
+  }
 
-	}
+  public VOMSGroupAttribute setAttribute(VOMSGroup g, String attrName,
+    String attrValue) {
 
-	public VOMSGroupAttribute createAttribute(VOMSGroup g, String attrName,
-			String attrDesc, String attrValue) {
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
 
-		if (g.getAttributeByName(attrName) != null)
-			throw new AlreadyExistsException("Attribute \"" + attrName
-					+ "\" already defined for group \"" + g + "\".");
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attrName
+        + "' is not defined in this vo.");
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+    VOMSGroupAttribute val = g.getAttributeByName(attrName);
 
-		if (desc == null)
-			desc = VOMSAttributeDAO.instance().createAttributeDescription(
-					attrName, attrDesc);
-		log.debug("Creating attribute \"(" + attrName + "," + attrValue
-				+ ")\" for group \"" + g + "\"");
-		VOMSGroupAttribute val = VOMSGroupAttribute
-				.instance(desc, attrValue, g);
-		g.addAttribute(val);
+    if (val != null)
+      val.setValue(attrValue);
 
-		return val;
+    else {
+      val = VOMSGroupAttribute.instance(desc, attrValue, g);
+      g.addAttribute(val);
+    }
 
-	}
+    HibernateFactory.getSession().update(g);
 
-	public void deleteAttribute(VOMSGroup g, String attrName) {
+    return val;
 
-		VOMSGroupAttribute ga = g.getAttributeByName(attrName);
+  }
 
-		if (ga == null)
-			throw new NoSuchAttributeException("Attribute named '" + attrName
-					+ "' not defined for group '" + g.getName() + "'!");
+  public VOMSGroupAttribute createAttribute(VOMSGroup g, String attrName,
+    String attrDesc, String attrValue) {
 
-		deleteAttribute(g, ga);
+    if (g.getAttributeByName(attrName) != null)
+      throw new AlreadyExistsException("Attribute \"" + attrName
+        + "\" already defined for group \"" + g + "\".");
 
-	}
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
 
-	public void deleteAttribute(VOMSGroup g, VOMSGroupAttribute val) {
+    if (desc == null)
+      desc = VOMSAttributeDAO.instance().createAttributeDescription(attrName,
+        attrDesc);
+    log.debug("Creating attribute \"(" + attrName + "," + attrValue
+      + ")\" for group \"" + g + "\"");
+    VOMSGroupAttribute val = VOMSGroupAttribute.instance(desc, attrValue, g);
+    g.addAttribute(val);
 
-		log.debug("Deleting attribute \"" + val.getName() + "\" from group \""
-				+ g + "\"");
+    return val;
 
-		g.deleteAttribute(val);
+  }
 
-	}
+  public void deleteAttribute(VOMSGroup g, String attrName) {
 
-	public boolean isVOGroup(VOMSGroup g) {
+    VOMSGroupAttribute ga = g.getAttributeByName(attrName);
 
-		return (g.equals(getVOGroup()));
-	}
+    if (ga == null)
+      throw new NoSuchAttributeException("Attribute named '" + attrName
+        + "' not defined for group '" + g.getName() + "'!");
 
-	public static VOMSGroupDAO instance() {
+    deleteAttribute(g, ga);
 
-		return new VOMSGroupDAO();
-	}
+  }
 
-	public List getMembers(VOMSGroup g) {
+  public void deleteAttribute(VOMSGroup g, VOMSGroupAttribute val) {
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot get members of a null group!");
+    log.debug("Deleting attribute \"" + val.getName() + "\" from group \"" + g
+      + "\"");
 
-		String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"group", g).list();
+    g.deleteAttribute(val);
 
-	}
+  }
 
-	public Object getMemberSubjectStrings(VOMSGroup g) {
+  public boolean isVOGroup(VOMSGroup g) {
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot get members of a null group!");
+    return (g.equals(getVOGroup()));
+  }
 
-		// String query =
-		// "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
+  public static VOMSGroupDAO instance() {
 
-		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
+    return new VOMSGroupDAO();
+  }
 
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"group", g).list();
-	}
+  public List getMembers(VOMSGroup g) {
+
+    if (g == null)
+      throw new NullArgumentException("Cannot get members of a null group!");
+
+    String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("group", g).list();
+
+  }
+
+  public Object getMemberSubjectStrings(VOMSGroup g) {
+
+    if (g == null)
+      throw new NullArgumentException("Cannot get members of a null group!");
+
+    // String query =
+    // "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
+
+    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
+
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("group", g).list();
+  }
 }

@@ -26,10 +26,10 @@ import org.italiangrid.voms.aa.RequestContext;
 
 import eu.emi.security.authn.x509.impl.PEMCredential;
 
-
 public interface ACGenerator {
-	
-	public void configure(PEMCredential aaCredential);
-	public byte[] generateVOMSAC(RequestContext context) throws IOException;
-	
+
+  public void configure(PEMCredential aaCredential);
+
+  public byte[] generateVOMSAC(RequestContext context) throws IOException;
+
 }

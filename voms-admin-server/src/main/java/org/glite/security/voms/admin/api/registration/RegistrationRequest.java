@@ -29,86 +29,86 @@ import java.io.Serializable;
  */
 public class RegistrationRequest implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * A flag that states whether the AUP was accepted by the user.
-	 */
-	boolean aupAccepted;
+  /**
+   * A flag that states whether the AUP was accepted by the user.
+   */
+  boolean aupAccepted;
 
-	/**
-	 * The user email address
-	 */
-	String emailAddress;
-	/**
-	 * The user institute
-	 */
-	String institute;
-	/**
-	 * The user phone number
-	 */
-	String phoneNumber;
-	
-	/**
-	 * Comments to the VO administrator.
-	 */
-	String comments;
+  /**
+   * The user email address
+   */
+  String emailAddress;
+  /**
+   * The user institute
+   */
+  String institute;
+  /**
+   * The user phone number
+   */
+  String phoneNumber;
 
-	public boolean isAupAccepted() {
+  /**
+   * Comments to the VO administrator.
+   */
+  String comments;
 
-		return aupAccepted;
-	}
+  public boolean isAupAccepted() {
 
-	public void setAupAccepted(boolean aupAccepted) {
+    return aupAccepted;
+  }
 
-		this.aupAccepted = aupAccepted;
-	}
+  public void setAupAccepted(boolean aupAccepted) {
 
-	public String getComments() {
+    this.aupAccepted = aupAccepted;
+  }
 
-		return comments;
-	}
+  public String getComments() {
 
-	public void setComments(String comments) {
+    return comments;
+  }
 
-		this.comments = comments;
-	}
+  public void setComments(String comments) {
 
-	public String getEmailAddress() {
+    this.comments = comments;
+  }
 
-		return emailAddress;
-	}
+  public String getEmailAddress() {
 
-	public void setEmailAddress(String emailAddress) {
+    return emailAddress;
+  }
 
-		this.emailAddress = emailAddress;
-	}
+  public void setEmailAddress(String emailAddress) {
 
-	public String getInstitute() {
+    this.emailAddress = emailAddress;
+  }
 
-		return institute;
-	}
+  public String getInstitute() {
 
-	public void setInstitute(String institute) {
+    return institute;
+  }
 
-		this.institute = institute;
-	}
+  public void setInstitute(String institute) {
 
-	public String getPhoneNumber() {
+    this.institute = institute;
+  }
 
-		return phoneNumber;
-	}
+  public String getPhoneNumber() {
 
-	public void setPhoneNumber(String phoneNumber) {
+    return phoneNumber;
+  }
 
-		this.phoneNumber = phoneNumber;
-	}
+  public void setPhoneNumber(String phoneNumber) {
 
-	public RegistrationRequest() {
+    this.phoneNumber = phoneNumber;
+  }
 
-		setAupAccepted(false);
-	}
+  public RegistrationRequest() {
+
+    setAupAccepted(false);
+  }
 }

@@ -24,53 +24,53 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class URLBuilder {
 
-	public static String buildAdminServiceBaseURL(String host, String portNumber, String vo){
-		
-		return String.format("https://%s:%s/voms/%s", host, portNumber, vo);
-	}
-	
-	public static String baseVOMSURLFromConfiguration(){
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		return buildAdminServiceBaseURL(conf.getHostname(),
-			"8443", conf.getVOName());
-		
-	}
-	
-	public static String buildRequestConfirmURL(NewVOMembershipRequest r){
-		return buildRequestConfirmURL(baseVOMSURLFromConfiguration(), r);
-	}
+  public static String buildAdminServiceBaseURL(String host, String portNumber,
+    String vo) {
 
-	public static String buildRequestCancelURL(NewVOMembershipRequest r){
-		return buildRequestCancelURL(baseVOMSURLFromConfiguration(), r);
-	}
-	
-	private static String buildRequestURL(String op, 
-		String baseURL, NewVOMembershipRequest r){
-		
-		return String.format("%s/register/%s-request.action?requestId=%d"
-			+"&confirmationId=%s",
-			baseURL,
-			op,
-			r.getId(),
-			r.getConfirmId());
-	}
-	
-	public static String buildRequestConfirmURL(String baseURL, 
-		NewVOMembershipRequest r){
-		
-		return buildRequestURL("confirm", baseURL, r);
-	}
-	
-	public static String buildRequestCancelURL(String baseURL, 
-		NewVOMembershipRequest r){
-		
-		return buildRequestURL("cancel", baseURL, r);	
-	}
-	
-	public static String buildLoginURL(){
-		
-		return String.format("%s/home/login.action", baseVOMSURLFromConfiguration());
-		
-	}
+    return String.format("https://%s:%s/voms/%s", host, portNumber, vo);
+  }
+
+  public static String baseVOMSURLFromConfiguration() {
+
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    return buildAdminServiceBaseURL(conf.getHostname(), "8443",
+      conf.getVOName());
+
+  }
+
+  public static String buildRequestConfirmURL(NewVOMembershipRequest r) {
+
+    return buildRequestConfirmURL(baseVOMSURLFromConfiguration(), r);
+  }
+
+  public static String buildRequestCancelURL(NewVOMembershipRequest r) {
+
+    return buildRequestCancelURL(baseVOMSURLFromConfiguration(), r);
+  }
+
+  private static String buildRequestURL(String op, String baseURL,
+    NewVOMembershipRequest r) {
+
+    return String.format("%s/register/%s-request.action?requestId=%d"
+      + "&confirmationId=%s", baseURL, op, r.getId(), r.getConfirmId());
+  }
+
+  public static String buildRequestConfirmURL(String baseURL,
+    NewVOMembershipRequest r) {
+
+    return buildRequestURL("confirm", baseURL, r);
+  }
+
+  public static String buildRequestCancelURL(String baseURL,
+    NewVOMembershipRequest r) {
+
+    return buildRequestURL("cancel", baseURL, r);
+  }
+
+  public static String buildLoginURL() {
+
+    return String
+      .format("%s/home/login.action", baseVOMSURLFromConfiguration());
+
+  }
 }

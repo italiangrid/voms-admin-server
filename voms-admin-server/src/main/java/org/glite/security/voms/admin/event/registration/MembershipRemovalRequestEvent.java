@@ -24,21 +24,24 @@ import org.glite.security.voms.admin.event.GenericEvent;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
 public class MembershipRemovalRequestEvent extends GenericEvent {
-	
-	MembershipRemovalRequest request;
-	
-	public MembershipRemovalRequestEvent(MembershipRemovalRequest req){
-		super(EventType.MembershipRemovalRequestEvent);
-		this.request = req;
-		
-	}
 
-	public MembershipRemovalRequest getRequest() {
-		return request;
-	}
+  MembershipRemovalRequest request;
 
-	public void setRequest(MembershipRemovalRequest request) {
-		this.request = request;
-	}
-	
+  public MembershipRemovalRequestEvent(MembershipRemovalRequest req) {
+
+    super(EventType.MembershipRemovalRequestEvent);
+    this.request = req;
+
+  }
+
+  public MembershipRemovalRequest getRequest() {
+
+    return request;
+  }
+
+  public void setRequest(MembershipRemovalRequest request) {
+
+    this.request = request;
+  }
+
 }

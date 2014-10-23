@@ -22,10 +22,10 @@ package org.italiangrid.voms.aa.x509;
 
 import org.italiangrid.voms.aa.RequestContext;
 
-
 public interface ACRequestLogger {
-	
-	public void logSuccess(RequestContext context);
-	public void logFailure(RequestContext context, String errorMessage);
+
+  public void logSuccess(RequestContext context);
+
+  public void logFailure(RequestContext context, String errorMessage);
 
 }

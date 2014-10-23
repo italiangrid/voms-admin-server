@@ -38,63 +38,63 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-public class RoleMembershipNotificationDispatcher extends BaseNotificationDispatcher{
+public class RoleMembershipNotificationDispatcher extends
+  BaseNotificationDispatcher {
 
-	
-	private static RoleMembershipNotificationDispatcher instance;
-	
-	public static RoleMembershipNotificationDispatcher instance(){
-		
-		if (instance ==  null)
-			instance = new RoleMembershipNotificationDispatcher();
-		
-		return instance;
-	}
-	
-	private RoleMembershipNotificationDispatcher() {
-		super(new EventMask(EventType.RoleMembershipRequestEvent));
-	}
+  private static RoleMembershipNotificationDispatcher instance;
 
-	public void fire(Event event) {
-		
-		RoleMembershipRequestEvent e = (RoleMembershipRequestEvent)event;
-		
-		RoleMembershipRequest req = e.getRequest();
-		
-		if (e instanceof RoleMembershipSubmittedEvent){
-			
-			RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent)e;
-			
-			VOMSContext context = VOMSContext.instance(ee.getRequest().getFQAN());
-			
-			List<String> admins;
-			
-			if (context.getGroup().getManagers().size() !=  0){
-				admins =  new ArrayList<String>();
-				for (GroupManager gm: context.getGroup().getManagers())
-					admins.add(gm.getEmailAddress());
-			}else
-				admins = NotificationUtil.getAdministratorsEmailList(context, 
-					VOMSPermission.getRequestsRWPermissions());
-			
-			
-			HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
-			NotificationService.instance().send(msg);
-			
-		}
-		
-		if (e instanceof RoleMembershipApprovedEvent){
-			
-			NotificationService.instance().send(new RequestApproved(req));
-			
-		}
-		
-		if (e instanceof RoleMembershipRejectedEvent){
-			
-			NotificationService.instance().send(new RequestRejected(req, null));
-			
-		}
+  public static RoleMembershipNotificationDispatcher instance() {
 
-	}
+    if (instance == null)
+      instance = new RoleMembershipNotificationDispatcher();
+
+    return instance;
+  }
+
+  private RoleMembershipNotificationDispatcher() {
+
+    super(new EventMask(EventType.RoleMembershipRequestEvent));
+  }
+
+  public void fire(Event event) {
+
+    RoleMembershipRequestEvent e = (RoleMembershipRequestEvent) event;
+
+    RoleMembershipRequest req = e.getRequest();
+
+    if (e instanceof RoleMembershipSubmittedEvent) {
+
+      RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent) e;
+
+      VOMSContext context = VOMSContext.instance(ee.getRequest().getFQAN());
+
+      List<String> admins;
+
+      if (context.getGroup().getManagers().size() != 0) {
+        admins = new ArrayList<String>();
+        for (GroupManager gm : context.getGroup().getManagers())
+          admins.add(gm.getEmailAddress());
+      } else
+        admins = NotificationUtil.getAdministratorsEmailList(context,
+          VOMSPermission.getRequestsRWPermissions());
+
+      HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
+      NotificationService.instance().send(msg);
+
+    }
+
+    if (e instanceof RoleMembershipApprovedEvent) {
+
+      NotificationService.instance().send(new RequestApproved(req));
+
+    }
+
+    if (e instanceof RoleMembershipRejectedEvent) {
+
+      NotificationService.instance().send(new RequestRejected(req, null));
+
+    }
+
+  }
 
 }

@@ -38,65 +38,65 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-public class GroupMembershipNotificationDispatcher extends BaseNotificationDispatcher{
+public class GroupMembershipNotificationDispatcher extends
+  BaseNotificationDispatcher {
 
-	
-	private static GroupMembershipNotificationDispatcher instance = null;
-	
-	public static GroupMembershipNotificationDispatcher instance(){
-		
-		if (instance == null)
-			instance = new GroupMembershipNotificationDispatcher();
-		
-		return instance;
-	}
-	
-	private GroupMembershipNotificationDispatcher() {
-		super(new EventMask(EventType.GroupMembershipRequestEvent));
-	}
-											
-	public void fire(Event event) {
-		
-		GroupMembershipRequestEvent e = (GroupMembershipRequestEvent) event;
-		
-		GroupMembershipRequest req = e.getRequest();
-		
-		if (e instanceof GroupMembershipSubmittedEvent){
-			
-			GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent)e;
-			
-			VOMSContext context = VOMSContext.instance(ee.getRequest().getGroupName());
-			
-			List<String> admins;
-			
-			if (context.getGroup().getManagers().size() !=  0){
-				admins =  new ArrayList<String>();
-				for (GroupManager gm: context.getGroup().getManagers())
-					admins.add(gm.getEmailAddress());
-			}else
-				admins = NotificationUtil.getAdministratorsEmailList(context, 
-					VOMSPermission.getRequestsRWPermissions());
-			
-			HandleRequest msg = new HandleRequest(req,
-				ee.getManagementURL(),
-				admins);
-					
-			NotificationService.instance().send(msg);
-			
-		}
-		
-		if (e instanceof GroupMembershipApprovedEvent){
-			
-			RequestApproved msg = new RequestApproved(req);
-			NotificationService.instance().send(msg);
-		
-		}
-		
-		if (e instanceof GroupMembershipRejectedEvent){
-		
-			RequestRejected msg = new RequestRejected(req, null);
-			
-			NotificationService.instance().send(msg);
-		}
-	}
+  private static GroupMembershipNotificationDispatcher instance = null;
+
+  public static GroupMembershipNotificationDispatcher instance() {
+
+    if (instance == null)
+      instance = new GroupMembershipNotificationDispatcher();
+
+    return instance;
+  }
+
+  private GroupMembershipNotificationDispatcher() {
+
+    super(new EventMask(EventType.GroupMembershipRequestEvent));
+  }
+
+  public void fire(Event event) {
+
+    GroupMembershipRequestEvent e = (GroupMembershipRequestEvent) event;
+
+    GroupMembershipRequest req = e.getRequest();
+
+    if (e instanceof GroupMembershipSubmittedEvent) {
+
+      GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent) e;
+
+      VOMSContext context = VOMSContext
+        .instance(ee.getRequest().getGroupName());
+
+      List<String> admins;
+
+      if (context.getGroup().getManagers().size() != 0) {
+        admins = new ArrayList<String>();
+        for (GroupManager gm : context.getGroup().getManagers())
+          admins.add(gm.getEmailAddress());
+      } else
+        admins = NotificationUtil.getAdministratorsEmailList(context,
+          VOMSPermission.getRequestsRWPermissions());
+
+      HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
+
+      NotificationService.instance().send(msg);
+
+    }
+
+    if (e instanceof GroupMembershipApprovedEvent) {
+
+      RequestApproved msg = new RequestApproved(req);
+      NotificationService.instance().send(msg);
+
+    }
+
+    if (e instanceof GroupMembershipRejectedEvent) {
+
+      RequestRejected msg = new RequestRejected(req, null);
+
+      NotificationService.instance().send(msg);
+    }
+  }
 }

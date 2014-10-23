@@ -31,79 +31,81 @@ import org.glite.security.voms.admin.notification.messages.SignAUPMessage;
 import org.glite.security.voms.admin.notification.messages.UserMembershipExpiredMessage;
 import org.glite.security.voms.admin.notification.messages.UserTargetedUserSuspensionMessage;
 
-public class DefaultNotificationDispatcher extends BaseNotificationDispatcher{
+public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(DefaultNotificationDispatcher.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(DefaultNotificationDispatcher.class);
 
-	private static DefaultNotificationDispatcher instance = null;
+  private static DefaultNotificationDispatcher instance = null;
 
-	private DefaultNotificationDispatcher() {
-		super(null);
-	}
+  private DefaultNotificationDispatcher() {
 
-	public static final DefaultNotificationDispatcher instance() {
-		if (instance == null)
-			instance = new DefaultNotificationDispatcher();
+    super(null);
+  }
 
-		return instance;
+  public static final DefaultNotificationDispatcher instance() {
 
-	}
+    if (instance == null)
+      instance = new DefaultNotificationDispatcher();
 
-	public void fire(Event e) {
+    return instance;
 
-		if (e instanceof UserSuspendedEvent) {
+  }
 
-			handle((UserSuspendedEvent) e);
+  public void fire(Event e) {
 
-		} else if (e instanceof SignAUPTaskAssignedEvent) {
+    if (e instanceof UserSuspendedEvent) {
 
-			handle((SignAUPTaskAssignedEvent) e);
+      handle((UserSuspendedEvent) e);
 
-		} else if (e instanceof UserMembershipExpired) {
+    } else if (e instanceof SignAUPTaskAssignedEvent) {
 
-			handle((UserMembershipExpired)e);
+      handle((SignAUPTaskAssignedEvent) e);
 
-		}
+    } else if (e instanceof UserMembershipExpired) {
 
-	}
+      handle((UserMembershipExpired) e);
 
-	public EventMask getMask() {
-		return null;
-	}
-	
+    }
 
-	protected void handle(UserSuspendedEvent e) {
+  }
 
-		AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(
-				e.getUser(), e.getReason().getMessage());
-		
-		UserTargetedUserSuspensionMessage usrMsg = new UserTargetedUserSuspensionMessage(e.getUser(),
-				e.getReason().getMessage());
-		
-		msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
-		usrMsg.addRecipient(e.getUser().getEmailAddress());
-		
-		NotificationService.instance().send(msg);
-		NotificationService.instance().send(usrMsg);
+  public EventMask getMask() {
 
-	}
+    return null;
+  }
 
-	protected void handle(SignAUPTaskAssignedEvent e) {
+  protected void handle(UserSuspendedEvent e) {
 
-		SignAUPMessage msg = new SignAUPMessage(e.getUser(), e.getAup());
-		msg.addRecipient(e.getUser().getEmailAddress());
-		NotificationService.instance().send(msg);
+    AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(
+      e.getUser(), e.getReason().getMessage());
 
-	}
-	
-	
-	protected void handle(UserMembershipExpired e){
-		UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
-				((UserMembershipExpired) e).getUser());
-		msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
-		NotificationService.instance().send(msg);
-		
-	}
+    UserTargetedUserSuspensionMessage usrMsg = new UserTargetedUserSuspensionMessage(
+      e.getUser(), e.getReason().getMessage());
+
+    msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
+    usrMsg.addRecipient(e.getUser().getEmailAddress());
+
+    NotificationService.instance().send(msg);
+    NotificationService.instance().send(usrMsg);
+
+  }
+
+  protected void handle(SignAUPTaskAssignedEvent e) {
+
+    SignAUPMessage msg = new SignAUPMessage(e.getUser(), e.getAup());
+    msg.addRecipient(e.getUser().getEmailAddress());
+    NotificationService.instance().send(msg);
+
+  }
+
+  protected void handle(UserMembershipExpired e) {
+
+    UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
+      ((UserMembershipExpired) e).getUser());
+    msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
+    NotificationService.instance().send(msg);
+
+  }
 
 }

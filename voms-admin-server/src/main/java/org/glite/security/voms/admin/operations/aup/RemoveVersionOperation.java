@@ -28,29 +28,30 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 
 public class RemoveVersionOperation extends BaseVomsOperation {
 
-	AUP aup;
-	
-	String version;
-	
-	public RemoveVersionOperation(AUP a, String v) {
-		this.aup = a;
-		this.version = v;
-	}
-	
-	@Override
-	protected Object doExecute() {
-		
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
-		dao.removeVersion(aup, version);
-		
-		return aup;
-	}
+  AUP aup;
 
-	
-	
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-	}
+  String version;
+
+  public RemoveVersionOperation(AUP a, String v) {
+
+    this.aup = a;
+    this.version = v;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    AUPDAO dao = DAOFactory.instance().getAUPDAO();
+    dao.removeVersion(aup, version);
+
+    return aup;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+  }
 
 }

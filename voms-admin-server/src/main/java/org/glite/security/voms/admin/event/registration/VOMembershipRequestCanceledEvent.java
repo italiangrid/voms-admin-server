@@ -23,9 +23,10 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestCanceledEvent extends VOMembershipRequestEvent {
 
-	public VOMembershipRequestCanceledEvent(NewVOMembershipRequest r) {
-		super(r);
-		// TODO Auto-generated constructor stub
-	}
+  public VOMembershipRequestCanceledEvent(NewVOMembershipRequest r) {
+
+    super(r);
+    // TODO Auto-generated constructor stub
+  }
 
 }

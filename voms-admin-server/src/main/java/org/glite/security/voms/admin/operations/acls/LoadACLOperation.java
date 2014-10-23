@@ -28,62 +28,61 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class LoadACLOperation extends BaseVomsOperation {
 
-	String contextString;
-	boolean defaultACL;
+  String contextString;
+  boolean defaultACL;
 
-	public static LoadACLOperation instance(String contextString) {
+  public static LoadACLOperation instance(String contextString) {
 
-		return new LoadACLOperation(contextString);
-	}
+    return new LoadACLOperation(contextString);
+  }
 
-	public static LoadACLOperation instance(String contextString,
-			boolean defaultACL) {
+  public static LoadACLOperation instance(String contextString,
+    boolean defaultACL) {
 
-		return new LoadACLOperation(contextString, defaultACL);
-	}
+    return new LoadACLOperation(contextString, defaultACL);
+  }
 
-	private LoadACLOperation(String contextString) {
+  private LoadACLOperation(String contextString) {
 
-		this(contextString, false);
-	}
+    this(contextString, false);
+  }
 
-	private LoadACLOperation(String contextString, boolean defaultACL) {
+  private LoadACLOperation(String contextString, boolean defaultACL) {
 
-		if (contextString == null)
-			throw new NullArgumentException("contextString cannot be null!");
+    if (contextString == null)
+      throw new NullArgumentException("contextString cannot be null!");
 
-		PathNamingScheme.checkSyntax(contextString);
+    PathNamingScheme.checkSyntax(contextString);
 
-		this.contextString = contextString;
-		this.defaultACL = defaultACL;
-	}
+    this.contextString = contextString;
+    this.defaultACL = defaultACL;
+  }
 
-	@Override
-	protected Object doExecute() {
+  @Override
+  protected Object doExecute() {
 
-		VOMSContext context = (VOMSContext) FindContextOperation.instance(
-				contextString).execute();
+    VOMSContext context = (VOMSContext) FindContextOperation.instance(
+      contextString).execute();
 
-		if (defaultACL && PathNamingScheme.isQualifiedRole(contextString))
-			throw new IllegalArgumentException(
-					"Role contexts do not have default ACLs!");
+    if (defaultACL && PathNamingScheme.isQualifiedRole(contextString))
+      throw new IllegalArgumentException(
+        "Role contexts do not have default ACLs!");
 
-		if (defaultACL)
-			return context.getGroup().getDefaultACL();
+    if (defaultACL)
+      return context.getGroup().getDefaultACL();
 
-		return context.getACL();
-	}
+    return context.getACL();
+  }
 
-	@Override
-	protected void setupPermissions() {
+  @Override
+  protected void setupPermissions() {
 
-		addRequiredPermission(VOMSContext.instance(contextString),
-				VOMSPermission.getEmptyPermissions().setACLReadPermission());
+    addRequiredPermission(VOMSContext.instance(contextString), VOMSPermission
+      .getEmptyPermissions().setACLReadPermission());
 
-		if (defaultACL)
-			addRequiredPermission(VOMSContext.instance(contextString),
-					VOMSPermission.getEmptyPermissions().setACLReadPermission()
-							.setACLDefaultPermission());
-	}
+    if (defaultACL)
+      addRequiredPermission(VOMSContext.instance(contextString), VOMSPermission
+        .getEmptyPermissions().setACLReadPermission().setACLDefaultPermission());
+  }
 
 }

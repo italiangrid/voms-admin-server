@@ -34,71 +34,72 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AssignRoleOperation extends BaseVomsOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	VOMSRole role;
+  VOMSRole role;
 
-	private AssignRoleOperation(Long userId, String roleFqan){
-		user = (VOMSUser) FindUserOperation.instance(userId).execute();
-		
-		VOMSContext context = VOMSContext.instance(roleFqan);
-		
-		group = context.getGroup();
-		role = context.getRole();
-		
-		
-	}
-	private AssignRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
+  private AssignRoleOperation(Long userId, String roleFqan) {
 
-		user = u;
-		group = g;
-		role = r;
-	}
+    user = (VOMSUser) FindUserOperation.instance(userId).execute();
 
-	public Object doExecute() {
+    VOMSContext context = VOMSContext.instance(roleFqan);
 
-		VOMSUserDAO.instance().assignRole(user, group, role);
-		return null;
-	}
+    group = context.getGroup();
+    role = context.getRole();
 
-	public static AssignRoleOperation instance(Long userId, String roleFqan){
-		return new AssignRoleOperation(userId, roleFqan);
-	}
-	
-	public static AssignRoleOperation instance(VOMSUser u, VOMSGroup g,
-			VOMSRole r) {
+  }
 
-		return new AssignRoleOperation(u, g, r);
-	}
+  private AssignRoleOperation(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-	public static AssignRoleOperation instance(String groupName,
-			String roleName, String userName, String caDn) {
+    user = u;
+    group = g;
+    role = r;
+  }
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
-				.execute();
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
-		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+  public Object doExecute() {
 
-		if (u == null)
-			throw new NoSuchUserException("User '" + userName + "," + caDn
-					+ "' not found in database.");
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' not found in database.");
-		if (r == null)
-			throw new NoSuchRoleException("Role '" + roleName
-					+ "' not found in database.");
+    VOMSUserDAO.instance().assignRole(user, group, role);
+    return null;
+  }
 
-		return new AssignRoleOperation(u, g, r);
+  public static AssignRoleOperation instance(Long userId, String roleFqan) {
 
-	}
+    return new AssignRoleOperation(userId, roleFqan);
+  }
 
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
-				.getContainerReadPermission().setMembershipRWPermission());
-	}
+  public static AssignRoleOperation instance(VOMSUser u, VOMSGroup g, VOMSRole r) {
+
+    return new AssignRoleOperation(u, g, r);
+  }
+
+  public static AssignRoleOperation instance(String groupName, String roleName,
+    String userName, String caDn) {
+
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(userName, caDn)
+      .execute();
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
+    VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+
+    if (u == null)
+      throw new NoSuchUserException("User '" + userName + "," + caDn
+        + "' not found in database.");
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' not found in database.");
+    if (r == null)
+      throw new NoSuchRoleException("Role '" + roleName
+        + "' not found in database.");
+
+    return new AssignRoleOperation(u, g, r);
+
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+      .getContainerReadPermission().setMembershipRWPermission());
+  }
 
 }

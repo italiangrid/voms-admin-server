@@ -20,59 +20,65 @@
 
 package org.italiangrid.voms.aa;
 
-
 public class VOMSWarningMessage {
 
-	private final VOMSWarning warning;
-	private final String vo;
-	private final String message;
-	
-	private VOMSWarningMessage(VOMSWarning warning, String vo) {
-		this.warning = warning;
-		this.vo = vo;
-		this.message = null;
-	}
+  private final VOMSWarning warning;
+  private final String vo;
+  private final String message;
 
-	private VOMSWarningMessage(VOMSWarning warning, String vo, String message){
-		this.warning = warning;
-		this.vo = vo;
-		this.message = message;
-	}
-	
-	/**
-	 * @return the vo
-	 */
-	public String getVo() {
-		return vo;
-	}
+  private VOMSWarningMessage(VOMSWarning warning, String vo) {
 
-	
-	/**
-	 * @return the message
-	 */
-	public String getMessage() {
-		if (message == null)
-			return warning.getDefaultMessage();
-		return message;
-	}
-	
-	/**
-	 * @return the warning
-	 */
-	public VOMSWarning getWarning() {
-		return warning;
-	}
-	
-	public static VOMSWarningMessage orderingNotSatisfied(String vo){
-		return new VOMSWarningMessage(VOMSWarning.OrderNotSatisfied,vo);
-	}
-	
-	public static VOMSWarningMessage shortenedAttributeValidity(String vo){
-		return new VOMSWarningMessage(VOMSWarning.ShortenedAttributeValidity,vo);
-	}
-	
-	public static VOMSWarningMessage attributeSubset(String vo){
-		return new VOMSWarningMessage(VOMSWarning.AttributeSubset,vo);
-	}
-	
+    this.warning = warning;
+    this.vo = vo;
+    this.message = null;
+  }
+
+  private VOMSWarningMessage(VOMSWarning warning, String vo, String message) {
+
+    this.warning = warning;
+    this.vo = vo;
+    this.message = message;
+  }
+
+  /**
+   * @return the vo
+   */
+  public String getVo() {
+
+    return vo;
+  }
+
+  /**
+   * @return the message
+   */
+  public String getMessage() {
+
+    if (message == null)
+      return warning.getDefaultMessage();
+    return message;
+  }
+
+  /**
+   * @return the warning
+   */
+  public VOMSWarning getWarning() {
+
+    return warning;
+  }
+
+  public static VOMSWarningMessage orderingNotSatisfied(String vo) {
+
+    return new VOMSWarningMessage(VOMSWarning.OrderNotSatisfied, vo);
+  }
+
+  public static VOMSWarningMessage shortenedAttributeValidity(String vo) {
+
+    return new VOMSWarningMessage(VOMSWarning.ShortenedAttributeValidity, vo);
+  }
+
+  public static VOMSWarningMessage attributeSubset(String vo) {
+
+    return new VOMSWarningMessage(VOMSWarning.AttributeSubset, vo);
+  }
+
 }

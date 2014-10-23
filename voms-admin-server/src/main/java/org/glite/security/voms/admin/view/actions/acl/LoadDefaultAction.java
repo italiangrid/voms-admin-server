@@ -25,37 +25,38 @@ import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail"),
-		@Result(name = BaseAction.INPUT, location = "aclDetail") })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "aclDetail"),
+  @Result(name = BaseAction.INPUT, location = "aclDetail") })
 public class LoadDefaultAction extends ACLActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	long aclGroupId = -1;
+  private static final long serialVersionUID = 1L;
+  long aclGroupId = -1;
 
-	@Override
-	public void prepare() throws Exception {
+  @Override
+  public void prepare() throws Exception {
 
-		if (getModel() == null) {
+    if (getModel() == null) {
 
-			VOMSGroup g = groupById(aclGroupId);
-			if (g.getDefaultACL() == null)
-				// FIXME: do it with an operation
-				model = ACLDAO.instance().create(g, true);
-			else
-				model = g.getDefaultACL();
-		}
+      VOMSGroup g = groupById(aclGroupId);
+      if (g.getDefaultACL() == null)
+        // FIXME: do it with an operation
+        model = ACLDAO.instance().create(g, true);
+      else
+        model = g.getDefaultACL();
+    }
 
-	}
+  }
 
-	public long getAclGroupId() {
-		return aclGroupId;
-	}
+  public long getAclGroupId() {
 
-	public void setAclGroupId(long aclGroupId) {
-		this.aclGroupId = aclGroupId;
-	}
+    return aclGroupId;
+  }
+
+  public void setAclGroupId(long aclGroupId) {
+
+    this.aclGroupId = aclGroupId;
+  }
 }

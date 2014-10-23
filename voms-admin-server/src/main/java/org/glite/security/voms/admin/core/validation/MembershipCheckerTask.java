@@ -27,40 +27,48 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MembershipCheckerTask extends AbstractMembershipChecker implements Runnable, RegistrationServiceTask{
-	
-	public static final Logger log = LoggerFactory.getLogger(MembershipCheckerTask.class);
+public class MembershipCheckerTask extends AbstractMembershipChecker implements
+  Runnable, RegistrationServiceTask {
 
-	public MembershipCheckerTask(MembershipValidationContext ctxt) {
-		setValidationContext(ctxt);
-	}
-	
-	public void checkMembershipStatus() {
-		
-		List<VOMSUser> expiringMembers = getExpiringMembersLookupStrategy().findExpiringMembers();
-		
-		log.debug("Expiring members: {}", expiringMembers);
-		
-		getHandleExpiringMembersStrategy().handleMembersAboutToExpire(expiringMembers);
-		
-		List<VOMSUser> expiredMembers = getExpiredMembersLookupStrategy().findExpiredMembers();
-		
-		log.debug("Expired members: {}", expiredMembers);
-		
-		getHandleExpiredMembersStrategy().handleExpiredMembers(expiredMembers);
-		
-		List<VOMSUser> aupFailingMembers = getAupFailingMembersLookupStrategy().findAUPFailingMembers();
-		
-		log.debug("AUP failing members: {}", aupFailingMembers);
-		
-		getHandleAUPFailingMembersStrategy().handleAUPFailingMembers(aupFailingMembers);
+  public static final Logger log = LoggerFactory
+    .getLogger(MembershipCheckerTask.class);
 
-	}
+  public MembershipCheckerTask(MembershipValidationContext ctxt) {
 
-	public void run() {
-	    
-	    checkMembershipStatus();
-	    
-	}
+    setValidationContext(ctxt);
+  }
+
+  public void checkMembershipStatus() {
+
+    List<VOMSUser> expiringMembers = getExpiringMembersLookupStrategy()
+      .findExpiringMembers();
+
+    log.debug("Expiring members: {}", expiringMembers);
+
+    getHandleExpiringMembersStrategy().handleMembersAboutToExpire(
+      expiringMembers);
+
+    List<VOMSUser> expiredMembers = getExpiredMembersLookupStrategy()
+      .findExpiredMembers();
+
+    log.debug("Expired members: {}", expiredMembers);
+
+    getHandleExpiredMembersStrategy().handleExpiredMembers(expiredMembers);
+
+    List<VOMSUser> aupFailingMembers = getAupFailingMembersLookupStrategy()
+      .findAUPFailingMembers();
+
+    log.debug("AUP failing members: {}", aupFailingMembers);
+
+    getHandleAUPFailingMembersStrategy().handleAUPFailingMembers(
+      aupFailingMembers);
+
+  }
+
+  public void run() {
+
+    checkMembershipStatus();
+
+  }
 
 }

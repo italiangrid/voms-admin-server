@@ -20,16 +20,18 @@
 package org.glite.security.voms.admin.operations;
 
 public abstract class BaseMembershipRWOperation extends
-		SingleContextVomsOperation {
+  SingleContextVomsOperation {
 
-	protected BaseMembershipRWOperation(VOMSContext ctxt) {
-		super(ctxt);
+  protected BaseMembershipRWOperation(VOMSContext ctxt) {
 
-	}
+    super(ctxt);
 
-	protected void setupPermissions() {
-		addRequiredPermission(__context, VOMSPermission
-				.getMembershipRWPermissions());
+  }
 
-	}
+  protected void setupPermissions() {
+
+    addRequiredPermission(__context,
+      VOMSPermission.getMembershipRWPermissions());
+
+  }
 }

@@ -20,33 +20,28 @@
 
 package org.glite.security.voms.admin.view.actions.user;
 
-
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "userDetail")
-})
-		
+@Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class RestoreAction extends SuspendAction {
 
-    /**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public String execute() throws Exception {
-    	
-    	RestoreUserOperation.instance(getModel()).execute();
+  @Override
+  public String execute() throws Exception {
 
-    	return SUCCESS;
-    }
-    
+    RestoreUserOperation.instance(getModel()).execute();
+
+    return SUCCESS;
+  }
+
 }

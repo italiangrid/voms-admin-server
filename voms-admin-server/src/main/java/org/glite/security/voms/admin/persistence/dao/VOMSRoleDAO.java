@@ -36,413 +36,400 @@ import org.hibernate.Query;
 
 public class VOMSRoleDAO {
 
-	protected VOMSRoleDAO() {
+  protected VOMSRoleDAO() {
 
-		HibernateFactory.beginTransaction();
-	}
+    HibernateFactory.beginTransaction();
+  }
 
-	public List findAll() {
+  public List findAll() {
 
-		return getAll();
-	}
+    return getAll();
+  }
 
-	public List getAll() {
+  public List getAll() {
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
-		return HibernateFactory.getSession().createQuery(query).list();
+    return HibernateFactory.getSession().createQuery(query).list();
 
-	}
+  }
 
-	public int countRoles() {
+  public int countRoles() {
 
-		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole";
+    String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
-		Long count = (Long) HibernateFactory.getSession().createQuery(query)
-				.uniqueResult();
+    Long count = (Long) HibernateFactory.getSession().createQuery(query)
+      .uniqueResult();
 
-		return count.intValue();
-	}
+    return count.intValue();
+  }
 
-	public int countMatches(String searchString) {
+  public int countMatches(String searchString) {
 
-		String sString = "%" + searchString + "%";
-		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
+    String sString = "%" + searchString + "%";
+    String query = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
 
-		Long count = (Long) HibernateFactory.getSession().createQuery(query)
-				.setString("searchString", sString).uniqueResult();
+    Long count = (Long) HibernateFactory.getSession().createQuery(query)
+      .setString("searchString", sString).uniqueResult();
 
-		return count.intValue();
-	}
+    return count.intValue();
+  }
 
-	public SearchResults getAll(int firstResult, int maxResults) {
+  public SearchResults getAll(int firstResult, int maxResults) {
 
-		SearchResults results = SearchResults.instance();
+    SearchResults results = SearchResults.instance();
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
-		Query q = HibernateFactory.getSession().createQuery(query);
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		List res = q.list();
+    List res = q.list();
 
-		results.setCount(countRoles());
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
-		results.setResults(res);
-		return results;
+    results.setCount(countRoles());
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
+    results.setResults(res);
+    return results;
 
-	}
+  }
 
-	public SearchResults search(String searchString, int firstResult,
-			int maxResults) {
+  public SearchResults search(String searchString, int firstResult,
+    int maxResults) {
 
-		if (searchString == null || searchString.equals("")
-				|| searchString.length() == 0)
-			return getAll(firstResult, maxResults);
+    if (searchString == null || searchString.equals("")
+      || searchString.length() == 0)
+      return getAll(firstResult, maxResults);
 
-		SearchResults results = SearchResults.instance();
+    SearchResults results = SearchResults.instance();
 
-		String sString = "%" + searchString + "%";
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
+    String sString = "%" + searchString + "%";
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name like :searchString";
 
-		Query q = HibernateFactory.getSession().createQuery(query).setString(
-				"searchString", sString);
+    Query q = HibernateFactory.getSession().createQuery(query)
+      .setString("searchString", sString);
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		List res = q.list();
+    List res = q.list();
 
-		results.setCount(countMatches(searchString));
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
-		results.setSearchString(searchString);
-		results.setResults(res);
+    results.setCount(countMatches(searchString));
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
+    results.setSearchString(searchString);
+    results.setResults(res);
 
-		return results;
-	}
+    return results;
+  }
 
-	public SearchResults searchMembers(VOMSGroup g, VOMSRole r,
-			String searchString, int firstResult, int maxResults) {
+  public SearchResults searchMembers(VOMSGroup g, VOMSRole r,
+    String searchString, int firstResult, int maxResults) {
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null group!");
+    if (g == null)
+      throw new NullArgumentException("Cannot search members in a null group!");
 
-		if (r == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null role!");
+    if (r == null)
+      throw new NullArgumentException("Cannot search members in a null role!");
 
-		if (searchString == null || searchString.equals("")
-				|| searchString.length() == 0)
-			return getMembers(g, r, firstResult, maxResults);
+    if (searchString == null || searchString.equals("")
+      || searchString.length() == 0)
+      return getMembers(g, r, firstResult, maxResults);
 
-		SearchResults results = SearchResults.instance();
-		String sString = "%" + searchString + "%";
+    SearchResults results = SearchResults.instance();
+    String sString = "%" + searchString + "%";
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
-				+ "and m.user.dn like :searchString order by m.user.dn asc";
+    String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
+      + "and m.user.dn like :searchString order by m.user.dn asc";
 
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setString("searchString", sString);
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setString("searchString", sString);
 
-		q.setEntity("group", g);
-		q.setEntity("role", r);
+    q.setEntity("group", g);
+    q.setEntity("role", r);
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		List res = q.list();
+    List res = q.list();
 
-		results.setSearchString(searchString);
-		results.setResults(res);
-		results.setCount(countMatchingMembers(g, r, searchString));
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
+    results.setSearchString(searchString);
+    results.setResults(res);
+    results.setCount(countMatchingMembers(g, r, searchString));
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
 
-		return results;
+    return results;
 
-	}
+  }
 
-	private int countMatchingMembers(VOMSGroup g, VOMSRole r,
-			String searchString) {
+  private int countMatchingMembers(VOMSGroup g, VOMSRole r, String searchString) {
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null group!");
+    if (g == null)
+      throw new NullArgumentException("Cannot search members in a null group!");
 
-		if (r == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null role!");
+    if (r == null)
+      throw new NullArgumentException("Cannot search members in a null role!");
 
-		String sString;
+    String sString;
 
-		if (searchString == null)
-			sString = "%";
-		else
-			sString = "%" + searchString + "%";
+    if (searchString == null)
+      sString = "%";
+    else
+      sString = "%" + searchString + "%";
 
-		String queryString = "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
-				+ "and m.user.dn like :searchString order by m.user.dn asc";
+    String queryString = "select count(m.user) from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
+      + "and m.user.dn like :searchString order by m.user.dn asc";
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		q.setString("searchString", sString);
-		q.setEntity("group", g);
-		q.setEntity("role", r);
+    q.setString("searchString", sString);
+    q.setEntity("group", g);
+    q.setEntity("role", r);
 
-		return ((Long) q.uniqueResult()).intValue();
-	}
+    return ((Long) q.uniqueResult()).intValue();
+  }
 
-	private SearchResults getMembers(VOMSGroup g, VOMSRole r, int firstResult,
-			int maxResults) {
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null group!");
+  private SearchResults getMembers(VOMSGroup g, VOMSRole r, int firstResult,
+    int maxResults) {
 
-		if (r == null)
-			throw new NullArgumentException(
-					"Cannot search members in a null role!");
+    if (g == null)
+      throw new NullArgumentException("Cannot search members in a null group!");
 
-		int membersCount = r.getUsers(g).size();
+    if (r == null)
+      throw new NullArgumentException("Cannot search members in a null role!");
 
-		SearchResults results = SearchResults.instance();
+    int membersCount = r.getUsers(g).size();
 
-		String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
-				+ "order by m.user.dn asc";
+    SearchResults results = SearchResults.instance();
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    String queryString = "select m.user as user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is :role "
+      + "order by m.user.dn asc";
 
-		q.setEntity("group", g);
-		q.setEntity("role", r);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    q.setEntity("group", g);
+    q.setEntity("role", r);
 
-		List res = q.list();
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		results.setSearchString(null);
-		results.setResults(res);
-		results.setCount(membersCount);
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
+    List res = q.list();
 
-		return results;
+    results.setSearchString(null);
+    results.setResults(res);
+    results.setCount(membersCount);
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
 
-	}
+    return results;
 
-	public List getAllNames() {
+  }
 
-		String query = "select name from org.glite.security.voms.admin.persistence.model.VOMSRole";
-		return HibernateFactory.getSession().createQuery(query).list();
+  public List getAllNames() {
 
-	}
+    String query = "select name from org.glite.security.voms.admin.persistence.model.VOMSRole";
+    return HibernateFactory.getSession().createQuery(query).list();
 
-	public VOMSRole findByName(String roleName) {
+  }
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name = :name";
+  public VOMSRole findByName(String roleName) {
 
-		return (VOMSRole) HibernateFactory.getSession().createQuery(query)
-				.setString("name", roleName).uniqueResult();
-	}
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole where name = :name";
 
-	public VOMSRole findById(Long id) {
+    return (VOMSRole) HibernateFactory.getSession().createQuery(query)
+      .setString("name", roleName).uniqueResult();
+  }
 
-		return (VOMSRole) HibernateFactory.getSession()
-				.load(VOMSRole.class, id);
-	}
+  public VOMSRole findById(Long id) {
 
-	
-	
-	public VOMSRole create(String roleName) {
+    return (VOMSRole) HibernateFactory.getSession().load(VOMSRole.class, id);
+  }
 
-		if (findByName(roleName) != null)
-			throw new AlreadyExistsException("Role \"" + roleName
-					+ "\" already defined in database!");
+  public VOMSRole create(String roleName) {
 
-		VOMSRole r = new VOMSRole(roleName);
+    if (findByName(roleName) != null)
+      throw new AlreadyExistsException("Role \"" + roleName
+        + "\" already defined in database!");
 
-		HibernateFactory.getSession().save(r);
+    VOMSRole r = new VOMSRole(roleName);
 
-		return r;
+    HibernateFactory.getSession().save(r);
 
-	}
+    return r;
 
-	public void deleteAll() {
+  }
 
-		HibernateFactory.getSession().createQuery(
-				"delete from org.glite.security.voms.admin.persistence.model.VOMSRole")
-				.executeUpdate();
+  public void deleteAll() {
 
-	}
+    HibernateFactory
+      .getSession()
+      .createQuery(
+        "delete from org.glite.security.voms.admin.persistence.model.VOMSRole")
+      .executeUpdate();
 
-	public VOMSRole delete(Long id) {
+  }
 
-		VOMSRole r = findById(id);
+  public VOMSRole delete(Long id) {
 
-		if (r == null)
-			throw new NoSuchRoleException("Role with id \"" + id
-					+ "\" is not defined in database!");
-		delete(r);
+    VOMSRole r = findById(id);
 
-		return r;
-	}
+    if (r == null)
+      throw new NoSuchRoleException("Role with id \"" + id
+        + "\" is not defined in database!");
+    delete(r);
 
-	public VOMSRole delete(String roleName) {
+    return r;
+  }
 
-		VOMSRole r = findByName(roleName);
-		if (r == null)
-			throw new NoSuchRoleException("Role '" + roleName
-					+ "' is not defined in database!");
+  public VOMSRole delete(String roleName) {
 
-		delete(r);
+    VOMSRole r = findByName(roleName);
+    if (r == null)
+      throw new NoSuchRoleException("Role '" + roleName
+        + "' is not defined in database!");
 
-		return r;
+    delete(r);
 
-	}
+    return r;
 
-	public VOMSRole delete(VOMSRole r) {
+  }
 
-		if (findByName(r.getName()) == null)
-			throw new NoSuchRoleException("Role \"" + r
-					+ "\" is not defined in database!");
+  public VOMSRole delete(VOMSRole r) {
 
-		r.getMappings().clear();
+    if (findByName(r.getName()) == null)
+      throw new NoSuchRoleException("Role \"" + r
+        + "\" is not defined in database!");
 
-		Iterator aclIter = r.getAcls().iterator();
+    r.getMappings().clear();
 
-		while (aclIter.hasNext()) {
+    Iterator aclIter = r.getAcls().iterator();
 
-			ACL acl = (ACL) aclIter.next();
-			VOMSGroup g = acl.getGroup();
-			g.getAcls().remove(acl);
-			aclIter.remove();
-		}
+    while (aclIter.hasNext()) {
 
-		// Delete permissions from ACLs that may be related with this role
-		ACLDAO.instance().deletePermissionsForRole(r);
+      ACL acl = (ACL) aclIter.next();
+      VOMSGroup g = acl.getGroup();
+      g.getAcls().remove(acl);
+      aclIter.remove();
+    }
 
-		// Delete role admins
-		VOMSAdminDAO.instance().deleteRoleAdmins(r);
+    // Delete permissions from ACLs that may be related with this role
+    ACLDAO.instance().deletePermissionsForRole(r);
 
-		HibernateFactory.getSession().delete(r);
+    // Delete role admins
+    VOMSAdminDAO.instance().deleteRoleAdmins(r);
 
-		return r;
+    HibernateFactory.getSession().delete(r);
 
-	}
+    return r;
 
-	public void removeRoleAttributesForGroup(VOMSGroup g) {
+  }
 
-		String deleteString = "delete from VOMSRoleAttribute where group = :group";
+  public void removeRoleAttributesForGroup(VOMSGroup g) {
 
-		HibernateFactory.getSession().createQuery(deleteString).setEntity(
-				"group", g).executeUpdate();
+    String deleteString = "delete from VOMSRoleAttribute where group = :group";
 
-	}
+    HibernateFactory.getSession().createQuery(deleteString)
+      .setEntity("group", g).executeUpdate();
 
-	public VOMSRoleAttribute setAttribute(VOMSRole r, VOMSGroup g,
-			String attrName, String attrValue) {
+  }
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+  public VOMSRoleAttribute setAttribute(VOMSRole r, VOMSGroup g,
+    String attrName, String attrValue) {
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attrName
-					+ "' is not defined in this vo.");
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
 
-		VOMSRoleAttribute val = r.getAttributeByName(g, attrName);
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attrName
+        + "' is not defined in this vo.");
 
-		if (val != null)
-			val.setValue(attrValue);
-		else {
-			val = VOMSRoleAttribute.instance(desc, attrValue, g, r);
-			r.addAttribute(val);
-		}
+    VOMSRoleAttribute val = r.getAttributeByName(g, attrName);
 
-		HibernateFactory.getSession().update(r);
-		return val;
+    if (val != null)
+      val.setValue(attrValue);
+    else {
+      val = VOMSRoleAttribute.instance(desc, attrValue, g, r);
+      r.addAttribute(val);
+    }
 
-	}
+    HibernateFactory.getSession().update(r);
+    return val;
 
-	public VOMSRoleAttribute createAttribute(VOMSRole r, VOMSGroup g,
-			String attrName, String attrDesc, String attrValue) {
+  }
 
-		if (r.getAttributeByName(g, attrName) != null)
-			throw new AlreadyExistsException("Attribute \"" + attrName
-					+ "\" already defined for role \"" + r + "\" in group \""
-					+ g + "\".");
+  public VOMSRoleAttribute createAttribute(VOMSRole r, VOMSGroup g,
+    String attrName, String attrDesc, String attrValue) {
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+    if (r.getAttributeByName(g, attrName) != null)
+      throw new AlreadyExistsException("Attribute \"" + attrName
+        + "\" already defined for role \"" + r + "\" in group \"" + g + "\".");
 
-		if (desc == null)
-			desc = VOMSAttributeDAO.instance().createAttributeDescription(
-					attrName, attrDesc);
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
 
-		VOMSRoleAttribute val = VOMSRoleAttribute.instance(desc, attrValue, g,
-				r);
+    if (desc == null)
+      desc = VOMSAttributeDAO.instance().createAttributeDescription(attrName,
+        attrDesc);
 
-		r.addAttribute(val);
+    VOMSRoleAttribute val = VOMSRoleAttribute.instance(desc, attrValue, g, r);
 
-		return val;
+    r.addAttribute(val);
 
-	}
+    return val;
 
-	public void deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
+  }
 
-		VOMSRoleAttribute attr = r.getAttributeByName(g, attrName);
+  public void deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
 
-		if (attr == null)
-			throw new NoSuchAttributeException("Attribute '" + attrName
-					+ "' not defined for role '" + r.getName() + "' in group '"
-					+ g + "'.");
+    VOMSRoleAttribute attr = r.getAttributeByName(g, attrName);
 
-		deleteAttribute(r, attr);
+    if (attr == null)
+      throw new NoSuchAttributeException("Attribute '" + attrName
+        + "' not defined for role '" + r.getName() + "' in group '" + g + "'.");
 
-	}
+    deleteAttribute(r, attr);
 
-	public void deleteAttribute(VOMSRole r, VOMSRoleAttribute val) {
+  }
 
-		r.deleteAttribute(val);
-		HibernateFactory.getSession().update(r);
+  public void deleteAttribute(VOMSRole r, VOMSRoleAttribute val) {
 
-	}
+    r.deleteAttribute(val);
+    HibernateFactory.getSession().update(r);
 
-	public List getMembers(VOMSGroup g, VOMSRole r) {
+  }
 
-		if (g == null)
-			throw new IllegalArgumentException(
-					"group parameter must be non-null!");
+  public List getMembers(VOMSGroup g, VOMSRole r) {
 
-		if (r == null)
-			throw new IllegalArgumentException(
-					"role parameter must be non-null!");
+    if (g == null)
+      throw new IllegalArgumentException("group parameter must be non-null!");
 
-		String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role = :role";
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"group", g).setEntity("role", r).list();
+    if (r == null)
+      throw new IllegalArgumentException("role parameter must be non-null!");
 
-	}
+    String query = "select m.user from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role = :role";
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("group", g).setEntity("role", r).list();
 
-	public static VOMSRoleDAO instance() {
+  }
 
-		return new VOMSRoleDAO();
-	}
+  public static VOMSRoleDAO instance() {
 
-	public Object getMemberSubjectStrings(VOMSGroup g, VOMSRole r) {
-		if (g == null)
-			throw new IllegalArgumentException(
-					"group parameter must be non-null!");
+    return new VOMSRoleDAO();
+  }
 
-		if (r == null)
-			throw new IllegalArgumentException(
-					"role parameter must be non-null!");
+  public Object getMemberSubjectStrings(VOMSGroup g, VOMSRole r) {
 
-		String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
+    if (g == null)
+      throw new IllegalArgumentException("group parameter must be non-null!");
 
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"group", g).setEntity("role", r).list();
-	}
+    if (r == null)
+      throw new IllegalArgumentException("role parameter must be non-null!");
+
+    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
+
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("group", g).setEntity("role", r).list();
+  }
 }

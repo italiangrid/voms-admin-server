@@ -24,9 +24,10 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserSignedAUPEvent extends UserAUPEvent {
 
-	public UserSignedAUPEvent(VOMSUser user, AUP aup) {
-		super(user, aup);
-		// TODO Auto-generated constructor stub
-	}
+  public UserSignedAUPEvent(VOMSUser user, AUP aup) {
+
+    super(user, aup);
+    // TODO Auto-generated constructor stub
+  }
 
 }

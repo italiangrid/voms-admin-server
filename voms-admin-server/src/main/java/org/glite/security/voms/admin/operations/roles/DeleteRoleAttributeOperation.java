@@ -30,42 +30,41 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
 
-	String attributeName;
+  String attributeName;
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		VOMSRoleDAO.instance().deleteAttributeByName(__context.getRole(),
-				__context.getGroup(), attributeName);
-		return null;
-	}
+    VOMSRoleDAO.instance().deleteAttributeByName(__context.getRole(),
+      __context.getGroup(), attributeName);
+    return null;
+  }
 
-	private DeleteRoleAttributeOperation(VOMSGroup g, VOMSRole r,
-			String attributeName) {
-		super(VOMSContext.instance(g, r));
-		this.attributeName = attributeName;
-	}
+  private DeleteRoleAttributeOperation(VOMSGroup g, VOMSRole r,
+    String attributeName) {
 
-	public static DeleteRoleAttributeOperation instance(VOMSGroup g,
-			VOMSRole r, String attributeName) {
+    super(VOMSContext.instance(g, r));
+    this.attributeName = attributeName;
+  }
 
-		return new DeleteRoleAttributeOperation(g, r, attributeName);
-	}
+  public static DeleteRoleAttributeOperation instance(VOMSGroup g, VOMSRole r,
+    String attributeName) {
 
-	public static DeleteRoleAttributeOperation instance(String groupName,
-			String roleName, String attributeName) {
+    return new DeleteRoleAttributeOperation(g, r, attributeName);
+  }
 
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
-		VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
+  public static DeleteRoleAttributeOperation instance(String groupName,
+    String roleName, String attributeName) {
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' not found!");
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
+    VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();
 
-		if (r == null)
-			throw new NoSuchRoleException("Role '" + roleName + "' not found!");
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName + "' not found!");
 
-		return new DeleteRoleAttributeOperation(g, r, attributeName);
-	}
+    if (r == null)
+      throw new NoSuchRoleException("Role '" + roleName + "' not found!");
+
+    return new DeleteRoleAttributeOperation(g, r, attributeName);
+  }
 
 }

@@ -21,60 +21,70 @@ package org.glite.security.voms.admin.operations;
 
 public class AuthorizationResponse {
 
-	boolean allowed;
+  boolean allowed;
 
-	private AuthorizationResponse() {
+  private AuthorizationResponse() {
 
-	}
+  }
 
-	private VOMSContext failingContext;
-	private VOMSPermission requiredPermissions;
-	private String failureReason;
+  private VOMSContext failingContext;
+  private VOMSPermission requiredPermissions;
+  private String failureReason;
 
-	public static AuthorizationResponse permit() {
-		AuthorizationResponse resp = new AuthorizationResponse();
-		resp.allowed = true;
-		return resp;
-	}
+  public static AuthorizationResponse permit() {
 
-	public static AuthorizationResponse deny(VOMSContext failingContext,
-			VOMSPermission requiredPermissions) {
-		AuthorizationResponse resp = new AuthorizationResponse();
-		resp.allowed = false;
-		resp.failingContext = failingContext;
-		resp.requiredPermissions = requiredPermissions;
-		return resp;
-	}
+    AuthorizationResponse resp = new AuthorizationResponse();
+    resp.allowed = true;
+    return resp;
+  }
 
-	public boolean isAllowed() {
-		return allowed;
-	}
+  public static AuthorizationResponse deny(VOMSContext failingContext,
+    VOMSPermission requiredPermissions) {
 
-	public void setAllowed(boolean allowed) {
-		this.allowed = allowed;
-	}
+    AuthorizationResponse resp = new AuthorizationResponse();
+    resp.allowed = false;
+    resp.failingContext = failingContext;
+    resp.requiredPermissions = requiredPermissions;
+    return resp;
+  }
 
-	public VOMSContext getFailingContext() {
-		return failingContext;
-	}
+  public boolean isAllowed() {
 
-	public void setFailingContext(VOMSContext failingContext) {
-		this.failingContext = failingContext;
-	}
+    return allowed;
+  }
 
-	public VOMSPermission getRequiredPermissions() {
-		return requiredPermissions;
-	}
+  public void setAllowed(boolean allowed) {
 
-	public void setRequiredPermissions(VOMSPermission requiredPermissions) {
-		this.requiredPermissions = requiredPermissions;
-	}
+    this.allowed = allowed;
+  }
 
-	public String getFailureReason() {
-		return failureReason;
-	}
+  public VOMSContext getFailingContext() {
 
-	public void setFailureReason(String failureReason) {
-		this.failureReason = failureReason;
-	}
+    return failingContext;
+  }
+
+  public void setFailingContext(VOMSContext failingContext) {
+
+    this.failingContext = failingContext;
+  }
+
+  public VOMSPermission getRequiredPermissions() {
+
+    return requiredPermissions;
+  }
+
+  public void setRequiredPermissions(VOMSPermission requiredPermissions) {
+
+    this.requiredPermissions = requiredPermissions;
+  }
+
+  public String getFailureReason() {
+
+    return failureReason;
+  }
+
+  public void setFailureReason(String failureReason) {
+
+    this.failureReason = failureReason;
+  }
 }

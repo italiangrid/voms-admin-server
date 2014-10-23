@@ -31,54 +31,55 @@ import org.glite.security.voms.admin.core.VOMSServiceConstants;
 
 public class UnassignedRolesTag extends javax.servlet.jsp.tagext.TagSupport {
 
-	public static final Logger log = LoggerFactory.getLogger(UnassignedRolesTag.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(UnassignedRolesTag.class);
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String id;
+  String id;
 
-	String groupId;
+  String groupId;
 
-	String var;
+  String var;
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		List roles = null;
+    List roles = null;
 
-		Map unassignedRoles = (Map) pageContext
-				.findAttribute(VOMSServiceConstants.UNASSIGNED_ROLES_KEY);
+    Map unassignedRoles = (Map) pageContext
+      .findAttribute(VOMSServiceConstants.UNASSIGNED_ROLES_KEY);
 
-		if (unassignedRoles == null)
-			throw new JspTagException(
-					"Unassigned roles mappings not found in page context!");
+    if (unassignedRoles == null)
+      throw new JspTagException(
+        "Unassigned roles mappings not found in page context!");
 
-		roles = (List) unassignedRoles.get(new Long(groupId));
-		pageContext.setAttribute(var, roles);
+    roles = (List) unassignedRoles.get(new Long(groupId));
+    pageContext.setAttribute(var, roles);
 
-		return SKIP_BODY;
-	}
+    return SKIP_BODY;
+  }
 
-	public String getVar() {
+  public String getVar() {
 
-		return var;
-	}
+    return var;
+  }
 
-	public void setVar(String var) {
+  public void setVar(String var) {
 
-		this.var = var;
-	}
+    this.var = var;
+  }
 
-	public String getGroupId() {
+  public String getGroupId() {
 
-		return groupId;
-	}
+    return groupId;
+  }
 
-	public void setGroupId(String groupId) {
+  public void setGroupId(String groupId) {
 
-		this.groupId = groupId;
-	}
+    this.groupId = groupId;
+  }
 
 }

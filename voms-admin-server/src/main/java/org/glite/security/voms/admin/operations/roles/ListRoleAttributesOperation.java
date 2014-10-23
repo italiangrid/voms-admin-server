@@ -27,38 +27,37 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListRoleAttributesOperation extends BaseVomsOperation {
 
-	protected VOMSGroup _vomsGroup;
-	protected VOMSRole _vomsRole;
+  protected VOMSGroup _vomsGroup;
+  protected VOMSRole _vomsRole;
 
-	private ListRoleAttributesOperation(VOMSGroup g, VOMSRole r) {
+  private ListRoleAttributesOperation(VOMSGroup g, VOMSRole r) {
 
-		this._vomsGroup = g;
-		this._vomsRole = r;
-	}
+    this._vomsGroup = g;
+    this._vomsRole = r;
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return _vomsRole.getAttributesInGroup(_vomsGroup);
+    return _vomsRole.getAttributesInGroup(_vomsGroup);
 
-	}
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		addRequiredPermissionOnPath(_vomsGroup.getParent(), VOMSPermission
-				.getContainerReadPermission());
+    addRequiredPermissionOnPath(_vomsGroup.getParent(),
+      VOMSPermission.getContainerReadPermission());
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getEmptyPermissions().setAttributesReadPermission());
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getEmptyPermissions().setAttributesReadPermission());
 
-		addRequiredPermission(VOMSContext.instance(_vomsGroup, _vomsRole),
-				VOMSPermission.getEmptyPermissions()
-						.setAttributesReadPermission());
+    addRequiredPermission(VOMSContext.instance(_vomsGroup, _vomsRole),
+      VOMSPermission.getEmptyPermissions().setAttributesReadPermission());
 
-	}
+  }
 
-	public static ListRoleAttributesOperation instance(VOMSGroup g, VOMSRole r) {
+  public static ListRoleAttributesOperation instance(VOMSGroup g, VOMSRole r) {
 
-		return new ListRoleAttributesOperation(g, r);
-	}
+    return new ListRoleAttributesOperation(g, r);
+  }
 
 }

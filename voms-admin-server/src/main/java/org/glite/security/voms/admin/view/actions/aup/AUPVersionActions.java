@@ -31,49 +31,57 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 public abstract class AUPVersionActions extends BaseAction implements
-		Preparable, ModelDriven<AUP> {
+  Preparable, ModelDriven<AUP> {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long aupId;
+  Long aupId;
 
-	AUP aup;
+  AUP aup;
 
-	String version;
+  String version;
 
-	public void prepare() throws Exception {
-		if (aup == null) {
+  public void prepare() throws Exception {
 
-			AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			aup = dao.findById(aupId, false);
-		}
+    if (aup == null) {
 
-	}
+      AUPDAO dao = DAOFactory.instance().getAUPDAO();
+      aup = dao.findById(aupId, false);
+    }
 
-	public AUP getModel() {
+  }
 
-		return aup;
-	}
+  public AUP getModel() {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The version string is required")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getVersion() {
-		return version;
-	}
+    return aup;
+  }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "The version string is required")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The version field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getVersion() {
 
-	public Long getAupId() {
-		return aupId;
-	}
+    return version;
+  }
 
-	public void setAupId(Long aupId) {
-		this.aupId = aupId;
-	}
+  public void setVersion(String version) {
+
+    this.version = version;
+  }
+
+  public Long getAupId() {
+
+    return aupId;
+  }
+
+  public void setAupId(Long aupId) {
+
+    this.aupId = aupId;
+  }
 
 }

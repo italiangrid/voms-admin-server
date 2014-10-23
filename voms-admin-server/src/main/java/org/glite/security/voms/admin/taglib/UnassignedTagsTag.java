@@ -24,43 +24,44 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class UnassignedTagsTag extends TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String adminId;
-	String var;
+  String adminId;
+  String var;
 
-	public String getAdminId() {
+  public String getAdminId() {
 
-		return adminId;
-	}
+    return adminId;
+  }
 
-	public void setAdminId(String adminId) {
+  public void setAdminId(String adminId) {
 
-		this.adminId = adminId;
-	}
+    this.adminId = adminId;
+  }
 
-	public String getVar() {
+  public String getVar() {
 
-		return var;
-	}
+    return var;
+  }
 
-	public void setVar(String var) {
+  public void setVar(String var) {
 
-		this.var = var;
-	}
+    this.var = var;
+  }
 
-	@Override
-	public int doStartTag() throws JspException {
-		// FIXME: DO this with an operation
-		// List<VOMSAdmin> unassignedTags =
-		// VOMSAdminDAO.instance().getUnassignedTagsForAdmin( new Long(adminId)
-		// );
-		// pageContext.setAttribute( var, unassignedTags);
-		//  
-		return SKIP_BODY;
-	}
+  @Override
+  public int doStartTag() throws JspException {
+
+    // FIXME: DO this with an operation
+    // List<VOMSAdmin> unassignedTags =
+    // VOMSAdminDAO.instance().getUnassignedTagsForAdmin( new Long(adminId)
+    // );
+    // pageContext.setAttribute( var, unassignedTags);
+    //
+    return SKIP_BODY;
+  }
 
 }

@@ -35,41 +35,42 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("json")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
-public class RestoreAllSuspendedUsersAction extends BaseAction{
-	
-	/**
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
+public class RestoreAllSuspendedUsersAction extends BaseAction {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	List<VOMSUserJSON> restoredUsers;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		restoredUsers = new ArrayList<VOMSUserJSON>();
-		
-		List<VOMSUser> suspendedUsers = VOMSUserDAO.instance().findSuspendedUsers();
-		
-		for (VOMSUser u: suspendedUsers){
-			
-			RestoreUserOperation.instance(u).execute();
-			restoredUsers.add(VOMSUserJSON.fromVOMSUser(u));
-		}
-		
-		return SUCCESS;
-	}
-	
-	@JSON(serialize=true)
-	public Collection<String> getActionMessages() {
-		
-		return super.getActionMessages();
-	}
+  private static final long serialVersionUID = 1L;
 
-	@JSON(serialize=true)
-	public List<VOMSUserJSON> getRestoredUsers() {
-		return restoredUsers;
-	}
-	
+  List<VOMSUserJSON> restoredUsers;
+
+  @Override
+  public String execute() throws Exception {
+
+    restoredUsers = new ArrayList<VOMSUserJSON>();
+
+    List<VOMSUser> suspendedUsers = VOMSUserDAO.instance().findSuspendedUsers();
+
+    for (VOMSUser u : suspendedUsers) {
+
+      RestoreUserOperation.instance(u).execute();
+      restoredUsers.add(VOMSUserJSON.fromVOMSUser(u));
+    }
+
+    return SUCCESS;
+  }
+
+  @JSON(serialize = true)
+  public Collection<String> getActionMessages() {
+
+    return super.getActionMessages();
+  }
+
+  @JSON(serialize = true)
+  public List<VOMSUserJSON> getRestoredUsers() {
+
+    return restoredUsers;
+  }
+
 }

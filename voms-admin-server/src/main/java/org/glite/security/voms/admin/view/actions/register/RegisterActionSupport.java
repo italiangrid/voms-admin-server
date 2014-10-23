@@ -36,131 +36,133 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
 @Results({ @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation") })
+  @Result(name = BaseAction.SUCCESS, location = "registerConfirmation") })
 public abstract class RegisterActionSupport extends BaseAction implements
-		Preparable, ModelDriven<NewVOMembershipRequest> {
+  Preparable, ModelDriven<NewVOMembershipRequest> {
 
-	public static final String CONFIRMATION_NEEDED = "needToConfirm";
-	public static final String PLEASE_WAIT = "pleaseWait";
-	public static final String ALREADY_MEMBER = "alreadyAMember";
-	
-	public static final String REGISTRATION_DISABLED = "registrationDisabled";
-	public static final String UNAUTHENTICATED_CLIENT = "unauthenticatedClient";
-	public static final String PLUGIN_VALIDATION_ERROR = "pluginValidationError";
-	
-	public static final String REQUEST_ATTRIBUTES = "requestAttributes";
-	public static final String SELECT_MANAGER = "selectManager";
-	
-	/**
+  public static final String CONFIRMATION_NEEDED = "needToConfirm";
+  public static final String PLEASE_WAIT = "pleaseWait";
+  public static final String ALREADY_MEMBER = "alreadyAMember";
+
+  public static final String REGISTRATION_DISABLED = "registrationDisabled";
+  public static final String UNAUTHENTICATED_CLIENT = "unauthenticatedClient";
+  public static final String PLUGIN_VALIDATION_ERROR = "pluginValidationError";
+
+  public static final String REQUEST_ATTRIBUTES = "requestAttributes";
+  public static final String SELECT_MANAGER = "selectManager";
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+  private static final long serialVersionUID = 1L;
 
-	Long requestId = -1L;
+  Long requestId = -1L;
 
-	protected NewVOMembershipRequest request;
+  protected NewVOMembershipRequest request;
 
-	protected RequesterInfo requester;
+  protected RequesterInfo requester;
 
-	AUPVersion currentAUPVersion;
+  AUPVersion currentAUPVersion;
 
-	protected String checkExistingPendingRequests() {
+  protected String checkExistingPendingRequests() {
 
-		RequestDAO dao = DAOFactory.instance().getRequestDAO();
+    RequestDAO dao = DAOFactory.instance().getRequestDAO();
 
-		NewVOMembershipRequest req = dao
-				.findActiveVOMembershipRequest(requester);
+    NewVOMembershipRequest req = dao.findActiveVOMembershipRequest(requester);
 
-		if (req != null) {
+    if (req != null) {
 
-			request = req;
-			if (req.getStatus().equals(STATUS.SUBMITTED))
-				return CONFIRMATION_NEEDED;
+      request = req;
+      if (req.getStatus().equals(STATUS.SUBMITTED))
+        return CONFIRMATION_NEEDED;
 
-			if (req.getStatus().equals(STATUS.CONFIRMED)
-					|| req.getStatus().equals(STATUS.PENDING))
-				return PLEASE_WAIT;
+      if (req.getStatus().equals(STATUS.CONFIRMED)
+        || req.getStatus().equals(STATUS.PENDING))
+        return PLEASE_WAIT;
 
-		}
-		return null;
-	}
+    }
+    return null;
+  }
 
-	protected RequesterInfo requesterInfoFromCurrentAdmin() {
+  protected RequesterInfo requesterInfoFromCurrentAdmin() {
 
-		RequesterInfo i = new RequesterInfo();
-		CurrentAdmin admin = CurrentAdmin.instance();
-		i.setCertificateSubject(admin.getRealSubject());
-		i.setCertificateIssuer(admin.getRealIssuer());
-		i.setEmailAddress(admin.getRealEmailAddress());
+    RequesterInfo i = new RequesterInfo();
+    CurrentAdmin admin = CurrentAdmin.instance();
+    i.setCertificateSubject(admin.getRealSubject());
+    i.setCertificateIssuer(admin.getRealIssuer());
+    i.setEmailAddress(admin.getRealEmailAddress());
 
-		return i;
+    return i;
 
-	}
+  }
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-		requester = requesterInfoFromCurrentAdmin();
+    requester = requesterInfoFromCurrentAdmin();
 
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
-		currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
+    currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
 
-		if (getModel() == null) {
+    if (getModel() == null) {
 
-			if (requestId != -1L) {
-				RequestDAO dao = DAOFactory.instance().getRequestDAO();
-				request = (NewVOMembershipRequest) dao
-						.findById(requestId, true);
-			}
-		}
+      if (requestId != -1L) {
+        RequestDAO dao = DAOFactory.instance().getRequestDAO();
+        request = (NewVOMembershipRequest) dao.findById(requestId, true);
+      }
+    }
 
-	}
+  }
 
-	public NewVOMembershipRequest getModel() {
+  public NewVOMembershipRequest getModel() {
 
-		return request;
-	}
+    return request;
+  }
 
-	public Long getRequestId() {
-		return requestId;
-	}
+  public Long getRequestId() {
 
-	public void setRequestId(Long requestId) {
-		this.requestId = requestId;
-	}
+    return requestId;
+  }
 
-	public RequesterInfo getRequester() {
-		return requester;
-	}
+  public void setRequestId(Long requestId) {
 
-	public void setRequester(RequesterInfo requester) {
-		this.requester = requester;
-	}
+    this.requestId = requestId;
+  }
 
-	public boolean registrationEnabled() {
-		return VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
-	}
+  public RequesterInfo getRequester() {
 
-	public boolean attributeRequestsEnabled() {
+    return requester;
+  }
 
-		return VOMSConfiguration
-				.instance()
-				.getBoolean(
-						VOMSConfigurationConstants.VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST,
-						false);
+  public void setRequester(RequesterInfo requester) {
 
-	}
+    this.requester = requester;
+  }
 
-	public AUPVersion getCurrentAUPVersion() {
-		return currentAUPVersion;
-	}
+  public boolean registrationEnabled() {
 
-	public String getRegistrationType() {
-		return VOMSConfiguration.instance().getRegistrationType();
-	}
+    return VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true);
+  }
+
+  public boolean attributeRequestsEnabled() {
+
+    return VOMSConfiguration.instance()
+      .getBoolean(
+        VOMSConfigurationConstants.VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST,
+        false);
+
+  }
+
+  public AUPVersion getCurrentAUPVersion() {
+
+    return currentAUPVersion;
+  }
+
+  public String getRegistrationType() {
+
+    return VOMSConfiguration.instance().getRegistrationType();
+  }
 
 }

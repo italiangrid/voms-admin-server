@@ -38,194 +38,200 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name="admins")
+@Table(name = "admins")
 public class VOMSAdmin implements Serializable, Cloneable {
 
-	private static final long serialVersionUID = -5459874418491929253L;
+  private static final long serialVersionUID = -5459874418491929253L;
 
-	@Id
-	@Column(name = "adminid")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ADMIN_SEQ")
-	@SequenceGenerator(name="VOMS_ADMIN_SEQ", sequenceName="VOMS_ADMIN_SEQ")
-	Long id;
+  @Id
+  @Column(name = "adminid")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_ADMIN_SEQ")
+  @SequenceGenerator(name = "VOMS_ADMIN_SEQ", sequenceName = "VOMS_ADMIN_SEQ")
+  Long id;
 
-	@Column(nullable=false)
-	@NaturalId
-	String dn;
+  @Column(nullable = false)
+  @NaturalId
+  String dn;
 
-	@ManyToOne(targetEntity = VOMSCA.class, optional = false)
-	@JoinColumn(name = "ca", nullable = false)
-	VOMSCA ca;
+  @ManyToOne(targetEntity = VOMSCA.class, optional = false)
+  @JoinColumn(name = "ca", nullable = false)
+  VOMSCA ca;
 
-	@Column(name="email_address", nullable=true)
-	String emailAddress;
-	
-	public VOMSAdmin() {
+  @Column(name = "email_address", nullable = true)
+  String emailAddress;
 
-	}
+  public VOMSAdmin() {
 
-	/**
-	 * @return Returns the ca.
-	 */
-	public VOMSCA getCa() {
+  }
 
-		return ca;
-	}
+  /**
+   * @return Returns the ca.
+   */
+  public VOMSCA getCa() {
 
-	/**
-	 * @param ca
-	 *            The ca to set.
-	 */
-	public void setCa(VOMSCA ca) {
+    return ca;
+  }
 
-		this.ca = ca;
-	}
+  /**
+   * @param ca
+   *          The ca to set.
+   */
+  public void setCa(VOMSCA ca) {
 
-	/**
-	 * @return Returns the dn.
-	 */
-	public String getDn() {
+    this.ca = ca;
+  }
 
-		return dn;
-	}
+  /**
+   * @return Returns the dn.
+   */
+  public String getDn() {
 
-	/**
-	 * @param dn
-	 *            The dn to set.
-	 */
-	public void setDn(String dn) {
+    return dn;
+  }
 
-		this.dn = dn;
-	}
+  /**
+   * @param dn
+   *          The dn to set.
+   */
+  public void setDn(String dn) {
 
-	/**
-	 * @return Returns the id.
-	 */
-	public Long getId() {
+    this.dn = dn;
+  }
 
-		return id;
-	}
+  /**
+   * @return Returns the id.
+   */
+  public Long getId() {
 
-	/**
-	 * @param id
-	 *            The id to set.
-	 */
-	public void setId(Long id) {
+    return id;
+  }
 
-		this.id = id;
-	}
+  /**
+   * @param id
+   *          The id to set.
+   */
+  public void setId(Long id) {
 
+    this.id = id;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((ca == null) ? 0 : ca.hashCode());
-		result = prime * result + ((dn == null) ? 0 : dn.hashCode());
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		VOMSAdmin other = (VOMSAdmin) obj;
-		if (ca == null) {
-			if (other.ca != null)
-				return false;
-		} else if (!ca.equals(other.ca))
-			return false;
-		if (dn == null) {
-			if (other.dn != null)
-				return false;
-		} else if (!dn.equals(other.dn))
-			return false;
-		return true;
-	}
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((ca == null) ? 0 : ca.hashCode());
+    result = prime * result + ((dn == null) ? 0 : dn.hashCode());
+    return result;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#clone()
-	 */
-	public Object clone() throws CloneNotSupportedException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
 
-		VOMSAdmin newInstance = (VOMSAdmin) super.clone();
-		newInstance.id = id;
-		newInstance.dn = dn;
-		newInstance.ca = ca;
-		return newInstance;
-	}
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    VOMSAdmin other = (VOMSAdmin) obj;
+    if (ca == null) {
+      if (other.ca != null)
+        return false;
+    } else if (!ca.equals(other.ca))
+      return false;
+    if (dn == null) {
+      if (other.dn != null)
+        return false;
+    } else if (!dn.equals(other.dn))
+      return false;
+    return true;
+  }
 
-	/* Service methods */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() throws CloneNotSupportedException {
 
-	public String toString() {
+    VOMSAdmin newInstance = (VOMSAdmin) super.clone();
+    newInstance.id = id;
+    newInstance.dn = dn;
+    newInstance.ca = ca;
+    return newInstance;
+  }
 
-		ToStringBuilder builder = new ToStringBuilder(this);
+  /* Service methods */
 
-		return builder.append(dn).append(ca.getSubjectString()).toString();
+  public String toString() {
 
-	}
+    ToStringBuilder builder = new ToStringBuilder(this);
 
-	public String getEmailAddress() {
+    return builder.append(dn).append(ca.getSubjectString()).toString();
 
-		return emailAddress;
-	}
+  }
 
-	public void setEmailAddress(String emailAddress) {
+  public String getEmailAddress() {
 
-		this.emailAddress = emailAddress;
-	}
+    return emailAddress;
+  }
 
-	public boolean isInternalAdmin() {
-		return getCa().getSubjectString().startsWith(
-				VOMSServiceConstants.INTERNAL_DN_PREFIX);
-	}
+  public void setEmailAddress(String emailAddress) {
 
-	public boolean isUnauthenticated(){
-		
-		return (getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT)
-				&& 
-				getCa().getSubjectString().equals(VOMSServiceConstants.VIRTUAL_CA));
-	}
-	
-	public boolean isGroupAdmin() {
+    this.emailAddress = emailAddress;
+  }
 
-		boolean result;
-		try {
+  public boolean isInternalAdmin() {
 
-			result = PathNamingScheme.isGroup(getDn());
+    return getCa().getSubjectString().startsWith(
+      VOMSServiceConstants.INTERNAL_DN_PREFIX);
+  }
 
-		} catch (VOMSSyntaxException e) {
+  public boolean isUnauthenticated() {
 
-			return false;
-		}
+    return (getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT) && getCa()
+      .getSubjectString().equals(VOMSServiceConstants.VIRTUAL_CA));
+  }
 
-		return result;
-	}
+  public boolean isGroupAdmin() {
 
-	public boolean isRoleAdmin() {
-		boolean result;
+    boolean result;
+    try {
 
-		try {
+      result = PathNamingScheme.isGroup(getDn());
 
-			result = PathNamingScheme.isQualifiedRole(getDn());
+    } catch (VOMSSyntaxException e) {
 
-		} catch (VOMSSyntaxException e) {
+      return false;
+    }
 
-			return false;
-		}
-		return result;
-	}
+    return result;
+  }
+
+  public boolean isRoleAdmin() {
+
+    boolean result;
+
+    try {
+
+      result = PathNamingScheme.isQualifiedRole(getDn());
+
+    } catch (VOMSSyntaxException e) {
+
+      return false;
+    }
+    return result;
+  }
 
 }

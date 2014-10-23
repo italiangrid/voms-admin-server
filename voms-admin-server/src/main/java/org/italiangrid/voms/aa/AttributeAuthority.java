@@ -20,10 +20,8 @@
 
 package org.italiangrid.voms.aa;
 
-
-
 public interface AttributeAuthority {
 
-	boolean getAttributes(RequestContext context);
-	
+  boolean getAttributes(RequestContext context);
+
 }

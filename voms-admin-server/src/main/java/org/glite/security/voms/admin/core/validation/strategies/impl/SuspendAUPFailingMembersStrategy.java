@@ -42,71 +42,71 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SuspendAUPFailingMembersStrategy implements
-		HandleAUPFailingMembersStrategy, AUPFailingMembersLookupStrategy {
+  HandleAUPFailingMembersStrategy, AUPFailingMembersLookupStrategy {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(SuspendAUPFailingMembersStrategy.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(SuspendAUPFailingMembersStrategy.class);
 
-	public List<VOMSUser> findAUPFailingMembers() {
+  public List<VOMSUser> findAUPFailingMembers() {
 
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		VOMSUserDAO userDAO = VOMSUserDAO.instance();
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    VOMSUserDAO userDAO = VOMSUserDAO.instance();
 
-		return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
+    return userDAO.findAUPFailingUsers(aupDAO.getVOAUP());
 
-	}
+  }
 
-	protected synchronized void handleAUPFailingMember(VOMSUser u) {
+  protected synchronized void handleAUPFailingMember(VOMSUser u) {
 
-		AUPDAO aupDAO = HibernateDAOFactory.instance().getAUPDAO();
-		AUP aup = aupDAO.getVOAUP();
+    AUPDAO aupDAO = HibernateDAOFactory.instance().getAUPDAO();
+    AUP aup = aupDAO.getVOAUP();
 
-		log.debug("Checking user '" + u + "' compliance with '" + aup.getName()
-				+ "'");
-		TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
+    log.debug("Checking user '" + u + "' compliance with '" + aup.getName()
+      + "'");
+    TaskDAO taskDAO = DAOFactory.instance().getTaskDAO();
 
-		SignAUPTask pendingSignAUPTask = u.getPendingSignAUPTask(aup); 
-		
-		if (pendingSignAUPTask == null) {
+    SignAUPTask pendingSignAUPTask = u.getPendingSignAUPTask(aup);
 
-			SignAUPTask t = taskDAO.createSignAUPTask(aup);
-			u.assignTask(t);
-			log.debug("Sign aup task assigned to user '{}'", u);
-			EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
+    if (pendingSignAUPTask == null) {
 
-		} else {
+      SignAUPTask t = taskDAO.createSignAUPTask(aup);
+      u.assignTask(t);
+      log.debug("Sign aup task assigned to user '{}'", u);
+      EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
 
-			if (u.getSuspended()){
-				
-				log.debug("User already suspended. Reason: {}", u.getSuspensionReason());
-				return;
-			}
-			
-			// User is not suspended, look if expired the pending Sign AUP task
-			// has expired
-			
-			log.debug("Sign AUP task: {}", pendingSignAUPTask);
-			
-			if (pendingSignAUPTask.getStatus().equals(TaskStatus.EXPIRED)){
-				
-				log.info("Suspending user '" + u
-						+ "' that failed to sign AUP in time");
+    } else {
 
-				ValidationManager.instance().suspendUser(u,
-						SuspensionReason.FAILED_TO_SIGN_AUP);
-			}
-		}
+      if (u.getSuspended()) {
 
-	}
+        log
+          .debug("User already suspended. Reason: {}", u.getSuspensionReason());
+        return;
+      }
 
-	public void handleAUPFailingMembers(List<VOMSUser> aupFailingMembers) {
+      // User is not suspended, look if expired the pending Sign AUP task
+      // has expired
 
-		if (aupFailingMembers == null || aupFailingMembers.isEmpty()) {
-			return;
-		}
+      log.debug("Sign AUP task: {}", pendingSignAUPTask);
 
-		for (VOMSUser u : aupFailingMembers)
-			handleAUPFailingMember(u);
+      if (pendingSignAUPTask.getStatus().equals(TaskStatus.EXPIRED)) {
 
-	}
+        log.info("Suspending user '" + u + "' that failed to sign AUP in time");
+
+        ValidationManager.instance().suspendUser(u,
+          SuspensionReason.FAILED_TO_SIGN_AUP);
+      }
+    }
+
+  }
+
+  public void handleAUPFailingMembers(List<VOMSUser> aupFailingMembers) {
+
+    if (aupFailingMembers == null || aupFailingMembers.isEmpty()) {
+      return;
+    }
+
+    for (VOMSUser u : aupFailingMembers)
+      handleAUPFailingMember(u);
+
+  }
 }

@@ -29,69 +29,72 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.acls.SaveACLEntryOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
-		@Result(name = BaseAction.INPUT, location = "editACLEntry") })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "editACLEntry") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class EditEntryAction extends ACLActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	List<String> selectedPermissions;
-	VOMSPermission permission;
+  List<String> selectedPermissions;
+  VOMSPermission permission;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		String permString;
+    String permString;
 
-		if (selectedPermissions == null)
-			permString = "NONE";
-		else if (selectedPermissions.contains("ALL"))
-			permString = "ALL";
-		else
-			permString = StringUtils.join(selectedPermissions, "|");
+    if (selectedPermissions == null)
+      permString = "NONE";
+    else if (selectedPermissions.contains("ALL"))
+      permString = "ALL";
+    else
+      permString = StringUtils.join(selectedPermissions, "|");
 
-		
-		VOMSPermission perm = VOMSPermission.fromString(permString);
-		
-		limitUnauthenticatedClientPermissions(perm);
-			
-		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
-				admin, perm, propagate);
+    VOMSPermission perm = VOMSPermission.fromString(permString);
 
-		op.execute();
+    limitUnauthenticatedClientPermissions(perm);
 
-		return SUCCESS;
-	}
+    SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
+      admin, perm, propagate);
 
-	public void prepareInput() throws Exception {
-		prepare();
+    op.execute();
 
-		if (permission == null)
-			permission = getModel().getPermissions(getAdmin());
+    return SUCCESS;
+  }
 
-	}
+  public void prepareInput() throws Exception {
 
-	public VOMSPermission getPermission() {
-		return permission;
-	}
+    prepare();
 
-	public void setPermission(VOMSPermission permission) {
-		this.permission = permission;
-	}
+    if (permission == null)
+      permission = getModel().getPermissions(getAdmin());
 
-	public List<String> getSelectedPermissions() {
-		return selectedPermissions;
-	}
+  }
 
-	public void setSelectedPermissions(List<String> selectedPermissions) {
-		this.selectedPermissions = selectedPermissions;
-	}
+  public VOMSPermission getPermission() {
+
+    return permission;
+  }
+
+  public void setPermission(VOMSPermission permission) {
+
+    this.permission = permission;
+  }
+
+  public List<String> getSelectedPermissions() {
+
+    return selectedPermissions;
+  }
+
+  public void setSelectedPermissions(List<String> selectedPermissions) {
+
+    this.selectedPermissions = selectedPermissions;
+  }
 
 }

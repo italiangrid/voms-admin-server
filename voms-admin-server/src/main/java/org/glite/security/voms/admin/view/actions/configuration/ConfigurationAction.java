@@ -29,76 +29,83 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.Preparable;
 
+@Result(name = BaseAction.SUCCESS, location = "configuration")
+public class ConfigurationAction extends BaseAction implements Preparable {
 
-@Result(name=BaseAction.SUCCESS, location="configuration")
-public class ConfigurationAction extends BaseAction implements Preparable{
-
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String vomsesConf;
-	
-	String mkGridmapConf;
-	
-	String contactString;
-	
-	String lsc;
-	
-	
-	public void prepare() throws Exception {
-		
-		contactString = URLBuilder.baseVOMSURLFromConfiguration();
-		
-		vomsesConf = VOMSConfiguration.instance().getVomsesConfigurationString();
-		
-		HttpServletRequest request = ServletActionContext.getRequest();
-		
-		// Build mkgridmap configuration
-		mkGridmapConf = "group vomss://"
-            + request.getServerName() + ":" 
-            + request.getServerPort() + "/voms/" + VOMSConfiguration.instance().getVOName()
-            + "   ."+VOMSConfiguration.instance().getVOName();
-        
-		lsc = VOMSConfiguration.instance().getLSCConfiguration();
+  String vomsesConf;
 
-	}
+  String mkGridmapConf;
 
-	public String getVomsesConf() {
-		return vomsesConf;
-	}
+  String contactString;
 
-	public void setVomsesConf(String vomsesConf) {
-		this.vomsesConf = vomsesConf;
-	}
+  String lsc;
 
-	public String getMkGridmapConf() {
-		return mkGridmapConf;
-	}
+  public void prepare() throws Exception {
 
-	public void setMkGridmapConf(String mkGridmapConf) {
-		this.mkGridmapConf = mkGridmapConf;
-	}
+    contactString = URLBuilder.baseVOMSURLFromConfiguration();
 
-	public String getContactString() {
-		return contactString;
-	}
+    vomsesConf = VOMSConfiguration.instance().getVomsesConfigurationString();
 
-	public void setContactString(String contactString) {
-		this.contactString = contactString;
-	}
-	
-	public String getLSC(){
-		return lsc;
-	}
+    HttpServletRequest request = ServletActionContext.getRequest();
 
-	public String getLsc() {
-		return lsc;
-	}
+    // Build mkgridmap configuration
+    mkGridmapConf = "group vomss://" + request.getServerName() + ":"
+      + request.getServerPort() + "/voms/"
+      + VOMSConfiguration.instance().getVOName() + "   ."
+      + VOMSConfiguration.instance().getVOName();
 
-	public void setLsc(String lsc) {
-		this.lsc = lsc;
-	}
+    lsc = VOMSConfiguration.instance().getLSCConfiguration();
+
+  }
+
+  public String getVomsesConf() {
+
+    return vomsesConf;
+  }
+
+  public void setVomsesConf(String vomsesConf) {
+
+    this.vomsesConf = vomsesConf;
+  }
+
+  public String getMkGridmapConf() {
+
+    return mkGridmapConf;
+  }
+
+  public void setMkGridmapConf(String mkGridmapConf) {
+
+    this.mkGridmapConf = mkGridmapConf;
+  }
+
+  public String getContactString() {
+
+    return contactString;
+  }
+
+  public void setContactString(String contactString) {
+
+    this.contactString = contactString;
+  }
+
+  public String getLSC() {
+
+    return lsc;
+  }
+
+  public String getLsc() {
+
+    return lsc;
+  }
+
+  public void setLsc(String lsc) {
+
+    this.lsc = lsc;
+  }
 
 }

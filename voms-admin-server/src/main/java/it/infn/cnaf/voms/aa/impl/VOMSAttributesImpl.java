@@ -49,245 +49,249 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
  */
 class VOMSAttributesImpl implements VOMSAttributes {
 
-    VOMSUser user;
+  VOMSUser user;
 
-    List <VOMSFQAN> fqans;
+  List<VOMSFQAN> fqans;
 
-    List <VOMSGenericAttribute> genericAttributes;
+  List<VOMSGenericAttribute> genericAttributes;
 
-    private VOMSAttributesImpl() {
+  private VOMSAttributesImpl() {
 
-        fqans = new ArrayList <VOMSFQAN>();
-        genericAttributes = new ArrayList <VOMSGenericAttribute>();
+    fqans = new ArrayList<VOMSFQAN>();
+    genericAttributes = new ArrayList<VOMSGenericAttribute>();
+
+  }
+
+  public List<VOMSFQAN> getFqans() {
+
+    return fqans;
+  }
+
+  public List<VOMSGenericAttribute> getGenericAttributes() {
+
+    return genericAttributes;
+  }
+
+  public VOMSUser getUser() {
+
+    return user;
+  }
+
+  public void setUser(VOMSUser user) {
+
+    this.user = user;
+  }
+
+  void getGroupsFromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
+
+    assert user != null : "Cannot get groups from a NULL user!";
+
+    Iterator<VOMSMapping> mIter = user.getMappings().iterator();
+
+    while (mIter.hasNext()) {
+
+      VOMSMapping m = mIter.next();
+      if (m.isGroupMapping())
+        fqans.add(VOMSFQAN.fromModel(m));
+    }
+
+  }
+
+  void getRolesFromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
+
+    assert user != null : "Cannot get roles from a NULL user!";
+
+    Iterator<VOMSMapping> mIter = user.getMappings().iterator();
+
+    while (mIter.hasNext()) {
+
+      VOMSMapping m = mIter.next();
+      if (m.isRoleMapping())
+        fqans.add(VOMSFQAN.fromModel(m));
+    }
+
+  }
+
+  private void addMissingFQANsForUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
+
+    assert user != null : "Cannot add missing FQANs for a NULL user!";
+
+    // Check that all the user groups are actually in the fqans list
+
+    Iterator<VOMSMapping> mappingIter = user.getMappings().iterator();
+
+    while (mappingIter.hasNext()) {
+
+      VOMSMapping mapping = mappingIter.next();
+
+      if (mapping.isGroupMapping()) {
+
+        VOMSFQAN possiblyMissingFQAN = VOMSFQAN.fromModel(mapping);
+
+        if (!fqans.contains(possiblyMissingFQAN))
+          fqans.add(possiblyMissingFQAN);
+
+      }
+    }
+  }
+
+  void getFQANsFromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user,
+    List<String> requestedFQANs) {
+
+    for (String fqan : requestedFQANs) {
+
+      if (PathNamingScheme.isQualifiedRole(fqan)) {
+
+        if (user.hasRole(fqan))
+          fqans.add(VOMSFQAN.fromString(fqan));
+
+      } else if (PathNamingScheme.isGroup(fqan)) {
+
+        if (user.isMember(fqan))
+          fqans.add(VOMSFQAN.fromString(fqan));
+
+      }
+    }
+  }
+
+  void getGenericAttributesFromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
+
+    assert user != null : "Cannot get Generic Attributes from a NULL user!";
+
+    Iterator<VOMSUserAttribute> userAttrs = user.getAttributes().iterator();
+
+    while (userAttrs.hasNext()) {
+
+      VOMSUserAttribute attribute = userAttrs.next();
+      genericAttributes.add(VOMSGenericAttribute.fromModel(attribute));
+    }
+
+    // Get group and role attributes starting from requested FQANs
+    for (VOMSFQAN requestedFQAN : fqans) {
+
+      if (requestedFQAN.isGroup()) {
+
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(
+          requestedFQAN.getFQAN());
+
+        Iterator<VOMSGroupAttribute> groupAttrsIter = g.getAttributes()
+          .iterator();
+
+        while (groupAttrsIter.hasNext())
+          genericAttributes.add(VOMSGenericAttribute.fromModel(groupAttrsIter
+            .next()));
+
+      } else if (requestedFQAN.isRole()) {
+
+        String roleName = PathNamingScheme.getRoleName(requestedFQAN.getFQAN());
+        String groupName = PathNamingScheme.getGroupName(requestedFQAN
+          .getFQAN());
+
+        VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+
+        Iterator<VOMSRoleAttribute> roleAttrsIter = r.getAttributesInGroup(g)
+          .iterator();
+
+        while (roleAttrsIter.hasNext())
+          genericAttributes.add(VOMSGenericAttribute.fromModel(roleAttrsIter
+            .next()));
+
+      }
+    }
+  }
+
+  public static VOMSAttributesImpl fromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
+
+    return fromUser(user, null);
+
+  }
+
+  public static VOMSAttributesImpl fromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user,
+    List<String> requestedFQANs) {
+
+    assert user != null : "Cannot get VOMS attributes for a NULL user!";
+
+    if (user.isSuspended())
+      throw new SuspendedUserException("User '" + user.getShortName()
+        + "' is currently suspended for the following reason: "
+        + user.getSuspensionReason());
+
+    VOMSAttributesImpl attrs = new VOMSAttributesImpl();
+
+    attrs.setUser(VOMSUser.fromModel(user));
+
+    if (requestedFQANs == null) {
+
+      attrs.getGroupsFromUser(user);
+      attrs.getGenericAttributesFromUser(user);
+
+    } else {
+
+      attrs.getFQANsFromUser(user, requestedFQANs);
+      attrs.getGenericAttributesFromUser(user);
+
+      boolean compulsoryGroupMembership = VOMSConfiguration.instance()
+        .getBoolean(
+          VOMSConfigurationConstants.VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP,
+          new Boolean(true));
+
+      if (compulsoryGroupMembership)
+        attrs.addMissingFQANsForUser(user);
 
     }
 
-    public List <VOMSFQAN> getFqans() {
+    return attrs;
 
-        return fqans;
-    }
+  }
 
-    public List <VOMSGenericAttribute> getGenericAttributes() {
+  public static VOMSAttributes getAllFromUser(
+    org.glite.security.voms.admin.persistence.model.VOMSUser user) {
 
-        return genericAttributes;
-    }
+    assert user != null : "Cannot get all VOMS attributes for a NULL user!";
 
-    public VOMSUser getUser() {
+    if (user.isSuspended())
+      throw new SuspendedUserException("User '" + user.getShortName()
+        + "' is currently suspended for the following reason: "
+        + user.getSuspensionReason());
 
-        return user;
-    }
+    VOMSAttributesImpl attrs = new VOMSAttributesImpl();
 
-    public void setUser( VOMSUser user ) {
+    attrs.setUser(VOMSUser.fromModel(user));
 
-        this.user = user;
-    }
+    attrs.getGroupsFromUser(user);
+    attrs.getRolesFromUser(user);
+    attrs.getGenericAttributesFromUser(user);
 
-    void getGroupsFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
+    return attrs;
 
-        assert user != null : "Cannot get groups from a NULL user!";
+  }
 
-        Iterator <VOMSMapping> mIter = user.getMappings().iterator();
+  public boolean hasRoles() {
 
-        while ( mIter.hasNext() ) {
+    for (VOMSFQAN f : getFqans()) {
 
-            VOMSMapping m = mIter.next();
-            if ( m.isGroupMapping() )
-                fqans.add( VOMSFQAN.fromModel( m ) );
-        }
-
-    }
-
-    void getRolesFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
-
-        assert user != null : "Cannot get roles from a NULL user!";
-
-        Iterator <VOMSMapping> mIter = user.getMappings().iterator();
-
-        while ( mIter.hasNext() ) {
-
-            VOMSMapping m = mIter.next();
-            if ( m.isRoleMapping() )
-                fqans.add( VOMSFQAN.fromModel( m ) );
-        }
+      if (f.isRole())
+        return true;
 
     }
 
-    private void addMissingFQANsForUser(
-            org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
+    return false;
+  }
 
-        assert user != null : "Cannot add missing FQANs for a NULL user!";
+  @Override
+  public String toString() {
 
-        // Check that all the user groups are actually in the fqans list
+    if (fqans == null || fqans.isEmpty())
+      return "[]";
 
-        Iterator<VOMSMapping> mappingIter = user.getMappings().iterator();
-
-        while ( mappingIter.hasNext() ) {
-
-            VOMSMapping mapping = mappingIter.next();
-
-            if ( mapping.isGroupMapping() ) {
-
-                VOMSFQAN possiblyMissingFQAN = VOMSFQAN.fromModel( mapping );
-
-                if ( !fqans.contains( possiblyMissingFQAN ) )
-                    fqans.add( possiblyMissingFQAN );
-
-            }
-        }
-    }
-
-    void getFQANsFromUser( org.glite.security.voms.admin.persistence.model.VOMSUser user,
-            List <String> requestedFQANs ) {
-
-        for ( String fqan : requestedFQANs ) {
-
-            if ( PathNamingScheme.isQualifiedRole( fqan ) ) {
-
-                if ( user.hasRole( fqan ) )
-                    fqans.add( VOMSFQAN.fromString( fqan ) );
-
-            } else if ( PathNamingScheme.isGroup( fqan ) ) {
-
-                if ( user.isMember( fqan ) )
-                    fqans.add( VOMSFQAN.fromString( fqan ) );
-
-            }
-        }
-    }
-
-    void getGenericAttributesFromUser(
-            org.glite.security.voms.admin.persistence.model.VOMSUser user ) {
-
-        assert user != null : "Cannot get Generic Attributes from a NULL user!";
-
-        Iterator <VOMSUserAttribute> userAttrs = user.getAttributes()
-                .iterator();
-
-        while ( userAttrs.hasNext() ) {
-
-            VOMSUserAttribute attribute = userAttrs.next();
-            genericAttributes.add( VOMSGenericAttribute.fromModel( attribute ) );
-        }
-
-        // Get group and role attributes starting from requested FQANs
-        for ( VOMSFQAN requestedFQAN : fqans ) {
-
-            if ( requestedFQAN.isGroup() ) {
-
-                VOMSGroup g = VOMSGroupDAO.instance().findByName(
-                        requestedFQAN.getFQAN() );
-
-                Iterator <VOMSGroupAttribute> groupAttrsIter = g
-                        .getAttributes().iterator();
-
-                while ( groupAttrsIter.hasNext() )
-                    genericAttributes.add( VOMSGenericAttribute
-                            .fromModel( groupAttrsIter.next() ) );
-
-            } else if ( requestedFQAN.isRole() ) {
-
-                String roleName = PathNamingScheme.getRoleName( requestedFQAN
-                        .getFQAN() );
-                String groupName = PathNamingScheme.getGroupName( requestedFQAN
-                        .getFQAN() );
-
-                VOMSRole r = VOMSRoleDAO.instance().findByName( roleName );
-                VOMSGroup g = VOMSGroupDAO.instance().findByName( groupName );
-
-                Iterator <VOMSRoleAttribute> roleAttrsIter = r
-                        .getAttributesInGroup( g ).iterator();
-
-                while ( roleAttrsIter.hasNext() )
-                    genericAttributes.add( VOMSGenericAttribute
-                            .fromModel( roleAttrsIter.next() ) );
-
-            }
-        }
-    }
-
-    
-    public static VOMSAttributesImpl fromUser(
-            org.glite.security.voms.admin.persistence.model.VOMSUser user){
-        
-        return fromUser( user, null );
-        
-    }
-    
-    public static VOMSAttributesImpl fromUser(
-            org.glite.security.voms.admin.persistence.model.VOMSUser user,
-            List <String> requestedFQANs ) {
-
-        assert user != null : "Cannot get VOMS attributes for a NULL user!";
-        
-        if (user.isSuspended())
-        	throw new SuspendedUserException("User '"+user.getShortName()+"' is currently suspended for the following reason: "+user.getSuspensionReason());
-        
-        VOMSAttributesImpl attrs = new VOMSAttributesImpl();
-
-        attrs.setUser( VOMSUser.fromModel( user ) );
-
-        if ( requestedFQANs == null ) {
-
-            attrs.getGroupsFromUser( user );
-            attrs.getGenericAttributesFromUser( user );
-
-        } else {
-
-            attrs.getFQANsFromUser( user, requestedFQANs );
-            attrs.getGenericAttributesFromUser( user );
-
-            boolean compulsoryGroupMembership = VOMSConfiguration
-                    .instance()
-                    .getBoolean(
-                            VOMSConfigurationConstants.VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP,
-                            new Boolean( true ) );
-
-            if ( compulsoryGroupMembership )
-                attrs.addMissingFQANsForUser( user );
-
-        }
-        
-        return attrs;
-
-    }
-    
-    public static VOMSAttributes getAllFromUser(org.glite.security.voms.admin.persistence.model.VOMSUser user){
-    	
-    	assert user != null: "Cannot get all VOMS attributes for a NULL user!";
-    	
-    	if (user.isSuspended())
-        	throw new SuspendedUserException("User '"+user.getShortName()+"' is currently suspended for the following reason: "+user.getSuspensionReason());
-    	
-    	VOMSAttributesImpl attrs = new VOMSAttributesImpl();
-    	
-    	attrs.setUser(VOMSUser.fromModel(user));
-    	
-    	attrs.getGroupsFromUser(user);
-    	attrs.getRolesFromUser(user);
-    	attrs.getGenericAttributesFromUser(user);
-    	
-    	return attrs;
-    		
-    }
-
-	public boolean hasRoles() {
-		
-		for (VOMSFQAN f: getFqans()){
-			
-			if (f.isRole())
-				return true;
-			
-		}
-		
-		return false;
-	}
-
-	@Override
-	public String toString() {
-		
-		if (fqans ==  null || fqans.isEmpty())
-			return "[]";
-		
-		return fqans.toString();
-	}
+    return fqans.toString();
+  }
 }

@@ -49,86 +49,91 @@ import com.opensymphony.xwork2.ValidationAware;
  * 
  */
 
-public class BaseAction extends ActionSupport implements ValidationAware{
+public class BaseAction extends ActionSupport implements ValidationAware {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String INPUT_FORM_REGEX = "^[^<>&=;]*$";
-	public static final String INPUT_DN_REGEX = "^[^<>&;]*$";
+  public static final String INPUT_FORM_REGEX = "^[^<>&=;]*$";
+  public static final String INPUT_DN_REGEX = "^[^<>&;]*$";
 
-	public static final String SEARCH = "search";
-	public static final String LIST = "list";
-	public static final String EDIT = "edit";
+  public static final String SEARCH = "search";
+  public static final String LIST = "list";
+  public static final String EDIT = "edit";
 
-	public static final String CREATE = "create";
-	public static final String SAVE = "save";
+  public static final String CREATE = "create";
+  public static final String SAVE = "save";
 
-	public static final String AUTHZ_ERROR = "authorizationError";
+  public static final String AUTHZ_ERROR = "authorizationError";
 
-	protected VOMSUser userById(Long id) {
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
+  protected VOMSUser userById(Long id) {
 
-		return (VOMSUser) FindUserOperation.instance(id).execute();
-	}
+    if (id == null)
+      throw new NullArgumentException("'id' cannot be null!");
 
-	protected VOMSGroup groupByName(String name) {
+    return (VOMSUser) FindUserOperation.instance(id).execute();
+  }
 
-		if (name == null)
-			throw new NullArgumentException("'name' cannot be null!");
+  protected VOMSGroup groupByName(String name) {
 
-		return (VOMSGroup) FindGroupOperation.instance(name).execute();
+    if (name == null)
+      throw new NullArgumentException("'name' cannot be null!");
 
-	}
+    return (VOMSGroup) FindGroupOperation.instance(name).execute();
 
-	protected VOMSAdmin adminById(Long id){
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
-		
-		return VOMSAdminDAO.instance().getById(id);
-		
-	}
-	
-	
-	protected VOMSGroup groupById(Long id) {
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
+  }
 
-		return (VOMSGroup) FindGroupOperation.instance(id).execute();
-	}
+  protected VOMSAdmin adminById(Long id) {
 
-	protected VOMSRole roleById(Long id) {
-		if (id == null)
-			throw new NullArgumentException("'id' cannot be null!");
+    if (id == null)
+      throw new NullArgumentException("'id' cannot be null!");
 
-		return (VOMSRole) FindRoleOperation.instance(id).execute();
-	}
+    return VOMSAdminDAO.instance().getById(id);
 
-	protected VOMSRole roleByName(String name) {
+  }
 
-		if (name == null)
-			throw new NullArgumentException("'name' cannot be null!");
+  protected VOMSGroup groupById(Long id) {
 
-		return (VOMSRole) FindRoleOperation.instance(name).execute();
-	}
-	
-	protected String getHomeURL(){
-		
-		return URLBuilder.baseVOMSURLFromConfiguration()+"/admin/home.action";
-	}
-	
-	protected Date getFutureDate(Date initialDate, int field, int increment) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(initialDate);
-		c.add(field, increment);
+    if (id == null)
+      throw new NullArgumentException("'id' cannot be null!");
 
-		return c.getTime();
-	}
+    return (VOMSGroup) FindGroupOperation.instance(id).execute();
+  }
 
-	protected Date getDefaultFutureDate(){
-		return getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 7);
-	}
+  protected VOMSRole roleById(Long id) {
+
+    if (id == null)
+      throw new NullArgumentException("'id' cannot be null!");
+
+    return (VOMSRole) FindRoleOperation.instance(id).execute();
+  }
+
+  protected VOMSRole roleByName(String name) {
+
+    if (name == null)
+      throw new NullArgumentException("'name' cannot be null!");
+
+    return (VOMSRole) FindRoleOperation.instance(name).execute();
+  }
+
+  protected String getHomeURL() {
+
+    return URLBuilder.baseVOMSURLFromConfiguration() + "/admin/home.action";
+  }
+
+  protected Date getFutureDate(Date initialDate, int field, int increment) {
+
+    Calendar c = Calendar.getInstance();
+    c.setTime(initialDate);
+    c.add(field, increment);
+
+    return c.getTime();
+  }
+
+  protected Date getDefaultFutureDate() {
+
+    return getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 7);
+  }
 }

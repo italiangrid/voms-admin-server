@@ -32,84 +32,94 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
 public abstract class ACLActionSupport extends BaseAction implements
-		Preparable, ModelDriven<ACL> {
-	
-	public static final Logger log = LoggerFactory.getLogger(ACLActionSupport.class);
+  Preparable, ModelDriven<ACL> {
 
-	/**
+  public static final Logger log = LoggerFactory
+    .getLogger(ACLActionSupport.class);
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long aclId = -1L;
-	Long adminId = -1L;
+  Long aclId = -1L;
+  Long adminId = -1L;
 
-	ACL model;
-	VOMSAdmin admin;
+  ACL model;
+  VOMSAdmin admin;
 
-	protected Boolean propagate;
+  protected Boolean propagate;
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-		if (getModel() == null) {
+    if (getModel() == null) {
 
-			if (getAclId() != -1)
-				model = ACLDAO.instance().getById(getAclId());
+      if (getAclId() != -1)
+        model = ACLDAO.instance().getById(getAclId());
 
-			if (getAdminId() != -1)
-				admin = VOMSAdminDAO.instance().getById(getAdminId());
+      if (getAdminId() != -1)
+        admin = VOMSAdminDAO.instance().getById(getAdminId());
 
-		}
+    }
 
-	}
+  }
 
-	public ACL getModel() {
+  public ACL getModel() {
 
-		return model;
-	}
+    return model;
+  }
 
-	public Long getAclId() {
-		return aclId;
-	}
+  public Long getAclId() {
 
-	public void setAclId(Long aclId) {
-		this.aclId = aclId;
-	}
+    return aclId;
+  }
 
-	public Long getAdminId() {
-		return adminId;
-	}
+  public void setAclId(Long aclId) {
 
-	public void setAdminId(Long adminId) {
-		this.adminId = adminId;
-	}
+    this.aclId = aclId;
+  }
 
-	public VOMSAdmin getAdmin() {
-		return admin;
-	}
+  public Long getAdminId() {
 
-	public void setAdmin(VOMSAdmin admin) {
-		this.admin = admin;
-	}
+    return adminId;
+  }
 
-	public Boolean getPropagate() {
-		return propagate;
-	}
+  public void setAdminId(Long adminId) {
 
-	public void setPropagate(Boolean propagate) {
-		this.propagate = propagate;
-	}
+    this.adminId = adminId;
+  }
 
-	protected void limitUnauthenticatedClientPermissions(VOMSPermission perms){
-		// Implement limiting on permissions for unauthenticated clients
-		if (admin.isUnauthenticated()){
-			VOMSPermission permMask = VOMSConfiguration.instance().getUnauthenticatedClientPermissionMask(); 
-			addActionMessage("Unauthenticated client permissions limited to: '"+permMask+"' for this context!");
-			perms.limitToPermissions(permMask);
-		}
-	}
-	
+  public VOMSAdmin getAdmin() {
+
+    return admin;
+  }
+
+  public void setAdmin(VOMSAdmin admin) {
+
+    this.admin = admin;
+  }
+
+  public Boolean getPropagate() {
+
+    return propagate;
+  }
+
+  public void setPropagate(Boolean propagate) {
+
+    this.propagate = propagate;
+  }
+
+  protected void limitUnauthenticatedClientPermissions(VOMSPermission perms) {
+
+    // Implement limiting on permissions for unauthenticated clients
+    if (admin.isUnauthenticated()) {
+      VOMSPermission permMask = VOMSConfiguration.instance()
+        .getUnauthenticatedClientPermissionMask();
+      addActionMessage("Unauthenticated client permissions limited to: '"
+        + permMask + "' for this context!");
+      perms.limitToPermissions(permMask);
+    }
+  }
 
 }

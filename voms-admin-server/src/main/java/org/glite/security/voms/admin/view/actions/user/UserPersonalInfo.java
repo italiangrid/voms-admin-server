@@ -23,89 +23,106 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class UserPersonalInfo {
 
-	String certificateSubject;
-	String certificateIssuer;
+  String certificateSubject;
+  String certificateIssuer;
 
-	String name;
-	String surname;
-	String institution;
-	String address;
-	String phoneNumber;
+  String name;
+  String surname;
+  String institution;
+  String address;
+  String phoneNumber;
 
-	String emailAddress;
+  String emailAddress;
 
-	public UserPersonalInfo() {
-		// TODO Auto-generated constructor stub
-	}
+  public UserPersonalInfo() {
 
-	public String getCertificateSubject() {
-		return certificateSubject;
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	public void setCertificateSubject(String certificateSubject) {
-		this.certificateSubject = certificateSubject;
-	}
+  public String getCertificateSubject() {
 
-	public String getCertificateIssuer() {
-		return certificateIssuer;
-	}
+    return certificateSubject;
+  }
 
-	public void setCertificateIssuer(String certificateIssuer) {
-		this.certificateIssuer = certificateIssuer;
-	}
+  public void setCertificateSubject(String certificateSubject) {
 
-	public String getName() {
-		return name;
-	}
+    this.certificateSubject = certificateSubject;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getCertificateIssuer() {
 
-	public String getSurname() {
-		return surname;
-	}
+    return certificateIssuer;
+  }
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+  public void setCertificateIssuer(String certificateIssuer) {
 
-	public String getInstitution() {
-		return institution;
-	}
+    this.certificateIssuer = certificateIssuer;
+  }
 
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
+  public String getName() {
 
-	public String getAddress() {
-		return address;
-	}
+    return name;
+  }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+  public void setName(String name) {
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    this.name = name;
+  }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+  public String getSurname() {
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    return surname;
+  }
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+  public void setSurname(String surname) {
 
-	@Override
-	public String toString() {
+    this.surname = surname;
+  }
 
-		return ToStringBuilder.reflectionToString(this);
-	}
+  public String getInstitution() {
+
+    return institution;
+  }
+
+  public void setInstitution(String institution) {
+
+    this.institution = institution;
+  }
+
+  public String getAddress() {
+
+    return address;
+  }
+
+  public void setAddress(String address) {
+
+    this.address = address;
+  }
+
+  public String getPhoneNumber() {
+
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+
+    this.phoneNumber = phoneNumber;
+  }
+
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  @Override
+  public String toString() {
+
+    return ToStringBuilder.reflectionToString(this);
+  }
 
 }

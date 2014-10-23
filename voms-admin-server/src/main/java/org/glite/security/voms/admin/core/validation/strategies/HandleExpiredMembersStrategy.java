@@ -26,6 +26,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface HandleExpiredMembersStrategy {
 
-	public void handleExpiredMembers(List<VOMSUser> expiredMembers);
-	
+  public void handleExpiredMembers(List<VOMSUser> expiredMembers);
+
 }

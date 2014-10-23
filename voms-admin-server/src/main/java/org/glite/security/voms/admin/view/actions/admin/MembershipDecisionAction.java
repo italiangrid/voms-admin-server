@@ -33,78 +33,77 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="pendingRequests.jsp")
-})
-		
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "pendingRequests.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class MembershipDecisionAction extends DecisionAction {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	protected void validateVOMembershipRequest() {
+  private static final long serialVersionUID = 1L;
 
-		
-		NewVOMembershipRequest r = (NewVOMembershipRequest) getModel();
+  protected void validateVOMembershipRequest() {
 
-		VOMSUser sameDnUser = (VOMSUser) FindUserOperation.instance(
-				r.getRequesterInfo().getCertificateSubject(),
-				r.getRequesterInfo().getCertificateIssuer()).execute();
+    NewVOMembershipRequest r = (NewVOMembershipRequest) getModel();
 
-		if (sameDnUser != null && decision.equals("approve")){
-			addActionError("A user with such certificate already exists. Please reject such request.");
-			decision = null;
-		}
-	
-	}
-	
-	protected void stripFalseFromApprovedGroups(){
-		
-		if (approvedGroups != null)
-			while (approvedGroups.contains("false"))
-				approvedGroups.remove("false");
-	}
-	
-	@Override
-	public void validate() {
-		
-		if (request instanceof NewVOMembershipRequest)
-			validateVOMembershipRequest();
-		
-	}
-	
-	List<String> approvedGroups;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		stripFalseFromApprovedGroups();
-		
-		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
-		
-		new HandleVOMembershipRequest((NewVOMembershipRequest) request,
-				theDecision, approvedGroups).execute();
-		
-		refreshPendingRequests();
+    VOMSUser sameDnUser = (VOMSUser) FindUserOperation.instance(
+      r.getRequesterInfo().getCertificateSubject(),
+      r.getRequesterInfo().getCertificateIssuer()).execute();
 
-		setDecision(null);
+    if (sameDnUser != null && decision.equals("approve")) {
+      addActionError("A user with such certificate already exists. Please reject such request.");
+      decision = null;
+    }
 
-		return SUCCESS;
-	}
+  }
 
-	public List<String> getApprovedGroups() {
-		return approvedGroups;
-	}
+  protected void stripFalseFromApprovedGroups() {
 
-	public void setApprovedGroups(List<String> approvedGroups) {
-		this.approvedGroups = approvedGroups;
-	}
-	
+    if (approvedGroups != null)
+      while (approvedGroups.contains("false"))
+        approvedGroups.remove("false");
+  }
+
+  @Override
+  public void validate() {
+
+    if (request instanceof NewVOMembershipRequest)
+      validateVOMembershipRequest();
+
+  }
+
+  List<String> approvedGroups;
+
+  @Override
+  public String execute() throws Exception {
+
+    stripFalseFromApprovedGroups();
+
+    DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
+
+    new HandleVOMembershipRequest((NewVOMembershipRequest) request,
+      theDecision, approvedGroups).execute();
+
+    refreshPendingRequests();
+
+    setDecision(null);
+
+    return SUCCESS;
+  }
+
+  public List<String> getApprovedGroups() {
+
+    return approvedGroups;
+  }
+
+  public void setApprovedGroups(List<String> approvedGroups) {
+
+    this.approvedGroups = approvedGroups;
+  }
+
 }

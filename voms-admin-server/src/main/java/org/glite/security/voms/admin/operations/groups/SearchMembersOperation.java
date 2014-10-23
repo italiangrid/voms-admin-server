@@ -29,61 +29,61 @@ import org.glite.security.voms.admin.view.actions.SearchData;
 
 public class SearchMembersOperation extends BaseMemberhipReadOperation {
 
-	int firstResult = 0, maxResults = 0;
-	String searchString;
+  int firstResult = 0, maxResults = 0;
+  String searchString;
 
-	private SearchMembersOperation(VOMSContext c, String searchString,
-			int firstResult, int maxResults) {
-		super(c);
+  private SearchMembersOperation(VOMSContext c, String searchString,
+    int firstResult, int maxResults) {
 
-		this.firstResult = firstResult;
-		this.maxResults = maxResults;
-		this.searchString = searchString;
-	}
+    super(c);
 
-	private SearchMembersOperation(VOMSGroup g, VOMSRole r,
-			String searchString, int firstResult, int maxResults) {
+    this.firstResult = firstResult;
+    this.maxResults = maxResults;
+    this.searchString = searchString;
+  }
 
-		super(VOMSContext.instance(g, r));
+  private SearchMembersOperation(VOMSGroup g, VOMSRole r, String searchString,
+    int firstResult, int maxResults) {
 
-		this.firstResult = firstResult;
-		this.maxResults = maxResults;
+    super(VOMSContext.instance(g, r));
 
-		this.searchString = searchString;
+    this.firstResult = firstResult;
+    this.maxResults = maxResults;
 
-	}
+    this.searchString = searchString;
 
-	protected Object doExecute() {
+  }
 
-		if (!__context.isGroupContext())
-			return VOMSRoleDAO.instance().searchMembers(__context.getGroup(),
-					__context.getRole(), searchString, firstResult, maxResults);
+  protected Object doExecute() {
 
-		return VOMSGroupDAO.instance().searchMembers(__context.getGroup(),
-				searchString, firstResult, maxResults);
+    if (!__context.isGroupContext())
+      return VOMSRoleDAO.instance().searchMembers(__context.getGroup(),
+        __context.getRole(), searchString, firstResult, maxResults);
 
-	}
+    return VOMSGroupDAO.instance().searchMembers(__context.getGroup(),
+      searchString, firstResult, maxResults);
 
-	public static SearchMembersOperation instance(VOMSGroup g, VOMSRole r,
-			String searchString, int firstResult, int maxResults) {
+  }
 
-		return new SearchMembersOperation(g, r, searchString, firstResult,
-				maxResults);
-	}
+  public static SearchMembersOperation instance(VOMSGroup g, VOMSRole r,
+    String searchString, int firstResult, int maxResults) {
 
-	public static SearchMembersOperation instance(VOMSGroup g,
-			String searchString, int firstResult, int maxResults) {
+    return new SearchMembersOperation(g, r, searchString, firstResult,
+      maxResults);
+  }
 
-		return new SearchMembersOperation(g, null, searchString, firstResult,
-				maxResults);
-	}
+  public static SearchMembersOperation instance(VOMSGroup g,
+    String searchString, int firstResult, int maxResults) {
 
-	public static SearchMembersOperation instance(SearchData sd) {
+    return new SearchMembersOperation(g, null, searchString, firstResult,
+      maxResults);
+  }
 
-		VOMSContext ctxt = VOMSContext
-				.instance(sd.getGroupId(), sd.getRoleId());
+  public static SearchMembersOperation instance(SearchData sd) {
 
-		return new SearchMembersOperation(ctxt, sd.getText(), sd
-				.getFirstResult(), sd.getMaxResults());
-	}
+    VOMSContext ctxt = VOMSContext.instance(sd.getGroupId(), sd.getRoleId());
+
+    return new SearchMembersOperation(ctxt, sd.getText(), sd.getFirstResult(),
+      sd.getMaxResults());
+  }
 }

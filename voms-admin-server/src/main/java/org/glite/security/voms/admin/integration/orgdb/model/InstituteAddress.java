@@ -31,171 +31,193 @@ import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
-@Table(name="INSTITUTE_ADDRESSES")
-public class InstituteAddress implements Serializable{
+@Table(name = "INSTITUTE_ADDRESSES")
+public class InstituteAddress implements Serializable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name="ADDRESS_ID",length=7)
-	Long id;
-	
-	@Column(name="STREET", length=35)
-	String street;
-	
-	@Column(name="POSTBOX", length=35)
-	String postBox;
-	
-	@Column(name="COUNTRY_CODE", length=2, nullable=false)
-	String countryCode;
-	
-	@Column(name="POSTAL_CODE", length=10)
-	String postalCode;
-	
-	@Column(name="PLACE", length=30)
-	String place;
-	
-	@Column(name="SUFFIX", length=15)
-	String suffix;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @Column(name = "ADDRESS_ID", length = 7)
+  Long id;
 
-	public InstituteAddress() {
-		
-	}
-	
-	public Long getId() {
-		return id;
-	}
+  @Column(name = "STREET", length = 35)
+  String street;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  @Column(name = "POSTBOX", length = 35)
+  String postBox;
 
-	public String getStreet() {
-		return street;
-	}
+  @Column(name = "COUNTRY_CODE", length = 2, nullable = false)
+  String countryCode;
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+  @Column(name = "POSTAL_CODE", length = 10)
+  String postalCode;
 
-	public String getPostBox() {
-		return postBox;
-	}
+  @Column(name = "PLACE", length = 30)
+  String place;
 
-	public void setPostBox(String postBox) {
-		this.postBox = postBox;
-	}
+  @Column(name = "SUFFIX", length = 15)
+  String suffix;
 
-	public String getCountryCode() {
-		return countryCode;
-	}
+  public InstituteAddress() {
 
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
+  }
 
-	public String getPostalCode() {
-		return postalCode;
-	}
+  public Long getId() {
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+    return id;
+  }
 
-	public String getPlace() {
-		return place;
-	}
+  public void setId(Long id) {
 
-	public void setPlace(String place) {
-		this.place = place;
-	}
+    this.id = id;
+  }
 
-	public String getSuffix() {
-		return suffix;
-	}
+  public String getStreet() {
 
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
+    return street;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((countryCode == null) ? 0 : countryCode.hashCode());
-		result = prime * result + ((place == null) ? 0 : place.hashCode());
-		result = prime * result + ((postBox == null) ? 0 : postBox.hashCode());
-		result = prime * result
-				+ ((postalCode == null) ? 0 : postalCode.hashCode());
-		result = prime * result + ((street == null) ? 0 : street.hashCode());
-		result = prime * result + ((suffix == null) ? 0 : suffix.hashCode());
-		return result;
-	}
+  public void setStreet(String street) {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		InstituteAddress other = (InstituteAddress) obj;
-		if (countryCode == null) {
-			if (other.countryCode != null)
-				return false;
-		} else if (!countryCode.equals(other.countryCode))
-			return false;
-		if (place == null) {
-			if (other.place != null)
-				return false;
-		} else if (!place.equals(other.place))
-			return false;
-		if (postBox == null) {
-			if (other.postBox != null)
-				return false;
-		} else if (!postBox.equals(other.postBox))
-			return false;
-		if (postalCode == null) {
-			if (other.postalCode != null)
-				return false;
-		} else if (!postalCode.equals(other.postalCode))
-			return false;
-		if (street == null) {
-			if (other.street != null)
-				return false;
-		} else if (!street.equals(other.street))
-			return false;
-		if (suffix == null) {
-			if (other.suffix != null)
-				return false;
-		} else if (!suffix.equals(other.suffix))
-			return false;
-		return true;
-	}
+    this.street = street;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("InstituteAddress [id=").append(id).append(
-				", countryCode=").append(countryCode).append(", place=")
-				.append(place).append(", postBox=").append(postBox).append(
-						", postalCode=").append(postalCode).append(", street=")
-				.append(street).append(", suffix=").append(suffix).append("]");
-		return builder.toString();
-	}
-	
-	
+  public String getPostBox() {
+
+    return postBox;
+  }
+
+  public void setPostBox(String postBox) {
+
+    this.postBox = postBox;
+  }
+
+  public String getCountryCode() {
+
+    return countryCode;
+  }
+
+  public void setCountryCode(String countryCode) {
+
+    this.countryCode = countryCode;
+  }
+
+  public String getPostalCode() {
+
+    return postalCode;
+  }
+
+  public void setPostalCode(String postalCode) {
+
+    this.postalCode = postalCode;
+  }
+
+  public String getPlace() {
+
+    return place;
+  }
+
+  public void setPlace(String place) {
+
+    this.place = place;
+  }
+
+  public String getSuffix() {
+
+    return suffix;
+  }
+
+  public void setSuffix(String suffix) {
+
+    this.suffix = suffix;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+      + ((countryCode == null) ? 0 : countryCode.hashCode());
+    result = prime * result + ((place == null) ? 0 : place.hashCode());
+    result = prime * result + ((postBox == null) ? 0 : postBox.hashCode());
+    result = prime * result
+      + ((postalCode == null) ? 0 : postalCode.hashCode());
+    result = prime * result + ((street == null) ? 0 : street.hashCode());
+    result = prime * result + ((suffix == null) ? 0 : suffix.hashCode());
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    InstituteAddress other = (InstituteAddress) obj;
+    if (countryCode == null) {
+      if (other.countryCode != null)
+        return false;
+    } else if (!countryCode.equals(other.countryCode))
+      return false;
+    if (place == null) {
+      if (other.place != null)
+        return false;
+    } else if (!place.equals(other.place))
+      return false;
+    if (postBox == null) {
+      if (other.postBox != null)
+        return false;
+    } else if (!postBox.equals(other.postBox))
+      return false;
+    if (postalCode == null) {
+      if (other.postalCode != null)
+        return false;
+    } else if (!postalCode.equals(other.postalCode))
+      return false;
+    if (street == null) {
+      if (other.street != null)
+        return false;
+    } else if (!street.equals(other.street))
+      return false;
+    if (suffix == null) {
+      if (other.suffix != null)
+        return false;
+    } else if (!suffix.equals(other.suffix))
+      return false;
+    return true;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("InstituteAddress [id=").append(id).append(", countryCode=")
+      .append(countryCode).append(", place=").append(place)
+      .append(", postBox=").append(postBox).append(", postalCode=")
+      .append(postalCode).append(", street=").append(street)
+      .append(", suffix=").append(suffix).append("]");
+    return builder.toString();
+  }
+
 }

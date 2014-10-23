@@ -21,12 +21,12 @@ package org.glite.security.voms.admin.util.version;
 
 public interface EndpointVersion {
 
-	public int getMajorVersionNumber();
+  public int getMajorVersionNumber();
 
-	public int getMinorVersionNumber();
+  public int getMinorVersionNumber();
 
-	public int getPatchVersionNumber();
+  public int getPatchVersionNumber();
 
-	public String getVersion();
+  public String getVersion();
 
 }

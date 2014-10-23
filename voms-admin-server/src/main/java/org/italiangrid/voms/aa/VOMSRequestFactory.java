@@ -22,13 +22,15 @@ package org.italiangrid.voms.aa;
 
 import org.italiangrid.voms.aa.impl.RequestImpl;
 
-
 public class VOMSRequestFactory {
 
-	private VOMSRequestFactory() {}
+  private VOMSRequestFactory() {
 
-	public static VOMSRequest newRequest(){
-		return new RequestImpl();
-	}
+  }
+
+  public static VOMSRequest newRequest() {
+
+    return new RequestImpl();
+  }
 
 }

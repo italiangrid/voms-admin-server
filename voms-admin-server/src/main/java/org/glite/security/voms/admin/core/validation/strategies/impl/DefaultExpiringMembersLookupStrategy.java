@@ -30,16 +30,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultExpiringMembersLookupStrategy implements
-		ExpiringMembersLookupStrategy {
+  ExpiringMembersLookupStrategy {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(DefaultExpiringMembersLookupStrategy.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(DefaultExpiringMembersLookupStrategy.class);
 
+  public List<VOMSUser> findExpiringMembers() {
 
-	public List<VOMSUser> findExpiringMembers() {
-		
-		return VOMSUserDAO.instance().findExpiringUsers(VOMSConfiguration.instance().getExpiringUsersWarningInterval());
-				
-	}
+    return VOMSUserDAO.instance().findExpiringUsers(
+      VOMSConfiguration.instance().getExpiringUsersWarningInterval());
+
+  }
 
 }

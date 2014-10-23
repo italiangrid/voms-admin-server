@@ -20,16 +20,17 @@
 
 package org.italiangrid.voms.aa.x509;
 
-
 import org.italiangrid.voms.aa.x509.impl.ACGeneratorImpl;
-
 
 public class ACGeneratorFactory {
 
-	private ACGeneratorFactory() {}
-	
-	public static ACGenerator newACGenerator(){
-		return ACGeneratorImpl.INSTANCE;
-	}
+  private ACGeneratorFactory() {
+
+  }
+
+  public static ACGenerator newACGenerator() {
+
+    return ACGeneratorImpl.INSTANCE;
+  }
 
 }

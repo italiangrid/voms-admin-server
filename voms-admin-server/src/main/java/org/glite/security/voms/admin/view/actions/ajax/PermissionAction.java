@@ -30,84 +30,95 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ParentPackage("json-light")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
 public class PermissionAction extends BaseAction {
 
-	public static final Logger log = LoggerFactory.getLogger(PermissionAction.class);
-	/**
+  public static final Logger log = LoggerFactory
+    .getLogger(PermissionAction.class);
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String context;
+  String context;
 
-	String permissionString;
+  String permissionString;
 
-	Long groupId;
-	Long roleId;
+  Long groupId;
+  Long roleId;
 
-	Boolean hasPermission;
+  Boolean hasPermission;
 
-	public String getContext() {
-		return context;
-	}
+  public String getContext() {
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+    return context;
+  }
 
-	public Long getGroupId() {
-		return groupId;
-	}
+  public void setContext(String context) {
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+    this.context = context;
+  }
 
-	public Long getRoleId() {
-		return roleId;
-	}
+  public Long getGroupId() {
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+    return groupId;
+  }
 
-	public Boolean getHasPermission() {
-		return hasPermission;
-	}
+  public void setGroupId(Long groupId) {
 
-	public void setHasPermission(Boolean hasPermission) {
-		this.hasPermission = hasPermission;
-	}
+    this.groupId = groupId;
+  }
 
-	public String getPermissionString() {
-		return permissionString;
-	}
+  public Long getRoleId() {
 
-	public void setPermissionString(String permissionString) {
-		this.permissionString = permissionString;
-	}
+    return roleId;
+  }
 
-	@Override
-	public String execute() throws Exception {
+  public void setRoleId(Long roleId) {
 
-		CurrentAdmin admin = CurrentAdmin.instance();
-		VOMSContext ctxt = null;
+    this.roleId = roleId;
+  }
 
-		if (context != null)
-			ctxt = VOMSContext.instance(context);
-		else {
-			ctxt = VOMSContext.instance(groupId, roleId);
-		}
+  public Boolean getHasPermission() {
 
-		VOMSPermission perm = VOMSPermission.fromString(permissionString);
+    return hasPermission;
+  }
 
-		log.debug("context: " + ctxt);
-		log.debug("permission: " + perm);
+  public void setHasPermission(Boolean hasPermission) {
 
-		hasPermission = admin.hasPermissions(ctxt, perm);
+    this.hasPermission = hasPermission;
+  }
 
-		return SUCCESS;
-	}
+  public String getPermissionString() {
+
+    return permissionString;
+  }
+
+  public void setPermissionString(String permissionString) {
+
+    this.permissionString = permissionString;
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    CurrentAdmin admin = CurrentAdmin.instance();
+    VOMSContext ctxt = null;
+
+    if (context != null)
+      ctxt = VOMSContext.instance(context);
+    else {
+      ctxt = VOMSContext.instance(groupId, roleId);
+    }
+
+    VOMSPermission perm = VOMSPermission.fromString(permissionString);
+
+    log.debug("context: " + ctxt);
+    log.debug("permission: " + perm);
+
+    hasPermission = admin.hasPermissions(ctxt, perm);
+
+    return SUCCESS;
+  }
 
 }

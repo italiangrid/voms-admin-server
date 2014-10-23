@@ -23,8 +23,9 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserRestoredEvent extends UserMembershipEvent {
 
-	public UserRestoredEvent(VOMSUser user) {
-		super(user);
-	}
+  public UserRestoredEvent(VOMSUser user) {
+
+    super(user);
+  }
 
 }

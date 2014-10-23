@@ -4,6 +4,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface OrgDBEmailAddressValidationStrategy {
 
-	public OrgDBEmailValidationResult validateEmailAddress(VOMSUser u, String emailAddress);
+  public OrgDBEmailValidationResult validateEmailAddress(VOMSUser u,
+    String emailAddress);
 
 }

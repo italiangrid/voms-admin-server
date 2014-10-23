@@ -38,78 +38,93 @@ import org.hibernate.util.ReflectHelper;
  */
 public class StringEnumUserType implements EnhancedUserType, ParameterizedType {
 
-	private Class<Enum> enumClass;
+  private Class<Enum> enumClass;
 
-	public void setParameterValues(Properties parameters) {
-		String enumClassName = parameters.getProperty("enumClassname");
-		try {
-			enumClass = ReflectHelper.classForName(enumClassName);
-		} catch (ClassNotFoundException cnfe) {
-			throw new HibernateException("Enum class not found", cnfe);
-		}
-	}
+  public void setParameterValues(Properties parameters) {
 
-	public Class returnedClass() {
-		return enumClass;
-	}
+    String enumClassName = parameters.getProperty("enumClassname");
+    try {
+      enumClass = ReflectHelper.classForName(enumClassName);
+    } catch (ClassNotFoundException cnfe) {
+      throw new HibernateException("Enum class not found", cnfe);
+    }
+  }
 
-	public int[] sqlTypes() {
-		return new int[] { Hibernate.STRING.sqlType() };
-	}
+  public Class returnedClass() {
 
-	public boolean isMutable() {
-		return false;
-	}
+    return enumClass;
+  }
 
-	public Object deepCopy(Object value) {
-		return value;
-	}
+  public int[] sqlTypes() {
 
-	public Serializable disassemble(Object value) {
-		return (Enum) value;
-	}
+    return new int[] { Hibernate.STRING.sqlType() };
+  }
 
-	public Object replace(Object original, Object target, Object owner) {
-		return original;
-	}
+  public boolean isMutable() {
 
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
-	}
+    return false;
+  }
 
-	public boolean equals(Object x, Object y) {
-		return x == y;
-	}
+  public Object deepCopy(Object value) {
 
-	public int hashCode(Object x) {
-		return x.hashCode();
-	}
+    return value;
+  }
 
-	public Object fromXMLString(String xmlValue) {
-		return Enum.valueOf(enumClass, xmlValue);
-	}
+  public Serializable disassemble(Object value) {
 
-	public String objectToSQLString(Object value) {
-		return '\'' + ((Enum) value).name() + '\'';
-	}
+    return (Enum) value;
+  }
 
-	public String toXMLString(Object value) {
-		return ((Enum) value).name();
-	}
+  public Object replace(Object original, Object target, Object owner) {
 
-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
-			throws SQLException {
-		String name = rs.getString(names[0]);
-		return rs.wasNull() ? null : Enum.valueOf(enumClass, name);
-	}
+    return original;
+  }
 
-	public void nullSafeSet(PreparedStatement st, Object value, int index)
-			throws SQLException {
-		if (value == null) {
-			st.setNull(index, Hibernate.STRING.sqlType());
-		} else {
-			st.setString(index, ((Enum) value).name());
-		}
-	}
+  public Object assemble(Serializable cached, Object owner) {
+
+    return cached;
+  }
+
+  public boolean equals(Object x, Object y) {
+
+    return x == y;
+  }
+
+  public int hashCode(Object x) {
+
+    return x.hashCode();
+  }
+
+  public Object fromXMLString(String xmlValue) {
+
+    return Enum.valueOf(enumClass, xmlValue);
+  }
+
+  public String objectToSQLString(Object value) {
+
+    return '\'' + ((Enum) value).name() + '\'';
+  }
+
+  public String toXMLString(Object value) {
+
+    return ((Enum) value).name();
+  }
+
+  public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+    throws SQLException {
+
+    String name = rs.getString(names[0]);
+    return rs.wasNull() ? null : Enum.valueOf(enumClass, name);
+  }
+
+  public void nullSafeSet(PreparedStatement st, Object value, int index)
+    throws SQLException {
+
+    if (value == null) {
+      st.setNull(index, Hibernate.STRING.sqlType());
+    } else {
+      st.setString(index, ((Enum) value).name());
+    }
+  }
 
 }

@@ -32,34 +32,34 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 @Table(name = "user_request_task")
 public class ApproveUserRequestTask extends Task implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "req_id", updatable = false, nullable = false)
-	Request request;
+  @ManyToOne
+  @JoinColumn(name = "req_id", updatable = false, nullable = false)
+  Request request;
 
-	public ApproveUserRequestTask() {
+  public ApproveUserRequestTask() {
 
-	}
+  }
 
-	/**
-	 * @return the request
-	 */
-	public Request getRequest() {
+  /**
+   * @return the request
+   */
+  public Request getRequest() {
 
-		return request;
-	}
+    return request;
+  }
 
-	/**
-	 * @param request
-	 *            the request to set
-	 */
-	public void setRequest(Request request) {
+  /**
+   * @param request
+   *          the request to set
+   */
+  public void setRequest(Request request) {
 
-		this.request = request;
-	}
+    this.request = request;
+  }
 
 }

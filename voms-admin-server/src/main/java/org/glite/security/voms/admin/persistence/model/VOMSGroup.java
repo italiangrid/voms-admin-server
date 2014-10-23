@@ -44,338 +44,346 @@ import org.hibernate.annotations.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
 
-	public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
-
-	private static final long serialVersionUID = -4693441755811017977L;
+  public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
 
-	public VOMSGroup() {
-		must = new Boolean(true);
-	}
+  private static final long serialVersionUID = -4693441755811017977L;
 
-	@Id
-	@Column(name = "gid")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_GROUP_SEQ")
-	@SequenceGenerator(name="VOMS_GROUP_SEQ", sequenceName="VOMS_GROUP_SEQ")
-	Long id;
+  public VOMSGroup() {
 
-	@Column(name="dn",nullable=false, unique=true)
-	String name;
+    must = new Boolean(true);
+  }
 
-	@ManyToOne(optional=true)
-	VOMSGroup parent;
+  @Id
+  @Column(name = "gid")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_GROUP_SEQ")
+  @SequenceGenerator(name = "VOMS_GROUP_SEQ", sequenceName = "VOMS_GROUP_SEQ")
+  Long id;
 
-	@Column(nullable=false)
-	Boolean must;
-	
-	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
+  @Column(name = "dn", nullable = false, unique = true)
+  String name;
 
-	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group", 
-		fetch = FetchType.EAGER)
-	@Sort(type = SortType.NATURAL)
-	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+  @ManyToOne(optional = true)
+  VOMSGroup parent;
 
-	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="group")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<ACL> acls = new HashSet<ACL>();
-	
-	Set<GroupManager> managers = new HashSet<GroupManager>();
-	
-	Boolean restricted;
+  @Column(nullable = false)
+  Boolean must;
 
-	String description;
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
 
-	public String getName() {
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group",
+    fetch = FetchType.EAGER)
+  @Sort(type = SortType.NATURAL)
+  Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-		return name;
-	}
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<ACL> acls = new HashSet<ACL>();
 
-	public void setName(String name) {
+  Set<GroupManager> managers = new HashSet<GroupManager>();
 
-		this.name = name;
-	}
+  Boolean restricted;
 
-	/**
-	 * @return Returns the id.
-	 */
-	public Long getId() {
+  String description;
 
-		return id;
-	}
+  public String getName() {
 
-	/**
-	 * @param id
-	 *            The id to set.
-	 */
-	public void setId(Long id) {
+    return name;
+  }
 
-		this.id = id;
-	}
+  public void setName(String name) {
 
-	/**
-	 * @return Returns the must.
-	 */
-	public Boolean getMust() {
+    this.name = name;
+  }
 
-		return must;
-	}
+  /**
+   * @return Returns the id.
+   */
+  public Long getId() {
 
-	/**
-	 * @param must
-	 *            The must to set.
-	 */
-	public void setMust(Boolean must) {
+    return id;
+  }
 
-		this.must = must;
-	}
+  /**
+   * @param id
+   *          The id to set.
+   */
+  public void setId(Long id) {
 
-	/**
-	 * @return Returns the parent.
-	 */
-	public VOMSGroup getParent() {
+    this.id = id;
+  }
 
-		return parent;
-	}
+  /**
+   * @return Returns the must.
+   */
+  public Boolean getMust() {
 
-	/**
-	 * @param parent
-	 *            The parent to set.
-	 */
-	public void setParent(VOMSGroup parent) {
+    return must;
+  }
 
-		this.parent = parent;
-	}
+  /**
+   * @param must
+   *          The must to set.
+   */
+  public void setMust(Boolean must) {
 
-	public Set<VOMSGroupAttribute> getAttributes() {
+    this.must = must;
+  }
 
-		return attributes;
-	}
+  /**
+   * @return Returns the parent.
+   */
+  public VOMSGroup getParent() {
 
-	public void setAttributes(Set<VOMSGroupAttribute> attributes) {
+    return parent;
+  }
 
-		this.attributes = attributes;
-	}
+  /**
+   * @param parent
+   *          The parent to set.
+   */
+  public void setParent(VOMSGroup parent) {
 
-	public boolean isRootGroup() {
+    this.parent = parent;
+  }
 
-		return this.equals(parent);
-	}
+  public Set<VOMSGroupAttribute> getAttributes() {
 
-	public void addAttribute(VOMSGroupAttribute val) {
-		attributes.add(val);
-	}
+    return attributes;
+  }
 
-	public VOMSGroupAttribute getAttributeByName(String name) {
+  public void setAttributes(Set<VOMSGroupAttribute> attributes) {
 
-		Iterator<VOMSGroupAttribute> i = attributes.iterator();
+    this.attributes = attributes;
+  }
 
-		while (i.hasNext()) {
-			VOMSGroupAttribute tmp = i.next();
+  public boolean isRootGroup() {
 
-			if (tmp.getName().equals(name))
-				return tmp;
-		}
+    return this.equals(parent);
+  }
 
-		return null;
+  public void addAttribute(VOMSGroupAttribute val) {
 
-	}
+    attributes.add(val);
+  }
 
-	public void deleteAttribute(VOMSGroupAttribute val) {
+  public VOMSGroupAttribute getAttributeByName(String name) {
 
-		if (!attributes.contains(val))
-			throw new NoSuchAttributeException("Attribute \"" + val.getName()
-					+ "\" undefined for group" + this);
+    Iterator<VOMSGroupAttribute> i = attributes.iterator();
 
-		attributes.remove(val);
-	}
+    while (i.hasNext()) {
+      VOMSGroupAttribute tmp = i.next();
 
-	public void deleteAttributeByName(String attrName) {
+      if (tmp.getName().equals(name))
+        return tmp;
+    }
 
-		deleteAttribute(getAttributeByName(attrName));
+    return null;
 
-	}
+  }
 
-	
-	public boolean equals(Object other) {
+  public void deleteAttribute(VOMSGroupAttribute val) {
 
-		if (this == other)
-			return true;
+    if (!attributes.contains(val))
+      throw new NoSuchAttributeException("Attribute \"" + val.getName()
+        + "\" undefined for group" + this);
 
-		if (!(other instanceof VOMSGroup))
-			return false;
+    attributes.remove(val);
+  }
 
-		VOMSGroup that = (VOMSGroup) other;
+  public void deleteAttributeByName(String attrName) {
 
-		if (that == null)
-			return false;
+    deleteAttribute(getAttributeByName(attrName));
 
-		return (getName().equals(that.getName()));
+  }
 
-	}
+  public boolean equals(Object other) {
 
-	public boolean hasMember(VOMSUser u) {
+    if (this == other)
+      return true;
 
-		VOMSMapping m = new VOMSMapping(u, this, null);
-		return mappings.contains(m);
+    if (!(other instanceof VOMSGroup))
+      return false;
 
-	}
+    VOMSGroup that = (VOMSGroup) other;
 
-	public Set<VOMSUser> getMembers() {
+    if (that == null)
+      return false;
 
-		SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
+    return (getName().equals(that.getName()));
 
-		Iterator<VOMSMapping> mIter = mappings.iterator();
-		while (mIter.hasNext()) {
-			VOMSMapping m = mIter.next();
-			if (m.isGroupMapping())
-				res.add(m.getUser());
-		}
+  }
 
-		return Collections.unmodifiableSortedSet(res);
+  public boolean hasMember(VOMSUser u) {
 
-	}
+    VOMSMapping m = new VOMSMapping(u, this, null);
+    return mappings.contains(m);
 
-	public Set<String> getMembersEmailAddresses() {
+  }
 
-		SortedSet<String> res = new TreeSet<String>();
+  public Set<VOMSUser> getMembers() {
 
-		Iterator<VOMSMapping> mIter = mappings.iterator();
-		
-		while (mIter.hasNext()) {
-			VOMSMapping m = mIter.next();
-			if (m.isGroupMapping())
-				res.add(m.getUser().getEmailAddress());
-		}
+    SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
 
-		return Collections.unmodifiableSortedSet(res);
+    Iterator<VOMSMapping> mIter = mappings.iterator();
+    while (mIter.hasNext()) {
+      VOMSMapping m = mIter.next();
+      if (m.isGroupMapping())
+        res.add(m.getUser());
+    }
 
-	}
+    return Collections.unmodifiableSortedSet(res);
 
-	public boolean isDescendant(VOMSGroup g){
-		return name.startsWith(g.getName());
-	}
-	
-	public Set<VOMSMapping> getMappings() {
+  }
 
-		return mappings;
-	}
+  public Set<String> getMembersEmailAddresses() {
 
-	public void setMappings(Set<VOMSMapping> mappings) {
+    SortedSet<String> res = new TreeSet<String>();
 
-		this.mappings = mappings;
-	}
+    Iterator<VOMSMapping> mIter = mappings.iterator();
 
-	
-	public int hashCode() {
+    while (mIter.hasNext()) {
+      VOMSMapping m = mIter.next();
+      if (m.isGroupMapping())
+        res.add(m.getUser().getEmailAddress());
+    }
 
-		return getName().hashCode();
-	}
+    return Collections.unmodifiableSortedSet(res);
 
-	public String toString() {
+  }
 
-		return getName();
-	}
+  public boolean isDescendant(VOMSGroup g) {
 
-	public int compareTo(VOMSGroup that) {
+    return name.startsWith(g.getName());
+  }
 
-		if (this.equals(that))
-			return 0;
+  public Set<VOMSMapping> getMappings() {
 
-		if (that == null)
-			return 1;
+    return mappings;
+  }
 
-		return this.getName().compareTo(that.getName());
-	}
+  public void setMappings(Set<VOMSMapping> mappings) {
 
-	public Set<ACL> getAcls() {
+    this.mappings = mappings;
+  }
 
-		return acls;
-	}
+  public int hashCode() {
 
-	public void setAcls(Set<ACL> acls) {
+    return getName().hashCode();
+  }
 
-		this.acls = acls;
-	}
+  public String toString() {
 
-	protected ACL getACL(boolean defaultACL) {
+    return getName();
+  }
 
-		if (getAcls().isEmpty())
-			return null;
+  public int compareTo(VOMSGroup that) {
 
-		Iterator<ACL> i = getAcls().iterator();
-		while (i.hasNext()) {
-			ACL a = i.next();
-			if (a.getDefaultACL().booleanValue() == defaultACL
-					&& a.getContext().isGroupContext())
-				return a;
-		}
+    if (this.equals(that))
+      return 0;
 
-		return null;
-	}
+    if (that == null)
+      return 1;
 
-	public ACL getACL() {
+    return this.getName().compareTo(that.getName());
+  }
 
-		return getACL(false);
-	}
+  public Set<ACL> getAcls() {
 
-	public ACL getDefaultACL() {
+    return acls;
+  }
 
-		return getACL(true);
-	}
+  public void setAcls(Set<ACL> acls) {
 
-	public void importACL(ACL acl) {
+    this.acls = acls;
+  }
 
-		ACL importedACL = new ACL(this, false);
+  protected ACL getACL(boolean defaultACL) {
 
-		importedACL.getPermissions().putAll(acl.getPermissions());
+    if (getAcls().isEmpty())
+      return null;
 
-		getAcls().add(importedACL);
+    Iterator<ACL> i = getAcls().iterator();
+    while (i.hasNext()) {
+      ACL a = i.next();
+      if (a.getDefaultACL().booleanValue() == defaultACL
+        && a.getContext().isGroupContext())
+        return a;
+    }
 
-	}
+    return null;
+  }
 
-	public Boolean getRestricted() {
-		return restricted;
-	}
+  public ACL getACL() {
 
-	public void setRestricted(Boolean restricted) {
-		this.restricted = restricted;
-	}
+    return getACL(false);
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public ACL getDefaultACL() {
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    return getACL(true);
+  }
 
-	
-	/**
-	 * @return the managers
-	 */
-	public Set<GroupManager> getManagers() {
-	
-		return managers;
-	}
+  public void importACL(ACL acl) {
 
-	
-	/**
-	 * @param managers the managers to set
-	 */
-	public void setManagers(Set<GroupManager> managers) {
-	
-		this.managers = managers;
-	}
+    ACL importedACL = new ACL(this, false);
 
-	public void addMapping(VOMSMapping m){
-		getMappings().add(m);
-	}
-	public boolean removeMapping(VOMSMapping m){
-		return getMappings().remove(m);
-	}
-	
+    importedACL.getPermissions().putAll(acl.getPermissions());
+
+    getAcls().add(importedACL);
+
+  }
+
+  public Boolean getRestricted() {
+
+    return restricted;
+  }
+
+  public void setRestricted(Boolean restricted) {
+
+    this.restricted = restricted;
+  }
+
+  public String getDescription() {
+
+    return description;
+  }
+
+  public void setDescription(String description) {
+
+    this.description = description;
+  }
+
+  /**
+   * @return the managers
+   */
+  public Set<GroupManager> getManagers() {
+
+    return managers;
+  }
+
+  /**
+   * @param managers
+   *          the managers to set
+   */
+  public void setManagers(Set<GroupManager> managers) {
+
+    this.managers = managers;
+  }
+
+  public void addMapping(VOMSMapping m) {
+
+    getMappings().add(m);
+  }
+
+  public boolean removeMapping(VOMSMapping m) {
+
+    return getMappings().remove(m);
+  }
+
 }

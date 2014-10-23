@@ -39,55 +39,55 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
  */
 public class RoleAttributesTag extends TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private String var;
+  private String var;
 
-	private String groupVar;
+  private String groupVar;
 
-	public String getGroupVar() {
+  public String getGroupVar() {
 
-		return groupVar;
-	}
+    return groupVar;
+  }
 
-	public void setGroupVar(String groupVar) {
+  public void setGroupVar(String groupVar) {
 
-		this.groupVar = groupVar;
-	}
+    this.groupVar = groupVar;
+  }
 
-	public String getVar() {
+  public String getVar() {
 
-		return var;
-	}
+    return var;
+  }
 
-	public void setVar(String var) {
+  public void setVar(String var) {
 
-		this.var = var;
-	}
+    this.var = var;
+  }
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		VOMSRole r = (VOMSRole) pageContext.getAttribute("vomsRole",
-				PageContext.REQUEST_SCOPE);
-		VOMSGroup g = (VOMSGroup) pageContext
-				.findAttribute((groupVar == null) ? "vomsGroup" : groupVar);
+    VOMSRole r = (VOMSRole) pageContext.getAttribute("vomsRole",
+      PageContext.REQUEST_SCOPE);
+    VOMSGroup g = (VOMSGroup) pageContext
+      .findAttribute((groupVar == null) ? "vomsGroup" : groupVar);
 
-		if (r == null)
-			throw new JspTagException(
-					"No role found in org.glite.security.voms.admin.request context!");
+    if (r == null)
+      throw new JspTagException(
+        "No role found in org.glite.security.voms.admin.request context!");
 
-		if (g == null)
-			throw new JspTagException(
-					"No group found in org.glite.security.voms.admin.request context!");
+    if (g == null)
+      throw new JspTagException(
+        "No group found in org.glite.security.voms.admin.request context!");
 
-		Set attributes = r.getAttributesInGroup(g);
+    Set attributes = r.getAttributesInGroup(g);
 
-		pageContext.setAttribute(var, attributes);
+    pageContext.setAttribute(var, attributes);
 
-		return SKIP_BODY;
-	}
+    return SKIP_BODY;
+  }
 
 }

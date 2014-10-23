@@ -26,16 +26,19 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class ListExpiringUsersOperation extends BaseVoReadOperation {
 
-	@Override
-	protected Object doExecute() {
-	
-		return VOMSUserDAO.instance().findExpiringUsers(VOMSConfiguration.instance().getExpiringUsersWarningInterval());
-	}
+  @Override
+  protected Object doExecute() {
 
-	protected ListExpiringUsersOperation() {}
-	
-	public static ListExpiringUsersOperation instance(){
-		
-		return new ListExpiringUsersOperation();
-	}
+    return VOMSUserDAO.instance().findExpiringUsers(
+      VOMSConfiguration.instance().getExpiringUsersWarningInterval());
+  }
+
+  protected ListExpiringUsersOperation() {
+
+  }
+
+  public static ListExpiringUsersOperation instance() {
+
+    return new ListExpiringUsersOperation();
+  }
 }

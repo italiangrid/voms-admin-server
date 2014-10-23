@@ -32,32 +32,31 @@ import org.slf4j.LoggerFactory;
 
 public class CSRFGuardHandler extends BasicHandler {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String CSRF_GUARD_HEADER_NAME = "X-VOMS-CSRF-GUARD";
+  public static final String CSRF_GUARD_HEADER_NAME = "X-VOMS-CSRF-GUARD";
 
-	public static final Logger log = LoggerFactory
-			.getLogger(CSRFGuardHandler.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(CSRFGuardHandler.class);
 
-	public static final String[] uncheckedServices = { "VOMSSaml",
-			"VOMSCompatibility" };
+  public static final String[] uncheckedServices = { "VOMSSaml",
+    "VOMSCompatibility" };
 
-	public void invoke(MessageContext msgContext) throws AxisFault {
+  public void invoke(MessageContext msgContext) throws AxisFault {
 
-		// Don't check readonly services
-		for (String uncheckedService : uncheckedServices)
-			if (uncheckedService.equals(msgContext.getTargetService()))
-				return;
+    // Don't check readonly services
+    for (String uncheckedService : uncheckedServices)
+      if (uncheckedService.equals(msgContext.getTargetService()))
+        return;
 
-		HttpServletRequest httpReq = (HttpServletRequest) MessageContext
-				.getCurrentContext().getProperty(
-						HTTPConstants.MC_HTTP_SERVLETREQUEST);
+    HttpServletRequest httpReq = (HttpServletRequest) MessageContext
+      .getCurrentContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
 
-		CSRFGuard.checkCSRFGuard(httpReq);
+    CSRFGuard.checkCSRFGuard(httpReq);
 
-	}
+  }
 
 }

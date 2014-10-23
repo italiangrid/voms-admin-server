@@ -27,60 +27,58 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("json")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
 public class UserStatsAction extends BaseAction {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	Long usersCount;
-	Long suspendedUsersCount;
-	Long expiredUsersCount;
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		VOMSUserDAO dao = VOMSUserDAO.instance();
-		
-		usersCount = dao.countUsers();
-		suspendedUsersCount = dao.countSuspendedUsers();
-		expiredUsersCount = dao.countExpiredUsers();
-		
-		return super.execute();
-	}
+  private static final long serialVersionUID = 1L;
 
-	
-	public Long getSuspendedUsersCount() {
-		return suspendedUsersCount;
-	}
+  Long usersCount;
+  Long suspendedUsersCount;
+  Long expiredUsersCount;
 
+  @Override
+  public String execute() throws Exception {
 
-	public void setSuspendedUsersCount(Long suspendedUsersCount) {
-		this.suspendedUsersCount = suspendedUsersCount;
-	}
+    VOMSUserDAO dao = VOMSUserDAO.instance();
 
+    usersCount = dao.countUsers();
+    suspendedUsersCount = dao.countSuspendedUsers();
+    expiredUsersCount = dao.countExpiredUsers();
 
-	public Long getExpiredUsersCount() {
-		return expiredUsersCount;
-	}
+    return super.execute();
+  }
 
+  public Long getSuspendedUsersCount() {
 
-	public void setExpiredUsersCount(Long expiredUsersCount) {
-		this.expiredUsersCount = expiredUsersCount;
-	}
+    return suspendedUsersCount;
+  }
 
+  public void setSuspendedUsersCount(Long suspendedUsersCount) {
 
-	public Long getUsersCount() {
-		return usersCount;
-	}
+    this.suspendedUsersCount = suspendedUsersCount;
+  }
 
+  public Long getExpiredUsersCount() {
 
-	public void setUsersCount(Long usersCount) {
-		this.usersCount = usersCount;
-	}
-		
+    return expiredUsersCount;
+  }
+
+  public void setExpiredUsersCount(Long expiredUsersCount) {
+
+    this.expiredUsersCount = expiredUsersCount;
+  }
+
+  public Long getUsersCount() {
+
+    return usersCount;
+  }
+
+  public void setUsersCount(Long usersCount) {
+
+    this.usersCount = usersCount;
+  }
+
 }

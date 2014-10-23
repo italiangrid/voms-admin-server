@@ -25,15 +25,12 @@ import java.util.List;
 import org.italiangrid.voms.aa.VOMSErrorMessage;
 import org.italiangrid.voms.aa.VOMSWarningMessage;
 
-
 public interface VOMSResponseBuilder {
 
-	public String createResponse(byte[] acBytes, 
-		List<VOMSWarningMessage> warnings);
-	
-	public String createErrorResponse(VOMSErrorMessage errorMessage);
-	
-	public String createLegacyErrorResponse(VOMSErrorMessage errorMessage);
-	
-	
+  public String createResponse(byte[] acBytes, List<VOMSWarningMessage> warnings);
+
+  public String createErrorResponse(VOMSErrorMessage errorMessage);
+
+  public String createLegacyErrorResponse(VOMSErrorMessage errorMessage);
+
 }

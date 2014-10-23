@@ -36,153 +36,153 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-	@Result(name = UserActionSupport.SUCCESS, location = "personalInfo.jsp"),
-	@Result(name = UserActionSupport.INPUT, location = "personalInfo.jsp"),
-	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-		location = "personalInfo.jsp") })
+  @Result(name = UserActionSupport.SUCCESS, location = "personalInfo.jsp"),
+  @Result(name = UserActionSupport.INPUT, location = "personalInfo.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "personalInfo.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-	"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class SavePersonalInformationAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String theName;
-	String theSurname;
-	String theInstitution;
-	String theAddress;
-	String thePhoneNumber;
-	String theEmailAddress;
+  String theName;
+  String theSurname;
+  String theInstitution;
+  String theAddress;
+  String thePhoneNumber;
+  String theEmailAddress;
 
-	private boolean isOrgDBPluginEnabled() {
+  private boolean isOrgDBPluginEnabled() {
 
-		return VOMSConfiguration.instance().getRegistrationType()
-			.equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE);
-	}
+    return VOMSConfiguration.instance().getRegistrationType()
+      .equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE);
+  }
 
-	@Override
-	public void validate() {
+  @Override
+  public void validate() {
 
-		// Run default checks before orgdb checks
-		super.validate();
-		if (hasFieldErrors())
-			return;
-		
-		if (isOrgDBPluginEnabled()) {
+    // Run default checks before orgdb checks
+    super.validate();
+    if (hasFieldErrors())
+      return;
 
-			OrgDBConfigurator conf = (OrgDBConfigurator) PluginManager.instance()
-				.getConfiguredPlugin(OrgDBConfigurator.class.getName());
+    if (isOrgDBPluginEnabled()) {
 
-			if (conf == null)
-				throw new IllegalStateException(
-					"OrgDB plugin configured but configurator is null!");
+      OrgDBConfigurator conf = (OrgDBConfigurator) PluginManager.instance()
+        .getConfiguredPlugin(OrgDBConfigurator.class.getName());
 
-			OrgDBEmailValidationResult validationResult = conf.getEmailValidator()
-				.validateEmailAddress(getModel(), getTheEmailAddress());
+      if (conf == null)
+        throw new IllegalStateException(
+          "OrgDB plugin configured but configurator is null!");
 
-			if (!validationResult.isValid()) {
-				addActionError(validationResult.getValidationError());
-			}
-		}
-	}
+      OrgDBEmailValidationResult validationResult = conf.getEmailValidator()
+        .validateEmailAddress(getModel(), getTheEmailAddress());
 
-	@Override
-	public String execute() throws Exception {
+      if (!validationResult.isValid()) {
+        addActionError(validationResult.getValidationError());
+      }
+    }
+  }
 
-		SaveUserPersonalInfoOperation op = new SaveUserPersonalInfoOperation(
-			getModel(), theName, theSurname, theInstitution, theAddress,
-			thePhoneNumber, theEmailAddress);
+  @Override
+  public String execute() throws Exception {
 
-		op.setAuthorizedUser(getModel());
+    SaveUserPersonalInfoOperation op = new SaveUserPersonalInfoOperation(
+      getModel(), theName, theSurname, theInstitution, theAddress,
+      thePhoneNumber, theEmailAddress);
 
-		op.execute();
+    op.setAuthorizedUser(getModel());
 
-		addActionMessage("Personal information updated.");
-		return SUCCESS;
-	}
+    op.execute();
 
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The name field contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getTheName() {
+    addActionMessage("Personal information updated.");
+    return SUCCESS;
+  }
 
-		return theName;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The name field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheName() {
 
-	public void setTheName(String theName) {
+    return theName;
+  }
 
-		this.theName = theName;
-	}
+  public void setTheName(String theName) {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The surname field contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getTheSurname() {
+    this.theName = theName;
+  }
 
-		return theSurname;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The surname field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheSurname() {
 
-	public void setTheSurname(String theSurname) {
+    return theSurname;
+  }
 
-		this.theSurname = theSurname;
-	}
+  public void setTheSurname(String theSurname) {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The institution field contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getTheInstitution() {
+    this.theSurname = theSurname;
+  }
 
-		return theInstitution;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The institution field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheInstitution() {
 
-	public void setTheInstitution(String theInstitution) {
+    return theInstitution;
+  }
 
-		this.theInstitution = theInstitution;
-	}
+  public void setTheInstitution(String theInstitution) {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The address field contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getTheAddress() {
+    this.theInstitution = theInstitution;
+  }
 
-		return theAddress;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The address field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheAddress() {
 
-	public void setTheAddress(String theAddress) {
+    return theAddress;
+  }
 
-		this.theAddress = theAddress;
-	}
+  public void setTheAddress(String theAddress) {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The phoneNumber field contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getThePhoneNumber() {
+    this.theAddress = theAddress;
+  }
 
-		return thePhoneNumber;
-	}
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The phoneNumber field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getThePhoneNumber() {
 
-	public void setThePhoneNumber(String thePhoneNumber) {
+    return thePhoneNumber;
+  }
 
-		this.thePhoneNumber = thePhoneNumber;
-	}
+  public void setThePhoneNumber(String thePhoneNumber) {
 
-	@RequiredStringValidator(type = ValidatorType.FIELD,
-		message = "Please enter an email address.")
-	@EmailValidator(type = ValidatorType.FIELD,
-		message = "Please enter a valid email address.")
-	@RegexFieldValidator(type = ValidatorType.FIELD,
-		message = "The email field name contains illegal characters!",
-		expression = "^[^<>&=;]*$")
-	public String getTheEmailAddress() {
+    this.thePhoneNumber = thePhoneNumber;
+  }
 
-		return theEmailAddress;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter an email address.")
+  @EmailValidator(type = ValidatorType.FIELD,
+    message = "Please enter a valid email address.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The email field name contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getTheEmailAddress() {
 
-	public void setTheEmailAddress(String theEmailAddress) {
+    return theEmailAddress;
+  }
 
-		this.theEmailAddress = theEmailAddress;
-	}
+  public void setTheEmailAddress(String theEmailAddress) {
+
+    this.theEmailAddress = theEmailAddress;
+  }
 
 }

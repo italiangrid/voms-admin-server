@@ -27,38 +27,37 @@ import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
-		@Result(name = BaseAction.INPUT, location = "deleteACLEntry") })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "deleteACLEntry") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class DeleteEntryAction extends ACLActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		DeleteACLEntryOperation op = DeleteACLEntryOperation.instance(
-				getModel(), getAdmin(), getPropagate());
-		op.execute();
+    DeleteACLEntryOperation op = DeleteACLEntryOperation.instance(getModel(),
+      getAdmin(), getPropagate());
+    op.execute();
 
-		ACLDAO dao = ACLDAO.instance();
-		// Delete admin if it doesn't have any active permissions
-		if (!admin.isInternalAdmin()) {
-			if (!dao.hasActivePermissions(admin))
-				VOMSAdminDAO.instance().delete(admin);
-		}
+    ACLDAO dao = ACLDAO.instance();
+    // Delete admin if it doesn't have any active permissions
+    if (!admin.isInternalAdmin()) {
+      if (!dao.hasActivePermissions(admin))
+        VOMSAdminDAO.instance().delete(admin);
+    }
 
-		// Delete default ACL if it's empty
-		if (model.isDefautlACL() && model.getPermissions().isEmpty())
-			dao.delete(model);
+    // Delete default ACL if it's empty
+    if (model.isDefautlACL() && model.getPermissions().isEmpty())
+      dao.delete(model);
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
 }

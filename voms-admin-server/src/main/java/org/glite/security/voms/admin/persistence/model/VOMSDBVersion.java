@@ -27,47 +27,49 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="version")
-public class VOMSDBVersion implements Serializable{
+@Table(name = "version")
+public class VOMSDBVersion implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	Integer version;
+  @Id
+  Integer version;
 
-	@Column(name="admin_version")
-	String adminVersion;
-	
-	public VOMSDBVersion() {
+  @Column(name = "admin_version")
+  String adminVersion;
 
-	}
+  public VOMSDBVersion() {
 
-	/**
-	 * @return Returns the version.
-	 */
-	public Integer getVersion() {
+  }
 
-		return version;
-	}
+  /**
+   * @return Returns the version.
+   */
+  public Integer getVersion() {
 
-	/**
-	 * @param version
-	 *            The version to set.
-	 */
-	public void setVersion(Integer version) {
+    return version;
+  }
 
-		this.version = version;
-	}
+  /**
+   * @param version
+   *          The version to set.
+   */
+  public void setVersion(Integer version) {
 
-	public String getAdminVersion() {
-		return adminVersion;
-	}
+    this.version = version;
+  }
 
-	public void setAdminVersion(String adminVersion) {
-		this.adminVersion = adminVersion;
-	}
-	
+  public String getAdminVersion() {
+
+    return adminVersion;
+  }
+
+  public void setAdminVersion(String adminVersion) {
+
+    this.adminVersion = adminVersion;
+  }
+
 }

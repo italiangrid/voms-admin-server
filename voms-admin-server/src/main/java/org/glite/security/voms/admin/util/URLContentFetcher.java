@@ -25,48 +25,48 @@ import java.net.URLConnection;
 
 public class URLContentFetcher {
 
-	private URLContentFetcher() {}
+  private URLContentFetcher() {
 
-	
-	public static final String fetchTextFromURL(String url){
-		
-		if (url == null)
-			return null;
-		
-		try {
+  }
 
-			URL daURL = new URL(url);
-			URLConnection conn = daURL.openConnection();
+  public static final String fetchTextFromURL(String url) {
 
-			conn.connect();
+    if (url == null)
+      return null;
 
-			String contentType = conn.getContentType();
+    try {
 
-			if (!contentType.startsWith("text")) {
-				
-				return null;
+      URL daURL = new URL(url);
+      URLConnection conn = daURL.openConnection();
 
-			} else {
+      conn.connect();
 
-				// FIXME: leverage CONTENT length,
-				StringBuilder text = new StringBuilder();
+      String contentType = conn.getContentType();
 
-				int c;
-				// FIXME: implement more efficient AUP fetching
-				while ((c = conn.getInputStream().read()) != -1) {
-					text.append((char) c);
-				}
+      if (!contentType.startsWith("text")) {
 
-				return text.toString();
+        return null;
 
-			}
+      } else {
 
-		} catch (Throwable e) {
-			
-			return null;
-		}
-		
-		
-	}
+        // FIXME: leverage CONTENT length,
+        StringBuilder text = new StringBuilder();
+
+        int c;
+        // FIXME: implement more efficient AUP fetching
+        while ((c = conn.getInputStream().read()) != -1) {
+          text.append((char) c);
+        }
+
+        return text.toString();
+
+      }
+
+    } catch (Throwable e) {
+
+      return null;
+    }
+
+  }
 
 }

@@ -26,15 +26,18 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 public class SuspendInvalidMembersStrategy implements
-		OrgDBMissingMembershipRecordStrategy {
+  OrgDBMissingMembershipRecordStrategy {
 
-		
-	public void handleMissingMembershipRecord(VOMSUser u) {
-		
-		SuspensionReason reason = SuspensionReason.OTHER;
-		reason.setMessage(String.format("OrgDB: No record found for user '%s %s, %s' inside CERN organization database.", u.getName(), u.getSurname(), u.getEmailAddress()));
-		ValidationManager.instance().suspendUser(u, reason);
+  public void handleMissingMembershipRecord(VOMSUser u) {
 
-	}
+    SuspensionReason reason = SuspensionReason.OTHER;
+    reason
+      .setMessage(String
+        .format(
+          "OrgDB: No record found for user '%s %s, %s' inside CERN organization database.",
+          u.getName(), u.getSurname(), u.getEmailAddress()));
+    ValidationManager.instance().suspendUser(u, reason);
+
+  }
 
 }

@@ -28,71 +28,80 @@ import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMem
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMembersStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.VOMembershipCheckStrategy;
 
-public abstract class AbstractMembershipChecker implements VOMembershipCheckStrategy{
-	
-	MembershipValidationContext validationContext;
+public abstract class AbstractMembershipChecker implements
+  VOMembershipCheckStrategy {
 
-	/**
-	 * @return the validationContext
-	 */
-	public MembershipValidationContext getValidationContext() {
-		return validationContext;
-	}
+  MembershipValidationContext validationContext;
 
-	/**
-	 * @param validationContext the validationContext to set
-	 */
-	public void setValidationContext(MembershipValidationContext validationContext) {
-		this.validationContext = validationContext;
-	}
-	
-	
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getAupFailingMembersLookupStrategy()
-	 */
-	public AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy() {
-		return validationContext.getAupFailingMembersLookupStrategy();
-	}
+  /**
+   * @return the validationContext
+   */
+  public MembershipValidationContext getValidationContext() {
 
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiredMembersLookupStrategy()
-	 */
-	public ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy() {
-		return validationContext.getExpiredMembersLookupStrategy();
-	}
+    return validationContext;
+  }
 
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiringMembersLookupStrategy()
-	 */
-	public ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy() {
-		return validationContext.getExpiringMembersLookupStrategy();
-	}
+  /**
+   * @param validationContext
+   *          the validationContext to set
+   */
+  public void setValidationContext(MembershipValidationContext validationContext) {
 
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiredMembersStrategy()
-	 */
-	public HandleExpiredMembersStrategy getHandleExpiredMembersStrategy() {
-		return validationContext.getHandleExpiredMembersStrategy();
-	}
+    this.validationContext = validationContext;
+  }
 
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiringMembersStrategy()
-	 */
-	public HandleExpiringMembersStrategy getHandleExpiringMembersStrategy() {
-		return validationContext.getHandleExpiringMembersStrategy();
-	}
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getAupFailingMembersLookupStrategy()
+   */
+  public AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy() {
 
-	/**
-	 * @return
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleAUPFailingMembersStrategy()
-	 */
-	public HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy() {
-		return validationContext.getHandleAUPFailingMembersStrategy();
-	}
-	
+    return validationContext.getAupFailingMembersLookupStrategy();
+  }
+
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiredMembersLookupStrategy()
+   */
+  public ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy() {
+
+    return validationContext.getExpiredMembersLookupStrategy();
+  }
+
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiringMembersLookupStrategy()
+   */
+  public ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy() {
+
+    return validationContext.getExpiringMembersLookupStrategy();
+  }
+
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiredMembersStrategy()
+   */
+  public HandleExpiredMembersStrategy getHandleExpiredMembersStrategy() {
+
+    return validationContext.getHandleExpiredMembersStrategy();
+  }
+
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiringMembersStrategy()
+   */
+  public HandleExpiringMembersStrategy getHandleExpiringMembersStrategy() {
+
+    return validationContext.getHandleExpiringMembersStrategy();
+  }
+
+  /**
+   * @return
+   * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleAUPFailingMembersStrategy()
+   */
+  public HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy() {
+
+    return validationContext.getHandleAUPFailingMembersStrategy();
+  }
+
 }

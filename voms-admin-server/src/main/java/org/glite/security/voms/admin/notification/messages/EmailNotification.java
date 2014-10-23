@@ -37,171 +37,172 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
-public abstract class EmailNotification implements VOMSNotification{
+public abstract class EmailNotification implements VOMSNotification {
 
-	private static final Logger log = LoggerFactory.getLogger(EmailNotification.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(EmailNotification.class);
 
-	private List<String> recipientList = new ArrayList<String>();
+  private List<String> recipientList = new ArrayList<String>();
 
-	private String subject;
+  private String subject;
 
-	private String message;
+  private String message;
 
-	private int deliveryAttemptCount = 0;
+  private int deliveryAttemptCount = 0;
 
-	public EmailNotification() {
+  public EmailNotification() {
 
-		super();
-	}
+    super();
+  }
 
-	public String getMessage() {
+  public String getMessage() {
 
-		return message;
-	}
+    return message;
+  }
 
-	public void setMessage(String message) {
+  public void setMessage(String message) {
 
-		this.message = message;
-	}
+    this.message = message;
+  }
 
-	public List<String> getRecipientList() {
+  public List<String> getRecipientList() {
 
-		return recipientList;
-	}
+    return recipientList;
+  }
 
-	public void setRecipientList(List<String> recipientList) {
+  public void setRecipientList(List<String> recipientList) {
 
-		this.recipientList = recipientList;
-	}
+    this.recipientList = recipientList;
+  }
 
-	public String getSubject() {
+  public String getSubject() {
 
-		return subject;
-	}
+    return subject;
+  }
 
-	public void setSubject(String subject) {
+  public void setSubject(String subject) {
 
-		this.subject = subject;
-	}
+    this.subject = subject;
+  }
 
-	public void addRecipient(String recipientAddress) {
+  public void addRecipient(String recipientAddress) {
 
-		if ((recipientAddress != null) && (!recipientAddress.trim().equals("")))
-			recipientList.add(recipientAddress);
-	}
+    if ((recipientAddress != null) && (!recipientAddress.trim().equals("")))
+      recipientList.add(recipientAddress);
+  }
 
-	public void addRecipients(Collection<String> c) {
+  public void addRecipients(Collection<String> c) {
 
-		Iterator<String> i = c.iterator();
+    Iterator<String> i = c.iterator();
 
-		while (i.hasNext()) {
-			addRecipient(i.next());
-		}
-	}
+    while (i.hasNext()) {
+      addRecipient(i.next());
+    }
+  }
 
-	public void addAdminToRecipients(VOMSAdmin a) {
+  public void addAdminToRecipients(VOMSAdmin a) {
 
-		log.debug("addAdminToRecipients::: Admin dn:" + a.getDn());
-		if (!a.isInternalAdmin())
-			addRecipient(a.getEmailAddress());
+    log.debug("addAdminToRecipients::: Admin dn:" + a.getDn());
+    if (!a.isInternalAdmin())
+      addRecipient(a.getEmailAddress());
 
-		else {
+    else {
 
-			if (a.isGroupAdmin()) {
-				log.debug("addAdminToRecipients::: admin is group admin.");
-				addGroupMembersToRecipients(a.getDn());
-			} else if (a.isRoleAdmin())
-				log.debug("addAdminToRecipients::: admin is role admin.");
+      if (a.isGroupAdmin()) {
+        log.debug("addAdminToRecipients::: admin is group admin.");
+        addGroupMembersToRecipients(a.getDn());
+      } else if (a.isRoleAdmin())
+        log.debug("addAdminToRecipients::: admin is role admin.");
 
-			String groupName = PathNamingScheme.getGroupName(a.getDn());
-			String roleName = PathNamingScheme.getRoleName(a.getDn());
+      String groupName = PathNamingScheme.getGroupName(a.getDn());
+      String roleName = PathNamingScheme.getRoleName(a.getDn());
 
-			log.debug("GroupName: " + groupName + " RoleName:" + roleName);
+      log.debug("GroupName: " + groupName + " RoleName:" + roleName);
 
-			addRoleMembersToRecipients(groupName, roleName);
-		}
+      addRoleMembersToRecipients(groupName, roleName);
+    }
 
-	}
+  }
 
-	public void addGroupMembersToRecipients(String groupName) {
+  public void addGroupMembersToRecipients(String groupName) {
 
-		VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
-		addRecipients(g.getMembersEmailAddresses());
+    VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+    addRecipients(g.getMembersEmailAddresses());
 
-	}
+  }
 
-	public void addRoleMembersToRecipients(String groupName, String roleName) {
+  public void addRoleMembersToRecipients(String groupName, String roleName) {
 
-		VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
-		VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+    VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+    VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
 
-		if (r == null || g == null)
-			return;
+    if (r == null || g == null)
+      return;
 
-		addRecipients(r.getMembersEmailAddresses(g));
-	}
+    addRecipients(r.getMembersEmailAddresses(g));
+  }
 
-	protected abstract void buildMessage();
+  protected abstract void buildMessage();
 
-	public void send() {
+  public void send() {
 
-		if (message == null)
-			buildMessage();
+    if (message == null)
+      buildMessage();
 
-		SimpleEmail e = new SimpleEmail();
+    SimpleEmail e = new SimpleEmail();
 
-		String sender = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
-		String smtpServer = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.SERVICE_SMTP_SERVER);
-		int smtpServerPort = VOMSConfiguration.instance().getInt(
-				VOMSConfigurationConstants.SERVICE_SMTP_SERVER_PORT, 25);
+    String sender = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
+    String smtpServer = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.SERVICE_SMTP_SERVER);
+    int smtpServerPort = VOMSConfiguration.instance().getInt(
+      VOMSConfigurationConstants.SERVICE_SMTP_SERVER_PORT, 25);
 
-		String userName = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_USERNAME, null);
-		String userPassword = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_PASSWORD, null);
-		boolean useTLS = VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.SERVICE_EMAIL_USE_TLS, false);
+    String userName = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_USERNAME, null);
+    String userPassword = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.SERVICE_EMAIL_ACCOUNT_PASSWORD, null);
+    boolean useTLS = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.SERVICE_EMAIL_USE_TLS, false);
 
-		deliveryAttemptCount++;
-		try {
+    deliveryAttemptCount++;
+    try {
 
-			e.setHostName(smtpServer);
-			e.setSmtpPort(smtpServerPort);
-			e.setFrom(sender, "VOMS Admin for VO "
-					+ VOMSConfiguration.instance().getVOName());
-			e.setSubject(subject);
-			e.setMsg(message);
+      e.setHostName(smtpServer);
+      e.setSmtpPort(smtpServerPort);
+      e.setFrom(sender, "VOMS Admin for VO "
+        + VOMSConfiguration.instance().getVOName());
+      e.setSubject(subject);
+      e.setMsg(message);
 
-			if (userName != null && userPassword != null)
-				e.setAuthentication(userName, userPassword);
+      if (userName != null && userPassword != null)
+        e.setAuthentication(userName, userPassword);
 
-			e.setTLS(useTLS);
+      e.setTLS(useTLS);
 
-			if (recipientList.isEmpty())
-				throw new VOMSNotificationException("Empty recipient list!");
+      if (recipientList.isEmpty())
+        throw new VOMSNotificationException("Empty recipient list!");
 
-			Iterator<String> i = recipientList.iterator();
-			while (i.hasNext())
-				e.addTo(i.next());
+      Iterator<String> i = recipientList.iterator();
+      while (i.hasNext())
+        e.addTo(i.next());
 
-			e.send();
+      e.send();
 
-		} catch (Throwable t) {
-			log.error("Error setting up email notification!", t);
-			throw new VOMSNotificationException(t.getMessage(), t);
+    } catch (Throwable t) {
+      log.error("Error setting up email notification!", t);
+      throw new VOMSNotificationException(t.getMessage(), t);
 
-		}
-	}
+    }
+  }
 
-	@Override
-	/**
-	 * @return the deliveryAttemptCount
-	 */
-	public int getDeliveryAttemptCount() {
+  @Override
+  /**
+   * @return the deliveryAttemptCount
+   */
+  public int getDeliveryAttemptCount() {
 
-		return deliveryAttemptCount;
-	}
+    return deliveryAttemptCount;
+  }
 
 }

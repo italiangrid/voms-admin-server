@@ -84,1192 +84,1209 @@ import org.slf4j.LoggerFactory;
 @Table(name = "usr")
 public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
-	private static final long serialVersionUID = -3815869585264835046L;
+  private static final long serialVersionUID = -3815869585264835046L;
 
-	public static final Logger log = LoggerFactory.getLogger(VOMSUser.class);
+  public static final Logger log = LoggerFactory.getLogger(VOMSUser.class);
 
-	public enum SuspensionReason {
+  public enum SuspensionReason {
 
-		FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."), MEMBERSHIP_EXPIRATION(
-				"User membership has expired."), SECURITY_INCIDENT(
-				"User membership has been suspended after a security incident."), OTHER(
-				"User membership has been suspended for another unknown reason.");
+    FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."), MEMBERSHIP_EXPIRATION(
+      "User membership has expired."), SECURITY_INCIDENT(
+      "User membership has been suspended after a security incident."), OTHER(
+      "User membership has been suspended for another unknown reason.");
 
-		String message;
+    String message;
 
-		private SuspensionReason(String msg) {
-			this.message = msg;
-		}
+    private SuspensionReason(String msg) {
 
-		public String getMessage() {
-			return message;
-		}
+      this.message = msg;
+    }
 
-		public void setMessage(String message) {
-			this.message = message;
-		}
+    public String getMessage() {
 
-	}
+      return message;
+    }
 
-	public VOMSUser() {
+    public void setMessage(String message) {
 
-	}
+      this.message = message;
+    }
 
-	@Id
-	@Column(name = "userid")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+  }
 
-	// Base membership information (JSPG requirements)
+  public VOMSUser() {
 
-	String name;
+  }
 
-	String surname;
+  @Id
+  @Column(name = "userid")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  Long id;
 
-	String institution;
+  // Base membership information (JSPG requirements)
 
-	String address;
+  String name;
 
-	@Column(name = "phone_number")
-	String phoneNumber;
+  String surname;
 
-	@Column(nullable = false, name = "email_address")
-	String emailAddress;
+  String institution;
 
-	// Compatibility fields
-	String dn;
+  String address;
 
-	/** This field is here for compatibility reasons **/
-	@ManyToOne(targetEntity = VOMSCA.class, optional = true)
-	@JoinColumn(name = "ca")
-	VOMSCA ca;
+  @Column(name = "phone_number")
+  String phoneNumber;
 
-	// Creation time and validity info
-	@Column(name = "creation_time", nullable = false)
-	Date creationTime;
+  @Column(nullable = false, name = "email_address")
+  String emailAddress;
 
-	@Column(name = "end_time", nullable = false)
-	Date endTime;
+  // Compatibility fields
+  String dn;
 
-	@Column(name = "suspended")
-	Boolean suspended = false;
+  /** This field is here for compatibility reasons **/
+  @ManyToOne(targetEntity = VOMSCA.class, optional = true)
+  @JoinColumn(name = "ca")
+  VOMSCA ca;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "suspension_reason_code")
-	SuspensionReason suspensionReasonCode;
+  // Creation time and validity info
+  @Column(name = "creation_time", nullable = false)
+  Date creationTime;
 
-	@Column(name = "suspension_reason")
-	String suspensionReason;
+  @Column(name = "end_time", nullable = false)
+  Date endTime;
 
-	/** Generic attributes mapping **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
+  @Column(name = "suspended")
+  Boolean suspended = false;
 
-	/** Membership mappings **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", fetch = FetchType.EAGER)
-	@Sort(type = SortType.NATURAL)
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+  @Enumerated(EnumType.STRING)
+  @Column(name = "suspension_reason_code")
+  SuspensionReason suspensionReasonCode;
 
-	/** User certificates **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<Certificate> certificates = new HashSet<Certificate>();
+  @Column(name = "suspension_reason")
+  String suspensionReason;
 
-	/** AUP acceptance records **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
+  /** Generic attributes mapping **/
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
 
-	/** Assigned tasks **/
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", fetch = FetchType.EAGER)
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<Task> tasks = new HashSet<Task>();
+  /** Membership mappings **/
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user",
+    fetch = FetchType.EAGER)
+  @Sort(type = SortType.NATURAL)
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-	/** Personal information set **/
-	// FIXME: currently ignored by configuration
-	@Transient
-	Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
+  /** User certificates **/
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<Certificate> certificates = new HashSet<Certificate>();
 
-	/**
-	 * @return Returns the emailAddress.
-	 */
-	public String getEmailAddress() {
+  /** AUP acceptance records **/
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
 
-		return emailAddress;
-	}
+  /** Assigned tasks **/
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user",
+    fetch = FetchType.EAGER)
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<Task> tasks = new HashSet<Task>();
 
-	/**
-	 * @param emailAddress
-	 *            The emailAddress to set.
-	 */
-	public void setEmailAddress(String emailAddress) {
+  /** Personal information set **/
+  // FIXME: currently ignored by configuration
+  @Transient
+  Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
 
-		this.emailAddress = emailAddress;
-	}
+  /**
+   * @return Returns the emailAddress.
+   */
+  public String getEmailAddress() {
 
-	public Long getId() {
+    return emailAddress;
+  }
 
-		return id;
-	}
+  /**
+   * @param emailAddress
+   *          The emailAddress to set.
+   */
+  public void setEmailAddress(String emailAddress) {
 
-	public void setId(Long id) {
+    this.emailAddress = emailAddress;
+  }
 
-		this.id = id;
-	}
+  public Long getId() {
 
-	public Set<VOMSUserAttribute> getAttributes() {
+    return id;
+  }
 
-		return attributes;
-	}
+  public void setId(Long id) {
 
-	public void setAttributes(Set<VOMSUserAttribute> attributes) {
+    this.id = id;
+  }
 
-		this.attributes = attributes;
-	}
+  public Set<VOMSUserAttribute> getAttributes() {
 
-	public Set<VOMSMapping> getMappings() {
+    return attributes;
+  }
 
-		return mappings;
-	}
+  public void setAttributes(Set<VOMSUserAttribute> attributes) {
 
-	public void setMappings(Set<VOMSMapping> mappings) {
+    this.attributes = attributes;
+  }
 
-		this.mappings = mappings;
-	}
+  public Set<VOMSMapping> getMappings() {
 
-	public VOMSUserAttribute getAttributeByName(String name) {
+    return mappings;
+  }
 
-		Iterator i = attributes.iterator();
+  public void setMappings(Set<VOMSMapping> mappings) {
 
-		while (i.hasNext()) {
-			VOMSUserAttribute tmp = (VOMSUserAttribute) i.next();
+    this.mappings = mappings;
+  }
 
-			if (tmp.getName().equals(name))
-				return tmp;
-		}
+  public VOMSUserAttribute getAttributeByName(String name) {
 
-		return null;
+    Iterator i = attributes.iterator();
 
-	}
+    while (i.hasNext()) {
+      VOMSUserAttribute tmp = (VOMSUserAttribute) i.next();
 
-	public void deleteAttributeByName(String attrName) {
+      if (tmp.getName().equals(name))
+        return tmp;
+    }
 
-		deleteAttribute(getAttributeByName(attrName));
+    return null;
 
-	}
+  }
 
-	public void deleteAttribute(VOMSUserAttribute val) {
+  public void deleteAttributeByName(String attrName) {
 
-		if (!attributes.contains(val))
-			throw new NoSuchAttributeException("Attribute \"" + val.getName()
-					+ "\" undefined for user " + this);
+    deleteAttribute(getAttributeByName(attrName));
 
-		attributes.remove(val);
+  }
 
-	}
+  public void deleteAttribute(VOMSUserAttribute val) {
 
-	public void setAttribute(String name, String value) {
+    if (!attributes.contains(val))
+      throw new NoSuchAttributeException("Attribute \"" + val.getName()
+        + "\" undefined for user " + this);
 
-		VOMSUserAttribute val = getAttributeByName(name);
+    attributes.remove(val);
 
-		if (val == null)
-			throw new NoSuchAttributeException("Attribute \"" + name
-					+ "\" undefined for user \"" + this + "\".");
+  }
 
-		val.setValue(value);
+  public void setAttribute(String name, String value) {
 
-	}
+    VOMSUserAttribute val = getAttributeByName(name);
 
-	public void addAttribute(VOMSUserAttribute val) {
+    if (val == null)
+      throw new NoSuchAttributeException("Attribute \"" + name
+        + "\" undefined for user \"" + this + "\".");
 
-		val.setUser(this);
+    val.setValue(value);
 
-		if (attributes.contains(val)) {
-			attributes.remove(val);
-		}
+  }
 
-		attributes.add(val);
-	}
+  public void addAttribute(VOMSUserAttribute val) {
 
-	public boolean isMember(String groupName) {
+    val.setUser(this);
 
-		if (groupName == null)
-			throw new NullArgumentException(
-					"Cannot org.glite.security.voms.admin.test membership in a null group!");
+    if (attributes.contains(val)) {
+      attributes.remove(val);
+    }
 
-		if (!PathNamingScheme.isGroup(groupName))
-			throw new VOMSSyntaxException(
-					"Group name passed as argument does not respect the VOMS FQAN syntax. ["
-							+ groupName + "]");
+    attributes.add(val);
+  }
 
-		Iterator i = getMappings().iterator();
+  public boolean isMember(String groupName) {
 
-		while (i.hasNext()) {
+    if (groupName == null)
+      throw new NullArgumentException(
+        "Cannot org.glite.security.voms.admin.test membership in a null group!");
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			if (m.getGroup().getName().equals(groupName) && m.isGroupMapping())
-				return true;
-		}
+    if (!PathNamingScheme.isGroup(groupName))
+      throw new VOMSSyntaxException(
+        "Group name passed as argument does not respect the VOMS FQAN syntax. ["
+          + groupName + "]");
 
-		return false;
+    Iterator i = getMappings().iterator();
 
-	}
+    while (i.hasNext()) {
 
-	public boolean isMember(VOMSGroup g) {
+      VOMSMapping m = (VOMSMapping) i.next();
+      if (m.getGroup().getName().equals(groupName) && m.isGroupMapping())
+        return true;
+    }
 
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot org.glite.security.voms.admin.test membership in a null group!");
+    return false;
 
-		Iterator i = getMappings().iterator();
+  }
 
-		while (i.hasNext()) {
+  public boolean isMember(VOMSGroup g) {
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			if (m.getGroup().equals(g) && m.isGroupMapping())
-				return true;
-		}
+    if (g == null)
+      throw new NullArgumentException(
+        "Cannot org.glite.security.voms.admin.test membership in a null group!");
 
-		return false;
+    Iterator i = getMappings().iterator();
 
-	}
+    while (i.hasNext()) {
 
-	public void addToGroup(VOMSGroup g) {
+      VOMSMapping m = (VOMSMapping) i.next();
+      if (m.getGroup().equals(g) && m.isGroupMapping())
+        return true;
+    }
 
-		log.debug("Adding user \"" + this + "\" to group \"" + g + "\".");
+    return false;
 
-		VOMSMapping m = new VOMSMapping(this, g, null);
-		if (!getMappings().add(m))
-			throw new AlreadyExistsException("User \"" + this
-					+ "\" is already a member of group \"" + g + "\".");
+  }
 
-		// Add this user to parent groups
-		if (!g.isRootGroup()) {
-			if (!isMember(g.parent))
-				addToGroup(g.parent);
-		}
+  public void addToGroup(VOMSGroup g) {
 
-	}
+    log.debug("Adding user \"" + this + "\" to group \"" + g + "\".");
 
-	public void removeFromGroup(VOMSGroup g) {
+    VOMSMapping m = new VOMSMapping(this, g, null);
+    if (!getMappings().add(m))
+      throw new AlreadyExistsException("User \"" + this
+        + "\" is already a member of group \"" + g + "\".");
 
-		log.debug("Removing user \"" + this + "\" from group \"" + g + "\".");
+    // Add this user to parent groups
+    if (!g.isRootGroup()) {
+      if (!isMember(g.parent))
+        addToGroup(g.parent);
+    }
 
-		dismissRolesInGroup(g);
+  }
 
-		VOMSMapping m = new VOMSMapping(this, g, null);
+  public void removeFromGroup(VOMSGroup g) {
 
-		if (getMappings().contains(m)) {
-			getMappings().remove(m);
-			g.removeMapping(m);
+    log.debug("Removing user \"" + this + "\" from group \"" + g + "\".");
 
-		} else
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" is not a member of group \"" + g + "\".");
+    dismissRolesInGroup(g);
 
-	}
+    VOMSMapping m = new VOMSMapping(this, g, null);
 
-	public VOMSMapping assignRole(VOMSGroup g, VOMSRole r) {
+    if (getMappings().contains(m)) {
+      getMappings().remove(m);
+      g.removeMapping(m);
 
-		if (!isMember(g))
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" is not a member of group \"" + g + "\".");
+    } else
+      throw new NoSuchMappingException("User \"" + this
+        + "\" is not a member of group \"" + g + "\".");
 
-		VOMSMapping m = new VOMSMapping(this, g, r);
-		if (getMappings().contains(m))
-			throw new AlreadyExistsException("User \"" + this
-					+ "\" already has role \"" + r + "\" in group \"" + g
-					+ "\".");
+  }
 
-		log.debug("Assigning role \"" + r + "\" to user \"" + this
-				+ "\" in group \"" + g + "\".");
+  public VOMSMapping assignRole(VOMSGroup g, VOMSRole r) {
 
-		getMappings().add(m);
-		r.getMappings().add(m);
+    if (!isMember(g))
+      throw new NoSuchMappingException("User \"" + this
+        + "\" is not a member of group \"" + g + "\".");
 
-		return m;
+    VOMSMapping m = new VOMSMapping(this, g, r);
+    if (getMappings().contains(m))
+      throw new AlreadyExistsException("User \"" + this
+        + "\" already has role \"" + r + "\" in group \"" + g + "\".");
 
-	}
+    log.debug("Assigning role \"" + r + "\" to user \"" + this
+      + "\" in group \"" + g + "\".");
 
-	public VOMSMapping dismissRole(VOMSGroup g, VOMSRole r) {
+    getMappings().add(m);
+    r.getMappings().add(m);
 
-		if (!isMember(g))
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" is not a member of group \"" + g + "\".");
+    return m;
 
-		if (!hasRole(g, r))
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" does not have role \"" + r + "\" in group \"" + g
-					+ "\".");
+  }
 
-		log.debug("Dismissing role \"" + r + "\" from user \"" + this
-				+ "\" in group \"" + g + "\".");
+  public VOMSMapping dismissRole(VOMSGroup g, VOMSRole r) {
 
-		Iterator i = getMappings().iterator();
-		boolean removed = false;
+    if (!isMember(g))
+      throw new NoSuchMappingException("User \"" + this
+        + "\" is not a member of group \"" + g + "\".");
 
-		VOMSMapping m = null;
-		while (i.hasNext()) {
-			m = (VOMSMapping) i.next();
-			if (m.isRoleMapping()) {
-				if (m.getGroup().equals(g) && m.getRole().equals(r)) {
-					i.remove();
-					boolean removedFromRole = r.removeMapping(m);
-					boolean removedFromGroup = g.removeMapping(m);
-					removed = true;
-				}
-			}
-		}
+    if (!hasRole(g, r))
+      throw new NoSuchMappingException("User \"" + this
+        + "\" does not have role \"" + r + "\" in group \"" + g + "\".");
 
-		if (!removed)
-			throw new VOMSInconsistentDatabaseException(
-					"Error removing existing role mapping!");
-		return m;
+    log.debug("Dismissing role \"" + r + "\" from user \"" + this
+      + "\" in group \"" + g + "\".");
 
-	}
+    Iterator i = getMappings().iterator();
+    boolean removed = false;
 
-	public void dismissRolesInGroup(VOMSGroup g) {
+    VOMSMapping m = null;
+    while (i.hasNext()) {
+      m = (VOMSMapping) i.next();
+      if (m.isRoleMapping()) {
+        if (m.getGroup().equals(g) && m.getRole().equals(r)) {
+          i.remove();
+          boolean removedFromRole = r.removeMapping(m);
+          boolean removedFromGroup = g.removeMapping(m);
+          removed = true;
+        }
+      }
+    }
 
-		if (!isMember(g))
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" is not a member of group \"" + g + "\".");
+    if (!removed)
+      throw new VOMSInconsistentDatabaseException(
+        "Error removing existing role mapping!");
+    return m;
 
-		Iterator i = getMappings().iterator();
+  }
 
-		while (i.hasNext()) {
+  public void dismissRolesInGroup(VOMSGroup g) {
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			
-			if (m.getGroup().equals(g) && m.isRoleMapping()){
-				i.remove();
-				m.getRole().removeMapping(m);
-			}
-		}
+    if (!isMember(g))
+      throw new NoSuchMappingException("User \"" + this
+        + "\" is not a member of group \"" + g + "\".");
 
-		return;
-	}
+    Iterator i = getMappings().iterator();
 
-	public boolean hasRole(VOMSGroup g, VOMSRole r) {
+    while (i.hasNext()) {
 
-		if (!isMember(g))
-			throw new NoSuchMappingException("User \"" + this
-					+ "\" is not a member of group \"" + g + "\".");
+      VOMSMapping m = (VOMSMapping) i.next();
 
-		Iterator i = getMappings().iterator();
+      if (m.getGroup().equals(g) && m.isRoleMapping()) {
+        i.remove();
+        m.getRole().removeMapping(m);
+      }
+    }
 
-		while (i.hasNext()) {
+    return;
+  }
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			if (m.isRoleMapping()) {
-				if (m.getGroup().equals(g) && m.getRole().equals(r))
-					return true;
-			}
-		}
+  public boolean hasRole(VOMSGroup g, VOMSRole r) {
 
-		return false;
-	}
+    if (!isMember(g))
+      throw new NoSuchMappingException("User \"" + this
+        + "\" is not a member of group \"" + g + "\".");
 
-	public boolean hasRole(String fqan) {
+    Iterator i = getMappings().iterator();
 
-		if (!PathNamingScheme.isQualifiedRole(fqan))
-			throw new IllegalArgumentException(
-					"Role name passed as argument is not a qualified role! ["
-							+ fqan + "]");
+    while (i.hasNext()) {
 
-		String groupName = PathNamingScheme.getGroupName(fqan);
-		String roleName = PathNamingScheme.getRoleName(fqan);
+      VOMSMapping m = (VOMSMapping) i.next();
+      if (m.isRoleMapping()) {
+        if (m.getGroup().equals(g) && m.getRole().equals(r))
+          return true;
+      }
+    }
 
-		Iterator i = getMappings().iterator();
+    return false;
+  }
 
-		while (i.hasNext()) {
+  public boolean hasRole(String fqan) {
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			if (m.isRoleMapping()) {
-				if (m.getGroup().getName().equals(groupName)
-						&& m.getRole().getName().equals(roleName))
-					return true;
-			}
-		}
+    if (!PathNamingScheme.isQualifiedRole(fqan))
+      throw new IllegalArgumentException(
+        "Role name passed as argument is not a qualified role! [" + fqan + "]");
 
-		return false;
+    String groupName = PathNamingScheme.getGroupName(fqan);
+    String roleName = PathNamingScheme.getRoleName(fqan);
 
-	}
+    Iterator i = getMappings().iterator();
 
-	public Set getGroups() {
+    while (i.hasNext()) {
 
-		SortedSet res = new TreeSet();
-		Iterator mIter = getMappings().iterator();
-		while (mIter.hasNext()) {
+      VOMSMapping m = (VOMSMapping) i.next();
+      if (m.isRoleMapping()) {
+        if (m.getGroup().getName().equals(groupName)
+          && m.getRole().getName().equals(roleName))
+          return true;
+      }
+    }
 
-			VOMSMapping m = (VOMSMapping) mIter.next();
-			if (m.isGroupMapping())
-				res.add(m.getGroup());
-		}
+    return false;
 
-		return Collections.unmodifiableSortedSet(res);
+  }
 
-	}
+  public Set getGroups() {
 
-	public Set getRoles(VOMSGroup g) {
+    SortedSet res = new TreeSet();
+    Iterator mIter = getMappings().iterator();
+    while (mIter.hasNext()) {
 
-		SortedSet res = new TreeSet();
+      VOMSMapping m = (VOMSMapping) mIter.next();
+      if (m.isGroupMapping())
+        res.add(m.getGroup());
+    }
 
-		Iterator mIter = getMappings().iterator();
-		while (mIter.hasNext()) {
+    return Collections.unmodifiableSortedSet(res);
 
-			VOMSMapping m = (VOMSMapping) mIter.next();
-			if (m.isRoleMapping() && m.getGroup().equals(g))
-				res.add(m.getRole());
-		}
+  }
 
-		return Collections.unmodifiableSortedSet(res);
-	}
+  public Set getRoles(VOMSGroup g) {
 
-	public Set getRoleMappings() {
+    SortedSet res = new TreeSet();
 
-		SortedSet res = new TreeSet();
+    Iterator mIter = getMappings().iterator();
+    while (mIter.hasNext()) {
 
-		Iterator mIter = getMappings().iterator();
+      VOMSMapping m = (VOMSMapping) mIter.next();
+      if (m.isRoleMapping() && m.getGroup().equals(g))
+        res.add(m.getRole());
+    }
 
-		while (mIter.hasNext()) {
+    return Collections.unmodifiableSortedSet(res);
+  }
 
-			VOMSMapping m = (VOMSMapping) mIter.next();
-			if (m.isRoleMapping())
-				res.add(m.getFQAN());
-		}
+  public Set getRoleMappings() {
 
-		return res;
-	}
+    SortedSet res = new TreeSet();
 
-	public Map getMappingsMap() {
+    Iterator mIter = getMappings().iterator();
 
-		log.debug("mappings.size(): " + getMappings().size());
-		if (getMappings().size() == 0)
-			return null;
+    while (mIter.hasNext()) {
 
-		Iterator i = getMappings().iterator();
-		Map map = new TreeMap();
+      VOMSMapping m = (VOMSMapping) mIter.next();
+      if (m.isRoleMapping())
+        res.add(m.getFQAN());
+    }
 
-		while (i.hasNext()) {
+    return res;
+  }
 
-			VOMSMapping m = (VOMSMapping) i.next();
-			log.debug("mapping: " + m);
+  public Map getMappingsMap() {
 
-			if (m.isGroupMapping()) {
+    log.debug("mappings.size(): " + getMappings().size());
+    if (getMappings().size() == 0)
+      return null;
 
-				log.debug("Added group mapping to map: " + m.getGroup());
-				map.put(m.getGroup(), new TreeSet());
+    Iterator i = getMappings().iterator();
+    Map map = new TreeMap();
 
-			} else if (m.isRoleMapping()) {
+    while (i.hasNext()) {
 
-				if (!map.containsKey(m.getGroup())) {
+      VOMSMapping m = (VOMSMapping) i.next();
+      log.debug("mapping: " + m);
 
-					Set s = new TreeSet();
-					s.add(m.getRole());
-					map.put(m.getGroup(), s);
+      if (m.isGroupMapping()) {
 
-					log.debug("Added mapping to map: " + m);
+        log.debug("Added group mapping to map: " + m.getGroup());
+        map.put(m.getGroup(), new TreeSet());
 
-				} else {
+      } else if (m.isRoleMapping()) {
 
-					Set s = (Set) map.get(m.getGroup());
-					s.add(m.getRole());
+        if (!map.containsKey(m.getGroup())) {
 
-					// is this necessary?
-					map.put(m.getGroup(), s);
-					log.debug("Added mapping to map:" + m.getRole());
-				}
-			}
-		}
+          Set s = new TreeSet();
+          s.add(m.getRole());
+          map.put(m.getGroup(), s);
 
-		return map;
+          log.debug("Added mapping to map: " + m);
 
-	}
+        } else {
 
-	public void fromUser(User u) {
+          Set s = (Set) map.get(m.getGroup());
+          s.add(m.getRole());
 
-		if (u == null)
-			throw new NullArgumentException("User passed as argument is null!");
+          // is this necessary?
+          map.put(m.getGroup(), s);
+          log.debug("Added mapping to map:" + m.getRole());
+        }
+      }
+    }
 
-		
-		setEmailAddress(u.getMail());
-	}
+    return map;
 
-	public User asUser() {
+  }
 
-		User u = new User();
+  public void fromUser(User u) {
 
-		u.setDN(getDefaultCertificate().getSubjectString());
-		u.setCA(getDefaultCertificate().getCa().getSubjectString());
-		u.setCN(null);
-		u.setMail(getEmailAddress());
-		u.setCertUri(null);
+    if (u == null)
+      throw new NullArgumentException("User passed as argument is null!");
 
-		return u;
-	}
+    setEmailAddress(u.getMail());
+  }
 
-	public static User[] collectionAsUsers(Collection c) {
+  public User asUser() {
 
-		if (c == null || c.isEmpty())
-			return null;
+    User u = new User();
 
-		User[] users = new User[c.size()];
+    u.setDN(getDefaultCertificate().getSubjectString());
+    u.setCA(getDefaultCertificate().getCa().getSubjectString());
+    u.setCN(null);
+    u.setMail(getEmailAddress());
+    u.setCertUri(null);
 
-		int index = 0;
-		Iterator i = c.iterator();
+    return u;
+  }
 
-		while (i.hasNext())
-			users[index++] = ((VOMSUser) i.next()).asUser();
+  public static User[] collectionAsUsers(Collection c) {
 
-		return users;
+    if (c == null || c.isEmpty())
+      return null;
 
-	}
+    User[] users = new User[c.size()];
 
-	public String toString() {
+    int index = 0;
+    Iterator i = c.iterator();
 
-		ToStringBuilder builder = new ToStringBuilder(this);
-		
-		builder.append("id", id).append("defaultCertficate", getDefaultCertificate()).append("name",name).append("surname", surname).append("emailAddress",emailAddress).append("suspended",suspended).append("endTime", endTime);
-		
-		return builder.toString();
-	}
+    while (i.hasNext())
+      users[index++] = ((VOMSUser) i.next()).asUser();
 
-	public boolean equals(Object other) {
+    return users;
 
-		if (this == other)
-			return true;
+  }
 
-		if (other == null)
-			return false;
+  public String toString() {
 
-		if (!(other instanceof VOMSUser))
-			return false;
+    ToStringBuilder builder = new ToStringBuilder(this);
 
-		VOMSUser that = (VOMSUser) other;
+    builder.append("id", id)
+      .append("defaultCertficate", getDefaultCertificate())
+      .append("name", name).append("surname", surname)
+      .append("emailAddress", emailAddress).append("suspended", suspended)
+      .append("endTime", endTime);
 
-		// If name and surname are defined for both parties,
-		// users are considered equal if they have the same:
+    return builder.toString();
+  }
 
-		// 1. name
-		// 2. surname
-		// 3. emailAddress
+  public boolean equals(Object other) {
 
-		// If name or surname aren't defined for a user
-		// the equality check is done on the first certificate.
+    if (this == other)
+      return true;
 
-		// If no certificate is available, the check is done on the
-		// id
+    if (other == null)
+      return false;
 
-		if (getName() != null && getSurname() != null) {
+    if (!(other instanceof VOMSUser))
+      return false;
 
-			if (that.getName() != null && that.getSurname() != null) {
+    VOMSUser that = (VOMSUser) other;
 
-				if (getName().equals(that.getName()))
-					if (getSurname().equals(that.getSurname()))
-						return getEmailAddress().equals(that.getEmailAddress());
+    // If name and surname are defined for both parties,
+    // users are considered equal if they have the same:
 
-				return false;
+    // 1. name
+    // 2. surname
+    // 3. emailAddress
 
-			} else
-				getDefaultCertificate().equals(that.getDefaultCertificate());
+    // If name or surname aren't defined for a user
+    // the equality check is done on the first certificate.
 
-		}
+    // If no certificate is available, the check is done on the
+    // id
 
-		if (getDefaultCertificate() == null) {
+    if (getName() != null && getSurname() != null) {
 
-			if (getId() == null)
-				throw new IllegalStateException(
-						"No information available to compare two users: this="
-								+ this + " , that=" + that);
+      if (that.getName() != null && that.getSurname() != null) {
 
-			return getId().equals(that.getId());
+        if (getName().equals(that.getName()))
+          if (getSurname().equals(that.getSurname()))
+            return getEmailAddress().equals(that.getEmailAddress());
 
-		}
+        return false;
 
-		return getDefaultCertificate().equals(that.getDefaultCertificate());
+      } else
+        getDefaultCertificate().equals(that.getDefaultCertificate());
 
-	}
+    }
 
-	public int hashCode() {
+    if (getDefaultCertificate() == null) {
 
-		HashCodeBuilder builder = new HashCodeBuilder(11, 59);
+      if (getId() == null)
+        throw new IllegalStateException(
+          "No information available to compare two users: this=" + this
+            + " , that=" + that);
 
-		if (getName() != null && getSurname() != null)
-			builder.append(name).append(surname).append(emailAddress);
-		else {
+      return getId().equals(that.getId());
 
-			if (getDefaultCertificate() == null) {
+    }
 
-				if (dn == null)
-					builder.append(id);
-				else
-					builder.append(dn);
+    return getDefaultCertificate().equals(that.getDefaultCertificate());
 
-			} else
-				builder.append(getDefaultCertificate().getSubjectString());
-		}
+  }
 
-		return builder.toHashCode();
-	}
+  public int hashCode() {
 
-	public String getShortName() {
-		
-		if (name == null){
-			if (getDefaultCertificate() == null)
-				return getDn();
-			else
-				return getDefaultCertificate().subjectString + "("+getId()+")";
-		}
-		return String.format("%s %s (%d)", name, surname, id);
-	}
+    HashCodeBuilder builder = new HashCodeBuilder(11, 59);
 
-	public Set<Certificate> getCertificates() {
+    if (getName() != null && getSurname() != null)
+      builder.append(name).append(surname).append(emailAddress);
+    else {
 
-		return certificates;
-	}
+      if (getDefaultCertificate() == null) {
 
-	public void setCertificates(Set<Certificate> certificates) {
+        if (dn == null)
+          builder.append(id);
+        else
+          builder.append(dn);
 
-		this.certificates = certificates;
-	}
+      } else
+        builder.append(getDefaultCertificate().getSubjectString());
+    }
 
-	public void addCertificate(Certificate cert) {
+    return builder.toHashCode();
+  }
 
-		if (hasCertificate(cert))
-			throw new AlreadyExistsException("Certificate '" + cert
-					+ "' is already bound to user '" + this + "'.");
+  public String getShortName() {
 
-		getCertificates().add(cert);
-		cert.setUser(this);
+    if (name == null) {
+      if (getDefaultCertificate() == null)
+        return getDn();
+      else
+        return getDefaultCertificate().subjectString + "(" + getId() + ")";
+    }
+    return String.format("%s %s (%d)", name, surname, id);
+  }
 
-	}
+  public Set<Certificate> getCertificates() {
 
-	public boolean hasCertificate(Certificate cert) {
+    return certificates;
+  }
 
-		for (Certificate c: certificates){
-			
-			if (c.equals(cert))
-				return true;
-		}
-		
-		return false;
-	}
+  public void setCertificates(Set<Certificate> certificates) {
 
-	public Certificate getCertificate(String subject, String issuer){
-	
-		for (Certificate c: certificates){
-			if (c.getSubjectString().equals(subject) &&
-				c.getCa().getSubjectString().equals(issuer))
-				return c;
-		}
-		
-		return null;
-	}
-	
-	public List<Certificate> getCertificatesBySubject(String subject){
-		
-		List<Certificate> result = new ArrayList<Certificate>();
-		
-		for (Certificate c: certificates){
-			
-			if (c.getSubjectString().equals(subject))
-				result.add(c);
-		}
-		
-		return result;
-	}
-	
-	public void removeCertificate(Certificate cert) {
+    this.certificates = certificates;
+  }
 
-		if (!hasCertificate(cert))
-			throw new NotFoundException("Certificate '" + cert
-					+ "' is not bound to user '" + this + "'.");
+  public void addCertificate(Certificate cert) {
 
-		getCertificates().remove(cert);
+    if (hasCertificate(cert))
+      throw new AlreadyExistsException("Certificate '" + cert
+        + "' is already bound to user '" + this + "'.");
 
-	}
+    getCertificates().add(cert);
+    cert.setUser(this);
 
-	public String getAddress() {
+  }
 
-		return address;
-	}
+  public boolean hasCertificate(Certificate cert) {
 
-	public void setAddress(String address) {
+    for (Certificate c : certificates) {
 
-		this.address = address;
-	}
+      if (c.equals(cert))
+        return true;
+    }
 
-	public Date getCreationTime() {
+    return false;
+  }
 
-		return creationTime;
-	}
+  public Certificate getCertificate(String subject, String issuer) {
 
-	public void setCreationTime(Date creationTime) {
+    for (Certificate c : certificates) {
+      if (c.getSubjectString().equals(subject)
+        && c.getCa().getSubjectString().equals(issuer))
+        return c;
+    }
 
-		this.creationTime = creationTime;
-	}
+    return null;
+  }
 
-	
-	public long getDaysBeforeEndTime(){
-		
-		Date now = new Date();
-		
-		if (now.after(getEndTime()))
-			return -1;
-		
-		long timeDiff = getEndTime().getTime() - now.getTime();
-		
-		return TimeUnit.MILLISECONDS.toDays(timeDiff);
-		
-	}
-	
-	public Date getEndTime() {
+  public List<Certificate> getCertificatesBySubject(String subject) {
 
-		return endTime;
-	}
+    List<Certificate> result = new ArrayList<Certificate>();
 
-	public void setEndTime(Date endTime) {
+    for (Certificate c : certificates) {
 
-		this.endTime = endTime;
-	}
+      if (c.getSubjectString().equals(subject))
+        result.add(c);
+    }
 
-	public String getInstitution() {
+    return result;
+  }
 
-		return institution;
-	}
+  public void removeCertificate(Certificate cert) {
 
-	public void setInstitution(String institution) {
+    if (!hasCertificate(cert))
+      throw new NotFoundException("Certificate '" + cert
+        + "' is not bound to user '" + this + "'.");
 
-		this.institution = institution;
-	}
+    getCertificates().remove(cert);
 
-	public String getName() {
+  }
 
-		return name;
-	}
+  public String getAddress() {
 
-	public void setName(String name) {
+    return address;
+  }
 
-		this.name = name;
-	}
+  public void setAddress(String address) {
 
-	public String getPhoneNumber() {
+    this.address = address;
+  }
 
-		return phoneNumber;
-	}
+  public Date getCreationTime() {
 
-	public void setPhoneNumber(String phoneNumber) {
+    return creationTime;
+  }
 
-		this.phoneNumber = phoneNumber;
-	}
+  public void setCreationTime(Date creationTime) {
 
-	public String getSurname() {
+    this.creationTime = creationTime;
+  }
 
-		return surname;
-	}
+  public long getDaysBeforeEndTime() {
 
-	public void setSurname(String surname) {
+    Date now = new Date();
 
-		this.surname = surname;
-	}
+    if (now.after(getEndTime()))
+      return -1;
 
-	public String getFullName() {
+    long timeDiff = getEndTime().getTime() - now.getTime();
 
-		return this.getName() + " " + this.getSurname();
-	}
+    return TimeUnit.MILLISECONDS.toDays(timeDiff);
 
-	public Certificate getDefaultCertificate() {
+  }
 
-		Iterator<Certificate> iter = getCertificates().iterator();
+  public Date getEndTime() {
 
-		if (iter.hasNext())
-			return iter.next();
+    return endTime;
+  }
 
-		return null;
+  public void setEndTime(Date endTime) {
 
-	}
+    this.endTime = endTime;
+  }
 
-	public String getEscapedDn() {
+  public String getInstitution() {
 
-		Certificate cert = getDefaultCertificate();
+    return institution;
+  }
 
-		if (cert == null)
-			return null;
+  public void setInstitution(String institution) {
 
-		return cert.getSubjectString().replaceAll("'", "\\\\'");
+    this.institution = institution;
+  }
 
-	}
+  public String getName() {
 
-	/**
-	 * @return the aupAcceptanceRecords
-	 */
-	public Set<AUPAcceptanceRecord> getAupAcceptanceRecords() {
+    return name;
+  }
 
-		return aupAcceptanceRecords;
-	}
+  public void setName(String name) {
 
-	/**
-	 * @param aupAcceptanceRecords
-	 *            the aupAcceptanceRecords to set
-	 */
-	public void setAupAcceptanceRecords(
-			Set<AUPAcceptanceRecord> aupAcceptanceRecords) {
+    this.name = name;
+  }
 
-		this.aupAcceptanceRecords = aupAcceptanceRecords;
-	}
+  public String getPhoneNumber() {
 
-	public boolean hasSignedAUP(AUPVersion aupVersion) {
+    return phoneNumber;
+  }
 
-		for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
+  public void setPhoneNumber(String phoneNumber) {
 
-			if (r.getAupVersion().equals(aupVersion))
-				return true;
+    this.phoneNumber = phoneNumber;
+  }
 
-		}
+  public String getSurname() {
 
-		return false;
-	}
+    return surname;
+  }
 
-	public AUPAcceptanceRecord getAUPAccceptanceRecord(AUPVersion aupVersion) {
+  public void setSurname(String surname) {
 
-		for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
+    this.surname = surname;
+  }
 
-			if (r.getAupVersion().equals(aupVersion))
-				return r;
-		}
+  public String getFullName() {
 
-		return null;
-	}
+    return this.getName() + " " + this.getSurname();
+  }
 
-	/**
-	 * @return the tasks
-	 */
-	public Set<Task> getTasks() {
+  public Certificate getDefaultCertificate() {
 
-		return tasks;
-	}
+    Iterator<Certificate> iter = getCertificates().iterator();
 
-	/**
-	 * @param tasks
-	 *            the tasks to set
-	 */
-	public void setTasks(Set<Task> tasks) {
+    if (iter.hasNext())
+      return iter.next();
 
-		this.tasks = tasks;
-	}
+    return null;
 
-	@Deprecated
-	public String getDn() {
+  }
 
-		// If the default certificate exists for this user, take the dn from
-		// there...
-		if (getDefaultCertificate() != null) {
-			return getDefaultCertificate().getSubjectString();
-		}
+  public String getEscapedDn() {
 
-		// Compatibility behaviour
-		return dn;
-	}
+    Certificate cert = getDefaultCertificate();
 
-	@Deprecated
-	public VOMSCA getCa() {
+    if (cert == null)
+      return null;
 
-		if (getDefaultCertificate() != null) {
-			return getDefaultCertificate().getCa();
-		}
+    return cert.getSubjectString().replaceAll("'", "\\\\'");
 
-		return ca;
-	}
+  }
 
-	/**
-	 * @return the personalInformations
-	 */
-	public Set<PersonalInformationRecord> getPersonalInformations() {
+  /**
+   * @return the aupAcceptanceRecords
+   */
+  public Set<AUPAcceptanceRecord> getAupAcceptanceRecords() {
 
-		return personalInformations;
-	}
+    return aupAcceptanceRecords;
+  }
 
-	/**
-	 * @param personalInformations
-	 *            the personalInformations to set
-	 */
-	public void setPersonalInformations(
-			Set<PersonalInformationRecord> personalInformations) {
+  /**
+   * @param aupAcceptanceRecords
+   *          the aupAcceptanceRecords to set
+   */
+  public void setAupAcceptanceRecords(
+    Set<AUPAcceptanceRecord> aupAcceptanceRecords) {
 
-		this.personalInformations = personalInformations;
-	}
+    this.aupAcceptanceRecords = aupAcceptanceRecords;
+  }
 
-	public void setDn(String dn) {
-		this.dn = dn;
-	}
+  public boolean hasSignedAUP(AUPVersion aupVersion) {
 
-	public void setCa(VOMSCA ca) {
-		this.ca = ca;
-	}
+    for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
 
-	public void assignTask(Task t) {
+      if (r.getAupVersion().equals(aupVersion))
+        return true;
 
-		if (!getTasks().contains(t)) {
+    }
 
-			getTasks().add(t);
-			t.setUser(this);
+    return false;
+  }
 
-		}
-	}
+  public AUPAcceptanceRecord getAUPAccceptanceRecord(AUPVersion aupVersion) {
 
-	public Task removeTask(Task t) {
+    for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
 
-		if (getTasks().contains(t)) {
-			getTasks().remove(t);
-			t.setUser(null);
+      if (r.getAupVersion().equals(aupVersion))
+        return r;
+    }
 
-			return t;
-		}
+    return null;
+  }
 
-		return null;
+  /**
+   * @return the tasks
+   */
+  public Set<Task> getTasks() {
 
-	}
-	
-	public boolean hasInvalidAUPAcceptanceRecordForAUP(AUP aup){
-		
-		if (getAupAcceptanceRecords().isEmpty())
-			return false;
-		
-		for (AUPAcceptanceRecord r: getAupAcceptanceRecords()){
-			if (r.getAupVersion().equals(aup.getActiveVersion()) && !r.getValid())
-				return true;
-			
-		}
-		return false;
-	}
-	
-	public boolean hasInvalidAUPAcceptanceRecord(){
-		
-		if (getAupAcceptanceRecords().isEmpty())
-			return false;
-		
-		for (AUPAcceptanceRecord r: getAupAcceptanceRecords())
-			if (!r.getValid())
-				return true;
-		
-		return false;
-	}
+    return tasks;
+  }
 
-	public boolean hasPendingSignAUPTasks() {
-		if (getTasks().isEmpty())
-			return false;
+  /**
+   * @param tasks
+   *          the tasks to set
+   */
+  public void setTasks(Set<Task> tasks) {
 
-		for (Task t : getTasks())
-			if (t instanceof SignAUPTask) {
-				SignAUPTask aupTask = (SignAUPTask) t;
+    this.tasks = tasks;
+  }
 
-				if (!aupTask.getStatus().equals(TaskStatus.COMPLETED))
-					return true;
-			}
+  @Deprecated
+  public String getDn() {
 
-		return false;
-	}
+    // If the default certificate exists for this user, take the dn from
+    // there...
+    if (getDefaultCertificate() != null) {
+      return getDefaultCertificate().getSubjectString();
+    }
 
-	public boolean hasPendingSignAUPTask(AUP aup) {
+    // Compatibility behaviour
+    return dn;
+  }
 
-		if (getTasks().isEmpty())
-			return false;
+  @Deprecated
+  public VOMSCA getCa() {
 
-		for (Task t : getTasks())
-			if (t instanceof SignAUPTask) {
-				SignAUPTask aupTask = (SignAUPTask) t;
-				log.debug("aupTask: " + aupTask);
-				if (aupTask.getAup().equals(aup)
-						&& (!aupTask.getStatus().equals(TaskStatus.COMPLETED))) {
-					log.debug("Found pending aup task: " + aupTask);
-					return true;
-				}
-			}
-		return false;
+    if (getDefaultCertificate() != null) {
+      return getDefaultCertificate().getCa();
+    }
 
-	}
-	
-	public SignAUPTask getPendingSignAUPTask(AUP aup) {
+    return ca;
+  }
 
-		if (getTasks().isEmpty())
-			return null;
+  /**
+   * @return the personalInformations
+   */
+  public Set<PersonalInformationRecord> getPersonalInformations() {
 
-		for (Task t : getTasks()) {
+    return personalInformations;
+  }
 
-			if (t instanceof SignAUPTask) {
+  /**
+   * @param personalInformations
+   *          the personalInformations to set
+   */
+  public void setPersonalInformations(
+    Set<PersonalInformationRecord> personalInformations) {
 
-				SignAUPTask aupTask = (SignAUPTask) t;
-				if (aupTask.getAup().equals(aup)
-						&& !aupTask.getStatus().equals(TaskStatus.COMPLETED))
-					return aupTask;
-			}
-		}
+    this.personalInformations = personalInformations;
+  }
 
-		return null;
+  public void setDn(String dn) {
 
-	}
+    this.dn = dn;
+  }
 
-	public void suspend(SuspensionReason reason) {
+  public void setCa(VOMSCA ca) {
 
-		setSuspended(true);
-		setSuspensionReasonCode(reason);
-		setSuspensionReason(reason.getMessage());
+    this.ca = ca;
+  }
 
-		for (Certificate c : getCertificates()) {
+  public void assignTask(Task t) {
 
-			// Only suspend certificates that are not already suspended
-			// possibly for another reason.
-			if (!c.isSuspended())
-				c.suspend(reason);
-		}
+    if (!getTasks().contains(t)) {
 
-	}
+      getTasks().add(t);
+      t.setUser(this);
 
-	/**
-	 * Restores membership and certificates that where suspended for the reason
-	 * passed as argument
-	 * 
-	 * @param reason
-	 */
-	public void restore(SuspensionReason reason) {
-		setSuspended(false);
-		setSuspensionReason(null);
+    }
+  }
 
-		for (Certificate c : getCertificates())
-			c.restore(reason);
-	}
+  public Task removeTask(Task t) {
 
-	public void restore() {
-		setSuspended(false);
-		
-		setSuspensionReason(null);
-		setSuspensionReasonCode(null);
+    if (getTasks().contains(t)) {
+      getTasks().remove(t);
+      t.setUser(null);
 
-		for (Certificate c : getCertificates())
-			c.restore();
+      return t;
+    }
 
-	}
+    return null;
 
-	public boolean isSuspended() {
+  }
 
-		return (suspended == null ? false : suspended);
+  public boolean hasInvalidAUPAcceptanceRecordForAUP(AUP aup) {
 
-	}
+    if (getAupAcceptanceRecords().isEmpty())
+      return false;
 
-	public Boolean getSuspended() {
-		return suspended;
-	}
+    for (AUPAcceptanceRecord r : getAupAcceptanceRecords()) {
+      if (r.getAupVersion().equals(aup.getActiveVersion()) && !r.getValid())
+        return true;
 
-	public void setSuspended(Boolean suspended) {
-		this.suspended = suspended;
-	}
+    }
+    return false;
+  }
 
-	public SuspensionReason getSuspensionReasonCode() {
-		return suspensionReasonCode;
-	}
+  public boolean hasInvalidAUPAcceptanceRecord() {
 
-	public void setSuspensionReasonCode(SuspensionReason suspensionReasonCode) {
-		this.suspensionReasonCode = suspensionReasonCode;
-	}
+    if (getAupAcceptanceRecords().isEmpty())
+      return false;
 
-	public String getSuspensionReason() {
-		return suspensionReason;
-	}
+    for (AUPAcceptanceRecord r : getAupAcceptanceRecords())
+      if (!r.getValid())
+        return true;
 
-	public void setSuspensionReason(String suspensionReason) {
-		this.suspensionReason = suspensionReason;
-	}
+    return false;
+  }
 
-	public boolean hasSuspendedCertificates() {
+  public boolean hasPendingSignAUPTasks() {
 
-		for (Certificate c : certificates)
-			if (c.isSuspended())
-				return true;
+    if (getTasks().isEmpty())
+      return false;
 
-		return false;
-	}
-	
-	public boolean hasExpired(){
-		
-		return endTime.before(new Date());
-	}
-	
-	public long getDaysSinceExpiration(){
-		
-		if (hasExpired()){
-			
-			Date now = new Date();
-			long timediff = now.getTime() - getEndTime().getTime();
-			
-			return TimeUnit.MILLISECONDS.toDays(timediff);
-		}
-		
-		return -1L;
-	}
+    for (Task t : getTasks())
+      if (t instanceof SignAUPTask) {
+        SignAUPTask aupTask = (SignAUPTask) t;
 
-	
-	public static VOMSUser fromVOMSUserJSON(VOMSUserJSON user){
-		
-		VOMSUser u = new VOMSUser();
-		
-		u.setName(user.getName());
-		u.setSurname(user.getSurname());
-		u.setAddress(user.getAddress());
-		u.setInstitution(user.getInstitution());
-		u.setPhoneNumber(user.getPhoneNumber());
-		u.setEmailAddress(user.getEmailAddress());
-		
-		return u;
-		
-	}
-	
-	public static VOMSUser fromRequesterInfo(RequesterInfo ri) {
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED))
+          return true;
+      }
 
-		VOMSUser u = new VOMSUser();
+    return false;
+  }
 
-		u.setDn(ri.getCertificateSubject());
-		
-		u.setName(ri.getName());
-		u.setSurname(ri.getSurname());
-		u.setAddress(ri.getAddress());
-		u.setInstitution(ri.getInstitution());
-		u.setPhoneNumber(ri.getPhoneNumber());
-		u.setEmailAddress(ri.getEmailAddress());
+  public boolean hasPendingSignAUPTask(AUP aup) {
 
-		return u;
-	}
+    if (getTasks().isEmpty())
+      return false;
 
-	@Override
-	public int compareTo(VOMSUser that) {
+    for (Task t : getTasks())
+      if (t instanceof SignAUPTask) {
+        SignAUPTask aupTask = (SignAUPTask) t;
+        log.debug("aupTask: " + aupTask);
+        if (aupTask.getAup().equals(aup)
+          && (!aupTask.getStatus().equals(TaskStatus.COMPLETED))) {
+          log.debug("Found pending aup task: " + aupTask);
+          return true;
+        }
+      }
+    return false;
 
-		if (that == null)
-			return 1;
+  }
 
-		if (getName() != null && getSurname() != null) {
+  public SignAUPTask getPendingSignAUPTask(AUP aup) {
 
-			if (that.getName() != null && that.getSurname() != null) {
+    if (getTasks().isEmpty())
+      return null;
 
-				// Both users have name and surname defined,
-				// order by surname and then by name
-				if (getSurname().equals(that.getSurname()))
-					return getName().compareTo(that.getName());
-				else
-					return getSurname().compareTo(that.getSurname());
+    for (Task t : getTasks()) {
 
-			} else
-				// One user has name or surname undefined, compare certificates
-				return getDefaultCertificate().compareTo(
-						that.getDefaultCertificate());
-		}
+      if (t instanceof SignAUPTask) {
 
-		if (getDefaultCertificate() != null)
-			// Both users have name and surname undefined, compare certificates
-			return getDefaultCertificate().compareTo(
-					that.getDefaultCertificate());
+        SignAUPTask aupTask = (SignAUPTask) t;
+        if (aupTask.getAup().equals(aup)
+          && !aupTask.getStatus().equals(TaskStatus.COMPLETED))
+          return aupTask;
+      }
+    }
 
-		return -1;
-		
-	}
+    return null;
+
+  }
+
+  public void suspend(SuspensionReason reason) {
+
+    setSuspended(true);
+    setSuspensionReasonCode(reason);
+    setSuspensionReason(reason.getMessage());
+
+    for (Certificate c : getCertificates()) {
+
+      // Only suspend certificates that are not already suspended
+      // possibly for another reason.
+      if (!c.isSuspended())
+        c.suspend(reason);
+    }
+
+  }
+
+  /**
+   * Restores membership and certificates that where suspended for the reason
+   * passed as argument
+   * 
+   * @param reason
+   */
+  public void restore(SuspensionReason reason) {
+
+    setSuspended(false);
+    setSuspensionReason(null);
+
+    for (Certificate c : getCertificates())
+      c.restore(reason);
+  }
+
+  public void restore() {
+
+    setSuspended(false);
+
+    setSuspensionReason(null);
+    setSuspensionReasonCode(null);
+
+    for (Certificate c : getCertificates())
+      c.restore();
+
+  }
+
+  public boolean isSuspended() {
+
+    return (suspended == null ? false : suspended);
+
+  }
+
+  public Boolean getSuspended() {
+
+    return suspended;
+  }
+
+  public void setSuspended(Boolean suspended) {
+
+    this.suspended = suspended;
+  }
+
+  public SuspensionReason getSuspensionReasonCode() {
+
+    return suspensionReasonCode;
+  }
+
+  public void setSuspensionReasonCode(SuspensionReason suspensionReasonCode) {
+
+    this.suspensionReasonCode = suspensionReasonCode;
+  }
+
+  public String getSuspensionReason() {
+
+    return suspensionReason;
+  }
+
+  public void setSuspensionReason(String suspensionReason) {
+
+    this.suspensionReason = suspensionReason;
+  }
+
+  public boolean hasSuspendedCertificates() {
+
+    for (Certificate c : certificates)
+      if (c.isSuspended())
+        return true;
+
+    return false;
+  }
+
+  public boolean hasExpired() {
+
+    return endTime.before(new Date());
+  }
+
+  public long getDaysSinceExpiration() {
+
+    if (hasExpired()) {
+
+      Date now = new Date();
+      long timediff = now.getTime() - getEndTime().getTime();
+
+      return TimeUnit.MILLISECONDS.toDays(timediff);
+    }
+
+    return -1L;
+  }
+
+  public static VOMSUser fromVOMSUserJSON(VOMSUserJSON user) {
+
+    VOMSUser u = new VOMSUser();
+
+    u.setName(user.getName());
+    u.setSurname(user.getSurname());
+    u.setAddress(user.getAddress());
+    u.setInstitution(user.getInstitution());
+    u.setPhoneNumber(user.getPhoneNumber());
+    u.setEmailAddress(user.getEmailAddress());
+
+    return u;
+
+  }
+
+  public static VOMSUser fromRequesterInfo(RequesterInfo ri) {
+
+    VOMSUser u = new VOMSUser();
+
+    u.setDn(ri.getCertificateSubject());
+
+    u.setName(ri.getName());
+    u.setSurname(ri.getSurname());
+    u.setAddress(ri.getAddress());
+    u.setInstitution(ri.getInstitution());
+    u.setPhoneNumber(ri.getPhoneNumber());
+    u.setEmailAddress(ri.getEmailAddress());
+
+    return u;
+  }
+
+  @Override
+  public int compareTo(VOMSUser that) {
+
+    if (that == null)
+      return 1;
+
+    if (getName() != null && getSurname() != null) {
+
+      if (that.getName() != null && that.getSurname() != null) {
+
+        // Both users have name and surname defined,
+        // order by surname and then by name
+        if (getSurname().equals(that.getSurname()))
+          return getName().compareTo(that.getName());
+        else
+          return getSurname().compareTo(that.getSurname());
+
+      } else
+        // One user has name or surname undefined, compare certificates
+        return getDefaultCertificate().compareTo(that.getDefaultCertificate());
+    }
+
+    if (getDefaultCertificate() != null)
+      // Both users have name and surname undefined, compare certificates
+      return getDefaultCertificate().compareTo(that.getDefaultCertificate());
+
+    return -1;
+
+  }
 }

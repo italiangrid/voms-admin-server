@@ -28,37 +28,36 @@ import org.glite.security.voms.admin.operations.requests.DeleteVOMembershipReque
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="pendingRequests.jsp")
-})
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "pendingRequests.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class DropRequestAction extends RequestActionSupport {
 
-	
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public void validate() {
-		
-		if (!(request instanceof NewVOMembershipRequest))
-			addActionError("Only VO membership request can be dropped with this action");
-		
-	}
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
-		
-		DeleteVOMembershipRequestOperation op = new DeleteVOMembershipRequestOperation((NewVOMembershipRequest)request);
-		op.execute();
-		addActionMessage("Request dropped!");
-		refreshPendingRequests();
-		return SUCCESS;
-	}
+  @Override
+  public void validate() {
+
+    if (!(request instanceof NewVOMembershipRequest))
+      addActionError("Only VO membership request can be dropped with this action");
+
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    DeleteVOMembershipRequestOperation op = new DeleteVOMembershipRequestOperation(
+      (NewVOMembershipRequest) request);
+    op.execute();
+    addActionMessage("Request dropped!");
+    refreshPendingRequests();
+    return SUCCESS;
+  }
 }

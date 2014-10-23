@@ -33,79 +33,82 @@ import org.glite.security.voms.service.compatibility.VOMSCompatibility;
 
 public class VomsCompatibilityService implements VOMSCompatibility {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(VomsCompatibilityService.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(VomsCompatibilityService.class);
 
-	public int getMajorVersionNumber() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 2;
-	}
+  public int getMajorVersionNumber() throws RemoteException {
 
-	public int getMinorVersionNumber() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    // TODO Auto-generated method stub
+    return 2;
+  }
 
-	public int getPatchVersionNumber() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+  public int getMinorVersionNumber() throws RemoteException {
 
-	public String[] getGridmapUsers() throws RemoteException, VOMSException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
 
-		log.info("getGridmapUsers();");
+  public int getPatchVersionNumber() throws RemoteException {
 
-		try {
+    // TODO Auto-generated method stub
+    return 0;
+  }
 
-			String voName = VOMSConfiguration.instance().getVOName();
-			List members = (List) ListMemberNamesOperation.instance(
-					"/" + voName).execute();
+  public String[] getGridmapUsers() throws RemoteException, VOMSException {
 
-			if (VOMSConfiguration.instance().getBoolean(
-					"voms.mkgridmap.translate_dn_email_format", false))
-				members = ServiceUtils.decorateDNList((List<String>) members);
+    log.info("getGridmapUsers();");
 
-			return ServiceUtils.toStringArray(members);
+    try {
 
-		} catch (RuntimeException e) {
+      String voName = VOMSConfiguration.instance().getVOName();
+      List members = (List) ListMemberNamesOperation.instance("/" + voName)
+        .execute();
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
+      if (VOMSConfiguration.instance().getBoolean(
+        "voms.mkgridmap.translate_dn_email_format", false))
+        members = ServiceUtils.decorateDNList((List<String>) members);
 
-	}
+      return ServiceUtils.toStringArray(members);
 
-	public String[] getGridmapUsers(String container) throws RemoteException,
-			VOMSException {
+    } catch (RuntimeException e) {
 
-		log.info("getGridmapUsers(" + container + ");");
-		try {
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
 
-			List members = (List) ListMemberNamesOperation.instance(container)
-					.execute();
+  }
 
-			if (VOMSConfiguration.instance().getBoolean(
-					"voms.mkgridmap.translate_dn_email_format", false))
-				members = ServiceUtils.decorateDNList((List<String>) members);
+  public String[] getGridmapUsers(String container) throws RemoteException,
+    VOMSException {
 
-			return ServiceUtils.toStringArray(members);
+    log.info("getGridmapUsers(" + container + ");");
+    try {
 
-		} catch (NoSuchRoleException e){ 
-		    
-		    log.warn("Role '{}' is not defined for this VO.", container);
-		    return null;
-		
-		} catch (NoSuchGroupException e){
-		    
-		    log.warn("Group '{}' is not defined for this VO.", container);
-		    return null;
-		
-		}catch (RuntimeException e) {
+      List members = (List) ListMemberNamesOperation.instance(container)
+        .execute();
 
-			ServiceExceptionHelper.handleServiceException(log, e);
-			throw e;
-		}
+      if (VOMSConfiguration.instance().getBoolean(
+        "voms.mkgridmap.translate_dn_email_format", false))
+        members = ServiceUtils.decorateDNList((List<String>) members);
 
-	}
+      return ServiceUtils.toStringArray(members);
+
+    } catch (NoSuchRoleException e) {
+
+      log.warn("Role '{}' is not defined for this VO.", container);
+      return null;
+
+    } catch (NoSuchGroupException e) {
+
+      log.warn("Group '{}' is not defined for this VO.", container);
+      return null;
+
+    } catch (RuntimeException e) {
+
+      ServiceExceptionHelper.handleServiceException(log, e);
+      throw e;
+    }
+
+  }
 
 }

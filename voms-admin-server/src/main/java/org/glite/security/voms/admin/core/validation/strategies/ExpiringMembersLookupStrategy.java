@@ -26,6 +26,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface ExpiringMembersLookupStrategy {
 
-	public List<VOMSUser> findExpiringMembers();
-	
+  public List<VOMSUser> findExpiringMembers();
+
 }

@@ -26,8 +26,8 @@ import org.glite.security.voms.admin.persistence.model.task.Task;
 
 public interface TaskLogRecordDAO extends GenericDAO<LogRecord, Long> {
 
-	public List<LogRecord> findForTask(Task t);
+  public List<LogRecord> findForTask(Task t);
 
-	public void deleteForTask(Task t);
+  public void deleteForTask(Task t);
 
 }

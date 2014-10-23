@@ -26,27 +26,27 @@ import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.RestoreUserCertificateOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "certificates.jsp")
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
-    	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="certificates.jsp")
-		
 })
-		
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class RestoreCertificateAction extends CertificateActionSupport {
 
-    /**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
-    
-    @Override
-    public String execute() throws Exception {
-	
-	RestoreUserCertificateOperation.instance(certificate).execute();
-	return SUCCESS;
-        
-    }
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public String execute() throws Exception {
+
+    RestoreUserCertificateOperation.instance(certificate).execute();
+    return SUCCESS;
+
+  }
 
 }

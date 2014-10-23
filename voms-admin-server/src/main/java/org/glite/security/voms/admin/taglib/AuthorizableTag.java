@@ -23,5 +23,5 @@ import java.util.Map;
 
 public interface AuthorizableTag {
 
-	public Map getPermissionMap();
+  public Map getPermissionMap();
 }

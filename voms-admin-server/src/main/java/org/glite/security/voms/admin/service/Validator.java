@@ -25,36 +25,37 @@ import org.glite.security.voms.User;
 
 public class Validator {
 
-	public static final String VALID_INPUT_PATTERN = "^[^<>&=]*$";
-	public static final String VALID_DN_PATTERN = "^[^<>&]*$";
+  public static final String VALID_INPUT_PATTERN = "^[^<>&=]*$";
+  public static final String VALID_DN_PATTERN = "^[^<>&]*$";
 
-	public static final Pattern inputPattern = Pattern
-			.compile(VALID_INPUT_PATTERN);
-	public static final Pattern dnPattern = Pattern.compile(VALID_DN_PATTERN);
+  public static final Pattern inputPattern = Pattern
+    .compile(VALID_INPUT_PATTERN);
+  public static final Pattern dnPattern = Pattern.compile(VALID_DN_PATTERN);
 
-	public static void validateInputString(String inputString,
-			String errorMessage) {
-		assert inputString != null : "Cannot validate a null input string!";
+  public static void validateInputString(String inputString, String errorMessage) {
 
-		if (!inputPattern.matcher(inputString).matches())
-			throw new IllegalArgumentException(errorMessage);
+    assert inputString != null : "Cannot validate a null input string!";
 
-	}
+    if (!inputPattern.matcher(inputString).matches())
+      throw new IllegalArgumentException(errorMessage);
 
-	public static void validateDN(String dnString, String errorMessage) {
-		assert dnString != null : "Cannot validate a null input string!";
+  }
 
-		if (!dnPattern.matcher(dnString).matches())
-			throw new IllegalArgumentException(errorMessage);
+  public static void validateDN(String dnString, String errorMessage) {
 
-	}
+    assert dnString != null : "Cannot validate a null input string!";
 
-	public static void validateUser(User u) {
+    if (!dnPattern.matcher(dnString).matches())
+      throw new IllegalArgumentException(errorMessage);
 
-		validateDN(u.getDN(), "Invalid characters in user's DN!");
-		if (u.getCN() != null)
-			validateDN(u.getCN(), "Invalid characters in user's CN!");
-		if (u.getMail() != null)
-			validateDN(u.getMail(), "Invalid characters in user's EMAIL!");
-	}
+  }
+
+  public static void validateUser(User u) {
+
+    validateDN(u.getDN(), "Invalid characters in user's DN!");
+    if (u.getCN() != null)
+      validateDN(u.getCN(), "Invalid characters in user's CN!");
+    if (u.getMail() != null)
+      validateDN(u.getMail(), "Invalid characters in user's EMAIL!");
+  }
 }

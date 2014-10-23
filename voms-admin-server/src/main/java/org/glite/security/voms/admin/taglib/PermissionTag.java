@@ -27,49 +27,53 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class PermissionTag extends TagSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String context;
+  String context;
 
-	String permission;
+  String permission;
 
-	public String getContext() {
-		return context;
-	}
+  public String getContext() {
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+    return context;
+  }
 
-	public String getPermission() {
-		return permission;
-	}
+  public void setContext(String context) {
 
-	public void setPermission(String permissions) {
-		this.permission = permissions;
-	}
+    this.context = context;
+  }
 
-	public int doStartTag() throws JspException {
+  public String getPermission() {
 
-		AuthorizableTag parentTag = (AuthorizableTag) getParent();
+    return permission;
+  }
 
-		if (parentTag == null)
-			throw new JspTagException(
-					"The permission tag may be used only in the context of the link, authorized, or submit tags!");
+  public void setPermission(String permissions) {
 
-		Map m = parentTag.getPermissionMap();
+    this.permission = permissions;
+  }
 
-		if (m == null)
-			throw new JspTagException(
-					"Permission map not initialized in parent element!");
+  public int doStartTag() throws JspException {
 
-		m.put(context, permission);
+    AuthorizableTag parentTag = (AuthorizableTag) getParent();
 
-		return SKIP_BODY;
+    if (parentTag == null)
+      throw new JspTagException(
+        "The permission tag may be used only in the context of the link, authorized, or submit tags!");
 
-	}
+    Map m = parentTag.getPermissionMap();
+
+    if (m == null)
+      throw new JspTagException(
+        "Permission map not initialized in parent element!");
+
+    m.put(context, permission);
+
+    return SKIP_BODY;
+
+  }
 
 }

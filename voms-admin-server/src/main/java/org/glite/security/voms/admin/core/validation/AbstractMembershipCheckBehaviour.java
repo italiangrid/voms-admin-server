@@ -28,56 +28,87 @@ import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMem
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMembersStrategy;
 
 public abstract class AbstractMembershipCheckBehaviour implements
-		AUPFailingMembersLookupStrategy, ExpiredMembersLookupStrategy,
-		ExpiringMembersLookupStrategy, HandleAUPFailingMembersStrategy,
-		HandleExpiredMembersStrategy, HandleExpiringMembersStrategy, MembershipValidationContext {
+  AUPFailingMembersLookupStrategy, ExpiredMembersLookupStrategy,
+  ExpiringMembersLookupStrategy, HandleAUPFailingMembersStrategy,
+  HandleExpiredMembersStrategy, HandleExpiringMembersStrategy,
+  MembershipValidationContext {
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getAupFailingMembersLookupStrategy()
-	 */
-	public AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getAupFailingMembersLookupStrategy()
+   */
+  public AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy() {
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiredMembersLookupStrategy()
-	 */
-	public ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+    // TODO Auto-generated method stub
+    return this;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getExpiringMembersLookupStrategy()
-	 */
-	public ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getExpiredMembersLookupStrategy()
+   */
+  public ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy() {
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleAUPFailingMembersStrategy()
-	 */
-	public HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+    // TODO Auto-generated method stub
+    return this;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiredMembersStrategy()
-	 */
-	public HandleExpiredMembersStrategy getHandleExpiredMembersStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getExpiringMembersLookupStrategy()
+   */
+  public ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy() {
 
-	/* (non-Javadoc)
-	 * @see org.glite.security.voms.admin.core.validation.MembershipValidationContext#getHandleExpiringMembersStrategy()
-	 */
-	public HandleExpiringMembersStrategy getHandleExpiringMembersStrategy() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getHandleAUPFailingMembersStrategy()
+   */
+  public HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy() {
+
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getHandleExpiredMembersStrategy()
+   */
+  public HandleExpiredMembersStrategy getHandleExpiredMembersStrategy() {
+
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.glite.security.voms.admin.core.validation.MembershipValidationContext
+   * #getHandleExpiringMembersStrategy()
+   */
+  public HandleExpiringMembersStrategy getHandleExpiringMembersStrategy() {
+
+    // TODO Auto-generated method stub
+    return this;
+  }
 
 }

@@ -35,44 +35,48 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @ParentPackage("json")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
-public class SuspendUserAction extends RestUserAction{
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
+public class SuspendUserAction extends RestUserAction {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	String suspensionReason;
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		SuspensionReason r = SuspensionReason.OTHER;
-		r.setMessage(getSuspensionReason());
+  private static final long serialVersionUID = 1L;
 
-		SuspendUserOperation.instance(getModel(), r).execute();
-		
-		addActionMessage(String.format("User %s is now suspended", getModel().getShortName()));
-		return SUCCESS;
-	}
+  String suspensionReason;
 
+  @Override
+  public String execute() throws Exception {
 
-	@RequiredStringValidator(type=ValidatorType.FIELD, message="Please provide a reason for the suspension.")
-	@RegexFieldValidator(type=ValidatorType.FIELD, message = "The reason contains illegal characters!", expression = "^[^<>&;]*$")
-	public String getSuspensionReason() {
-		return suspensionReason;
-	}
+    SuspensionReason r = SuspensionReason.OTHER;
+    r.setMessage(getSuspensionReason());
 
+    SuspendUserOperation.instance(getModel(), r).execute();
 
-	public void setSuspensionReason(String suspensionReason) {
-		this.suspensionReason = suspensionReason;
-	}
-	
-	@JSON(serialize=true)
-	@Override
-	public Collection<String> getActionMessages() {
-		return super.getActionMessages();
-	}
+    addActionMessage(String.format("User %s is now suspended", getModel()
+      .getShortName()));
+    return SUCCESS;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a reason for the suspension.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The reason contains illegal characters!",
+    expression = "^[^<>&;]*$")
+  public String getSuspensionReason() {
+
+    return suspensionReason;
+  }
+
+  public void setSuspensionReason(String suspensionReason) {
+
+    this.suspensionReason = suspensionReason;
+  }
+
+  @JSON(serialize = true)
+  @Override
+  public Collection<String> getActionMessages() {
+
+    return super.getActionMessages();
+  }
 }

@@ -33,80 +33,89 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
-		@Result(name = BaseAction.INPUT, location = "attributes.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="attributes.jsp")		
-})
-
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "setAttribute,deleteAttribute" })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
+  @Result(name = BaseAction.INPUT, location = "attributes.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "attributes.jsp") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "setAttribute,deleteAttribute" })
 public class AttributeActions extends RoleActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long groupId = -1L;
+  Long groupId = -1L;
 
-	String attributeName;
+  String attributeName;
 
-	String attributeValue;
+  String attributeValue;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	public String getAttributeName() {
-		return attributeName;
-	}
+  public String getAttributeName() {
 
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
-	}
+    return attributeName;
+  }
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "This field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getAttributeValue() {
-		return attributeValue;
-	}
+  public void setAttributeName(String attributeName) {
 
-	public void setAttributeValue(String attributeValue) {
-		this.attributeValue = attributeValue;
-	}
+    this.attributeName = attributeName;
+  }
 
-	@Action("set-attribute")
-	public String setAttribute() throws Exception {
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "This field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getAttributeValue() {
 
-		SetRoleAttributeOperation.instance(getGroup(), getModel(),
-				getAttributeName(), getAttributeValue()).execute();
+    return attributeValue;
+  }
 
-		return SUCCESS;
-	}
+  public void setAttributeValue(String attributeValue) {
 
-	@Action("delete-attribute")
-	public String deleteAttribute() throws Exception {
+    this.attributeValue = attributeValue;
+  }
 
-		DeleteRoleAttributeOperation.instance(getGroup(), getModel(),
-				getAttributeName()).execute();
-		return SUCCESS;
-	}
+  @Action("set-attribute")
+  public String setAttribute() throws Exception {
 
-	@Override
-	public void prepare() throws Exception {
+    SetRoleAttributeOperation.instance(getGroup(), getModel(),
+      getAttributeName(), getAttributeValue()).execute();
 
-		super.prepare();
+    return SUCCESS;
+  }
 
-		group = groupById(groupId);
-	}
+  @Action("delete-attribute")
+  public String deleteAttribute() throws Exception {
 
-	public Long getGroupId() {
-		return groupId;
-	}
+    DeleteRoleAttributeOperation.instance(getGroup(), getModel(),
+      getAttributeName()).execute();
+    return SUCCESS;
+  }
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+  @Override
+  public void prepare() throws Exception {
 
-	public VOMSGroup getGroup() {
-		return group;
-	}
+    super.prepare();
+
+    group = groupById(groupId);
+  }
+
+  public Long getGroupId() {
+
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
+
+  public VOMSGroup getGroup() {
+
+    return group;
+  }
 
 }

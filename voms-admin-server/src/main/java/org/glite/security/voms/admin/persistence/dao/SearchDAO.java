@@ -21,62 +21,65 @@ package org.glite.security.voms.admin.persistence.dao;
 
 public class SearchDAO {
 
-	public String query;
-	public String allObjectsQuery;
-	public String countQuery;
-	public String allObjectsCountQuery;
+  public String query;
+  public String allObjectsQuery;
+  public String countQuery;
+  public String allObjectsCountQuery;
 
-	public String getAllObjectsCountQuery() {
+  public String getAllObjectsCountQuery() {
 
-		return allObjectsCountQuery;
-	}
+    return allObjectsCountQuery;
+  }
 
-	public void setAllObjectsCountQuery(String allObjectsCountQuery) {
+  public void setAllObjectsCountQuery(String allObjectsCountQuery) {
 
-		this.allObjectsCountQuery = allObjectsCountQuery;
-	}
+    this.allObjectsCountQuery = allObjectsCountQuery;
+  }
 
-	public String getAllObjectsQuery() {
+  public String getAllObjectsQuery() {
 
-		return allObjectsQuery;
-	}
+    return allObjectsQuery;
+  }
 
-	public void setAllObjectsQuery(String allObjectsQuery) {
+  public void setAllObjectsQuery(String allObjectsQuery) {
 
-		this.allObjectsQuery = allObjectsQuery;
-	}
+    this.allObjectsQuery = allObjectsQuery;
+  }
 
-	public String getCountQuery() {
+  public String getCountQuery() {
 
-		return countQuery;
-	}
+    return countQuery;
+  }
 
-	public void setCountQuery(String countQuery) {
+  public void setCountQuery(String countQuery) {
 
-		this.countQuery = countQuery;
-	}
+    this.countQuery = countQuery;
+  }
 
-	public String getQuery() {
+  public String getQuery() {
 
-		return query;
-	}
+    return query;
+  }
 
-	public void setQuery(String query) {
+  public void setQuery(String query) {
 
-		this.query = query;
-	}
+    this.query = query;
+  }
 
-	public SearchResults getAll() {
-		return null;
+  public SearchResults getAll() {
 
-	}
+    return null;
 
-	public SearchResults getAll(int firstResult, int maxResults) {
-		return null;
-	}
+  }
 
-	public SearchResults search(String searchParameter, int firstResult,
-			int maxResults) {
-		return null;
-	}
+  public SearchResults getAll(int firstResult, int maxResults) {
+
+    return null;
+  }
+
+  public SearchResults search(String searchParameter, int firstResult,
+    int maxResults) {
+
+    return null;
+  }
 }

@@ -32,106 +32,105 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class FormatDNTag extends TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String fields;
+  String fields;
 
-	String dn;
+  String dn;
 
-	/**
-	 * FIXME: Should allow for more characters inside the fields, to be standard
-	 * compliant
-	 **/
-	private static final String regexTemplate = "=((?:(?:\\/(?!DN|DC|STREET|O|OU|CN|C|L|E|Email|emailAddress|UID|uid))?\\w?:?;?'?\"?`?\\s?\\.?@?-?\\p{L}?\\(?\\)?,?)*)";
+  /**
+   * FIXME: Should allow for more characters inside the fields, to be standard
+   * compliant
+   **/
+  private static final String regexTemplate = "=((?:(?:\\/(?!DN|DC|STREET|O|OU|CN|C|L|E|Email|emailAddress|UID|uid))?\\w?:?;?'?\"?`?\\s?\\.?@?-?\\p{L}?\\(?\\)?,?)*)";
 
-	private void write(String s) throws JspTagException {
+  private void write(String s) throws JspTagException {
 
-		JspWriter out = pageContext.getOut();
-		try {
-			out.print(s);
-		} catch (IOException e) {
+    JspWriter out = pageContext.getOut();
+    try {
+      out.print(s);
+    } catch (IOException e) {
 
-			throw new JspTagException("Error writing to jsp writer!");
-		}
+      throw new JspTagException("Error writing to jsp writer!");
+    }
 
-	}
+  }
 
-	public String getFields() {
+  public String getFields() {
 
-		return fields;
-	}
+    return fields;
+  }
 
-	public void setFields(String fields) {
+  public void setFields(String fields) {
 
-		this.fields = fields;
-	}
+    this.fields = fields;
+  }
 
-	public String formatDN() {
+  public String formatDN() {
 
-		StringBuffer repr = new StringBuffer();
+    StringBuffer repr = new StringBuffer();
 
-		if (fields == null || "".equals(fields.trim()))
-			return dn;
+    if (fields == null || "".equals(fields.trim()))
+      return dn;
 
-		String[] fieldsArray = fields.trim().split(",");
+    String[] fieldsArray = fields.trim().split(",");
 
-		for (int i = 0; i < fieldsArray.length; i++) {
-			String regex = fieldsArray[i].trim() + regexTemplate;
-			Pattern p = Pattern.compile(regex);
-			Matcher m = p.matcher(dn);
+    for (int i = 0; i < fieldsArray.length; i++) {
+      String regex = fieldsArray[i].trim() + regexTemplate;
+      Pattern p = Pattern.compile(regex);
+      Matcher m = p.matcher(dn);
 
-			while (m.find()) {
-				if (i > 0 || (repr.length() > 0))
-					repr.append(",");
-				repr.append(fieldsArray[i].trim() + "=");
+      while (m.find()) {
+        if (i > 0 || (repr.length() > 0))
+          repr.append(",");
+        repr.append(fieldsArray[i].trim() + "=");
 
-				String match = m.group().trim();
+        String match = m.group().trim();
 
-				repr.append(match.substring(match.indexOf('=') + 1));
+        repr.append(match.substring(match.indexOf('=') + 1));
 
-			}
+      }
 
-		}
+    }
 
-		if (repr.length() == 0)
-			return dn;
+    if (repr.length() == 0)
+      return dn;
 
-		return repr.toString();
+    return repr.toString();
 
-	}
+  }
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		if (fields == null
-				|| VOMSConfiguration.instance().getBoolean(
-						"voms.webapp.always-show-full-dns", false))
-			write(dn);
-		else {
+    if (fields == null
+      || VOMSConfiguration.instance().getBoolean(
+        "voms.webapp.always-show-full-dns", false))
+      write(dn);
+    else {
 
-			StringBuilder element = new StringBuilder();
+      StringBuilder element = new StringBuilder();
 
-			element
-					.append("<div class=\"clickable formattedDN \" style=\"display:inline;\"><span title=\""
-							+ dn + "\">" + formatDN() + "</span>");
-			element.append("<span style=\"display:none\">" + dn
-					+ "</span></div>");
-			write(element.toString());
+      element
+        .append("<div class=\"clickable formattedDN \" style=\"display:inline;\"><span title=\""
+          + dn + "\">" + formatDN() + "</span>");
+      element.append("<span style=\"display:none\">" + dn + "</span></div>");
+      write(element.toString());
 
-		}
+    }
 
-		return SKIP_BODY;
-	}
+    return SKIP_BODY;
+  }
 
-	public String getDn() {
+  public String getDn() {
 
-		return dn;
-	}
+    return dn;
+  }
 
-	public void setDn(String dn) {
+  public void setDn(String dn) {
 
-		this.dn = dn;
-	}
+    this.dn = dn;
+  }
 }

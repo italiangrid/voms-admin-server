@@ -28,16 +28,17 @@ import org.slf4j.LoggerFactory;
 
 public class SoapMonitorHandler extends BasicHandler {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(SoapMonitorHandler.class);
+  private static final long serialVersionUID = 1L;
+  private static final Logger log = LoggerFactory
+    .getLogger(SoapMonitorHandler.class);
 
-	public void invoke(MessageContext msgContext) throws AxisFault {
+  public void invoke(MessageContext msgContext) throws AxisFault {
 
-		Message msg = msgContext.getCurrentMessage();
-		log.info("Current message: " + msg.getSOAPPartAsString());
-	}
+    Message msg = msgContext.getCurrentMessage();
+    log.info("Current message: " + msg.getSOAPPartAsString());
+  }
 
 }

@@ -23,66 +23,71 @@ import java.util.HashMap;
 
 public class AbstractEvent implements Event {
 
-	EventType type;
+  EventType type;
 
-	long creationTime;
-	long completionTime;
-	boolean completed = false;
+  long creationTime;
+  long completionTime;
+  boolean completed = false;
 
-	String name;
+  String name;
 
-	HashMap<String, Object> payload;
+  HashMap<String, Object> payload;
 
-	public AbstractEvent(EventType type) {
-		this.type = type;
-		creationTime = System.currentTimeMillis();
-		payload = new HashMap<String, Object>();
-	}
+  public AbstractEvent(EventType type) {
 
-	public long getCompletionTime() {
+    this.type = type;
+    creationTime = System.currentTimeMillis();
+    payload = new HashMap<String, Object>();
+  }
 
-		return completionTime;
-	}
+  public long getCompletionTime() {
 
-	public long getCreationTime() {
+    return completionTime;
+  }
 
-		return creationTime;
-	}
+  public long getCreationTime() {
 
-	public boolean isCompleted() {
-		return completed;
-	}
+    return creationTime;
+  }
 
-	public void setCompleted() {
+  public boolean isCompleted() {
 
-		completed = true;
-		completionTime = System.currentTimeMillis();
+    return completed;
+  }
 
-	}
+  public void setCompleted() {
 
-	public String getName() {
+    completed = true;
+    completionTime = System.currentTimeMillis();
 
-		if (name == null)
-			return this.getClass().getSimpleName();
+  }
 
-		return name;
-	}
+  public String getName() {
 
-	protected void setOperation(String op) {
+    if (name == null)
+      return this.getClass().getSimpleName();
 
-		name = op;
-	}
+    return name;
+  }
 
-	public EventType getType() {
-		return type;
-	}
+  protected void setOperation(String op) {
 
-	public void setType(EventType type) {
-		this.type = type;
-	}
+    name = op;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public EventType getType() {
+
+    return type;
+  }
+
+  public void setType(EventType type) {
+
+    this.type = type;
+  }
+
+  public void setName(String name) {
+
+    this.name = name;
+  }
 
 }

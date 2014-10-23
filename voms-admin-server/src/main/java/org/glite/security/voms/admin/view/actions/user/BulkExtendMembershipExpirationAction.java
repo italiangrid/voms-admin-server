@@ -34,40 +34,37 @@ import org.glite.security.voms.admin.operations.users.ConditionalRestoreUserOper
 import org.glite.security.voms.admin.operations.users.SetMembershipExpirationOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-
-
-
 @Results({
-	
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-	@Result(name = BaseAction.INPUT, location = "users")
-})
 
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "users") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class BulkExtendMembershipExpirationAction extends UserBulkActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		Date expirationDate = ValidationUtil.membershipExpirationDateStartingFromNow();
-		List<Date> dates = Collections.nCopies(userIds.size(), expirationDate);
-		
-		DoubleArgumentOperationCollection<Long, Date> op = new DoubleArgumentOperationCollection<Long, Date>(userIds, 
-					dates,SetMembershipExpirationOperation.class);
-				
-		op.execute();
-		
-		SingleArgumentOperationCollection<Long> restore = new SingleArgumentOperationCollection<Long>(userIds, ConditionalRestoreUserOperation.class);
-		restore.execute();
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public String execute() throws Exception {
+
+    Date expirationDate = ValidationUtil
+      .membershipExpirationDateStartingFromNow();
+    List<Date> dates = Collections.nCopies(userIds.size(), expirationDate);
+
+    DoubleArgumentOperationCollection<Long, Date> op = new DoubleArgumentOperationCollection<Long, Date>(
+      userIds, dates, SetMembershipExpirationOperation.class);
+
+    op.execute();
+
+    SingleArgumentOperationCollection<Long> restore = new SingleArgumentOperationCollection<Long>(
+      userIds, ConditionalRestoreUserOperation.class);
+    restore.execute();
+
+    return SUCCESS;
+  }
 
 }

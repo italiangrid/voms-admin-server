@@ -26,22 +26,23 @@ import org.glite.security.voms.admin.persistence.model.request.CertificateReques
 
 public class CertificateRequestEvent extends GenericEvent {
 
-	
-	CertificateRequest request;
-	
-	public CertificateRequestEvent(CertificateRequest req) {
-		super(EventType.CertificateRequestEvent);
-		setRequest(req);
-		
-	}
+  CertificateRequest request;
 
-	public CertificateRequest getRequest() {
-		return request;
-	}
+  public CertificateRequestEvent(CertificateRequest req) {
 
-	public void setRequest(CertificateRequest request) {
-		this.request = request;
-	}
+    super(EventType.CertificateRequestEvent);
+    setRequest(req);
 
-	
+  }
+
+  public CertificateRequest getRequest() {
+
+    return request;
+  }
+
+  public void setRequest(CertificateRequest request) {
+
+    this.request = request;
+  }
+
 }

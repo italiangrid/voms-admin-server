@@ -25,7 +25,7 @@ import java.util.List;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface HandleAUPFailingMembersStrategy {
-	
-	public void handleAUPFailingMembers(List<VOMSUser> aupFailingMembers);
+
+  public void handleAUPFailingMembers(List<VOMSUser> aupFailingMembers);
 
 }

@@ -26,20 +26,20 @@ import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 
 public class ListCaOperation extends BaseVoReadOperation {
 
-	private ListCaOperation() {
+  private ListCaOperation() {
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		List cas = VOMSCADAO.instance().getValid();
-		return cas;
+    List cas = VOMSCADAO.instance().getValid();
+    return cas;
 
-	}
+  }
 
-	public static ListCaOperation instance() {
+  public static ListCaOperation instance() {
 
-		return new ListCaOperation();
-	}
+    return new ListCaOperation();
+  }
 
 }

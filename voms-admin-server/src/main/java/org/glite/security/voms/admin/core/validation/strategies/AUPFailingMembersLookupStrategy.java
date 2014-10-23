@@ -25,7 +25,7 @@ import java.util.List;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface AUPFailingMembersLookupStrategy {
-	
-	public List<VOMSUser> findAUPFailingMembers();
+
+  public List<VOMSUser> findAUPFailingMembers();
 
 }

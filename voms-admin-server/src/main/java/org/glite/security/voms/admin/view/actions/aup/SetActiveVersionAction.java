@@ -25,26 +25,26 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.aup.SetActiveVersionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.INPUT, location = "aups"),
-		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
-
+@Results({
+  @Result(name = BaseAction.INPUT, location = "aups"),
+  @Result(name = BaseAction.SUCCESS, location = "/aup/load.action",
+    type = "redirect") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class SetActiveVersionAction extends AUPVersionActions {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		SetActiveVersionOperation op = new SetActiveVersionOperation(getModel(), getVersion());
-		op.execute();
-		return SUCCESS;
-	}
+    SetActiveVersionOperation op = new SetActiveVersionOperation(getModel(),
+      getVersion());
+    op.execute();
+    return SUCCESS;
+  }
 
 }

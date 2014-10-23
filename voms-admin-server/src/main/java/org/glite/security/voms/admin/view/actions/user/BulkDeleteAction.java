@@ -27,36 +27,32 @@ import org.glite.security.voms.admin.operations.SingleArgumentOperationCollectio
 import org.glite.security.voms.admin.operations.users.DeleteUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-
 @Results({
-	
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
-	@Result(name = BaseAction.INPUT, location = "users"),
-	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location="users")
-	
-})
 
+@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "users"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "users")
+
+})
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class BulkDeleteAction extends UserBulkActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		SingleArgumentOperationCollection<Long> op = new SingleArgumentOperationCollection<Long>(userIds, DeleteUserOperation.class);
-		op.execute();
-		
-		
-		addActionMessage("Users deleted!");
-		
-		return SUCCESS;
-	}
-	
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public String execute() throws Exception {
+
+    SingleArgumentOperationCollection<Long> op = new SingleArgumentOperationCollection<Long>(
+      userIds, DeleteUserOperation.class);
+    op.execute();
+
+    addActionMessage("Users deleted!");
+
+    return SUCCESS;
+  }
+
 }

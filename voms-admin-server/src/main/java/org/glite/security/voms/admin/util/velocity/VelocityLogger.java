@@ -27,69 +27,68 @@ import org.slf4j.LoggerFactory;
 
 public class VelocityLogger implements LogChute {
 
-	public static final Logger logger = LoggerFactory
-			.getLogger(VelocityLogger.class);
+  public static final Logger logger = LoggerFactory
+    .getLogger(VelocityLogger.class);
 
-	public void init(RuntimeServices rs) throws Exception {
+  public void init(RuntimeServices rs) throws Exception {
 
-	}
+  }
 
-	public boolean isLevelEnabled(int level) {
-		
-		boolean result = false;
-        switch (level)
-        {
-                case DEBUG_ID:
-                        result = logger.isDebugEnabled();
-                        break;
-                case INFO_ID:
-                        result = logger.isInfoEnabled();
-                        break;
-                case WARN_ID:
-                        result = logger.isWarnEnabled();
-                        break;
-                case ERROR_ID:
-                        result = logger.isErrorEnabled();
-                        break;
-        }
-        return result;
-	}
+  public boolean isLevelEnabled(int level) {
 
-	public void log(int level, String msg) {
+    boolean result = false;
+    switch (level) {
+    case DEBUG_ID:
+      result = logger.isDebugEnabled();
+      break;
+    case INFO_ID:
+      result = logger.isInfoEnabled();
+      break;
+    case WARN_ID:
+      result = logger.isWarnEnabled();
+      break;
+    case ERROR_ID:
+      result = logger.isErrorEnabled();
+      break;
+    }
+    return result;
+  }
 
-		switch (level) {
-		case DEBUG_ID:
-			logger.debug(msg);
-			break;
-		case INFO_ID:
-			logger.info(msg);
-			break;
-		case WARN_ID:
-			logger.warn(msg);
-			break;
-		case ERROR_ID:
-			logger.error(msg);
-			break;
-		}
+  public void log(int level, String msg) {
 
-	}
+    switch (level) {
+    case DEBUG_ID:
+      logger.debug(msg);
+      break;
+    case INFO_ID:
+      logger.info(msg);
+      break;
+    case WARN_ID:
+      logger.warn(msg);
+      break;
+    case ERROR_ID:
+      logger.error(msg);
+      break;
+    }
 
-	public void log(int level, String msg, Throwable exception) {
+  }
 
-		switch (level) {
-		case DEBUG_ID:
-			logger.debug(msg,exception);
-			break;
-		case INFO_ID:
-			logger.info(msg,exception);
-			break;
-		case WARN_ID:
-			logger.warn(msg,exception);
-			break;
-		case ERROR_ID:
-			logger.error(msg,exception);
-			break;
-		}
-	}
+  public void log(int level, String msg, Throwable exception) {
+
+    switch (level) {
+    case DEBUG_ID:
+      logger.debug(msg, exception);
+      break;
+    case INFO_ID:
+      logger.info(msg, exception);
+      break;
+    case WARN_ID:
+      logger.warn(msg, exception);
+      break;
+    case ERROR_ID:
+      logger.error(msg, exception);
+      break;
+    }
+  }
 
 }

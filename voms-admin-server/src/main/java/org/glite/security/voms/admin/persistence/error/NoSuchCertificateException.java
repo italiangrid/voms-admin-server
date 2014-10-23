@@ -23,9 +23,10 @@ import org.glite.security.voms.admin.error.NotFoundException;
 
 public class NoSuchCertificateException extends NotFoundException {
 
-	public NoSuchCertificateException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+  public NoSuchCertificateException(String message) {
+
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
 }

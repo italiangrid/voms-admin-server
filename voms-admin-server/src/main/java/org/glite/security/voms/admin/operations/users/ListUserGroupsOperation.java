@@ -25,29 +25,29 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class ListUserGroupsOperation extends BaseVoReadOperation {
 
-	String username, caDN;
+  String username, caDN;
 
-	private ListUserGroupsOperation(String name, String ca) {
+  private ListUserGroupsOperation(String name, String ca) {
 
-		username = name;
-		caDN = ca;
+    username = name;
+    caDN = ca;
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDN)
-				.execute();
-		if (u == null)
-			throw new NoSuchUserException("No user '" + username + "," + caDN
-					+ "' found in org.glite.security.voms.admin.persistence.error.");
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDN)
+      .execute();
+    if (u == null)
+      throw new NoSuchUserException("No user '" + username + "," + caDN
+        + "' found in org.glite.security.voms.admin.persistence.error.");
 
-		return u.getGroups();
-	}
+    return u.getGroups();
+  }
 
-	public static ListUserGroupsOperation instance(String username, String caDn) {
+  public static ListUserGroupsOperation instance(String username, String caDn) {
 
-		return new ListUserGroupsOperation(username, caDn);
-	}
+    return new ListUserGroupsOperation(username, caDn);
+  }
 
 }

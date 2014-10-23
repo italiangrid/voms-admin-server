@@ -28,35 +28,35 @@ import org.glite.security.voms.admin.operations.requests.SetConfimedVOMembership
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@Results( {
-	@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-	@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
-	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="pendingRequests.jsp")
-})
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "pendingRequests.jsp") })
 public class SetConfirmedRequestAction extends RequestActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	@Override
-	public void validate() {
-		
-		if (!(request instanceof NewVOMembershipRequest))
-			addActionError("Only VO membership request can be dropped with this action");
-		
-	}
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
-	
-		SetConfimedVOMembershipRequestOperation op = new SetConfimedVOMembershipRequestOperation((NewVOMembershipRequest) request);
-		op.execute();
-		addActionMessage("Request confirmed!");
-		refreshPendingRequests();
-		return SUCCESS;
-	}
+  @Override
+  public void validate() {
+
+    if (!(request instanceof NewVOMembershipRequest))
+      addActionError("Only VO membership request can be dropped with this action");
+
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    SetConfimedVOMembershipRequestOperation op = new SetConfimedVOMembershipRequestOperation(
+      (NewVOMembershipRequest) request);
+    op.execute();
+    addActionMessage("Request confirmed!");
+    refreshPendingRequests();
+    return SUCCESS;
+  }
 
 }

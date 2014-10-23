@@ -28,53 +28,53 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Results({
-	@Result(name=BaseAction.SUCCESS,location="registrationCancelled"),
-	@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")
-})
+  @Result(name = BaseAction.SUCCESS, location = "registrationCancelled"),
+  @Result(name = BaseAction.ERROR, location = "registrationConfirmationError") })
 public class CancelRequestAction extends RegisterActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	public static final Logger log = LoggerFactory.getLogger(CancelRequestAction.class);
-	
-	String confirmationId;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (!registrationEnabled())
-			return REGISTRATION_DISABLED;
-		
-		if (!request.getStatus().equals(STATUS.SUBMITTED)){
-			
-			addActionError("Your request cannot be canceled at this stage!");
-			return ERROR;
-		}
-			
-		
-		if (request.getConfirmId().equals(confirmationId)){
-			
-			RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
-			log.info("Removing request '"+request+"' on user's request.");
-			
-			rDAO.makeTransient(request);
-			return SUCCESS;
-		}
-			
-		addActionError("Wrong confirmation id!");
-		return ERROR;
-	}
+  private static final long serialVersionUID = 1L;
+  public static final Logger log = LoggerFactory
+    .getLogger(CancelRequestAction.class);
 
-	public String getConfirmationId() {
-		return confirmationId;
-	}
+  String confirmationId;
 
-	public void setConfirmationId(String confirmationId) {
-		this.confirmationId = confirmationId;
-	}
-	
+  @Override
+  public String execute() throws Exception {
+
+    if (!registrationEnabled())
+      return REGISTRATION_DISABLED;
+
+    if (!request.getStatus().equals(STATUS.SUBMITTED)) {
+
+      addActionError("Your request cannot be canceled at this stage!");
+      return ERROR;
+    }
+
+    if (request.getConfirmId().equals(confirmationId)) {
+
+      RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+      log.info("Removing request '" + request + "' on user's request.");
+
+      rDAO.makeTransient(request);
+      return SUCCESS;
+    }
+
+    addActionError("Wrong confirmation id!");
+    return ERROR;
+  }
+
+  public String getConfirmationId() {
+
+    return confirmationId;
+  }
+
+  public void setConfirmationId(String confirmationId) {
+
+    this.confirmationId = confirmationId;
+  }
+
 }

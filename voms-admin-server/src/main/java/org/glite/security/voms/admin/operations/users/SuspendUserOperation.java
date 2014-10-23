@@ -30,52 +30,56 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 
 public class SuspendUserOperation extends BaseVomsOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	SuspensionReason reason;
+  SuspensionReason reason;
 
-	private SuspendUserOperation(Long userId, String r){
-		
-		this.user = VOMSUserDAO.instance().findById(userId);
-		
-		this.reason = SuspensionReason.OTHER;
-		this.reason.setMessage(r);
-		
-	}
-	private SuspendUserOperation(VOMSUser u, SuspensionReason r) {
-		this.user = u;
-		reason = r;
+  private SuspendUserOperation(Long userId, String r) {
 
-	}
+    this.user = VOMSUserDAO.instance().findById(userId);
 
-	public static SuspendUserOperation instance(Long userId, String r){
-		return new SuspendUserOperation(userId, r);
-	}
-	
-	public static SuspendUserOperation instance(VOMSUser u, SuspensionReason r) {
-		return new SuspendUserOperation(u, r);
-	}
+    this.reason = SuspensionReason.OTHER;
+    this.reason.setMessage(r);
 
-	@Override
-	protected Object doExecute() {
+  }
 
-		if (user == null)
-			throw new NullArgumentException("User cannot be null!");
-		if (reason == null)
-			throw new NullArgumentException("Reason cannot be null!");
-		
-		ValidationManager.instance().suspendUser(user, reason);
+  private SuspendUserOperation(VOMSUser u, SuspensionReason r) {
 
-		return null;
-	}
+    this.user = u;
+    reason = r;
 
-	@Override
-	protected void setupPermissions() {
+  }
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission()
-				.setSuspendPermission());
+  public static SuspendUserOperation instance(Long userId, String r) {
 
-	}
+    return new SuspendUserOperation(userId, r);
+  }
+
+  public static SuspendUserOperation instance(VOMSUser u, SuspensionReason r) {
+
+    return new SuspendUserOperation(u, r);
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    if (user == null)
+      throw new NullArgumentException("User cannot be null!");
+    if (reason == null)
+      throw new NullArgumentException("Reason cannot be null!");
+
+    ValidationManager.instance().suspendUser(user, reason);
+
+    return null;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setSuspendPermission());
+
+  }
 
 }

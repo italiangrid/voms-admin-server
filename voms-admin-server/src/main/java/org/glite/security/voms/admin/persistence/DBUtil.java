@@ -31,37 +31,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DBUtil {
-	
-	public static Logger log = LoggerFactory.getLogger(DBUtil.class);
-	
-	public static Configuration loadHibernateConfiguration(String hibernatePropertiesFile) {
-		
-		Properties dbProperties = new Properties();
 
-		try {	
-			
-			dbProperties.load(new FileInputStream(hibernatePropertiesFile));
+  public static Logger log = LoggerFactory.getLogger(DBUtil.class);
 
-		} catch (IOException e) {
+  public static Configuration loadHibernateConfiguration(
+    String hibernatePropertiesFile) {
 
-			log.error("Error loading hibernate properties: " + e.getMessage(),
-					e);
-			
-			throw new VOMSException("Error loading hibernate properties: "
-					+ e.getMessage(), e);
-		}
+    Properties dbProperties = new Properties();
 
-		Configuration cfg = new AnnotationConfiguration().addProperties(
-				dbProperties).configure();
-		
-		return cfg;
-	
-	}
-	
-	public static Configuration loadHibernateConfiguration(String configurationDir, String voName) {
+    try {
 
-		String f = String.format("%s/%s/%s", configurationDir, voName, "database.properties");
-		return loadHibernateConfiguration(f);
-	}
-	
+      dbProperties.load(new FileInputStream(hibernatePropertiesFile));
+
+    } catch (IOException e) {
+
+      log.error("Error loading hibernate properties: " + e.getMessage(), e);
+
+      throw new VOMSException("Error loading hibernate properties: "
+        + e.getMessage(), e);
+    }
+
+    Configuration cfg = new AnnotationConfiguration().addProperties(
+      dbProperties).configure();
+
+    return cfg;
+
+  }
+
+  public static Configuration loadHibernateConfiguration(
+    String configurationDir, String voName) {
+
+    String f = String.format("%s/%s/%s", configurationDir, voName,
+      "database.properties");
+    return loadHibernateConfiguration(f);
+  }
+
 }

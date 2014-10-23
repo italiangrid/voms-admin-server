@@ -30,112 +30,103 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class DeleteGroupOperation extends BaseVomsOperation {
 
-	String groupName = null;
+  String groupName = null;
 
-	Long groupId;
+  Long groupId;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	private DeleteGroupOperation(String groupName) {
+  private DeleteGroupOperation(String groupName) {
 
-		this.groupName = groupName;
-	}
+    this.groupName = groupName;
+  }
 
-	private DeleteGroupOperation(VOMSGroup g) {
+  private DeleteGroupOperation(VOMSGroup g) {
 
-		this.group = g;
-	}
+    this.group = g;
+  }
 
-	private DeleteGroupOperation(Long id) {
+  private DeleteGroupOperation(Long id) {
 
-		this.groupId = id;
+    this.groupId = id;
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		if (group == null) {
-			if (groupName != null)
-				group = VOMSGroupDAO.instance().findByName(groupName);
-			else
-				group = VOMSGroupDAO.instance().findById(groupId);
-		}
+    if (group == null) {
+      if (groupName != null)
+        group = VOMSGroupDAO.instance().findByName(groupName);
+      else
+        group = VOMSGroupDAO.instance().findById(groupId);
+    }
 
-		if (group == null) {
+    if (group == null) {
 
-			String msg;
+      String msg;
 
-			if (groupName == null)
-				msg = "Group having id '"
-						+ groupId
-						+ "' not found in database.";
-			else
-				msg = "Group '"
-						+ groupName
-						+ "' not found in database.";
+      if (groupName == null)
+        msg = "Group having id '" + groupId + "' not found in database.";
+      else
+        msg = "Group '" + groupName + "' not found in database.";
 
-			throw new NoSuchGroupException(msg);
+      throw new NoSuchGroupException(msg);
 
-		}
+    }
 
-		VOMSGroupDAO.instance().delete(group);
-		return group;
-	}
+    VOMSGroupDAO.instance().delete(group);
+    return group;
+  }
 
-	public static DeleteGroupOperation instance(String groupName) {
+  public static DeleteGroupOperation instance(String groupName) {
 
-		return new DeleteGroupOperation(groupName);
-	}
+    return new DeleteGroupOperation(groupName);
+  }
 
-	public static VOMSOperation instance(VOMSGroup g) {
+  public static VOMSOperation instance(VOMSGroup g) {
 
-		return new DeleteGroupOperation(g);
-	}
+    return new DeleteGroupOperation(g);
+  }
 
-	public static VOMSOperation instance(Long id) {
+  public static VOMSOperation instance(Long id) {
 
-		return new DeleteGroupOperation(id);
+    return new DeleteGroupOperation(id);
 
-	}
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		VOMSContext ctxt;
+    VOMSContext ctxt;
 
-		if (group == null) {
+    if (group == null) {
 
-			if (groupName != null) {
-				String parentGroupName = PathNamingScheme
-						.getParentGroupName(groupName);
+      if (groupName != null) {
+        String parentGroupName = PathNamingScheme.getParentGroupName(groupName);
 
-				VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
-						parentGroupName);
+        VOMSGroup parentGroup = VOMSGroupDAO.instance().findByName(
+          parentGroupName);
 
-				if (parentGroup == null)
-					throw new NoSuchGroupException(
-							"Group '"
-									+ parentGroupName
-									+ "' not found in database!");
+        if (parentGroup == null)
+          throw new NoSuchGroupException("Group '" + parentGroupName
+            + "' not found in database!");
 
-				ctxt = VOMSContext.instance(parentGroup);
+        ctxt = VOMSContext.instance(parentGroup);
 
-			} else {
+      } else {
 
-				VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
+        VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
 
-				if (g == null)
-					throw new NoSuchGroupException(
-							"Group having id '"
-									+ groupId
-									+ "' not found in database!");
+        if (g == null)
+          throw new NoSuchGroupException("Group having id '" + groupId
+            + "' not found in database!");
 
-				ctxt = VOMSContext.instance(g.getParent());
-			}
+        ctxt = VOMSContext.instance(g.getParent());
+      }
 
-		} else
-			ctxt = VOMSContext.instance(group.getParent());
+    } else
+      ctxt = VOMSContext.instance(group.getParent());
 
-		addRequiredPermission(ctxt, VOMSPermission.getContainerRWPermissions());
+    addRequiredPermission(ctxt, VOMSPermission.getContainerRWPermissions());
 
-	}
+  }
 }

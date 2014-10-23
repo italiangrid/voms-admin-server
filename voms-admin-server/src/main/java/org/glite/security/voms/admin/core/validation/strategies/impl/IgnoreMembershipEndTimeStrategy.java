@@ -29,29 +29,28 @@ import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMem
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMembersStrategy;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class IgnoreMembershipEndTimeStrategy implements 
-	HandleExpiredMembersStrategy, 
-	ExpiredMembersLookupStrategy,
-	ExpiringMembersLookupStrategy, 
-	HandleExpiringMembersStrategy{
+public class IgnoreMembershipEndTimeStrategy implements
+  HandleExpiredMembersStrategy, ExpiredMembersLookupStrategy,
+  ExpiringMembersLookupStrategy, HandleExpiringMembersStrategy {
 
-	
-	public List<VOMSUser> findExpiredMembers() {
-		return Collections.EMPTY_LIST;
-	}
+  public List<VOMSUser> findExpiredMembers() {
 
-	public void handleExpiredMembers(List<VOMSUser> expiredMembers) {
-		// Do NOTHING 
-	}
+    return Collections.EMPTY_LIST;
+  }
 
-	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
-		// Do NOTHING
-	}
+  public void handleExpiredMembers(List<VOMSUser> expiredMembers) {
 
-	public List<VOMSUser> findExpiringMembers() {
-		
-		return Collections.EMPTY_LIST;
-	}
+    // Do NOTHING
+  }
 
+  public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
+
+    // Do NOTHING
+  }
+
+  public List<VOMSUser> findExpiringMembers() {
+
+    return Collections.EMPTY_LIST;
+  }
 
 }

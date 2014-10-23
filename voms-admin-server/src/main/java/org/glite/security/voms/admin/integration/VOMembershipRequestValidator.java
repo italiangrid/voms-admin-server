@@ -24,6 +24,6 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public interface VOMembershipRequestValidator {
 
-	public void validate(NewVOMembershipRequest voMembershipRequest);
-	
+  public void validate(NewVOMembershipRequest voMembershipRequest);
+
 }

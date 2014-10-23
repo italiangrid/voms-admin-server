@@ -35,67 +35,75 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( {
-		@Result(name = BaseAction.INPUT, location = "aups"),
-		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
-		
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.INPUT, location = "aups"),
+  @Result(name = BaseAction.SUCCESS, location = "/aup/load.action",
+    type = "redirect") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class ChangeReacceptancePeriodAction extends BaseAction implements
-		Preparable, ModelDriven<AUP> {
+  Preparable, ModelDriven<AUP> {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long aupId;
-	int period;
+  Long aupId;
+  int period;
 
-	AUP aup;
+  AUP aup;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		ChangeReacceptancePeriodOperation op = new ChangeReacceptancePeriodOperation(aup, period);
-		op.execute();
-		
-		return SUCCESS;
-	}
+    ChangeReacceptancePeriodOperation op = new ChangeReacceptancePeriodOperation(
+      aup, period);
+    op.execute();
 
-	public Long getAupId() {
-		return aupId;
-	}
+    return SUCCESS;
+  }
 
-	public void setAupId(Long aupId) {
-		this.aupId = aupId;
-	}
+  public Long getAupId() {
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "The period (in days) is required.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "[0-9]+", message = "Please specify a positive integer number.")
-	@IntRangeFieldValidator(type = ValidatorType.FIELD, min = "1", max = "730", message = "The input is out of the acceptable range (1 < x < 730)")
-	public int getPeriod() {
-		return period;
-	}
+    return aupId;
+  }
 
-	public void setPeriod(int period) {
-		this.period = period;
-	}
+  public void setAupId(Long aupId) {
 
-	public void prepare() throws Exception {
+    this.aupId = aupId;
+  }
 
-		if (aup == null) {
-			AUPDAO dao = DAOFactory.instance().getAUPDAO();
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "The period (in days) is required.")
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "[0-9]+",
+    message = "Please specify a positive integer number.")
+  @IntRangeFieldValidator(type = ValidatorType.FIELD, min = "1", max = "730",
+    message = "The input is out of the acceptable range (1 < x < 730)")
+  public int getPeriod() {
 
-			aup = dao.findById(getAupId(), true);
+    return period;
+  }
 
-		}
+  public void setPeriod(int period) {
 
-	}
+    this.period = period;
+  }
 
-	public AUP getModel() {
+  public void prepare() throws Exception {
 
-		return aup;
-	}
+    if (aup == null) {
+      AUPDAO dao = DAOFactory.instance().getAUPDAO();
+
+      aup = dao.findById(getAupId(), true);
+
+    }
+
+  }
+
+  public AUP getModel() {
+
+    return aup;
+  }
 
 }

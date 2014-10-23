@@ -31,72 +31,72 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class RolesTag extends TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String user;
+  String user;
 
-	String group;
+  String group;
 
-	String var;
+  String var;
 
-	public RolesTag() {
+  public RolesTag() {
 
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    super();
+    // TODO Auto-generated constructor stub
+  }
 
-	public String getGroup() {
+  public String getGroup() {
 
-		return group;
-	}
+    return group;
+  }
 
-	public void setGroup(String group) {
+  public void setGroup(String group) {
 
-		this.group = group;
-	}
+    this.group = group;
+  }
 
-	public String getUser() {
+  public String getUser() {
 
-		return user;
-	}
+    return user;
+  }
 
-	public void setUser(String user) {
+  public void setUser(String user) {
 
-		this.user = user;
-	}
+    this.user = user;
+  }
 
-	public String getVar() {
+  public String getVar() {
 
-		return var;
-	}
+    return var;
+  }
 
-	public void setVar(String var) {
+  public void setVar(String var) {
 
-		this.var = var;
-	}
+    this.var = var;
+  }
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		VOMSUser vomsUser = (VOMSUser) pageContext.getAttribute(user,
-				PageContext.REQUEST_SCOPE);
+    VOMSUser vomsUser = (VOMSUser) pageContext.getAttribute(user,
+      PageContext.REQUEST_SCOPE);
 
-		VOMSGroup vomsGroup = (VOMSGroup) pageContext.getAttribute(group);
+    VOMSGroup vomsGroup = (VOMSGroup) pageContext.getAttribute(group);
 
-		if (vomsUser == null)
-			throw new JspTagException(
-					"No user found in org.glite.security.voms.admin.request context!");
+    if (vomsUser == null)
+      throw new JspTagException(
+        "No user found in org.glite.security.voms.admin.request context!");
 
-		if ((vomsGroup == null))
-			throw new JspTagException("No group found in pageContext!");
+    if ((vomsGroup == null))
+      throw new JspTagException("No group found in pageContext!");
 
-		Set roles = vomsUser.getRoles(vomsGroup);
+    Set roles = vomsUser.getRoles(vomsGroup);
 
-		pageContext.setAttribute(var, roles);
+    pageContext.setAttribute(var, roles);
 
-		return SKIP_BODY;
-	}
+    return SKIP_BODY;
+  }
 
 }

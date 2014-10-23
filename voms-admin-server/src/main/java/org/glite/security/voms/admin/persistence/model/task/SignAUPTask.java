@@ -35,83 +35,84 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 @Table(name = "sign_aup_task")
 public class SignAUPTask extends Task implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "aup_id", nullable = false)
-	AUP aup;
+  @ManyToOne
+  @JoinColumn(name = "aup_id", nullable = false)
+  AUP aup;
 
-	public SignAUPTask() {
+  public SignAUPTask() {
 
-		// TODO Auto-generated constructor stub
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	public SignAUPTask(TaskType tt, AUP a, Date expiryDate) {
-		type = tt;
-		aup = a;
-		this.expiryDate = expiryDate;
-		creationDate = new Date();
-		status = TaskStatus.CREATED;
+  public SignAUPTask(TaskType tt, AUP a, Date expiryDate) {
 
-		addLogRecord(getCreationDate());
+    type = tt;
+    aup = a;
+    this.expiryDate = expiryDate;
+    creationDate = new Date();
+    status = TaskStatus.CREATED;
 
-	}
+    addLogRecord(getCreationDate());
 
-	/**
-	 * @return the aup
-	 */
-	public AUP getAup() {
+  }
 
-		return aup;
-	}
+  /**
+   * @return the aup
+   */
+  public AUP getAup() {
 
-	/**
-	 * @param aup
-	 *            the aup to set
-	 */
-	public void setAup(AUP aup) {
+    return aup;
+  }
 
-		this.aup = aup;
-	}
+  /**
+   * @param aup
+   *          the aup to set
+   */
+  public void setAup(AUP aup) {
 
-	@Override
-	public String toString() {
+    this.aup = aup;
+  }
 
-		return String.format(
-				"SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s]",
-				getId(), getStatus(), getAup(), getUser().toString(),
-				getExpiryDate());
+  @Override
+  public String toString() {
 
-	}
+    return String.format(
+      "SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s]", getId(),
+      getStatus(), getAup(), getUser().toString(), getExpiryDate());
 
-	@Override
-	public boolean equals(Object other) {
+  }
 
-		if (this == other)
-			return true;
+  @Override
+  public boolean equals(Object other) {
 
-		if (!(other instanceof Task))
-			return false;
+    if (this == other)
+      return true;
 
-		if (other == null)
-			return false;
+    if (!(other instanceof Task))
+      return false;
 
-		SignAUPTask that = (SignAUPTask) other;
+    if (other == null)
+      return false;
 
-		EqualsBuilder builder = new EqualsBuilder();
-		return builder.appendSuper(super.equals(other)).append(aup, that.aup)
-				.isEquals();
+    SignAUPTask that = (SignAUPTask) other;
 
-	}
+    EqualsBuilder builder = new EqualsBuilder();
+    return builder.appendSuper(super.equals(other)).append(aup, that.aup)
+      .isEquals();
 
-	@Override
-	public int hashCode() {
-		HashCodeBuilder builder = new HashCodeBuilder(17, 57).appendSuper(
-				super.hashCode()).append(aup);
-		return builder.toHashCode();
-	}
+  }
+
+  @Override
+  public int hashCode() {
+
+    HashCodeBuilder builder = new HashCodeBuilder(17, 57).appendSuper(
+      super.hashCode()).append(aup);
+    return builder.toHashCode();
+  }
 
 }

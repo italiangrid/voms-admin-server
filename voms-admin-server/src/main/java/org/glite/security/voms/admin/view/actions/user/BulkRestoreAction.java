@@ -26,29 +26,27 @@ import org.glite.security.voms.admin.operations.SingleArgumentOperationCollectio
 import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-
 @Results({
-	
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-	@Result(name = BaseAction.INPUT, location = "users")
-})
 
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "users") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class BulkRestoreAction extends UserBulkActionSupport {
-	
-	/**
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
-		SingleArgumentOperationCollection<Long> op = new SingleArgumentOperationCollection<Long>(userIds, RestoreUserOperation.class);
-		op.execute();
-		return SUCCESS;
-	}
-	
+  @Override
+  public String execute() throws Exception {
+
+    SingleArgumentOperationCollection<Long> op = new SingleArgumentOperationCollection<Long>(
+      userIds, RestoreUserOperation.class);
+    op.execute();
+    return SUCCESS;
+  }
+
 }

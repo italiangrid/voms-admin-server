@@ -23,28 +23,31 @@ package org.italiangrid.voms.aa.impl;
 import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
 import org.italiangrid.voms.VOMSGenericAttribute;
 
-
 public class VOMSGAImpl implements VOMSGenericAttribute {
 
-	final VOMSBaseAttribute attribute;
-	
-	public VOMSGAImpl(VOMSBaseAttribute ua) {
-		this.attribute = ua;
-	}
+  final VOMSBaseAttribute attribute;
 
-	@Override
-	public String getName() {
-		return attribute.getName();
-	}
+  public VOMSGAImpl(VOMSBaseAttribute ua) {
 
-	@Override
-	public String getValue() {
-		return attribute.getValue();
-	}
+    this.attribute = ua;
+  }
 
-	@Override
-	public String getContext() {
-		return attribute.getContext();
-	}
+  @Override
+  public String getName() {
+
+    return attribute.getName();
+  }
+
+  @Override
+  public String getValue() {
+
+    return attribute.getValue();
+  }
+
+  @Override
+  public String getContext() {
+
+    return attribute.getContext();
+  }
 
 }

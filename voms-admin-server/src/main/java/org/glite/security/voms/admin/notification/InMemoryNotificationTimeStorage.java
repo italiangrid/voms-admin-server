@@ -20,22 +20,21 @@
 
 package org.glite.security.voms.admin.notification;
 
-
 public class InMemoryNotificationTimeStorage implements NotificationTimeStorage {
 
-	long lastSentNotificationTime = 0;
+  long lastSentNotificationTime = 0;
 
-	@Override
-	public long getLastNotificationTime() {
+  @Override
+  public long getLastNotificationTime() {
 
-		return lastSentNotificationTime;
-	}
+    return lastSentNotificationTime;
+  }
 
-	@Override
-	public void setLastNotificationTime(long time) {
+  @Override
+  public void setLastNotificationTime(long time) {
 
-		this.lastSentNotificationTime = time;
+    this.lastSentNotificationTime = time;
 
-	}
+  }
 
 }

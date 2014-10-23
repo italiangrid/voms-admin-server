@@ -34,168 +34,169 @@ import javax.persistence.Table;
 import org.glite.security.voms.admin.util.DNUtil;
 
 @Entity
-@Table(name="ca")
+@Table(name = "ca")
 public class VOMSCA implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = -2633375466574044765L;
+  private static final long serialVersionUID = -2633375466574044765L;
 
-	@Id
-	@Column(name="cid")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_CA_SEQ")
-	@SequenceGenerator(name="VOMS_CA_SEQ", sequenceName="VOMS_CA_SEQ")
-	Short id;
+  @Id
+  @Column(name = "cid")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_CA_SEQ")
+  @SequenceGenerator(name = "VOMS_CA_SEQ", sequenceName = "VOMS_CA_SEQ")
+  Short id;
 
-	@Column(name="subject_string", unique=true, nullable=false)
-	String subjectString;
-	
-	String description;
-	
-	@Column(name="creation_time", nullable=false)
-	Date creationTime;
+  @Column(name = "subject_string", unique = true, nullable = false)
+  String subjectString;
 
-	public VOMSCA() {
+  String description;
 
-		// TODO Auto-generated constructor stub
-	}
+  @Column(name = "creation_time", nullable = false)
+  Date creationTime;
 
-	public VOMSCA(X509Certificate cert, String description) {
+  public VOMSCA() {
 
-		assert cert != null : "X509Certificate is null!";
+    // TODO Auto-generated constructor stub
+  }
 
-		subjectString = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
-		creationTime = new Date();
+  public VOMSCA(X509Certificate cert, String description) {
 
-		this.description = description;
-	}
+    assert cert != null : "X509Certificate is null!";
 
-	public VOMSCA(String name, String desc) {
+    subjectString = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
+    creationTime = new Date();
 
-		this.subjectString = name;
-		this.description = desc;
-		creationTime = new Date();
+    this.description = description;
+  }
 
-	}
+  public VOMSCA(String name, String desc) {
 
-	/**
-	 * @return Returns the description.
-	 */
-	public String getDescription() {
+    this.subjectString = name;
+    this.description = desc;
+    creationTime = new Date();
 
-		return description;
-	}
+  }
 
-	/**
-	 * @param description
-	 *            The description to set.
-	 */
-	public void setDescription(String description) {
+  /**
+   * @return Returns the description.
+   */
+  public String getDescription() {
 
-		this.description = description;
-	}
+    return description;
+  }
 
-	/**
-	 * @return Returns the dn.
-	 */
-	public String getSubjectString() {
+  /**
+   * @param description
+   *          The description to set.
+   */
+  public void setDescription(String description) {
 
-		return subjectString;
-	}
+    this.description = description;
+  }
 
-	/**
-	 * @param dn
-	 *            The dn to set.
-	 */
-	public void setSubjectString(String dn) {
+  /**
+   * @return Returns the dn.
+   */
+  public String getSubjectString() {
 
-		this.subjectString = dn;
-	}
+    return subjectString;
+  }
 
-	/**
-	 * @return Returns the id.
-	 */
-	public Short getId() {
+  /**
+   * @param dn
+   *          The dn to set.
+   */
+  public void setSubjectString(String dn) {
 
-		return id;
-	}
+    this.subjectString = dn;
+  }
 
-	/**
-	 * @param id
-	 *            The id to set.
-	 */
-	public void setId(Short id) {
+  /**
+   * @return Returns the id.
+   */
+  public Short getId() {
 
-		this.id = id;
-	}
+    return id;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
+  /**
+   * @param id
+   *          The id to set.
+   */
+  public void setId(Short id) {
 
-		return subjectString;
-	}
+    this.id = id;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object other) {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
 
-		if (this == other)
-			return true;
+    return subjectString;
+  }
 
-		if (!(other instanceof VOMSCA))
-			return false;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object other) {
 
-		if (other == null)
-			return false;
+    if (this == other)
+      return true;
 
-		final VOMSCA that = (VOMSCA) other;
-		return (getSubjectString().equals(that.getSubjectString()));
+    if (!(other instanceof VOMSCA))
+      return false;
 
-	}
+    if (other == null)
+      return false;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
+    final VOMSCA that = (VOMSCA) other;
+    return (getSubjectString().equals(that.getSubjectString()));
 
-		return subjectString.hashCode();
+  }
 
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
 
-	public String getShortName() {
-		return subjectString;
-	}
+    return subjectString.hashCode();
 
-	@Deprecated
-	public String getDn() {
+  }
 
-		return subjectString;
-	}
+  public String getShortName() {
 
-	@Deprecated
-	public void setDn(String dn) {
+    return subjectString;
+  }
 
-		this.subjectString = dn;
-	}
+  @Deprecated
+  public String getDn() {
 
-	public Date getCreationTime() {
+    return subjectString;
+  }
 
-		return creationTime;
-	}
+  @Deprecated
+  public void setDn(String dn) {
 
-	public void setCreationTime(Date creationTime) {
+    this.subjectString = dn;
+  }
 
-		this.creationTime = creationTime;
-	}
+  public Date getCreationTime() {
+
+    return creationTime;
+  }
+
+  public void setCreationTime(Date creationTime) {
+
+    this.creationTime = creationTime;
+  }
 
 }

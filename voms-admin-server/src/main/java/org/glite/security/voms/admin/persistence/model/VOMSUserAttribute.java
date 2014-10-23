@@ -26,106 +26,107 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="usr_attrs")
+@Table(name = "usr_attrs")
 public class VOMSUserAttribute extends VOMSBaseAttribute {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@PrimaryKeyJoinColumn
-	@ManyToOne(targetEntity=VOMSUser.class)
-	public VOMSUser user;
+  private static final long serialVersionUID = 1L;
 
-	public VOMSUser getUser() {
+  @Id
+  @PrimaryKeyJoinColumn
+  @ManyToOne(targetEntity = VOMSUser.class)
+  public VOMSUser user;
 
-		return user;
-	}
+  public VOMSUser getUser() {
 
-	public void setUser(VOMSUser user) {
+    return user;
+  }
 
-		this.user = user;
-	}
+  public void setUser(VOMSUser user) {
 
-	public VOMSUserAttribute() {
+    this.user = user;
+  }
 
-	}
+  public VOMSUserAttribute() {
 
-	public VOMSUserAttribute(VOMSAttributeDescription desc, String attrValue) {
+  }
 
-		super(desc, attrValue);
+  public VOMSUserAttribute(VOMSAttributeDescription desc, String attrValue) {
 
-	}
+    super(desc, attrValue);
 
-	public VOMSUserAttribute(VOMSAttributeDescription desc, String value,
-			VOMSUser u) {
+  }
 
-		super(desc, value);
-		setUser(u);
-	}
+  public VOMSUserAttribute(VOMSAttributeDescription desc, String value,
+    VOMSUser u) {
 
-	public boolean equals(Object other) {
+    super(desc, value);
+    setUser(u);
+  }
 
-		if (this == other)
-			return true;
+  public boolean equals(Object other) {
 
-		if (!(other instanceof VOMSUserAttribute))
-			return false;
+    if (this == other)
+      return true;
 
-		if (other == null)
-			return false;
+    if (!(other instanceof VOMSUserAttribute))
+      return false;
 
-		VOMSUserAttribute that = (VOMSUserAttribute) other;
+    if (other == null)
+      return false;
 
-		if (getUser().equals(that.getUser()))
-			return getAttributeDescription().equals(
-					that.getAttributeDescription());
+    VOMSUserAttribute that = (VOMSUserAttribute) other;
 
-		return false;
-	}
+    if (getUser().equals(that.getUser()))
+      return getAttributeDescription().equals(that.getAttributeDescription());
 
-	public int hashCode() {
-		int result = 14;
+    return false;
+  }
 
-		result = 29 * result + getAttributeDescription().hashCode();
+  public int hashCode() {
 
-		if (getUser() != null)
-			result = 29 * result + getUser().hashCode();
+    int result = 14;
 
-		return result;
+    result = 29 * result + getAttributeDescription().hashCode();
 
-	}
+    if (getUser() != null)
+      result = 29 * result + getUser().hashCode();
 
-	public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
-			String value, VOMSUser u) {
+    return result;
 
-		return new VOMSUserAttribute(desc, value, u);
-	}
+  }
 
-	public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
-			String value) {
+  public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
+    String value, VOMSUser u) {
 
-		return new VOMSUserAttribute(desc, value);
-	}
+    return new VOMSUserAttribute(desc, value, u);
+  }
 
-	public static VOMSUserAttribute instance(String attrName, String attrDesc,
-			String attrValue) {
+  public static VOMSUserAttribute instance(VOMSAttributeDescription desc,
+    String value) {
 
-		VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
-				attrDesc);
-		VOMSUserAttribute instance = new VOMSUserAttribute(desc, attrValue);
+    return new VOMSUserAttribute(desc, value);
+  }
 
-		return instance;
-	}
+  public static VOMSUserAttribute instance(String attrName, String attrDesc,
+    String attrValue) {
 
-	public String toString() {
+    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
+      attrDesc);
+    VOMSUserAttribute instance = new VOMSUserAttribute(desc, attrValue);
 
-		return "(" + getName() + "," + value + ")";
-	}
+    return instance;
+  }
 
-	public String getContext() {
-		return null;
-	}
+  public String toString() {
+
+    return "(" + getName() + "," + value + ")";
+  }
+
+  public String getContext() {
+
+    return null;
+  }
 }

@@ -23,5 +23,5 @@ import org.glite.security.voms.admin.persistence.model.task.TaskType;
 
 public interface TaskTypeDAO extends GenericDAO<TaskType, Long> {
 
-	public TaskType findByName(String name);
+  public TaskType findByName(String name);
 }

@@ -23,21 +23,22 @@ package org.glite.security.voms.admin.operations.group_manager;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
-
 public class DeleteGroupManagerOperation extends BaseGroupManagerOperation {
 
-	public DeleteGroupManagerOperation(GroupManager m) {
-		super(m);
-	}
+  public DeleteGroupManagerOperation(GroupManager m) {
 
-	@Override
-	protected Object doExecute() {
-		for (VOMSGroup g: manager.getManagedGroups()){
-			g.getManagers().remove(manager);
-		}
-		
-		dao.makeTransient(manager);
-		return manager;
-	}
+    super(m);
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    for (VOMSGroup g : manager.getManagedGroups()) {
+      g.getManagers().remove(manager);
+    }
+
+    dao.makeTransient(manager);
+    return manager;
+  }
 
 }

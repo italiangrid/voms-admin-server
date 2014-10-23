@@ -31,62 +31,63 @@ import org.glite.security.voms.admin.persistence.model.Certificate;
 
 public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
-	X509Certificate theCert;
+  X509Certificate theCert;
 
-	String subject;
-	String issuer;
+  String subject;
+  String issuer;
 
-	private RemoveUserCertificateOperation(X509Certificate c) {
+  private RemoveUserCertificateOperation(X509Certificate c) {
 
-		theCert = c;
+    theCert = c;
 
-	}
+  }
 
-	private RemoveUserCertificateOperation(String subject, String issuer) {
+  private RemoveUserCertificateOperation(String subject, String issuer) {
 
-		this.subject = subject;
-		this.issuer = issuer;
-	}
+    this.subject = subject;
+    this.issuer = issuer;
+  }
 
-	public static RemoveUserCertificateOperation instance(X509Certificate cert) {
+  public static RemoveUserCertificateOperation instance(X509Certificate cert) {
 
-		return new RemoveUserCertificateOperation(cert);
+    return new RemoveUserCertificateOperation(cert);
 
-	}
+  }
 
-	public static RemoveUserCertificateOperation instance(String subject,
-			String issuer) {
+  public static RemoveUserCertificateOperation instance(String subject,
+    String issuer) {
 
-		return new RemoveUserCertificateOperation(subject, issuer);
-	}
+    return new RemoveUserCertificateOperation(subject, issuer);
+  }
 
-	@Override
-	protected Object doExecute() {
+  @Override
+  protected Object doExecute() {
 
-		if (theCert != null) {
+    if (theCert != null) {
 
-			Certificate cert = CertificateDAO.instance().find(theCert);
-			VOMSUserDAO.instance().deleteCertificate(cert);
+      Certificate cert = CertificateDAO.instance().find(theCert);
+      VOMSUserDAO.instance().deleteCertificate(cert);
 
-		} else {
+    } else {
 
-			Certificate cert = CertificateDAO.instance().findByDNCA(subject,
-					issuer);
-			if (cert == null)
-				throw new NoSuchCertificateException("No certificate found matching subject '"+subject+", "+issuer+"'.");
-			
-			VOMSUserDAO.instance().deleteCertificate(cert);
-		}
+      Certificate cert = CertificateDAO.instance().findByDNCA(subject, issuer);
+      if (cert == null)
+        throw new NoSuchCertificateException(
+          "No certificate found matching subject '" + subject + ", " + issuer
+            + "'.");
 
-		return null;
-	}
+      VOMSUserDAO.instance().deleteCertificate(cert);
+    }
 
-	@Override
-	protected void setupPermissions() {
+    return null;
+  }
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions().setMembershipRWPermission());
+  @Override
+  protected void setupPermissions() {
 
-	}
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+
+  }
 
 }

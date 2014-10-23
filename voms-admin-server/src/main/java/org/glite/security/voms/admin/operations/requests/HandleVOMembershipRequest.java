@@ -39,79 +39,79 @@ import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.register.SubmitRequestAction;
 
 public class HandleVOMembershipRequest extends
-		BaseHandleRequestOperation<NewVOMembershipRequest> {
+  BaseHandleRequestOperation<NewVOMembershipRequest> {
 
-	private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
+  private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
 
-	List<String> approvedGroups; 
-	
-	public HandleVOMembershipRequest(NewVOMembershipRequest request,
-			DECISION decision, List<String> approvedGroups) {
-		
-		super(request, decision);
-		this.approvedGroups = approvedGroups;
-	}
+  List<String> approvedGroups;
 
-	@Override
-	protected void approve() {
-		checkRequestStatus(STATUS.CONFIRMED);
+  public HandleVOMembershipRequest(NewVOMembershipRequest request,
+    DECISION decision, List<String> approvedGroups) {
 
-		
-		VOMSUser user = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
-		VOMSUserDAO.instance().create(user,
-					request.getRequesterInfo().getCertificateIssuer());
+    super(request, decision);
+    this.approvedGroups = approvedGroups;
+  }
 
-		approveRequest();
+  @Override
+  protected void approve() {
 
-		// Check if signed AUP is the same version as the current one
-		// and if so add an AUP signature record for the user
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    checkRequestStatus(STATUS.CONFIRMED);
 
-		AUPVersion currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
-		
-		String signedAUPVersion = request.getRequesterInfo().getInfo(SubmitRequestAction.SIGNED_AUP_VERSION_KEY);
-		if (signedAUPVersion == null || currentAUPVersion.getVersion().equals(signedAUPVersion)){
-			// 	Add a sign aup record for the user
-			VOMSUserDAO.instance().signAUP(user,
-					aupDAO.getVOAUP());
-		}
-		
-		if (approvedGroups != null){
-			VOMSGroupDAO groupDAO = VOMSGroupDAO.instance();
-			
-			for (String groupName: approvedGroups){
-				
-				VOMSGroup g = groupDAO.findByName(groupName);
-				if (g != null)
-					user.addToGroup(g);
-			}
-			
-		}
+    VOMSUser user = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
+    VOMSUserDAO.instance().create(user,
+      request.getRequesterInfo().getCertificateIssuer());
 
-		EventManager
-				.dispatch(new VOMembershipRequestApprovedEvent(request));
-		
-	}
+    approveRequest();
 
+    // Check if signed AUP is the same version as the current one
+    // and if so add an AUP signature record for the user
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
-	@Override
-	protected void reject() {
-		rejectRequest();
+    AUPVersion currentAUPVersion = aupDAO.getVOAUP().getActiveVersion();
 
-		EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
-				REJECT_MOTIVATION));
+    String signedAUPVersion = request.getRequesterInfo().getInfo(
+      SubmitRequestAction.SIGNED_AUP_VERSION_KEY);
+    if (signedAUPVersion == null
+      || currentAUPVersion.getVersion().equals(signedAUPVersion)) {
+      // Add a sign aup record for the user
+      VOMSUserDAO.instance().signAUP(user, aupDAO.getVOAUP());
+    }
 
-		DAOFactory.instance().getRequestDAO().makeTransient(request);
-		
-	}
+    if (approvedGroups != null) {
+      VOMSGroupDAO groupDAO = VOMSGroupDAO.instance();
 
+      for (String groupName : approvedGroups) {
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission()
-				.setRequestsReadPermission().setRequestsWritePermission());
+        VOMSGroup g = groupDAO.findByName(groupName);
+        if (g != null)
+          user.addToGroup(g);
+      }
 
-	}
+    }
+
+    EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+
+  }
+
+  @Override
+  protected void reject() {
+
+    rejectRequest();
+
+    EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
+      REJECT_MOTIVATION));
+
+    DAOFactory.instance().getRequestDAO().makeTransient(request);
+
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setRequestsReadPermission().setRequestsWritePermission());
+
+  }
 
 }

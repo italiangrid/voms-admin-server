@@ -23,9 +23,10 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserCreatedEvent extends UserMembershipEvent {
 
-	public UserCreatedEvent(VOMSUser user) {
-		super(user);
-		// TODO Auto-generated constructor stub
-	}
+  public UserCreatedEvent(VOMSUser user) {
+
+    super(user);
+    // TODO Auto-generated constructor stub
+  }
 
 }

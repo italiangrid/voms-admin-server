@@ -19,19 +19,18 @@
  */
 package org.glite.security.voms.admin.event;
 
-
 public interface Event {
 
-	EventType getType();
+  EventType getType();
 
-	String getName();
+  String getName();
 
-	long getCreationTime();
+  long getCreationTime();
 
-	long getCompletionTime();
+  long getCompletionTime();
 
-	public boolean isCompleted();
+  public boolean isCompleted();
 
-	public void setCompleted();
+  public void setCompleted();
 
 }

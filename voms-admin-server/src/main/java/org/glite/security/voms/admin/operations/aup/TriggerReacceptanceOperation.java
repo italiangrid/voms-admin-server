@@ -29,41 +29,46 @@ import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class TriggerReacceptanceOperation extends BaseVomsOperation {
-	
-	AUP aup;
-	VOMSUser user;
-	
-	public TriggerReacceptanceOperation(AUP a, VOMSUser u) {
-		this.aup = a;
-		this.user = u;
-	}
 
-	public TriggerReacceptanceOperation(AUP a) {
-		this.aup = a;
-		this.user = null;
-	}
-	
-	@Override
-	protected Object doExecute() {
-		
-		if (user == null)
-			aup.getActiveVersion().setLastForcedReacceptanceTime(new Date());
-		else{	
-			AUPAcceptanceRecord record = user.getAUPAccceptanceRecord(aup.getActiveVersion());
-			
-			if (record != null && !record.hasExpired())
-				record.setValid(false);
+  AUP aup;
+  VOMSUser user;
 
-			
-		}
-		
-		return aup;
-	}
+  public TriggerReacceptanceOperation(AUP a, VOMSUser u) {
 
-	@Override
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission().setSuspendPermission());
+    this.aup = a;
+    this.user = u;
+  }
 
-	}
+  public TriggerReacceptanceOperation(AUP a) {
+
+    this.aup = a;
+    this.user = null;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    if (user == null)
+      aup.getActiveVersion().setLastForcedReacceptanceTime(new Date());
+    else {
+      AUPAcceptanceRecord record = user.getAUPAccceptanceRecord(aup
+        .getActiveVersion());
+
+      if (record != null && !record.hasExpired())
+        record.setValid(false);
+
+    }
+
+    return aup;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission()
+      .setSuspendPermission());
+
+  }
 
 }

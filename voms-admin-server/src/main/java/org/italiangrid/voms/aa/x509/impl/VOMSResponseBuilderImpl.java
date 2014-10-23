@@ -19,7 +19,6 @@
 
 package org.italiangrid.voms.aa.x509.impl;
 
-
 import java.io.StringWriter;
 import java.util.List;
 
@@ -46,199 +45,200 @@ import org.w3c.dom.Element;
 
 public enum VOMSResponseBuilderImpl implements VOMSResponseBuilder {
 
-	INSTANCE;
+  INSTANCE;
 
-	private final Logger log = LoggerFactory.getLogger(VOMSResponseBuilderImpl.class);
+  private final Logger log = LoggerFactory
+    .getLogger(VOMSResponseBuilderImpl.class);
 
-	protected DocumentBuilder docBuilder;
+  protected DocumentBuilder docBuilder;
 
-	private TransformerFactory transformerFactory = TransformerFactory
-		.newInstance();
+  private TransformerFactory transformerFactory = TransformerFactory
+    .newInstance();
 
-	private VOMSResponseBuilderImpl() {
+  private VOMSResponseBuilderImpl() {
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-		factory.setIgnoringComments(true);
-		factory.setNamespaceAware(false);
-		factory.setValidating(false);
+    factory.setIgnoringComments(true);
+    factory.setNamespaceAware(false);
+    factory.setValidating(false);
 
-		try {
+    try {
 
-			docBuilder = factory.newDocumentBuilder();
+      docBuilder = factory.newDocumentBuilder();
 
-		} catch (ParserConfigurationException e) {
-			log.error("Error configuring DOM document builder: " + e.getMessage(), e);
-			throw new VOMSException(e);
-		}
+    } catch (ParserConfigurationException e) {
+      log.error("Error configuring DOM document builder: " + e.getMessage(), e);
+      throw new VOMSException(e);
+    }
 
-	}
+  }
 
-	protected String xmlDocAsString(Document doc) {
+  protected String xmlDocAsString(Document doc) {
 
-		Transformer transformer;
+    Transformer transformer;
 
-		try {
-			transformer = transformerFactory.newTransformer();
-		} catch (TransformerConfigurationException e) {
+    try {
+      transformer = transformerFactory.newTransformer();
+    } catch (TransformerConfigurationException e) {
 
-			log.error("Error creating XML transformer:" + e.getMessage(), e);
-			throw new VOMSException(e);
+      log.error("Error creating XML transformer:" + e.getMessage(), e);
+      throw new VOMSException(e);
 
-		}
+    }
 
-		StringWriter writer = new StringWriter();
+    StringWriter writer = new StringWriter();
 
-		DOMSource source = new DOMSource(doc);
-		StreamResult res = new StreamResult(writer);
+    DOMSource source = new DOMSource(doc);
+    StreamResult res = new StreamResult(writer);
 
-		try {
+    try {
 
-			transformer.transform(source, res);
-			writer.flush();
+      transformer.transform(source, res);
+      writer.flush();
 
-		} catch (TransformerException e) {
+    } catch (TransformerException e) {
 
-			log.error("Error caught serializing XML :" + e.getMessage());
-			if (log.isDebugEnabled())
-				log.error(e.getMessage(), e);
+      log.error("Error caught serializing XML :" + e.getMessage());
+      if (log.isDebugEnabled())
+        log.error(e.getMessage(), e);
 
-			throw new VOMSException("Error caugh serializing XML :", e);
+      throw new VOMSException("Error caugh serializing XML :", e);
 
-		}
-		String output = writer.toString();
-		log.debug("Serialized: {}", output);
-		return output;
-	}
+    }
+    String output = writer.toString();
+    log.debug("Serialized: {}", output);
+    return output;
+  }
 
-	@Override
-	public String createResponse(byte[] acBytes, List<VOMSWarningMessage> warnings) {
+  @Override
+  public String createResponse(byte[] acBytes, List<VOMSWarningMessage> warnings) {
 
-		Document response = docBuilder.newDocument();
-		VOMSResponseFragment frag = new VOMSResponseFragment(response);
+    Document response = docBuilder.newDocument();
+    VOMSResponseFragment frag = new VOMSResponseFragment(response);
 
-		frag.buildACElement(Base64.encodeBytes(acBytes), warnings);
-		response.appendChild(frag.getFragment());
+    frag.buildACElement(Base64.encodeBytes(acBytes), warnings);
+    response.appendChild(frag.getFragment());
 
-		return xmlDocAsString(response);
-	}
+    return xmlDocAsString(response);
+  }
 
-	@Override
-	public String createErrorResponse(VOMSErrorMessage errorMessage) {
+  @Override
+  public String createErrorResponse(VOMSErrorMessage errorMessage) {
 
-		Document response = docBuilder.newDocument();
-		VOMSResponseFragment frag = new VOMSResponseFragment(response);
+    Document response = docBuilder.newDocument();
+    VOMSResponseFragment frag = new VOMSResponseFragment(response);
 
-		frag.buildErrorElement(errorMessage);
-		response.appendChild(frag.getFragment());
+    frag.buildErrorElement(errorMessage);
+    response.appendChild(frag.getFragment());
 
-		return xmlDocAsString(response);
-	}
+    return xmlDocAsString(response);
+  }
 
-	@Override
-	public String createLegacyErrorResponse(VOMSErrorMessage errorMessage) {
+  @Override
+  public String createLegacyErrorResponse(VOMSErrorMessage errorMessage) {
 
-		Document response = docBuilder.newDocument();
-		VOMSResponseFragment frag = new VOMSResponseFragment(response);
+    Document response = docBuilder.newDocument();
+    VOMSResponseFragment frag = new VOMSResponseFragment(response);
 
-		frag.buildLegacyErrorElement(errorMessage);
-		response.appendChild(frag.getFragment());
+    frag.buildLegacyErrorElement(errorMessage);
+    response.appendChild(frag.getFragment());
 
-		return xmlDocAsString(response);
-	}
+    return xmlDocAsString(response);
+  }
 }
 
 class VOMSResponseFragment {
 
-	private Document doc;
-	DocumentFragment fragment;
+  private Document doc;
+  DocumentFragment fragment;
 
-	VOMSResponseFragment(Document document) {
+  VOMSResponseFragment(Document document) {
 
-		this.doc = document;
-		fragment = doc.createDocumentFragment();
+    this.doc = document;
+    fragment = doc.createDocumentFragment();
 
-	}
+  }
 
-	void buildACElement(String base64EncodedACString, 
-		List<VOMSWarningMessage> warnings) {
+  void buildACElement(String base64EncodedACString,
+    List<VOMSWarningMessage> warnings) {
 
-		Element root = doc.createElement("voms");
-		fragment.appendChild(root);
+    Element root = doc.createElement("voms");
+    fragment.appendChild(root);
 
-		Element ac = doc.createElement("ac");
-		appendTextChild(ac, base64EncodedACString);
-		root.appendChild(ac);
-		
-		for (VOMSWarningMessage w: warnings){
-			Element warningElement = doc.createElement("warning");
-			String warningMessage = String.format("WARNING: %s : %s", 
-				w.getVo(), w.getMessage());
-			appendTextChild(warningElement, warningMessage);
-			root.appendChild(warningElement);
-		}
+    Element ac = doc.createElement("ac");
+    appendTextChild(ac, base64EncodedACString);
+    root.appendChild(ac);
 
-	}
+    for (VOMSWarningMessage w : warnings) {
+      Element warningElement = doc.createElement("warning");
+      String warningMessage = String.format("WARNING: %s : %s", w.getVo(),
+        w.getMessage());
+      appendTextChild(warningElement, warningMessage);
+      root.appendChild(warningElement);
+    }
 
-	void buildLegacyErrorElement(VOMSErrorMessage m) {
+  }
 
-		Element root = doc.createElement("vomsans");
-		Element error = doc.createElement("error");
-		Element errorItem = doc.createElement("item");
-		Element errorItemNumber = doc.createElement("number");
-		Element errorItemMessage = doc.createElement("message");
-		Element ac = doc.createElement("ac");
-		Element version = doc.createElement("version");
+  void buildLegacyErrorElement(VOMSErrorMessage m) {
 
-		appendTextChild(errorItemNumber, Integer.toString
-			(m.getError().getLegacyErrorCode()));
+    Element root = doc.createElement("vomsans");
+    Element error = doc.createElement("error");
+    Element errorItem = doc.createElement("item");
+    Element errorItemNumber = doc.createElement("number");
+    Element errorItemMessage = doc.createElement("message");
+    Element ac = doc.createElement("ac");
+    Element version = doc.createElement("version");
 
-		appendTextChild(errorItemMessage, m.getMessage());
+    appendTextChild(errorItemNumber,
+      Integer.toString(m.getError().getLegacyErrorCode()));
 
-		appendTextChild(version, "3");
-		
-		// This nonsense is needed so that legacy voms-clients correctly parse the 
-		// generated response and report errors as expected.
-		appendTextChild(ac, "QQ==\n");
+    appendTextChild(errorItemMessage, m.getMessage());
 
-		root.appendChild(version);
-		root.appendChild(error);
-		root.appendChild(ac);
+    appendTextChild(version, "3");
 
-		error.appendChild(errorItem);
-		errorItem.appendChild(errorItemNumber);
-		errorItem.appendChild(errorItemMessage);
+    // This nonsense is needed so that legacy voms-clients correctly parse the
+    // generated response and report errors as expected.
+    appendTextChild(ac, "QQ==\n");
 
-		fragment.appendChild(root);
-	}
+    root.appendChild(version);
+    root.appendChild(error);
+    root.appendChild(ac);
 
-	void buildErrorElement(VOMSErrorMessage m) {
+    error.appendChild(errorItem);
+    errorItem.appendChild(errorItemNumber);
+    errorItem.appendChild(errorItemMessage);
 
-		Element root = doc.createElement("voms");
-		Element error = doc.createElement("error");
-		Element errorCodeElement = doc.createElement("code");
-		Element errorMessageElement = doc.createElement("message");
+    fragment.appendChild(root);
+  }
 
-		appendTextChild(errorMessageElement, m.getMessage());
-		
-		appendTextChild(errorCodeElement, Integer.toString(m.getError()
-			.getLegacyErrorCode()));
-		
-		error.appendChild(errorCodeElement);
-		error.appendChild(errorMessageElement);
-		
-		root.appendChild(error);
-		fragment.appendChild(root);
-	}
+  void buildErrorElement(VOMSErrorMessage m) {
 
-	DocumentFragment getFragment() {
+    Element root = doc.createElement("voms");
+    Element error = doc.createElement("error");
+    Element errorCodeElement = doc.createElement("code");
+    Element errorMessageElement = doc.createElement("message");
 
-		return fragment;
-	}
+    appendTextChild(errorMessageElement, m.getMessage());
 
-	private void appendTextChild(Element e, String text) {
+    appendTextChild(errorCodeElement,
+      Integer.toString(m.getError().getLegacyErrorCode()));
 
-		e.appendChild(doc.createTextNode(text));
-	}
+    error.appendChild(errorCodeElement);
+    error.appendChild(errorMessageElement);
+
+    root.appendChild(error);
+    fragment.appendChild(root);
+  }
+
+  DocumentFragment getFragment() {
+
+    return fragment;
+  }
+
+  private void appendTextChild(Element e, String text) {
+
+    e.appendChild(doc.createTextNode(text));
+  }
 
 }

@@ -42,153 +42,156 @@ import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
+@Results({
 
-@Results( { 
-	
-	@Result(name = BaseAction.SUCCESS, location = "searchResults.jsp"),
-	@Result(name = BaseAction.INPUT, location = "searchResults.jsp")
-	
+@Result(name = BaseAction.SUCCESS, location = "searchResults.jsp"),
+  @Result(name = BaseAction.INPUT, location = "searchResults.jsp")
+
 })
 public class QueryDatabaseAction extends BaseAction implements
-		ModelDriven<List<VOMSOrgDBPerson>>, Preparable {
+  ModelDriven<List<VOMSOrgDBPerson>>, Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	protected RequesterInfo requester;
+  private static final long serialVersionUID = 1L;
 
-	String emailAddress;
+  protected RequesterInfo requester;
 
-	String name;
-	String surname;
+  String emailAddress;
 
-	List<VOMSOrgDBPerson> searchResults;
-	
-	String experimentName;
-	
-	protected RequesterInfo requesterInfoFromCurrentAdmin() {
+  String name;
+  String surname;
 
-		RequesterInfo i = new RequesterInfo();
-		CurrentAdmin admin = CurrentAdmin.instance();
-		i.setCertificateSubject(admin.getRealSubject());
-		i.setCertificateIssuer(admin.getRealIssuer());
-		i.setEmailAddress(admin.getRealEmailAddress());
+  List<VOMSOrgDBPerson> searchResults;
 
-		return i;
+  String experimentName;
 
-	}
-	
-	public void prepare() throws Exception {
-		requester = requesterInfoFromCurrentAdmin();	
-	}
-		
-	
+  protected RequesterInfo requesterInfoFromCurrentAdmin() {
 
-	@Override
-	public String execute() throws Exception {
+    RequesterInfo i = new RequesterInfo();
+    CurrentAdmin admin = CurrentAdmin.instance();
+    i.setCertificateSubject(admin.getRealSubject());
+    i.setCertificateIssuer(admin.getRealIssuer());
+    i.setEmailAddress(admin.getRealEmailAddress());
 
-		try {
-			
-			requester.setName(name);
-			requester.setSurname(surname);
-			requester.setEmailAddress(emailAddress);
+    return i;
 
-			PluginConfigurator configuredPlugin = PluginManager.instance()
-					.getConfiguredPlugin(OrgDBConfigurator.class.getName());
+  }
 
-			experimentName = configuredPlugin
-					.getPluginProperty(OrgDBConfigurator.ORGDB_EXPERIMENT_NAME_PROPERTY);
-			
-			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
-					.getVOMSPersonDAO();
+  public void prepare() throws Exception {
 
-			searchResults = new ArrayList<VOMSOrgDBPerson>();
-			
-			VOMSOrgDBPerson exactMatch =  dao
-					.findPersonWithValidExperimentParticipationByEmail(
-							emailAddress, experimentName);
+    requester = requesterInfoFromCurrentAdmin();
+  }
 
-			if (exactMatch == null) {
+  @Override
+  public String execute() throws Exception {
 
-				
-				searchResults = dao
-						.findPersonsWithValidExperimentParticipationByName(
-								name, surname, experimentName);
-				
-				if (searchResults.isEmpty()) {
-					addActionError(String
-							.format(
-									"No valid participation found for '%s %s' for experiment '%s'",
-									name, surname, experimentName));
-				}else{
-					addActionMessage(String.format("Matches found for name '%s %s' for experiment '%s'", name, surname, experimentName)); 
-				}
-			
-			}else{
-				
-				addActionMessage("Found the following match for email '"+emailAddress+"'.");
-				searchResults.add(exactMatch);
-			}
+    try {
 
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
+      requester.setName(name);
+      requester.setSurname(surname);
+      requester.setEmailAddress(emailAddress);
 
-		return SUCCESS;
+      PluginConfigurator configuredPlugin = PluginManager.instance()
+        .getConfiguredPlugin(OrgDBConfigurator.class.getName());
 
-	}
+      experimentName = configuredPlugin
+        .getPluginProperty(OrgDBConfigurator.ORGDB_EXPERIMENT_NAME_PROPERTY);
 
-	
+      OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
 
-	
-	
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
-	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+      searchResults = new ArrayList<VOMSOrgDBPerson>();
 
-	/**
-	 * @param emailAddress
-	 *            the emailAddress to set
-	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-	
+      VOMSOrgDBPerson exactMatch = dao
+        .findPersonWithValidExperimentParticipationByEmail(emailAddress,
+          experimentName);
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your name.")
-	public String getName() {
-		return name;
-	}
+      if (exactMatch == null) {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        searchResults = dao.findPersonsWithValidExperimentParticipationByName(
+          name, surname, experimentName);
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your surname.")
-	public String getSurname() {
-		return surname;
-	}
+        if (searchResults.isEmpty()) {
+          addActionError(String.format(
+            "No valid participation found for '%s %s' for experiment '%s'",
+            name, surname, experimentName));
+        } else {
+          addActionMessage(String.format(
+            "Matches found for name '%s %s' for experiment '%s'", name,
+            surname, experimentName));
+        }
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+      } else {
 
-	public List<VOMSOrgDBPerson> getModel() {
-		
-		return searchResults;
-	}
+        addActionMessage("Found the following match for email '" + emailAddress
+          + "'.");
+        searchResults.add(exactMatch);
+      }
 
-	public String getExperimentName() {
-		return experimentName;
-	}
+    } catch (Exception e) {
+      addActionError(e.getMessage());
+    }
 
+    return SUCCESS;
 
-	public RequesterInfo getRequester() {
-		return requester;
-	}
-	
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your email address.")
+  @EmailValidator(type = ValidatorType.FIELD,
+    message = "Please enter a valid email address.")
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  /**
+   * @param emailAddress
+   *          the emailAddress to set
+   */
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your name.")
+  public String getName() {
+
+    return name;
+  }
+
+  public void setName(String name) {
+
+    this.name = name;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your surname.")
+  public String getSurname() {
+
+    return surname;
+  }
+
+  public void setSurname(String surname) {
+
+    this.surname = surname;
+  }
+
+  public List<VOMSOrgDBPerson> getModel() {
+
+    return searchResults;
+  }
+
+  public String getExperimentName() {
+
+    return experimentName;
+  }
+
+  public RequesterInfo getRequester() {
+
+    return requester;
+  }
+
 }

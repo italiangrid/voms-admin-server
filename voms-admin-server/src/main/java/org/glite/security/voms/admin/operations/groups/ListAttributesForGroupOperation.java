@@ -26,31 +26,31 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class ListAttributesForGroupOperation extends BaseVomsOperation {
 
-	VOMSGroup _vomsGroup;
+  VOMSGroup _vomsGroup;
 
-	private ListAttributesForGroupOperation(VOMSGroup g) {
+  private ListAttributesForGroupOperation(VOMSGroup g) {
 
-		_vomsGroup = g;
+    _vomsGroup = g;
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return _vomsGroup.getAttributes();
-	}
+    return _vomsGroup.getAttributes();
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		addRequiredPermissionOnPath(_vomsGroup.getParent(), VOMSPermission
-				.getContainerReadPermission());
+    addRequiredPermissionOnPath(_vomsGroup.getParent(),
+      VOMSPermission.getContainerReadPermission());
 
-		addRequiredPermission(VOMSContext.instance(_vomsGroup), VOMSPermission
-				.getEmptyPermissions().setAttributesReadPermission());
+    addRequiredPermission(VOMSContext.instance(_vomsGroup), VOMSPermission
+      .getEmptyPermissions().setAttributesReadPermission());
 
-	}
+  }
 
-	public static ListAttributesForGroupOperation instance(VOMSGroup g) {
+  public static ListAttributesForGroupOperation instance(VOMSGroup g) {
 
-		return new ListAttributesForGroupOperation(g);
-	}
+    return new ListAttributesForGroupOperation(g);
+  }
 }

@@ -22,56 +22,59 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 
-
 public abstract class CertificateActionSupport extends UserActionSupport {
-    
-    /**
+
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    Long certificateId;
+  Long certificateId;
 
-    Certificate certificate;
+  Certificate certificate;
 
-    /**
-     * @return the certificateId
-     */
-    public Long getCertificateId() {
-        return certificateId;
-    }
+  /**
+   * @return the certificateId
+   */
+  public Long getCertificateId() {
 
-    /**
-     * @param certificateId the certificateId to set
-     */
-    public void setCertificateId(Long certificateId) {
-        this.certificateId = certificateId;
-    }
+    return certificateId;
+  }
 
-    /**
-     * @return the certificate
-     */
-    public Certificate getCertificate() {
-        return certificate;
-    }
+  /**
+   * @param certificateId
+   *          the certificateId to set
+   */
+  public void setCertificateId(Long certificateId) {
 
-    /**
-     * @param certificate the certificate to set
-     */
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
-    }
+    this.certificateId = certificateId;
+  }
 
-    @Override
-    public void prepare() throws Exception {
-    
-    	if (certificate == null)
-    		certificate = CertificateDAO.instance().findById(certificateId);
-    
-    	super.prepare();
-    
-    }
-    
-    
+  /**
+   * @return the certificate
+   */
+  public Certificate getCertificate() {
+
+    return certificate;
+  }
+
+  /**
+   * @param certificate
+   *          the certificate to set
+   */
+  public void setCertificate(Certificate certificate) {
+
+    this.certificate = certificate;
+  }
+
+  @Override
+  public void prepare() throws Exception {
+
+    if (certificate == null)
+      certificate = CertificateDAO.instance().findById(certificateId);
+
+    super.prepare();
+
+  }
 
 }

@@ -24,20 +24,20 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class DeleteAllUsersOperation extends BaseVoRWOperation {
 
-	private DeleteAllUsersOperation() {
+  private DeleteAllUsersOperation() {
 
-	}
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		VOMSUserDAO.instance().deleteAll();
+    VOMSUserDAO.instance().deleteAll();
 
-		return null;
-	}
+    return null;
+  }
 
-	public static DeleteAllUsersOperation instance() {
+  public static DeleteAllUsersOperation instance() {
 
-		return new DeleteAllUsersOperation();
-	}
+    return new DeleteAllUsersOperation();
+  }
 
 }

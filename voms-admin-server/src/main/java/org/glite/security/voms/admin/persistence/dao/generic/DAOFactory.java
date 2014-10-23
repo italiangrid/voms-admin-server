@@ -37,55 +37,56 @@ import org.glite.security.voms.admin.persistence.dao.hibernate.HibernateDAOFacto
  */
 public abstract class DAOFactory {
 
-	private static Logger log = LoggerFactory.getLogger(DAOFactory.class);
+  private static Logger log = LoggerFactory.getLogger(DAOFactory.class);
 
-	/**
-	 * Creates a standalone DAOFactory that returns unmanaged DAO beans for use
-	 * in any environment Hibernate has been configured for. Uses
-	 * HibernateUtil/SessionFactory and Hibernate context propagation
-	 * (CurrentSessionContext), thread-bound or transaction-bound, and
-	 * transaction scoped.
-	 */
-	public static final Class HIBERNATE = HibernateDAOFactory.class;
+  /**
+   * Creates a standalone DAOFactory that returns unmanaged DAO beans for use in
+   * any environment Hibernate has been configured for. Uses
+   * HibernateUtil/SessionFactory and Hibernate context propagation
+   * (CurrentSessionContext), thread-bound or transaction-bound, and transaction
+   * scoped.
+   */
+  public static final Class HIBERNATE = HibernateDAOFactory.class;
 
-	/**
-	 * Factory method for instantiation of concrete factories.
-	 */
-	public static DAOFactory instance(Class factory) {
-		try {
-			log.debug("Creating concrete DAO factory: " + factory);
-			return (DAOFactory) factory.newInstance();
-		} catch (Exception ex) {
-			throw new RuntimeException("Couldn't create DAOFactory: " + factory);
-		}
-	}
+  /**
+   * Factory method for instantiation of concrete factories.
+   */
+  public static DAOFactory instance(Class factory) {
 
-	public static DAOFactory instance() {
+    try {
+      log.debug("Creating concrete DAO factory: " + factory);
+      return (DAOFactory) factory.newInstance();
+    } catch (Exception ex) {
+      throw new RuntimeException("Couldn't create DAOFactory: " + factory);
+    }
+  }
 
-		return instance(HIBERNATE);
-	}
+  public static DAOFactory instance() {
 
-	// Add your DAO interfaces here
-	public abstract AUPDAO getAUPDAO();
+    return instance(HIBERNATE);
+  }
 
-	public abstract AUPVersionDAO getAUPVersionDAO();
+  // Add your DAO interfaces here
+  public abstract AUPDAO getAUPDAO();
 
-	public abstract TaskDAO getTaskDAO();
+  public abstract AUPVersionDAO getAUPVersionDAO();
 
-	public abstract TaskTypeDAO getTaskTypeDAO();
+  public abstract TaskDAO getTaskDAO();
 
-	public abstract TaskLogRecordDAO getTaskLogRecordDAO();
+  public abstract TaskTypeDAO getTaskTypeDAO();
 
-	public abstract RequestDAO getRequestDAO();
+  public abstract TaskLogRecordDAO getTaskLogRecordDAO();
 
-	public abstract RequesterInfoDAO getRequesterInfoDAO();
+  public abstract RequestDAO getRequestDAO();
 
-	public abstract GroupDAO getGroupDAO();
+  public abstract RequesterInfoDAO getRequesterInfoDAO();
 
-	public abstract UserDAO getUserDAO();
-	
-	public abstract PeriodicNotificationsDAO getPeriodicNotificationsDAO();
-	
-	public abstract GroupManagerDAO getGroupManagerDAO();
+  public abstract GroupDAO getGroupDAO();
+
+  public abstract UserDAO getUserDAO();
+
+  public abstract PeriodicNotificationsDAO getPeriodicNotificationsDAO();
+
+  public abstract GroupManagerDAO getGroupManagerDAO();
 
 }

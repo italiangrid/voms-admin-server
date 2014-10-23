@@ -37,70 +37,72 @@ import eu.emi.security.authn.x509.impl.CertificateUtils;
 import eu.emi.security.authn.x509.impl.CertificateUtils.Encoding;
 
 /**
- * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a> 
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
  */
 public final class UpdateCATask implements Runnable {
 
-	static final Logger log = LoggerFactory.getLogger(UpdateCATask.class);
+  static final Logger log = LoggerFactory.getLogger(UpdateCATask.class);
 
-	private void directorySanityChecks(File directory) {
-		if (!directory.exists())
-			throw new VOMSException("Local trust directory does not exists:"
-					+ directory.getAbsolutePath());
+  private void directorySanityChecks(File directory) {
 
-		if (!directory.isDirectory())
-			throw new VOMSException("Local trust directory is not a directory:"
-					+ directory.getAbsolutePath());
+    if (!directory.exists())
+      throw new VOMSException("Local trust directory does not exists:"
+        + directory.getAbsolutePath());
 
-		if (!directory.canRead())
-			throw new VOMSException("Local trust directory is not readable:"
-					+ directory.getAbsolutePath());
+    if (!directory.isDirectory())
+      throw new VOMSException("Local trust directory is not a directory:"
+        + directory.getAbsolutePath());
 
-		if (!directory.canExecute())
-			throw new VOMSException("Local trust directory is not traversable:"
-					+ directory.getAbsolutePath());
-	}
+    if (!directory.canRead())
+      throw new VOMSException("Local trust directory is not readable:"
+        + directory.getAbsolutePath());
 
-	public void run() {
+    if (!directory.canExecute())
+      throw new VOMSException("Local trust directory is not traversable:"
+        + directory.getAbsolutePath());
+  }
 
-		String trustAnchorsDir = VOMSConfiguration.instance().getString(
-				VOMSConfigurationConstants.TRUST_ANCHORS_DIR,
-				"/etc/grid-security/certificates");
+  public void run() {
 
-		log.debug("Updating CAs from: " + trustAnchorsDir);
+    String trustAnchorsDir = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.TRUST_ANCHORS_DIR,
+      "/etc/grid-security/certificates");
 
-		VOMSCADAO dao = VOMSCADAO.instance();
+    log.debug("Updating CAs from: " + trustAnchorsDir);
 
-		File dir = new File(trustAnchorsDir);
-		directorySanityChecks(dir);
+    VOMSCADAO dao = VOMSCADAO.instance();
 
-		File[] certFiles = dir.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.matches(".*\\.\\d");
-			}
-		});
+    File dir = new File(trustAnchorsDir);
+    directorySanityChecks(dir);
 
-		for (File caFile : certFiles) {
-			log.debug("Parsing CA certificate from {}.", caFile);
+    File[] certFiles = dir.listFiles(new FilenameFilter() {
 
-			X509Certificate caCert;
+      public boolean accept(File dir, String name) {
 
-			try {
-				caCert = CertificateUtils.loadCertificate(new FileInputStream(
-						caFile), Encoding.PEM);
-				
-			} catch (IOException e) {
-				log.error(e.getMessage(), e);
-				continue;
-			}
+        return name.matches(".*\\.\\d");
+      }
+    });
 
-			String caDN = DNUtil.getOpenSSLSubject(caCert
-					.getSubjectX500Principal());
+    for (File caFile : certFiles) {
+      log.debug("Parsing CA certificate from {}.", caFile);
 
-			log.debug("Checking CA: " + caDN);
+      X509Certificate caCert;
 
-			dao.createIfMissing(caDN, null);
+      try {
+        caCert = CertificateUtils.loadCertificate(new FileInputStream(caFile),
+          Encoding.PEM);
 
-		}
-	}
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+        continue;
+      }
+
+      String caDN = DNUtil.getOpenSSLSubject(caCert.getSubjectX500Principal());
+
+      log.debug("Checking CA: " + caDN);
+
+      dao.createIfMissing(caDN, null);
+
+    }
+  }
 }

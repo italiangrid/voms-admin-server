@@ -24,35 +24,36 @@ import java.util.StringTokenizer;
 
 public final class EventMask extends BitSet {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public EventMask(EventType... eventTypes) {
+  public EventMask(EventType... eventTypes) {
 
-		for (EventType t : eventTypes)
-			set(t.bitNo);
-	}
+    for (EventType t : eventTypes)
+      set(t.bitNo);
+  }
 
-	public EventMask(String types) {
-		setTypes(types);
-	}
+  public EventMask(String types) {
 
-	public void setTypes(String types) {
+    setTypes(types);
+  }
 
-		if (types == null)
-			return;
+  public void setTypes(String types) {
 
-		StringTokenizer st = new StringTokenizer(types, ",");
-		while (st.hasMoreTokens()) {
+    if (types == null)
+      return;
 
-			String type = st.nextToken();
+    StringTokenizer st = new StringTokenizer(types, ",");
+    while (st.hasMoreTokens()) {
 
-			int bitNo = Integer.valueOf(type);
+      String type = st.nextToken();
 
-			set(bitNo);
-		}
-	}
+      int bitNo = Integer.valueOf(type);
+
+      set(bitNo);
+    }
+  }
 
 }

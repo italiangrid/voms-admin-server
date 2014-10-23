@@ -33,45 +33,45 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class CreateRoleOperation extends BaseVomsOperation {
 
-	String roleName;
-	
-	private CreateRoleOperation(String roleName) {
+  String roleName;
 
-		this.roleName = roleName;
-	}
+  private CreateRoleOperation(String roleName) {
 
-	private void setupACLs(VOMSRole r) {
+    this.roleName = roleName;
+  }
 
-		List groups = (List) ListGroupsOperation.instance().execute();
+  private void setupACLs(VOMSRole r) {
 
-		Iterator groupsIter = groups.iterator();
+    List groups = (List) ListGroupsOperation.instance().execute();
 
-		while (groupsIter.hasNext())
-			r.importACL((VOMSGroup) groupsIter.next());
+    Iterator groupsIter = groups.iterator();
 
-	}
+    while (groupsIter.hasNext())
+      r.importACL((VOMSGroup) groupsIter.next());
 
-	protected Object doExecute() {
+  }
 
-		VOMSRole r = VOMSRoleDAO.instance().create(roleName);
+  protected Object doExecute() {
 
-		setupACLs(r);
+    VOMSRole r = VOMSRoleDAO.instance().create(roleName);
 
-		HibernateFactory.getSession().save(r);
+    setupACLs(r);
 
-		return r;
-	}
+    HibernateFactory.getSession().save(r);
 
-	public static CreateRoleOperation instance(String roleName) {
+    return r;
+  }
 
-		return new CreateRoleOperation(roleName);
-	}
+  public static CreateRoleOperation instance(String roleName) {
 
-	protected void setupPermissions() {
+    return new CreateRoleOperation(roleName);
+  }
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerRWPermissions());
+  protected void setupPermissions() {
 
-	}
+    addRequiredPermission(VOMSContext.getVoContext(),
+      VOMSPermission.getContainerRWPermissions());
+
+  }
 
 }

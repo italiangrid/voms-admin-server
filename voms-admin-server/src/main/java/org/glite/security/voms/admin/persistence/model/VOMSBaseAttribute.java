@@ -34,76 +34,76 @@ import org.glite.security.voms.service.attributes.AttributeValue;
 
 @MappedSuperclass
 public abstract class VOMSBaseAttribute implements VomsAttributeValue,
-		Serializable {
+  Serializable {
 
-	@Id
-	@ManyToOne
-	@PrimaryKeyJoinColumn(name="a_id")
-	VOMSAttributeDescription attributeDescription;
-	
-	@Column(name="a_value")
-	String value;
-	
-	@Transient
-	String context;
+  @Id
+  @ManyToOne
+  @PrimaryKeyJoinColumn(name = "a_id")
+  VOMSAttributeDescription attributeDescription;
 
-	public AttributeValue asAttributeValue() {
+  @Column(name = "a_value")
+  String value;
 
-		AttributeClass aClass = getAttributeDescription().asAttributeClass();
+  @Transient
+  String context;
 
-		AttributeValue val = new AttributeValue();
-		val.setAttributeClass(aClass);
+  public AttributeValue asAttributeValue() {
 
-		val.setContext(getContext());
+    AttributeClass aClass = getAttributeDescription().asAttributeClass();
 
-		val.setValue(getValue());
+    AttributeValue val = new AttributeValue();
+    val.setAttributeClass(aClass);
 
-		return val;
-	}
+    val.setContext(getContext());
 
-	protected VOMSBaseAttribute() {
+    val.setValue(getValue());
 
-	}
+    return val;
+  }
 
-	protected VOMSBaseAttribute(VOMSAttributeDescription desc, String value) {
+  protected VOMSBaseAttribute() {
 
-		this.attributeDescription = desc;
-		this.value = value;
-	}
+  }
 
-	public VOMSAttributeDescription getAttributeDescription() {
+  protected VOMSBaseAttribute(VOMSAttributeDescription desc, String value) {
 
-		return attributeDescription;
-	}
+    this.attributeDescription = desc;
+    this.value = value;
+  }
 
-	public void setAttributeDescription(
-			VOMSAttributeDescription attributeDescription) {
+  public VOMSAttributeDescription getAttributeDescription() {
 
-		this.attributeDescription = attributeDescription;
-	}
+    return attributeDescription;
+  }
 
-	public void setContext(String context) {
+  public void setAttributeDescription(
+    VOMSAttributeDescription attributeDescription) {
 
-		this.context = context;
-	}
+    this.attributeDescription = attributeDescription;
+  }
 
-	public String getValue() {
+  public void setContext(String context) {
 
-		return value;
-	}
+    this.context = context;
+  }
 
-	public void setValue(String value) {
+  public String getValue() {
 
-		this.value = value;
-	}
+    return value;
+  }
 
-	public String getName() {
+  public void setValue(String value) {
 
-		return attributeDescription.getName();
-	}
+    this.value = value;
+  }
 
-	public void setName(String name) {
+  public String getName() {
 
-		attributeDescription.setName(name);
-	}
+    return attributeDescription.getName();
+  }
+
+  public void setName(String name) {
+
+    attributeDescription.setName(name);
+  }
 }

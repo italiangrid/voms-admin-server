@@ -22,14 +22,16 @@ package org.italiangrid.voms.aa.impl;
 
 import org.italiangrid.voms.aa.RequestContext;
 
-
 public class NullFilteringPolicy implements FQANFilteringPolicy {
 
-	public NullFilteringPolicy() {}
+  public NullFilteringPolicy() {
 
-	@Override
-	public boolean filterIssuedFQANs(RequestContext context) {
-		return false;
-	}
+  }
+
+  @Override
+  public boolean filterIssuedFQANs(RequestContext context) {
+
+    return false;
+  }
 
 }

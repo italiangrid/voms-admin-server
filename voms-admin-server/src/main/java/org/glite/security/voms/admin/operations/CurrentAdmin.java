@@ -39,281 +39,287 @@ import org.slf4j.LoggerFactory;
 
 public class CurrentAdmin {
 
-	private static final Logger log = LoggerFactory.getLogger(CurrentAdmin.class);
+  private static final Logger log = LoggerFactory.getLogger(CurrentAdmin.class);
 
-	private VOMSAdmin admin;
+  private VOMSAdmin admin;
 
-	public VOMSAdmin getAdmin() {
+  public VOMSAdmin getAdmin() {
 
-		return admin;
-	}
+    return admin;
+  }
 
-	protected CurrentAdmin(VOMSAdmin a) {
+  protected CurrentAdmin(VOMSAdmin a) {
 
-		this.admin = a;
-	}
-	
-	public static CurrentAdmin instance() {
+    this.admin = a;
+  }
 
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get();
+  public static CurrentAdmin instance() {
 
-		String adminDN = theContext.getClientName();
-		String caDN = theContext.getIssuerName();
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
 
-		VOMSAdmin admin = VOMSAdminDAO.instance().getByName(adminDN, caDN);
+    String adminDN = theContext.getClientName();
+    String caDN = theContext.getIssuerName();
 
-		if (admin == null)
-			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+    VOMSAdmin admin = VOMSAdminDAO.instance().getByName(adminDN, caDN);
 
-		return new CurrentAdmin(admin);
-	}
+    if (admin == null)
+      admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
 
-	public VOMSCA getCa() {
+    return new CurrentAdmin(admin);
+  }
 
-		return admin.getCa();
-	}
+  public VOMSCA getCa() {
 
-	public String getDn() {
+    return admin.getCa();
+  }
 
-		return admin.getDn();
-	}
+  public String getDn() {
 
-	public boolean isAuthorizedAdmin() {
+    return admin.getDn();
+  }
 
-		return !getAdmin().equals(
-				VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
-	}
+  public boolean isAuthorizedAdmin() {
 
-	public boolean isVoUser() {
+    return !getAdmin().equals(
+      VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
+  }
 
-		return (getVoUser() != null);
+  public boolean isVoUser() {
 
-	}
+    return (getVoUser() != null);
 
-	public boolean is(VOMSUser u){
-		
-		if (getVoUser() == null)
-			return false;
-		
-		return getVoUser().equals(u);
-		
-	}
-	public VOMSUser getVoUser() {
+  }
 
-		if (!isAuthorizedAdmin()) {
+  public boolean is(VOMSUser u) {
 
-			return VOMSUserDAO.instance().getByDNandCA(getRealSubject(),
-					getRealIssuer());
-		}
+    if (getVoUser() == null)
+      return false;
 
-		return VOMSUserDAO.instance()
-				.getByDNandCA(admin.getDn(), admin.getCa());
-	}
+    return getVoUser().equals(u);
 
-	public void createVoUser() {
+  }
 
-		VOMSUser usr = getVoUser();
+  public VOMSUser getVoUser() {
 
-		if (usr == null) {
+    if (!isAuthorizedAdmin()) {
 
-			VOMSUserDAO.instance().create(getRealSubject(), getRealIssuer(),
-					getRealCN(), null, getRealEmailAddress());
-		}
-	}
+      return VOMSUserDAO.instance().getByDNandCA(getRealSubject(),
+        getRealIssuer());
+    }
 
-	public boolean isVOAdmin() {
+    return VOMSUserDAO.instance().getByDNandCA(admin.getDn(), admin.getCa());
+  }
 
-		if (hasPermissions(VOMSContext.getVoContext(), VOMSPermission
-				.getAllPermissions()))
-			return true;
-		
-		if (hasPermissions(VOMSContext.getVoContext(), VOMSPermission.getRequestsRWPermissions()))
-			return true;
+  public void createVoUser() {
 
-		return false;
-	}
+    VOMSUser usr = getVoUser();
 
-	public boolean canBrowseVO() {
-		return hasPermissions(VOMSContext.getVoContext(), VOMSPermission
-				.getContainerReadPermission().setMembershipReadPermission());
-	}
+    if (usr == null) {
 
-	public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
-		
-		ACL acl = c.getACL();
+      VOMSUserDAO.instance().create(getRealSubject(), getRealIssuer(),
+        getRealCN(), null, getRealEmailAddress());
+    }
+  }
 
-		log.debug("Checking if admin " + getAdmin() + " has permission " + p
-				+ " in context " + c);
+  public boolean isVOAdmin() {
 
-		log.debug("ACL for this context: ");
-		log.debug(acl.toString());
-		
-		if (isUnauthenticated()){
-			
-			VOMSPermission unauthPerms = acl.getUnauthenticatedClientPermissions();
-			
-			if (unauthPerms == null)
-				return false;
-			
-			return unauthPerms.satisfies(p);
-			
-		}
+    if (hasPermissions(VOMSContext.getVoContext(),
+      VOMSPermission.getAllPermissions()))
+      return true;
 
-		VOMSUser adminUser = getVoUser();
+    if (hasPermissions(VOMSContext.getVoContext(),
+      VOMSPermission.getRequestsRWPermissions()))
+      return true;
 
-		log.debug("Admin user: " + adminUser);
+    return false;
+  }
 
-		VOMSPermission personalPermissions = acl.getPermissions(admin);
+  public boolean canBrowseVO() {
 
-		log.debug("Personal permissions for admin: " + personalPermissions);
+    return hasPermissions(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
+  }
 
-		VOMSPermission anyAuthenticatedUserPermissions = acl
-				.getAnyAuthenticatedUserPermissions();
+  public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
 
-		log.debug("Permissions for any authenticated user: "
-				+ anyAuthenticatedUserPermissions);
+    ACL acl = c.getACL();
 
-		VOMSPermissionList adminPerms = VOMSPermissionList.instance();
-		
-		VOMSPermission unauthenticatedClientPermissions = acl.getUnauthenticatedClientPermissions();
-		log.debug("Permissions for unauthenticated clients: "+ unauthenticatedClientPermissions);
+    log.debug("Checking if admin " + getAdmin() + " has permission " + p
+      + " in context " + c);
 
-		if (personalPermissions == null && adminUser == null
-				&& anyAuthenticatedUserPermissions == null && unauthenticatedClientPermissions == null)
-			return false;
+    log.debug("ACL for this context: ");
+    log.debug(acl.toString());
 
-		if (personalPermissions != null)
-			adminPerms.addPermission(personalPermissions);
+    if (isUnauthenticated()) {
 
-		if (anyAuthenticatedUserPermissions != null)
-			adminPerms.addPermission(anyAuthenticatedUserPermissions);
-		
-		if (unauthenticatedClientPermissions != null)
-			adminPerms.addPermission(unauthenticatedClientPermissions);
+      VOMSPermission unauthPerms = acl.getUnauthenticatedClientPermissions();
 
-		if (adminUser == null)
-			return adminPerms.satifies(p);
+      if (unauthPerms == null)
+        return false;
 
-		// AdminUser != null
-		Map<VOMSAdmin, VOMSPermission> groupPermissions = acl
-				.getGroupPermissions();
-		Map<VOMSAdmin, VOMSPermission> rolePermissions = acl
-				.getRolePermissions();
+      return unauthPerms.satisfies(p);
 
-		log.debug("Group permissions empty? " + groupPermissions.isEmpty());
-		log.debug("Role permissions empty? " + rolePermissions.isEmpty());
+    }
 
-		if (!groupPermissions.isEmpty()) {
+    VOMSUser adminUser = getVoUser();
 
-			for (Map.Entry<VOMSAdmin, VOMSPermission> entry : groupPermissions
-					.entrySet()) {
+    log.debug("Admin user: " + adminUser);
 
-				String groupName = entry.getKey().getDn();
+    VOMSPermission personalPermissions = acl.getPermissions(admin);
 
-				if (adminUser.isMember(groupName)) {
-					adminPerms.addPermission((VOMSPermission) entry.getValue());
-					log
-							.debug("Adding group permission "
-									+ entry.getValue()
-									+ " to admin's permission set. admin is a member of the group '"
-									+ groupName + "'.");
-				}
+    log.debug("Personal permissions for admin: " + personalPermissions);
 
-			}
-		}
+    VOMSPermission anyAuthenticatedUserPermissions = acl
+      .getAnyAuthenticatedUserPermissions();
 
-		if (!rolePermissions.isEmpty()) {
+    log.debug("Permissions for any authenticated user: "
+      + anyAuthenticatedUserPermissions);
 
-			for (Map.Entry<VOMSAdmin, VOMSPermission> entry : rolePermissions
-					.entrySet()) {
-				String roleName = entry.getKey().getDn();
+    VOMSPermissionList adminPerms = VOMSPermissionList.instance();
 
-				log.debug("Checking if current admin has role: " + roleName);
-				if (adminUser.hasRole(roleName)) {
+    VOMSPermission unauthenticatedClientPermissions = acl
+      .getUnauthenticatedClientPermissions();
+    log.debug("Permissions for unauthenticated clients: "
+      + unauthenticatedClientPermissions);
 
-					adminPerms.addPermission(entry.getValue());
-					log.debug("Adding role permission " + entry.getValue()
-							+ " to admin's permission set. admin has role '"
-							+ roleName + "'.");
-				}
-			}
-		}
+    if (personalPermissions == null && adminUser == null
+      && anyAuthenticatedUserPermissions == null
+      && unauthenticatedClientPermissions == null)
+      return false;
 
-		log.debug("Admin permissions: " + adminPerms);
+    if (personalPermissions != null)
+      adminPerms.addPermission(personalPermissions);
 
-		return adminPerms.satifies(p);
-	}
+    if (anyAuthenticatedUserPermissions != null)
+      adminPerms.addPermission(anyAuthenticatedUserPermissions);
 
-	public String getRealSubject() {
+    if (unauthenticatedClientPermissions != null)
+      adminPerms.addPermission(unauthenticatedClientPermissions);
 
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get();
+    if (adminUser == null)
+      return adminPerms.satifies(p);
 
-		return theContext.getClientName();
+    // AdminUser != null
+    Map<VOMSAdmin, VOMSPermission> groupPermissions = acl.getGroupPermissions();
+    Map<VOMSAdmin, VOMSPermission> rolePermissions = acl.getRolePermissions();
 
-	}
+    log.debug("Group permissions empty? " + groupPermissions.isEmpty());
+    log.debug("Role permissions empty? " + rolePermissions.isEmpty());
 
-	public String getRealIssuer() {
+    if (!groupPermissions.isEmpty()) {
 
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get();
+      for (Map.Entry<VOMSAdmin, VOMSPermission> entry : groupPermissions
+        .entrySet()) {
 
-		return theContext.getIssuerName();
+        String groupName = entry.getKey().getDn();
 
-	}
+        if (adminUser.isMember(groupName)) {
+          adminPerms.addPermission((VOMSPermission) entry.getValue());
+          log.debug("Adding group permission " + entry.getValue()
+            + " to admin's permission set. admin is a member of the group '"
+            + groupName + "'.");
+        }
 
-	public String getRealCN() {
+      }
+    }
 
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get();
-		if (theContext.getClientCert() ==  null)
-			return null;
-		
-		String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
-				.getSubjectX500Principal());
+    if (!rolePermissions.isEmpty()) {
 
-		Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
-		if (m.find())
-			return m.group(1); // get the CN field
-		else
-			return null;
-	}
+      for (Map.Entry<VOMSAdmin, VOMSPermission> entry : rolePermissions
+        .entrySet()) {
+        String roleName = entry.getKey().getDn();
 
-	public String getRealEmailAddress() {
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get();
-		
-		if (theContext.getClientCert() ==  null)
-			return null;
-		
-		String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
-				.getSubjectX500Principal());
+        log.debug("Checking if current admin has role: " + roleName);
+        if (adminUser.hasRole(roleName)) {
 
-		String candidateEmail = DNUtil.getEmailAddressFromDN(DNUtil
-				.normalizeEmailAddressInDN(name));
+          adminPerms.addPermission(entry.getValue());
+          log.debug("Adding role permission " + entry.getValue()
+            + " to admin's permission set. admin has role '" + roleName + "'.");
+        }
+      }
+    }
 
-		if (candidateEmail == null)
-			candidateEmail = DNUtil.getEmailAddressFromExtensions(theContext
-					.getClientCert());
+    log.debug("Admin permissions: " + adminPerms);
 
-		return candidateEmail;
+    return adminPerms.satifies(p);
+  }
 
-	}
+  public String getRealSubject() {
 
-	public List<VOMSAttribute> getVOMSAttributes(){
-		
-		VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext.get(); 
-		if (theContext.getClientCert() ==  null)
-			return null;
-		
-		return theContext.getVOMSAttributes();
-	}
-	
-	
-	public String toString() {
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
 
-		return admin.toString();
-	}
+    return theContext.getClientName();
 
-	public boolean isUnauthenticated(){
-		
-		return admin.isUnauthenticated();
-		
-	}
+  }
+
+  public String getRealIssuer() {
+
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+
+    return theContext.getIssuerName();
+
+  }
+
+  public String getRealCN() {
+
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+    if (theContext.getClientCert() == null)
+      return null;
+
+    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
+      .getSubjectX500Principal());
+
+    Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
+    if (m.find())
+      return m.group(1); // get the CN field
+    else
+      return null;
+  }
+
+  public String getRealEmailAddress() {
+
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+
+    if (theContext.getClientCert() == null)
+      return null;
+
+    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
+      .getSubjectX500Principal());
+
+    String candidateEmail = DNUtil.getEmailAddressFromDN(DNUtil
+      .normalizeEmailAddressInDN(name));
+
+    if (candidateEmail == null)
+      candidateEmail = DNUtil.getEmailAddressFromExtensions(theContext
+        .getClientCert());
+
+    return candidateEmail;
+
+  }
+
+  public List<VOMSAttribute> getVOMSAttributes() {
+
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+    if (theContext.getClientCert() == null)
+      return null;
+
+    return theContext.getVOMSAttributes();
+  }
+
+  public String toString() {
+
+    return admin.toString();
+  }
+
+  public boolean isUnauthenticated() {
+
+    return admin.isUnauthenticated();
+
+  }
 }

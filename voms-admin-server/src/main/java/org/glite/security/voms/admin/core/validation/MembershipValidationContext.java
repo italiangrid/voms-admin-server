@@ -29,17 +29,16 @@ import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMe
 
 public interface MembershipValidationContext {
 
-	AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy();
-	
-	ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy();
-	
-	ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy();
-	
-	HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy();
-	
-	HandleExpiredMembersStrategy getHandleExpiredMembersStrategy();
-	
-	HandleExpiringMembersStrategy getHandleExpiringMembersStrategy();
-	
-	
+  AUPFailingMembersLookupStrategy getAupFailingMembersLookupStrategy();
+
+  ExpiredMembersLookupStrategy getExpiredMembersLookupStrategy();
+
+  ExpiringMembersLookupStrategy getExpiringMembersLookupStrategy();
+
+  HandleAUPFailingMembersStrategy getHandleAUPFailingMembersStrategy();
+
+  HandleExpiredMembersStrategy getHandleExpiredMembersStrategy();
+
+  HandleExpiringMembersStrategy getHandleExpiringMembersStrategy();
+
 }

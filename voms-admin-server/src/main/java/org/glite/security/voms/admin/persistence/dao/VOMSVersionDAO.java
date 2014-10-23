@@ -27,58 +27,57 @@ import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 
 public class VOMSVersionDAO {
 
-	private VOMSVersionDAO() {
+  private VOMSVersionDAO() {
 
-		super();
-	}
+    super();
+  }
 
-	public static VOMSVersionDAO instance() {
+  public static VOMSVersionDAO instance() {
 
-		return new VOMSVersionDAO();
-	}
+    return new VOMSVersionDAO();
+  }
 
-	
-	public VOMSDBVersion createCurrentVersion(){
-		VOMSDBVersion v = new VOMSDBVersion();
-		v.setVersion(VOMSServiceConstants.VOMS_DB_VERSION);
-		v.setAdminVersion(VOMSConfiguration.instance().getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
-		
-		return v;
-	}
-	
-	public void setupVersion() {
+  public VOMSDBVersion createCurrentVersion() {
 
-		VOMSDBVersion v = getVersion();
-		
-		if (v == null){
-			
-			v = createCurrentVersion();
-			HibernateFactory.getSession().save(v);
-			
-		}else{
-			
-			if (v.getVersion() != VOMSServiceConstants.VOMS_DB_VERSION){
-				// Delete existing VOMS server version
-				HibernateFactory.getSession().delete(v);
-				
-				HibernateFactory.getSession().save(createCurrentVersion());
-			}else{
-				
-				v.setAdminVersion(VOMSConfiguration.instance().getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
-			}
-			
-		}
+    VOMSDBVersion v = new VOMSDBVersion();
+    v.setVersion(VOMSServiceConstants.VOMS_DB_VERSION);
+    v.setAdminVersion(VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
 
-	}
-	
-	public VOMSDBVersion getVersion(){
-		
-		return (VOMSDBVersion) HibernateFactory.getSession().createQuery("from VOMSDBVersion" ).uniqueResult();
-		
-		
-	}
-	
-	
-	
+    return v;
+  }
+
+  public void setupVersion() {
+
+    VOMSDBVersion v = getVersion();
+
+    if (v == null) {
+
+      v = createCurrentVersion();
+      HibernateFactory.getSession().save(v);
+
+    } else {
+
+      if (v.getVersion() != VOMSServiceConstants.VOMS_DB_VERSION) {
+        // Delete existing VOMS server version
+        HibernateFactory.getSession().delete(v);
+
+        HibernateFactory.getSession().save(createCurrentVersion());
+      } else {
+
+        v.setAdminVersion(VOMSConfiguration.instance().getString(
+          VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
+      }
+
+    }
+
+  }
+
+  public VOMSDBVersion getVersion() {
+
+    return (VOMSDBVersion) HibernateFactory.getSession()
+      .createQuery("from VOMSDBVersion").uniqueResult();
+
+  }
 
 }

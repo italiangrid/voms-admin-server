@@ -30,15 +30,14 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class UserDetailPreparer extends ViewPreparerSupport {
 
-	public void execute(TilesRequestContext context,
-			AttributeContext attributeContext) throws PreparerException {
+  public void execute(TilesRequestContext context,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSAttributeDescription> attributeClasses = VOMSAttributeDAO
-				.instance().getAllAttributeDescriptions();
+    List<VOMSAttributeDescription> attributeClasses = VOMSAttributeDAO
+      .instance().getAllAttributeDescriptions();
 
-		context.getRequestScope().put("attributeClasses", attributeClasses);
-		
+    context.getRequestScope().put("attributeClasses", attributeClasses);
 
-	}
+  }
 
 }

@@ -23,16 +23,18 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestConfirmedEvent extends VOMembershipRequestEvent {
 
-	String url;
+  String url;
 
-	public VOMembershipRequestConfirmedEvent(NewVOMembershipRequest r,
-			String managementURL) {
-		super(r);
-		url = managementURL;
-	}
+  public VOMembershipRequestConfirmedEvent(NewVOMembershipRequest r,
+    String managementURL) {
 
-	public String getUrl() {
-		return url;
-	}
+    super(r);
+    url = managementURL;
+  }
+
+  public String getUrl() {
+
+    return url;
+  }
 
 }

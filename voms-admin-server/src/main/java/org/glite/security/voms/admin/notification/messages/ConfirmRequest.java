@@ -23,28 +23,28 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class ConfirmRequest extends AbstractVelocityNotification {
 
-	private String confirmURL;
-	private String cancelURL;
+  private String confirmURL;
+  private String cancelURL;
 
-	public ConfirmRequest(String recipient, String confirmURL, String cancelURL) {
+  public ConfirmRequest(String recipient, String confirmURL, String cancelURL) {
 
-		addRecipient(recipient);
-		this.confirmURL = confirmURL;
-		this.cancelURL = cancelURL;
-	}
+    addRecipient(recipient);
+    this.confirmURL = confirmURL;
+    this.cancelURL = cancelURL;
+  }
 
-	protected void buildMessage() {
+  protected void buildMessage() {
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
-		setSubject("Your membership request for VO " + voName);
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String voName = conf.getVOName();
+    setSubject("Your membership request for VO " + voName);
 
-		context.put("voName", voName);
-		context.put("recipient", getRecipientList().get(0));
-		context.put("confirmURL", confirmURL);
-		context.put("cancelURL", cancelURL);
+    context.put("voName", voName);
+    context.put("recipient", getRecipientList().get(0));
+    context.put("confirmURL", confirmURL);
+    context.put("cancelURL", cancelURL);
 
-		super.buildMessage();
+    super.buildMessage();
 
-	}
+  }
 }

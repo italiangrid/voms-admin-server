@@ -27,45 +27,45 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 
 public class CreateAttributeDescriptionOperation extends BaseVomsOperation {
 
-	String name;
-	String description;
-	Boolean unique;
+  String name;
+  String description;
+  Boolean unique;
 
-	private CreateAttributeDescriptionOperation(String name,
-			String description, Boolean unique) {
-		this.name = name;
-		this.description = description;
-		this.unique = unique;
-	}
+  private CreateAttributeDescriptionOperation(String name, String description,
+    Boolean unique) {
 
-	protected Object doExecute() {
+    this.name = name;
+    this.description = description;
+    this.unique = unique;
+  }
 
-		if (unique == null)
-			unique = new Boolean(false);
+  protected Object doExecute() {
 
-		return VOMSAttributeDAO.instance().createAttributeDescription(name,
-				description, unique.booleanValue());
-	}
+    if (unique == null)
+      unique = new Boolean(false);
 
-	protected void setupPermissions() {
+    return VOMSAttributeDAO.instance().createAttributeDescription(name,
+      description, unique.booleanValue());
+  }
 
-		VOMSContext voContext = VOMSContext.getVoContext();
+  protected void setupPermissions() {
 
-		addRequiredPermission(voContext, VOMSPermission
-				.getContainerRWPermissions().setAttributesReadPermission()
-				.setAttributesWritePermission());
-	}
+    VOMSContext voContext = VOMSContext.getVoContext();
 
-	public static CreateAttributeDescriptionOperation instance(String name,
-			String description, Boolean unique) {
-		return new CreateAttributeDescriptionOperation(name, description,
-				unique);
-	}
+    addRequiredPermission(voContext, VOMSPermission.getContainerRWPermissions()
+      .setAttributesReadPermission().setAttributesWritePermission());
+  }
 
-	protected String logArgs() {
+  public static CreateAttributeDescriptionOperation instance(String name,
+    String description, Boolean unique) {
 
-		return ToStringBuilder.reflectionToString(this);
+    return new CreateAttributeDescriptionOperation(name, description, unique);
+  }
 
-	}
+  protected String logArgs() {
+
+    return ToStringBuilder.reflectionToString(this);
+
+  }
 
 }

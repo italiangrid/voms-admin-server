@@ -43,216 +43,230 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( { 
-		@Result(name = BaseAction.INPUT, location = "orgdbRegister"),
-		@Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
-		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerConfirmation"),
-		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
-		@Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR, location = "pluginValidationError")
-})
-
+@Results({
+  @Result(name = BaseAction.INPUT, location = "orgdbRegister"),
+  @Result(name = BaseAction.SUCCESS, location = "registerConfirmation"),
+  @Result(name = RegisterActionSupport.CONFIRMATION_NEEDED,
+    location = "registerConfirmation"),
+  @Result(name = RegisterActionSupport.REGISTRATION_DISABLED,
+    location = "registrationDisabled"),
+  @Result(name = RegisterActionSupport.PLUGIN_VALIDATION_ERROR,
+    location = "pluginValidationError") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
-public class SubmitRequestAction extends
-		OrgDbRegisterActionSupport {
-	
-	
-	/**
+  "token.includeMethods", "execute" })
+public class SubmitRequestAction extends OrgDbRegisterActionSupport {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	String name;
-	String surname;
+  private static final long serialVersionUID = 1L;
 
-	String institution;
-	String address;
+  String name;
+  String surname;
 
-	String phoneNumber;
+  String institution;
+  String address;
 
-	String emailAddress;
-	
-	String aupAccepted;
+  String phoneNumber;
 
-	RequestValidationResult validationResult;
-	
-	protected void populateRequestModel(){
-		
-		long requestLifetime = VOMSConfiguration.instance().getLong("voms.request.vo_membership.lifetime",
-				300);
-		
-		
-		Date expirationDate = getFutureDate(new Date(), Calendar.SECOND, (int)requestLifetime);
+  String emailAddress;
 
-		requester.setName(name);
-		requester.setSurname(surname);
-		requester.setInstitution(institution);
-		requester.setAddress(address);
-		requester.setPhoneNumber(phoneNumber);
-		requester.setEmailAddress(emailAddress);
+  String aupAccepted;
 
-		request = DAOFactory.instance().getRequestDAO()
-				.createVOMembershipRequest(requester, expirationDate);
-			
-	}
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (!registrationEnabled())
-			return REGISTRATION_DISABLED;
-		
-		String result = checkExistingPendingRequests();
+  RequestValidationResult validationResult;
 
-		if (result != null)
-			return result;
-		
-		populateRequestModel();
-		
-		// External plugin validation
-		validationResult = ValidationManager.instance().validateRequest(request);
-		if (!validationResult.getOutcome().equals(Outcome.SUCCESS)){
-						
-			DAOFactory.instance().getRequestDAO().makeTransient(request);
-			addActionError(validationResult.getMessage());
-			return PLUGIN_VALIDATION_ERROR;
-		}
-		
-		EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
-				URLBuilder.buildRequestConfirmURL(getModel()),
-				URLBuilder.buildRequestCancelURL(getModel())));
+  protected void populateRequestModel() {
 
-		return SUCCESS;
-	}
+    long requestLifetime = VOMSConfiguration.instance().getLong(
+      "voms.request.vo_membership.lifetime", 300);
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    Date expirationDate = getFutureDate(new Date(), Calendar.SECOND,
+      (int) requestLifetime);
 
+    requester.setName(name);
+    requester.setSurname(surname);
+    requester.setInstitution(institution);
+    requester.setAddress(address);
+    requester.setPhoneNumber(phoneNumber);
+    requester.setEmailAddress(emailAddress);
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    request = DAOFactory.instance().getRequestDAO()
+      .createVOMembershipRequest(requester, expirationDate);
 
+  }
 
-	/**
-	 * @return the surname
-	 */
-	public String getSurname() {
-		return surname;
-	}
+  @Override
+  public String execute() throws Exception {
 
+    if (!registrationEnabled())
+      return REGISTRATION_DISABLED;
 
-	/**
-	 * @param surname the surname to set
-	 */
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+    String result = checkExistingPendingRequests();
 
+    if (result != null)
+      return result;
 
-	/**
-	 * @return the institution
-	 */
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your institution.")
-	public String getInstitution() {
-		return institution;
-	}
+    populateRequestModel();
 
+    // External plugin validation
+    validationResult = ValidationManager.instance().validateRequest(request);
+    if (!validationResult.getOutcome().equals(Outcome.SUCCESS)) {
 
-	/**
-	 * @param institution the institution to set
-	 */
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
+      DAOFactory.instance().getRequestDAO().makeTransient(request);
+      addActionError(validationResult.getMessage());
+      return PLUGIN_VALIDATION_ERROR;
+    }
 
+    EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
+      URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
+        .buildRequestCancelURL(getModel())));
 
-	/**
-	 * @return the address
-	 */
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your address.")
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
-	public String getAddress() {
-		return address;
-	}
+    return SUCCESS;
+  }
 
+  /**
+   * @return the name
+   */
+  public String getName() {
 
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    return name;
+  }
 
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
 
-	/**
-	 * @return the phoneNumber
-	 */
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your phoneNumber.")
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters.")
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    this.name = name;
+  }
 
+  /**
+   * @return the surname
+   */
+  public String getSurname() {
 
-	/**
-	 * @param phoneNumber the phoneNumber to set
-	 */
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    return surname;
+  }
 
+  /**
+   * @param surname
+   *          the surname to set
+   */
+  public void setSurname(String surname) {
 
-	/**
-	 * @return the emailAddress
-	 */
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please enter your email address.")
-	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    this.surname = surname;
+  }
 
+  /**
+   * @return the institution
+   */
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your institution.")
+  public String getInstitution() {
 
-	/**
-	 * @param emailAddress the emailAddress to set
-	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    return institution;
+  }
 
+  /**
+   * @param institution
+   *          the institution to set
+   */
+  public void setInstitution(String institution) {
 
-	/**
-	 * @return the aupAccepted
-	 */
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
-	public String getAupAccepted() {
-		return aupAccepted;
-	}
+    this.institution = institution;
+  }
 
+  /**
+   * @return the address
+   */
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your address.")
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters.")
+  public String getAddress() {
 
-	/**
-	 * @param aupAccepted the aupAccepted to set
-	 */
-	public void setAupAccepted(String aupAccepted) {
-		this.aupAccepted = aupAccepted;
-	}
+    return address;
+  }
 
+  /**
+   * @param address
+   *          the address to set
+   */
+  public void setAddress(String address) {
 
-	/**
-	 * @return the validationResult
-	 */
-	public RequestValidationResult getValidationResult() {
-		return validationResult;
-	}	
-	
+    this.address = address;
+  }
+
+  /**
+   * @return the phoneNumber
+   */
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your phoneNumber.")
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters.")
+  public String getPhoneNumber() {
+
+    return phoneNumber;
+  }
+
+  /**
+   * @param phoneNumber
+   *          the phoneNumber to set
+   */
+  public void setPhoneNumber(String phoneNumber) {
+
+    this.phoneNumber = phoneNumber;
+  }
+
+  /**
+   * @return the emailAddress
+   */
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter your email address.")
+  @EmailValidator(type = ValidatorType.FIELD,
+    message = "Please enter a valid email address.")
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  /**
+   * @param emailAddress
+   *          the emailAddress to set
+   */
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  /**
+   * @return the aupAccepted
+   */
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "You must sign the AUP.")
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$",
+    message = "You must accept the terms of the AUP to proceed")
+  public String getAupAccepted() {
+
+    return aupAccepted;
+  }
+
+  /**
+   * @param aupAccepted
+   *          the aupAccepted to set
+   */
+  public void setAupAccepted(String aupAccepted) {
+
+    this.aupAccepted = aupAccepted;
+  }
+
+  /**
+   * @return the validationResult
+   */
+  public RequestValidationResult getValidationResult() {
+
+    return validationResult;
+  }
+
 }

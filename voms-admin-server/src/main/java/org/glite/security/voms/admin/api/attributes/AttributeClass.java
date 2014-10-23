@@ -29,91 +29,91 @@ import java.io.Serializable;
  */
 public class AttributeClass implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The GA name
-	 */
-	private String name;
-	
-	/**
-	 * A textual description for the GA
-	 */
-	private String description;
-	
-	/**
-	 * A boolean flag that states whether attribute value uniqueness across VOMS users should be enforced for this GA
-	 */
-	private boolean uniquenessChecked;
+  /**
+   * The GA name
+   */
+  private String name;
 
-	/**
-	 * Returns the description associated to this GA
-	 * 
-	 * @return
-	 * the GA description
-	 */
-	public String getDescription() {
+  /**
+   * A textual description for the GA
+   */
+  private String description;
 
-		return description;
-	}
+  /**
+   * A boolean flag that states whether attribute value uniqueness across VOMS
+   * users should be enforced for this GA
+   */
+  private boolean uniquenessChecked;
 
-	/**
-	 * Sets a description of this GA
-	 * 
-	 * @param description
-	 * the GA description
-	 */
-	public void setDescription(String description) {
+  /**
+   * Returns the description associated to this GA
+   * 
+   * @return the GA description
+   */
+  public String getDescription() {
 
-		this.description = description;
-	}
+    return description;
+  }
 
-	/**
-	 * Returns the GA name
-	 * 
-	 * @return
-	 * the GA name
-	 */
-	public String getName() {
+  /**
+   * Sets a description of this GA
+   * 
+   * @param description
+   *          the GA description
+   */
+  public void setDescription(String description) {
 
-		return name;
-	}
+    this.description = description;
+  }
 
-	/**
-	 * Sets a name for this GA
-	 * 
-	 * @param name
-	 * the GA name
-	 */
-	public void setName(String name) {
+  /**
+   * Returns the GA name
+   * 
+   * @return the GA name
+   */
+  public String getName() {
 
-		this.name = name;
-	}
+    return name;
+  }
 
-	/**
-	 * Tests whether uniqueness of values across VOMS users is checked for this GA 
-	 * 
-	 * @return
-	 * <code>true</code> if uniqueness is checked, <code>false</code> otherwise.
-	 */
-	public boolean isUniquenessChecked() {
+  /**
+   * Sets a name for this GA
+   * 
+   * @param name
+   *          the GA name
+   */
+  public void setName(String name) {
 
-		return uniquenessChecked;
-	}
-	
+    this.name = name;
+  }
 
-	/**
-	 * Sets whether uniqueness of values should be checked across VOMS users for this GA
-	 * 
-	 * @param uniquenessChecked
-	 * <code>true</code> to enable uniqueness value checking, <code>false</code> otherwise
-	 */
-	public void setUniquenessChecked(boolean uniquenessChecked) {
+  /**
+   * Tests whether uniqueness of values across VOMS users is checked for this GA
+   * 
+   * @return <code>true</code> if uniqueness is checked, <code>false</code>
+   *         otherwise.
+   */
+  public boolean isUniquenessChecked() {
 
-		this.uniquenessChecked = uniquenessChecked;
-	}
+    return uniquenessChecked;
+  }
+
+  /**
+   * Sets whether uniqueness of values should be checked across VOMS users for
+   * this GA
+   * 
+   * @param uniquenessChecked
+   *          <code>true</code> to enable uniqueness value checking,
+   *          <code>false</code> otherwise
+   */
+  public void setUniquenessChecked(boolean uniquenessChecked) {
+
+    this.uniquenessChecked = uniquenessChecked;
+  }
 
 }

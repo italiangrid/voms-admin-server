@@ -30,50 +30,61 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( {
-		@Result(name = BaseAction.INPUT, location = "addAupVersion"),
-		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
-		
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.INPUT, location = "addAupVersion"),
+  @Result(name = BaseAction.SUCCESS, location = "/aup/load.action",
+    type = "redirect") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class AddVersionAction extends AUPVersionActions {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	String url;
+  private static final long serialVersionUID = 1L;
+  String url;
 
-	@Override
-	public void validate() {
-		for (AUPVersion existingVersion: getModel().getVersions())
-			if (existingVersion.getVersion().equals(getVersion()))
-				addFieldError("version", "Version '"+getVersion()+"' already exists for this aup!");
-		
-		AUPVersion candidateVersion = new AUPVersion();
-		candidateVersion.setUrl(url);
-		if (candidateVersion.getURLContent() == null){
-			addFieldError("url", "Error fetching the content of the specified URL! Please provide a valid URL pointing to a text file!");
-		}
-		
-	}
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public void validate() {
 
-		AddVersionOperation op = new AddVersionOperation(getModel(), getVersion(), url);
-		op.execute();
-		
-		return SUCCESS;
+    for (AUPVersion existingVersion : getModel().getVersions())
+      if (existingVersion.getVersion().equals(getVersion()))
+        addFieldError("version", "Version '" + getVersion()
+          + "' already exists for this aup!");
 
-	}
+    AUPVersion candidateVersion = new AUPVersion();
+    candidateVersion.setUrl(url);
+    if (candidateVersion.getURLContent() == null) {
+      addFieldError(
+        "url",
+        "Error fetching the content of the specified URL! Please provide a valid URL pointing to a text file!");
+    }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "The url field is required!")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The version field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getUrl() {
-		return url;
-	}
+  }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+  @Override
+  public String execute() throws Exception {
+
+    AddVersionOperation op = new AddVersionOperation(getModel(), getVersion(),
+      url);
+    op.execute();
+
+    return SUCCESS;
+
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "The url field is required!")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The version field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getUrl() {
+
+    return url;
+  }
+
+  public void setUrl(String url) {
+
+    this.url = url;
+  }
 }

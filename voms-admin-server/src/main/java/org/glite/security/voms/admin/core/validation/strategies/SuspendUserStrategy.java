@@ -25,6 +25,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 
 public interface SuspendUserStrategy {
 
-	public void suspendUser(VOMSUser user, SuspensionReason suspensionReason);
-	
+  public void suspendUser(VOMSUser user, SuspensionReason suspensionReason);
+
 }

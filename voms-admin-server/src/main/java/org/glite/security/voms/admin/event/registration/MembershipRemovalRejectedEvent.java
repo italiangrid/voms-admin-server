@@ -22,11 +22,12 @@ package org.glite.security.voms.admin.event.registration;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
 public class MembershipRemovalRejectedEvent extends
-		MembershipRemovalRequestEvent {
+  MembershipRemovalRequestEvent {
 
-	public MembershipRemovalRejectedEvent(MembershipRemovalRequest req) {
-		super(req);
-		// TODO Auto-generated constructor stub
-	}
+  public MembershipRemovalRejectedEvent(MembershipRemovalRequest req) {
+
+    super(req);
+    // TODO Auto-generated constructor stub
+  }
 
 }

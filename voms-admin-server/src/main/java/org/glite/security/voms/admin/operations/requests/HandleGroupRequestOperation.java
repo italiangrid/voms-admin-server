@@ -31,47 +31,50 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
-public class HandleGroupRequestOperation extends BaseHandleRequestOperation<GroupMembershipRequest> {
+public class HandleGroupRequestOperation extends
+  BaseHandleRequestOperation<GroupMembershipRequest> {
 
-	public HandleGroupRequestOperation(GroupMembershipRequest request, DECISION decision) {
-		super(request, decision);
-	}
+  public HandleGroupRequestOperation(GroupMembershipRequest request,
+    DECISION decision) {
 
+    super(request, decision);
+  }
 
-	@Override
-	protected void approve() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		
-		VOMSUser u = getRequesterAsVomsUser();
-		VOMSGroup g = findGroupByName(request.getGroupName());
-		
-		if (!u.isMember(g))
-		    AddMemberOperation.instance(u, g).execute();
-		
-		approveRequest();
-		
-		EventManager.dispatch(new GroupMembershipApprovedEvent(request));
-		
-	
-	}
+  @Override
+  protected void approve() {
 
-	@Override
-	protected void reject() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		rejectRequest();
-		EventManager.dispatch(new GroupMembershipRejectedEvent(request));
-	}
+    checkRequestStatus(STATUS.SUBMITTED);
 
-	@Override
-	protected void setupPermissions() {
-		
-		VOMSGroup g  = findGroupByName(request.getGroupName());
-		addRequiredPermissionOnPath(g, VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(VOMSContext.instance(g), VOMSPermission.getMembershipRWPermissions());
-		addRequiredPermission(VOMSContext.instance(g), VOMSPermission.getRequestsRWPermissions());
+    VOMSUser u = getRequesterAsVomsUser();
+    VOMSGroup g = findGroupByName(request.getGroupName());
 
-	}
+    if (!u.isMember(g))
+      AddMemberOperation.instance(u, g).execute();
+
+    approveRequest();
+
+    EventManager.dispatch(new GroupMembershipApprovedEvent(request));
+
+  }
+
+  @Override
+  protected void reject() {
+
+    checkRequestStatus(STATUS.SUBMITTED);
+    rejectRequest();
+    EventManager.dispatch(new GroupMembershipRejectedEvent(request));
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    VOMSGroup g = findGroupByName(request.getGroupName());
+    addRequiredPermissionOnPath(g, VOMSPermission.getContainerReadPermission());
+    addRequiredPermission(VOMSContext.instance(g),
+      VOMSPermission.getMembershipRWPermissions());
+    addRequiredPermission(VOMSContext.instance(g),
+      VOMSPermission.getRequestsRWPermissions());
+
+  }
 
 }

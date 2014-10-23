@@ -30,34 +30,35 @@ import org.glite.security.voms.admin.view.actions.search.BaseSearchAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "searchMember.jsp"),
-		@Result(name = BaseAction.INPUT, location = "searchMemberError.jsp") })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "searchMember.jsp"),
+  @Result(name = BaseAction.INPUT, location = "searchMemberError.jsp") })
 public class SearchMemberAction extends BaseSearchAction implements
-		ModelDriven<VOMSRole>, Preparable {
+  ModelDriven<VOMSRole>, Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	VOMSGroup group;
-	VOMSRole role;
+  private static final long serialVersionUID = 1L;
+  VOMSGroup group;
+  VOMSRole role;
 
-	public void prepare() throws Exception {
-		initSearchData(ROLE_MEMBER_SEARCH_NAME);
+  public void prepare() throws Exception {
 
-		group = groupById(searchData.getGroupId());
-		role = roleById(searchData.getRoleId());
+    initSearchData(ROLE_MEMBER_SEARCH_NAME);
 
-	}
+    group = groupById(searchData.getGroupId());
+    role = roleById(searchData.getRoleId());
 
-	public VOMSGroup getGroup() {
-		return group;
-	}
+  }
 
-	public VOMSRole getModel() {
+  public VOMSGroup getGroup() {
 
-		return role;
-	}
+    return group;
+  }
+
+  public VOMSRole getModel() {
+
+    return role;
+  }
 
 }

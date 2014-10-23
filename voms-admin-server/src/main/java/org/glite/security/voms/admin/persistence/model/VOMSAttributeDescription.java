@@ -32,121 +32,125 @@ import javax.persistence.Table;
 import org.glite.security.voms.service.attributes.AttributeClass;
 
 @Entity
-@Table(name="attributes")
+@Table(name = "attributes")
 public class VOMSAttributeDescription implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "a_id")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ATTR_DESC_SEQ")
-	@SequenceGenerator(name="VOMS_ATTR_DESC_SEQ", sequenceName="VOMS_ATTR_DESC_SEQ")
-	Long id;
+  @Id
+  @Column(name = "a_id")
+  @GeneratedValue(strategy = GenerationType.AUTO,
+    generator = "VOMS_ATTR_DESC_SEQ")
+  @SequenceGenerator(name = "VOMS_ATTR_DESC_SEQ",
+    sequenceName = "VOMS_ATTR_DESC_SEQ")
+  Long id;
 
-	@Column(name="a_name", nullable=false, unique=true)
-	String name;
+  @Column(name = "a_name", nullable = false, unique = true)
+  String name;
 
-	@Column(name="a_desc", columnDefinition="text")
-	String description;
-	
-	@Column(name="a_uniq", nullable=false)
-	Boolean unique = new Boolean(false);
+  @Column(name = "a_desc", columnDefinition = "text")
+  String description;
 
-	public Long getId() {
+  @Column(name = "a_uniq", nullable = false)
+  Boolean unique = new Boolean(false);
 
-		return id;
-	}
+  public Long getId() {
 
-	public void setId(Long id) {
+    return id;
+  }
 
-		this.id = id;
-	}
+  public void setId(Long id) {
 
-	public String getName() {
+    this.id = id;
+  }
 
-		return name;
-	}
+  public String getName() {
 
-	public void setName(String name) {
+    return name;
+  }
 
-		this.name = name;
-	}
+  public void setName(String name) {
 
-	public String getDescription() {
+    this.name = name;
+  }
 
-		return description;
-	}
+  public String getDescription() {
 
-	public void setDescription(String description) {
+    return description;
+  }
 
-		this.description = description;
-	}
+  public void setDescription(String description) {
 
-	public boolean isUnique() {
+    this.description = description;
+  }
 
-		return unique.booleanValue();
-	}
+  public boolean isUnique() {
 
-	public Boolean getUnique() {
-		return unique;
-	}
+    return unique.booleanValue();
+  }
 
-	public void setUnique(Boolean unique) {
-		this.unique = unique;
-	}
+  public Boolean getUnique() {
 
-	public boolean equals(Object other) {
+    return unique;
+  }
 
-		if (this == other)
-			return true;
+  public void setUnique(Boolean unique) {
 
-		if (!(other instanceof VOMSAttributeDescription))
-			return false;
+    this.unique = unique;
+  }
 
-		if (other == null)
-			return false;
+  public boolean equals(Object other) {
 
-		VOMSAttributeDescription that = (VOMSAttributeDescription) other;
+    if (this == other)
+      return true;
 
-		return (getName().equals(that.getName()));
-	}
+    if (!(other instanceof VOMSAttributeDescription))
+      return false;
 
-	public int hashCode() {
+    if (other == null)
+      return false;
 
-		return getName().hashCode();
-	}
+    VOMSAttributeDescription that = (VOMSAttributeDescription) other;
 
-	public VOMSAttributeDescription() {
+    return (getName().equals(that.getName()));
+  }
 
-		super();
+  public int hashCode() {
 
-	}
+    return getName().hashCode();
+  }
 
-	public VOMSAttributeDescription(String name, String desc) {
+  public VOMSAttributeDescription() {
 
-		this.name = name;
-		this.description = desc;
-	}
+    super();
 
-	public VOMSAttributeDescription(String name, String desc, boolean uniq) {
+  }
 
-		this.name = name;
-		this.description = desc;
-		this.unique = new Boolean(uniq);
-	}
+  public VOMSAttributeDescription(String name, String desc) {
 
-	public AttributeClass asAttributeClass() {
+    this.name = name;
+    this.description = desc;
+  }
 
-		AttributeClass ac = new AttributeClass();
+  public VOMSAttributeDescription(String name, String desc, boolean uniq) {
 
-		ac.setName(getName());
-		ac.setDescription(getDescription());
-		ac.setUniquenessChecked(getUnique().booleanValue());
+    this.name = name;
+    this.description = desc;
+    this.unique = new Boolean(uniq);
+  }
 
-		return ac;
+  public AttributeClass asAttributeClass() {
 
-	}
+    AttributeClass ac = new AttributeClass();
+
+    ac.setName(getName());
+    ac.setDescription(getDescription());
+    ac.setUniquenessChecked(getUnique().booleanValue());
+
+    return ac;
+
+  }
 }

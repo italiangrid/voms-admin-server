@@ -30,15 +30,14 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class ListAttributeClassesPreparer extends ViewPreparerSupport {
 
-	@Override
-	public void execute(TilesRequestContext tilesContext,
-			AttributeContext attributeContext) throws PreparerException {
+  @Override
+  public void execute(TilesRequestContext tilesContext,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSAttributeDescription> attributeClasses = (List<VOMSAttributeDescription>) ListAttributeDescriptionsOperation
-				.instance().execute();
+    List<VOMSAttributeDescription> attributeClasses = (List<VOMSAttributeDescription>) ListAttributeDescriptionsOperation
+      .instance().execute();
 
-		tilesContext.getRequestScope()
-				.put("attributeClasses", attributeClasses);
-	}
+    tilesContext.getRequestScope().put("attributeClasses", attributeClasses);
+  }
 
 }

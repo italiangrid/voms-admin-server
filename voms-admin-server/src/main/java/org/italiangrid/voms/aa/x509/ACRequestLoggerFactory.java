@@ -20,16 +20,17 @@
 
 package org.italiangrid.voms.aa.x509;
 
-
 import org.italiangrid.voms.aa.x509.impl.ACRequestLoggerImpl;
-
 
 public class ACRequestLoggerFactory {
 
-	private ACRequestLoggerFactory() {}
-	
-	public static ACRequestLogger newRequestLogger(){
-		return new ACRequestLoggerImpl();
-	}
+  private ACRequestLoggerFactory() {
+
+  }
+
+  public static ACRequestLogger newRequestLogger() {
+
+    return new ACRequestLoggerImpl();
+  }
 
 }

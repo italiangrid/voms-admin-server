@@ -28,25 +28,28 @@ import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class SetConfimedVOMembershipRequestOperation extends RequestRWOperation {
 
-	Long requestId;
-	NewVOMembershipRequest request;
-	
-	
-	public SetConfimedVOMembershipRequestOperation(Long requestId) {
-		RequestDAO dao = DAOFactory.instance().getRequestDAO();
-		request = (NewVOMembershipRequest) dao.findById(requestId, true);
-		if (request  == null)
-			throw new NotFoundException("No VO membership request found for id "+requestId);
-	}
+  Long requestId;
+  NewVOMembershipRequest request;
 
-	public SetConfimedVOMembershipRequestOperation(NewVOMembershipRequest req) {
-		this.request = req;
-	}
-	
-	@Override
-	protected Object doExecute() {
-		request.setStatus(STATUS.CONFIRMED);
-		return request;
-	}
+  public SetConfimedVOMembershipRequestOperation(Long requestId) {
+
+    RequestDAO dao = DAOFactory.instance().getRequestDAO();
+    request = (NewVOMembershipRequest) dao.findById(requestId, true);
+    if (request == null)
+      throw new NotFoundException("No VO membership request found for id "
+        + requestId);
+  }
+
+  public SetConfimedVOMembershipRequestOperation(NewVOMembershipRequest req) {
+
+    this.request = req;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    request.setStatus(STATUS.CONFIRMED);
+    return request;
+  }
 
 }

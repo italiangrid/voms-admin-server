@@ -45,292 +45,307 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 @Table(name = "requester_info")
 public class RequesterInfo implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	public static final String MULTIVALUE_COUNT_PREFIX = "num_";	
-	public static final String MANAGER_EMAIL_ADDRESS = "managerEmail"; 
-	public static final String MANAGER_ID = "managerId";
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_REQ_INFO_SEQ")
-	@SequenceGenerator(name="VOMS_REQ_INFO_SEQ", sequenceName="VOMS_REQ_INFO_SEQ")
-	Long id;
-
-	@Column(nullable = false)
-	String certificateSubject;
+  private static final long serialVersionUID = 1L;
+  public static final String MULTIVALUE_COUNT_PREFIX = "num_";
+  public static final String MANAGER_EMAIL_ADDRESS = "managerEmail";
+  public static final String MANAGER_ID = "managerId";
 
-	@Column(nullable = false)
-	String certificateIssuer;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO,
+    generator = "VOMS_REQ_INFO_SEQ")
+  @SequenceGenerator(name = "VOMS_REQ_INFO_SEQ",
+    sequenceName = "VOMS_REQ_INFO_SEQ")
+  Long id;
 
-	String name;
-
-	String surname;
+  @Column(nullable = false)
+  String certificateSubject;
 
-	String institution;
-
-	String address;
+  @Column(nullable = false)
+  String certificateIssuer;
 
-	String phoneNumber;
+  String name;
 
-	@Column(nullable = false)
-	String emailAddress;
+  String surname;
+
+  String institution;
 
-	@org.hibernate.annotations.CollectionOfElements
-	@JoinTable(name = "requester_personal_info", joinColumns = @JoinColumn(name = "requester_id"))
-	@org.hibernate.annotations.MapKey(columns = @Column(name = "pi_key"))
-	@Column(name = "pi_value")
-	Map<String, String> personalInformation = new HashMap<String, String>();
+  String address;
 
-	Boolean voMember;
+  String phoneNumber;
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  @Column(nullable = false)
+  String emailAddress;
 
-		return id;
-	}
+  @org.hibernate.annotations.CollectionOfElements
+  @JoinTable(name = "requester_personal_info", joinColumns = @JoinColumn(
+    name = "requester_id"))
+  @org.hibernate.annotations.MapKey(columns = @Column(name = "pi_key"))
+  @Column(name = "pi_value")
+  Map<String, String> personalInformation = new HashMap<String, String>();
 
-	/**
-	 * @return the certificateSubject
-	 */
-	public String getCertificateSubject() {
+  Boolean voMember;
 
-		return certificateSubject;
-	}
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-	/**
-	 * @return the certificateIssuer
-	 */
-	public String getCertificateIssuer() {
+    return id;
+  }
 
-		return certificateIssuer;
-	}
+  /**
+   * @return the certificateSubject
+   */
+  public String getCertificateSubject() {
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+    return certificateSubject;
+  }
 
-		this.id = id;
-	}
+  /**
+   * @return the certificateIssuer
+   */
+  public String getCertificateIssuer() {
 
-	/**
-	 * @param certificateSubject
-	 *            the certificateSubject to set
-	 */
-	public void setCertificateSubject(String certificateSubject) {
+    return certificateIssuer;
+  }
 
-		this.certificateSubject = certificateSubject;
-	}
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-	/**
-	 * @param certificateIssuer
-	 *            the certificateIssuer to set
-	 */
-	public void setCertificateIssuer(String certificateIssuer) {
+    this.id = id;
+  }
 
-		this.certificateIssuer = certificateIssuer;
-	}
+  /**
+   * @param certificateSubject
+   *          the certificateSubject to set
+   */
+  public void setCertificateSubject(String certificateSubject) {
 
-	/**
-	 * @return the personalInformation
-	 */
-	public Map<String, String> getPersonalInformation() {
+    this.certificateSubject = certificateSubject;
+  }
 
-		return personalInformation;
-	}
+  /**
+   * @param certificateIssuer
+   *          the certificateIssuer to set
+   */
+  public void setCertificateIssuer(String certificateIssuer) {
 
-	/**
-	 * @param personalInformation
-	 *            the personalInformation to set
-	 */
-	public void setPersonalInformation(Map<String, String> personalInformation) {
+    this.certificateIssuer = certificateIssuer;
+  }
 
-		this.personalInformation = personalInformation;
-	}
+  /**
+   * @return the personalInformation
+   */
+  public Map<String, String> getPersonalInformation() {
 
-	/**
-	 * @return the emailAddress
-	 */
-	public String getEmailAddress() {
+    return personalInformation;
+  }
 
-		return emailAddress;
-	}
+  /**
+   * @param personalInformation
+   *          the personalInformation to set
+   */
+  public void setPersonalInformation(Map<String, String> personalInformation) {
 
-	/**
-	 * @param emailAddress
-	 *            the emailAddress to set
-	 */
-	public void setEmailAddress(String emailAddress) {
+    this.personalInformation = personalInformation;
+  }
 
-		this.emailAddress = emailAddress;
-	}
+  /**
+   * @return the emailAddress
+   */
+  public String getEmailAddress() {
 
-	public boolean isVoMember() {
+    return emailAddress;
+  }
 
-		return voMember;
-	}
+  /**
+   * @param emailAddress
+   *          the emailAddress to set
+   */
+  public void setEmailAddress(String emailAddress) {
 
-	/**
-	 * @return the voMember
-	 */
-	public Boolean getVoMember() {
+    this.emailAddress = emailAddress;
+  }
 
-		return voMember;
-	}
+  public boolean isVoMember() {
 
-	/**
-	 * @param voMember
-	 *            the voMember to set
-	 */
-	public void setVoMember(Boolean voMember) {
+    return voMember;
+  }
 
-		this.voMember = voMember;
-	}
+  /**
+   * @return the voMember
+   */
+  public Boolean getVoMember() {
 
-	@Override
-	public boolean equals(Object other) {
+    return voMember;
+  }
 
-		if (this == other)
-			return true;
+  /**
+   * @param voMember
+   *          the voMember to set
+   */
+  public void setVoMember(Boolean voMember) {
 
-		if (!(other instanceof RequesterInfo))
-			return false;
+    this.voMember = voMember;
+  }
 
-		if (other == null)
-			return false;
-
-		RequesterInfo that = (RequesterInfo) other;
-
-		// Implement meaningful checks here
-
-		return new EqualsBuilder().append(certificateSubject,
-				that.certificateSubject).append(certificateIssuer,
-				that.certificateIssuer).append(emailAddress, that.emailAddress)
-				.isEquals();
-
-	}
-
-	public String addInfo(String name, String value) {
-
-		return personalInformation.put(name, value);
-	}
-
-	public String getInfo(String name) {
-
-		return personalInformation.get(name);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	@Override
-	public int hashCode() {
-
-		return new HashCodeBuilder(17, 37).append(certificateSubject).append(
-				certificateIssuer).append(emailAddress).toHashCode();
-
-	}
-
-	@Override
-	public String toString() {
-
-		ToStringBuilder builder = new ToStringBuilder(this);
-		
-		builder.append("certificateSubject", certificateSubject).
-			append("certificateIssuer", certificateIssuer).
-			append("emailAddress", emailAddress).
-			append("name", name).append("surname",surname).append("voMember", voMember);
-		
-		return builder.toString();
-			
-	}
-	
-	public List<String> getMultivaluedInfo(String propertyName){
-		List<String> result = new ArrayList<String>();
-		
-		Integer valueCount;
-		
-		if (personalInformation.get(MULTIVALUE_COUNT_PREFIX+propertyName) != null){
-			valueCount = Integer.parseInt(personalInformation.get(MULTIVALUE_COUNT_PREFIX+propertyName));
-			
-			for (int i=0; i < valueCount; i++)
-				result.add(personalInformation.get(propertyName+i));
-			
-			return result;
-		
-		}
-		
-		return Collections.EMPTY_LIST;
-	}
-
-	
-	public String getManagerEmail(){
-		
-		return getInfo(MANAGER_EMAIL_ADDRESS);
-	}
-	
-	public void setManagerEmail(String emailAddress){
-		addInfo(MANAGER_EMAIL_ADDRESS, emailAddress);
-	}
-	
-	public static RequesterInfo fromVOUser(VOMSUser user){
-		
-		RequesterInfo ri = new RequesterInfo();
-		
-		ri.setName(user.getName());
-		ri.setSurname(user.getSurname());
-		ri.setAddress(user.getAddress());
-		ri.setInstitution(user.getInstitution());
-		ri.setPhoneNumber(user.getPhoneNumber());
-		ri.setEmailAddress(user.getEmailAddress());
-		ri.setCertificateSubject(user.getDefaultCertificate().getSubjectString());
-		ri.setCertificateIssuer(user.getDefaultCertificate().getCa().getSubjectString());
-		ri.setVoMember(true);
-		
-		return ri;
-		
-		
-	}
+  @Override
+  public boolean equals(Object other) {
+
+    if (this == other)
+      return true;
+
+    if (!(other instanceof RequesterInfo))
+      return false;
+
+    if (other == null)
+      return false;
+
+    RequesterInfo that = (RequesterInfo) other;
+
+    // Implement meaningful checks here
+
+    return new EqualsBuilder()
+      .append(certificateSubject, that.certificateSubject)
+      .append(certificateIssuer, that.certificateIssuer)
+      .append(emailAddress, that.emailAddress).isEquals();
+
+  }
+
+  public String addInfo(String name, String value) {
+
+    return personalInformation.put(name, value);
+  }
+
+  public String getInfo(String name) {
+
+    return personalInformation.get(name);
+  }
+
+  public String getName() {
+
+    return name;
+  }
+
+  public void setName(String name) {
+
+    this.name = name;
+  }
+
+  public String getSurname() {
+
+    return surname;
+  }
+
+  public void setSurname(String surname) {
+
+    this.surname = surname;
+  }
+
+  public String getInstitution() {
+
+    return institution;
+  }
+
+  public void setInstitution(String institution) {
+
+    this.institution = institution;
+  }
+
+  public String getAddress() {
+
+    return address;
+  }
+
+  public void setAddress(String address) {
+
+    this.address = address;
+  }
+
+  public String getPhoneNumber() {
+
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+
+    this.phoneNumber = phoneNumber;
+  }
+
+  @Override
+  public int hashCode() {
+
+    return new HashCodeBuilder(17, 37).append(certificateSubject)
+      .append(certificateIssuer).append(emailAddress).toHashCode();
+
+  }
+
+  @Override
+  public String toString() {
+
+    ToStringBuilder builder = new ToStringBuilder(this);
+
+    builder.append("certificateSubject", certificateSubject)
+      .append("certificateIssuer", certificateIssuer)
+      .append("emailAddress", emailAddress).append("name", name)
+      .append("surname", surname).append("voMember", voMember);
+
+    return builder.toString();
+
+  }
+
+  public List<String> getMultivaluedInfo(String propertyName) {
+
+    List<String> result = new ArrayList<String>();
+
+    Integer valueCount;
+
+    if (personalInformation.get(MULTIVALUE_COUNT_PREFIX + propertyName) != null) {
+      valueCount = Integer.parseInt(personalInformation
+        .get(MULTIVALUE_COUNT_PREFIX + propertyName));
+
+      for (int i = 0; i < valueCount; i++)
+        result.add(personalInformation.get(propertyName + i));
+
+      return result;
+
+    }
+
+    return Collections.EMPTY_LIST;
+  }
+
+  public String getManagerEmail() {
+
+    return getInfo(MANAGER_EMAIL_ADDRESS);
+  }
+
+  public void setManagerEmail(String emailAddress) {
+
+    addInfo(MANAGER_EMAIL_ADDRESS, emailAddress);
+  }
+
+  public static RequesterInfo fromVOUser(VOMSUser user) {
+
+    RequesterInfo ri = new RequesterInfo();
+
+    ri.setName(user.getName());
+    ri.setSurname(user.getSurname());
+    ri.setAddress(user.getAddress());
+    ri.setInstitution(user.getInstitution());
+    ri.setPhoneNumber(user.getPhoneNumber());
+    ri.setEmailAddress(user.getEmailAddress());
+    ri.setCertificateSubject(user.getDefaultCertificate().getSubjectString());
+    ri.setCertificateIssuer(user.getDefaultCertificate().getCa()
+      .getSubjectString());
+    ri.setVoMember(true);
+
+    return ri;
+
+  }
 }

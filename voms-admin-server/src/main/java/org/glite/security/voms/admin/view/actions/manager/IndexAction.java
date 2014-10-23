@@ -28,44 +28,40 @@ import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@Result(name=BaseAction.SUCCESS, location="managerIndex")
+@Result(name = BaseAction.SUCCESS, location = "managerIndex")
 public class IndexAction extends BaseAction {
 
-	
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	List<GroupManager> groupManagers;
-	
-	@Override
-	public String execute() throws Exception {
-	
-		GroupManagerDAO dao = DAOFactory.instance().getGroupManagerDAO();
-		groupManagers = dao.findAll();
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
 
-	
-	/**
-	 * @return the groupManagers
-	 */
-	public List<GroupManager> getGroupManagers() {
-	
-		return groupManagers;
-	}
+  List<GroupManager> groupManagers;
 
-	
-	/**
-	 * @param groupManagers the groupManagers to set
-	 */
-	public void setGroupManagers(List<GroupManager> groupManagers) {
-	
-		this.groupManagers = groupManagers;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	
+    GroupManagerDAO dao = DAOFactory.instance().getGroupManagerDAO();
+    groupManagers = dao.findAll();
+
+    return SUCCESS;
+  }
+
+  /**
+   * @return the groupManagers
+   */
+  public List<GroupManager> getGroupManagers() {
+
+    return groupManagers;
+  }
+
+  /**
+   * @param groupManagers
+   *          the groupManagers to set
+   */
+  public void setGroupManagers(List<GroupManager> groupManagers) {
+
+    this.groupManagers = groupManagers;
+  }
+
 }

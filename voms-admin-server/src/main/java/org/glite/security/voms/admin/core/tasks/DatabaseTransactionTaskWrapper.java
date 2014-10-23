@@ -25,48 +25,51 @@ import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper{
-	
-	public static final Logger log = LoggerFactory.getLogger(DatabaseTransactionTaskWrapper.class);
-	
-	boolean doLogging = false;
-	
-	public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd) {
-		
-		super(task);
-		doLogging = logStartAndEnd;
+public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
 
-	}
-	
-	public void run() {
-		try{
+  public static final Logger log = LoggerFactory
+    .getLogger(DatabaseTransactionTaskWrapper.class);
 
-			HibernateFactory.getSession();
-			HibernateFactory.beginTransaction();
+  boolean doLogging = false;
 
-			if (doLogging)
-				log.debug("{} task starting...", task.getClass().getSimpleName());
-			
-			task.run();
-							
-			HibernateFactory.commitTransaction();
-			HibernateFactory.closeSession();
-			
-			if (doLogging)
-				log.debug("{} task done.", task.getClass().getSimpleName());
-		
-		}catch (VOMSDatabaseException e) {
-			
-			log.error("Database exception caught while executing {} task: {}", new String[]{task.getClass().getSimpleName(),e.getMessage()});
-			log.error(e.getMessage(),e);
-			log.error("Swallowing the exception hoping it's a temporary failure.");
-		
-		}catch (Throwable t) {
-			
-			log.error("An unexpected exception was caught while executing task {}", task.getClass().getSimpleName());
-			log.error(t.getMessage(), t);
-			
-			
-		}
-	}
+  public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd) {
+
+    super(task);
+    doLogging = logStartAndEnd;
+
+  }
+
+  public void run() {
+
+    try {
+
+      HibernateFactory.getSession();
+      HibernateFactory.beginTransaction();
+
+      if (doLogging)
+        log.debug("{} task starting...", task.getClass().getSimpleName());
+
+      task.run();
+
+      HibernateFactory.commitTransaction();
+      HibernateFactory.closeSession();
+
+      if (doLogging)
+        log.debug("{} task done.", task.getClass().getSimpleName());
+
+    } catch (VOMSDatabaseException e) {
+
+      log.error("Database exception caught while executing {} task: {}",
+        new String[] { task.getClass().getSimpleName(), e.getMessage() });
+      log.error(e.getMessage(), e);
+      log.error("Swallowing the exception hoping it's a temporary failure.");
+
+    } catch (Throwable t) {
+
+      log.error("An unexpected exception was caught while executing task {}",
+        task.getClass().getSimpleName());
+      log.error(t.getMessage(), t);
+
+    }
+  }
 }

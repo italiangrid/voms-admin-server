@@ -29,61 +29,53 @@ import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
-	@Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
-	@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")
-})
+  @Result(name = BaseAction.SUCCESS, location = "registrationConfirmed"),
+  @Result(name = BaseAction.ERROR, location = "registrationConfirmationError") })
 public class SetRequestConfirmedAction extends RegisterActionSupport {
 
-	
-	private static final long serialVersionUID = -3732391685550459780L;
+  private static final long serialVersionUID = -3732391685550459780L;
 
-	String confirmationId;
-	
+  String confirmationId;
 
-	@Override
-	public String execute() throws Exception {
-		
-		if (!registrationEnabled())
-			return REGISTRATION_DISABLED;
-		
-		if (!getModel().getStatus().equals(STATUS.SUBMITTED)){
-			addActionError("Your request has already been confirmed!");
-			return ERROR;
-		}
-		
-		if (!getModel().getConfirmId().equals(confirmationId)){
-			addActionError("Wrong confirmation id!");
-			return ERROR;
-		}
-		
-		
-		getModel().setStatus(STATUS.CONFIRMED);
-	
-		EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
-				URLBuilder.buildLoginURL()));
-		
-		return SUCCESS;
-	}
+  @Override
+  public String execute() throws Exception {
 
+    if (!registrationEnabled())
+      return REGISTRATION_DISABLED;
 
-	
-	/**
-	 * @return the confirmationId
-	 */
-	public String getConfirmationId() {
-	
-		return confirmationId;
-	}
+    if (!getModel().getStatus().equals(STATUS.SUBMITTED)) {
+      addActionError("Your request has already been confirmed!");
+      return ERROR;
+    }
 
+    if (!getModel().getConfirmId().equals(confirmationId)) {
+      addActionError("Wrong confirmation id!");
+      return ERROR;
+    }
 
-	
-	/**
-	 * @param confirmationId the confirmationId to set
-	 */
-	public void setConfirmationId(String confirmationId) {
-	
-		this.confirmationId = confirmationId;
-	}
+    getModel().setStatus(STATUS.CONFIRMED);
 
-	
+    EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
+      URLBuilder.buildLoginURL()));
+
+    return SUCCESS;
+  }
+
+  /**
+   * @return the confirmationId
+   */
+  public String getConfirmationId() {
+
+    return confirmationId;
+  }
+
+  /**
+   * @param confirmationId
+   *          the confirmationId to set
+   */
+  public void setConfirmationId(String confirmationId) {
+
+    this.confirmationId = confirmationId;
+  }
+
 }

@@ -27,85 +27,84 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="group_attrs")
+@Table(name = "group_attrs")
 @MappedSuperclass
 public class VOMSGroupAttribute extends VOMSBaseAttribute {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@ManyToOne
-	@JoinColumn(name="g_id")
-	VOMSGroup group;
+  private static final long serialVersionUID = 1L;
 
-	public VOMSGroupAttribute() {
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "g_id")
+  VOMSGroup group;
 
-		// TODO Auto-generated constructor stub
-	}
+  public VOMSGroupAttribute() {
 
-	public static VOMSGroupAttribute instance(VOMSAttributeDescription desc,
-			String value, VOMSGroup g) {
+    // TODO Auto-generated constructor stub
+  }
 
-		return new VOMSGroupAttribute(desc, value, g);
-	}
+  public static VOMSGroupAttribute instance(VOMSAttributeDescription desc,
+    String value, VOMSGroup g) {
 
-	protected VOMSGroupAttribute(VOMSAttributeDescription desc, String value,
-			VOMSGroup g) {
+    return new VOMSGroupAttribute(desc, value, g);
+  }
 
-		super(desc, value);
-		this.group = g;
+  protected VOMSGroupAttribute(VOMSAttributeDescription desc, String value,
+    VOMSGroup g) {
 
-	}
+    super(desc, value);
+    this.group = g;
 
-	public String getContext() {
+  }
 
-		return group.getName();
-	}
+  public String getContext() {
 
-	public VOMSGroup getGroup() {
+    return group.getName();
+  }
 
-		return group;
-	}
+  public VOMSGroup getGroup() {
 
-	public void setGroup(VOMSGroup group) {
+    return group;
+  }
 
-		this.group = group;
-	}
+  public void setGroup(VOMSGroup group) {
 
-	public boolean equals(Object other) {
+    this.group = group;
+  }
 
-		if (this == other)
-			return true;
+  public boolean equals(Object other) {
 
-		if (!(other instanceof VOMSGroupAttribute))
-			return false;
+    if (this == other)
+      return true;
 
-		if (other == null)
-			return false;
+    if (!(other instanceof VOMSGroupAttribute))
+      return false;
 
-		VOMSGroupAttribute that = (VOMSGroupAttribute) other;
+    if (other == null)
+      return false;
 
-		if (getGroup().equals(that.getGroup()))
-			return getAttributeDescription().equals(
-					that.getAttributeDescription());
+    VOMSGroupAttribute that = (VOMSGroupAttribute) other;
 
-		return false;
+    if (getGroup().equals(that.getGroup()))
+      return getAttributeDescription().equals(that.getAttributeDescription());
 
-	}
+    return false;
 
-	public int hashCode() {
+  }
 
-		int result = 14;
+  public int hashCode() {
 
-		result = 29 * result + getAttributeDescription().hashCode();
+    int result = 14;
 
-		if (getGroup() != null)
-			result = 29 * result + getGroup().hashCode();
+    result = 29 * result + getAttributeDescription().hashCode();
 
-		return result;
+    if (getGroup() != null)
+      result = 29 * result + getGroup().hashCode();
 
-	}
+    return result;
+
+  }
 }

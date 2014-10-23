@@ -35,95 +35,94 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class SaveACLEntryOperation extends BaseVomsOperation {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SaveACLEntryOperation.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(SaveACLEntryOperation.class);
 
-	private ACL acl;
-	private VOMSAdmin admin;
-	private VOMSPermission perms;
+  private ACL acl;
+  private VOMSAdmin admin;
+  private VOMSPermission perms;
 
-	private boolean recursive = false;
+  private boolean recursive = false;
 
-	protected Object doExecute() {		
+  protected Object doExecute() {
 
-		ACLDAO.instance().saveACLEntry(acl, admin, perms);
+    ACLDAO.instance().saveACLEntry(acl, admin, perms);
 
-		if (isRecursive() && acl.getContext().isGroupContext()) {
+    if (isRecursive() && acl.getContext().isGroupContext()) {
 
-			try {
+      try {
 
-				List childrenGroups = VOMSGroupDAO.instance().getChildren(
-						acl.getGroup());
-				Iterator childIter = childrenGroups.iterator();
+        List childrenGroups = VOMSGroupDAO.instance().getChildren(
+          acl.getGroup());
+        Iterator childIter = childrenGroups.iterator();
 
-				while (childIter.hasNext()) {
+        while (childIter.hasNext()) {
 
-					VOMSGroup childGroup = (VOMSGroup) childIter.next();
-					SaveACLEntryOperation op = instance(childGroup.getACL(),
-							admin, perms, true);
-					op.execute();
+          VOMSGroup childGroup = (VOMSGroup) childIter.next();
+          SaveACLEntryOperation op = instance(childGroup.getACL(), admin,
+            perms, true);
+          op.execute();
 
-				}
+        }
 
-			} catch (VOMSAuthorizationException e) {
+      } catch (VOMSAuthorizationException e) {
 
-				log.warn("Authorization Error saving recursively ACL entry !",
-						e);
+        log.warn("Authorization Error saving recursively ACL entry !", e);
 
-			} catch (RuntimeException e) {
+      } catch (RuntimeException e) {
 
-				throw e;
-			}
-		}
-		return acl;
+        throw e;
+      }
+    }
+    return acl;
 
-	}
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		VOMSPermission requiredPerms = null;
+    VOMSPermission requiredPerms = null;
 
-		if (acl.isDefautlACL())
-			requiredPerms = VOMSPermission.getEmptyPermissions()
-					.setACLDefaultPermission().setACLReadPermission()
-					.setACLWritePermission();
-		else
-			requiredPerms = VOMSPermission.getEmptyPermissions()
-					.setACLReadPermission().setACLWritePermission();
+    if (acl.isDefautlACL())
+      requiredPerms = VOMSPermission.getEmptyPermissions()
+        .setACLDefaultPermission().setACLReadPermission()
+        .setACLWritePermission();
+    else
+      requiredPerms = VOMSPermission.getEmptyPermissions()
+        .setACLReadPermission().setACLWritePermission();
 
-		addRequiredPermission(acl.getContext(), requiredPerms);
-	}
+    addRequiredPermission(acl.getContext(), requiredPerms);
+  }
 
-	private SaveACLEntryOperation(ACL acl, VOMSAdmin admin,
-			VOMSPermission perms, boolean recursive) {
+  private SaveACLEntryOperation(ACL acl, VOMSAdmin admin, VOMSPermission perms,
+    boolean recursive) {
 
-		this.acl = acl;
-		this.admin = admin;
-		this.perms = perms;
-		this.recursive = recursive;
+    this.acl = acl;
+    this.admin = admin;
+    this.perms = perms;
+    this.recursive = recursive;
 
-	}
+  }
 
-	public static SaveACLEntryOperation instance(ACL acl, VOMSAdmin admin,
-			VOMSPermission perms) {
+  public static SaveACLEntryOperation instance(ACL acl, VOMSAdmin admin,
+    VOMSPermission perms) {
 
-		return new SaveACLEntryOperation(acl, admin, perms, false);
-	}
+    return new SaveACLEntryOperation(acl, admin, perms, false);
+  }
 
-	public static SaveACLEntryOperation instance(ACL acl, VOMSAdmin admin,
-			VOMSPermission perms, boolean recursive) {
+  public static SaveACLEntryOperation instance(ACL acl, VOMSAdmin admin,
+    VOMSPermission perms, boolean recursive) {
 
-		return new SaveACLEntryOperation(acl, admin, perms, recursive);
-	}
+    return new SaveACLEntryOperation(acl, admin, perms, recursive);
+  }
 
-	public boolean isRecursive() {
+  public boolean isRecursive() {
 
-		return recursive;
-	}
+    return recursive;
+  }
 
-	public void setRecursive(boolean recursive) {
+  public void setRecursive(boolean recursive) {
 
-		this.recursive = recursive;
-	}
+    this.recursive = recursive;
+  }
 
 }

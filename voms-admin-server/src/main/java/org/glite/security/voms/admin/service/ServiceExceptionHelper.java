@@ -25,40 +25,39 @@ import org.hibernate.JDBCException;
 
 public class ServiceExceptionHelper {
 
-	public static void handleServiceException(Logger log, RuntimeException t) {
+  public static void handleServiceException(Logger log, RuntimeException t) {
 
-		// If the exception is a DB exception, clean out the session gracefully
-		if (t instanceof JDBCException) {
+    // If the exception is a DB exception, clean out the session gracefully
+    if (t instanceof JDBCException) {
 
-			Throwable cause = t.getCause();
+      Throwable cause = t.getCause();
 
-			log.error("Database error caught: " + cause.getMessage());
+      log.error("Database error caught: " + cause.getMessage());
 
-			// Print stack trace in logs if log is debug enabled.
-			if (log.isDebugEnabled())
-				log.error("Database error caught: " + cause.getMessage(), t);
+      // Print stack trace in logs if log is debug enabled.
+      if (log.isDebugEnabled())
+        log.error("Database error caught: " + cause.getMessage(), t);
 
-			try {
+      try {
 
-				HibernateFactory.rollbackTransaction();
+        HibernateFactory.rollbackTransaction();
 
-			} finally {
+      } finally {
 
-				HibernateFactory.closeSession();
+        HibernateFactory.closeSession();
 
-			}
+      }
 
-		} else {
+    } else {
 
-			if (log.isDebugEnabled())
-				log.error(t.getClass().getSimpleName() + " exception caught: ",
-						t);
-			else
-				log.error(t.getClass().getSimpleName() + " exception caught: "
-						+ t.getMessage());
-		}
+      if (log.isDebugEnabled())
+        log.error(t.getClass().getSimpleName() + " exception caught: ", t);
+      else
+        log.error(t.getClass().getSimpleName() + " exception caught: "
+          + t.getMessage());
+    }
 
-		throw t;
-	}
+    throw t;
+  }
 
 }

@@ -52,10 +52,9 @@ public class VOMSSslConnectorConfigurator implements
 
         certChainValidator = new CertificateValidatorBuilder()
           .trustAnchorsDir(options.getTrustStoreDirectory())
-          .trustAnchorsUpdateInterval(options.getTrustStoreRefreshIntervalInMsec())
-          .storeUpdateListener(l)
-          .validationErrorListener(l)
-          .build();
+          .trustAnchorsUpdateInterval(
+            options.getTrustStoreRefreshIntervalInMsec())
+          .storeUpdateListener(l).validationErrorListener(l).build();
       }
 
       SSLContext sslContext = SocketFactoryCreator.getSSLContext(

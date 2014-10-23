@@ -24,32 +24,31 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 
 public class RequestApproved extends AbstractVelocityNotification {
 
-	Request request;
-	
-	public RequestApproved(Request req) {
+  Request request;
 
-		addRecipient(req.getRequesterInfo().getEmailAddress());
-		this.request = req;
-		
+  public RequestApproved(Request req) {
 
-	}
+    addRecipient(req.getRequesterInfo().getEmailAddress());
+    this.request = req;
 
-	protected void buildMessage() {
+  }
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
+  protected void buildMessage() {
 
-		String requestType = request.getTypeName().toLowerCase();
-		
-		setSubject("Your "+requestType+" for VO " + voName
-				+ " has been approved.");
-		
-		context.put("request", request);
-		context.put("voName", voName);
-		context.put("recipient", getRecipientList().get(0));
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String voName = conf.getVOName();
 
-		super.buildMessage();
+    String requestType = request.getTypeName().toLowerCase();
 
-	}
+    setSubject("Your " + requestType + " for VO " + voName
+      + " has been approved.");
+
+    context.put("request", request);
+    context.put("voName", voName);
+    context.put("recipient", getRecipientList().get(0));
+
+    super.buildMessage();
+
+  }
 
 }

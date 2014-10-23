@@ -24,7 +24,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface OrgDBMembershipSynchronizationStrategy {
 
-	public void synchronizeMemberInformation(VOMSUser u,
-		VOMSOrgDBPerson orgDBRecord, String experimentName);
+  public void synchronizeMemberInformation(VOMSUser u,
+    VOMSOrgDBPerson orgDBRecord, String experimentName);
 
 }

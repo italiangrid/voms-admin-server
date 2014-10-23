@@ -26,31 +26,30 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 public class HibernateInterceptor extends AbstractInterceptor implements
-		StrutsStatics {
+  StrutsStatics {
 
-	
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String intercept(ActionInvocation ai) throws Exception {
+  @Override
+  public String intercept(ActionInvocation ai) throws Exception {
 
-		String result = ai.invoke();
+    String result = ai.invoke();
 
-		try {
+    try {
 
-			HibernateFactory.commitTransaction();
+      HibernateFactory.commitTransaction();
 
-		} finally {
+    } finally {
 
-			HibernateFactory.closeSession();
+      HibernateFactory.closeSession();
 
-		}
+    }
 
-		return result;
+    return result;
 
-	}
+  }
 
 }

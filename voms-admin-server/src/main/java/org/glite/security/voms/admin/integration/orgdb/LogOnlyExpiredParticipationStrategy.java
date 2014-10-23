@@ -27,15 +27,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LogOnlyExpiredParticipationStrategy implements
-	OrgDbExpiredParticipationStrategy {
+  OrgDbExpiredParticipationStrategy {
 
-    public static final Logger log = LoggerFactory.getLogger(LogOnlyExpiredParticipationStrategy.class);
-    
-    public void handleOrgDbExpiredParticipation(VOMSUser u,
-	    VOMSOrgDBPerson orgDBPerson, String experimentName) {
-	
-	log.debug("User {} participation for experiment {} has expired.", u, experimentName);
+  public static final Logger log = LoggerFactory
+    .getLogger(LogOnlyExpiredParticipationStrategy.class);
 
-    }
+  public void handleOrgDbExpiredParticipation(VOMSUser u,
+    VOMSOrgDBPerson orgDBPerson, String experimentName) {
+
+    log.debug("User {} participation for experiment {} has expired.", u,
+      experimentName);
+
+  }
 
 }

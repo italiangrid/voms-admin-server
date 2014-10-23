@@ -34,179 +34,222 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 public class VOMSUserJSON {
-	
-	/**
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long id;
-	
-	String name;
+  Long id;
 
-	String surname;
+  String name;
 
-	String institution;
+  String surname;
 
-	String address;
+  String institution;
 
-	String phoneNumber;
-	
-	String emailAddress;
-	
-	Date creationTime;
+  String address;
 
-	Date endTime;
+  String phoneNumber;
 
-	Boolean suspended = false;
+  String emailAddress;
 
-	SuspensionReason suspensionReasonCode;
+  Date creationTime;
 
-	String suspensionReason;
+  Date endTime;
 
-	List<CertificateJSON> certificates;
-	
-	
-	public Long getId() {
-		return id;
-	}
+  Boolean suspended = false;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  SuspensionReason suspensionReasonCode;
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a name for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The name field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getName() {
-		return name;
-	}
+  String suspensionReason;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  List<CertificateJSON> certificates;
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a family name for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The family name contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getSurname() {
-		return surname;
-	}
+  public Long getId() {
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+    return id;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an institution for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The institution contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getInstitution() {
-		return institution;
-	}
+  public void setId(Long id) {
 
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
+    this.id = id;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an address for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The address contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getAddress() {
-		return address;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a name for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The name field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getName() {
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    return name;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide a phone number for the user.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The phone number contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+  public void setName(String name) {
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    this.name = name;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "Please provide an email address for the user.")
-	@EmailValidator(type = ValidatorType.FIELD, message = "Please enter a valid email address.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The email address contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a family name for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The family name contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getSurname() {
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    return surname;
+  }
 
-	public Date getCreationTime() {
-		return creationTime;
-	}
+  public void setSurname(String surname) {
 
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
+    this.surname = surname;
+  }
 
-	public Date getEndTime() {
-		return endTime;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide an institution for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The institution contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getInstitution() {
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
+    return institution;
+  }
 
-	public Boolean getSuspended() {
-		return suspended;
-	}
+  public void setInstitution(String institution) {
 
-	public void setSuspended(Boolean suspended) {
-		this.suspended = suspended;
-	}
+    this.institution = institution;
+  }
 
-	public SuspensionReason getSuspensionReasonCode() {
-		return suspensionReasonCode;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide an address for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The address contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getAddress() {
 
-	public void setSuspensionReasonCode(SuspensionReason suspensionReasonCode) {
-		this.suspensionReasonCode = suspensionReasonCode;
-	}
+    return address;
+  }
 
-	public String getSuspensionReason() {
-		return suspensionReason;
-	}
+  public void setAddress(String address) {
 
-	public void setSuspensionReason(String suspensionReason) {
-		this.suspensionReason = suspensionReason;
-	}
-	
-	
-	public List<CertificateJSON> getCertificates() {
-		return certificates;
-	}
+    this.address = address;
+  }
 
-	public void setCertificates(List<CertificateJSON> certificates) {
-		this.certificates = certificates;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide a phone number for the user.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The phone number contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getPhoneNumber() {
 
-	public static VOMSUserJSON fromVOMSUser(VOMSUser user){
-		
-		VOMSUserJSON u = new VOMSUserJSON();
-		u.setId(user.getId());
-		u.setName(user.getName());
-		u.setSurname(user.getSurname());
-		u.setAddress(user.getAddress());
-		u.setPhoneNumber(user.getPhoneNumber());
-		u.setInstitution(user.getInstitution());
-		u.setSuspended(user.getSuspended());
-		u.setSuspensionReason(user.getSuspensionReason());
-		u.setSuspensionReasonCode(user.getSuspensionReasonCode());
-		u.setEmailAddress(user.getEmailAddress());
-		u.setCreationTime(user.getCreationTime());
-		u.setEndTime(user.getEndTime());
-		
-		List<CertificateJSON> certs = new ArrayList<CertificateJSON>();
-		for (Certificate c: user.getCertificates())
-			certs.add(CertificateJSON.fromCertificate(c));
-		
-		u.setCertificates(certs);
-		return u;
-	}
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+
+    this.phoneNumber = phoneNumber;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please provide an email address for the user.")
+  @EmailValidator(type = ValidatorType.FIELD,
+    message = "Please enter a valid email address.")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The email address contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  public Date getCreationTime() {
+
+    return creationTime;
+  }
+
+  public void setCreationTime(Date creationTime) {
+
+    this.creationTime = creationTime;
+  }
+
+  public Date getEndTime() {
+
+    return endTime;
+  }
+
+  public void setEndTime(Date endTime) {
+
+    this.endTime = endTime;
+  }
+
+  public Boolean getSuspended() {
+
+    return suspended;
+  }
+
+  public void setSuspended(Boolean suspended) {
+
+    this.suspended = suspended;
+  }
+
+  public SuspensionReason getSuspensionReasonCode() {
+
+    return suspensionReasonCode;
+  }
+
+  public void setSuspensionReasonCode(SuspensionReason suspensionReasonCode) {
+
+    this.suspensionReasonCode = suspensionReasonCode;
+  }
+
+  public String getSuspensionReason() {
+
+    return suspensionReason;
+  }
+
+  public void setSuspensionReason(String suspensionReason) {
+
+    this.suspensionReason = suspensionReason;
+  }
+
+  public List<CertificateJSON> getCertificates() {
+
+    return certificates;
+  }
+
+  public void setCertificates(List<CertificateJSON> certificates) {
+
+    this.certificates = certificates;
+  }
+
+  public static VOMSUserJSON fromVOMSUser(VOMSUser user) {
+
+    VOMSUserJSON u = new VOMSUserJSON();
+    u.setId(user.getId());
+    u.setName(user.getName());
+    u.setSurname(user.getSurname());
+    u.setAddress(user.getAddress());
+    u.setPhoneNumber(user.getPhoneNumber());
+    u.setInstitution(user.getInstitution());
+    u.setSuspended(user.getSuspended());
+    u.setSuspensionReason(user.getSuspensionReason());
+    u.setSuspensionReasonCode(user.getSuspensionReasonCode());
+    u.setEmailAddress(user.getEmailAddress());
+    u.setCreationTime(user.getCreationTime());
+    u.setEndTime(user.getEndTime());
+
+    List<CertificateJSON> certs = new ArrayList<CertificateJSON>();
+    for (Certificate c : user.getCertificates())
+      certs.add(CertificateJSON.fromCertificate(c));
+
+    u.setCertificates(certs);
+    return u;
+  }
 
 }

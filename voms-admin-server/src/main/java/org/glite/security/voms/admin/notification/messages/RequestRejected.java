@@ -24,32 +24,33 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 
 public class RequestRejected extends AbstractVelocityNotification {
 
-	Request request;
-	
-	String rejectReasons;
+  Request request;
 
-	public RequestRejected(Request request, String rejectReasons) {
+  String rejectReasons;
 
-		addRecipient(request.getRequesterInfo().getEmailAddress());
-		this.request = request;
-		this.rejectReasons = rejectReasons;
-	}
+  public RequestRejected(Request request, String rejectReasons) {
 
-	protected void buildMessage() {
-		String voName = VOMSConfiguration.instance().getVOName();
+    addRecipient(request.getRequesterInfo().getEmailAddress());
+    this.request = request;
+    this.rejectReasons = rejectReasons;
+  }
 
-		String requestType = request.getTypeName().toLowerCase();
-		
-		setSubject("Your "+requestType+" for VO " + voName
-				+ " has been rejected.");
+  protected void buildMessage() {
 
-		context.put("voName", voName);
-		context.put("request", request);
-		context.put("recipient", getRecipientList().get(0));
-		context.put("rejectReasons", rejectReasons);
+    String voName = VOMSConfiguration.instance().getVOName();
 
-		super.buildMessage();
+    String requestType = request.getTypeName().toLowerCase();
 
-	}
+    setSubject("Your " + requestType + " for VO " + voName
+      + " has been rejected.");
+
+    context.put("voName", voName);
+    context.put("request", request);
+    context.put("recipient", getRecipientList().get(0));
+    context.put("rejectReasons", rejectReasons);
+
+    super.buildMessage();
+
+  }
 
 }

@@ -36,24 +36,24 @@ import java.util.List;
  */
 public interface GenericDAO<T, ID extends Serializable> {
 
-	T findById(ID id, boolean lock);
+  T findById(ID id, boolean lock);
 
-	List<T> findAll();
+  List<T> findAll();
 
-	List<T> findByExample(T exampleInstance, String... excludeProperty);
+  List<T> findByExample(T exampleInstance, String... excludeProperty);
 
-	T makePersistent(T entity);
+  T makePersistent(T entity);
 
-	void makeTransient(T entity);
+  void makeTransient(T entity);
 
-	/**
-	 * Affects every managed instance in the current persistence context!
-	 */
-	void flush();
+  /**
+   * Affects every managed instance in the current persistence context!
+   */
+  void flush();
 
-	/**
-	 * Affects every managed instance in the current persistence context!
-	 */
-	void clear();
+  /**
+   * Affects every managed instance in the current persistence context!
+   */
+  void clear();
 
 }

@@ -26,47 +26,48 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 
 public class ChangeReacceptancePeriodOperation extends BaseVomsOperation {
 
-	AUP aup;
-	int period;
-	
-	
-	public ChangeReacceptancePeriodOperation(AUP aup, int period) {
-		this.aup = aup;
-		this.period = period;
-		
-	}
-	@Override
-	protected Object doExecute() {
-		
-		aup.setReacceptancePeriod(period);
-		return aup;
-	}
-	
-	
-	public AUP getAup() {
-		return aup;
-	}
+  AUP aup;
+  int period;
 
+  public ChangeReacceptancePeriodOperation(AUP aup, int period) {
 
-	public void setAup(AUP aup) {
-		this.aup = aup;
-	}
+    this.aup = aup;
+    this.period = period;
 
+  }
 
-	public int getPeriod() {
-		return period;
-	}
+  @Override
+  protected Object doExecute() {
 
+    aup.setReacceptancePeriod(period);
+    return aup;
+  }
 
-	public void setPeriod(int period) {
-		this.period = period;
-	}
+  public AUP getAup() {
 
+    return aup;
+  }
 
-	@Override
-	protected void setupPermissions() {
-		
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerRWPermissions().setMembershipRWPermission());
-	}
+  public void setAup(AUP aup) {
+
+    this.aup = aup;
+  }
+
+  public int getPeriod() {
+
+    return period;
+  }
+
+  public void setPeriod(int period) {
+
+    this.period = period;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerRWPermissions().setMembershipRWPermission());
+  }
 
 }

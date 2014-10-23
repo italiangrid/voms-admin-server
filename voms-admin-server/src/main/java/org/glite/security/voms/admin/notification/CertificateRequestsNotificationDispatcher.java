@@ -31,44 +31,48 @@ import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 
 public class CertificateRequestsNotificationDispatcher extends
-		BaseNotificationDispatcher {
+  BaseNotificationDispatcher {
 
-	private static CertificateRequestsNotificationDispatcher INSTANCE;
-	
-	public static CertificateRequestsNotificationDispatcher instance(){
-		
-		if (INSTANCE == null)
-			INSTANCE = new CertificateRequestsNotificationDispatcher();
-		
-		return INSTANCE;
-	}
-	
-	private CertificateRequestsNotificationDispatcher() {
-		super(new EventMask(EventType.CertificateRequestEvent));
-	}
+  private static CertificateRequestsNotificationDispatcher INSTANCE;
 
-	public void fire(Event e) {
-		
-		if (e instanceof CertificateRequestSubmittedEvent){
-			
-			CertificateRequestSubmittedEvent ee = (CertificateRequestSubmittedEvent)e;
-			
-			HandleRequest msg = new HandleRequest(ee.getRequest(), ee.getManagementURL());
-			
-			NotificationService.instance().send(msg);
-		}
-		
-		if (e instanceof CertificateRequestApprovedEvent){
-			
-			RequestApproved msg = new RequestApproved(((CertificateRequestApprovedEvent)e).getRequest());
-			NotificationService.instance().send(msg);
-		}
-		
-		if (e instanceof CertificateRequestRejectedEvent){
-			RequestRejected msg = new RequestRejected(((CertificateRequestRejectedEvent)e).getRequest(), null);
-			NotificationService.instance().send(msg);
-		}
+  public static CertificateRequestsNotificationDispatcher instance() {
 
-	}
+    if (INSTANCE == null)
+      INSTANCE = new CertificateRequestsNotificationDispatcher();
+
+    return INSTANCE;
+  }
+
+  private CertificateRequestsNotificationDispatcher() {
+
+    super(new EventMask(EventType.CertificateRequestEvent));
+  }
+
+  public void fire(Event e) {
+
+    if (e instanceof CertificateRequestSubmittedEvent) {
+
+      CertificateRequestSubmittedEvent ee = (CertificateRequestSubmittedEvent) e;
+
+      HandleRequest msg = new HandleRequest(ee.getRequest(),
+        ee.getManagementURL());
+
+      NotificationService.instance().send(msg);
+    }
+
+    if (e instanceof CertificateRequestApprovedEvent) {
+
+      RequestApproved msg = new RequestApproved(
+        ((CertificateRequestApprovedEvent) e).getRequest());
+      NotificationService.instance().send(msg);
+    }
+
+    if (e instanceof CertificateRequestRejectedEvent) {
+      RequestRejected msg = new RequestRejected(
+        ((CertificateRequestRejectedEvent) e).getRequest(), null);
+      NotificationService.instance().send(msg);
+    }
+
+  }
 
 }

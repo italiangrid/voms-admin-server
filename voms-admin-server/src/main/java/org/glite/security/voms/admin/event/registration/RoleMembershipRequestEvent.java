@@ -25,20 +25,22 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 
 public class RoleMembershipRequestEvent extends GenericEvent {
 
-	RoleMembershipRequest request;
-	
-	public RoleMembershipRequestEvent(RoleMembershipRequest req) {
-		super(EventType.RoleMembershipRequestEvent);
-		this.request = req;
-	}
+  RoleMembershipRequest request;
 
-	public RoleMembershipRequest getRequest() {
-		return request;
-	}
+  public RoleMembershipRequestEvent(RoleMembershipRequest req) {
 
-	public void setRequest(RoleMembershipRequest request) {
-		this.request = request;
-	}
+    super(EventType.RoleMembershipRequestEvent);
+    this.request = req;
+  }
 
-	
+  public RoleMembershipRequest getRequest() {
+
+    return request;
+  }
+
+  public void setRequest(RoleMembershipRequest request) {
+
+    this.request = request;
+  }
+
 }

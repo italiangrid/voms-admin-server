@@ -24,36 +24,38 @@ import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 
 public class FindRoleOperation extends BaseVoReadOperation {
 
-	Long id;
+  Long id;
 
-	String name;
+  String name;
 
-	private FindRoleOperation(Long id) {
+  private FindRoleOperation(Long id) {
 
-		this.id = id;
+    this.id = id;
 
-	}
+  }
 
-	private FindRoleOperation(String name) {
-		this.name = name;
-	}
+  private FindRoleOperation(String name) {
 
-	protected Object doExecute() {
-		VOMSRoleDAO dao = VOMSRoleDAO.instance();
+    this.name = name;
+  }
 
-		if (name != null)
-			return dao.findByName(name);
+  protected Object doExecute() {
 
-		return dao.findById(id);
-	}
+    VOMSRoleDAO dao = VOMSRoleDAO.instance();
 
-	public static FindRoleOperation instance(Long id) {
+    if (name != null)
+      return dao.findByName(name);
 
-		return new FindRoleOperation(id);
-	}
+    return dao.findById(id);
+  }
 
-	public static FindRoleOperation instance(String name) {
+  public static FindRoleOperation instance(Long id) {
 
-		return new FindRoleOperation(name);
-	}
+    return new FindRoleOperation(id);
+  }
+
+  public static FindRoleOperation instance(String name) {
+
+    return new FindRoleOperation(name);
+  }
 }

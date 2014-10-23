@@ -33,78 +33,85 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ParentPackage("json-light")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
 public class UIAction extends BaseAction implements SessionAware {
 
-	public static final Logger log = LoggerFactory.getLogger(UIAction.class);
+  public static final Logger log = LoggerFactory.getLogger(UIAction.class);
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String panelId;
-	Boolean visible;
+  String panelId;
+  Boolean visible;
 
-	Map<String, Boolean> statusMap;
+  Map<String, Boolean> statusMap;
 
-	private transient Map<String, Object> session;
+  private transient Map<String, Object> session;
 
-	@Action("store")
-	public String store() {
+  @Action("store")
+  public String store() {
 
-		log.debug("panelId: " + panelId);
-		log.debug("visible" + visible);
+    log.debug("panelId: " + panelId);
+    log.debug("visible" + visible);
 
-		statusMap = (HashMap<String, Boolean>) session
-				.get(VOMSServiceConstants.STATUS_MAP_KEY);
+    statusMap = (HashMap<String, Boolean>) session
+      .get(VOMSServiceConstants.STATUS_MAP_KEY);
 
-		if (statusMap == null)
-			statusMap = new HashMap<String, Boolean>();
+    if (statusMap == null)
+      statusMap = new HashMap<String, Boolean>();
 
-		if (panelId != null)
-			statusMap.put(panelId, visible);
+    if (panelId != null)
+      statusMap.put(panelId, visible);
 
-		session.put(VOMSServiceConstants.STATUS_MAP_KEY, statusMap);
+    session.put(VOMSServiceConstants.STATUS_MAP_KEY, statusMap);
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
-	@Action("status")
-	public String status() {
+  @Action("status")
+  public String status() {
 
-		statusMap = (HashMap<String, Boolean>) session
-				.get(VOMSServiceConstants.STATUS_MAP_KEY);
+    statusMap = (HashMap<String, Boolean>) session
+      .get(VOMSServiceConstants.STATUS_MAP_KEY);
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
-	public void setSession(Map<String, Object> session) {
-		this.session = session;
-	}
+  public void setSession(Map<String, Object> session) {
 
-	public String getPanelId() {
-		return panelId;
-	}
+    this.session = session;
+  }
 
-	public void setPanelId(String panelId) {
-		this.panelId = panelId;
-	}
+  public String getPanelId() {
 
-	public Boolean getVisible() {
-		return visible;
-	}
+    return panelId;
+  }
 
-	public void setVisible(Boolean visible) {
-		this.visible = visible;
-	}
+  public void setPanelId(String panelId) {
 
-	public Map<String, Boolean> getStatusMap() {
-		return statusMap;
-	}
+    this.panelId = panelId;
+  }
 
-	public void setStatusMap(Map<String, Boolean> statusMap) {
-		this.statusMap = statusMap;
-	}
+  public Boolean getVisible() {
+
+    return visible;
+  }
+
+  public void setVisible(Boolean visible) {
+
+    this.visible = visible;
+  }
+
+  public Map<String, Boolean> getStatusMap() {
+
+    return statusMap;
+  }
+
+  public void setStatusMap(Map<String, Boolean> statusMap) {
+
+    this.statusMap = statusMap;
+  }
 
 }

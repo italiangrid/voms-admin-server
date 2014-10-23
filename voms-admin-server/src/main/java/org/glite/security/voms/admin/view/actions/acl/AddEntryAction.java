@@ -47,267 +47,285 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
-		@Result(name = BaseAction.INPUT, location = "addACLEntry") })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "manage", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "addACLEntry") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class AddEntryAction extends ACLActionSupport {
-	
-	public static final Logger log = LoggerFactory.getLogger(AddEntryAction.class);
 
-	/**
+  public static final Logger log = LoggerFactory
+    .getLogger(AddEntryAction.class);
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String entryType;
+  String entryType;
 
-	List<String> selectedPermissions;
+  List<String> selectedPermissions;
 
-	VOMSPermission permission;
+  VOMSPermission permission;
 
-	Long userId;
+  Long userId;
 
-	String dn;
+  String dn;
 
-	Short caId;
+  Short caId;
 
-	String emailAddress;
+  String emailAddress;
 
-	Long roleId;
+  Long roleId;
 
-	Long roleGroupId;
+  Long roleGroupId;
 
-	Long groupId;
-	
-	Map<String, String> entryTypeMap;
+  Long groupId;
 
-	@Override
-	public void validate() {
-		if (selectedPermissions == null)
-			addActionError("No permissions selected!");
-		else if (selectedPermissions.isEmpty())
-			addActionError("No permissions selected!");
-		
-		
-		
-		if (entryType.equals("non-vo-user")){
-			
-			if (dn == null || "".equals(dn))
-				addFieldError("dn", "Please specify a subject!");
-			
-			if (emailAddress == null || "".equals(emailAddress))
-				addFieldError("emailAddress", "Please specify a valid email address!");
-			
-			VOMSCA adminCA = VOMSCADAO.instance().getByID(caId);
-			if (adminCA == null){
-				addFieldError("caId", "A CA for the given subject is not registered in the VOMS database!");
-			}
-			
-			if (VOMSAdminDAO.instance().getByName(dn, adminCA.getSubjectString()) != null){
-				
-				addFieldError("dn", "An administrator with the given subject already exists. Choose a different subject!");
-			}
-		}
-		
-		if (hasActionErrors() || hasFieldErrors())
-			buildEntryTypeMap();
-	}
-	
-	private void loadAdmin() throws Exception {
+  Map<String, String> entryTypeMap;
 
-		if (entryType.equals("vo-user")) {
+  @Override
+  public void validate() {
 
-			VOMSUser u = (VOMSUser) FindUserOperation.instance(userId)
-					.execute();
-			if (u == null)
-				throw new NoSuchUserException("User not found for id : "
-						+ userId);
+    if (selectedPermissions == null)
+      addActionError("No permissions selected!");
+    else if (selectedPermissions.isEmpty())
+      addActionError("No permissions selected!");
 
-			admin = VOMSAdminDAO.instance().createFromUser(u);
+    if (entryType.equals("non-vo-user")) {
 
-		} else if (entryType.equals("non-vo-user")) {
+      if (dn == null || "".equals(dn))
+        addFieldError("dn", "Please specify a subject!");
 
-			VOMSCA ca = VOMSCADAO.instance().getByID(caId);
-			admin = VOMSAdminDAO.instance()
-					.getByName(dn, ca.getSubjectString());
+      if (emailAddress == null || "".equals(emailAddress))
+        addFieldError("emailAddress", "Please specify a valid email address!");
 
-			if (admin == null){
-				admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
-				admin.setEmailAddress(getEmailAddress());
-			}
+      VOMSCA adminCA = VOMSCADAO.instance().getByID(caId);
+      if (adminCA == null) {
+        addFieldError("caId",
+          "A CA for the given subject is not registered in the VOMS database!");
+      }
 
-		} else if (entryType.equals("role-admin")) {
+      if (VOMSAdminDAO.instance().getByName(dn, adminCA.getSubjectString()) != null) {
 
-			VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleId)
-					.execute();
-			VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(roleGroupId)
-					.execute();
+        addFieldError(
+          "dn",
+          "An administrator with the given subject already exists. Choose a different subject!");
+      }
+    }
 
-			VOMSContext ctxt = VOMSContext.instance(g, r);
+    if (hasActionErrors() || hasFieldErrors())
+      buildEntryTypeMap();
+  }
 
-			admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
-			if (admin == null)
-				admin = VOMSAdminDAO.instance().create(ctxt.toString());
+  private void loadAdmin() throws Exception {
 
-		} else if (entryType.equals("group-admin")) {
+    if (entryType.equals("vo-user")) {
 
-			VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupId)
-					.execute();
-			VOMSContext ctxt = VOMSContext.instance(g);
+      VOMSUser u = (VOMSUser) FindUserOperation.instance(userId).execute();
+      if (u == null)
+        throw new NoSuchUserException("User not found for id : " + userId);
 
-			admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
+      admin = VOMSAdminDAO.instance().createFromUser(u);
 
-			if (admin == null)
-				admin = VOMSAdminDAO.instance().create(ctxt.toString());
+    } else if (entryType.equals("non-vo-user")) {
 
-		} else if (entryType.equals("anyone")) {
+      VOMSCA ca = VOMSCADAO.instance().getByID(caId);
+      admin = VOMSAdminDAO.instance().getByName(dn, ca.getSubjectString());
 
-			admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+      if (admin == null) {
+        admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
+        admin.setEmailAddress(getEmailAddress());
+      }
 
-		} else if (entryType.equals("unauthenticated")){
-			
-			admin = VOMSAdminDAO.instance().getUnauthenticatedClientAdmin();
-			
-			if (admin == null)
-				admin = VOMSAdminDAO.instance().createUnauthenticateClientAdmin();
-		}
-		
-		else
-			throw new IllegalArgumentException("Unsupported entryType value: "
-					+ entryType);
-	}
+    } else if (entryType.equals("role-admin")) {
 
-	@Override
-	public String execute() throws Exception {
+      VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleId).execute();
+      VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(roleGroupId)
+        .execute();
 
-		loadAdmin();
+      VOMSContext ctxt = VOMSContext.instance(g, r);
 
-		VOMSPermission perms = VOMSPermission.fromStringArray(selectedPermissions.toArray(new String[selectedPermissions.size()]));
-		
-		limitUnauthenticatedClientPermissions(perms);
-		
-		SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
-				admin, perms, propagate == null ? false : propagate);
+      admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
+      if (admin == null)
+        admin = VOMSAdminDAO.instance().create(ctxt.toString());
 
-		op.execute();
+    } else if (entryType.equals("group-admin")) {
 
-		return SUCCESS;
-	}
+      VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupId).execute();
+      VOMSContext ctxt = VOMSContext.instance(g);
 
-	public List<String> getSelectedPermissions() {
-		return selectedPermissions;
-	}
+      admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
 
-	public void setSelectedPermissions(List<String> selectedPermissions) {
-		this.selectedPermissions = selectedPermissions;
-	}
+      if (admin == null)
+        admin = VOMSAdminDAO.instance().create(ctxt.toString());
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "entryType is required!")
-	public String getEntryType() {
-		return entryType;
-	}
+    } else if (entryType.equals("anyone")) {
 
-	public void setEntryType(String entryType) {
+      admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
 
-		this.entryType = entryType;
-	}
+    } else if (entryType.equals("unauthenticated")) {
 
-	public Long getUserId() {
-		return userId;
-	}
+      admin = VOMSAdminDAO.instance().getUnauthenticatedClientAdmin();
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+      if (admin == null)
+        admin = VOMSAdminDAO.instance().createUnauthenticateClientAdmin();
+    }
 
-	public Long getRoleId() {
-		return roleId;
-	}
+    else
+      throw new IllegalArgumentException("Unsupported entryType value: "
+        + entryType);
+  }
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	public Long getGroupId() {
-		return groupId;
-	}
+    loadAdmin();
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+    VOMSPermission perms = VOMSPermission.fromStringArray(selectedPermissions
+      .toArray(new String[selectedPermissions.size()]));
 
-	public String getDn() {
-		return dn;
-	}
+    limitUnauthenticatedClientPermissions(perms);
 
-	public void setDn(String dn) {
-		this.dn = dn;
-	}
+    SaveACLEntryOperation op = SaveACLEntryOperation.instance(getModel(),
+      admin, perms, propagate == null ? false : propagate);
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    op.execute();
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    return SUCCESS;
+  }
 
-	public Short getCaId() {
-		return caId;
-	}
+  public List<String> getSelectedPermissions() {
 
-	public void setCaId(Short caId) {
-		this.caId = caId;
-	}
+    return selectedPermissions;
+  }
 
-	public Long getRoleGroupId() {
-		return roleGroupId;
-	}
+  public void setSelectedPermissions(List<String> selectedPermissions) {
 
-	public void setRoleGroupId(Long roleGroupId) {
-		this.roleGroupId = roleGroupId;
-	}
+    this.selectedPermissions = selectedPermissions;
+  }
 
-	public VOMSPermission getPermission() {
-		return permission;
-	}
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "entryType is required!")
+  public String getEntryType() {
 
-	public void setPermission(VOMSPermission permission) {
-		this.permission = permission;
-	}
+    return entryType;
+  }
 
-	public void prepareInput() throws Exception {
+  public void setEntryType(String entryType) {
 
-		prepare();
+    this.entryType = entryType;
+  }
 
-		if (permission == null)
-			permission = VOMSPermission.getEmptyPermissions();
-		
-		buildEntryTypeMap();
-		
-	}
+  public Long getUserId() {
 
-	protected void buildEntryTypeMap(){
-		
-		entryTypeMap = new LinkedHashMap<String, String>();
-		
-		entryTypeMap.put("anyone", "any authenticated user");
-		entryTypeMap.put("unauthenticated", "unauthenticated clients");
-		
-		if (!VOMSUserDAO.instance().findAll().isEmpty())
-			entryTypeMap.put("vo-user", "a VO member certificate");
-		
-		entryTypeMap.put("role-admin","VO members with a specific role");
-		entryTypeMap.put("group-admin", "VO members in a specific group");
-		entryTypeMap.put("non-vo-user", "a non VO member");
-	}
-	
-	public Map<String, String> getEntryTypeMap() {
-		return entryTypeMap;
-	}
-	
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+
+    this.userId = userId;
+  }
+
+  public Long getRoleId() {
+
+    return roleId;
+  }
+
+  public void setRoleId(Long roleId) {
+
+    this.roleId = roleId;
+  }
+
+  public Long getGroupId() {
+
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
+
+  public String getDn() {
+
+    return dn;
+  }
+
+  public void setDn(String dn) {
+
+    this.dn = dn;
+  }
+
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  public Short getCaId() {
+
+    return caId;
+  }
+
+  public void setCaId(Short caId) {
+
+    this.caId = caId;
+  }
+
+  public Long getRoleGroupId() {
+
+    return roleGroupId;
+  }
+
+  public void setRoleGroupId(Long roleGroupId) {
+
+    this.roleGroupId = roleGroupId;
+  }
+
+  public VOMSPermission getPermission() {
+
+    return permission;
+  }
+
+  public void setPermission(VOMSPermission permission) {
+
+    this.permission = permission;
+  }
+
+  public void prepareInput() throws Exception {
+
+    prepare();
+
+    if (permission == null)
+      permission = VOMSPermission.getEmptyPermissions();
+
+    buildEntryTypeMap();
+
+  }
+
+  protected void buildEntryTypeMap() {
+
+    entryTypeMap = new LinkedHashMap<String, String>();
+
+    entryTypeMap.put("anyone", "any authenticated user");
+    entryTypeMap.put("unauthenticated", "unauthenticated clients");
+
+    if (!VOMSUserDAO.instance().findAll().isEmpty())
+      entryTypeMap.put("vo-user", "a VO member certificate");
+
+    entryTypeMap.put("role-admin", "VO members with a specific role");
+    entryTypeMap.put("group-admin", "VO members in a specific group");
+    entryTypeMap.put("non-vo-user", "a non VO member");
+  }
+
+  public Map<String, String> getEntryTypeMap() {
+
+    return entryTypeMap;
+  }
+
 }

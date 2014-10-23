@@ -528,10 +528,7 @@ public class SchemaDeployer {
       .getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION);
 
     String adminVersion = version.getAdminVersion().trim();
-    String[] versionsToBeUpgraded = { "2.5.3", 
-      "2.5.4", 
-      "2.5.5", 
-      "2.6.1",
+    String[] versionsToBeUpgraded = { "2.5.3", "2.5.4", "2.5.5", "2.6.1",
       "2.7.0", "2.7.1", "3.0.0", "3.0.1", "3.1.0" };
 
     boolean needsUpgrade = false;

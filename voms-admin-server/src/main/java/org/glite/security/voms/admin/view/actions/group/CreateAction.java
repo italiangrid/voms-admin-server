@@ -35,120 +35,140 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-		@Result(name = BaseAction.INPUT, location = "groupCreate"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "groupCreate")
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "groupCreate"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "groupCreate")
 
 })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class CreateAction extends GroupActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	VOMSGroup group;
+  private static final long serialVersionUID = 1L;
+  VOMSGroup group;
 
-	String groupName;
-	String parentGroupName;
-	
-	String description;
-	Boolean isRestricted;
-	
+  String groupName;
+  String parentGroupName;
 
-	@Override
-	public void validate() {
-		
-		String candidateName = getParentGroupName()+"/"+getGroupName();
-		
-		
-		if (getGroupName().contains("/")){
-			
-			addFieldError("groupName", "The group name '"+getGroupName()+"' is invalid. It should not contain the '/' character.");
-			return;
-		}
-		
-		try{
-			PathNamingScheme.isGroup(candidateName);
-		
-		}catch (VOMSSyntaxException e) {
-			
-			addFieldError("groupName", "'"+getGroupName()+"' is not a valid group name!");
-			return;
-		}
-		
-		
-		VOMSGroup target = VOMSGroupDAO.instance().findByName(candidateName);
-		
-		if (target != null){
-			
-			addFieldError("groupName", "Group '"+candidateName+"' already exists!");
-		}
-			
-	}
-	@Override
-	public String execute() throws Exception {
+  String description;
+  Boolean isRestricted;
 
-		if (groupName == null && parentGroupName == null)
-			return INPUT;
+  @Override
+  public void validate() {
 
-		String name = getParentGroupName() + "/" + getGroupName();
-		
-		if ("".equals(description.trim()))
-			description = null;
+    String candidateName = getParentGroupName() + "/" + getGroupName();
 
-		VOMSGroup g = (VOMSGroup) CreateGroupOperation.instance(name, description, isRestricted).execute();
+    if (getGroupName().contains("/")) {
 
-		if (g != null)
-			addActionMessage(getText("confirm.group.creation", g.getName()));
+      addFieldError("groupName", "The group name '" + getGroupName()
+        + "' is invalid. It should not contain the '/' character.");
+      return;
+    }
 
-		return SUCCESS;
+    try {
+      PathNamingScheme.isGroup(candidateName);
 
-	}
+    } catch (VOMSSyntaxException e) {
 
-	public VOMSGroup getModel() {
+      addFieldError("groupName", "'" + getGroupName()
+        + "' is not a valid group name!");
+      return;
+    }
 
-		return group;
-	}
+    VOMSGroup target = VOMSGroupDAO.instance().findByName(candidateName);
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the group is required!")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The group name field contains illegal characters!", expression = "^[^<>&=;]*$")
-	public String getGroupName() {
-		return groupName;
-	}
+    if (target != null) {
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
+      addFieldError("groupName", "Group '" + candidateName
+        + "' already exists!");
+    }
 
-	public String getParentGroupName() {
-		return parentGroupName;
-	}
+  }
 
-	public void setParentGroupName(String parentGroupName) {
-		this.parentGroupName = parentGroupName;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The description field contains illegal characters!", expression = "^[^<>&=;]*$")
-	@StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength="255", message="The description field size is limited to 255 characters.")
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Boolean getIsRestricted() {
-		return isRestricted;
-	}
-	public void setIsRestricted(Boolean isRestricted) {
-		this.isRestricted = isRestricted;
-	}
-	@Override
-	public void prepare() throws Exception {
+    if (groupName == null && parentGroupName == null)
+      return INPUT;
 
-	}
+    String name = getParentGroupName() + "/" + getGroupName();
+
+    if ("".equals(description.trim()))
+      description = null;
+
+    VOMSGroup g = (VOMSGroup) CreateGroupOperation.instance(name, description,
+      isRestricted).execute();
+
+    if (g != null)
+      addActionMessage(getText("confirm.group.creation", g.getName()));
+
+    return SUCCESS;
+
+  }
+
+  public VOMSGroup getModel() {
+
+    return group;
+  }
+
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "A name for the group is required!")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The group name field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  public String getGroupName() {
+
+    return groupName;
+  }
+
+  public void setGroupName(String groupName) {
+
+    this.groupName = groupName;
+  }
+
+  public String getParentGroupName() {
+
+    return parentGroupName;
+  }
+
+  public void setParentGroupName(String parentGroupName) {
+
+    this.parentGroupName = parentGroupName;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The description field contains illegal characters!",
+    expression = "^[^<>&=;]*$")
+  @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "255",
+    message = "The description field size is limited to 255 characters.")
+  public String getDescription() {
+
+    return description;
+  }
+
+  public void setDescription(String description) {
+
+    this.description = description;
+  }
+
+  public Boolean getIsRestricted() {
+
+    return isRestricted;
+  }
+
+  public void setIsRestricted(Boolean isRestricted) {
+
+    this.isRestricted = isRestricted;
+  }
+
+  @Override
+  public void prepare() throws Exception {
+
+  }
 
 }

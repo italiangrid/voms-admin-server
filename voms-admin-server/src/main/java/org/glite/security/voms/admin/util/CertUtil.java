@@ -29,28 +29,28 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class CertUtil {
 
-	static {
-		if (Security.getProvider("BC") == null) {
-			Security.addProvider(new BouncyCastleProvider());
-		}
-	}
+  static {
+    if (Security.getProvider("BC") == null) {
+      Security.addProvider(new BouncyCastleProvider());
+    }
+  }
 
-	public static void validateCertificate(X509Certificate cert) {
+  public static void validateCertificate(X509Certificate cert) {
 
-	}
+  }
 
-	public static X509Certificate parseCertficate(InputStream in)
-			throws CertificateException {
+  public static X509Certificate parseCertficate(InputStream in)
+    throws CertificateException {
 
-		CertificateFactory certFactory = CertificateFactory.getInstance(
-				"X.509", Security.getProvider("BC"));
+    CertificateFactory certFactory = CertificateFactory.getInstance("X.509",
+      Security.getProvider("BC"));
 
-		X509Certificate cert = (X509Certificate) certFactory
-				.generateCertificate(in);
+    X509Certificate cert = (X509Certificate) certFactory
+      .generateCertificate(in);
 
-		validateCertificate(cert);
-		return cert;
+    validateCertificate(cert);
+    return cert;
 
-	}
+  }
 
 }

@@ -73,1150 +73,1139 @@ import org.slf4j.LoggerFactory;
 
 public class VOMSUserDAO {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(VOMSUserDAO.class);
+  private static final Logger log = LoggerFactory.getLogger(VOMSUserDAO.class);
 
-	public static VOMSUserDAO instance() {
+  public static VOMSUserDAO instance() {
 
-		HibernateFactory.beginTransaction();
-		return new VOMSUserDAO();
-	}
+    HibernateFactory.beginTransaction();
+    return new VOMSUserDAO();
+  }
 
-	private VOMSUserDAO() {
+  private VOMSUserDAO() {
 
-	}
+  }
 
-	public void requestAUPReacceptance(VOMSUser user, AUP aup) {
-		if (user == null)
-			throw new NullArgumentException("user cannot be null!");
+  public void requestAUPReacceptance(VOMSUser user, AUP aup) {
 
-		if (aup == null)
-			throw new NullArgumentException("aup cannot be null!");
+    if (user == null)
+      throw new NullArgumentException("user cannot be null!");
 
-		AUPVersion aupVersion = aup.getActiveVersion();
+    if (aup == null)
+      throw new NullArgumentException("aup cannot be null!");
 
-		if (aupVersion == null)
-			throw new NotFoundException("No registered version found for AUP '"
-					+ aup.getName() + "'.");
+    AUPVersion aupVersion = aup.getActiveVersion();
 
-		log.debug("User '" + user + "' is request to reaccept aup version '"
-				+ aupVersion + "'");
+    if (aupVersion == null)
+      throw new NotFoundException("No registered version found for AUP '"
+        + aup.getName() + "'.");
 
-		AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
+    log.debug("User '" + user + "' is request to reaccept aup version '"
+      + aupVersion + "'");
 
-		if (r != null) {
+    AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
 
-			if (r.getValid())
-				r.setValid(false);
-			else
-				log.debug("Ignoring invalidation of already invalid record.");
-		}
+    if (r != null) {
 
-	}
+      if (r.getValid())
+        r.setValid(false);
+      else
+        log.debug("Ignoring invalidation of already invalid record.");
+    }
 
-	public void signAUP(VOMSUser user) {
+  }
 
-		signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
-	}
+  public void signAUP(VOMSUser user) {
 
-	public void signAUP(VOMSUser user, AUP aup) {
+    signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
+  }
 
-		if (user == null)
-			throw new NullArgumentException("user cannot be null!");
+  public void signAUP(VOMSUser user, AUP aup) {
 
-		if (aup == null)
-			throw new NullArgumentException("aup cannot be null!");
+    if (user == null)
+      throw new NullArgumentException("user cannot be null!");
 
-		AUPVersion aupVersion = aup.getActiveVersion();
+    if (aup == null)
+      throw new NullArgumentException("aup cannot be null!");
 
-		if (aupVersion == null)
-			throw new NotFoundException("No registered version found for AUP '"
-					+ aup.getName() + "'.");
+    AUPVersion aupVersion = aup.getActiveVersion();
 
-		log.debug("User '" + user + "' signing aup version '" + aupVersion
-				+ "'");
+    if (aupVersion == null)
+      throw new NotFoundException("No registered version found for AUP '"
+        + aup.getName() + "'.");
 
-		AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
+    log.debug("User '" + user + "' signing aup version '" + aupVersion + "'");
 
-		if (r == null) {
+    AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
 
-			log.debug("Creating new aup acceptance record!");
-			AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user,
-					aupVersion);
-			aupRecord.setLastAcceptanceDate(new Date());
+    if (r == null) {
 
-			user.getAupAcceptanceRecords().add(aupRecord);
+      log.debug("Creating new aup acceptance record!");
+      AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
+      aupRecord.setLastAcceptanceDate(new Date());
 
-		} else {
+      user.getAupAcceptanceRecords().add(aupRecord);
 
-			log.debug("Updating existing acceptance record");
-			// User has signed but has been prompted to resign
-			AUPAcceptanceRecord aupRecord = user
-					.getAUPAccceptanceRecord(aupVersion);
-			aupRecord.setLastAcceptanceDate(new Date());
-			aupRecord.setValid(true);
+    } else {
 
-		}
+      log.debug("Updating existing acceptance record");
+      // User has signed but has been prompted to resign
+      AUPAcceptanceRecord aupRecord = user.getAUPAccceptanceRecord(aupVersion);
+      aupRecord.setLastAcceptanceDate(new Date());
+      aupRecord.setValid(true);
 
-		SignAUPTask pendingTask;
+    }
 
-		do {
+    SignAUPTask pendingTask;
 
-			pendingTask = user.getPendingSignAUPTask(aupVersion.getAup());
+    do {
 
-			if (pendingTask != null) {
-				log.debug("Setting task '" + pendingTask + "' completed");
-				pendingTask.setCompleted();
-			}
+      pendingTask = user.getPendingSignAUPTask(aupVersion.getAup());
 
-		} while (pendingTask != null);
+      if (pendingTask != null) {
+        log.debug("Setting task '" + pendingTask + "' completed");
+        pendingTask.setCompleted();
+      }
 
-		if (user.isSuspended()
-				&& user.getSuspensionReasonCode().equals(
-						SuspensionReason.FAILED_TO_SIGN_AUP)) {
+    } while (pendingTask != null);
 
-			log.debug("Restoring user '" + user + "'");
-			user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);
-		}
+    if (user.isSuspended()
+      && user.getSuspensionReasonCode().equals(
+        SuspensionReason.FAILED_TO_SIGN_AUP)) {
 
-		HibernateFactory.getSession().saveOrUpdate(user);
-		EventManager
-				.dispatch(new UserSignedAUPEvent(user, aupVersion.getAup()));
+      log.debug("Restoring user '" + user + "'");
+      user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);
+    }
 
-	}
+    HibernateFactory.getSession().saveOrUpdate(user);
+    EventManager.dispatch(new UserSignedAUPEvent(user, aupVersion.getAup()));
 
-	public List<VOMSUser> findUsersWithPendingSignAUPTask(AUP aup) {
+  }
 
-		String queryString = "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
+  public List<VOMSUser> findUsersWithPendingSignAUPTask(AUP aup) {
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
-		q.setEntity("aup", aup);
+    String queryString = "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
 
-		return q.list();
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+    q.setEntity("aup", aup);
 
-	}
-	
-	public Long countExpiredUsers(){
-		
-		Date now = new Date();
+    return q.list();
 
-		String queryString = "select count(*) from VOMSUser u where u.endTime < :now";
-		
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+  }
 
-		q.setDate("now", now);
+  public Long countExpiredUsers() {
 
-		return (Long) q.uniqueResult();
-		
-	}
+    Date now = new Date();
 
-	public List<VOMSUser> findExpiredUsers() {
+    String queryString = "select count(*) from VOMSUser u where u.endTime < :now";
 
-		Date now = new Date();
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		String queryString = "from VOMSUser u where u.endTime < :now";
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    q.setDate("now", now);
 
-		q.setDate("now", now);
+    return (Long) q.uniqueResult();
 
-		return q.list();
-	}
+  }
 
-	public List<VOMSUser> findAUPFailingUsers(AUP aup) {
+  public List<VOMSUser> findExpiredUsers() {
 
-		List<VOMSUser> result = new ArrayList<VOMSUser>();
+    Date now = new Date();
 
-		AUPVersion activeVersion = aup.getActiveVersion();
+    String queryString = "from VOMSUser u where u.endTime < :now";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		// Get users First that do not have any acceptance records for the
-		// active aupVersion
-		String noAcceptanceRecordForActiveAUPVersionQuery = "select u from VOMSUser u where u not in (select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
+    q.setDate("now", now);
 
-		Query q = HibernateFactory.getSession().createQuery(
-				noAcceptanceRecordForActiveAUPVersionQuery);
-		List<VOMSUser> noRecordUsers = q.list();
+    return q.list();
+  }
 
-		result.addAll(noRecordUsers);
+  public List<VOMSUser> findAUPFailingUsers(AUP aup) {
 
-		log.debug("Users without acceptance records for currently active aup:"
-				+ result);
+    List<VOMSUser> result = new ArrayList<VOMSUser>();
 
-		// Add users that have an expired aup acceptance record due to aup
-		// update or acceptance retriggering.
-		String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
+    AUPVersion activeVersion = aup.getActiveVersion();
 
-		Query q2 = HibernateFactory.getSession().createQuery(qString);
+    // Get users First that do not have any acceptance records for the
+    // active aupVersion
+    String noAcceptanceRecordForActiveAUPVersionQuery = "select u from VOMSUser u where u not in (select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
 
-		q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
-		List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
-		result.addAll(expiredDueToAUPUpdateUsers);
+    Query q = HibernateFactory.getSession().createQuery(
+      noAcceptanceRecordForActiveAUPVersionQuery);
+    List<VOMSUser> noRecordUsers = q.list();
 
-		log.debug("Users that signed the AUP before it was last updated:"
-				+ expiredDueToAUPUpdateUsers);
+    result.addAll(noRecordUsers);
 
-		// Add users that have a valid aup acceptance record that needs to be
-		// checked against
-		// the reacceptance period
-		Query q3 = HibernateFactory
-				.getSession()
-				.createQuery(
-						"select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
-								+ " and r.lastAcceptanceDate > :lastUpdateTime ");
+    log.debug("Users without acceptance records for currently active aup:"
+      + result);
 
-		q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+    // Add users that have an expired aup acceptance record due to aup
+    // update or acceptance retriggering.
+    String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
 
-		List<VOMSUser> potentiallyExpiredUsers = q3.list();
-		HibernateFactory.getSession().flush();
+    Query q2 = HibernateFactory.getSession().createQuery(qString);
 
-		log.debug("Users that needs checking since their aup acceptance record could be expired:"
-				+ potentiallyExpiredUsers);
+    q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+    List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
+    result.addAll(expiredDueToAUPUpdateUsers);
 
-		for (VOMSUser u : potentiallyExpiredUsers) {
+    log.debug("Users that signed the AUP before it was last updated:"
+      + expiredDueToAUPUpdateUsers);
 
-			AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup
-					.getActiveVersion());
+    // Add users that have a valid aup acceptance record that needs to be
+    // checked against
+    // the reacceptance period
+    Query q3 = HibernateFactory
+      .getSession()
+      .createQuery(
+        "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
+          + " and r.lastAcceptanceDate > :lastUpdateTime ");
 
-			if (r.hasExpired()) {
-				log.debug(String
-						.format("Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
-								u.toString()));
-				result.add(u);
+    q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
 
-			}
+    List<VOMSUser> potentiallyExpiredUsers = q3.list();
+    HibernateFactory.getSession().flush();
 
-		}
+    log
+      .debug("Users that needs checking since their aup acceptance record could be expired:"
+        + potentiallyExpiredUsers);
 
-		return result;
+    for (VOMSUser u : potentiallyExpiredUsers) {
 
-	}
+      AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup.getActiveVersion());
 
-	public void addCertificate(VOMSUser u, String dn, String caDn) {
-		assert u != null : "User must be non-null!";
-		assert dn != null : "DN must be non-null!";
-		assert caDn != null : "CA must be non-null!";
+      if (r.hasExpired()) {
+        log
+          .debug(String
+            .format(
+              "Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
+              u.toString()));
+        result.add(u);
 
-		VOMSCA ca = VOMSCADAO.instance().getByName(caDn);
-		if (ca == null)
-			throw new NoSuchCAException("CA '" + caDn
-					+ "' not found in database.");
+      }
 
-		Certificate cert = CertificateDAO.instance().findByDNCA(dn, caDn);
+    }
 
-		if (cert != null)
-			throw new AlreadyExistsException("Certificate already bound!");
+    return result;
 
-		cert = new Certificate();
+  }
 
-		cert.setSubjectString(dn);
-		cert.setCa(ca);
-		cert.setCreationTime(new Date());
-		cert.setSuspended(false);
+  public void addCertificate(VOMSUser u, String dn, String caDn) {
 
-		cert.setUser(u);
-		u.addCertificate(cert);
-		if (u.isSuspended()) {
-			cert.setSuspended(true);
-			cert.setSuspensionReason(u.getSuspensionReason());
-		}
+    assert u != null : "User must be non-null!";
+    assert dn != null : "DN must be non-null!";
+    assert caDn != null : "CA must be non-null!";
 
-		HibernateFactory.getSession().saveOrUpdate(cert);
-		HibernateFactory.getSession().saveOrUpdate(u);
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDn);
+    if (ca == null)
+      throw new NoSuchCAException("CA '" + caDn + "' not found in database.");
 
-	}
+    Certificate cert = CertificateDAO.instance().findByDNCA(dn, caDn);
 
-	public void addCertificate(VOMSUser u, X509Certificate x509Cert) {
+    if (cert != null)
+      throw new AlreadyExistsException("Certificate already bound!");
 
-		assert u != null : "User must be non-null!";
-		assert x509Cert != null : "Certificate must be non-null!";
+    cert = new Certificate();
 
-		// Assume the certificate have been already validated
-		// at this stage.
+    cert.setSubjectString(dn);
+    cert.setCa(ca);
+    cert.setCreationTime(new Date());
+    cert.setSuspended(false);
 
-		String caDN = DNUtil.getOpenSSLSubject(x509Cert.getIssuerX500Principal());
-		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+    cert.setUser(u);
+    u.addCertificate(cert);
+    if (u.isSuspended()) {
+      cert.setSuspended(true);
+      cert.setSuspensionReason(u.getSuspensionReason());
+    }
 
-		if (ca == null)
-			throw new NoSuchCAException("CA '" + caDN + "' not recognized!");
+    HibernateFactory.getSession().saveOrUpdate(cert);
+    HibernateFactory.getSession().saveOrUpdate(u);
 
-		Certificate cert = CertificateDAO.instance().find(x509Cert);
+  }
 
-		if (cert != null)
-			throw new AlreadyExistsException("Certificate already bound!");
+  public void addCertificate(VOMSUser u, X509Certificate x509Cert) {
 
-		cert = new Certificate();
+    assert u != null : "User must be non-null!";
+    assert x509Cert != null : "Certificate must be non-null!";
 
-		String subjectString = DNUtil.getOpenSSLSubject(x509Cert
-				.getSubjectX500Principal());
-		cert.setSubjectString(subjectString);
-		cert.setCreationTime(new Date());
-		cert.setSuspended(false);
-		cert.setCa(ca);
+    // Assume the certificate have been already validated
+    // at this stage.
 
-		cert.setUser(u);
+    String caDN = DNUtil.getOpenSSLSubject(x509Cert.getIssuerX500Principal());
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
-		if (u.isSuspended()) {
-			cert.setSuspended(true);
-			cert.setSuspensionReason(u.getSuspensionReason());
-		}
+    if (ca == null)
+      throw new NoSuchCAException("CA '" + caDN + "' not recognized!");
 
-		u.addCertificate(cert);
+    Certificate cert = CertificateDAO.instance().find(x509Cert);
 
-		HibernateFactory.getSession().saveOrUpdate(cert);
-		HibernateFactory.getSession().saveOrUpdate(u);
+    if (cert != null)
+      throw new AlreadyExistsException("Certificate already bound!");
 
-	}
+    cert = new Certificate();
 
-	public void addToGroup(VOMSUser u, VOMSGroup g) {
+    String subjectString = DNUtil.getOpenSSLSubject(x509Cert
+      .getSubjectX500Principal());
+    cert.setSubjectString(subjectString);
+    cert.setCreationTime(new Date());
+    cert.setSuspended(false);
+    cert.setCa(ca);
 
-		log.debug("Adding user \"" + u + "\" to group \"" + g + "\".");
+    cert.setUser(u);
 
-		if (!HibernateFactory.getSession().contains(u)) {
+    if (u.isSuspended()) {
+      cert.setSuspended(true);
+      cert.setSuspensionReason(u.getSuspensionReason());
+    }
 
-			VOMSUser checkUser = findById(u.getId());
+    u.addCertificate(cert);
 
-			if (checkUser == null)
-				throw new NoSuchUserException("User \"" + u
-						+ "\" not found in database.");
-		}
+    HibernateFactory.getSession().saveOrUpdate(cert);
+    HibernateFactory.getSession().saveOrUpdate(u);
 
-		// Check that the group exists
-		if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
-			throw new NoSuchGroupException("Group \"" + g
-					+ "\" is not defined in database.");
+  }
 
-		VOMSMapping m = new VOMSMapping(u, g, null);
-		if (u.getMappings().contains(m))
-			throw new AlreadyMemberException("User \"" + u
-					+ "\" is already a member of group \"" + g + "\".");
+  public void addToGroup(VOMSUser u, VOMSGroup g) {
 
-		u.getMappings().add(m);
+    log.debug("Adding user \"" + u + "\" to group \"" + g + "\".");
 
-		HibernateFactory.getSession().save(u);
+    if (!HibernateFactory.getSession().contains(u)) {
 
-	}
+      VOMSUser checkUser = findById(u.getId());
 
-	public void assignRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
+      if (checkUser == null)
+        throw new NoSuchUserException("User \"" + u
+          + "\" not found in database.");
+    }
 
-		u.assignRole(g, r);
-		HibernateFactory.getSession().update(u);
+    // Check that the group exists
+    if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
+      throw new NoSuchGroupException("Group \"" + g
+        + "\" is not defined in database.");
 
-	}
+    VOMSMapping m = new VOMSMapping(u, g, null);
+    if (u.getMappings().contains(m))
+      throw new AlreadyMemberException("User \"" + u
+        + "\" is already a member of group \"" + g + "\".");
 
-	private void checkNullFields(VOMSUser usr) {
+    u.getMappings().add(m);
 
-		if (!VOMSConfiguration.instance().getBoolean(
-				"voms.admin.compatibility-mode", true)) {
+    HibernateFactory.getSession().save(u);
 
-			if (usr.getName() == null)
-				throw new NullArgumentException(
-						"Please specify a name for the user!");
+  }
 
-			if (usr.getSurname() == null)
-				throw new NullArgumentException(
-						"Please specify a surname for the user!");
+  public void assignRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-			if (usr.getInstitution() == null)
-				throw new NullArgumentException(
-						"Please specify an instituion for the user!");
+    u.assignRole(g, r);
+    HibernateFactory.getSession().update(u);
 
-			if (usr.getAddress() == null)
-				throw new NullArgumentException(
-						"Please specify an address for the user!");
+  }
 
-			if (usr.getPhoneNumber() == null)
-				throw new NullArgumentException(
-						"Please specify a phone number for the user!");
+  private void checkNullFields(VOMSUser usr) {
 
-			if (usr.getEmailAddress() == null)
-				throw new NullArgumentException(
-						"Please specify an email address for the user!");
+    if (!VOMSConfiguration.instance().getBoolean(
+      "voms.admin.compatibility-mode", true)) {
 
-		} else {
+      if (usr.getName() == null)
+        throw new NullArgumentException("Please specify a name for the user!");
 
-			if (usr.getDn() == null)
-				throw new NullArgumentException(
-						"Please specify a dn for the user!");
+      if (usr.getSurname() == null)
+        throw new NullArgumentException(
+          "Please specify a surname for the user!");
 
-			if (usr.getEmailAddress() == null)
-				throw new NullArgumentException(
-						"Please specify an email address for the user!");
-		}
+      if (usr.getInstitution() == null)
+        throw new NullArgumentException(
+          "Please specify an instituion for the user!");
 
-	}
+      if (usr.getAddress() == null)
+        throw new NullArgumentException(
+          "Please specify an address for the user!");
 
-	public int countMatches(String searchString) {
+      if (usr.getPhoneNumber() == null)
+        throw new NullArgumentException(
+          "Please specify a phone number for the user!");
 
-		String sString = "%" + searchString + "%";
+      if (usr.getEmailAddress() == null)
+        throw new NullArgumentException(
+          "Please specify an email address for the user!");
 
-		String countString = "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-				+ " or lower(u.institution) like lower(:searchString) "
-				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
-				+ " order by u.surname asc";
+    } else {
 
-		Query q = HibernateFactory.getSession().createQuery(countString);
-		q.setString("searchString", sString);
+      if (usr.getDn() == null)
+        throw new NullArgumentException("Please specify a dn for the user!");
 
-		Long count = (Long) q.uniqueResult();
+      if (usr.getEmailAddress() == null)
+        throw new NullArgumentException(
+          "Please specify an email address for the user!");
+    }
 
-		return count.intValue();
+  }
 
-	}
+  public int countMatches(String searchString) {
 
-	public Long countUsers() {
+    String sString = "%" + searchString + "%";
 
-		Query q = HibernateFactory.getSession().createQuery(
-				"select count(*) from VOMSUser");
+    String countString = "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+      + " or lower(u.institution) like lower(:searchString) "
+      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+      + " order by u.surname asc";
 
-		Long count = (Long) q.uniqueResult();
+    Query q = HibernateFactory.getSession().createQuery(countString);
+    q.setString("searchString", sString);
 
-		return count;
-	}
+    Long count = (Long) q.uniqueResult();
 
-	public VOMSUser create(String dn, String caDN, String cn, String certURI,
-			String emailAddress) {
+    return count.intValue();
 
-		if (dn == null)
-			throw new NullArgumentException("dn must be non-null!");
+  }
 
-		if (caDN == null)
-			throw new NullArgumentException("ca must be non-null!");
+  public Long countUsers() {
 
-		if (emailAddress == null)
-			throw new NullArgumentException("emailAddress must be non-null!");
+    Query q = HibernateFactory.getSession().createQuery(
+      "select count(*) from VOMSUser");
 
-		VOMSUser u = findByDNandCA(dn, caDN);
+    Long count = (Long) q.uniqueResult();
 
-		if (u != null)
-			throw new UserAlreadyExistsException(
-					"User "
-							+ u
-							+ " already in org.glite.security.voms.admin.persistence.error!");
+    return count;
+  }
 
-		caDN = DNUtil.normalizeDN(caDN);
+  public VOMSUser create(String dn, String caDN, String cn, String certURI,
+    String emailAddress) {
 
-		VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
+    if (dn == null)
+      throw new NullArgumentException("dn must be non-null!");
 
-		if (ca == null)
-			throw new NoSuchCAException("Unknown ca " + caDN
-					+ ". Will not create user " + dn);
+    if (caDN == null)
+      throw new NullArgumentException("ca must be non-null!");
 
-		u = new VOMSUser();
+    if (emailAddress == null)
+      throw new NullArgumentException("emailAddress must be non-null!");
 
-		dn = DNUtil.normalizeDN(dn);
+    VOMSUser u = findByDNandCA(dn, caDN);
 
-		u.setEmailAddress(emailAddress);
+    if (u != null)
+      throw new UserAlreadyExistsException("User " + u
+        + " already in org.glite.security.voms.admin.persistence.error!");
 
-		log.debug("Creating user \"" + u + "\".");
+    caDN = DNUtil.normalizeDN(caDN);
 
-		// Add user to default VO group
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
-		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-		HibernateFactory.getSession().save(u);
+    if (ca == null)
+      throw new NoSuchCAException("Unknown ca " + caDN
+        + ". Will not create user " + dn);
 
-		addToGroup(u, voGroup);
+    u = new VOMSUser();
 
-		return u;
-	}
-	
-	public VOMSUser create(VOMSUserJSON usr, String certificateSubject, String caSubject){
-		
-		VOMSUser u = VOMSUser.fromVOMSUserJSON(usr);
-		
-		u.setDn(certificateSubject);
-		return create(u, caSubject);
-		
-	}
-	
-	protected Certificate createCertificate(String certificateSubject, String caSubject){
-		
-		CertificateDAO certDAO = CertificateDAO.instance();
-		
-		return certDAO.create(certificateSubject, caSubject);
-		
-		
-	}
-	protected Certificate lookupCertificate(String certificateSubject, String caSubject){
-		
-		CertificateDAO certDAO = CertificateDAO.instance();
-		Certificate cert = certDAO.findByDNCA(certificateSubject, caSubject);
-		
-		return cert;
-	}
-	
-	
-	protected Certificate assertCertificateIsNotBound(String certificateSubject, String caSubject){
-		
-		Certificate cert = lookupCertificate(certificateSubject, caSubject);
-		
-		if (cert != null)
-			throw new UserAlreadyExistsException("A user holding a certificate with the following subject '" + certificateSubject
-					+ "' already exists in this VO.");
-		return cert;
-		
-	}
-	
-	
-	
-	protected VOMSUser initUserMembership(VOMSUser user){
-		
-		Calendar c = Calendar.getInstance();
-		
-		// Membership start and end time 
-		user.setCreationTime(c.getTime());
+    dn = DNUtil.normalizeDN(dn);
 
-		// Default lifetime for membership is 12 months
-		int lifetime = VOMSConfiguration.instance().getInt(
-				VOMSConfigurationConstants.DEFAULT_MEMBERSHIP_LIFETIME, 12);
+    u.setEmailAddress(emailAddress);
 
-		c.add(Calendar.MONTH, lifetime);
-		user.setEndTime(c.getTime());
-		
-		return user;
-		
-	}
-	
-	
-	public VOMSUser create(VOMSUser usr, String caDN) {
+    log.debug("Creating user \"" + u + "\".");
 
-		checkNullFields(usr);
+    // Add user to default VO group
 
-		Certificate cert = assertCertificateIsNotBound(usr.getDn(), caDN);
-		
-		// Initialize user membership 
-		initUserMembership(usr);
-		
-		// Create certificate and link it to the membership
-		cert = createCertificate(usr.getDn(), caDN);
-		
-		usr.addCertificate(cert);
-		
-		HibernateFactory.getSession().save(usr);
-		
-		// Add user to VO root group
-		VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-		usr.addToGroup(voGroup);
+    VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
+    HibernateFactory.getSession().save(u);
 
-		EventManager.dispatch(new UserCreatedEvent(usr));
-		return usr;
+    addToGroup(u, voGroup);
 
-	}
+    return u;
+  }
 
-	public VOMSUser create(VOMSUser usr) {
+  public VOMSUser create(VOMSUserJSON usr, String certificateSubject,
+    String caSubject) {
 
-		return create(usr, null);
+    VOMSUser u = VOMSUser.fromVOMSUserJSON(usr);
 
-	}
+    u.setDn(certificateSubject);
+    return create(u, caSubject);
 
-	public VOMSUserAttribute createAttribute(VOMSUser u, String attrName,
-			String attrDesc, String value) {
+  }
 
-		if (u.getAttributeByName(attrName) != null)
-			throw new AttributeAlreadyExistsException("Attribute \"" + attrName
-					+ "\" already defined for user \"" + u + "\".");
+  protected Certificate createCertificate(String certificateSubject,
+    String caSubject) {
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+    CertificateDAO certDAO = CertificateDAO.instance();
 
-		if (desc == null)
-			desc = VOMSAttributeDAO.instance().createAttributeDescription(
-					attrName, attrDesc);
+    return certDAO.create(certificateSubject, caSubject);
 
-		log.debug("Creating attribute \"(" + attrName + "," + value
-				+ ")\" for user \"" + u + "\".");
-		VOMSUserAttribute val = VOMSUserAttribute.instance(desc, value, u);
-		u.addAttribute(val);
-		return val;
+  }
 
-	}
+  protected Certificate lookupCertificate(String certificateSubject,
+    String caSubject) {
 
-	public void delete(Long userId) {
+    CertificateDAO certDAO = CertificateDAO.instance();
+    Certificate cert = certDAO.findByDNCA(certificateSubject, caSubject);
 
-		VOMSUser u = findById(userId);
+    return cert;
+  }
 
-		if (u == null)
-			throw new NoSuchUserException("User identified by \"" + userId
-					+ "\" not found in database!");
-		try {
+  protected Certificate assertCertificateIsNotBound(String certificateSubject,
+    String caSubject) {
 
-			delete(u);
+    Certificate cert = lookupCertificate(certificateSubject, caSubject);
 
-		} catch (ObjectNotFoundException e) {
-			// Still don't understand why sometimes findById fails in returnin
-			// null...
-			throw new NoSuchUserException("User identified by \"" + userId
-					+ "\" not found in database!");
-		}
-	}
+    if (cert != null)
+      throw new UserAlreadyExistsException(
+        "A user holding a certificate with the following subject '"
+          + certificateSubject + "' already exists in this VO.");
+    return cert;
 
-	public void delete(VOMSUser u) {
+  }
 
-		log.debug("Deleting user \"" + u + "\".");
+  protected VOMSUser initUserMembership(VOMSUser user) {
 
-		u.getCertificates().clear();
-		u.getMappings().clear();
-		u.getAttributes().clear();
-		u.getAupAcceptanceRecords().clear();
-		u.getPersonalInformations().clear();
-		u.getTasks().clear();
+    Calendar c = Calendar.getInstance();
 
-		DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
+    // Membership start and end time
+    user.setCreationTime(c.getTime());
 
-		HibernateFactory.getSession().delete(u);
+    // Default lifetime for membership is 12 months
+    int lifetime = VOMSConfiguration.instance().getInt(
+      VOMSConfigurationConstants.DEFAULT_MEMBERSHIP_LIFETIME, 12);
 
-		EventManager.dispatch(new UserDeletedEvent(u));
+    c.add(Calendar.MONTH, lifetime);
+    user.setEndTime(c.getTime());
 
-	}
+    return user;
 
-	public void deleteAll() {
+  }
 
-		Iterator users = findAll().iterator();
+  public VOMSUser create(VOMSUser usr, String caDN) {
 
-		while (users.hasNext())
-			delete((VOMSUser) users.next());
+    checkNullFields(usr);
 
-	}
+    Certificate cert = assertCertificateIsNotBound(usr.getDn(), caDN);
 
-	public void deleteAttribute(VOMSUser u, String attrName) {
+    // Initialize user membership
+    initUserMembership(usr);
 
-		if (u.getAttributeByName(attrName) == null)
-			throw new NoSuchAttributeException("Attribute \"" + attrName
-					+ "\" not defined for user \"" + u + "\".");
+    // Create certificate and link it to the membership
+    cert = createCertificate(usr.getDn(), caDN);
 
-		log.debug("Deleting attribute \"" + attrName + "\" for user \"" + u
-				+ "\".");
+    usr.addCertificate(cert);
 
-		u.deleteAttributeByName(attrName);
-		HibernateFactory.getSession().update(u);
+    HibernateFactory.getSession().save(usr);
 
-	}
+    // Add user to VO root group
+    VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
+    usr.addToGroup(voGroup);
 
-	public void deleteCertificate(Certificate cert) {
+    EventManager.dispatch(new UserCreatedEvent(usr));
+    return usr;
 
-		assert cert != null : "Certificate must be non-null!";
+  }
 
-		VOMSUser u = cert.getUser();
-		deleteCertificate(u, cert);
-	}
+  public VOMSUser create(VOMSUser usr) {
 
-	public void deleteCertificate(VOMSUser u, Certificate cert) {
+    return create(usr, null);
 
-		assert u != null : "User must be non-null!";
-		assert cert != null : "Certificate must be non-null!";
+  }
 
-		if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
-			throw new VOMSException(
-					"User has only one certificate registered, so it cannot be removed!");
+  public VOMSUserAttribute createAttribute(VOMSUser u, String attrName,
+    String attrDesc, String value) {
 
-		if (!u.getCertificates().remove(cert)) {
-			// This should never happen
-			throw new VOMSDatabaseException(
-					"Inconsistent database! It was not possible to remove certificate '"
-							+ cert
-							+ "' from user '"
-							+ u
-							+ "', even if it seemed user actually possessed such certificate.");
-		}
+    if (u.getAttributeByName(attrName) != null)
+      throw new AttributeAlreadyExistsException("Attribute \"" + attrName
+        + "\" already defined for user \"" + u + "\".");
 
-	}
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
 
-	public void dismissRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
+    if (desc == null)
+      desc = VOMSAttributeDAO.instance().createAttributeDescription(attrName,
+        attrDesc);
 
-		u.dismissRole(g, r);
-		HibernateFactory.getSession().update(u);
+    log.debug("Creating attribute \"(" + attrName + "," + value
+      + ")\" for user \"" + u + "\".");
+    VOMSUserAttribute val = VOMSUserAttribute.instance(desc, value, u);
+    u.addAttribute(val);
+    return val;
 
-	}
+  }
 
-	public VOMSUser findBySubject(String subject) {
-		if (subject == null)
-			throw new NullArgumentException("subject cannot be null!");
+  public void delete(Long userId) {
 
-		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
+    VOMSUser u = findById(userId);
 
-		Query q = HibernateFactory.getSession().createQuery(query);
+    if (u == null)
+      throw new NoSuchUserException("User identified by \"" + userId
+        + "\" not found in database!");
+    try {
 
-		q.setString("subjectString", subject);
+      delete(u);
 
-		VOMSUser u = (VOMSUser) q.uniqueResult();
+    } catch (ObjectNotFoundException e) {
+      // Still don't understand why sometimes findById fails in returnin
+      // null...
+      throw new NoSuchUserException("User identified by \"" + userId
+        + "\" not found in database!");
+    }
+  }
 
-		return u;
+  public void delete(VOMSUser u) {
 
-	}
+    log.debug("Deleting user \"" + u + "\".");
 
-	public VOMSUser findByCertificate(String subject, String issuer) {
+    u.getCertificates().clear();
+    u.getMappings().clear();
+    u.getAttributes().clear();
+    u.getAupAcceptanceRecords().clear();
+    u.getPersonalInformations().clear();
+    u.getTasks().clear();
 
-		if (subject == null)
-			throw new NullArgumentException("subject cannot be null!");
+    DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
 
-		if (issuer == null)
-			throw new NullArgumentException("issuer cannot be null!");
+    HibernateFactory.getSession().delete(u);
 
-		String normalizedSubject = DNUtil.normalizeDN(subject);
-		String normalizedIssuer = DNUtil.normalizeDN(issuer);
+    EventManager.dispatch(new UserDeletedEvent(u));
 
-		String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
+  }
 
-		Query q = HibernateFactory.getSession().createQuery(query);
+  public void deleteAll() {
 
-		q.setString("subjectString", normalizedSubject);
-		q.setString("issuerSubjectString", normalizedIssuer);
+    Iterator users = findAll().iterator();
 
-		VOMSUser u = (VOMSUser) q.uniqueResult();
+    while (users.hasNext())
+      delete((VOMSUser) users.next());
 
-		return u;
-	}
+  }
 
-	public VOMSUser findByDNandCA(String dn, String caDN) {
+  public void deleteAttribute(VOMSUser u, String attrName) {
 
-		if (dn == null)
-			throw new NullArgumentException("dn must be non-null!");
+    if (u.getAttributeByName(attrName) == null)
+      throw new NoSuchAttributeException("Attribute \"" + attrName
+        + "\" not defined for user \"" + u + "\".");
 
-		if (caDN == null)
-			throw new NullArgumentException("ca must be non-null!");
+    log
+      .debug("Deleting attribute \"" + attrName + "\" for user \"" + u + "\".");
 
-		return findByCertificate(dn, caDN);
+    u.deleteAttributeByName(attrName);
+    HibernateFactory.getSession().update(u);
 
-	}
+  }
 
-	public VOMSUser findByEmail(String emailAddress) {
+  public void deleteCertificate(Certificate cert) {
 
-		if (emailAddress == null)
-			throw new NullArgumentException("emailAddress must be non-null!");
+    assert cert != null : "Certificate must be non-null!";
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSUser as u  where u.emailAddress = :emailAddress";
-		Query q = HibernateFactory.getSession().createQuery(query);
+    VOMSUser u = cert.getUser();
+    deleteCertificate(u, cert);
+  }
 
-		q.setString("emailAddress", emailAddress);
+  public void deleteCertificate(VOMSUser u, Certificate cert) {
 
-		return (VOMSUser) q.uniqueResult();
+    assert u != null : "User must be non-null!";
+    assert cert != null : "Certificate must be non-null!";
 
-	}
+    if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
+      throw new VOMSException(
+        "User has only one certificate registered, so it cannot be removed!");
 
-	public VOMSUser findById(Long userId) {
+    if (!u.getCertificates().remove(cert)) {
+      // This should never happen
+      throw new VOMSDatabaseException(
+        "Inconsistent database! It was not possible to remove certificate '"
+          + cert + "' from user '" + u
+          + "', even if it seemed user actually possessed such certificate.");
+    }
 
-		return (VOMSUser) HibernateFactory.getSession().get(VOMSUser.class,
-				userId);
-	}
+  }
 
-	public List findAll() {
+  public void dismissRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
-		Query q = HibernateFactory.getSession().createQuery(
-				"select u from VOMSUser u order by u.surname asc");
+    u.dismissRole(g, r);
+    HibernateFactory.getSession().update(u);
 
-		List result = q.list();
+  }
 
-		return result;
-	}
+  public VOMSUser findBySubject(String subject) {
 
-	
-	private SearchResults paginatedFind(Query q, Query countQuery, String searchString, int firstResults, int maxResults) {
-		
-		SearchResults res = SearchResults.instance();
-		
-		res.setSearchString(searchString);
-		 
-		q.setFirstResult(firstResults);
-		q.setMaxResults(maxResults);
-		
-		res.setResults(q.list());
-		
-		Long count = (Long) countQuery.uniqueResult();
-		
-		res.setCount(count.intValue());
-		
-		res.setFirstResult(firstResults);
-		res.setResultsPerPage(maxResults);
+    if (subject == null)
+      throw new NullArgumentException("subject cannot be null!");
 
-		return res;
-	}
-	
-	private String getUserOrderClause(){
-		
-		// If endTime is ignored by configuration, we should not consider
-		// it for sorting the search results
-		boolean endTimeDisabled = VOMSConfiguration
-					.instance()
-					.getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, 
-								false);
-		
-		if (endTimeDisabled)
-			return "order by u.surname asc";
-		else
-			return "order by u.endTime asc, u.surname asc";
-		
-	}
-	
-	public SearchResults findAll(int firstResults, int maxResults) {
+    String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
 
-		
-		String query = "from VOMSUser as u "+getUserOrderClause(); 
-		
-		Query q = HibernateFactory.getSession().createQuery(
-				query);
-		
-		Query countQ = HibernateFactory.getSession().createQuery(
-				"select count(*) from VOMSUser");
-		
-		return paginatedFind(q, countQ, null, firstResults, maxResults);
-	}
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-	public List findAllNames() {
+    q.setString("subjectString", subject);
 
-		String query = "select subjectString, ca.subjectString from Certificate";
+    VOMSUser u = (VOMSUser) q.uniqueResult();
 
-		return HibernateFactory.getSession().createQuery(query).list();
+    return u;
 
-	}
+  }
 
-	public VOMSUser getByDNandCA(String userDN, String caDN) {
+  public VOMSUser findByCertificate(String subject, String issuer) {
 
-		String queryString = "from Certificate where subjectString = :userDN and ca.subjectString = :caDN";
+    if (subject == null)
+      throw new NullArgumentException("subject cannot be null!");
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    if (issuer == null)
+      throw new NullArgumentException("issuer cannot be null!");
 
-		q.setString("userDN", userDN);
-		q.setString("caDN", caDN);
+    String normalizedSubject = DNUtil.normalizeDN(subject);
+    String normalizedIssuer = DNUtil.normalizeDN(issuer);
 
-		Certificate c = (Certificate) q.uniqueResult();
+    String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
 
-		if (c == null)
-			return null;
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		return c.getUser();
+    q.setString("subjectString", normalizedSubject);
+    q.setString("issuerSubjectString", normalizedIssuer);
 
-	}
+    VOMSUser u = (VOMSUser) q.uniqueResult();
 
-	public VOMSUser getByDNandCA(String userDN, VOMSCA ca) {
-		if (userDN == null)
-			throw new NullArgumentException(
-					"Cannot find a user by name given a null userDN!");
+    return u;
+  }
 
-		if (ca == null)
-			throw new NullArgumentException(
-					"Cannot find a user by name and ca given a null ca!");
+  public VOMSUser findByDNandCA(String dn, String caDN) {
 
-		return getByDNandCA(userDN, ca.getSubjectString());
+    if (dn == null)
+      throw new NullArgumentException("dn must be non-null!");
 
-	}
+    if (caDN == null)
+      throw new NullArgumentException("ca must be non-null!");
 
-	public List getUnAssignedRoles(Long userId, Long groupId) {
+    return findByCertificate(dn, caDN);
 
-		VOMSUser u = findById(userId);
+  }
 
-		VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
+  public VOMSUser findByEmail(String emailAddress) {
 
-		List result = new ArrayList();
+    if (emailAddress == null)
+      throw new NullArgumentException("emailAddress must be non-null!");
 
-		Iterator roles = VOMSRoleDAO.instance().getAll().iterator();
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSUser as u  where u.emailAddress = :emailAddress";
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		while (roles.hasNext()) {
+    q.setString("emailAddress", emailAddress);
 
-			VOMSRole r = (VOMSRole) roles.next();
+    return (VOMSUser) q.uniqueResult();
 
-			if (!u.hasRole(g, r))
-				result.add(r);
-		}
+  }
 
-		return result;
-	}
+  public VOMSUser findById(Long userId) {
 
-	public List getUnsubscribedGroups(Long userId) {
+    return (VOMSUser) HibernateFactory.getSession().get(VOMSUser.class, userId);
+  }
 
-		// Easy, but not performant (leverage HQL!) implementation
+  public List findAll() {
 
-		VOMSUser u = findById(userId);
-		List result = new ArrayList();
+    Query q = HibernateFactory.getSession().createQuery(
+      "select u from VOMSUser u order by u.surname asc");
 
-		Iterator groups = VOMSGroupDAO.instance().getAll().iterator();
+    List result = q.list();
 
-		while (groups.hasNext()) {
+    return result;
+  }
 
-			VOMSGroup g = (VOMSGroup) groups.next();
+  private SearchResults paginatedFind(Query q, Query countQuery,
+    String searchString, int firstResults, int maxResults) {
 
-			if (!u.isMember(g))
-				result.add(g);
-		}
+    SearchResults res = SearchResults.instance();
 
-		return result;
-	}
+    res.setSearchString(searchString);
 
-	public void removeFromGroup(VOMSUser u, VOMSGroup g) {
+    q.setFirstResult(firstResults);
+    q.setMaxResults(maxResults);
 
-		log.debug("Removing user \"" + u + "\" from group \"" + g + "\".");
+    res.setResults(q.list());
 
-		if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
-			throw new NoSuchGroupException("Group \"" + g
-					+ "\" is not defined in database.");
+    Long count = (Long) countQuery.uniqueResult();
 
-		u.removeFromGroup(g);
+    res.setCount(count.intValue());
 
-		// HibernateFactory.getSession().save(u);
-	}
+    res.setFirstResult(firstResults);
+    res.setResultsPerPage(maxResults);
 
-	public List<VOMSUser> findSuspendedUsers(){
-		
-		String queryString = "from VOMSUser u where u.suspended = true";
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    return res;
+  }
 
-		return q.list();		
-	}
-	
-	public List<VOMSUser> findSuspendedUsers(int firstResult, int maxResults){
-		
-		
-		String queryString = "from VOMSUser u where u.suspended = true";
-		Query q = HibernateFactory.getSession().createQuery(queryString);
-		
-		return q.list();		
-	}
-	
-	public Long countSuspendedUsers(){
-		
-		String queryString = "select count(*) from VOMSUser u where u.suspended = true";
-		Query q = HibernateFactory.getSession().createQuery(queryString);
-		
-		return (Long) q.uniqueResult();
-		
-	}
-	
-	
-	public SearchResults searchExpired(String searchString, int firstResults,
-			int maxResults) {
-		
-		log.debug("searchString:" + searchString + ",firstResults: "
-				+ firstResults + ",maxResults: " + maxResults);
+  private String getUserOrderClause() {
 
-		if (searchString == null || searchString.trim().equals("")
-				|| searchString.length() == 0)
-			return findAll(firstResults, maxResults);
+    // If endTime is ignored by configuration, we should not consider
+    // it for sorting the search results
+    boolean endTimeDisabled = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
 
-		SearchResults res = SearchResults.instance();
+    if (endTimeDisabled)
+      return "order by u.surname asc";
+    else
+      return "order by u.endTime asc, u.surname asc";
 
-		String sString = "%" + searchString + "%";
+  }
 
-		String queryString = "select distinct u from VOMSUser u join u.certificates as cert where u.expired = true and (lower(u.surname) like lower(:searchString) "
-				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-				+ " or lower(u.institution) like lower(:searchString) "
-				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
-				+ getUserOrderClause();
+  public SearchResults findAll(int firstResults, int maxResults) {
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    String query = "from VOMSUser as u " + getUserOrderClause();
 
-		q.setString("searchString", sString);
-		q.setFirstResult(firstResults);
-		q.setMaxResults(maxResults);
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-		res.setCount(countMatches(searchString));
-		res.setFirstResult(firstResults);
-		res.setResultsPerPage(maxResults);
-		res.setResults(q.list());
-		res.setSearchString(searchString);
+    Query countQ = HibernateFactory.getSession().createQuery(
+      "select count(*) from VOMSUser");
 
-		return res;
-	}
-	
-	public SearchResults searchWithPendingAUPRequest(String searchString, 
-		int firstResults,
-		int maxResults) {
-		
-		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
-		
-		String queryString = "from VOMSUser u join u.tasks as t join u.certificates as cert " +
-			"where t.class = SignAUPTask and t.status != 'COMPLETED' " +
-			"and t.aup = :aup";
-		
-		String commonSearchString = "and (lower(u.surname) like lower(:searchString) "
-			+ "or lower(u.name) like lower(:searchString) " 
-			+ "or u.emailAddress like :searchString "
-			+ "or lower(u.institution) like lower(:searchString) "
-			+ "or cert.subjectString like(:searchString) "
-			+ "or cert.ca.subjectString like(:searchString))";
-		
-		if (searchStringEmpty(searchString)){
-			
-			
-			Query q = HibernateFactory.getSession()
-				.createQuery("select distinct u "+queryString)
-				.setEntity("aup", aup);
-			
-			String countQuery = String.format("select count(distinct u) %s", queryString);
-			Query countQ = HibernateFactory.getSession()
-				.createQuery(countQuery)
-				.setEntity("aup", aup);
-			
-			return paginatedFind(q, countQ,null,firstResults, maxResults);
-		}else{
-			String sString = "%" + searchString + "%";
-			String commonQueryPart = String.format("%s %s", 
-				queryString, commonSearchString);
-			
-			Query q = HibernateFactory.getSession()
-					.createQuery(String.format("select distinct u %s", commonQueryPart))
-					.setEntity("aup", aup);
-			
-			Query count = HibernateFactory.getSession()
-				.createQuery(String.format("select count(distinct u) %s", commonQueryPart))
-				.setEntity("aup", aup);
-			
-			q.setString("searchString", sString);
-			count.setString("searchString", sString);
-			
-			return paginatedFind(q, count, searchString, firstResults, maxResults);
-		}
-		
-	}
-	
-	public SearchResults searchSuspended(String searchString, int firstResults,
-			int maxResults) {
+    return paginatedFind(q, countQ, null, firstResults, maxResults);
+  }
 
-		
-		if (searchStringEmpty(searchString)){	
-			
-			Query q = HibernateFactory.getSession().createQuery("from VOMSUser u where u.suspended = true");
-			Query countQ = HibernateFactory.getSession().createQuery("select count(*) from VOMSUser u where u.suspended = true");
-			
-			return paginatedFind(q, countQ,null,firstResults, maxResults);
-			
-			
-		}else{
-			
-			String sString = "%" + searchString + "%";
-			
-			String commonQueryPart = "from VOMSUser u join u.certificates as cert where u.suspended = true and (lower(u.surname) like lower(:searchString) "
-					+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-					+ " or lower(u.institution) like lower(:searchString) "
-					+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
-					+ getUserOrderClause();
-			
-			// FIXME: this is *UGLY*, use Criteria API instead
-			Query q = HibernateFactory.getSession().createQuery(String.format("select distinct u %s", commonQueryPart));
-			Query count = HibernateFactory.getSession().createQuery(String.format("select count(*) %s", commonQueryPart));
+  public List findAllNames() {
 
-			q.setString("searchString", sString);
-			count.setString("searchString", sString);
-			
-			return paginatedFind(q, count, searchString, firstResults, maxResults);
-			
-		}
-	
-	}
-	
-	private boolean searchStringEmpty(String searchString){
-		
-		return (searchString == null || 
-				searchString.trim().equals("")
-				|| searchString.length() == 0);
-		
-	}
-	
-	public SearchResults search(String searchString, int firstResults,
-			int maxResults) {
-		
-		log.debug("searchString:" + searchString + ",firstResults: "
-				+ firstResults + ",maxResults: " + maxResults);
+    String query = "select subjectString, ca.subjectString from Certificate";
 
-		if (searchStringEmpty(searchString))
-			return findAll(firstResults, maxResults);
+    return HibernateFactory.getSession().createQuery(query).list();
 
-		String sString = "%" + searchString + "%";
+  }
 
-		String commonPart = "from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-				+ "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-				+ " or lower(u.institution) like lower(:searchString) "
-				+ " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
-				+ getUserOrderClause();
-		
-		Query q = HibernateFactory.getSession().createQuery(String.format("select distinct u %s", commonPart));
-		Query count = HibernateFactory.getSession().createQuery(String.format("select count(*) %s", commonPart));
-		
-		q.setString("searchString", sString);
-		count.setString("searchString", sString);
-		
-		return paginatedFind(q, count, searchString, firstResults, maxResults);
+  public VOMSUser getByDNandCA(String userDN, String caDN) {
 
-	}
+    String queryString = "from Certificate where subjectString = :userDN and ca.subjectString = :caDN";
 
-	public VOMSUserAttribute setAttribute(VOMSUser u, String attrName,
-			String attrValue) {
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-				.getAttributeDescriptionByName(attrName);
+    q.setString("userDN", userDN);
+    q.setString("caDN", caDN);
 
-		log.debug("AttributeDescription:" + desc);
+    Certificate c = (Certificate) q.uniqueResult();
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attrName
-					+ "' is not defined in this vo.");
+    if (c == null)
+      return null;
 
-		if (!VOMSAttributeDAO.instance().isAttributeValueAlreadyAssigned(u,
-				desc, attrValue)) {
+    return c.getUser();
 
-			VOMSUserAttribute val = u.getAttributeByName(desc.getName());
-			if (val == null) {
-				val = VOMSUserAttribute.instance(desc, attrValue, u);
-				u.addAttribute(val);
-			} else
-				val.setValue(attrValue);
+  }
 
-			return val;
-		}
+  public VOMSUser getByDNandCA(String userDN, VOMSCA ca) {
 
-		throw new AttributeValueAlreadyAssignedException(
-				"Value '"
-						+ attrValue
-						+ "' for attribute '"
-						+ attrName
-						+ "' has been already assigned to another user in this vo! Choose a different value.");
+    if (userDN == null)
+      throw new NullArgumentException(
+        "Cannot find a user by name given a null userDN!");
 
-	}
+    if (ca == null)
+      throw new NullArgumentException(
+        "Cannot find a user by name and ca given a null ca!");
 
-	public VOMSUser update(VOMSUser u) {
+    return getByDNandCA(userDN, ca.getSubjectString());
 
-		HibernateFactory.getSession().update(u);
-		return u;
+  }
 
-	}
-	
+  public List getUnAssignedRoles(Long userId, Long groupId) {
 
-	public Long countExpiringUsers(Integer intervalInDays) {
-		Criteria crit = HibernateFactory.getSession().createCriteria(
-				VOMSUser.class);
+    VOMSUser u = findById(userId);
 
-		Calendar cal = Calendar.getInstance();
+    VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
 
-		Date now = cal.getTime();
-		cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
+    List result = new ArrayList();
 
-		Date intervalDate = cal.getTime();
+    Iterator roles = VOMSRoleDAO.instance().getAll().iterator();
 
-		crit.add(Restrictions.between("endTime", now, intervalDate));
-		crit.add(Restrictions.eq("suspended", false));
-		
-		crit.setProjection(Projections.rowCount());
-		
-		return (Long)crit.list().get(0);
-		
-	}
-	
-	
-	public List<VOMSUser> findExpiringUsers(Integer intervalInDays) {
+    while (roles.hasNext()) {
 
-		Criteria crit = HibernateFactory.getSession().createCriteria(
-				VOMSUser.class);
+      VOMSRole r = (VOMSRole) roles.next();
 
-		Calendar cal = Calendar.getInstance();
+      if (!u.hasRole(g, r))
+        result.add(r);
+    }
 
-		Date now = cal.getTime();
-		cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
+    return result;
+  }
 
-		Date intervalDate = cal.getTime();
+  public List getUnsubscribedGroups(Long userId) {
 
-		crit.add(Restrictions.between("endTime", now, intervalDate));
-		crit.add(Restrictions.eq("suspended", false));
-		crit.addOrder(Order.asc("endTime"));
+    // Easy, but not performant (leverage HQL!) implementation
 
-		return crit.list();
+    VOMSUser u = findById(userId);
+    List result = new ArrayList();
 
-	}
+    Iterator groups = VOMSGroupDAO.instance().getAll().iterator();
+
+    while (groups.hasNext()) {
+
+      VOMSGroup g = (VOMSGroup) groups.next();
+
+      if (!u.isMember(g))
+        result.add(g);
+    }
+
+    return result;
+  }
+
+  public void removeFromGroup(VOMSUser u, VOMSGroup g) {
+
+    log.debug("Removing user \"" + u + "\" from group \"" + g + "\".");
+
+    if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
+      throw new NoSuchGroupException("Group \"" + g
+        + "\" is not defined in database.");
+
+    u.removeFromGroup(g);
+
+    // HibernateFactory.getSession().save(u);
+  }
+
+  public List<VOMSUser> findSuspendedUsers() {
+
+    String queryString = "from VOMSUser u where u.suspended = true";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    return q.list();
+  }
+
+  public List<VOMSUser> findSuspendedUsers(int firstResult, int maxResults) {
+
+    String queryString = "from VOMSUser u where u.suspended = true";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    return q.list();
+  }
+
+  public Long countSuspendedUsers() {
+
+    String queryString = "select count(*) from VOMSUser u where u.suspended = true";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    return (Long) q.uniqueResult();
+
+  }
+
+  public SearchResults searchExpired(String searchString, int firstResults,
+    int maxResults) {
+
+    log.debug("searchString:" + searchString + ",firstResults: " + firstResults
+      + ",maxResults: " + maxResults);
+
+    if (searchString == null || searchString.trim().equals("")
+      || searchString.length() == 0)
+      return findAll(firstResults, maxResults);
+
+    SearchResults res = SearchResults.instance();
+
+    String sString = "%" + searchString + "%";
+
+    String queryString = "select distinct u from VOMSUser u join u.certificates as cert where u.expired = true and (lower(u.surname) like lower(:searchString) "
+      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+      + " or lower(u.institution) like lower(:searchString) "
+      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+      + getUserOrderClause();
+
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    q.setString("searchString", sString);
+    q.setFirstResult(firstResults);
+    q.setMaxResults(maxResults);
+
+    res.setCount(countMatches(searchString));
+    res.setFirstResult(firstResults);
+    res.setResultsPerPage(maxResults);
+    res.setResults(q.list());
+    res.setSearchString(searchString);
+
+    return res;
+  }
+
+  public SearchResults searchWithPendingAUPRequest(String searchString,
+    int firstResults, int maxResults) {
+
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+
+    String queryString = "from VOMSUser u join u.tasks as t join u.certificates as cert "
+      + "where t.class = SignAUPTask and t.status != 'COMPLETED' "
+      + "and t.aup = :aup";
+
+    String commonSearchString = "and (lower(u.surname) like lower(:searchString) "
+      + "or lower(u.name) like lower(:searchString) "
+      + "or u.emailAddress like :searchString "
+      + "or lower(u.institution) like lower(:searchString) "
+      + "or cert.subjectString like(:searchString) "
+      + "or cert.ca.subjectString like(:searchString))";
+
+    if (searchStringEmpty(searchString)) {
+
+      Query q = HibernateFactory.getSession()
+        .createQuery("select distinct u " + queryString).setEntity("aup", aup);
+
+      String countQuery = String.format("select count(distinct u) %s",
+        queryString);
+      Query countQ = HibernateFactory.getSession().createQuery(countQuery)
+        .setEntity("aup", aup);
+
+      return paginatedFind(q, countQ, null, firstResults, maxResults);
+    } else {
+      String sString = "%" + searchString + "%";
+      String commonQueryPart = String.format("%s %s", queryString,
+        commonSearchString);
+
+      Query q = HibernateFactory.getSession()
+        .createQuery(String.format("select distinct u %s", commonQueryPart))
+        .setEntity("aup", aup);
+
+      Query count = HibernateFactory
+        .getSession()
+        .createQuery(
+          String.format("select count(distinct u) %s", commonQueryPart))
+        .setEntity("aup", aup);
+
+      q.setString("searchString", sString);
+      count.setString("searchString", sString);
+
+      return paginatedFind(q, count, searchString, firstResults, maxResults);
+    }
+
+  }
+
+  public SearchResults searchSuspended(String searchString, int firstResults,
+    int maxResults) {
+
+    if (searchStringEmpty(searchString)) {
+
+      Query q = HibernateFactory.getSession().createQuery(
+        "from VOMSUser u where u.suspended = true");
+      Query countQ = HibernateFactory.getSession().createQuery(
+        "select count(*) from VOMSUser u where u.suspended = true");
+
+      return paginatedFind(q, countQ, null, firstResults, maxResults);
+
+    } else {
+
+      String sString = "%" + searchString + "%";
+
+      String commonQueryPart = "from VOMSUser u join u.certificates as cert where u.suspended = true and (lower(u.surname) like lower(:searchString) "
+        + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+        + " or lower(u.institution) like lower(:searchString) "
+        + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+        + getUserOrderClause();
+
+      // FIXME: this is *UGLY*, use Criteria API instead
+      Query q = HibernateFactory.getSession().createQuery(
+        String.format("select distinct u %s", commonQueryPart));
+      Query count = HibernateFactory.getSession().createQuery(
+        String.format("select count(*) %s", commonQueryPart));
+
+      q.setString("searchString", sString);
+      count.setString("searchString", sString);
+
+      return paginatedFind(q, count, searchString, firstResults, maxResults);
+
+    }
+
+  }
+
+  private boolean searchStringEmpty(String searchString) {
+
+    return (searchString == null || searchString.trim().equals("") || searchString
+      .length() == 0);
+
+  }
+
+  public SearchResults search(String searchString, int firstResults,
+    int maxResults) {
+
+    log.debug("searchString:" + searchString + ",firstResults: " + firstResults
+      + ",maxResults: " + maxResults);
+
+    if (searchStringEmpty(searchString))
+      return findAll(firstResults, maxResults);
+
+    String sString = "%" + searchString + "%";
+
+    String commonPart = "from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+      + " or lower(u.institution) like lower(:searchString) "
+      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+      + getUserOrderClause();
+
+    Query q = HibernateFactory.getSession().createQuery(
+      String.format("select distinct u %s", commonPart));
+    Query count = HibernateFactory.getSession().createQuery(
+      String.format("select count(*) %s", commonPart));
+
+    q.setString("searchString", sString);
+    count.setString("searchString", sString);
+
+    return paginatedFind(q, count, searchString, firstResults, maxResults);
+
+  }
+
+  public VOMSUserAttribute setAttribute(VOMSUser u, String attrName,
+    String attrValue) {
+
+    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
+      .getAttributeDescriptionByName(attrName);
+
+    log.debug("AttributeDescription:" + desc);
+
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attrName
+        + "' is not defined in this vo.");
+
+    if (!VOMSAttributeDAO.instance().isAttributeValueAlreadyAssigned(u, desc,
+      attrValue)) {
+
+      VOMSUserAttribute val = u.getAttributeByName(desc.getName());
+      if (val == null) {
+        val = VOMSUserAttribute.instance(desc, attrValue, u);
+        u.addAttribute(val);
+      } else
+        val.setValue(attrValue);
+
+      return val;
+    }
+
+    throw new AttributeValueAlreadyAssignedException(
+      "Value '"
+        + attrValue
+        + "' for attribute '"
+        + attrName
+        + "' has been already assigned to another user in this vo! Choose a different value.");
+
+  }
+
+  public VOMSUser update(VOMSUser u) {
+
+    HibernateFactory.getSession().update(u);
+    return u;
+
+  }
+
+  public Long countExpiringUsers(Integer intervalInDays) {
+
+    Criteria crit = HibernateFactory.getSession()
+      .createCriteria(VOMSUser.class);
+
+    Calendar cal = Calendar.getInstance();
+
+    Date now = cal.getTime();
+    cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
+
+    Date intervalDate = cal.getTime();
+
+    crit.add(Restrictions.between("endTime", now, intervalDate));
+    crit.add(Restrictions.eq("suspended", false));
+
+    crit.setProjection(Projections.rowCount());
+
+    return (Long) crit.list().get(0);
+
+  }
+
+  public List<VOMSUser> findExpiringUsers(Integer intervalInDays) {
+
+    Criteria crit = HibernateFactory.getSession()
+      .createCriteria(VOMSUser.class);
+
+    Calendar cal = Calendar.getInstance();
+
+    Date now = cal.getTime();
+    cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
+
+    Date intervalDate = cal.getTime();
+
+    crit.add(Restrictions.between("endTime", now, intervalDate));
+    crit.add(Restrictions.eq("suspended", false));
+    crit.addOrder(Order.asc("endTime"));
+
+    return crit.list();
+
+  }
 
 }

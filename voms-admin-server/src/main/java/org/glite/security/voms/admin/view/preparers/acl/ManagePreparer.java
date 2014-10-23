@@ -34,30 +34,25 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ManagePreparer extends ViewPreparerSupport {
 
-	@Override
-	public void execute(TilesRequestContext tilesContext,
-			AttributeContext attributeContext) throws PreparerException {
+  @Override
+  public void execute(TilesRequestContext tilesContext,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSGroup> groups = Collections.EMPTY_LIST;
-		List<VOMSRole> roles = Collections.EMPTY_LIST;
-		
-		try{
-			groups = (List<VOMSGroup>) ListGroupsOperation
-					.instance().execute();
-			
-			roles = (List<VOMSRole>) ListRolesOperation.instance()
-			.execute();
-		
-		
-		}catch(VOMSAuthorizationException e){
-			
-			// swallow authorization exception
-		}
-			
-			
+    List<VOMSGroup> groups = Collections.EMPTY_LIST;
+    List<VOMSRole> roles = Collections.EMPTY_LIST;
 
-		tilesContext.getRequestScope().put("voGroups", groups);
-		tilesContext.getRequestScope().put("voRoles", roles);
+    try {
+      groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
 
-	}
+      roles = (List<VOMSRole>) ListRolesOperation.instance().execute();
+
+    } catch (VOMSAuthorizationException e) {
+
+      // swallow authorization exception
+    }
+
+    tilesContext.getRequestScope().put("voGroups", groups);
+    tilesContext.getRequestScope().put("voRoles", roles);
+
+  }
 }

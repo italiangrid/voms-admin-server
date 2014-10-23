@@ -24,24 +24,26 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserMembershipExpiredMessage extends AbstractVelocityNotification {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	public UserMembershipExpiredMessage(VOMSUser u) {
-		this.user = u;
-	}
+  public UserMembershipExpiredMessage(VOMSUser u) {
 
-	@Override
-	protected void buildMessage() {
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
-		
-		setSubject(String.format("VO %s Membership expiration notification", voName));
-		context.put("voName", voName);
-		context.put("recipient", getRecipientList().get(0));
-		
-		super.buildMessage();
+    this.user = u;
+  }
 
-	}
+  @Override
+  protected void buildMessage() {
+
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String voName = conf.getVOName();
+
+    setSubject(String
+      .format("VO %s Membership expiration notification", voName));
+    context.put("voName", voName);
+    context.put("recipient", getRecipientList().get(0));
+
+    super.buildMessage();
+
+  }
 
 }

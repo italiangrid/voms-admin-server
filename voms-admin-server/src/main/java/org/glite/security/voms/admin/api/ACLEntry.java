@@ -51,45 +51,54 @@ import org.glite.security.voms.admin.api.acl.VOMSACL;
  */
 public class ACLEntry {
 
-	/** Empty public constructor. */
-	public ACLEntry() {
-	}
+  /** Empty public constructor. */
+  public ACLEntry() {
 
-	/** Returns the principal's DN for this ACL entry. */
-	public String getAdminDN() {
-		return null;
-	};
+  }
 
-	/** Returns the principal's CA for this ACL entry. */
-	public String getAdminCA() {
-		return null;
-	};
+  /** Returns the principal's DN for this ACL entry. */
+  public String getAdminDN() {
 
-	/** Sets the principal's DN for this ACL entry. */
-	public void setAdminDN(String dn) {
-	}
+    return null;
+  };
 
-	/** Sets the principal's CA for this ACL entry. */
-	public void setAdminCA(String ca) {
-	}
+  /** Returns the principal's CA for this ACL entry. */
+  public String getAdminCA() {
 
-	/** Returns the operation field of this ACL entry. */
-	public String getOperationName() {
-		return null;
-	};
+    return null;
+  };
 
-	/** Sets the operation field of this ACL entry. */
-	public void setOperationName(String operation) {
-	}
+  /** Sets the principal's DN for this ACL entry. */
+  public void setAdminDN(String dn) {
 
-	/** Returns the allow field of this ACL entry. */
-	public boolean isAllow() {
-		return false;
-	}
+  }
 
-	/** Sets the allow field of this ACL entry. */
-	public void setAllow(boolean allow) {
-	}
+  /** Sets the principal's CA for this ACL entry. */
+  public void setAdminCA(String ca) {
+
+  }
+
+  /** Returns the operation field of this ACL entry. */
+  public String getOperationName() {
+
+    return null;
+  };
+
+  /** Sets the operation field of this ACL entry. */
+  public void setOperationName(String operation) {
+
+  }
+
+  /** Returns the allow field of this ACL entry. */
+  public boolean isAllow() {
+
+    return false;
+  }
+
+  /** Sets the allow field of this ACL entry. */
+  public void setAllow(boolean allow) {
+
+  }
 
 }
 

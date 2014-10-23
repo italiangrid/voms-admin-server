@@ -31,76 +31,76 @@ import org.glite.security.voms.admin.operations.users.SearchUsersOperation;
 import org.glite.security.voms.admin.view.actions.SearchData;
 
 public class BaseSearchOperation extends BaseVoReadOperation implements
-		SearchOperation {
+  SearchOperation {
 
-	SearchData searchData;
+  SearchData searchData;
 
-	int userMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfigurationConstants.USER_MAX_RESULTS_PER_PAGE, 15);
-	int groupMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfigurationConstants.GROUP_MAX_RESULTS_PER_PAGE, 15);
-	int roleMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfigurationConstants.ROLE_MAX_RESULTS_PER_PAGE, 15);
-	int attributeMaxResults = VOMSConfiguration.instance().getInt(
-			VOMSConfigurationConstants.ATTRIBUTES_MAX_RESULTS_PER_PAGE, 15);
+  int userMaxResults = VOMSConfiguration.instance().getInt(
+    VOMSConfigurationConstants.USER_MAX_RESULTS_PER_PAGE, 15);
+  int groupMaxResults = VOMSConfiguration.instance().getInt(
+    VOMSConfigurationConstants.GROUP_MAX_RESULTS_PER_PAGE, 15);
+  int roleMaxResults = VOMSConfiguration.instance().getInt(
+    VOMSConfigurationConstants.ROLE_MAX_RESULTS_PER_PAGE, 15);
+  int attributeMaxResults = VOMSConfiguration.instance().getInt(
+    VOMSConfigurationConstants.ATTRIBUTES_MAX_RESULTS_PER_PAGE, 15);
 
-	protected BaseSearchOperation(SearchData sd) {
-		setSearchData(sd);
-	}
+  protected BaseSearchOperation(SearchData sd) {
 
-	@Override
-	protected Object doExecute() {
+    setSearchData(sd);
+  }
 
-		// Default search is user search
-		if (searchData == null)
-			return SearchUsersOperation.instance(null, 0, userMaxResults)
-					.execute();
-		else {
+  @Override
+  protected Object doExecute() {
 
-			String searchType = searchData.getType().toLowerCase();
+    // Default search is user search
+    if (searchData == null)
+      return SearchUsersOperation.instance(null, 0, userMaxResults).execute();
+    else {
 
-			if (searchData.getText() != null
-					&& searchData.getText().trim().equals(""))
-				searchData.setText(null);
+      String searchType = searchData.getType().toLowerCase();
 
-			if (searchData.getMaxResults() == 0)
-				searchData.setMaxResults(userMaxResults);
+      if (searchData.getText() != null
+        && searchData.getText().trim().equals(""))
+        searchData.setText(null);
 
-			if (searchType.equals("user"))
-				return SearchUsersOperation.instance(searchData.getText(),
-						searchData.getFirstResult(), searchData.getMaxResults()).execute();
-			else if (searchType.equals("group"))
-				return SearchGroupsOperation.instance(searchData.getText(),
-						searchData.getFirstResult(), groupMaxResults).execute();
-			else if (searchType.equals("role"))
-				return SearchRolesOperation.instance(searchData.getText(),
-						searchData.getFirstResult(), groupMaxResults).execute();
-			else if (searchType.equals("attribute"))
-				return SearchUserAttributesOperation.instance(
-						searchData.getText(), searchData.getFirstResult(),
-						groupMaxResults).execute();
-			else if (searchType.equals("group-member")
-					|| searchType.equals("role-member"))
-				return SearchMembersOperation.instance(searchData).execute();
-			else
-				throw new VOMSException("Unsupported search type '"
-						+ searchData.getType() + "'");
+      if (searchData.getMaxResults() == 0)
+        searchData.setMaxResults(userMaxResults);
 
-		}
-	}
+      if (searchType.equals("user"))
+        return SearchUsersOperation.instance(searchData.getText(),
+          searchData.getFirstResult(), searchData.getMaxResults()).execute();
+      else if (searchType.equals("group"))
+        return SearchGroupsOperation.instance(searchData.getText(),
+          searchData.getFirstResult(), groupMaxResults).execute();
+      else if (searchType.equals("role"))
+        return SearchRolesOperation.instance(searchData.getText(),
+          searchData.getFirstResult(), groupMaxResults).execute();
+      else if (searchType.equals("attribute"))
+        return SearchUserAttributesOperation.instance(searchData.getText(),
+          searchData.getFirstResult(), groupMaxResults).execute();
+      else if (searchType.equals("group-member")
+        || searchType.equals("role-member"))
+        return SearchMembersOperation.instance(searchData).execute();
+      else
+        throw new VOMSException("Unsupported search type '"
+          + searchData.getType() + "'");
 
-	public SearchData getSearchData() {
+    }
+  }
 
-		return searchData;
-	}
+  public SearchData getSearchData() {
 
-	public void setSearchData(SearchData data) {
-		searchData = data;
+    return searchData;
+  }
 
-	}
+  public void setSearchData(SearchData data) {
 
-	public static SearchOperation instance(SearchData sd) {
+    searchData = data;
 
-		return new BaseSearchOperation(sd);
-	}
+  }
+
+  public static SearchOperation instance(SearchData sd) {
+
+    return new BaseSearchOperation(sd);
+  }
 }

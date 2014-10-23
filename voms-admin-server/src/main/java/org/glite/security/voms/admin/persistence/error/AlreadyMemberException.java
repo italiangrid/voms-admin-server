@@ -21,27 +21,27 @@ package org.glite.security.voms.admin.persistence.error;
 
 public class AlreadyMemberException extends AlreadyExistsException {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public AlreadyMemberException(String message) {
+  public AlreadyMemberException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
-	public AlreadyMemberException(String message, Throwable t) {
+  public AlreadyMemberException(String message, Throwable t) {
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+    super(message, t);
+    // TODO Auto-generated constructor stub
+  }
 
-	public AlreadyMemberException(Throwable t) {
+  public AlreadyMemberException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
-	}
+    super(t);
+    // TODO Auto-generated constructor stub
+  }
 
 }

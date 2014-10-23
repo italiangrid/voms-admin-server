@@ -27,12 +27,12 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DefaultExpiredMembersLookupStrategy implements
-		ExpiredMembersLookupStrategy {
+  ExpiredMembersLookupStrategy {
 
-	public List<VOMSUser> findExpiredMembers() {
-		
-		return VOMSUserDAO.instance().findExpiredUsers();
+  public List<VOMSUser> findExpiredMembers() {
 
-	}
+    return VOMSUserDAO.instance().findExpiredUsers();
+
+  }
 
 }

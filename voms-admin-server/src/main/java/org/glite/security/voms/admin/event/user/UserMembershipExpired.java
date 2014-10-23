@@ -23,8 +23,9 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserMembershipExpired extends UserMembershipEvent {
 
-	public UserMembershipExpired(VOMSUser user) {
-		super(user);
-	}
+  public UserMembershipExpired(VOMSUser user) {
+
+    super(user);
+  }
 
 }

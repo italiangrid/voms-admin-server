@@ -23,27 +23,27 @@ import org.glite.security.voms.admin.error.NotFoundException;
 
 public class NoSuchRoleException extends NotFoundException {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public NoSuchRoleException(String message) {
+  public NoSuchRoleException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
-	public NoSuchRoleException(String message, Throwable t) {
+  public NoSuchRoleException(String message, Throwable t) {
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+    super(message, t);
+    // TODO Auto-generated constructor stub
+  }
 
-	public NoSuchRoleException(Throwable t) {
+  public NoSuchRoleException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
-	}
+    super(t);
+    // TODO Auto-generated constructor stub
+  }
 
 }

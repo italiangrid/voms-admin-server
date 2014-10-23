@@ -26,145 +26,143 @@ import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
+public class OrgDBVOMSPersonDAOHibernate extends
+  OrgDBGenericHibernateDAO<VOMSOrgDBPerson, Long> implements OrgDBVOMSPersonDAO {
 
-public class OrgDBVOMSPersonDAOHibernate extends OrgDBGenericHibernateDAO<VOMSOrgDBPerson, Long> implements
-	OrgDBVOMSPersonDAO
-{
+  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationById(
+    Long personId, String experimentName) {
 
-	public VOMSOrgDBPerson findPersonWithValidExperimentParticipationById(Long personId, String experimentName) {
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-		"p.id = :personId and "+
-		"(pp.experiment.name = :experimentName and " +
-		"pp.id.startDate <= current_date() and " +
-		"(pp.endDate is null or "+
-		"pp.endDate > current_date())" +
-		")";
-		
-		Query q = getSession().createQuery(query)
-			.setLong("personId", personId)
-			.setString("experimentName", experimentName);
-		
-		return (VOMSOrgDBPerson) q.uniqueResult();
-	}
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "p.id = :personId and "
+      + "(pp.experiment.name = :experimentName and "
+      + "pp.id.startDate <= current_date() and "
+      + "(pp.endDate is null or "
+      + "pp.endDate > current_date())" + ")";
 
-	public VOMSOrgDBPerson findPersonWithValidExperimentParticipationByEmail(String emailAddress,
-			String experimentName) {
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-				"(lower(p.physicalEmail) = :email or " +
-				"lower(p.email) = :email) and " +
-				"(pp.experiment.name = :experimentName and " +
-				"pp.id.startDate <= current_date() and " +
-				"(pp.endDate is null or "+
-				"pp.endDate > current_date())" +
-				")";
-		
-		Query q = getSession().createQuery(query)
-			.setString("email", emailAddress.toLowerCase())
-			.setString("experimentName", experimentName);
-		
-		return (VOMSOrgDBPerson) q.uniqueResult();
-		
-	}
+    Query q = getSession().createQuery(query).setLong("personId", personId)
+      .setString("experimentName", experimentName);
 
-	public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationById(List<Long> personIds,
-			String experimentName) {
-		
-		return null;
-	}
+    return (VOMSOrgDBPerson) q.uniqueResult();
+  }
 
-	public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationByEmail(
-			List<String> emailAddresses, String experimentName) {
+  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationByEmail(
+    String emailAddress, String experimentName) {
 
-		return null;
-	}
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "(lower(p.physicalEmail) = :email or "
+      + "lower(p.email) = :email) and "
+      + "(pp.experiment.name = :experimentName and "
+      + "pp.id.startDate <= current_date() and "
+      + "(pp.endDate is null or "
+      + "pp.endDate > current_date())" + ")";
 
-	public VOMSOrgDBPerson findPersonByEmail(String emailAddress) {
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-			"lower(p.physicalEmail) = :email or lower(p.email) = :email";
-		
-		Query q = getSession().createQuery(query).setString("email", emailAddress.toLowerCase());
-		
-		return (VOMSOrgDBPerson) q.uniqueResult();
-	}
+    Query q = getSession().createQuery(query)
+      .setString("email", emailAddress.toLowerCase())
+      .setString("experimentName", experimentName);
 
-	public VOMSOrgDBPerson findPersonById(Long personId) {
-		
-		return (VOMSOrgDBPerson)getSession().load(VOMSOrgDBPerson.class, personId);
-	}
+    return (VOMSOrgDBPerson) q.uniqueResult();
 
-	public List<VOMSOrgDBPerson> findPersonByName(String firstName, String name) {
-		
-		return findByCriteria(Restrictions.eq("firstName", firstName).ignoreCase(), Restrictions.eq("name", name).ignoreCase());
-	}
+  }
 
-	public List<VOMSOrgDBPerson> findPersonBySurname(String surname) {
-		return findByCriteria(Restrictions.eq("name", surname).ignoreCase());
-	}
+  public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationById(
+    List<Long> personIds, String experimentName) {
 
-	public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipation(
-			String experimentName, List<String> validEmails) {
-		
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-		"pp.experiment.name = :experimentName and " +
-		"pp.endDate != null  and pp.endDate < current_date() and" +
-		"(lower(p.physicalEmail) in :validEmails or lower(p.email) in :validEmails)";
-		
-		Query q = getSession().createQuery(query).setString("experimentName", experimentName).setParameterList("validEmails", validEmails);
-		return q.list();
-	}
+    return null;
+  }
 
-	@SuppressWarnings("unchecked")
-	public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipation(
-			String experimentName) {
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-		"pp.experiment.name = :experimentName and " +
-		"pp.id.startDate <= current_date() and " +
-		"(pp.endDate is null or "+
-		"pp.endDate > current_date()) and (p.email is not null or p.physicalEmail is not null)";
-		
-		Query q = getSession().createQuery(query).setString("experimentName", experimentName);	
-		return q.list();
-	}
+  public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationByEmail(
+    List<String> emailAddresses, String experimentName) {
 
-	public Long countPersonsWithValidExperimentParticipation(
-			String experimentName) {
-		
-		String query = "select count(*) from VOMSOrgDBPerson p join p.participations pp where " +
-		"pp.experiment.name = :experimentName and " +
-		"pp.id.startDate <= current_date() and " +
-		"(pp.endDate is null or "+
-		"pp.endDate > current_date()) and (p.email is not null or p.physicalEmail is not null)";
-		
-		Query q = getSession().createQuery(query).setString("experimentName", experimentName);
-		
-		return (Long) q.uniqueResult();
-	}
+    return null;
+  }
 
-	@SuppressWarnings("unchecked")
-	public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipationByName(
-			String name, String surname, String experimentName) {
-		
-		String query = "select p from VOMSOrgDBPerson p join p.participations pp where " +
-		"p.firstName = upper(:name) and "+
-		"p.name  = upper(:surname) and "+
-		"(pp.experiment.name = :experimentName and " +
-		"pp.id.startDate <= current_date() and " +
-		"(pp.endDate is null or "+
-		"pp.endDate > current_date())" +
-		")";
-		
-		Query q = getSession().createQuery(query)
-		.setString("name", name)
-		.setString("surname", surname)
-		.setString("experimentName", experimentName);
-		
-		return q.list();
-	}
+  public VOMSOrgDBPerson findPersonByEmail(String emailAddress) {
 
-	
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "lower(p.physicalEmail) = :email or lower(p.email) = :email";
+
+    Query q = getSession().createQuery(query).setString("email",
+      emailAddress.toLowerCase());
+
+    return (VOMSOrgDBPerson) q.uniqueResult();
+  }
+
+  public VOMSOrgDBPerson findPersonById(Long personId) {
+
+    return (VOMSOrgDBPerson) getSession().load(VOMSOrgDBPerson.class, personId);
+  }
+
+  public List<VOMSOrgDBPerson> findPersonByName(String firstName, String name) {
+
+    return findByCriteria(Restrictions.eq("firstName", firstName).ignoreCase(),
+      Restrictions.eq("name", name).ignoreCase());
+  }
+
+  public List<VOMSOrgDBPerson> findPersonBySurname(String surname) {
+
+    return findByCriteria(Restrictions.eq("name", surname).ignoreCase());
+  }
+
+  public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipation(
+    String experimentName, List<String> validEmails) {
+
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "pp.experiment.name = :experimentName and "
+      + "pp.endDate != null  and pp.endDate < current_date() and"
+      + "(lower(p.physicalEmail) in :validEmails or lower(p.email) in :validEmails)";
+
+    Query q = getSession().createQuery(query)
+      .setString("experimentName", experimentName)
+      .setParameterList("validEmails", validEmails);
+    return q.list();
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipation(
+    String experimentName) {
+
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "pp.experiment.name = :experimentName and "
+      + "pp.id.startDate <= current_date() and "
+      + "(pp.endDate is null or "
+      + "pp.endDate > current_date()) and (p.email is not null or p.physicalEmail is not null)";
+
+    Query q = getSession().createQuery(query).setString("experimentName",
+      experimentName);
+    return q.list();
+  }
+
+  public Long countPersonsWithValidExperimentParticipation(String experimentName) {
+
+    String query = "select count(*) from VOMSOrgDBPerson p join p.participations pp where "
+      + "pp.experiment.name = :experimentName and "
+      + "pp.id.startDate <= current_date() and "
+      + "(pp.endDate is null or "
+      + "pp.endDate > current_date()) and (p.email is not null or p.physicalEmail is not null)";
+
+    Query q = getSession().createQuery(query).setString("experimentName",
+      experimentName);
+
+    return (Long) q.uniqueResult();
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipationByName(
+    String name, String surname, String experimentName) {
+
+    String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
+      + "p.firstName = upper(:name) and "
+      + "p.name  = upper(:surname) and "
+      + "(pp.experiment.name = :experimentName and "
+      + "pp.id.startDate <= current_date() and "
+      + "(pp.endDate is null or "
+      + "pp.endDate > current_date())" + ")";
+
+    Query q = getSession().createQuery(query).setString("name", name)
+      .setString("surname", surname)
+      .setString("experimentName", experimentName);
+
+    return q.list();
+  }
+
 }

@@ -33,94 +33,95 @@ import com.opensymphony.xwork2.Preparable;
 @Results({
 
 @Result(name = BaseAction.SUCCESS, location = "users"),
-	@Result(name = BaseAction.INPUT, location = "users") })
+  @Result(name = BaseAction.INPUT, location = "users") })
 public class SearchAction extends BaseSearchAction implements Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String limitToSuspendedUsers;
-	String limitToUsersWithPendingSignAUPRequest;
+  String limitToSuspendedUsers;
+  String limitToUsersWithPendingSignAUPRequest;
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-		initSearchData(USER_SEARCH_NAME);
+    initSearchData(USER_SEARCH_NAME);
 
-	}
+  }
 
-	protected Map<String, String> getSearchCustomFlags() {
+  protected Map<String, String> getSearchCustomFlags() {
 
-		Map<String, String> params = new HashMap<String, String>();
+    Map<String, String> params = new HashMap<String, String>();
 
-		if (limitToSuspendedUsers != null) {
-			params.put("limitToSuspendedUsers", limitToSuspendedUsers);
-			params.put("limitToUsersWithPendingSignAUPRequest", 
-				limitToUsersWithPendingSignAUPRequest);
-		}
+    if (limitToSuspendedUsers != null) {
+      params.put("limitToSuspendedUsers", limitToSuspendedUsers);
+      params.put("limitToUsersWithPendingSignAUPRequest",
+        limitToUsersWithPendingSignAUPRequest);
+    }
 
-		return params;
-	}
+    return params;
+  }
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		if (limitToSuspendedUsers == null && limitToUsersWithPendingSignAUPRequest == null) {
-			return super.execute();
-		}
+    if (limitToSuspendedUsers == null
+      && limitToUsersWithPendingSignAUPRequest == null) {
+      return super.execute();
+    }
 
-		if (limitToSuspendedUsers.equals("false") 
-			&& limitToUsersWithPendingSignAUPRequest.equals("false"))
-			return super.execute();
-		
-		if (limitToUsersWithPendingSignAUPRequest.equals("true")){
-			
-			searchResults = VOMSUserDAO.instance().searchWithPendingAUPRequest(
-				searchData.getText(), searchData.getFirstResult(),
-				searchData.getMaxResults());
-			
-		}else if (limitToSuspendedUsers.equals("true")){
-			
-			searchResults = VOMSUserDAO.instance().searchSuspended(
-				searchData.getText(), searchData.getFirstResult(),
-				searchData.getMaxResults());
-		}
+    if (limitToSuspendedUsers.equals("false")
+      && limitToUsersWithPendingSignAUPRequest.equals("false"))
+      return super.execute();
 
-		session.put("searchData", getSearchData());
-		session.put("searchResults", searchResults);
-		session.put(SearchNavBarTag.SEARCH_PARAMS_KEY, getSearchCustomFlags());
+    if (limitToUsersWithPendingSignAUPRequest.equals("true")) {
 
-		return SUCCESS;
+      searchResults = VOMSUserDAO.instance().searchWithPendingAUPRequest(
+        searchData.getText(), searchData.getFirstResult(),
+        searchData.getMaxResults());
 
-	}
+    } else if (limitToSuspendedUsers.equals("true")) {
 
-	public String getLimitToSuspendedUsers() {
+      searchResults = VOMSUserDAO.instance().searchSuspended(
+        searchData.getText(), searchData.getFirstResult(),
+        searchData.getMaxResults());
+    }
 
-		return limitToSuspendedUsers;
-	}
+    session.put("searchData", getSearchData());
+    session.put("searchResults", searchResults);
+    session.put(SearchNavBarTag.SEARCH_PARAMS_KEY, getSearchCustomFlags());
 
-	public void setLimitToSuspendedUsers(String limitToSuspendedUsers) {
+    return SUCCESS;
 
-		this.limitToSuspendedUsers = limitToSuspendedUsers;
-	}
+  }
 
-	/**
-	 * @return the limitToUsersWithPendingSignAUPRequest
-	 */
-	public String getLimitToUsersWithPendingSignAUPRequest() {
+  public String getLimitToSuspendedUsers() {
 
-		return limitToUsersWithPendingSignAUPRequest;
-	}
+    return limitToSuspendedUsers;
+  }
 
-	/**
-	 * @param limitToUsersWithPendingSignAUPRequest
-	 *          the limitToUsersWithPendingSignAUPRequest to set
-	 */
-	public void setLimitToUsersWithPendingSignAUPRequest(
-		String limitToUsersWithPendingSignAUPRequest) {
+  public void setLimitToSuspendedUsers(String limitToSuspendedUsers) {
 
-		this.limitToUsersWithPendingSignAUPRequest = limitToUsersWithPendingSignAUPRequest;
-	}
+    this.limitToSuspendedUsers = limitToSuspendedUsers;
+  }
+
+  /**
+   * @return the limitToUsersWithPendingSignAUPRequest
+   */
+  public String getLimitToUsersWithPendingSignAUPRequest() {
+
+    return limitToUsersWithPendingSignAUPRequest;
+  }
+
+  /**
+   * @param limitToUsersWithPendingSignAUPRequest
+   *          the limitToUsersWithPendingSignAUPRequest to set
+   */
+  public void setLimitToUsersWithPendingSignAUPRequest(
+    String limitToUsersWithPendingSignAUPRequest) {
+
+    this.limitToUsersWithPendingSignAUPRequest = limitToUsersWithPendingSignAUPRequest;
+  }
 
 }

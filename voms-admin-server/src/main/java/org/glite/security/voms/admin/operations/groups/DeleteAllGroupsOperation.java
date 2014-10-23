@@ -24,19 +24,19 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 
 public class DeleteAllGroupsOperation extends BaseVoRWOperation {
 
-	private DeleteAllGroupsOperation() {
+  private DeleteAllGroupsOperation() {
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		VOMSGroupDAO.instance().deleteAll();
-		return null;
-	}
+    VOMSGroupDAO.instance().deleteAll();
+    return null;
+  }
 
-	public static DeleteAllGroupsOperation instance() {
+  public static DeleteAllGroupsOperation instance() {
 
-		return new DeleteAllGroupsOperation();
-	}
+    return new DeleteAllGroupsOperation();
+  }
 
 }

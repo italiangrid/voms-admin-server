@@ -24,29 +24,29 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 
 public class SearchGroupsOperation extends BaseVoReadOperation {
 
-	String text;
+  String text;
 
-	int firstResult;
+  int firstResult;
 
-	int maxResults;
+  int maxResults;
 
-	private SearchGroupsOperation(String text, int firstResult, int maxResults) {
+  private SearchGroupsOperation(String text, int firstResult, int maxResults) {
 
-		this.text = text;
-		this.firstResult = firstResult;
-		this.maxResults = maxResults;
-	}
+    this.text = text;
+    this.firstResult = firstResult;
+    this.maxResults = maxResults;
+  }
 
-	public static SearchGroupsOperation instance(String text, int firstResult,
-			int maxResults) {
+  public static SearchGroupsOperation instance(String text, int firstResult,
+    int maxResults) {
 
-		return new SearchGroupsOperation(text, firstResult, maxResults);
-	}
+    return new SearchGroupsOperation(text, firstResult, maxResults);
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return VOMSGroupDAO.instance().search(text, firstResult, maxResults);
+    return VOMSGroupDAO.instance().search(text, firstResult, maxResults);
 
-	}
+  }
 
 }

@@ -34,9 +34,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-  Authors: 	Valerio Venturi <valerio.venturi@cnaf.infn.it>
-  			Andrea Ceccanti <andrea.ceccanti@cnaf.infn.it>
- 
+ Authors: 	Valerio Venturi <valerio.venturi@cnaf.infn.it>
+ Andrea Ceccanti <andrea.ceccanti@cnaf.infn.it>
+
  **************************************************************************/
 
 package it.infn.cnaf.voms.saml;
@@ -70,98 +70,93 @@ import org.slf4j.LoggerFactory;
  */
 public class VOMSSAMLService {
 
-	public static final String VOMS_SAML_FQAN_URI = "http://voms.forge.cnaf.infn.it/fqan";
-	
-    static private Logger logger = LoggerFactory.getLogger(VOMSSAMLService.class);
-    
-    private SAMLAssertionFactory sAMLAssertionFactory;
+  public static final String VOMS_SAML_FQAN_URI = "http://voms.forge.cnaf.infn.it/fqan";
 
-    private SAMLResponseFactory sAMLResponseFactory;
+  static private Logger logger = LoggerFactory.getLogger(VOMSSAMLService.class);
 
-    private int maxAssertionLifetime;
+  private SAMLAssertionFactory sAMLAssertionFactory;
 
-    public VOMSSAMLService( SAMLAssertionFactory sAMLAssertionFactory, 
-            SAMLResponseFactory sAMLResponseFactory,
-            int maxAssertionLifetime ) {
+  private SAMLResponseFactory sAMLResponseFactory;
 
-        this.sAMLAssertionFactory = sAMLAssertionFactory;
-        this.sAMLResponseFactory = sAMLResponseFactory;
-        this.maxAssertionLifetime = maxAssertionLifetime;
+  private int maxAssertionLifetime;
+
+  public VOMSSAMLService(SAMLAssertionFactory sAMLAssertionFactory,
+    SAMLResponseFactory sAMLResponseFactory, int maxAssertionLifetime) {
+
+    this.sAMLAssertionFactory = sAMLAssertionFactory;
+    this.sAMLResponseFactory = sAMLResponseFactory;
+    this.maxAssertionLifetime = maxAssertionLifetime;
+  }
+
+  public Response attributeQuery(AttributeQuery attributeQuery,
+    HttpServletRequest httpServletRequest) throws RemoteException {
+
+    try {
+
+      // get the peer security context
+      SecurityContextHelper peerSecurityContext = new SecurityContextHelper(
+        httpServletRequest);
+
+      checkAttributeQuery(attributeQuery, peerSecurityContext);
+
+      /* prepare the Assertion */
+      Assertion assertion = sAMLAssertionFactory.create(
+        peerSecurityContext.getCertificate(), attributeQuery,
+        maxAssertionLifetime);
+
+      /* prepare the Response and return it */
+      return sAMLResponseFactory.create(attributeQuery.getID(), assertion);
+
+    } catch (Throwable exception) {
+      logger.error(exception.getMessage());
+      return sAMLResponseFactory.create(attributeQuery.getID(), exception);
     }
+  }
 
-    public Response attributeQuery( AttributeQuery attributeQuery,
-                HttpServletRequest httpServletRequest ) throws RemoteException {
-    	
-        try {
-	
-            // get the peer security context
-            SecurityContextHelper peerSecurityContext = new SecurityContextHelper(
-                    httpServletRequest );
+  private void checkAttributeQuery(AttributeQuery attributeQuery,
+    SecurityContextHelper peerSecurityContext) throws VersionMismatchException,
+    X509SubjectWrongNameIDFormatException,
+    X509SubjectWrongNameIDValueException, IssuerPeerMismatchException,
+    UnauthorizedQueryException, UnsupportedQueryException,
+    UnknownAttributeException {
 
-            checkAttributeQuery( attributeQuery, peerSecurityContext );
+    // check Version attribute for AttributeQuery is 2.0
+    if (attributeQuery.getVersion() != SAMLVersion.VERSION_20)
+      throw new VersionMismatchException();
 
-            /* prepare the Assertion */
-            Assertion assertion = sAMLAssertionFactory.create(
-                            peerSecurityContext.getCertificate(), 
-                            attributeQuery,
-                            maxAssertionLifetime );
+    String subjectNameIDFormat = attributeQuery.getSubject().getNameID()
+      .getFormat();
 
-            /* prepare the Response and return it */
-            return sAMLResponseFactory.create( attributeQuery.getID(), assertion );
+    // check the Format attribute of NameID in Subject conforme to SAML X509
+    // Profile
+    if (!subjectNameIDFormat.equals(NameID.X509_SUBJECT))
+      throw new X509SubjectWrongNameIDFormatException(subjectNameIDFormat);
 
-        } catch ( Throwable exception ) {
-            logger.error( exception.getMessage() );
-            return sAMLResponseFactory.create( attributeQuery.getID(), exception );
-        }
-    }
+    String subjectNameIDValue = attributeQuery.getSubject().getNameID()
+      .getValue();
 
-    private void checkAttributeQuery( AttributeQuery attributeQuery,
-            SecurityContextHelper peerSecurityContext )
-            throws VersionMismatchException ,
-            X509SubjectWrongNameIDFormatException ,
-            X509SubjectWrongNameIDValueException , IssuerPeerMismatchException ,
-            UnauthorizedQueryException , UnsupportedQueryException ,
-            UnknownAttributeException {
+    // check the distinguished name in Subject conform to RFC 2253
+    if (!DNUtil.isRFC2253Conformant(subjectNameIDValue))
+      throw new X509SubjectWrongNameIDValueException(subjectNameIDValue);
 
-        // check Version attribute for AttributeQuery is 2.0
-        if ( attributeQuery.getVersion() != SAMLVersion.VERSION_20 )
-            throw new VersionMismatchException();
+    X500Principal subject = new X500Principal(subjectNameIDValue);
 
-        String subjectNameIDFormat = attributeQuery.getSubject().getNameID()
-                .getFormat();
+    X500Principal issuer = new X500Principal(attributeQuery.getIssuer()
+      .getValue());
 
-        // check the Format attribute of NameID in Subject conforme to SAML X509
-        // Profile
-        if ( !subjectNameIDFormat
-                .equals( NameID.X509_SUBJECT ) )
-            throw new X509SubjectWrongNameIDFormatException(
-                    subjectNameIDFormat );
+    logger.debug("Received AttributeQuery issued by " + issuer.getName()
+      + " for subject " + subjectNameIDValue);
 
-        String subjectNameIDValue = attributeQuery.getSubject().getNameID()
-                .getValue();
+    // check the peer identity corresponds to the issuer of the
+    // AttributeQuery
+    // if ( !peerSecurityContext.is( issuer ) )
+    // throw new IssuerPeerMismatchException( issuer.getName(),
+    // peerSecurityContext.getX500Principal().getName() );
 
-        // check the distinguished name in Subject conform to RFC 2253
-        if ( !DNUtil.isRFC2253Conformant( subjectNameIDValue ) )
-            throw new X509SubjectWrongNameIDValueException( subjectNameIDValue );
+    // Check the AttributeQuery is authorized
+    // if ( !peerSecurityContext.is( subject ) )
+    // throw new UnauthorizedQueryException( issuer.getName(), subject
+    // .getName() );
 
-        X500Principal subject = new X500Principal( subjectNameIDValue );
-
-        X500Principal issuer = new X500Principal( attributeQuery.getIssuer()
-                .getValue() );
-
-        logger.debug( "Received AttributeQuery issued by " + issuer.getName()
-                + " for subject " + subjectNameIDValue );
-
-        // check the peer identity corresponds to the issuer of the
-        // AttributeQuery
-        //        if ( !peerSecurityContext.is( issuer ) )
-        //            throw new IssuerPeerMismatchException( issuer.getName(),
-        //                    peerSecurityContext.getX500Principal().getName() );
-
-        // Check the AttributeQuery is authorized
-        //        if ( !peerSecurityContext.is( subject ) )
-        //            throw new UnauthorizedQueryException( issuer.getName(), subject
-        //                    .getName() );
-        
-    }
+  }
 }

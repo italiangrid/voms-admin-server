@@ -33,102 +33,118 @@ import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
-@Table(name="COUNTRIES")
-public class Country implements Serializable{
-	/**
+@Table(name = "COUNTRIES")
+public class Country implements Serializable {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name="ISO_CODE", length=2)
-	String isoCode;
-	
-	@Column(nullable=false, unique=true, name="NAME", length=17)
-	String name;
-	
-	@Column(name="PTT_CODE", length=4)
-	String pttCode;
-	
-	@Column(nullable=false,length=1, name="PREFIX_OR_SUFFIX")
-	String prefixOrSuffix;
-	
-	@Column(nullable=false,length=1, name="BEFORE_PLACE_OR_COUNTRY")
-	String beforePlaceOrCountry;
-	
-	public Country() {
-		
-	}
+  @Id
+  @Column(name = "ISO_CODE", length = 2)
+  String isoCode;
 
-	public String getIsoCode() {
-		return isoCode;
-	}
+  @Column(nullable = false, unique = true, name = "NAME", length = 17)
+  String name;
 
-	public String getName() {
-		return name;
-	}
+  @Column(name = "PTT_CODE", length = 4)
+  String pttCode;
 
-	public String getPttCode() {
-		return pttCode;
-	}
+  @Column(nullable = false, length = 1, name = "PREFIX_OR_SUFFIX")
+  String prefixOrSuffix;
 
-	public String getPrefixOrSuffix() {
-		return prefixOrSuffix;
-	}
+  @Column(nullable = false, length = 1, name = "BEFORE_PLACE_OR_COUNTRY")
+  String beforePlaceOrCountry;
 
-	public String getBeforePlaceOrCountry() {
-		return beforePlaceOrCountry;
-	}
+  public Country() {
 
-	public void setIsoCode(String isoCode) {
-		this.isoCode = isoCode;
-	}
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getIsoCode() {
 
-	public void setPttCode(String pttCode) {
-		this.pttCode = pttCode;
-	}
+    return isoCode;
+  }
 
-	public void setPrefixOrSuffix(String prefixOrSuffix) {
-		this.prefixOrSuffix = prefixOrSuffix;
-	}
+  public String getName() {
 
-	public void setBeforePlaceOrCountry(String beforePlaceOrCountry) {
-		this.beforePlaceOrCountry = beforePlaceOrCountry;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		
-		if (obj == null)
-			return false;
-		
-		if (obj == this)
-			return true;
-		
-		Country that = (Country)obj;
-		
-		return new EqualsBuilder().append(isoCode, that.isoCode).append(name, that.name).isEquals();
-	}
+    return name;
+  }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder(17, 13).append(isoCode).append(name).toHashCode();
-	}
+  public String getPttCode() {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Country [isoCode=").append(isoCode).append(", name=")
-				.append(name).append("]");
-		return builder.toString();
-	}
-	
-	
+    return pttCode;
+  }
+
+  public String getPrefixOrSuffix() {
+
+    return prefixOrSuffix;
+  }
+
+  public String getBeforePlaceOrCountry() {
+
+    return beforePlaceOrCountry;
+  }
+
+  public void setIsoCode(String isoCode) {
+
+    this.isoCode = isoCode;
+  }
+
+  public void setName(String name) {
+
+    this.name = name;
+  }
+
+  public void setPttCode(String pttCode) {
+
+    this.pttCode = pttCode;
+  }
+
+  public void setPrefixOrSuffix(String prefixOrSuffix) {
+
+    this.prefixOrSuffix = prefixOrSuffix;
+  }
+
+  public void setBeforePlaceOrCountry(String beforePlaceOrCountry) {
+
+    this.beforePlaceOrCountry = beforePlaceOrCountry;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (obj == null)
+      return false;
+
+    if (obj == this)
+      return true;
+
+    Country that = (Country) obj;
+
+    return new EqualsBuilder().append(isoCode, that.isoCode)
+      .append(name, that.name).isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+
+    return new HashCodeBuilder(17, 13).append(isoCode).append(name)
+      .toHashCode();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("Country [isoCode=").append(isoCode).append(", name=")
+      .append(name).append("]");
+    return builder.toString();
+  }
+
 }

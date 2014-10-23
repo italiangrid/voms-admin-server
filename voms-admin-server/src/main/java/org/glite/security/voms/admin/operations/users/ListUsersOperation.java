@@ -24,17 +24,18 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class ListUsersOperation extends BaseVoReadOperation {
 
-	protected ListUsersOperation() {
+  protected ListUsersOperation() {
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return VOMSUserDAO.instance().findAll();
+    return VOMSUserDAO.instance().findAll();
 
-	}
+  }
 
-	public static ListUsersOperation instance() {
-		return new ListUsersOperation();
-	}
+  public static ListUsersOperation instance() {
+
+    return new ListUsersOperation();
+  }
 }

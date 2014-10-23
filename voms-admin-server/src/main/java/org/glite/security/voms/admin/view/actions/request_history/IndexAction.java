@@ -28,44 +28,40 @@ import org.glite.security.voms.admin.operations.requests.ListClosedRequestsOpera
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@Results({
-	@Result(name= BaseAction.SUCCESS, location="requestHistory")
-})
-public class IndexAction extends BaseAction{
+@Results({ @Result(name = BaseAction.SUCCESS, location = "requestHistory") })
+public class IndexAction extends BaseAction {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	List<Request> closedRequests;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
-	
-		ListClosedRequestsOperation op = new ListClosedRequestsOperation();
-		closedRequests = (List<Request>) op.execute();
-		
-		return SUCCESS;
-	}
-	
-	
-	/**
-	 * @return the closedRequests
-	 */
-	public List<Request> getClosedRequests() {
-	
-		return closedRequests;
-	}
+  List<Request> closedRequests;
 
-	
-	/**
-	 * @param closedRequests the closedRequests to set
-	 */
-	public void setClosedRequests(List<Request> closedRequests) {
-	
-		this.closedRequests = closedRequests;
-	}
+  @Override
+  public String execute() throws Exception {
 
-	
+    ListClosedRequestsOperation op = new ListClosedRequestsOperation();
+    closedRequests = (List<Request>) op.execute();
+
+    return SUCCESS;
+  }
+
+  /**
+   * @return the closedRequests
+   */
+  public List<Request> getClosedRequests() {
+
+    return closedRequests;
+  }
+
+  /**
+   * @param closedRequests
+   *          the closedRequests to set
+   */
+  public void setClosedRequests(List<Request> closedRequests) {
+
+    this.closedRequests = closedRequests;
+  }
+
 }

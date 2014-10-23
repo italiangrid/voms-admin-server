@@ -28,64 +28,63 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class FindGroupOperation extends BaseVomsOperation {
 
-	Long id = null;
+  Long id = null;
 
-	String name = null;
+  String name = null;
 
-	private FindGroupOperation(Long id) {
-		this.id = id;
+  private FindGroupOperation(Long id) {
 
-	}
+    this.id = id;
 
-	private FindGroupOperation(String name) {
+  }
 
-		this.name = name;
-	}
+  private FindGroupOperation(String name) {
 
-	protected Object doExecute() {
+    this.name = name;
+  }
 
-		if (id != null)
-			return VOMSGroupDAO.instance().findById(id);
+  protected Object doExecute() {
 
-		if (name != null)
-			return VOMSGroupDAO.instance().findByName(name);
+    if (id != null)
+      return VOMSGroupDAO.instance().findById(id);
 
-		return null;
-	}
+    if (name != null)
+      return VOMSGroupDAO.instance().findByName(name);
 
-	public static FindGroupOperation instance(Long id) {
+    return null;
+  }
 
-		return new FindGroupOperation(id);
-	}
+  public static FindGroupOperation instance(Long id) {
 
-	public static FindGroupOperation instance(String name) {
+    return new FindGroupOperation(id);
+  }
 
-		return new FindGroupOperation(name);
-	}
+  public static FindGroupOperation instance(String name) {
 
-	protected void setupPermissions() {
-		if (name != null) {
+    return new FindGroupOperation(name);
+  }
 
-			String parentGroupName = PathNamingScheme.getParentGroupName(name);
+  protected void setupPermissions() {
 
-			VOMSContext ctxt = VOMSContext.instance(VOMSGroupDAO.instance()
-					.findByName(parentGroupName));
+    if (name != null) {
 
-			addRequiredPermission(ctxt, VOMSPermission
-					.getContainerReadPermission());
+      String parentGroupName = PathNamingScheme.getParentGroupName(name);
 
-		} else if (id != null) {
+      VOMSContext ctxt = VOMSContext.instance(VOMSGroupDAO.instance()
+        .findByName(parentGroupName));
 
-			VOMSGroup parentGroup = VOMSGroupDAO.instance().findById(id)
-					.getParent();
+      addRequiredPermission(ctxt, VOMSPermission.getContainerReadPermission());
 
-			VOMSContext ctxt = VOMSContext.instance(parentGroup);
+    } else if (id != null) {
 
-			addRequiredPermission(ctxt, VOMSPermission
-					.getContainerReadPermission());
+      VOMSGroup parentGroup = VOMSGroupDAO.instance().findById(id).getParent();
 
-		}
+      VOMSContext ctxt = VOMSContext.instance(parentGroup);
 
-		return;
-	}
+      addRequiredPermission(ctxt, VOMSPermission.getContainerReadPermission());
+
+    }
+
+    return;
+  }
 }

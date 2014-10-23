@@ -29,95 +29,109 @@ import org.italiangrid.voms.aa.VOMSErrorMessage;
 import org.italiangrid.voms.aa.VOMSResponse;
 import org.italiangrid.voms.aa.VOMSWarningMessage;
 
-
 public class ResponseImpl implements VOMSResponse {
 
-	public ResponseImpl() {
-		warnings = new ArrayList<VOMSWarningMessage>();
-		errorMessages = new ArrayList<VOMSErrorMessage>();
-		issuedFQANs = new ArrayList<String>();
-		issuedGAs = new ArrayList<VOMSGenericAttribute>();
-		targets = new ArrayList<String>();
-		outcome = Outcome.SUCCESS;
-	}
-	
-	private Outcome outcome;
-	private List<VOMSWarningMessage> warnings;
-	private List<VOMSErrorMessage> errorMessages;
-	private List<String> issuedFQANs;
-	private List<VOMSGenericAttribute> issuedGAs;
-	private List<String> targets;
-	private Date notAfter;
-	private Date notBefore;
-	
-	@Override
-	public Outcome getOutcome() {		
-		return outcome;
-	}
+  public ResponseImpl() {
 
-	@Override
-	public void setOutcome(Outcome o) {
-		outcome = o;
-	}
+    warnings = new ArrayList<VOMSWarningMessage>();
+    errorMessages = new ArrayList<VOMSErrorMessage>();
+    issuedFQANs = new ArrayList<String>();
+    issuedGAs = new ArrayList<VOMSGenericAttribute>();
+    targets = new ArrayList<String>();
+    outcome = Outcome.SUCCESS;
+  }
 
-	@Override
-	public List<VOMSWarningMessage> getWarnings() {
-		return warnings;
-	}
+  private Outcome outcome;
+  private List<VOMSWarningMessage> warnings;
+  private List<VOMSErrorMessage> errorMessages;
+  private List<String> issuedFQANs;
+  private List<VOMSGenericAttribute> issuedGAs;
+  private List<String> targets;
+  private Date notAfter;
+  private Date notBefore;
 
-	@Override
-	public List<VOMSErrorMessage> getErrorMessages() {
-		return errorMessages;
-	}
+  @Override
+  public Outcome getOutcome() {
 
-	@Override
-	public List<String> getIssuedFQANs() {
-		return issuedFQANs;
-	}
+    return outcome;
+  }
 
-	@Override
-	public void setIssuedFQANs(List<String> issuedFQANs) {
-		this.issuedFQANs = issuedFQANs;
-	}
+  @Override
+  public void setOutcome(Outcome o) {
 
-	@Override
-	public List<VOMSGenericAttribute> getIssuedGAs() {
-		return issuedGAs;
-	}
+    outcome = o;
+  }
 
-	@Override
-	public void setIssuedGAs(List<VOMSGenericAttribute> issuedGAs) {
-		this.issuedGAs = issuedGAs;  
-	}
+  @Override
+  public List<VOMSWarningMessage> getWarnings() {
 
-	@Override
-	public List<String> getTargets() {
-		return targets;
-	}
+    return warnings;
+  }
 
-	@Override
-	public void setTargets(List<String> targets) {
-		this.targets = targets;
-	}
+  @Override
+  public List<VOMSErrorMessage> getErrorMessages() {
 
-	@Override
-	public Date getNotAfter() {
-		return notAfter;
-	}
+    return errorMessages;
+  }
 
-	@Override
-	public void setNotAfter(Date notAfter) {
-		this.notAfter = notAfter;
-	}
+  @Override
+  public List<String> getIssuedFQANs() {
 
-	@Override
-	public Date getNotBefore() {
-		return notBefore;
-	}
+    return issuedFQANs;
+  }
 
-	@Override
-	public void setNotBefore(Date notBefore) {
-		this.notBefore = notBefore;
-	}
+  @Override
+  public void setIssuedFQANs(List<String> issuedFQANs) {
+
+    this.issuedFQANs = issuedFQANs;
+  }
+
+  @Override
+  public List<VOMSGenericAttribute> getIssuedGAs() {
+
+    return issuedGAs;
+  }
+
+  @Override
+  public void setIssuedGAs(List<VOMSGenericAttribute> issuedGAs) {
+
+    this.issuedGAs = issuedGAs;
+  }
+
+  @Override
+  public List<String> getTargets() {
+
+    return targets;
+  }
+
+  @Override
+  public void setTargets(List<String> targets) {
+
+    this.targets = targets;
+  }
+
+  @Override
+  public Date getNotAfter() {
+
+    return notAfter;
+  }
+
+  @Override
+  public void setNotAfter(Date notAfter) {
+
+    this.notAfter = notAfter;
+  }
+
+  @Override
+  public Date getNotBefore() {
+
+    return notBefore;
+  }
+
+  @Override
+  public void setNotBefore(Date notBefore) {
+
+    this.notBefore = notBefore;
+  }
 
 }

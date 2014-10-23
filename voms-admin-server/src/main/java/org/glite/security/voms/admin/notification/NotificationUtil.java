@@ -47,165 +47,165 @@ import org.slf4j.LoggerFactory;
  */
 public class NotificationUtil {
 
-	public static final Logger log = LoggerFactory
-		.getLogger(NotificationUtil.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(NotificationUtil.class);
 
-	public static String getServiceURL() {
+  public static String getServiceURL() {
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String hostname = conf.getServiceHostname();
-		String voName = conf.getVOName();
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String hostname = conf.getServiceHostname();
+    String voName = conf.getVOName();
 
-		return String.format("https://%s:8443/voms/%s", hostname, voName);
+    return String.format("https://%s:8443/voms/%s", hostname, voName);
 
-	}
+  }
 
-	/**
-	 * This method resolves the email address for a given VOMS administrator. For
-	 * "normal" administrators, the email address stored in the database is
-	 * returned (if present). For VOMS group and role administrators, the
-	 * group/role members email addresses are returned. The resulting email
-	 * address collection contains no duplicates.
-	 * 
-	 * 
-	 * @param a
-	 *          A {@link VOMSAdmin} administrator
-	 * @return A possibly empty list of email addresses associated with the
-	 *         {@link VOMSAdmin} administrator
-	 * 
-	 */
-	public static Collection<String> resolveAdministratorEmailAddress(VOMSAdmin a) {
+  /**
+   * This method resolves the email address for a given VOMS administrator. For
+   * "normal" administrators, the email address stored in the database is
+   * returned (if present). For VOMS group and role administrators, the
+   * group/role members email addresses are returned. The resulting email
+   * address collection contains no duplicates.
+   * 
+   * 
+   * @param a
+   *          A {@link VOMSAdmin} administrator
+   * @return A possibly empty list of email addresses associated with the
+   *         {@link VOMSAdmin} administrator
+   * 
+   */
+  public static Collection<String> resolveAdministratorEmailAddress(VOMSAdmin a) {
 
-		HashSet<String> emails = new HashSet<String>();
+    HashSet<String> emails = new HashSet<String>();
 
-		if (!a.isInternalAdmin()) {
+    if (!a.isInternalAdmin()) {
 
-			if (a.getEmailAddress() != null && !"".equals(a.getEmailAddress().trim()))
-				emails.add(a.getEmailAddress().trim());
+      if (a.getEmailAddress() != null && !"".equals(a.getEmailAddress().trim()))
+        emails.add(a.getEmailAddress().trim());
 
-		} else {
+    } else {
 
-			if (a.isGroupAdmin()) {
+      if (a.isGroupAdmin()) {
 
-				VOMSGroup g = VOMSGroupDAO.instance().findByName(a.getDn());
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(a.getDn());
 
-				emails.addAll(g.getMembersEmailAddresses());
+        emails.addAll(g.getMembersEmailAddresses());
 
-			} else if (a.isRoleAdmin()) {
+      } else if (a.isRoleAdmin()) {
 
-				VOMSRole r = VOMSRoleDAO.instance().findByName(
-					PathNamingScheme.getRoleName(a.getDn()));
+        VOMSRole r = VOMSRoleDAO.instance().findByName(
+          PathNamingScheme.getRoleName(a.getDn()));
 
-				VOMSGroup g = VOMSGroupDAO.instance().findByName(
-					PathNamingScheme.getGroupName(a.getDn()));
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(
+          PathNamingScheme.getGroupName(a.getDn()));
 
-				emails.addAll(r.getMembersEmailAddresses(g));
+        emails.addAll(r.getMembersEmailAddresses(g));
 
-			}
+      }
 
-		}
+    }
 
-		return emails;
-	}
+    return emails;
+  }
 
-	private static String getNotificationBehaviour() {
+  private static String getNotificationBehaviour() {
 
-		final String[] possibleBehaviours = { "admins", "service", "all" };
+    final String[] possibleBehaviours = { "admins", "service", "all" };
 
-		String notificationBehaviour = VOMSConfiguration.instance().getString(
-			VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR, "admins");
+    String notificationBehaviour = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR, "admins");
 
-		// Check user values for configuration behaviour, and if unknown value
-		// is set, restore the default
+    // Check user values for configuration behaviour, and if unknown value
+    // is set, restore the default
 
-		boolean notificationBehaviourValueOK = false;
+    boolean notificationBehaviourValueOK = false;
 
-		for (String b : possibleBehaviours)
-			if (notificationBehaviour.trim().equals(b)) {
-				notificationBehaviourValueOK = true;
-				break;
-			}
+    for (String b : possibleBehaviours)
+      if (notificationBehaviour.trim().equals(b)) {
+        notificationBehaviourValueOK = true;
+        break;
+      }
 
-		if (!notificationBehaviourValueOK) {
+    if (!notificationBehaviourValueOK) {
 
-			notificationBehaviour = "admins";
-			log
-				.warn("Unrecognized value for configuration option: "
-					+ VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR
-					+ ". Possible values are: 'admins','service', 'all'. Setting the default value to 'admins'. Fix your configuration file!");
-		}
+      notificationBehaviour = "admins";
+      log
+        .warn("Unrecognized value for configuration option: "
+          + VOMSConfigurationConstants.NOTIFICATION_NOTIFY_BEHAVIOUR
+          + ". Possible values are: 'admins','service', 'all'. Setting the default value to 'admins'. Fix your configuration file!");
+    }
 
-		return notificationBehaviour;
+    return notificationBehaviour;
 
-	}
+  }
 
-	/**
-	 * Returns the email addresses of the VOMS Administrators having ALL
-	 * permissions in the VO root group.
-	 * 
-	 * @return A list of administrator email addresses having the given
-	 *         permissions in the specified context.
-	 */
-	public static List<String> getAdministratorsEmailList() {
+  /**
+   * Returns the email addresses of the VOMS Administrators having ALL
+   * permissions in the VO root group.
+   * 
+   * @return A list of administrator email addresses having the given
+   *         permissions in the specified context.
+   */
+  public static List<String> getAdministratorsEmailList() {
 
-		return getAdministratorsEmailList(VOMSContext.getVoContext(),
-			VOMSPermission.getAllPermissions());
-	}
+    return getAdministratorsEmailList(VOMSContext.getVoContext(),
+      VOMSPermission.getAllPermissions());
+  }
 
-	/**
-	 * Returns the email addresses of the VOMS Administrators with a given
-	 * permission in a specific VOMS context.
-	 * 
-	 * @param context
-	 *          The {@link VOMSContext}, i.e., a group or a qualified role.
-	 * 
-	 * @param permission
-	 *          The requested {@link VOMSPermission}.
-	 * 
-	 * @return A list of administrator email addresses having the given
-	 *         permissions in the specified context.
-	 */
-	public static List<String> getAdministratorsEmailList(VOMSContext context,
-		VOMSPermission permission) {
+  /**
+   * Returns the email addresses of the VOMS Administrators with a given
+   * permission in a specific VOMS context.
+   * 
+   * @param context
+   *          The {@link VOMSContext}, i.e., a group or a qualified role.
+   * 
+   * @param permission
+   *          The requested {@link VOMSPermission}.
+   * 
+   * @return A list of administrator email addresses having the given
+   *         permissions in the specified context.
+   */
+  public static List<String> getAdministratorsEmailList(VOMSContext context,
+    VOMSPermission permission) {
 
-		if (context == null)
-			throw new IllegalArgumentException("Please provide a non-null context!");
+    if (context == null)
+      throw new IllegalArgumentException("Please provide a non-null context!");
 
-		if (permission == null)
-			throw new IllegalArgumentException(
-				"Please provide a non-null permission!");
+    if (permission == null)
+      throw new IllegalArgumentException(
+        "Please provide a non-null permission!");
 
-		String notificationBehaviour = getNotificationBehaviour();
+    String notificationBehaviour = getNotificationBehaviour();
 
-		String serviceEmailAddress = VOMSConfiguration.instance().getString(
-			VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
+    String serviceEmailAddress = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.SERVICE_EMAIL_ADDRESS);
 
-		HashSet<String> adminEmails = new HashSet<String>();
+    HashSet<String> adminEmails = new HashSet<String>();
 
-		Set<VOMSAdmin> admins = context.getACL().getAdminsWithPermissions(
-			permission);
+    Set<VOMSAdmin> admins = context.getACL().getAdminsWithPermissions(
+      permission);
 
-		if ("service".equals(notificationBehaviour)
-			|| "all".equals(notificationBehaviour))
-			adminEmails.add(serviceEmailAddress);
+    if ("service".equals(notificationBehaviour)
+      || "all".equals(notificationBehaviour))
+      adminEmails.add(serviceEmailAddress);
 
-		if ("admins".equals(notificationBehaviour)
-			|| "all".equals(notificationBehaviour)) {
+    if ("admins".equals(notificationBehaviour)
+      || "all".equals(notificationBehaviour)) {
 
-			for (VOMSAdmin a : admins)
-				adminEmails.addAll(resolveAdministratorEmailAddress(a));
-		}
+      for (VOMSAdmin a : admins)
+        adminEmails.addAll(resolveAdministratorEmailAddress(a));
+    }
 
-		if (adminEmails.isEmpty()) {
-			log
-				.warn("No valid administrator email address found, falling back to service email address.");
-			adminEmails.add(serviceEmailAddress);
-		}
-		
-		ArrayList<String> emailList = new ArrayList<String>();
-		emailList.addAll(adminEmails);
+    if (adminEmails.isEmpty()) {
+      log
+        .warn("No valid administrator email address found, falling back to service email address.");
+      adminEmails.add(serviceEmailAddress);
+    }
 
-		return emailList;
+    ArrayList<String> emailList = new ArrayList<String>();
+    emailList.addAll(adminEmails);
 
-	}
+    return emailList;
+
+  }
 }

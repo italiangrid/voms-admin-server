@@ -30,36 +30,35 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
-@Results( { @Result(name = BaseAction.INPUT, location = "aups") })
+@Results({ @Result(name = BaseAction.INPUT, location = "aups") })
 public class AUPActionSupport extends BaseAction implements Preparable,
-		ModelDriven<AUP> {
+  ModelDriven<AUP> {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	AUP voAUP;
+  AUP voAUP;
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+    AUPDAO dao = DAOFactory.instance().getAUPDAO();
 
-		if (voAUP == null)
-			voAUP = dao.getVOAUP();
+    if (voAUP == null)
+      voAUP = dao.getVOAUP();
 
-	}
+  }
 
-	@Action("load")
-	public String load() throws Exception {
+  @Action("load")
+  public String load() throws Exception {
 
-		return INPUT;
-	}
+    return INPUT;
+  }
 
-	public AUP getModel() {
+  public AUP getModel() {
 
-		return voAUP;
-	}
+    return voAUP;
+  }
 
 }

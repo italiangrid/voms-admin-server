@@ -29,21 +29,28 @@ import javax.xml.rpc.encoding.Serializer;
  *
  */
 public class SerializerFactory implements
-		org.apache.axis.encoding.SerializerFactory {
+  org.apache.axis.encoding.SerializerFactory {
 
-	/* (non-Javadoc)
-	 * @see javax.xml.rpc.encoding.SerializerFactory#getSerializerAs(java.lang.String)
-	 */
-	public Serializer getSerializerAs(String arg0) {
-		return new it.infn.cnaf.voms.saml.axis_serializers.Serializer();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * javax.xml.rpc.encoding.SerializerFactory#getSerializerAs(java.lang.String)
+   */
+  public Serializer getSerializerAs(String arg0) {
 
-	/* (non-Javadoc)
-	 * @see javax.xml.rpc.encoding.SerializerFactory#getSupportedMechanismTypes()
-	 */
-	public Iterator getSupportedMechanismTypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    return new it.infn.cnaf.voms.saml.axis_serializers.Serializer();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.xml.rpc.encoding.SerializerFactory#getSupportedMechanismTypes()
+   */
+  public Iterator getSupportedMechanismTypes() {
+
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

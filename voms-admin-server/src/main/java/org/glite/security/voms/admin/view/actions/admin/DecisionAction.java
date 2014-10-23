@@ -34,58 +34,58 @@ import org.glite.security.voms.admin.persistence.model.request.MembershipRemoval
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-		@Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="pendingRequests.jsp")
-})
-		
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "pendingRequests.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class DecisionAction extends RequestActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String decision;
-	
-	@Override
-	public String execute() throws Exception {
+  String decision;
 
-		DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
+  @Override
+  public String execute() throws Exception {
 
-		if (request instanceof GroupMembershipRequest)
-			new HandleGroupRequestOperation((GroupMembershipRequest) request,
-					theDecision).execute();
+    DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
 
-		if (request instanceof RoleMembershipRequest)
-			new HandleRoleMembershipRequestOperation(
-					(RoleMembershipRequest) request, theDecision).execute();
+    if (request instanceof GroupMembershipRequest)
+      new HandleGroupRequestOperation((GroupMembershipRequest) request,
+        theDecision).execute();
 
-		if (request instanceof MembershipRemovalRequest)
-			new HandleMembershipRemovalRequest(
-					(MembershipRemovalRequest) request, theDecision).execute();
+    if (request instanceof RoleMembershipRequest)
+      new HandleRoleMembershipRequestOperation((RoleMembershipRequest) request,
+        theDecision).execute();
 
-		if (request instanceof CertificateRequest)
-			new HandleCertificateRequestOperation((CertificateRequest) request,
-					theDecision).execute();
+    if (request instanceof MembershipRemovalRequest)
+      new HandleMembershipRemovalRequest((MembershipRemovalRequest) request,
+        theDecision).execute();
 
-		refreshPendingRequests();
+    if (request instanceof CertificateRequest)
+      new HandleCertificateRequestOperation((CertificateRequest) request,
+        theDecision).execute();
 
-		setDecision(null);
+    refreshPendingRequests();
 
-		return SUCCESS;
-	}
+    setDecision(null);
 
-	public String getDecision() {
-		return decision;
-	}
+    return SUCCESS;
+  }
 
-	public void setDecision(String decision) {
-		this.decision = decision;
-	}
+  public String getDecision() {
+
+    return decision;
+  }
+
+  public void setDecision(String decision) {
+
+    this.decision = decision;
+  }
 
 }

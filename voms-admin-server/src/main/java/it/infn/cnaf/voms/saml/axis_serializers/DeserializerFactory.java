@@ -29,21 +29,30 @@ import javax.xml.rpc.encoding.Deserializer;
  *
  */
 public class DeserializerFactory implements
-		org.apache.axis.encoding.DeserializerFactory {
+  org.apache.axis.encoding.DeserializerFactory {
 
-	/* (non-Javadoc)
-	 * @see javax.xml.rpc.encoding.DeserializerFactory#getDeserializerAs(java.lang.String)
-	 */
-	public Deserializer getDeserializerAs(String arg0) {
-		return new it.infn.cnaf.voms.saml.axis_serializers.Deserializer();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * javax.xml.rpc.encoding.DeserializerFactory#getDeserializerAs(java.lang.
+   * String)
+   */
+  public Deserializer getDeserializerAs(String arg0) {
 
-	/* (non-Javadoc)
-	 * @see javax.xml.rpc.encoding.DeserializerFactory#getSupportedMechanismTypes()
-	 */
-	public Iterator getSupportedMechanismTypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    return new it.infn.cnaf.voms.saml.axis_serializers.Deserializer();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * javax.xml.rpc.encoding.DeserializerFactory#getSupportedMechanismTypes()
+   */
+  public Iterator getSupportedMechanismTypes() {
+
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

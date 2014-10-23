@@ -34,103 +34,100 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class TagUtils {
 
-	// CONSTANTS
-	public static final String CONTAINER_RW_PERMISSIONS = "rw";
+  // CONSTANTS
+  public static final String CONTAINER_RW_PERMISSIONS = "rw";
 
-	public static final String CONTAINER_R_PERMISSIONS = "r";
+  public static final String CONTAINER_R_PERMISSIONS = "r";
 
-	public static final String CONTAINER_W_PERMISSIONS = "w";
+  public static final String CONTAINER_W_PERMISSIONS = "w";
 
-	public static boolean hasPermissions(PageContext pageContext,
-			Map permissionMap) throws JspException {
+  public static boolean hasPermissions(PageContext pageContext,
+    Map permissionMap) throws JspException {
 
-		if (permissionMap.isEmpty())
-			return false;
+    if (permissionMap.isEmpty())
+      return false;
 
-		Iterator i = permissionMap.entrySet().iterator();
+    Iterator i = permissionMap.entrySet().iterator();
 
-		while (i.hasNext()) {
+    while (i.hasNext()) {
 
-			Map.Entry entry = (Entry) i.next();
-			if (!isAuthorized(pageContext, (String) entry.getKey(),
-					(String) entry.getValue()))
-				return false;
-		}
+      Map.Entry entry = (Entry) i.next();
+      if (!isAuthorized(pageContext, (String) entry.getKey(),
+        (String) entry.getValue()))
+        return false;
+    }
 
-		return true;
+    return true;
 
-	}
+  }
 
-	public static boolean isAuthorized(PageContext pageContext,
-			String vomsContext, String permissions) throws JspException {
+  public static boolean isAuthorized(PageContext pageContext,
+    String vomsContext, String permissions) throws JspException {
 
-		CurrentAdmin admin = (CurrentAdmin) CurrentAdmin.instance();
+    CurrentAdmin admin = (CurrentAdmin) CurrentAdmin.instance();
 
-		if (admin == null)
-			throw new JspTagException(
-					"No admin defined in the org.glite.security.voms.admin.request context!");
+    if (admin == null)
+      throw new JspTagException(
+        "No admin defined in the org.glite.security.voms.admin.request context!");
 
-		return admin.hasPermissions(buildContext(vomsContext),
-				buildPermissions(permissions));
+    return admin.hasPermissions(buildContext(vomsContext),
+      buildPermissions(permissions));
 
-	}
+  }
 
-	public static VOMSContext buildContext(String context) throws JspException {
+  public static VOMSContext buildContext(String context) throws JspException {
 
-		if (context.equals("vo"))
-			return VOMSContext.getVoContext();
+    if (context.equals("vo"))
+      return VOMSContext.getVoContext();
 
-		else {
+    else {
 
-			if (context.matches("^vo/.*$"))
-				context = context.replace("vo", VOMSContext.getVoContext()
-						.getGroup().getName());
-			try {
+      if (context.matches("^vo/.*$"))
+        context = context.replace("vo", VOMSContext.getVoContext().getGroup()
+          .getName());
+      try {
 
-				return VOMSContext.instance(context);
+        return VOMSContext.instance(context);
 
-			} catch (VOMSSyntaxException e) {
+      } catch (VOMSSyntaxException e) {
 
-				throw new JspTagException(
-						"VOMS security context creation error (context: "
-								+ context + "): " + e.getMessage());
+        throw new JspTagException(
+          "VOMS security context creation error (context: " + context + "): "
+            + e.getMessage());
 
-			} catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
 
-				throw new JspTagException(
-						"VOMS security context creation error (context: "
-								+ context + "): " + e.getMessage());
+        throw new JspTagException(
+          "VOMS security context creation error (context: " + context + "): "
+            + e.getMessage());
 
-			}
-		}
-	}
+      }
+    }
+  }
 
-	public static VOMSPermission buildPermissions(String permission)
-			throws JspException {
+  public static VOMSPermission buildPermissions(String permission)
+    throws JspException {
 
-		try {
+    try {
 
-			if (permission.equals(CONTAINER_R_PERMISSIONS))
-				return VOMSPermission
-						.fromString("CONTAINER_READ|MEMBERSHIP_READ");
+      if (permission.equals(CONTAINER_R_PERMISSIONS))
+        return VOMSPermission.fromString("CONTAINER_READ|MEMBERSHIP_READ");
 
-			if (permission.equals(CONTAINER_W_PERMISSIONS))
-				return VOMSPermission
-						.fromString("CONTAINER_WRITE|MEMBERSHIP_WRITE");
+      if (permission.equals(CONTAINER_W_PERMISSIONS))
+        return VOMSPermission.fromString("CONTAINER_WRITE|MEMBERSHIP_WRITE");
 
-			if (permission.equals(CONTAINER_RW_PERMISSIONS))
-				return VOMSPermission
-						.fromString("CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE");
+      if (permission.equals(CONTAINER_RW_PERMISSIONS))
+        return VOMSPermission
+          .fromString("CONTAINER_READ|CONTAINER_WRITE|MEMBERSHIP_READ|MEMBERSHIP_WRITE");
 
-			return VOMSPermission.fromString(permission);
+      return VOMSPermission.fromString(permission);
 
-		} catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
 
-			throw new JspTagException(
-					"VOMS permission parse error (permission: " + permission
-							+ "): " + e.getMessage());
+      throw new JspTagException("VOMS permission parse error (permission: "
+        + permission + "): " + e.getMessage());
 
-		}
-	}
+    }
+  }
 
 }

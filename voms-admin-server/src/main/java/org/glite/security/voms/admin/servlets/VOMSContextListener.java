@@ -29,33 +29,32 @@ import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSContextListener implements ServletContextListener {
 
-	static final Logger log = LoggerFactory.getLogger(VOMSContextListener.class);
+  static final Logger log = LoggerFactory.getLogger(VOMSContextListener.class);
 
-	public VOMSContextListener() {
+  public VOMSContextListener() {
 
-		super();
+    super();
 
-	}
+  }
 
-	public void contextInitialized(ServletContextEvent ctxtEvent) {
+  public void contextInitialized(ServletContextEvent ctxtEvent) {
 
-		try {
+    try {
 
-			VOMSService.start(ctxtEvent.getServletContext());
-		
-		} catch (VOMSException e) {
+      VOMSService.start(ctxtEvent.getServletContext());
 
-			log.error("VOMS-Admin setup failure!", e);
-			
+    } catch (VOMSException e) {
 
-		}
+      log.error("VOMS-Admin setup failure!", e);
 
-	}
+    }
 
-	public void contextDestroyed(ServletContextEvent ctxtEvent) {
+  }
 
-		VOMSService.stop();
+  public void contextDestroyed(ServletContextEvent ctxtEvent) {
 
-	}
+    VOMSService.stop();
+
+  }
 
 }

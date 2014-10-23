@@ -28,9 +28,12 @@
 package it.infn.cnaf.voms.saml.axis_skeletons;
 
 public interface AttributeAuthorityService extends javax.xml.rpc.Service {
-    public java.lang.String getAttributeAuthorityPortTypeAddress();
 
-    public it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType getAttributeAuthorityPortType() throws javax.xml.rpc.ServiceException;
+  public java.lang.String getAttributeAuthorityPortTypeAddress();
 
-    public it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType getAttributeAuthorityPortType(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+  public it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType getAttributeAuthorityPortType()
+    throws javax.xml.rpc.ServiceException;
+
+  public it.infn.cnaf.voms.saml.axis_skeletons.AttributeAuthorityPortType getAttributeAuthorityPortType(
+    java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
 }

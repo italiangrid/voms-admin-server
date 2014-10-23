@@ -27,38 +27,45 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public abstract class UserMembershipEvent extends GenericEvent {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	VOMSGroup group;
-	VOMSRole role;
+  VOMSGroup group;
+  VOMSRole role;
 
-	public UserMembershipEvent(VOMSUser user) {
-		super(EventType.UserMembershipEvent);
-		setUser(user);
-	}
+  public UserMembershipEvent(VOMSUser user) {
 
-	public VOMSUser getUser() {
-		return user;
-	}
+    super(EventType.UserMembershipEvent);
+    setUser(user);
+  }
 
-	public void setUser(VOMSUser user) {
-		this.user = user;
-	}
+  public VOMSUser getUser() {
 
-	public VOMSGroup getGroup() {
-		return group;
-	}
+    return user;
+  }
 
-	public void setGroup(VOMSGroup group) {
-		this.group = group;
-	}
+  public void setUser(VOMSUser user) {
 
-	public VOMSRole getRole() {
-		return role;
-	}
+    this.user = user;
+  }
 
-	public void setRole(VOMSRole role) {
-		this.role = role;
-	}
+  public VOMSGroup getGroup() {
+
+    return group;
+  }
+
+  public void setGroup(VOMSGroup group) {
+
+    this.group = group;
+  }
+
+  public VOMSRole getRole() {
+
+    return role;
+  }
+
+  public void setRole(VOMSRole role) {
+
+    this.role = role;
+  }
 
 }

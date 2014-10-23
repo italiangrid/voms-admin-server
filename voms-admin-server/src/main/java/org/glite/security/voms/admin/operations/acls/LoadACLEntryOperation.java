@@ -23,15 +23,15 @@ import org.glite.security.voms.admin.operations.BaseVomsOperation;
 
 public class LoadACLEntryOperation extends BaseVomsOperation {
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return null;
-	}
+    return null;
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
-	}
+  }
 
 }

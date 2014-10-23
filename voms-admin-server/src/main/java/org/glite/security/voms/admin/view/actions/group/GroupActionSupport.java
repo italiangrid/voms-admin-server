@@ -30,47 +30,52 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 public class GroupActionSupport extends BaseAction implements
-		ModelDriven<VOMSGroup>, Preparable {
+  ModelDriven<VOMSGroup>, Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long groupId = -1L;
-	VOMSGroup group;
+  Long groupId = -1L;
+  VOMSGroup group;
 
-	List<VOMSAttributeDescription> attributeClasses;
+  List<VOMSAttributeDescription> attributeClasses;
 
-	public VOMSGroup getModel() {
-		return group;
-	}
+  public VOMSGroup getModel() {
 
-	public void prepare() throws Exception {
+    return group;
+  }
 
-		if (getModel() == null)
-			if (getGroupId() != -1)
-				group = groupById(getGroupId());
+  public void prepare() throws Exception {
 
-		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
-				.instance().getAllAttributeDescriptions();
-	}
+    if (getModel() == null)
+      if (getGroupId() != -1)
+        group = groupById(getGroupId());
 
-	public Long getGroupId() {
-		return groupId;
-	}
+    attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
+      .instance().getAllAttributeDescriptions();
+  }
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+  public Long getGroupId() {
 
-	public List<VOMSAttributeDescription> getAttributeClasses() {
-		return attributeClasses;
-	}
+    return groupId;
+  }
 
-	public void setAttributeClasses(
-			List<VOMSAttributeDescription> attributeClasses) {
-		this.attributeClasses = attributeClasses;
-	}
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
+
+  public List<VOMSAttributeDescription> getAttributeClasses() {
+
+    return attributeClasses;
+  }
+
+  public void setAttributeClasses(
+    List<VOMSAttributeDescription> attributeClasses) {
+
+    this.attributeClasses = attributeClasses;
+  }
 
 }

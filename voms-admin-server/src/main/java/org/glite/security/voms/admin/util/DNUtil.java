@@ -40,97 +40,97 @@ import eu.emi.security.authn.x509.impl.X500NameUtils;
  * 
  */
 public class DNUtil {
-	
-	/**
-	 * Converts BouncyCastle's X500 principal to something, which is used in the
-	 * Globus libraries by default (whatever it is).
-	 * 
-	 * @param principal
-	 *            the subject's or the issuer's X500 principal
-	 * @return the proper string represetnation
-	 */
-	public static String getOpenSSLSubject(X500Principal principal) {
 
-		return OpensslNameUtils.convertFromRfc2253(X500NameUtils.getReadableForm(principal), false);
-	}
+  /**
+   * Converts BouncyCastle's X500 principal to something, which is used in the
+   * Globus libraries by default (whatever it is).
+   * 
+   * @param principal
+   *          the subject's or the issuer's X500 principal
+   * @return the proper string represetnation
+   */
+  public static String getOpenSSLSubject(X500Principal principal) {
 
-	public static String normalizeEmailAddressInDN(String dn) {
-		return dn
-				.replaceAll(
-						"/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=",
-						"/Email=");
-	}
+    return OpensslNameUtils.convertFromRfc2253(
+      X500NameUtils.getReadableForm(principal), false);
+  }
 
-	public static String normalizeUIDInDN(String dn) {
+  public static String normalizeEmailAddressInDN(String dn) {
 
-		return dn
-				.replaceAll("/(UserId|USERID|userId|userid|uid|Uid)=", "/UID=");
-	}
+    return dn.replaceAll(
+      "/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=",
+      "/Email=");
+  }
 
-	public static String normalizeDN(String dn) {
-		return normalizeUIDInDN(normalizeEmailAddressInDN(dn));
-	}
+  public static String normalizeUIDInDN(String dn) {
 
-	public static String getEmailAddressFromDN(String dn) {
+    return dn.replaceAll("/(UserId|USERID|userId|userid|uid|Uid)=", "/UID=");
+  }
 
-		Pattern emailPattern = Pattern.compile("Email=([^/]*)");
-		Matcher m = emailPattern.matcher(dn);
+  public static String normalizeDN(String dn) {
 
-		if (m.find()) {
+    return normalizeUIDInDN(normalizeEmailAddressInDN(dn));
+  }
 
-			return m.group(1);
-		}
+  public static String getEmailAddressFromDN(String dn) {
 
-		return null;
-	}
+    Pattern emailPattern = Pattern.compile("Email=([^/]*)");
+    Matcher m = emailPattern.matcher(dn);
 
-	public static String getEmailAddressFromExtensions(X509Certificate cert) {
+    if (m.find()) {
 
-		try {
-
-			Collection<List<?>> altNames = cert.getSubjectAlternativeNames();
-
-			if (altNames == null)
-				return null;
-
-			// Iterate over alternative names
-			for (List<?> entry : altNames) {
-
-				// First item in the list is an integer specify the altName
-				// 'kind'
-				int entryType = (Integer) entry.get(0);
-
-				// 1 is the code for rfc822 name, we consider only the first
-				// address
-				// in the list.
-
-				if (entryType == 1)
-					return (String) entry.get(1);
-				else
-					continue;
-
-			}
-
-		} catch (CertificateParsingException e) {
-			throw new VOMSException(
-					"Error accessing subject alternative names: "
-							+ e.getMessage(), e);
-		}
-
-		return null;
-	}
-	
-	public static boolean isRFC2253Conformant(String subjectNameIDValue) {
-		
-		// TODO: Migrate this method from old VOMS SAML codebase
-		return true;
-	}
-	
-	public static String getBCasX500( String principalString){
-        
-        return getOpenSSLSubject( new X500Principal(principalString ));
-        
+      return m.group(1);
     }
+
+    return null;
+  }
+
+  public static String getEmailAddressFromExtensions(X509Certificate cert) {
+
+    try {
+
+      Collection<List<?>> altNames = cert.getSubjectAlternativeNames();
+
+      if (altNames == null)
+        return null;
+
+      // Iterate over alternative names
+      for (List<?> entry : altNames) {
+
+        // First item in the list is an integer specify the altName
+        // 'kind'
+        int entryType = (Integer) entry.get(0);
+
+        // 1 is the code for rfc822 name, we consider only the first
+        // address
+        // in the list.
+
+        if (entryType == 1)
+          return (String) entry.get(1);
+        else
+          continue;
+
+      }
+
+    } catch (CertificateParsingException e) {
+      throw new VOMSException("Error accessing subject alternative names: "
+        + e.getMessage(), e);
+    }
+
+    return null;
+  }
+
+  public static boolean isRFC2253Conformant(String subjectNameIDValue) {
+
+    // TODO: Migrate this method from old VOMS SAML codebase
+    return true;
+  }
+
+  public static String getBCasX500(String principalString) {
+
+    return getOpenSSLSubject(new X500Principal(principalString));
+
+  }
 }
 
 // Please do not change this line.

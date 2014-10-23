@@ -25,25 +25,27 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.aup.RemoveVersionOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.INPUT, location = "aups"),
-		@Result(name = BaseAction.SUCCESS, location = "/aup/load.action", type = "redirect") })
-		
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.INPUT, location = "aups"),
+  @Result(name = BaseAction.SUCCESS, location = "/aup/load.action",
+    type = "redirect") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class RemoveVersionAction extends AUPVersionActions {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
-		RemoveVersionOperation op = new RemoveVersionOperation(getModel(), getVersion());
-		op.execute();
-		return SUCCESS;
+  @Override
+  public String execute() throws Exception {
 
-	}
+    RemoveVersionOperation op = new RemoveVersionOperation(getModel(),
+      getVersion());
+    op.execute();
+    return SUCCESS;
+
+  }
 
 }

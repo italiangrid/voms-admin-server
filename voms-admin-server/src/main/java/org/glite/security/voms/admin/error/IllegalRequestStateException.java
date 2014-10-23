@@ -19,13 +19,12 @@
  */
 package org.glite.security.voms.admin.error;
 
-
 public class IllegalRequestStateException extends VOMSException {
 
-	public IllegalRequestStateException(String message) {
+  public IllegalRequestStateException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
 }

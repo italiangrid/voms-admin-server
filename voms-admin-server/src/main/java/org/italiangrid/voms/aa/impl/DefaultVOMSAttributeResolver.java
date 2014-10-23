@@ -43,136 +43,136 @@ import org.italiangrid.voms.aa.VOMSWarningMessage;
 
 public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
-	protected FQANEncoding fqanEncoding;
-	
-	protected FQANFilteringPolicy fqanFilteringPolicy;
-	
-	public DefaultVOMSAttributeResolver(FQANEncoding encoding, 
-		FQANFilteringPolicy filteringPolicy) {
-		
-		fqanEncoding = encoding;
-		fqanFilteringPolicy = filteringPolicy;
-	}
+  protected FQANEncoding fqanEncoding;
 
-	protected void failResponse(VOMSResponse r, VOMSErrorMessage e) {
+  protected FQANFilteringPolicy fqanFilteringPolicy;
 
-		r.setOutcome(Outcome.FAILURE);
-		r.getErrorMessages().add(e);
-	}
+  public DefaultVOMSAttributeResolver(FQANEncoding encoding,
+    FQANFilteringPolicy filteringPolicy) {
 
-	protected void resolveRequestedFQANs(RequestContext context) {
+    fqanEncoding = encoding;
+    fqanFilteringPolicy = filteringPolicy;
+  }
 
-		VOMSRequest request = context.getRequest();
-		VOMSUser u = context.getVOMSUser();
-		VOMSResponse response = context.getResponse();
+  protected void failResponse(VOMSResponse r, VOMSErrorMessage e) {
 
-		for (String fqan : request.getRequestedFQANs()) {
-			if (PathNamingScheme.isQualifiedRole(fqan)) {
-				if (u.hasRole(fqan)) {
-					response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
-				} else {
-					failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
-					context.setHandled(true);
-					return;
-				}
+    r.setOutcome(Outcome.FAILURE);
+    r.getErrorMessages().add(e);
+  }
 
-			} else if (PathNamingScheme.isGroup(fqan)) {
-				if (u.isMember(fqan)) {
-					response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
-				} else {
-					failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
-					context.setHandled(true);
-					return;
-				}
-			}
-		}
-	}
+  protected void resolveRequestedFQANs(RequestContext context) {
 
-	protected void resolveCompulsoryGroupFQANs(RequestContext context) {
+    VOMSRequest request = context.getRequest();
+    VOMSUser u = context.getVOMSUser();
+    VOMSResponse response = context.getResponse();
 
-		VOMSUser u = context.getVOMSUser();
-		VOMSResponse response = context.getResponse();
+    for (String fqan : request.getRequestedFQANs()) {
+      if (PathNamingScheme.isQualifiedRole(fqan)) {
+        if (u.hasRole(fqan)) {
+          response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
+        } else {
+          failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
+          context.setHandled(true);
+          return;
+        }
 
-		Iterator<VOMSMapping> mappingIter = u.getMappings().iterator();
-		while (mappingIter.hasNext()) {
-			VOMSMapping mapping = mappingIter.next();
+      } else if (PathNamingScheme.isGroup(fqan)) {
+        if (u.isMember(fqan)) {
+          response.getIssuedFQANs().add(fqanEncoding.encodeFQAN(fqan));
+        } else {
+          failResponse(response, VOMSErrorMessage.noSuchAttribute(fqan));
+          context.setHandled(true);
+          return;
+        }
+      }
+    }
+  }
 
-			if (mapping.isGroupMapping()) {
-				String fqan = fqanEncoding.encodeFQAN(mapping.getFQAN());
+  protected void resolveCompulsoryGroupFQANs(RequestContext context) {
 
-				if (!response.getIssuedFQANs().contains(fqan))
-					response.getIssuedFQANs().add(fqan);
-			}
-		}
-	}
+    VOMSUser u = context.getVOMSUser();
+    VOMSResponse response = context.getResponse();
 
-	@Override
-	public void resolveFQANs(RequestContext context) {
+    Iterator<VOMSMapping> mappingIter = u.getMappings().iterator();
+    while (mappingIter.hasNext()) {
+      VOMSMapping mapping = mappingIter.next();
 
-		resolveRequestedFQANs(context);
-		resolveCompulsoryGroupFQANs(context);
-		filterFQANs(context);
+      if (mapping.isGroupMapping()) {
+        String fqan = fqanEncoding.encodeFQAN(mapping.getFQAN());
 
-	}
+        if (!response.getIssuedFQANs().contains(fqan))
+          response.getIssuedFQANs().add(fqan);
+      }
+    }
+  }
 
-	protected void filterFQANs(RequestContext context) {
-		
-		boolean filtered = fqanFilteringPolicy.filterIssuedFQANs(context);
-		
-		if (filtered)
-			context.getResponse().getWarnings()
-			.add(VOMSWarningMessage.attributeSubset(context.getVOName()));
-	}
+  @Override
+  public void resolveFQANs(RequestContext context) {
 
-	protected void addContainerGAs(RequestContext context) {
+    resolveRequestedFQANs(context);
+    resolveCompulsoryGroupFQANs(context);
+    filterFQANs(context);
 
-		for (String f : context.getResponse().getIssuedFQANs()) {
+  }
 
-			String fqan = fqanEncoding.decodeFQAN(f);
-			
-			if (PathNamingScheme.isGroup(fqan)) {
-				VOMSGroup g = VOMSGroupDAO.instance().findByName(fqan);
+  protected void filterFQANs(RequestContext context) {
 
-				for (VOMSGroupAttribute gattr : g.getAttributes()) {
-					context.getResponse().getIssuedGAs().add(newGenericAttribute(gattr));
-				}
+    boolean filtered = fqanFilteringPolicy.filterIssuedFQANs(context);
 
-			} else {
+    if (filtered)
+      context.getResponse().getWarnings()
+        .add(VOMSWarningMessage.attributeSubset(context.getVOName()));
+  }
 
-				String roleName = PathNamingScheme.getRoleName(fqan);
-				String groupName = PathNamingScheme.getGroupName(fqan);
+  protected void addContainerGAs(RequestContext context) {
 
-				VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
-				VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+    for (String f : context.getResponse().getIssuedFQANs()) {
 
-				for (VOMSRoleAttribute rattr : r.getAttributesInGroup(g)) {
-					context.getResponse().getIssuedGAs().add(newGenericAttribute(rattr));
-				}
-			}
-		}
-	}
+      String fqan = fqanEncoding.decodeFQAN(f);
 
-	protected void addUserGAs(RequestContext context) {
+      if (PathNamingScheme.isGroup(fqan)) {
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(fqan);
 
-		VOMSUser user = context.getVOMSUser();
-		VOMSResponse response = context.getResponse();
+        for (VOMSGroupAttribute gattr : g.getAttributes()) {
+          context.getResponse().getIssuedGAs().add(newGenericAttribute(gattr));
+        }
 
-		for (VOMSUserAttribute attr : user.getAttributes()) {
-			response.getIssuedGAs().add(newGenericAttribute(attr));
-		}
-	}
+      } else {
 
-	@Override
-	public void resolveGAs(RequestContext context) {
+        String roleName = PathNamingScheme.getRoleName(fqan);
+        String groupName = PathNamingScheme.getGroupName(fqan);
 
-		addUserGAs(context);
-		addContainerGAs(context);
+        VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+        VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
 
-	}
+        for (VOMSRoleAttribute rattr : r.getAttributesInGroup(g)) {
+          context.getResponse().getIssuedGAs().add(newGenericAttribute(rattr));
+        }
+      }
+    }
+  }
 
-	protected VOMSGenericAttribute newGenericAttribute(VOMSBaseAttribute ua) {
+  protected void addUserGAs(RequestContext context) {
 
-		return new VOMSGAImpl(ua);
-	}
+    VOMSUser user = context.getVOMSUser();
+    VOMSResponse response = context.getResponse();
+
+    for (VOMSUserAttribute attr : user.getAttributes()) {
+      response.getIssuedGAs().add(newGenericAttribute(attr));
+    }
+  }
+
+  @Override
+  public void resolveGAs(RequestContext context) {
+
+    addUserGAs(context);
+    addContainerGAs(context);
+
+  }
+
+  protected VOMSGenericAttribute newGenericAttribute(VOMSBaseAttribute ua) {
+
+    return new VOMSGAImpl(ua);
+  }
 
 }

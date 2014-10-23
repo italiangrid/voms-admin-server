@@ -22,10 +22,10 @@ package org.italiangrid.voms.aa.impl;
 
 import org.italiangrid.voms.aa.RequestContext;
 
-
 public interface AttributeResolver {
 
-	public void resolveFQANs(RequestContext requestContext);
-	public void resolveGAs(RequestContext requestContext);
-	
+  public void resolveFQANs(RequestContext requestContext);
+
+  public void resolveGAs(RequestContext requestContext);
+
 }

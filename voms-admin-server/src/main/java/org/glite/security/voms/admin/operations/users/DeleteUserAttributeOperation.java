@@ -28,38 +28,38 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class DeleteUserAttributeOperation extends BaseAttributeRWOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	String attributeName;
+  String attributeName;
 
-	private DeleteUserAttributeOperation(VOMSUser u, String aName) {
+  private DeleteUserAttributeOperation(VOMSUser u, String aName) {
 
-		super(VOMSContext.getVoContext());
+    super(VOMSContext.getVoContext());
 
-		user = u;
-		attributeName = aName;
-	}
+    user = u;
+    attributeName = aName;
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		VOMSUserDAO.instance().deleteAttribute(user, attributeName);
-		return null;
-	}
+    VOMSUserDAO.instance().deleteAttribute(user, attributeName);
+    return null;
+  }
 
-	public static DeleteUserAttributeOperation instance(VOMSUser u, String aName) {
+  public static DeleteUserAttributeOperation instance(VOMSUser u, String aName) {
 
-		return new DeleteUserAttributeOperation(u, aName);
-	}
+    return new DeleteUserAttributeOperation(u, aName);
+  }
 
-	public static DeleteUserAttributeOperation instance(User u, String aName) {
+  public static DeleteUserAttributeOperation instance(User u, String aName) {
 
-		VOMSUser vomsUser = (VOMSUser) FindUserOperation.instance(u.getDN(),
-				u.getCA()).execute();
+    VOMSUser vomsUser = (VOMSUser) FindUserOperation.instance(u.getDN(),
+      u.getCA()).execute();
 
-		if (vomsUser == null)
-			throw new NoSuchUserException("User '" + u.getDN() + ","
-					+ u.getCA() + "' not found in this vo.");
+    if (vomsUser == null)
+      throw new NoSuchUserException("User '" + u.getDN() + "," + u.getCA()
+        + "' not found in this vo.");
 
-		return new DeleteUserAttributeOperation(vomsUser, aName);
-	}
+    return new DeleteUserAttributeOperation(vomsUser, aName);
+  }
 }

@@ -22,7 +22,6 @@ package org.glite.security.voms.admin.integration.orgdb.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Defines all DAOs and the concrete factories to get the conrecte DAOs.
  * <p>
@@ -37,34 +36,35 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class OrgDBDAOFactory {
 
-	private static Logger log = LoggerFactory.getLogger(OrgDBDAOFactory.class);
+  private static Logger log = LoggerFactory.getLogger(OrgDBDAOFactory.class);
 
-	/**
-	 * Creates a standalone DAOFactory that returns unmanaged DAO beans for use
-	 * in any environment Hibernate has been configured for. Uses
-	 * HibernateUtil/SessionFactory and Hibernate context propagation
-	 * (CurrentSessionContext), thread-bound or transaction-bound, and
-	 * transaction scoped.
-	 */
-	public static final Class HIBERNATE = OrgDBHibernateDAOFactory.class;
+  /**
+   * Creates a standalone DAOFactory that returns unmanaged DAO beans for use in
+   * any environment Hibernate has been configured for. Uses
+   * HibernateUtil/SessionFactory and Hibernate context propagation
+   * (CurrentSessionContext), thread-bound or transaction-bound, and transaction
+   * scoped.
+   */
+  public static final Class HIBERNATE = OrgDBHibernateDAOFactory.class;
 
-	/**
-	 * Factory method for instantiation of concrete factories.
-	 */
-	public static OrgDBDAOFactory instance(Class factory) {
-		try {
-			// log.debug("Creating concrete DAO factory: " + factory);
-			return (OrgDBDAOFactory) factory.newInstance();
-		} catch (Exception ex) {
-			throw new RuntimeException("Couldn't create DAOFactory: " + factory);
-		}
-	}
+  /**
+   * Factory method for instantiation of concrete factories.
+   */
+  public static OrgDBDAOFactory instance(Class factory) {
 
-	public static OrgDBDAOFactory instance() {
+    try {
+      // log.debug("Creating concrete DAO factory: " + factory);
+      return (OrgDBDAOFactory) factory.newInstance();
+    } catch (Exception ex) {
+      throw new RuntimeException("Couldn't create DAOFactory: " + factory);
+    }
+  }
 
-		return instance(HIBERNATE);
-	}
+  public static OrgDBDAOFactory instance() {
 
-	public abstract OrgDBVOMSPersonDAO getVOMSPersonDAO();
-	
+    return instance(HIBERNATE);
+  }
+
+  public abstract OrgDBVOMSPersonDAO getVOMSPersonDAO();
+
 }

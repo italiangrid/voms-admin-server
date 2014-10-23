@@ -28,5 +28,8 @@
 package it.infn.cnaf.voms.saml.axis_skeletons;
 
 public interface AttributeAuthorityPortType extends java.rmi.Remote {
-    public org.opensaml.saml2.core.Response attributeQuery(org.opensaml.saml2.core.AttributeQuery body) throws java.rmi.RemoteException;
+
+  public org.opensaml.saml2.core.Response attributeQuery(
+    org.opensaml.saml2.core.AttributeQuery body)
+    throws java.rmi.RemoteException;
 }

@@ -27,43 +27,40 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 
-
 public abstract class BaseGroupManagerOperation extends BaseVomsOperation {
 
-	protected GroupManager manager;
-	protected GroupManagerDAO dao;
-	
-	protected BaseGroupManagerOperation(GroupManager m) {
-		
-		manager = m;
-		dao = DAOFactory.instance().getGroupManagerDAO();
-	}
+  protected GroupManager manager;
+  protected GroupManagerDAO dao;
 
-	@Override
-	protected void setupPermissions() {
+  protected BaseGroupManagerOperation(GroupManager m) {
 
-		addRequiredPermission(VOMSContext.getVoContext(), 
-			VOMSPermission.getAllPermissions());
+    manager = m;
+    dao = DAOFactory.instance().getGroupManagerDAO();
+  }
 
-	}
+  @Override
+  protected void setupPermissions() {
 
-	
-	/**
-	 * @return the manager
-	 */
-	public GroupManager getManager() {
-	
-		return manager;
-	}
+    addRequiredPermission(VOMSContext.getVoContext(),
+      VOMSPermission.getAllPermissions());
 
-	
-	/**
-	 * @param manager the manager to set
-	 */
-	public void setManager(GroupManager manager) {
-	
-		this.manager = manager;
-	}
-	
+  }
+
+  /**
+   * @return the manager
+   */
+  public GroupManager getManager() {
+
+    return manager;
+  }
+
+  /**
+   * @param manager
+   *          the manager to set
+   */
+  public void setManager(GroupManager manager) {
+
+    this.manager = manager;
+  }
 
 }

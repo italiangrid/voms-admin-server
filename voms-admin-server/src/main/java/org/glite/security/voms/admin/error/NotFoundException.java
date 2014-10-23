@@ -23,22 +23,22 @@ import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 
 public class NotFoundException extends VOMSDatabaseException {
 
-	public NotFoundException(String message) {
+  public NotFoundException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
-	public NotFoundException(String message, Throwable t) {
+  public NotFoundException(String message, Throwable t) {
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+    super(message, t);
+    // TODO Auto-generated constructor stub
+  }
 
-	public NotFoundException(Throwable t) {
+  public NotFoundException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
-	}
+    super(t);
+    // TODO Auto-generated constructor stub
+  }
 
 }

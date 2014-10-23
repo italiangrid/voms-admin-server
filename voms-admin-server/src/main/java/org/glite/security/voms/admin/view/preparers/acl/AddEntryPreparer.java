@@ -37,24 +37,24 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddEntryPreparer extends ViewPreparerSupport {
 
-	@Override
-	public void execute(TilesRequestContext tilesContext,
-			AttributeContext attributeContext) throws PreparerException {
+  @Override
+  public void execute(TilesRequestContext tilesContext,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation
-				.instance().execute();
-		List<VOMSRole> roles = (List<VOMSRole>) ListRolesOperation.instance()
-				.execute();
-		List<VOMSUser> users = (List<VOMSUser>) ListUsersOperation.instance()
-				.execute();
-		List<VOMSCA> cas = (List<VOMSCA>) VOMSCADAO.instance().getValid();
+    List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance()
+      .execute();
+    List<VOMSRole> roles = (List<VOMSRole>) ListRolesOperation.instance()
+      .execute();
+    List<VOMSUser> users = (List<VOMSUser>) ListUsersOperation.instance()
+      .execute();
+    List<VOMSCA> cas = (List<VOMSCA>) VOMSCADAO.instance().getValid();
 
-	
-		tilesContext.getRequestScope().put("voCertificates", CertificateDAO.instance().getAll());
-		tilesContext.getRequestScope().put("voUsers", users);
-		tilesContext.getRequestScope().put("voGroups", groups);
-		tilesContext.getRequestScope().put("voRoles", roles);
-		tilesContext.getRequestScope().put("voCAs", cas);
-	}
+    tilesContext.getRequestScope().put("voCertificates",
+      CertificateDAO.instance().getAll());
+    tilesContext.getRequestScope().put("voUsers", users);
+    tilesContext.getRequestScope().put("voGroups", groups);
+    tilesContext.getRequestScope().put("voRoles", roles);
+    tilesContext.getRequestScope().put("voCAs", cas);
+  }
 
 }

@@ -49,67 +49,69 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityContextFilter implements Filter, ValidationResultListener {
 
-	public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
-	public static final int SESSION_LIFETIME_IN_SECONDS = 120;
-	
-	protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
+  public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
+  public static final int SESSION_LIFETIME_IN_SECONDS = 120;
 
-	private VOMSACValidator validator;
-	
-	public void init(FilterConfig arg0) throws ServletException {
+  protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
-		log.debug("Initializing SecurityContextFilter {}", this);
-		validator = VOMSValidators.newValidator(this);
-	}
+  private VOMSACValidator validator;
 
-	protected void initContext(HttpServletRequest request){
-		
-		HttpSession s = request.getSession(true);
-		s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
-		
-		VOMSSecurityContext sc = (VOMSSecurityContext) 
-			s.getAttribute(SECURITY_CONTEXT_SESSION_KEY);
-		
-		if (sc == null){
-			InitSecurityContext.setContextFromRequest(request, validator);
-			s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, 
-				CurrentSecurityContext.get());
-			InitSecurityContext.logConnection();
-		}else
-			CurrentSecurityContext.set(sc);
-		
-	}
-	
-	protected void initWebappProperties(HttpServletRequest request){
-		String voName = VOMSConfiguration.instance().getVOName();
-		request.setAttribute("voName", voName);
-		request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY, CurrentAdmin
-				.instance());
-	}
-	
-	public void doFilter(ServletRequest req, ServletResponse res,
-			FilterChain chain) throws IOException, ServletException {
+  public void init(FilterConfig arg0) throws ServletException {
 
-		log.debug("Executing SecurityContextFilter {}", this);
-		
-		HttpServletRequest request=  (HttpServletRequest)req;
-		
-		initContext(request);
-		initWebappProperties(request);
-		
-		chain.doFilter(req, res);
-	}
+    log.debug("Initializing SecurityContextFilter {}", this);
+    validator = VOMSValidators.newValidator(this);
+  }
 
-	public void destroy() {
-		log.debug("Destroying SecurityContextFilter {}", this);
-	}
+  protected void initContext(HttpServletRequest request) {
 
-	@Override
-	public void notifyValidationResult(VOMSValidationResult result) {
-		if (!result.isValid())
-			log.warn("VOMS attributes validation result: {}", result);
-		else
-			log.debug("VOMS attributes validation result: {}", result);
-	}
+    HttpSession s = request.getSession(true);
+    s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
+
+    VOMSSecurityContext sc = (VOMSSecurityContext) s
+      .getAttribute(SECURITY_CONTEXT_SESSION_KEY);
+
+    if (sc == null) {
+      InitSecurityContext.setContextFromRequest(request, validator);
+      s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, CurrentSecurityContext.get());
+      InitSecurityContext.logConnection();
+    } else
+      CurrentSecurityContext.set(sc);
+
+  }
+
+  protected void initWebappProperties(HttpServletRequest request) {
+
+    String voName = VOMSConfiguration.instance().getVOName();
+    request.setAttribute("voName", voName);
+    request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY,
+      CurrentAdmin.instance());
+  }
+
+  public void doFilter(ServletRequest req, ServletResponse res,
+    FilterChain chain) throws IOException, ServletException {
+
+    log.debug("Executing SecurityContextFilter {}", this);
+
+    HttpServletRequest request = (HttpServletRequest) req;
+
+    initContext(request);
+    initWebappProperties(request);
+
+    chain.doFilter(req, res);
+  }
+
+  public void destroy() {
+
+    log.debug("Destroying SecurityContextFilter {}", this);
+  }
+
+  @Override
+  public void notifyValidationResult(VOMSValidationResult result) {
+
+    if (!result.isValid())
+      log.warn("VOMS attributes validation result: {}", result);
+    else
+      log.debug("VOMS attributes validation result: {}", result);
+  }
 
 }

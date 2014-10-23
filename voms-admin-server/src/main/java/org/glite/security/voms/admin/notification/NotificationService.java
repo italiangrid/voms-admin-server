@@ -30,132 +30,132 @@ import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NotificationService implements NotificationServiceIF{
+public class NotificationService implements NotificationServiceIF {
 
-	private static final Logger log = LoggerFactory
-		.getLogger(NotificationService.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(NotificationService.class);
 
-	private static NotificationServiceIF singleton = null;
+  private static NotificationServiceIF singleton = null;
 
-	private LinkedBlockingQueue<VOMSNotification> outgoingMessages = new LinkedBlockingQueue<VOMSNotification>();
+  private LinkedBlockingQueue<VOMSNotification> outgoingMessages = new LinkedBlockingQueue<VOMSNotification>();
 
-	private ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt(
-		"voms.noification.max_delivery_attempt_count", 5);
+  int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt(
+    "voms.noification.max_delivery_attempt_count", 5);
 
-	long sleepTimeBeforeRetry = 30;
+  long sleepTimeBeforeRetry = 30;
 
-	private NotificationService() {
+  private NotificationService() {
 
-		executorService.submit(new NotificationRunner(outgoingMessages));
+    executorService.submit(new NotificationRunner(outgoingMessages));
 
-	}
+  }
 
-	public synchronized static void shutdown() {
+  public synchronized static void shutdown() {
 
-		if (singleton == null) {
-			log
-				.debug("Notification service has not been started and, as such, cannot be shut down.");
-			return;
-		}
+    if (singleton == null) {
+      log
+        .debug("Notification service has not been started and, as such, cannot be shut down.");
+      return;
+    }
 
-		singleton.shutdownNow();
+    singleton.shutdownNow();
 
-	}
+  }
 
-	public synchronized static NotificationServiceIF instance() {
+  public synchronized static NotificationServiceIF instance() {
 
-		if (singleton == null)
-			singleton = new NotificationService();
+    if (singleton == null)
+      singleton = new NotificationService();
 
-		return singleton;
-	}
+    return singleton;
+  }
 
-	public void send(VOMSNotification n) {
+  public void send(VOMSNotification n) {
 
-		log.debug("Adding notification '" + n + "' to outgoing message queue.");
-		if (!VOMSConfiguration.instance().getBoolean(
-			VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
-			outgoingMessages.add(n);
-		} else {
-			log
-				.warn(
-					"Outgoing notification {} will be discarded as the notification service is DISABLED.",
-					n.toString());
-		}
+    log.debug("Adding notification '" + n + "' to outgoing message queue.");
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
+      outgoingMessages.add(n);
+    } else {
+      log
+        .warn(
+          "Outgoing notification {} will be discarded as the notification service is DISABLED.",
+          n.toString());
+    }
 
-	}
+  }
 
-	class NotificationRunner implements Runnable {
+  class NotificationRunner implements Runnable {
 
-		final LinkedBlockingQueue<VOMSNotification> outgoingQueue;
+    final LinkedBlockingQueue<VOMSNotification> outgoingQueue;
 
-		public NotificationRunner(
-			LinkedBlockingQueue<VOMSNotification> outgoingQueue) {
+    public NotificationRunner(
+      LinkedBlockingQueue<VOMSNotification> outgoingQueue) {
 
-			this.outgoingQueue = outgoingQueue;
-		}
+      this.outgoingQueue = outgoingQueue;
+    }
 
-		public void run() {
+    public void run() {
 
-			for (;;) {
+      for (;;) {
 
-				boolean deliveryHadErrors = false;
+        boolean deliveryHadErrors = false;
 
-				try {
+        try {
 
-					VOMSNotification n = outgoingQueue.take();
-					log.debug("Fetched outgoing message " + n);
+          VOMSNotification n = outgoingQueue.take();
+          log.debug("Fetched outgoing message " + n);
 
-					try {
-						n.send();
-						deliveryHadErrors = false;
-						log.debug("Notification '" + n + "' delivered succesfully.");
+          try {
+            n.send();
+            deliveryHadErrors = false;
+            log.debug("Notification '" + n + "' delivered succesfully.");
 
-					} catch (VOMSNotificationException e) {
+          } catch (VOMSNotificationException e) {
 
-						deliveryHadErrors = true;
-						log.error("Error dispatching email notification '" + n + "': " + e,
-							e);
+            deliveryHadErrors = true;
+            log.error("Error dispatching email notification '" + n + "': " + e,
+              e);
 
-						if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount) {
-							outgoingQueue.put(n);
-						} else
-							log.warn("Discarding notification '" + n + "' after "
-								+ n.getDeliveryAttemptCount() + " failed delivery attempts.");
+            if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount) {
+              outgoingQueue.put(n);
+            } else
+              log.warn("Discarding notification '" + n + "' after "
+                + n.getDeliveryAttemptCount() + " failed delivery attempts.");
 
-					} catch (Throwable t) {
+          } catch (Throwable t) {
 
-						log.error("Error dispatching email notification '" + n + "': "
-							+ t.getClass().getName() + " - " + t.getMessage());
-						if (log.isDebugEnabled())
-							log.error("Error dispatching email notification '" + n + "': "
-								+ t.getMessage(), t);
+            log.error("Error dispatching email notification '" + n + "': "
+              + t.getClass().getName() + " - " + t.getMessage());
+            if (log.isDebugEnabled())
+              log.error("Error dispatching email notification '" + n + "': "
+                + t.getMessage(), t);
 
-						deliveryHadErrors = true;
+            deliveryHadErrors = true;
 
-					}
+          }
 
-					if (deliveryHadErrors && !outgoingQueue.isEmpty())
-						TimeUnit.SECONDS.sleep(sleepTimeBeforeRetry);
+          if (deliveryHadErrors && !outgoingQueue.isEmpty())
+            TimeUnit.SECONDS.sleep(sleepTimeBeforeRetry);
 
-				} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
 
-					return;
-				}
-			}
+          return;
+        }
+      }
 
-		}
-	}
+    }
+  }
 
-	/**
-	 * @return
-	 * @see java.util.concurrent.ExecutorService#shutdownNow()
-	 */
-	public List<Runnable> shutdownNow() {
+  /**
+   * @return
+   * @see java.util.concurrent.ExecutorService#shutdownNow()
+   */
+  public List<Runnable> shutdownNow() {
 
-		return executorService.shutdownNow();
-	}
+    return executorService.shutdownNow();
+  }
 
 }

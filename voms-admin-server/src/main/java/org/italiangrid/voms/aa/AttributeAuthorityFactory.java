@@ -28,20 +28,20 @@ import org.italiangrid.voms.aa.impl.NullFQANEncoding;
 
 public class AttributeAuthorityFactory {
 
-	private AttributeAuthorityFactory(){}
-	
-	public static AttributeAuthority newAttributeAuthority(long maxAttrsValidityInSecs,
-		boolean legacyFQANEncoding) {
-		
-		if (legacyFQANEncoding)
-			return new AAImpl(new DefaultVOMSAttributeResolver(
-				new LegacyFQANEncoding(),
-				new LimitToOwnedFQANsPolicy()), maxAttrsValidityInSecs);
-			
-		return new AAImpl(new DefaultVOMSAttributeResolver(
-			new NullFQANEncoding(),
-			new LimitToOwnedFQANsPolicy())
-			,maxAttrsValidityInSecs);
-	}
-	
+  private AttributeAuthorityFactory() {
+
+  }
+
+  public static AttributeAuthority newAttributeAuthority(
+    long maxAttrsValidityInSecs, boolean legacyFQANEncoding) {
+
+    if (legacyFQANEncoding)
+      return new AAImpl(new DefaultVOMSAttributeResolver(
+        new LegacyFQANEncoding(), new LimitToOwnedFQANsPolicy()),
+        maxAttrsValidityInSecs);
+
+    return new AAImpl(new DefaultVOMSAttributeResolver(new NullFQANEncoding(),
+      new LimitToOwnedFQANsPolicy()), maxAttrsValidityInSecs);
+  }
+
 }

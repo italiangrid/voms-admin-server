@@ -23,21 +23,22 @@ package org.glite.security.voms.admin.operations.group_manager;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
-
 public class CreateGroupManagerOperation extends BaseGroupManagerOperation {
 
-	public CreateGroupManagerOperation(GroupManager gm) {
-		super(gm);
-	}
+  public CreateGroupManagerOperation(GroupManager gm) {
 
-	@Override
-	protected Object doExecute() {
-		for (VOMSGroup g: manager.getManagedGroups()){
-			g.getManagers().add(manager);
-		}
-		dao.makePersistent(manager);
-		
-		return manager;
-	}
-	
+    super(gm);
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    for (VOMSGroup g : manager.getManagedGroups()) {
+      g.getManagers().add(manager);
+    }
+    dao.makePersistent(manager);
+
+    return manager;
+  }
+
 }

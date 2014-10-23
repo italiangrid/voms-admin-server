@@ -37,76 +37,82 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( {
-		@Result(name = BaseAction.INPUT, location = "signAup"),
-		@Result(name = BaseAction.SUCCESS, location = "/home/login.action", type = "redirect") })
-
+@Results({
+  @Result(name = BaseAction.INPUT, location = "signAup"),
+  @Result(name = BaseAction.SUCCESS, location = "/home/login.action",
+    type = "redirect") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class SignAction extends BaseAction implements ModelDriven<AUP>,
-		Preparable {
+  Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long aupId;
+  Long aupId;
 
-	String aupAccepted;
+  String aupAccepted;
 
-	AUP aup;
+  AUP aup;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		VOMSUser u = CurrentAdmin.instance().getVoUser();
+    VOMSUser u = CurrentAdmin.instance().getVoUser();
 
-		if (u == null)
-			throw new VOMSException(
-					"Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
+    if (u == null)
+      throw new VOMSException(
+        "Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
 
-		if (aupAccepted.equals("true"))
-			VOMSUserDAO.instance().signAUP(u, aup);
-		else {
+    if (aupAccepted.equals("true"))
+      VOMSUserDAO.instance().signAUP(u, aup);
+    else {
 
-			addFieldError("aupAccepted",
-					"You have to accept the terms of the AUP to proceed!");
-			return INPUT;
-		}
+      addFieldError("aupAccepted",
+        "You have to accept the terms of the AUP to proceed!");
+      return INPUT;
+    }
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
-	public AUP getModel() {
+  public AUP getModel() {
 
-		return aup;
-	}
+    return aup;
+  }
 
-	public Long getAupId() {
-		return aupId;
-	}
+  public Long getAupId() {
 
-	public void setAupId(Long aupId) {
-		this.aupId = aupId;
-	}
+    return aupId;
+  }
 
-	public void prepare() throws Exception {
-		if (aup == null) {
-			AUPDAO dao = DAOFactory.instance().getAUPDAO();
-			aup = dao.getVOAUP();
-		}
-	}
+  public void setAupId(Long aupId) {
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "You must sign the AUP.")
-	@RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$", message = "You must accept the terms of the AUP to proceed")
-	public String getAupAccepted() {
-		return aupAccepted;
-	}
+    this.aupId = aupId;
+  }
 
-	public void setAupAccepted(String aupAccepted) {
-		this.aupAccepted = aupAccepted;
-	}
+  public void prepare() throws Exception {
+
+    if (aup == null) {
+      AUPDAO dao = DAOFactory.instance().getAUPDAO();
+      aup = dao.getVOAUP();
+    }
+  }
+
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "You must sign the AUP.")
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$",
+    message = "You must accept the terms of the AUP to proceed")
+  public String getAupAccepted() {
+
+    return aupAccepted;
+  }
+
+  public void setAupAccepted(String aupAccepted) {
+
+    this.aupAccepted = aupAccepted;
+  }
 
 }

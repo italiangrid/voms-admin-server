@@ -22,9 +22,8 @@ package org.italiangrid.voms.aa.impl;
 
 import org.italiangrid.voms.aa.RequestContext;
 
-
 public interface FQANFilteringPolicy {
 
-	public boolean filterIssuedFQANs(RequestContext context);
-	
+  public boolean filterIssuedFQANs(RequestContext context);
+
 }

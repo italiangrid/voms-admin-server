@@ -32,55 +32,61 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 public class RoleActionSupport extends BaseAction implements
-		ModelDriven<VOMSRole>, Preparable {
+  ModelDriven<VOMSRole>, Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long roleId = -1L;
+  Long roleId = -1L;
 
-	VOMSRole role;
+  VOMSRole role;
 
-	List<VOMSAttributeDescription> attributeClasses;
-	List<VOMSGroup> voGroups;
+  List<VOMSAttributeDescription> attributeClasses;
+  List<VOMSGroup> voGroups;
 
-	public VOMSRole getModel() {
-		return role;
-	}
+  public VOMSRole getModel() {
 
-	public void prepare() throws Exception {
+    return role;
+  }
 
-		if (getModel() == null) {
+  public void prepare() throws Exception {
 
-			if (roleId != -1)
-				role = roleById(roleId);
-		}
+    if (getModel() == null) {
 
-		attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
-				.instance().getAllAttributeDescriptions();
-		voGroups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
-	}
+      if (roleId != -1)
+        role = roleById(roleId);
+    }
 
-	public Long getRoleId() {
-		return roleId;
-	}
+    attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
+      .instance().getAllAttributeDescriptions();
+    voGroups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
+  }
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+  public Long getRoleId() {
 
-	public List<VOMSGroup> getVoGroups() {
-		return voGroups;
-	}
+    return roleId;
+  }
 
-	public void setVoGroups(List<VOMSGroup> voGroups) {
-		this.voGroups = voGroups;
-	}
+  public void setRoleId(Long roleId) {
 
-	public List<VOMSAttributeDescription> getAttributeClasses() {
-		return attributeClasses;
-	}
+    this.roleId = roleId;
+  }
+
+  public List<VOMSGroup> getVoGroups() {
+
+    return voGroups;
+  }
+
+  public void setVoGroups(List<VOMSGroup> voGroups) {
+
+    this.voGroups = voGroups;
+  }
+
+  public List<VOMSAttributeDescription> getAttributeClasses() {
+
+    return attributeClasses;
+  }
 
 }

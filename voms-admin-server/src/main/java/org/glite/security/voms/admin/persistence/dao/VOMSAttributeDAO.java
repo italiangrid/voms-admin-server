@@ -33,276 +33,283 @@ import org.hibernate.Query;
 
 public class VOMSAttributeDAO {
 
-	public static final Logger log = LoggerFactory.getLogger(VOMSAttributeDAO.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(VOMSAttributeDAO.class);
 
-	protected VOMSAttributeDAO() {
+  protected VOMSAttributeDAO() {
 
-		HibernateFactory.beginTransaction();
-	}
+    HibernateFactory.beginTransaction();
+  }
 
-	public static VOMSAttributeDAO instance() {
+  public static VOMSAttributeDAO instance() {
 
-		return new VOMSAttributeDAO();
-	}
+    return new VOMSAttributeDAO();
+  }
 
-	public List getAllAttributeDescriptions() {
+  public List getAllAttributeDescriptions() {
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription order by name";
-		return HibernateFactory.getSession().createQuery(query).list();
-	}
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription order by name";
+    return HibernateFactory.getSession().createQuery(query).list();
+  }
 
-	public VOMSAttributeDescription createAttributeDescription(String name,
-			String desc, boolean unique) {
+  public VOMSAttributeDescription createAttributeDescription(String name,
+    String desc, boolean unique) {
 
-		VOMSAttributeDescription attrDesc = getAttributeDescriptionByName(name);
-		if (attrDesc != null)
-			throw new AlreadyExistsException("Attribute \"" + name
-					+ "\" already defined in database.");
+    VOMSAttributeDescription attrDesc = getAttributeDescriptionByName(name);
+    if (attrDesc != null)
+      throw new AlreadyExistsException("Attribute \"" + name
+        + "\" already defined in database.");
 
-		attrDesc = new VOMSAttributeDescription(name, desc, unique);
-		HibernateFactory.getSession().save(attrDesc);
-		return attrDesc;
-	}
+    attrDesc = new VOMSAttributeDescription(name, desc, unique);
+    HibernateFactory.getSession().save(attrDesc);
+    return attrDesc;
+  }
 
-	public VOMSAttributeDescription createAttributeDescription(String name,
-			String desc) {
+  public VOMSAttributeDescription createAttributeDescription(String name,
+    String desc) {
 
-		return createAttributeDescription(name, desc, false);
+    return createAttributeDescription(name, desc, false);
 
-	}
+  }
 
-	public VOMSAttributeDescription deleteAttributeDescription(String name) {
+  public VOMSAttributeDescription deleteAttributeDescription(String name) {
 
-		VOMSAttributeDescription attrDesc = getAttributeDescriptionByName(name);
+    VOMSAttributeDescription attrDesc = getAttributeDescriptionByName(name);
 
-		if (attrDesc == null)
-			throw new NoSuchAttributeException("Attribute \"" + name
-					+ "\" not found in database.");
+    if (attrDesc == null)
+      throw new NoSuchAttributeException("Attribute \"" + name
+        + "\" not found in database.");
 
-		String attributeValueEntities[] = new String[] { "VOMSUserAttribute",
-				"VOMSGroupAttribute", "VOMSRoleAttribute" };
+    String attributeValueEntities[] = new String[] { "VOMSUserAttribute",
+      "VOMSGroupAttribute", "VOMSRoleAttribute" };
 
-		// Delete attribute value mappings!
-		for (int i = 0; i < attributeValueEntities.length; i++) {
-			String query = "delete from org.glite.security.voms.admin.persistence.model."
-					+ attributeValueEntities[i]
-					+ " where attributeDescription = :desc";
-			HibernateFactory.getSession().createQuery(query).setEntity("desc",
-					attrDesc).executeUpdate();
+    // Delete attribute value mappings!
+    for (int i = 0; i < attributeValueEntities.length; i++) {
+      String query = "delete from org.glite.security.voms.admin.persistence.model."
+        + attributeValueEntities[i] + " where attributeDescription = :desc";
+      HibernateFactory.getSession().createQuery(query)
+        .setEntity("desc", attrDesc).executeUpdate();
 
-		}
+    }
 
-		HibernateFactory.getSession().delete(attrDesc);
+    HibernateFactory.getSession().delete(attrDesc);
 
-		return attrDesc;
+    return attrDesc;
 
-	}
+  }
 
-	public VOMSAttributeDescription getAttributeDescriptionByName(String name) {
+  public VOMSAttributeDescription getAttributeDescriptionByName(String name) {
 
-		String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription where name = :name";
+    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription where name = :name";
 
-		VOMSAttributeDescription retVal = (VOMSAttributeDescription) HibernateFactory
-				.getSession().createQuery(query).setString("name", name)
-				.uniqueResult();
+    VOMSAttributeDescription retVal = (VOMSAttributeDescription) HibernateFactory
+      .getSession().createQuery(query).setString("name", name).uniqueResult();
 
-		return retVal;
+    return retVal;
 
-	}
+  }
 
-	public List getUserAttributes() {
+  public List getUserAttributes() {
 
-		String query = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
+    String query = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
 
-		return HibernateFactory.getSession().createQuery(query).list();
-	}
+    return HibernateFactory.getSession().createQuery(query).list();
+  }
 
-	public List getGroupAttributes() {
-		String query = "select a.attributeDescription.name, g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a";
+  public List getGroupAttributes() {
 
-		return HibernateFactory.getSession().createQuery(query).list();
-	}
+    String query = "select a.attributeDescription.name, g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a";
 
-	public List getRoleAttributes() {
-		String query = "select a.attributeDescription.name, r, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a";
+    return HibernateFactory.getSession().createQuery(query).list();
+  }
 
-		return HibernateFactory.getSession().createQuery(query).list();
-	}
+  public List getRoleAttributes() {
 
-	public List getUserAttributes(String attributeName) {
+    String query = "select a.attributeDescription.name, r, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a";
 
-		VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
+    return HibernateFactory.getSession().createQuery(query).list();
+  }
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attributeName
-					+ "' not found in database!");
+  public List getUserAttributes(String attributeName) {
 
-		return getUserAttributes(desc);
+    VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
 
-	}
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attributeName
+        + "' not found in database!");
 
-	public List getGroupAttributes(String attributeName) {
+    return getUserAttributes(desc);
 
-		VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
+  }
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attributeName
-					+ "' not found in database!");
+  public List getGroupAttributes(String attributeName) {
 
-		return getGroupAttributes(desc);
+    VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
 
-	}
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attributeName
+        + "' not found in database!");
 
-	public List getRoleAttributes(String attributeName) {
-		VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
+    return getGroupAttributes(desc);
 
-		if (desc == null)
-			throw new NoSuchAttributeException("Attribute '" + attributeName
-					+ "' not found in database!");
+  }
 
-		return getRoleAttributes(desc);
+  public List getRoleAttributes(String attributeName) {
 
-	}
+    VOMSAttributeDescription desc = getAttributeDescriptionByName(attributeName);
 
-	public List getGroupAttributes(VOMSAttributeDescription desc) {
-		String query = "select g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a"
-				+ " where a.attributeDescription = :desc";
+    if (desc == null)
+      throw new NoSuchAttributeException("Attribute '" + attributeName
+        + "' not found in database!");
 
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"desc", desc).list();
-	}
+    return getRoleAttributes(desc);
 
-	public List getRoleAttributes(VOMSAttributeDescription desc) {
+  }
 
-		String query = "select r, a.group, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a"
-				+ " where a.attributeDescription = :desc";
+  public List getGroupAttributes(VOMSAttributeDescription desc) {
 
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"desc", desc).list();
-	}
+    String query = "select g, a.value from org.glite.security.voms.admin.persistence.model.VOMSGroup g join g.attributes a"
+      + " where a.attributeDescription = :desc";
 
-	public List getUserAttributes(VOMSAttributeDescription desc) {
-		String query = "select u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a"
-				+ " where a.attributeDescription = :desc";
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("desc", desc).list();
+  }
 
-		return HibernateFactory.getSession().createQuery(query).setEntity(
-				"desc", desc).list();
-	}
+  public List getRoleAttributes(VOMSAttributeDescription desc) {
 
-	public SearchResults getAllUserAttributes(int firstResult, int maxResults) {
+    String query = "select r, a.group, a.value from org.glite.security.voms.admin.persistence.model.VOMSRole r join r.attributes a"
+      + " where a.attributeDescription = :desc";
 
-		SearchResults results = SearchResults.instance();
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("desc", desc).list();
+  }
 
-		String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
-				+ "order by a.attributeDescription.name,u.dn";
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+  public List getUserAttributes(VOMSAttributeDescription desc) {
 
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+    String query = "select u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a"
+      + " where a.attributeDescription = :desc";
 
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
-		results.setCount(countUserAttributes());
-		results.setResults(q.list());
+    return HibernateFactory.getSession().createQuery(query)
+      .setEntity("desc", desc).list();
+  }
 
-		return results;
-	}
+  public SearchResults getAllUserAttributes(int firstResult, int maxResults) {
 
-	public int countUserAttributes() {
+    SearchResults results = SearchResults.instance();
 
-		String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
+    String queryString = "select a.attributeDescription.name, u, a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
+      + "order by a.attributeDescription.name,u.dn";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		Long count = (Long) HibernateFactory.getSession().createQuery(
-				queryString).uniqueResult();
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		return count.intValue();
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
+    results.setCount(countUserAttributes());
+    results.setResults(q.list());
 
-	}
+    return results;
+  }
 
-	public int countUserAttributesMatches(String searchString) {
+  public int countUserAttributes() {
 
-		String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
-				+ "where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or "
-				+ "(a.value like :searchString)";
+    String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a";
 
-		String sString = "%" + searchString + "%";
-		Query q = HibernateFactory.getSession().createQuery(queryString)
-				.setString("searchString", sString);
+    Long count = (Long) HibernateFactory.getSession().createQuery(queryString)
+      .uniqueResult();
 
-		Long count = (Long) q.uniqueResult();
-		return count.intValue();
+    return count.intValue();
 
-	}
+  }
 
-	public SearchResults searchUserAttributes(String searchString,
-			int firstResult, int maxResults) {
+  public int countUserAttributesMatches(String searchString) {
 
-		if (searchString == null || searchString.equals("")
-				|| searchString.length() == 0)
-			return getAllUserAttributes(firstResult, maxResults);
+    String queryString = "select count(*) from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a "
+      + "where (a.attributeDescription.name like :searchString) or (u.dn like :searchString) or (u.ca.subjectString like :searchString) or "
+      + "(a.value like :searchString)";
 
-		SearchResults results = SearchResults.instance();
-		String sString = "%" + searchString + "%";
-		String queryString = "select a.attributeDescription.name, u, a.value from VOMSUser u join u.certificates c "
-			    + " join u.attributes a "
-				+ "where (a.attributeDescription.name like :searchString) or (c.subjectString like :searchString) or (c.ca.subjectString like :searchString) or "
-				+ "(a.value like :searchString) order by a.attributeDescription.name,c.subjectString";
+    String sString = "%" + searchString + "%";
+    Query q = HibernateFactory.getSession().createQuery(queryString)
+      .setString("searchString", sString);
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    Long count = (Long) q.uniqueResult();
+    return count.intValue();
 
-		q.setString("searchString", sString);
-		q.setFirstResult(firstResult);
-		q.setMaxResults(maxResults);
+  }
 
-		results.setCount(countUserAttributesMatches(searchString));
-		results.setFirstResult(firstResult);
-		results.setResultsPerPage(maxResults);
-		results.setSearchString(searchString);
-		results.setResults(q.list());
+  public SearchResults searchUserAttributes(String searchString,
+    int firstResult, int maxResults) {
 
-		return results;
+    if (searchString == null || searchString.equals("")
+      || searchString.length() == 0)
+      return getAllUserAttributes(firstResult, maxResults);
 
-	}
+    SearchResults results = SearchResults.instance();
+    String sString = "%" + searchString + "%";
+    String queryString = "select a.attributeDescription.name, u, a.value from VOMSUser u join u.certificates c "
+      + " join u.attributes a "
+      + "where (a.attributeDescription.name like :searchString) or (c.subjectString like :searchString) or (c.ca.subjectString like :searchString) or "
+      + "(a.value like :searchString) order by a.attributeDescription.name,c.subjectString";
 
-	public boolean isAttributeValueAlreadyAssigned(VOMSUser u, String attributeName, String attributeValue){
-		
-		return isAttributeValueAlreadyAssigned(u, getAttributeDescriptionByName(attributeName), attributeValue);
-	}
-	
-	public boolean isAttributeValueAlreadyAssigned(VOMSUser u,
-			VOMSAttributeDescription desc, String attrValue) {
-		if (!desc.isUnique())
-			return false;
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
-		String queryString = "select a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a where a.attributeDescription = :desc "
-				+ "and u != :user";
+    q.setString("searchString", sString);
+    q.setFirstResult(firstResult);
+    q.setMaxResults(maxResults);
 
-		Query q = HibernateFactory.getSession().createQuery(queryString);
+    results.setCount(countUserAttributesMatches(searchString));
+    results.setFirstResult(firstResult);
+    results.setResultsPerPage(maxResults);
+    results.setSearchString(searchString);
+    results.setResults(q.list());
 
-		q.setEntity("desc", desc);
-		q.setEntity("user", u);
+    return results;
 
-		// Need to perform the check in memory since oracle has a bug (or I did
-		// not understand how to manage clob equality tests).
-		Iterator i = q.iterate();
-		while (i.hasNext()) {
-			String value = (String) i.next();
+  }
 
-			// NULL attribute value can be assigned to multiple users, two NULLs
-			// aren't equal as attribute values
-			if (value == null)
-				return false;
+  public boolean isAttributeValueAlreadyAssigned(VOMSUser u,
+    String attributeName, String attributeValue) {
 
-			if (value.equals(attrValue))
-				return true;
-		}
+    return isAttributeValueAlreadyAssigned(u,
+      getAttributeDescriptionByName(attributeName), attributeValue);
+  }
 
-		return false;
-	}
+  public boolean isAttributeValueAlreadyAssigned(VOMSUser u,
+    VOMSAttributeDescription desc, String attrValue) {
 
-	public void update(VOMSAttributeDescription desc) {
+    if (!desc.isUnique())
+      return false;
 
-		HibernateFactory.getSession().update(desc);
-	}
+    String queryString = "select a.value from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.attributes a where a.attributeDescription = :desc "
+      + "and u != :user";
+
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    q.setEntity("desc", desc);
+    q.setEntity("user", u);
+
+    // Need to perform the check in memory since oracle has a bug (or I did
+    // not understand how to manage clob equality tests).
+    Iterator i = q.iterate();
+    while (i.hasNext()) {
+      String value = (String) i.next();
+
+      // NULL attribute value can be assigned to multiple users, two NULLs
+      // aren't equal as attribute values
+      if (value == null)
+        return false;
+
+      if (value.equals(attrValue))
+        return true;
+    }
+
+    return false;
+  }
+
+  public void update(VOMSAttributeDescription desc) {
+
+    HibernateFactory.getSession().update(desc);
+  }
 
 }

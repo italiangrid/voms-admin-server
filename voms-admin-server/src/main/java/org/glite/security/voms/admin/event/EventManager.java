@@ -27,56 +27,59 @@ import org.slf4j.LoggerFactory;
 
 public class EventManager {
 
-	public static final Logger log = LoggerFactory.getLogger(EventManager.class);
+  public static final Logger log = LoggerFactory.getLogger(EventManager.class);
 
-	final List<EventListener> listeners = new ArrayList<EventListener>();
+  final List<EventListener> listeners = new ArrayList<EventListener>();
 
-	static private volatile EventManager instance = null;
+  static private volatile EventManager instance = null;
 
-	public static synchronized EventManager instance() {
-		if (instance == null)
-			instance = new EventManager();
-		return instance;
-	}
+  public static synchronized EventManager instance() {
 
-	private EventManager() {
+    if (instance == null)
+      instance = new EventManager();
+    return instance;
+  }
 
-	}
+  private EventManager() {
 
-	public synchronized void register(EventListener listener) {
+  }
 
-		listeners.add(listener);
-	}
+  public synchronized void register(EventListener listener) {
 
-	public synchronized void unRegister(EventListener listener) {
+    listeners.add(listener);
+  }
 
-		listeners.remove(listener);
-	}
+  public synchronized void unRegister(EventListener listener) {
 
-	public synchronized List<EventListener> getListeners() {
-		return listeners;
-	}
+    listeners.remove(listener);
+  }
 
-	public synchronized void fireEvent(Event e) {
-		try {
-			for (EventListener l : getListeners()) {
+  public synchronized List<EventListener> getListeners() {
 
-				if (l.getMask() == null || l.getMask().get(e.getType().bitNo))
-					l.fire(e);
-			}
-		} catch (Throwable t) {
-			log.error("Error dispatching event '" + e + "': " + t.getMessage());
-			if (log.isDebugEnabled())
-				log.error("Error dispatching event '" + e + "': "
-						+ t.getMessage(), t);
-		}
-	}
+    return listeners;
+  }
 
-	public synchronized static void dispatch(Event e) {
-		if (instance == null)
-			log
-					.debug("Event manager has not been initialized! The event will be lost...");
-		else
-			instance.fireEvent(e);
-	}
+  public synchronized void fireEvent(Event e) {
+
+    try {
+      for (EventListener l : getListeners()) {
+
+        if (l.getMask() == null || l.getMask().get(e.getType().bitNo))
+          l.fire(e);
+      }
+    } catch (Throwable t) {
+      log.error("Error dispatching event '" + e + "': " + t.getMessage());
+      if (log.isDebugEnabled())
+        log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
+    }
+  }
+
+  public synchronized static void dispatch(Event e) {
+
+    if (instance == null)
+      log
+        .debug("Event manager has not been initialized! The event will be lost...");
+    else
+      instance.fireEvent(e);
+  }
 }

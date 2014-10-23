@@ -26,195 +26,197 @@ import java.util.concurrent.TimeUnit;
 
 public class AUPAcceptanceRecord implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long id;
+  Long id;
 
-	AUPVersion aupVersion;
+  AUPVersion aupVersion;
 
-	VOMSUser user;
+  VOMSUser user;
 
-	Date lastAcceptanceDate;
-	
-	Boolean valid;
+  Date lastAcceptanceDate;
 
-	public AUPAcceptanceRecord(VOMSUser u, AUPVersion aup) {
-		this.user = u;
-		this.aupVersion = aup;
-		this.valid = true;
-	}
+  Boolean valid;
 
-	public AUPAcceptanceRecord() {
+  public AUPAcceptanceRecord(VOMSUser u, AUPVersion aup) {
 
-		// TODO Auto-generated constructor stub
-	}
+    this.user = u;
+    this.aupVersion = aup;
+    this.valid = true;
+  }
 
-	public boolean equals(Object other) {
+  public AUPAcceptanceRecord() {
 
-		if (this == other)
-			return true;
+    // TODO Auto-generated constructor stub
+  }
 
-		if (!(other instanceof AUPAcceptanceRecord))
-			return false;
+  public boolean equals(Object other) {
 
-		if (other == null)
-			return false;
+    if (this == other)
+      return true;
 
-		AUPAcceptanceRecord that = (AUPAcceptanceRecord) other;
+    if (!(other instanceof AUPAcceptanceRecord))
+      return false;
 
-		// Implement meaningful checks here
-		return (getUser().equals(that.getUser()) && getAupVersion().equals(
-				that.getAupVersion()));
+    if (other == null)
+      return false;
 
-	}
+    AUPAcceptanceRecord that = (AUPAcceptanceRecord) other;
 
-	@Override
-	public int hashCode() {
+    // Implement meaningful checks here
+    return (getUser().equals(that.getUser()) && getAupVersion().equals(
+      that.getAupVersion()));
 
-		if (getId() != null)
-			return getId().hashCode();
+  }
 
-		return super.hashCode();
-	}
+  @Override
+  public int hashCode() {
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+    if (getId() != null)
+      return getId().hashCode();
 
-		return id;
-	}
+    return super.hashCode();
+  }
 
-	/**
-	 * @return the aupVersion
-	 */
-	public AUPVersion getAupVersion() {
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		return aupVersion;
-	}
+    return id;
+  }
 
-	/**
-	 * @return the user
-	 */
-	public VOMSUser getUser() {
+  /**
+   * @return the aupVersion
+   */
+  public AUPVersion getAupVersion() {
 
-		return user;
-	}
+    return aupVersion;
+  }
 
-	/**
-	 * @return the lastAcceptanceDate
-	 */
-	public Date getLastAcceptanceDate() {
+  /**
+   * @return the user
+   */
+  public VOMSUser getUser() {
 
-		return lastAcceptanceDate;
-	}
+    return user;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+  /**
+   * @return the lastAcceptanceDate
+   */
+  public Date getLastAcceptanceDate() {
 
-		this.id = id;
-	}
+    return lastAcceptanceDate;
+  }
 
-	/**
-	 * @param aupVersion
-	 *            the aupVersion to set
-	 */
-	public void setAupVersion(AUPVersion aupVersion) {
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-		this.aupVersion = aupVersion;
-	}
+    this.id = id;
+  }
 
-	/**
-	 * @param user
-	 *            the user to set
-	 */
-	public void setUser(VOMSUser user) {
+  /**
+   * @param aupVersion
+   *          the aupVersion to set
+   */
+  public void setAupVersion(AUPVersion aupVersion) {
 
-		this.user = user;
-	}
+    this.aupVersion = aupVersion;
+  }
 
-	/**
-	 * @param lastAcceptanceDate
-	 *            the lastAcceptanceDate to set
-	 */
-	public void setLastAcceptanceDate(Date lastAcceptanceDate) {
+  /**
+   * @param user
+   *          the user to set
+   */
+  public void setUser(VOMSUser user) {
 
-		this.lastAcceptanceDate = lastAcceptanceDate;
-	}
+    this.user = user;
+  }
 
-	@Override
-	public String toString() {
-		
-		return String.format(
-				"[user: %s, aupVersion: %s, lastAcceptanceDate: %s, valid: %s]", user,
-				aupVersion, lastAcceptanceDate, valid);
-	}
-	
-	
-	public boolean hasExpired(){
-		
-		if (!valid)
-			return true;
-		
-		if (lastAcceptanceDate.before(aupVersion.getLastUpdateTime()))
-			return true;
-					
-		Date now = new Date();
-		if (getExpirationDate().before(now))
-			return true;
-		
-		return false;
-	}
-	
-	public long getDaysSinceLastAcceptance(){
-		
-		Date now = new Date();
-		
-		long timeDiff = now.getTime() - lastAcceptanceDate.getTime();
-		
-		return TimeUnit.MILLISECONDS.toDays(timeDiff);
-	}
-	
-	public long getDaysBeforeExpiration(){
-		
-		Date now = new Date();
-		
-		if (! valid)
-			return 0;
-		
-		long timeDiff = getExpirationDate().getTime() - now.getTime();
-		
-		return TimeUnit.MILLISECONDS.toDays(timeDiff);
-		
-	}
-	
-	public Date getExpirationDate(){	
-			
-		Calendar c = Calendar.getInstance();
-		
-		// If the record has been invalidated the expiration date is now.
-		if (!valid)
-			return c.getTime();
-			
-		c.setTime(lastAcceptanceDate);
-		
-		c.add(Calendar.DAY_OF_YEAR, aupVersion.getAup().getReacceptancePeriod());
-		
-		return c.getTime();
-	}
+  /**
+   * @param lastAcceptanceDate
+   *          the lastAcceptanceDate to set
+   */
+  public void setLastAcceptanceDate(Date lastAcceptanceDate) {
 
-	public Boolean getValid() {
-		return valid;
-	}
+    this.lastAcceptanceDate = lastAcceptanceDate;
+  }
 
-	public void setValid(Boolean valid) {
-		this.valid = valid;
-	}
-	
+  @Override
+  public String toString() {
+
+    return String.format(
+      "[user: %s, aupVersion: %s, lastAcceptanceDate: %s, valid: %s]", user,
+      aupVersion, lastAcceptanceDate, valid);
+  }
+
+  public boolean hasExpired() {
+
+    if (!valid)
+      return true;
+
+    if (lastAcceptanceDate.before(aupVersion.getLastUpdateTime()))
+      return true;
+
+    Date now = new Date();
+    if (getExpirationDate().before(now))
+      return true;
+
+    return false;
+  }
+
+  public long getDaysSinceLastAcceptance() {
+
+    Date now = new Date();
+
+    long timeDiff = now.getTime() - lastAcceptanceDate.getTime();
+
+    return TimeUnit.MILLISECONDS.toDays(timeDiff);
+  }
+
+  public long getDaysBeforeExpiration() {
+
+    Date now = new Date();
+
+    if (!valid)
+      return 0;
+
+    long timeDiff = getExpirationDate().getTime() - now.getTime();
+
+    return TimeUnit.MILLISECONDS.toDays(timeDiff);
+
+  }
+
+  public Date getExpirationDate() {
+
+    Calendar c = Calendar.getInstance();
+
+    // If the record has been invalidated the expiration date is now.
+    if (!valid)
+      return c.getTime();
+
+    c.setTime(lastAcceptanceDate);
+
+    c.add(Calendar.DAY_OF_YEAR, aupVersion.getAup().getReacceptancePeriod());
+
+    return c.getTime();
+  }
+
+  public Boolean getValid() {
+
+    return valid;
+  }
+
+  public void setValid(Boolean valid) {
+
+    this.valid = valid;
+  }
+
 }

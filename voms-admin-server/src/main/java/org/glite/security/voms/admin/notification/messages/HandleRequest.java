@@ -27,43 +27,40 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 
 public class HandleRequest extends AbstractVelocityNotification {
 
-	Request request;
+  Request request;
 
-	String requestManagementURL;
+  String requestManagementURL;
 
-	
-	public HandleRequest(Request request, 
-			String requestManagementURL,
-			List<String> administratorEmailAddresses){
-		
-		this.request = request;
-		this.requestManagementURL = requestManagementURL;
-		
-		addRecipients(administratorEmailAddresses);
-		
-	}
-	
-	public HandleRequest(Request request,
-			String requestManagementURL) {
+  public HandleRequest(Request request, String requestManagementURL,
+    List<String> administratorEmailAddresses) {
 
-		this(request, requestManagementURL, NotificationUtil.getAdministratorsEmailList());
-		
-	}
+    this.request = request;
+    this.requestManagementURL = requestManagementURL;
 
-	protected void buildMessage() {
-		
-		String voName = VOMSConfiguration.instance().getVOName();
-		
-		
-		setSubject("A "+request.getTypeName().toLowerCase()+" for VO " + voName
-				+ " requires your approval.");
+    addRecipients(administratorEmailAddresses);
 
-		context.put("voName", voName);
-		context.put("recipient", "VO Admin");
-		context.put("request", request);
-		context.put("requestManagementURL", requestManagementURL);
+  }
 
-		super.buildMessage();
+  public HandleRequest(Request request, String requestManagementURL) {
 
-	}
+    this(request, requestManagementURL, NotificationUtil
+      .getAdministratorsEmailList());
+
+  }
+
+  protected void buildMessage() {
+
+    String voName = VOMSConfiguration.instance().getVOName();
+
+    setSubject("A " + request.getTypeName().toLowerCase() + " for VO " + voName
+      + " requires your approval.");
+
+    context.put("voName", voName);
+    context.put("recipient", "VO Admin");
+    context.put("request", request);
+    context.put("requestManagementURL", requestManagementURL);
+
+    super.buildMessage();
+
+  }
 }

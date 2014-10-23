@@ -25,94 +25,107 @@ import org.italiangrid.voms.aa.RequestContext;
 import org.italiangrid.voms.aa.VOMSRequest;
 import org.italiangrid.voms.aa.VOMSResponse;
 
-
 public class RequestContextImpl implements RequestContext {
 
-	public RequestContextImpl(VOMSRequest req, VOMSResponse resp) {
-		request = req;
-		response = resp;
-		handled = false;
-	}
+  public RequestContextImpl(VOMSRequest req, VOMSResponse resp) {
 
-	private VOMSUser user;
-	private VOMSRequest request;
-	private VOMSResponse response;
-	private boolean handled;
-	
-	private String host;
-	private String voName;
-	private int port;
-	
-	
-	@Override
-	public VOMSUser getVOMSUser() {
-		return user;
-	}
+    request = req;
+    response = resp;
+    handled = false;
+  }
 
-	@Override
-	public void setVOMSUser(VOMSUser u) {
-		this.user = u;
-	}
+  private VOMSUser user;
+  private VOMSRequest request;
+  private VOMSResponse response;
+  private boolean handled;
 
-	@Override
-	public VOMSRequest getRequest() {
-		return request;
-	}
+  private String host;
+  private String voName;
+  private int port;
 
-	@Override
-	public VOMSResponse getResponse() { 
-		return response;
-	}
+  @Override
+  public VOMSUser getVOMSUser() {
 
-	@Override
-	public boolean isHandled() {
-		return handled;
-	}
+    return user;
+  }
 
-	@Override
-	public void setHandled(boolean handled) {
-		this.handled = handled;
-	}
+  @Override
+  public void setVOMSUser(VOMSUser u) {
 
-	@Override
-	public String getVOName() {
-		return voName;
-	}
+    this.user = u;
+  }
 
-	@Override
-	public void setVOName(String vo) {
-		voName=vo;
-	}
+  @Override
+  public VOMSRequest getRequest() {
 
-	@Override
-	public String getHost() {
-		return host;
-	}
+    return request;
+  }
 
-	@Override
-	public void setHost(String hostname) {
-		this.host = hostname;
-	}
+  @Override
+  public VOMSResponse getResponse() {
 
-	@Override
-	public int getPort() {
-		return port;
-	}
+    return response;
+  }
 
-	@Override
-	public void setPort(int port) {
-		this.port = port;
-	}
+  @Override
+  public boolean isHandled() {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
+    return handled;
+  }
 
-		return "RequestContextImpl [user=" + user + ", request=" + request
-			+ ", response=" + response + ", handled=" + handled + ", host=" + host
-			+ ", voName=" + voName + ", port=" + port + "]";
-	}
-	
+  @Override
+  public void setHandled(boolean handled) {
+
+    this.handled = handled;
+  }
+
+  @Override
+  public String getVOName() {
+
+    return voName;
+  }
+
+  @Override
+  public void setVOName(String vo) {
+
+    voName = vo;
+  }
+
+  @Override
+  public String getHost() {
+
+    return host;
+  }
+
+  @Override
+  public void setHost(String hostname) {
+
+    this.host = hostname;
+  }
+
+  @Override
+  public int getPort() {
+
+    return port;
+  }
+
+  @Override
+  public void setPort(int port) {
+
+    this.port = port;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+
+    return "RequestContextImpl [user=" + user + ", request=" + request
+      + ", response=" + response + ", handled=" + handled + ", host=" + host
+      + ", voName=" + voName + ", port=" + port + "]";
+  }
+
 }

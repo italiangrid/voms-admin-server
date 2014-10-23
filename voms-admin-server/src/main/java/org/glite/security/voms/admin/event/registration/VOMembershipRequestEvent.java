@@ -25,20 +25,23 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public abstract class VOMembershipRequestEvent extends GenericEvent {
 
-	NewVOMembershipRequest request;
+  NewVOMembershipRequest request;
 
-	public VOMembershipRequestEvent(NewVOMembershipRequest r) {
-		super(EventType.VOMembershipRequestEvent);
-		request = r;
+  public VOMembershipRequestEvent(NewVOMembershipRequest r) {
 
-	}
+    super(EventType.VOMembershipRequestEvent);
+    request = r;
 
-	public NewVOMembershipRequest getRequest() {
-		return request;
-	}
+  }
 
-	public void setRequest(NewVOMembershipRequest request) {
-		this.request = request;
-	}
+  public NewVOMembershipRequest getRequest() {
+
+    return request;
+  }
+
+  public void setRequest(NewVOMembershipRequest request) {
+
+    this.request = request;
+  }
 
 }

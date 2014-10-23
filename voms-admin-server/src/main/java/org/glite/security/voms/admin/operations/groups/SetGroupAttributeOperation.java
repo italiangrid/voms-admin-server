@@ -29,43 +29,41 @@ import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetGroupAttributeOperation extends BaseAttributeRWOperation {
 
-	String attributeName;
+  String attributeName;
 
-	String attributeDescription;
+  String attributeDescription;
 
-	String attributeValue;
+  String attributeValue;
 
-	private SetGroupAttributeOperation(VOMSGroup g, String aName, String aDesc,
-			String aValue) {
+  private SetGroupAttributeOperation(VOMSGroup g, String aName, String aDesc,
+    String aValue) {
 
-		super(VOMSContext.instance(g));
-		attributeName = aName;
-		attributeDescription = aDesc;
-		attributeValue = aValue;
-	}
+    super(VOMSContext.instance(g));
+    attributeName = aName;
+    attributeDescription = aDesc;
+    attributeValue = aValue;
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		return VOMSGroupDAO.instance().setAttribute(__context.getGroup(),
-				attributeName, attributeValue);
-	}
+    return VOMSGroupDAO.instance().setAttribute(__context.getGroup(),
+      attributeName, attributeValue);
+  }
 
-	public static VOMSOperation instance(String groupName, AttributeValue value) {
+  public static VOMSOperation instance(String groupName, AttributeValue value) {
 
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' does not exist in this vo.");
-		return new SetGroupAttributeOperation(g, value.getAttributeClass()
-				.getName(), value.getAttributeClass().getDescription(), value
-				.getValue());
-	}
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' does not exist in this vo.");
+    return new SetGroupAttributeOperation(g, value.getAttributeClass()
+      .getName(), value.getAttributeClass().getDescription(), value.getValue());
+  }
 
-	public static VOMSOperation instance(VOMSGroup g, String aName,
-			String aDesc, String aValue) {
+  public static VOMSOperation instance(VOMSGroup g, String aName, String aDesc,
+    String aValue) {
 
-		return new SetGroupAttributeOperation(g, aName, aDesc, aValue);
-	}
+    return new SetGroupAttributeOperation(g, aName, aDesc, aValue);
+  }
 }

@@ -29,43 +29,40 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
-		@Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="aupStatus.jsp")})
-
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
+  @Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
+    location = "aupStatus.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class TriggerReacceptanceAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	@Override
-	public void validate() {
-		
-		if (getModel().hasPendingSignAUPTasks()){
-			addActionError("User has already pending requests for signing the AUP.");
-			refreshPendingRequests();
-		}
-		
-	}
-	@Override
-	public String execute() throws Exception {
-		
-		AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
-		
-		new TriggerReacceptanceOperation(aupDAO.getVOAUP(), getModel()).execute();
-		
-		addActionMessage("AUP reacceptance requested.");
-				
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
 
-	
+  @Override
+  public void validate() {
+
+    if (getModel().hasPendingSignAUPTasks()) {
+      addActionError("User has already pending requests for signing the AUP.");
+      refreshPendingRequests();
+    }
+
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+    new TriggerReacceptanceOperation(aupDAO.getVOAUP(), getModel()).execute();
+
+    addActionMessage("AUP reacceptance requested.");
+
+    return SUCCESS;
+  }
+
 }

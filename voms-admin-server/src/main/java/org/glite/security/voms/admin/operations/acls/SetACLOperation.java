@@ -30,54 +30,54 @@ import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 
 public class SetACLOperation extends BaseVomsOperation {
 
-	Map<VOMSAdmin, VOMSPermission> permissions;
-	ACL theACL;
+  Map<VOMSAdmin, VOMSPermission> permissions;
+  ACL theACL;
 
-	private SetACLOperation(ACL acl, Map<VOMSAdmin, VOMSPermission> perms) {
+  private SetACLOperation(ACL acl, Map<VOMSAdmin, VOMSPermission> perms) {
 
-		if (acl == null)
-			throw new NullArgumentException("acl cannot be null!");
+    if (acl == null)
+      throw new NullArgumentException("acl cannot be null!");
 
-		if (perms == null)
-			throw new NullArgumentException("perms cannot be null!");
+    if (perms == null)
+      throw new NullArgumentException("perms cannot be null!");
 
-		theACL = acl;
-		permissions = perms;
-	}
+    theACL = acl;
+    permissions = perms;
+  }
 
-	public static SetACLOperation instance(ACL acl,
-			Map<VOMSAdmin, VOMSPermission> perms) {
+  public static SetACLOperation instance(ACL acl,
+    Map<VOMSAdmin, VOMSPermission> perms) {
 
-		return new SetACLOperation(acl, perms);
-	}
+    return new SetACLOperation(acl, perms);
+  }
 
-	@Override
-	protected Object doExecute() {
+  @Override
+  protected Object doExecute() {
 
-		if (permissions.isEmpty() && !theACL.isDefautlACL())
-			throw new VOMSException(
-					"Will not replace the current ACL with an empty one.");
+    if (permissions.isEmpty() && !theACL.isDefautlACL())
+      throw new VOMSException(
+        "Will not replace the current ACL with an empty one.");
 
-		// Drop old permissions
-		theACL.getPermissions().clear();
+    // Drop old permissions
+    theACL.getPermissions().clear();
 
-		// Set the new permission set
-		theACL.getPermissions().putAll(permissions);
+    // Set the new permission set
+    theACL.getPermissions().putAll(permissions);
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	protected void setupPermissions() {
+  @Override
+  protected void setupPermissions() {
 
-		VOMSPermission perms = VOMSPermission.getEmptyPermissions()
-				.setACLReadPermission().setACLWritePermission();
+    VOMSPermission perms = VOMSPermission.getEmptyPermissions()
+      .setACLReadPermission().setACLWritePermission();
 
-		if (theACL.isDefautlACL())
-			perms.setACLDefaultPermission();
+    if (theACL.isDefautlACL())
+      perms.setACLDefaultPermission();
 
-		addRequiredPermission(theACL.getContext(), perms);
+    addRequiredPermission(theACL.getContext(), perms);
 
-	}
+  }
 
 }

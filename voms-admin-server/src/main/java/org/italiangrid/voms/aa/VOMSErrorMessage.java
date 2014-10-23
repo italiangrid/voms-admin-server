@@ -20,89 +20,100 @@
 
 package org.italiangrid.voms.aa;
 
-
-
 public class VOMSErrorMessage {
 
-	private final VOMSError error;
-	private String message;
-		
-	private VOMSErrorMessage(VOMSError e, String message) {
-		this.error = e;
-		this.message = message;
-	}
-	
-	private VOMSErrorMessage(VOMSError e) {
-		this(e, null);
-	}
+  private final VOMSError error;
+  private String message;
 
-	public String getMessage() {
-		if (message == null)
-			return error.getDefaultMessage();
-		
-		return message;
-	}
+  private VOMSErrorMessage(VOMSError e, String message) {
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    this.error = e;
+    this.message = message;
+  }
 
-	public VOMSError getError() {	
-		return error;
-	}
+  private VOMSErrorMessage(VOMSError e) {
 
-	@Override
-	public String toString() {
-		return String.format("[%s] %s", error.name(), 
-			(message == null) ? error.getDefaultMessage() : message);
-	}
-	
-	public static VOMSErrorMessage noSuchUser(String userDN, String userCA){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.NoSuchUser);
-		m.setMessage(String.format("User unknown to this VO: '%s' (issued by '%s')", 
-			userDN, userCA));
-		return m;
-	}
-	
-	public static VOMSErrorMessage noSuchAttribute(String fqan){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.NoSuchAttribute);
-		m.setMessage(String.format(
-			"User is not authorized to request attribute '%s' or attribute does " +
-			"not exist.", fqan));
-		return m;
-	}
-	
-	public static VOMSErrorMessage suspendedUser(String userDN, 
-		String userCA, 
-		String suspensionReason){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.SuspendedUser);
-		m.setMessage(String.format("User '%s, %s' is currently suspended. Reason: %s",
-			userDN, userCA, suspensionReason));
-		return m;
-	}
-	
-	public static VOMSErrorMessage suspendedCertificate(String certSubject, 
-		String certIssuer, 
-		String suspensionReason){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.SuspendedCertificate);
-		m.setMessage(String.format("Certificate '%s, %s' is currently suspended. Reason: %s",
-			certSubject, certIssuer, suspensionReason));
-		return m;
-	}
-	
-	public static VOMSErrorMessage internalError(String message){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.InternalError);
-		m.setMessage(message);
-		return m;
-	}
-	
-	public static VOMSErrorMessage endpointDisabled(){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.EndpointDisabled);
-		return m;
-	}
-	
-	public static VOMSErrorMessage unauthenticatedClient(){
-		VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.UnauthenticatedClient);
-		return m;
-	}
+    this(e, null);
+  }
+
+  public String getMessage() {
+
+    if (message == null)
+      return error.getDefaultMessage();
+
+    return message;
+  }
+
+  public void setMessage(String message) {
+
+    this.message = message;
+  }
+
+  public VOMSError getError() {
+
+    return error;
+  }
+
+  @Override
+  public String toString() {
+
+    return String.format("[%s] %s", error.name(),
+      (message == null) ? error.getDefaultMessage() : message);
+  }
+
+  public static VOMSErrorMessage noSuchUser(String userDN, String userCA) {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.NoSuchUser);
+    m.setMessage(String.format(
+      "User unknown to this VO: '%s' (issued by '%s')", userDN, userCA));
+    return m;
+  }
+
+  public static VOMSErrorMessage noSuchAttribute(String fqan) {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.NoSuchAttribute);
+    m.setMessage(String.format(
+      "User is not authorized to request attribute '%s' or attribute does "
+        + "not exist.", fqan));
+    return m;
+  }
+
+  public static VOMSErrorMessage suspendedUser(String userDN, String userCA,
+    String suspensionReason) {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.SuspendedUser);
+    m.setMessage(String.format(
+      "User '%s, %s' is currently suspended. Reason: %s", userDN, userCA,
+      suspensionReason));
+    return m;
+  }
+
+  public static VOMSErrorMessage suspendedCertificate(String certSubject,
+    String certIssuer, String suspensionReason) {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.SuspendedCertificate);
+    m.setMessage(String.format(
+      "Certificate '%s, %s' is currently suspended. Reason: %s", certSubject,
+      certIssuer, suspensionReason));
+    return m;
+  }
+
+  public static VOMSErrorMessage internalError(String message) {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.InternalError);
+    m.setMessage(message);
+    return m;
+  }
+
+  public static VOMSErrorMessage endpointDisabled() {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.EndpointDisabled);
+    return m;
+  }
+
+  public static VOMSErrorMessage unauthenticatedClient() {
+
+    VOMSErrorMessage m = new VOMSErrorMessage(VOMSError.UnauthenticatedClient);
+    return m;
+  }
 }

@@ -20,8 +20,6 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
-
-
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
 import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
@@ -35,62 +33,54 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleRoleMembershipRequestOperation extends
-		BaseHandleRequestOperation<RoleMembershipRequest> {
+  BaseHandleRequestOperation<RoleMembershipRequest> {
 
-	public HandleRoleMembershipRequestOperation(RoleMembershipRequest request,
-			DECISION decision) {
-		super(request, decision);
-	}
+  public HandleRoleMembershipRequestOperation(RoleMembershipRequest request,
+    DECISION decision) {
 
+    super(request, decision);
+  }
 
+  @Override
+  protected void approve() {
 
-	@Override
-	protected void approve() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		
-		VOMSUser u = getRequesterAsVomsUser();
-		VOMSGroup g = findGroupByName(request.getGroupName());
-		VOMSRole r = findRoleByName(request.getRoleName());
-		
-		AssignRoleOperation.instance(u, g, r).execute();
-		
-		approveRequest();
-		
-		EventManager.dispatch(new RoleMembershipApprovedEvent(request));
-		
-		
-	}
+    checkRequestStatus(STATUS.SUBMITTED);
 
+    VOMSUser u = getRequesterAsVomsUser();
+    VOMSGroup g = findGroupByName(request.getGroupName());
+    VOMSRole r = findRoleByName(request.getRoleName());
 
+    AssignRoleOperation.instance(u, g, r).execute();
 
-	@Override
-	protected void reject() {
-		
-		checkRequestStatus(STATUS.SUBMITTED);
-		
-		rejectRequest();
-		EventManager.dispatch(new RoleMembershipRejectedEvent(request));
-		
-		
-	}
+    approveRequest();
 
+    EventManager.dispatch(new RoleMembershipApprovedEvent(request));
 
+  }
 
-	@Override
-	protected void setupPermissions() {
-		
-		
-		VOMSGroup g = findGroupByName(request.getGroupName());
-		VOMSRole r = findRoleByName(request.getRoleName());
-		
-		addRequiredPermissionOnPath(g, VOMSPermission.getContainerReadPermission());
-		
-		addRequiredPermission(VOMSContext.instance(g, r), VOMSPermission.getMembershipRWPermissions());
-		addRequiredPermission(VOMSContext.instance(g, r), VOMSPermission.getRequestsRWPermissions());
-		
-		
+  @Override
+  protected void reject() {
 
-	}
+    checkRequestStatus(STATUS.SUBMITTED);
+
+    rejectRequest();
+    EventManager.dispatch(new RoleMembershipRejectedEvent(request));
+
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    VOMSGroup g = findGroupByName(request.getGroupName());
+    VOMSRole r = findRoleByName(request.getRoleName());
+
+    addRequiredPermissionOnPath(g, VOMSPermission.getContainerReadPermission());
+
+    addRequiredPermission(VOMSContext.instance(g, r),
+      VOMSPermission.getMembershipRWPermissions());
+    addRequiredPermission(VOMSContext.instance(g, r),
+      VOMSPermission.getRequestsRWPermissions());
+
+  }
 
 }

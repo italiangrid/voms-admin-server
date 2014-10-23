@@ -33,70 +33,72 @@ import javax.persistence.Table;
 @Table(name = "personal_info_type")
 public class PersonalInformationType {
 
-	public enum Type {
-		STRING, PHONE_NUMBER, EMAIL_ADDRESS, URL
-	}
+  public enum Type {
+    STRING, PHONE_NUMBER, EMAIL_ADDRESS, URL
+  }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_PI_TYPE_SEQ")
-	@SequenceGenerator(name="VOMS_PI_TYPE_SEQ", sequenceName="VOMS_PI_TYPE_SEQ")
-	Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO,
+    generator = "VOMS_PI_TYPE_SEQ")
+  @SequenceGenerator(name = "VOMS_PI_TYPE_SEQ",
+    sequenceName = "VOMS_PI_TYPE_SEQ")
+  Long id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, unique = true)
-	Type type;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, unique = true)
+  Type type;
 
-	String description;
+  String description;
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		return id;
-	}
+    return id;
+  }
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
+  /**
+   * @return the description
+   */
+  public String getDescription() {
 
-		return description;
-	}
+    return description;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-		this.id = id;
-	}
+    this.id = id;
+  }
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(String description) {
+  /**
+   * @param description
+   *          the description to set
+   */
+  public void setDescription(String description) {
 
-		this.description = description;
-	}
+    this.description = description;
+  }
 
-	/**
-	 * @return the type
-	 */
-	public Type getType() {
+  /**
+   * @return the type
+   */
+  public Type getType() {
 
-		return type;
-	}
+    return type;
+  }
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(Type type) {
+  /**
+   * @param type
+   *          the type to set
+   */
+  public void setType(Type type) {
 
-		this.type = type;
-	}
+    this.type = type;
+  }
 
 }

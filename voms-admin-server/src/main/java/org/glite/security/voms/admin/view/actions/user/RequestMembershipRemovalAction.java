@@ -37,64 +37,67 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "userHome"),
-		@Result(name = BaseAction.INPUT, location = "requestMembershipRemoval"),
-		@Result(name = "registrationDisabled", location = "userHome")
-})
-
+@Results({ @Result(name = BaseAction.SUCCESS, location = "userHome"),
+  @Result(name = BaseAction.INPUT, location = "requestMembershipRemoval"),
+  @Result(name = "registrationDisabled", location = "userHome") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class RequestMembershipRemovalAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	String reason;
-	
-	@Override
-	public void validate() {
-		VOMSUser u = CurrentAdmin.instance().getVoUser();
-		
-		if (!getModel().equals(u))
-			addActionError("You cannot submit a membership removal request for another user!");
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		if (reqDAO.userHasPendingMembershipRemovalRequest(getModel()))
-			addActionError("User has pending membership removal requests!");
-		
-	}
-	@Override
-	public String execute() throws Exception {
-		
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return "registrationDisabled";
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		MembershipRemovalRequest req = reqDAO.createMembershipRemovalRequest(getModel(), reason, getDefaultFutureDate());
-		
-		EventManager.dispatch(new MembershipRemovalSubmittedEvent(req, getHomeURL()));
-		
-		refreshPendingRequests();
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
 
-	@RegexFieldValidator(type=ValidatorType.FIELD, expression="^[^<>&=;]*$", message="You entered invalid characters in the reason field!")
-	@RequiredStringValidator(type=ValidatorType.FIELD, message = "Please enter a reason.")
-	public String getReason() {
-		return reason;
-	}
+  String reason;
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-	
-	
-	
+  @Override
+  public void validate() {
+
+    VOMSUser u = CurrentAdmin.instance().getVoUser();
+
+    if (!getModel().equals(u))
+      addActionError("You cannot submit a membership removal request for another user!");
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+
+    if (reqDAO.userHasPendingMembershipRemovalRequest(getModel()))
+      addActionError("User has pending membership removal requests!");
+
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+      return "registrationDisabled";
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+
+    MembershipRemovalRequest req = reqDAO.createMembershipRemovalRequest(
+      getModel(), reason, getDefaultFutureDate());
+
+    EventManager
+      .dispatch(new MembershipRemovalSubmittedEvent(req, getHomeURL()));
+
+    refreshPendingRequests();
+
+    return SUCCESS;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters in the reason field!")
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a reason.")
+  public String getReason() {
+
+    return reason;
+  }
+
+  public void setReason(String reason) {
+
+    this.reason = reason;
+  }
+
 }

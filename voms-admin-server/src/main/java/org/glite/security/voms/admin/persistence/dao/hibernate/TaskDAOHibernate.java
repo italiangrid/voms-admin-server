@@ -41,90 +41,90 @@ import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.hibernate.criterion.Restrictions;
 
 public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
-	TaskDAO {
+  TaskDAO {
 
-	private static final Logger log = LoggerFactory
-		.getLogger(TaskDAOHibernate.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(TaskDAOHibernate.class);
 
-	public ApproveUserRequestTask createApproveUserRequestTask(Request req) {
+  public ApproveUserRequestTask createApproveUserRequestTask(Request req) {
 
-		return null;
-	}
+    return null;
+  }
 
-	public SignAUPTask createSignAUPTask(AUP aup, Date expiryDate) {
+  public SignAUPTask createSignAUPTask(AUP aup, Date expiryDate) {
 
-		TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
-			.getTaskTypeDAO();
+    TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
+      .getTaskTypeDAO();
 
-		if (aup == null)
-			throw new NullArgumentException("aup cannot be null!");
+    if (aup == null)
+      throw new NullArgumentException("aup cannot be null!");
 
-		if (expiryDate == null)
-			throw new NullArgumentException("expiryDate cannot be null!");
+    if (expiryDate == null)
+      throw new NullArgumentException("expiryDate cannot be null!");
 
-		TaskType tt = ttDAO.findByName("SignAUPTask");
+    TaskType tt = ttDAO.findByName("SignAUPTask");
 
-		if (tt == null)
-			throw new VOMSDatabaseException(
-				"Inconsistent database! Task type for SignAUPTask not found in database!");
+    if (tt == null)
+      throw new VOMSDatabaseException(
+        "Inconsistent database! Task type for SignAUPTask not found in database!");
 
-		SignAUPTask t = new SignAUPTask(tt, aup, expiryDate);
+    SignAUPTask t = new SignAUPTask(tt, aup, expiryDate);
 
-		makePersistent(t);
+    makePersistent(t);
 
-		return t;
+    return t;
 
-	}
+  }
 
-	public List<Task> findApproveUserRequestTasks() {
+  public List<Task> findApproveUserRequestTasks() {
 
-		return findConcrete(ApproveUserRequestTask.class);
+    return findConcrete(ApproveUserRequestTask.class);
 
-	}
+  }
 
-	protected List<Task> findConcrete(Class clazz) {
+  protected List<Task> findConcrete(Class clazz) {
 
-		return getSession().createCriteria(clazz).list();
-	}
+    return getSession().createCriteria(clazz).list();
+  }
 
-	public List<Task> findSignAUPTasks() {
+  public List<Task> findSignAUPTasks() {
 
-		return findConcrete(SignAUPTask.class);
-	}
+    return findConcrete(SignAUPTask.class);
+  }
 
-	public void removeAllTasks() {
+  public void removeAllTasks() {
 
-		List<Task> tasks = findAll();
+    List<Task> tasks = findAll();
 
-		for (Task t : tasks)
-			makeTransient(t);
+    for (Task t : tasks)
+      makeTransient(t);
 
-	}
+  }
 
-	public SignAUPTask createSignAUPTask(AUP aup) {
+  public SignAUPTask createSignAUPTask(AUP aup) {
 
-		int lifetime = VOMSConfiguration.instance().getInt(
-			VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME, 15);
+    int lifetime = VOMSConfiguration.instance().getInt(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME, 15);
 
-		Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance();
 
-		// Negative lifetime values are useful for debugging purposes!
-		if (lifetime > 0) {
-			cal.add(Calendar.DAY_OF_YEAR, lifetime);
-		}
+    // Negative lifetime values are useful for debugging purposes!
+    if (lifetime > 0) {
+      cal.add(Calendar.DAY_OF_YEAR, lifetime);
+    }
 
-		log.debug("Scheduling SignAUP task with expiration date: {}", cal.getTime()
-			.toString());
+    log.debug("Scheduling SignAUP task with expiration date: {}", cal.getTime()
+      .toString());
 
-		return createSignAUPTask(aup, cal.getTime());
+    return createSignAUPTask(aup, cal.getTime());
 
-	}
+  }
 
-	public List<Task> getActiveTasks() {
+  public List<Task> getActiveTasks() {
 
-		return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED),
-			Restrictions.ne("status", TaskStatus.EXPIRED));
+    return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED),
+      Restrictions.ne("status", TaskStatus.EXPIRED));
 
-	}
+  }
 
 }

@@ -32,71 +32,70 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-
 @Results({
-	
-	@Result(name=UserActionSupport.SUCCESS,location="mappingsRequest.jsp"),
-	@Result(name=UserActionSupport.ERROR,location="mappingsRequest.jsp"),
-	@Result(name=UserActionSupport.INPUT,location="mappingsRequest.jsp")
-})
 
+@Result(name = UserActionSupport.SUCCESS, location = "mappingsRequest.jsp"),
+  @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
+  @Result(name = UserActionSupport.INPUT, location = "mappingsRequest.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class RequestGroupMembershipAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	Long groupId;
-	
-	
-	@Override
-	public void validate() {
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		VOMSGroup g = groupById(groupId);
-		
-		if (g == null)
-			throw new NoSuchGroupException("Group with id '"+groupId+"' not found!");
-		
-		if (model.isMember(g))
-			addActionError(getText("group_request.user.already_member", new String[]{model.toString(),g.getName()}));
-		
-		
-		if (reqDAO.userHasPendingGroupMembershipRequest(model, g))
-			addActionError(getText("group_request.user.has_pending_request",new String[]{model.toString(),g.getName()}));
-	}
-		
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return "registrationDisabled";
-		
-		if (hasActionErrors())
-			return ERROR;
+  private static final long serialVersionUID = 1L;
+  Long groupId;
 
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		VOMSGroup g = groupById(groupId);
+  @Override
+  public void validate() {
 
-		GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(getModel(), g, getDefaultFutureDate());
-		EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
-		
-		refreshPendingRequests();
-		
-		return SUCCESS;
-	}
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
 
-	public Long getGroupId() {
-		return groupId;
-	}	
-	
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+    VOMSGroup g = groupById(groupId);
+
+    if (g == null)
+      throw new NoSuchGroupException("Group with id '" + groupId
+        + "' not found!");
+
+    if (model.isMember(g))
+      addActionError(getText("group_request.user.already_member", new String[] {
+        model.toString(), g.getName() }));
+
+    if (reqDAO.userHasPendingGroupMembershipRequest(model, g))
+      addActionError(getText("group_request.user.has_pending_request",
+        new String[] { model.toString(), g.getName() }));
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+      return "registrationDisabled";
+
+    if (hasActionErrors())
+      return ERROR;
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+    VOMSGroup g = groupById(groupId);
+
+    GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(
+      getModel(), g, getDefaultFutureDate());
+    EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
+
+    refreshPendingRequests();
+
+    return SUCCESS;
+  }
+
+  public Long getGroupId() {
+
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
 }

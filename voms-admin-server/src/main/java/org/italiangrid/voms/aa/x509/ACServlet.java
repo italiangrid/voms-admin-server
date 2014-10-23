@@ -48,347 +48,338 @@ import org.slf4j.LoggerFactory;
 
 public class ACServlet extends HttpServlet {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String LEGACY_REQUEST_HEADER = "X-VOMS-Legacy";
-	
-	public static final Logger log = LoggerFactory.getLogger(ACServlet.class);
-	
-	private VOMSResponseBuilder responseBuilder;
-	private ACGenerator acGenerator;
-	private ACRequestLogger acRequestLogger;
-	
-	/**
-	 * 
-	 * @param response
-	 * @param context
-	 */
-	protected void addDebugHeaders( HttpServletResponse response, 
-		RequestContext context){
-		
-		response.addHeader("X-VOMS-FQANs", 
-			StringUtils.join(context.getResponse().getIssuedFQANs(),","));
+  public static final String LEGACY_REQUEST_HEADER = "X-VOMS-Legacy";
 
-		response.addHeader("X-VOMS-GAs", 
-			StringUtils.join(context.getResponse().getIssuedGAs(),","));		
-	}
+  public static final Logger log = LoggerFactory.getLogger(ACServlet.class);
 
-	protected void doGet( HttpServletRequest request, HttpServletResponse response )
-		throws ServletException , IOException {
-		
-		RequestContext context = newRequestContext(request);
-		boolean isLegacyRequest = isLegacyRequest(request);
-		
-		prepareResponse(response);
-		
-		if (!isACEndpointEnabled()){
-			VOMSErrorMessage em = VOMSErrorMessage.endpointDisabled();
-			
-			logFailure(context,em.getMessage());
-			
-			writeErrorResponse(request,
-				response, 
-				em,
-				isLegacyRequest);
-			
-			return;
-		}
-		
-		if (CurrentAdmin.instance().isUnauthenticated()){
-			logFailure(context,  
-					VOMSError.UnauthenticatedClient.getDefaultMessage());
-			
-			writeErrorResponse(request,
-				response, 
-				VOMSErrorMessage.unauthenticatedClient(),
-				isLegacyRequest);
-			
-			return;
-		}
-		
-		populateRequest(request,context);
+  private VOMSResponseBuilder responseBuilder;
+  private ACGenerator acGenerator;
+  private ACRequestLogger acRequestLogger;
 
-		AttributeAuthority aa = newAttributeAuthority();
-		
-		if (!aa.getAttributes(context)){	
-			
-			VOMSErrorMessage em = context.getResponse().getErrorMessages()
-				.get(0);
-			
-			logFailure(context,em.getMessage()); 
-						
-			writeErrorResponse(request, response, em, isLegacyRequest);
+  /**
+   * 
+   * @param response
+   * @param context
+   */
+  protected void addDebugHeaders(HttpServletResponse response,
+    RequestContext context) {
 
-			return;
-		
-		}else {
-			
-			try{
-				
-				byte[] acBytes = acGenerator.generateVOMSAC(context);
-				
-				addDebugHeaders(response, context);
-				writeResponse( response, acBytes, context);
-				logSuccess(context);
-				return;
-			
-			}catch(Throwable t){
-				
-				log.error("Error encoding user attribute certificate: "
-					+t.getMessage(),t);
-				
-				logFailure(context, 
-					VOMSError.InternalError.getDefaultMessage());
-				
-				writeErrorResponse( 
-					request,
-					response,
-					VOMSErrorMessage.internalError(t.getMessage()),
-					isLegacyRequest);
-			}
-		}
-	}
+    response.addHeader("X-VOMS-FQANs",
+      StringUtils.join(context.getResponse().getIssuedFQANs(), ","));
 
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		responseBuilder = ResponseBuilderFactory.newResponseBuilder();
-		acGenerator = ACGeneratorFactory.newACGenerator();
-		acRequestLogger = ACRequestLoggerFactory.newRequestLogger();
-	}
+    response.addHeader("X-VOMS-GAs",
+      StringUtils.join(context.getResponse().getIssuedGAs(), ","));
+  }
 
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean isACEndpointEnabled(){
-		return VOMSConfiguration.instance()
-			.getBoolean(VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT, 
-				true); 
-	}
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected boolean isLegacyRequest(HttpServletRequest request){
-		return request.getHeader(LEGACY_REQUEST_HEADER) != null;
-	}
-	
-	/**
-	 * 
-	 * @param context
-	 * @param errorMessage
-	 */
-	public void logFailure(RequestContext context, String errorMessage) {
-		acRequestLogger.logFailure(context, errorMessage);
-	}
+    RequestContext context = newRequestContext(request);
+    boolean isLegacyRequest = isLegacyRequest(request);
 
-	/**
-	 * 
-	 * @param context
-	 */
-	public void logSuccess(RequestContext context) {
-		acRequestLogger.logSuccess(context);
-	}
+    prepareResponse(response);
 
-	/**
-	 * 
-	 * @return
-	 */
-	protected AttributeAuthority newAttributeAuthority() {
+    if (!isACEndpointEnabled()) {
+      VOMSErrorMessage em = VOMSErrorMessage.endpointDisabled();
 
-		long maximumValidity = VOMSConfiguration.instance().getLong(
-			VOMSConfigurationConstants.VOMS_AA_X509_MAX_AC_VALIDITY,
-			TimeUnit.HOURS.toSeconds(12));
+      logFailure(context, em.getMessage());
 
-		boolean legacyFQANEncoding = VOMSConfiguration.instance().getBoolean(
-			VOMSConfigurationConstants.VOMS_AA_X509_LEGACY_FQAN_ENCODING,
-			true);
-		
-		return AttributeAuthorityFactory.newAttributeAuthority(maximumValidity, legacyFQANEncoding);
-	}
-	
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected RequestContext newRequestContext(HttpServletRequest request){
-		
-		RequestContext context = RequestContextFactory.newContext(); 
-		
-		String subject = CurrentAdmin
-			.instance().getRealSubject();
-		
-		String issuer = CurrentAdmin
-			.instance().getRealIssuer();
-		
-		context.getRequest().setRequesterSubject(subject);
-		context.getRequest().setRequesterIssuer(issuer);
-		context.getRequest().setHolderSubject(subject);
-		context.getRequest().setHolderIssuer(issuer);
-		
-		context.setVOName(VOMSConfiguration.instance().getVOName());
-		context.setHost(VOMSConfiguration.instance().getHostname());
-		context.setPort(request.getServerPort());
-		
-		return context;
-	}
-	
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected List<String> parseRequestedFQANs(HttpServletRequest request) {
+      writeErrorResponse(request, response, em, isLegacyRequest);
 
-		String fqansString = request.getParameter("fqans");
+      return;
+    }
 
-		if (fqansString == null)
-			return Collections.emptyList();
+    if (CurrentAdmin.instance().isUnauthenticated()) {
+      logFailure(context, VOMSError.UnauthenticatedClient.getDefaultMessage());
 
-		List<String> requestedFQANs = new ArrayList<String>();
-		
-		if (fqansString.contains(",")) {
+      writeErrorResponse(request, response,
+        VOMSErrorMessage.unauthenticatedClient(), isLegacyRequest);
 
-			for (String s : StringUtils.split(fqansString, ","))
-				requestedFQANs.add(s);
-		} else
-			requestedFQANs.add(fqansString);
+      return;
+    }
 
-		return requestedFQANs;
+    populateRequest(request, context);
 
-	}
+    AttributeAuthority aa = newAttributeAuthority();
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private List<String> parseTargetsFromRequest(HttpServletRequest request){
-		String targets = request.getParameter("targets");
-		if (targets == null)
-			return Collections.emptyList();
-		
-		List<String> targetList = new ArrayList<String>();
-		
-		if (targets.contains(",")){
-		
-			String targetTokens[] = targets.split(",");
-			
-			for (String t: targetTokens) 
-				targetList.add(t);
-			
-		}else{
-				
-			targetList = Collections.singletonList(targets);
-		
-		}
-		
-		return targetList;
-		
-	}
+    if (!aa.getAttributes(context)) {
 
-	/**
-	 * Parse
-	 * @param request
-	 * @return
-	 */
-	private long parseValidityFromRequest(HttpServletRequest request){
-		long lifetime = -1;
+      VOMSErrorMessage em = context.getResponse().getErrorMessages().get(0);
 
-		try{
-			String lifetimeString = request.getParameter( "lifetime" );
+      logFailure(context, em.getMessage());
 
-			if (lifetimeString != null)
-				lifetime = Long.parseLong(request.getParameter( "lifetime" ));
+      writeErrorResponse(request, response, em, isLegacyRequest);
 
-		}catch (NumberFormatException e){
-			// Ignore strange things in lifetime parameter
-		}
-		return lifetime;
-	}	
-	
-	/**
-	 * 
-	 * @param request
-	 * @param context
-	 */
-	private void populateRequest(HttpServletRequest request,
-		RequestContext context) {
+      return;
 
-		VOMSSecurityContext ctxt = (VOMSSecurityContext) CurrentSecurityContext.get();
-		
-		context.getRequest().setHolderCert(ctxt.getClientCert());
-		
-		context.getRequest().setRequestedFQANs(parseRequestedFQANs(request));
-		context.getRequest().setRequestedValidity(parseValidityFromRequest(request));
-		context.getRequest().setTargets(parseTargetsFromRequest(request));
-		
-		context.getRequest().setOwnedAttributes(ctxt.getVOMSAttributes());
-		
-	}
+    } else {
 
-	/**
-	 * 
-	 * @param response
-	 */
-	protected void prepareResponse(HttpServletResponse response) {
-		response.setContentType("text/xml");
-		response.setCharacterEncoding("UTF-8");
-	}
+      try {
 
-	/**
-	 * 
-	 * @param request
-	 * @param response
-	 * @param errorMessage
-	 * @param isLegacyClient
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	protected void writeErrorResponse(HttpServletRequest request,
-			HttpServletResponse response,
-			VOMSErrorMessage errorMessage,	boolean isLegacyClient)	
-			throws ServletException, IOException {
+        byte[] acBytes = acGenerator.generateVOMSAC(context);
 
-		
-		response.setStatus(errorMessage.getError().getHttpStatus());
-		
-		String responseString = null;
-		
-		if (isLegacyClient){
-			responseString = responseBuilder
-				.createLegacyErrorResponse(errorMessage);
-		}else
-			responseString = responseBuilder
-			.createErrorResponse(errorMessage);
-		 
-		response.getOutputStream().write(responseString.getBytes());
-	}
+        addDebugHeaders(response, context);
+        writeResponse(response, acBytes, context);
+        logSuccess(context);
+        return;
 
-	/**
-	 * 
-	 * @param response
-	 * @param ac
-	 * @param context
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	protected void writeResponse(HttpServletResponse response, 
-		byte[] ac, 
-		RequestContext context)
-		throws ServletException, IOException {
-		
-		String responseString = responseBuilder.createResponse(ac, 
-			context.getResponse().getWarnings());
-		
-		response.getOutputStream().write(responseString.getBytes());
-	}
-	
+      } catch (Throwable t) {
+
+        log.error(
+          "Error encoding user attribute certificate: " + t.getMessage(), t);
+
+        logFailure(context, VOMSError.InternalError.getDefaultMessage());
+
+        writeErrorResponse(request, response,
+          VOMSErrorMessage.internalError(t.getMessage()), isLegacyRequest);
+      }
+    }
+  }
+
+  @Override
+  public void init() throws ServletException {
+
+    super.init();
+    responseBuilder = ResponseBuilderFactory.newResponseBuilder();
+    acGenerator = ACGeneratorFactory.newACGenerator();
+    acRequestLogger = ACRequestLoggerFactory.newRequestLogger();
+  }
+
+  /**
+   * 
+   * @return
+   */
+  protected boolean isACEndpointEnabled() {
+
+    return VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT, true);
+  }
+
+  /**
+   * 
+   * @param request
+   * @return
+   */
+  protected boolean isLegacyRequest(HttpServletRequest request) {
+
+    return request.getHeader(LEGACY_REQUEST_HEADER) != null;
+  }
+
+  /**
+   * 
+   * @param context
+   * @param errorMessage
+   */
+  public void logFailure(RequestContext context, String errorMessage) {
+
+    acRequestLogger.logFailure(context, errorMessage);
+  }
+
+  /**
+   * 
+   * @param context
+   */
+  public void logSuccess(RequestContext context) {
+
+    acRequestLogger.logSuccess(context);
+  }
+
+  /**
+   * 
+   * @return
+   */
+  protected AttributeAuthority newAttributeAuthority() {
+
+    long maximumValidity = VOMSConfiguration.instance().getLong(
+      VOMSConfigurationConstants.VOMS_AA_X509_MAX_AC_VALIDITY,
+      TimeUnit.HOURS.toSeconds(12));
+
+    boolean legacyFQANEncoding = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.VOMS_AA_X509_LEGACY_FQAN_ENCODING, true);
+
+    return AttributeAuthorityFactory.newAttributeAuthority(maximumValidity,
+      legacyFQANEncoding);
+  }
+
+  /**
+   * 
+   * @param request
+   * @return
+   */
+  protected RequestContext newRequestContext(HttpServletRequest request) {
+
+    RequestContext context = RequestContextFactory.newContext();
+
+    String subject = CurrentAdmin.instance().getRealSubject();
+
+    String issuer = CurrentAdmin.instance().getRealIssuer();
+
+    context.getRequest().setRequesterSubject(subject);
+    context.getRequest().setRequesterIssuer(issuer);
+    context.getRequest().setHolderSubject(subject);
+    context.getRequest().setHolderIssuer(issuer);
+
+    context.setVOName(VOMSConfiguration.instance().getVOName());
+    context.setHost(VOMSConfiguration.instance().getHostname());
+    context.setPort(request.getServerPort());
+
+    return context;
+  }
+
+  /**
+   * 
+   * @param request
+   * @return
+   */
+  protected List<String> parseRequestedFQANs(HttpServletRequest request) {
+
+    String fqansString = request.getParameter("fqans");
+
+    if (fqansString == null)
+      return Collections.emptyList();
+
+    List<String> requestedFQANs = new ArrayList<String>();
+
+    if (fqansString.contains(",")) {
+
+      for (String s : StringUtils.split(fqansString, ","))
+        requestedFQANs.add(s);
+    } else
+      requestedFQANs.add(fqansString);
+
+    return requestedFQANs;
+
+  }
+
+  /**
+   * 
+   * @param request
+   * @return
+   */
+  private List<String> parseTargetsFromRequest(HttpServletRequest request) {
+
+    String targets = request.getParameter("targets");
+    if (targets == null)
+      return Collections.emptyList();
+
+    List<String> targetList = new ArrayList<String>();
+
+    if (targets.contains(",")) {
+
+      String targetTokens[] = targets.split(",");
+
+      for (String t : targetTokens)
+        targetList.add(t);
+
+    } else {
+
+      targetList = Collections.singletonList(targets);
+
+    }
+
+    return targetList;
+
+  }
+
+  /**
+   * Parse
+   * 
+   * @param request
+   * @return
+   */
+  private long parseValidityFromRequest(HttpServletRequest request) {
+
+    long lifetime = -1;
+
+    try {
+      String lifetimeString = request.getParameter("lifetime");
+
+      if (lifetimeString != null)
+        lifetime = Long.parseLong(request.getParameter("lifetime"));
+
+    } catch (NumberFormatException e) {
+      // Ignore strange things in lifetime parameter
+    }
+    return lifetime;
+  }
+
+  /**
+   * 
+   * @param request
+   * @param context
+   */
+  private void populateRequest(HttpServletRequest request,
+    RequestContext context) {
+
+    VOMSSecurityContext ctxt = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+
+    context.getRequest().setHolderCert(ctxt.getClientCert());
+
+    context.getRequest().setRequestedFQANs(parseRequestedFQANs(request));
+    context.getRequest()
+      .setRequestedValidity(parseValidityFromRequest(request));
+    context.getRequest().setTargets(parseTargetsFromRequest(request));
+
+    context.getRequest().setOwnedAttributes(ctxt.getVOMSAttributes());
+
+  }
+
+  /**
+   * 
+   * @param response
+   */
+  protected void prepareResponse(HttpServletResponse response) {
+
+    response.setContentType("text/xml");
+    response.setCharacterEncoding("UTF-8");
+  }
+
+  /**
+   * 
+   * @param request
+   * @param response
+   * @param errorMessage
+   * @param isLegacyClient
+   * @throws ServletException
+   * @throws IOException
+   */
+  protected void writeErrorResponse(HttpServletRequest request,
+    HttpServletResponse response, VOMSErrorMessage errorMessage,
+    boolean isLegacyClient) throws ServletException, IOException {
+
+    response.setStatus(errorMessage.getError().getHttpStatus());
+
+    String responseString = null;
+
+    if (isLegacyClient) {
+      responseString = responseBuilder.createLegacyErrorResponse(errorMessage);
+    } else
+      responseString = responseBuilder.createErrorResponse(errorMessage);
+
+    response.getOutputStream().write(responseString.getBytes());
+  }
+
+  /**
+   * 
+   * @param response
+   * @param ac
+   * @param context
+   * @throws ServletException
+   * @throws IOException
+   */
+  protected void writeResponse(HttpServletResponse response, byte[] ac,
+    RequestContext context) throws ServletException, IOException {
+
+    String responseString = responseBuilder.createResponse(ac, context
+      .getResponse().getWarnings());
+
+    response.getOutputStream().write(responseString.getBytes());
+  }
+
 }

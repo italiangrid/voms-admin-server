@@ -20,87 +20,96 @@
 
 package org.glite.security.voms.admin.util;
 
-public class AdminServiceContactInfo implements Comparable<AdminServiceContactInfo>{
+public class AdminServiceContactInfo implements
+  Comparable<AdminServiceContactInfo> {
 
-	String voName;
-	String host;
-	int port;
-	
-	
-	/**
-	 * @return the voName
-	 */
-	public synchronized String getVoName() {
-		return voName;
-	}
+  String voName;
+  String host;
+  int port;
 
+  /**
+   * @return the voName
+   */
+  public synchronized String getVoName() {
 
-	/**
-	 * @param voName the voName to set
-	 */
-	public synchronized void setVoName(String voName) {
-		this.voName = voName;
-	}
+    return voName;
+  }
 
+  /**
+   * @param voName
+   *          the voName to set
+   */
+  public synchronized void setVoName(String voName) {
 
-	/**
-	 * @return the host
-	 */
-	public synchronized String getHost() {
-		return host;
-	}
+    this.voName = voName;
+  }
 
+  /**
+   * @return the host
+   */
+  public synchronized String getHost() {
 
-	/**
-	 * @param host the host to set
-	 */
-	public synchronized void setHost(String host) {
-		this.host = host;
-	}
+    return host;
+  }
 
+  /**
+   * @param host
+   *          the host to set
+   */
+  public synchronized void setHost(String host) {
 
-	/**
-	 * @return the port
-	 */
-	public synchronized int getPort() {
-		return port;
-	}
-	
-	public String getURL(){
-		return String.format("https://%s:%d/voms/%s", host, port, voName);
-	}
-	
-	public String getBaseURL(){
-		
-		return String.format("https://%s:%d", host, port);
-	}
-	
-	/**
-	 * @param port the port to set
-	 */
-	public synchronized void setPort(int port) {
-		this.port = port;
-	}
+    this.host = host;
+  }
 
-	public AdminServiceContactInfo(String vo, String host, int port) {
-		this.voName = vo;
-		this.host = host;
-		this.port = port;
-	}
+  /**
+   * @return the port
+   */
+  public synchronized int getPort() {
 
+    return port;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "AdminServiceContactInfo [voName=" + voName + ", host=" + host
-				+ ", port=" + port + "]";
-	}
+  public String getURL() {
 
+    return String.format("https://%s:%d/voms/%s", host, port, voName);
+  }
 
-	@Override
-	public int compareTo(AdminServiceContactInfo o) {
-		return this.getVoName().compareTo(o.getVoName());
-	}
+  public String getBaseURL() {
+
+    return String.format("https://%s:%d", host, port);
+  }
+
+  /**
+   * @param port
+   *          the port to set
+   */
+  public synchronized void setPort(int port) {
+
+    this.port = port;
+  }
+
+  public AdminServiceContactInfo(String vo, String host, int port) {
+
+    this.voName = vo;
+    this.host = host;
+    this.port = port;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+
+    return "AdminServiceContactInfo [voName=" + voName + ", host=" + host
+      + ", port=" + port + "]";
+  }
+
+  @Override
+  public int compareTo(AdminServiceContactInfo o) {
+
+    return this.getVoName().compareTo(o.getVoName());
+  }
 }

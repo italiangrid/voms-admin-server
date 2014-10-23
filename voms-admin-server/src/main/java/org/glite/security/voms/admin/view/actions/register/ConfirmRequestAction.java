@@ -34,70 +34,72 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( { @Result(name = BaseAction.INPUT, location = "register"),
-		@Result(name = BaseAction.SUCCESS, type="chain", location="set-request-confirmed"),
-		@Result(name = BaseAction.ERROR, location = "registrationConfirmationError"),
-		@Result(name = ConfirmRequestAction.REQUEST_ATTRIBUTES, location = "requestAttributes"),
-		@Result(name = ConfirmRequestAction.SELECT_MANAGER, location="selectManager")
-})
+@Results({
+  @Result(name = BaseAction.INPUT, location = "register"),
+  @Result(name = BaseAction.SUCCESS, type = "chain",
+    location = "set-request-confirmed"),
+  @Result(name = BaseAction.ERROR, location = "registrationConfirmationError"),
+  @Result(name = ConfirmRequestAction.REQUEST_ATTRIBUTES,
+    location = "requestAttributes"),
+  @Result(name = ConfirmRequestAction.SELECT_MANAGER,
+    location = "selectManager") })
 public class ConfirmRequestAction extends RegisterActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	String confirmationId;
-	
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  String confirmationId;
 
-		if (!registrationEnabled())
-			return REGISTRATION_DISABLED;
+  @Override
+  public String execute() throws Exception {
 
-		if (!getModel().getStatus().equals(STATUS.SUBMITTED)){
-			addActionError("Your request has already been confirmed!");
-			return ERROR;
-		}
-		
-		List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
-		List<GroupManager> managers = DAOFactory.instance()
-			.getGroupManagerDAO().findAll();
-		
-		if (managers.size() > 0){
-			
-			ServletActionContext.getRequest().setAttribute("groupManagers", managers);
-			return SELECT_MANAGER;
-		}
-		
-		
-		// Enable group selection only if configured to do so
-		// and if there's more than one group in the VO
-		if (attributeRequestsEnabled() && groups.size() > 1){
-			
-			// All members are included in the root group by default, so
-			// the root group is removed from the list of groups that could be 
-			// requested
-			if (groups.size() > 1)
-				groups = groups.subList(1, groups.size());
-			
-			ServletActionContext.getRequest().setAttribute("voGroups", groups);
-			return REQUEST_ATTRIBUTES;
-		}
-		
-		return SUCCESS;
-	}
+    if (!registrationEnabled())
+      return REGISTRATION_DISABLED;
 
-	
-	@RequiredFieldValidator(type = ValidatorType.FIELD, message = "A confirmation id is required!")
-	public String getConfirmationId() {
-		return confirmationId;
-	}
+    if (!getModel().getStatus().equals(STATUS.SUBMITTED)) {
+      addActionError("Your request has already been confirmed!");
+      return ERROR;
+    }
 
-	public void setConfirmationId(String confirmationId) {
-		this.confirmationId = confirmationId;
-	}
+    List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
+    List<GroupManager> managers = DAOFactory.instance().getGroupManagerDAO()
+      .findAll();
+
+    if (managers.size() > 0) {
+
+      ServletActionContext.getRequest().setAttribute("groupManagers", managers);
+      return SELECT_MANAGER;
+    }
+
+    // Enable group selection only if configured to do so
+    // and if there's more than one group in the VO
+    if (attributeRequestsEnabled() && groups.size() > 1) {
+
+      // All members are included in the root group by default, so
+      // the root group is removed from the list of groups that could be
+      // requested
+      if (groups.size() > 1)
+        groups = groups.subList(1, groups.size());
+
+      ServletActionContext.getRequest().setAttribute("voGroups", groups);
+      return REQUEST_ATTRIBUTES;
+    }
+
+    return SUCCESS;
+  }
+
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "A confirmation id is required!")
+  public String getConfirmationId() {
+
+    return confirmationId;
+  }
+
+  public void setConfirmationId(String confirmationId) {
+
+    this.confirmationId = confirmationId;
+  }
 
 }

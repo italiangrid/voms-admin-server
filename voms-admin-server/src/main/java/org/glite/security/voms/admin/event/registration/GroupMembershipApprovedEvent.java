@@ -23,9 +23,10 @@ import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRe
 
 public class GroupMembershipApprovedEvent extends GroupMembershipRequestEvent {
 
-	public GroupMembershipApprovedEvent(GroupMembershipRequest req) {
-		super(req);
-		// TODO Auto-generated constructor stub
-	}
+  public GroupMembershipApprovedEvent(GroupMembershipRequest req) {
+
+    super(req);
+    // TODO Auto-generated constructor stub
+  }
 
 }

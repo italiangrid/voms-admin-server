@@ -27,37 +27,34 @@ import org.glite.security.voms.admin.operations.users.SetUserAttributeOperation;
 import org.glite.security.voms.admin.persistence.error.AttributeValueAlreadyAssignedException;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
-		@Result(name = BaseAction.INPUT, location ="attributes.jsp") })
-		
+@Results({ @Result(name = BaseAction.SUCCESS, location = "attributes.jsp"),
+  @Result(name = BaseAction.INPUT, location = "attributes.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
-		
+  "token.includeMethods", "execute" })
 public class SetAttributeAction extends AttributeActions {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	
-	@Override
-	public String execute() throws Exception {
-		
-		try{
-			SetUserAttributeOperation.instance(getModel(), attributeName,
-					attributeValue).execute();
-		
-		}catch (AttributeValueAlreadyAssignedException e){
-			addFieldError("attributeValue", "The attribute value '"+attributeValue+"' is already assigned to another user!");
-			return INPUT;
-		}
-		
-		addActionMessage(getText("confirm.user.attribute_set", new String[]{attributeName, getModel().getShortName()}));
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public String execute() throws Exception {
+
+    try {
+      SetUserAttributeOperation.instance(getModel(), attributeName,
+        attributeValue).execute();
+
+    } catch (AttributeValueAlreadyAssignedException e) {
+      addFieldError("attributeValue", "The attribute value '" + attributeValue
+        + "' is already assigned to another user!");
+      return INPUT;
+    }
+
+    addActionMessage(getText("confirm.user.attribute_set", new String[] {
+      attributeName, getModel().getShortName() }));
+
+    return SUCCESS;
+  }
 
 }

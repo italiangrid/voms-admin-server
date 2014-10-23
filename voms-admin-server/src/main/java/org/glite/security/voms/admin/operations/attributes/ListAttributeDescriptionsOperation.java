@@ -26,24 +26,26 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 
 public class ListAttributeDescriptionsOperation extends BaseVomsOperation {
 
-	private ListAttributeDescriptionsOperation() {
+  private ListAttributeDescriptionsOperation() {
 
-	}
+  }
 
-	protected Object doExecute() {
-		return VOMSAttributeDAO.instance().getAllAttributeDescriptions();
-	}
+  protected Object doExecute() {
 
-	protected void setupPermissions() {
+    return VOMSAttributeDAO.instance().getAllAttributeDescriptions();
+  }
 
-		VOMSContext voContext = VOMSContext.getVoContext();
+  protected void setupPermissions() {
 
-		addRequiredPermission(voContext, VOMSPermission
-				.getContainerReadPermission().setAttributesReadPermission());
+    VOMSContext voContext = VOMSContext.getVoContext();
 
-	}
+    addRequiredPermission(voContext, VOMSPermission
+      .getContainerReadPermission().setAttributesReadPermission());
 
-	public static ListAttributeDescriptionsOperation instance() {
-		return new ListAttributeDescriptionsOperation();
-	}
+  }
+
+  public static ListAttributeDescriptionsOperation instance() {
+
+    return new ListAttributeDescriptionsOperation();
+  }
 }

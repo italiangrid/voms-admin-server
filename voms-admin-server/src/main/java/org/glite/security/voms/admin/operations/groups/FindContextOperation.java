@@ -31,51 +31,50 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class FindContextOperation extends BaseVomsOperation {
 
-	VOMSContext theContext = null;
+  VOMSContext theContext = null;
 
-	String contextString = null;
+  String contextString = null;
 
-	private FindContextOperation(String contextString) {
+  private FindContextOperation(String contextString) {
 
-		if (contextString == null)
-			throw new NullArgumentException("contextString cannot be null!");
+    if (contextString == null)
+      throw new NullArgumentException("contextString cannot be null!");
 
-		PathNamingScheme.checkSyntax(contextString);
+    PathNamingScheme.checkSyntax(contextString);
 
-		this.contextString = contextString;
-	}
+    this.contextString = contextString;
+  }
 
-	public static FindContextOperation instance(String contextString) {
+  public static FindContextOperation instance(String contextString) {
 
-		return new FindContextOperation(contextString);
-	}
+    return new FindContextOperation(contextString);
+  }
 
-	@Override
-	protected Object doExecute() {
+  @Override
+  protected Object doExecute() {
 
-		String groupName = PathNamingScheme.getGroupName(contextString);
-		VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
+    String groupName = PathNamingScheme.getGroupName(contextString);
+    VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
 
-		if (PathNamingScheme.isQualifiedRole(contextString)) {
+    if (PathNamingScheme.isQualifiedRole(contextString)) {
 
-			String roleName = PathNamingScheme.getRoleName(contextString);
-			VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+      String roleName = PathNamingScheme.getRoleName(contextString);
+      VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
 
-			return VOMSContext.instance(g, r);
-		}
+      return VOMSContext.instance(g, r);
+    }
 
-		return VOMSContext.instance(g);
-	}
+    return VOMSContext.instance(g);
+  }
 
-	@Override
-	protected void setupPermissions() {
+  @Override
+  protected void setupPermissions() {
 
-		// A group part must be present in the contextString
-		VOMSGroup g = VOMSGroupDAO.instance().findByName(
-				PathNamingScheme.getGroupName(contextString));
-		addRequiredPermissionOnPath(g, VOMSPermission
-				.getContainerReadPermission());
+    // A group part must be present in the contextString
+    VOMSGroup g = VOMSGroupDAO.instance().findByName(
+      PathNamingScheme.getGroupName(contextString));
+    addRequiredPermissionOnPath(g, VOMSPermission.getContainerReadPermission());
 
-	}
+  }
 
 }

@@ -34,65 +34,66 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class RemoveMemberOperation extends BaseVomsOperation {
 
-	VOMSUser user;
+  VOMSUser user;
 
-	VOMSGroup group;
+  VOMSGroup group;
 
-	private RemoveMemberOperation(VOMSUser u, VOMSGroup g) {
-		user = u;
-		group = g;
+  private RemoveMemberOperation(VOMSUser u, VOMSGroup g) {
 
-	}
+    user = u;
+    group = g;
 
-	protected Object doExecute() {
+  }
 
-		// Remove from children group first, if there are some
+  protected Object doExecute() {
 
-		List childrenGroups = (List) ListChildrenGroupsOperation
-				.instance(group).execute();
+    // Remove from children group first, if there are some
 
-		Iterator i = childrenGroups.iterator();
+    List childrenGroups = (List) ListChildrenGroupsOperation.instance(group)
+      .execute();
 
-		while (i.hasNext()) {
-			VOMSGroup childGroup = (VOMSGroup) i.next();
-			if (user.isMember(childGroup))
-				instance(user, childGroup).execute();
-		}
+    Iterator i = childrenGroups.iterator();
 
-		VOMSUserDAO.instance().removeFromGroup(user, group);
-		return null;
-	}
+    while (i.hasNext()) {
+      VOMSGroup childGroup = (VOMSGroup) i.next();
+      if (user.isMember(childGroup))
+        instance(user, childGroup).execute();
+    }
 
-	public static RemoveMemberOperation instance(VOMSUser u, VOMSGroup g) {
+    VOMSUserDAO.instance().removeFromGroup(user, group);
+    return null;
+  }
 
-		return new RemoveMemberOperation(u, g);
-	}
+  public static RemoveMemberOperation instance(VOMSUser u, VOMSGroup g) {
 
-	public static RemoveMemberOperation instance(String groupName,
-			String username, String caDn) {
+    return new RemoveMemberOperation(u, g);
+  }
 
-		VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
-				.execute();
-		VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName)
-				.execute();
+  public static RemoveMemberOperation instance(String groupName,
+    String username, String caDn) {
 
-		if (u == null)
-			throw new NoSuchUserException("User '" + username + "," + caDn
-					+ "' not found in this vo.");
+    VOMSUser u = (VOMSUser) FindUserOperation.instance(username, caDn)
+      .execute();
+    VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
 
-		if (g == null)
-			throw new NoSuchGroupException("Group '" + groupName
-					+ "' does not exist in this vo.");
+    if (u == null)
+      throw new NoSuchUserException("User '" + username + "," + caDn
+        + "' not found in this vo.");
 
-		return new RemoveMemberOperation(u, g);
+    if (g == null)
+      throw new NoSuchGroupException("Group '" + groupName
+        + "' does not exist in this vo.");
 
-	}
+    return new RemoveMemberOperation(u, g);
 
-	protected void setupPermissions() {
-		addRequiredPermission(VOMSContext.instance(group.getParent()),
-				VOMSPermission.getContainerReadPermission());
-		addRequiredPermission(VOMSContext.instance(group), VOMSPermission
-				.getMembershipRWPermissions().setContainerReadPermission());
-	}
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.instance(group.getParent()),
+      VOMSPermission.getContainerReadPermission());
+    addRequiredPermission(VOMSContext.instance(group), VOMSPermission
+      .getMembershipRWPermissions().setContainerReadPermission());
+  }
 
 }

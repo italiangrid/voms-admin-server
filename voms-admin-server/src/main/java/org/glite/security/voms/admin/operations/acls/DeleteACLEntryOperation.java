@@ -35,109 +35,108 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class DeleteACLEntryOperation extends BaseVomsOperation {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(DeleteACLEntryOperation.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(DeleteACLEntryOperation.class);
 
-	private ACL acl;
-	private VOMSAdmin admin;
+  private ACL acl;
+  private VOMSAdmin admin;
 
-	private boolean recursive = false;
+  private boolean recursive = false;
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		if (isRecursive()) {
+    if (isRecursive()) {
 
-			if (acl.getContext().isGroupContext()) {
-				try {
+      if (acl.getContext().isGroupContext()) {
+        try {
 
-					List childrenGroups = VOMSGroupDAO.instance().getChildren(
-							acl.getGroup());
-					Iterator childIter = childrenGroups.iterator();
+          List childrenGroups = VOMSGroupDAO.instance().getChildren(
+            acl.getGroup());
+          Iterator childIter = childrenGroups.iterator();
 
-					while (childIter.hasNext()) {
+          while (childIter.hasNext()) {
 
-						VOMSGroup childGroup = (VOMSGroup) childIter.next();
-						DeleteACLEntryOperation op = instance(childGroup
-								.getACL(), admin, recursive);
-						op.execute();
-					}
+            VOMSGroup childGroup = (VOMSGroup) childIter.next();
+            DeleteACLEntryOperation op = instance(childGroup.getACL(), admin,
+              recursive);
+            op.execute();
+          }
 
-					log.debug("Removing ACL entry for admin '" + admin
-							+ "' in ACL '" + acl.getContext()
-							+ "' [recursive].");
-					ACLDAO.instance().deleteACLEntry(acl, admin);
-					return acl;
+          log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
+            + acl.getContext() + "' [recursive].");
+          ACLDAO.instance().deleteACLEntry(acl, admin);
+          return acl;
 
-				} catch (VOMSAuthorizationException e) {
+        } catch (VOMSAuthorizationException e) {
 
-					log
-							.warn("Authorization Error saving recursively ACL entry !");
+          log.warn("Authorization Error saving recursively ACL entry !");
 
-				} catch (RuntimeException e) {
+        } catch (RuntimeException e) {
 
-					throw e;
-				}
+          throw e;
+        }
 
-			} else {
+      } else {
 
-				log.debug("Removing ACL entry for admin '" + admin
-						+ "' in ACL '" + acl.getContext() + "' [recursive].");
-				ACLDAO.instance().deleteACLEntry(acl, admin);
-				return acl;
-			}
+        log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
+          + acl.getContext() + "' [recursive].");
+        ACLDAO.instance().deleteACLEntry(acl, admin);
+        return acl;
+      }
 
-		} else {
+    } else {
 
-			log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
-					+ acl.getContext() + "'.");
-			ACLDAO.instance().deleteACLEntry(acl, admin);
-			return acl;
-		}
+      log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
+        + acl.getContext() + "'.");
+      ACLDAO.instance().deleteACLEntry(acl, admin);
+      return acl;
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		VOMSPermission requiredPerms = null;
-		if (acl.isDefautlACL())
-			requiredPerms = VOMSPermission.getEmptyPermissions()
-					.setACLDefaultPermission().setACLReadPermission()
-					.setACLWritePermission();
-		else
-			requiredPerms = VOMSPermission.getEmptyPermissions()
-					.setACLReadPermission().setACLWritePermission();
+    VOMSPermission requiredPerms = null;
+    if (acl.isDefautlACL())
+      requiredPerms = VOMSPermission.getEmptyPermissions()
+        .setACLDefaultPermission().setACLReadPermission()
+        .setACLWritePermission();
+    else
+      requiredPerms = VOMSPermission.getEmptyPermissions()
+        .setACLReadPermission().setACLWritePermission();
 
-		addRequiredPermission(acl.getContext(), requiredPerms);
+    addRequiredPermission(acl.getContext(), requiredPerms);
 
-	}
+  }
 
-	private DeleteACLEntryOperation(ACL acl, VOMSAdmin admin) {
+  private DeleteACLEntryOperation(ACL acl, VOMSAdmin admin) {
 
-		this.acl = acl;
-		this.admin = admin;
-	}
+    this.acl = acl;
+    this.admin = admin;
+  }
 
-	private DeleteACLEntryOperation(ACL acl, VOMSAdmin admin, boolean propagate) {
+  private DeleteACLEntryOperation(ACL acl, VOMSAdmin admin, boolean propagate) {
 
-		this.acl = acl;
-		this.admin = admin;
-		this.recursive = propagate;
-	}
+    this.acl = acl;
+    this.admin = admin;
+    this.recursive = propagate;
+  }
 
-	public static DeleteACLEntryOperation instance(ACL acl, VOMSAdmin admin) {
+  public static DeleteACLEntryOperation instance(ACL acl, VOMSAdmin admin) {
 
-		return new DeleteACLEntryOperation(acl, admin);
-	}
+    return new DeleteACLEntryOperation(acl, admin);
+  }
 
-	public static DeleteACLEntryOperation instance(ACL acl, VOMSAdmin admin,
-			boolean propagate) {
+  public static DeleteACLEntryOperation instance(ACL acl, VOMSAdmin admin,
+    boolean propagate) {
 
-		return new DeleteACLEntryOperation(acl, admin, propagate);
-	}
+    return new DeleteACLEntryOperation(acl, admin, propagate);
+  }
 
-	protected boolean isRecursive() {
-		return recursive;
-	}
+  protected boolean isRecursive() {
+
+    return recursive;
+  }
 
 }

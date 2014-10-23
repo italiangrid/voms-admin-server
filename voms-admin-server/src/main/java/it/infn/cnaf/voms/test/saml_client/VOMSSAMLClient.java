@@ -67,234 +67,227 @@ import org.opensaml.xml.io.MarshallingException;
 import org.w3c.dom.Element;
 
 public class VOMSSAMLClient {
-    
-    static final String MY_DN = "CN=Andrea Ceccanti,L=CNAF,OU=Personal Certificate,O=INFN,C=IT"; 
-    static final String MY_OTHER_DN = "emailAddress=andrea.ceccanti@cnaf.infn.it,CN=cecco,OU=Voms-Admin testing,O=Voms-Admin,ST=Test,C=IT";
 
-    static {
+  static final String MY_DN = "CN=Andrea Ceccanti,L=CNAF,OU=Personal Certificate,O=INFN,C=IT";
+  static final String MY_OTHER_DN = "emailAddress=andrea.ceccanti@cnaf.infn.it,CN=cecco,OU=Voms-Admin testing,O=Voms-Admin,ST=Test,C=IT";
 
-        Security.addProvider( new BouncyCastleProvider() );
+  static {
 
-    }
+    Security.addProvider(new BouncyCastleProvider());
 
-    
-    public static void main( String[] args ) throws MalformedURLException ,
-            ServiceException , RemoteException {
+  }
 
-        new VOMSSAMLClient( args);
-    }
+  public static void main(String[] args) throws MalformedURLException,
+    ServiceException, RemoteException {
 
-    public static Element marshall( XMLObject xmlObject )
-            throws MarshallingException {
+    new VOMSSAMLClient(args);
+  }
 
-        Element element;
+  public static Element marshall(XMLObject xmlObject)
+    throws MarshallingException {
 
-        MarshallerFactory marshallerFactory = Configuration
-                .getMarshallerFactory();
-        Marshaller marshaller = marshallerFactory.getMarshaller( xmlObject );
-        element = marshaller.marshall( xmlObject );
+    Element element;
 
-        return element;
-    }
+    MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+    Marshaller marshaller = marshallerFactory.getMarshaller(xmlObject);
+    element = marshaller.marshall(xmlObject);
 
-    
-    public void usage(){
-    	
-    	System.out.format("usage: %s <host> <vo> <dn>", this.getClass().getName());
-    	
-    }
-    
-    
-    public void testEmptyAttributeQuery(){
-    	
-    	
-    	
-    }
-    public VOMSSAMLClient( String[] args ) throws MalformedURLException,
-            ServiceException, RemoteException {
+    return element;
+  }
 
-    	
-    	if (args.length < 3){
-    		usage();
-    		System.exit(-1);
-    		
-    	}
-    	
-    	String host = args[0];
-    	String vo = args[1];
-    	String dn = args[2];
-    	
-    	initializeOpenSAML();
-    	
-    	List<String> fqans = new ArrayList<String>();
-    	
-    	if (args.length > 2){
-    		
-    		for (int i=2; i < args.length; i++)
-    			fqans.add(args[i]);
- 	
-    	}
-    	
-        
-        
-        AttributeQuery query = buildAttributeQuery( MY_DN, vo ,fqans);
+  public void usage() {
 
-        System.out.println( "Query:" );
-        print( query );
+    System.out.format("usage: %s <host> <vo> <dn>", this.getClass().getName());
 
-        AttributeAuthorityPortType aa = getVOMSSamlService( host, vo );
-        
-        Response response = aa.attributeQuery( query );
+  }
 
-        System.out.println( "Response:" );
-        print( response );
-        
-    }
-    
-    
-    
+  public void testEmptyAttributeQuery() {
 
-    AttributeQuery buildAttributeQuery( String userDn, String voName, List<String>  fqans) {
+  }
 
-        XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
+  public VOMSSAMLClient(String[] args) throws MalformedURLException,
+    ServiceException, RemoteException {
 
-        AttributeQueryBuilder qb = (AttributeQueryBuilder) bf
-                .getBuilder( AttributeQuery.DEFAULT_ELEMENT_NAME );
-
-        AttributeQuery query = qb.buildObject();
-
-        query.setID( UUID.randomUUID().toString() );
-        query.setVersion( SAMLVersion.VERSION_20 );
-
-        query.setIssueInstant( new DateTime() );
-
-        IssuerBuilder issuerBuilder = (IssuerBuilder) bf
-                .getBuilder( Issuer.DEFAULT_ELEMENT_NAME );
-
-        Issuer issuer = issuerBuilder.buildObject();
-        issuer.setValue( userDn );
-        issuer.setFormat( NameID.X509_SUBJECT );
-
-        query.setIssuer( issuer );
-
-        SubjectBuilder subjectBuilder = (SubjectBuilder) bf
-                .getBuilder( Subject.DEFAULT_ELEMENT_NAME );
-        Subject subject = subjectBuilder.buildObject();
-
-        NameIDBuilder nameIdBuilder = (NameIDBuilder) bf
-                .getBuilder( NameID.DEFAULT_ELEMENT_NAME );
-
-        NameID requester = nameIdBuilder.buildObject();
-        requester.setFormat( NameID.X509_SUBJECT );
-        requester.setValue( userDn );
-
-        subject.setNameID( requester );
-
-        query.setSubject( subject );
-        
-        if (!fqans.isEmpty()){
-        	List<Attribute> requestedAttrs = new ArrayList<Attribute>();
-        
-        	requestedAttrs.add(AttributeWizard.createVOAttribute(voName));
-       
-        	List<String> groups = new ArrayList<String>();
-        	List<String> roles = new ArrayList<String>();
-        	
-        	for (String f: fqans){
-        		
-        		if (PathNamingScheme.isGroupFQAN(f))
-        			groups.add(f);
-        		else
-        			roles.add(f);
-        	}
-        	
-        	requestedAttrs.add(AttributeWizard.createPrimaryGroupAttributeFromString(null));
-        	
-        	requestedAttrs.add(AttributeWizard.createGroupAttributeFromStrings(groups));	
-        	
-        	if (!roles.isEmpty()){
-        		requestedAttrs.add(AttributeWizard.createRoleAttributeFromStrings(roles));
-        		requestedAttrs.add(AttributeWizard.createPrimaryRoleAttributeFromString(null));
-        	}
-        	
-        	query.getAttributes().addAll(requestedAttrs);
-        }
-        
-        return query;
-    }
-
-    AttributeAuthorityPortType getVOMSSamlService( String host, String vo ) {
-
-        String url = String.format( "https://%s:8443/voms/%s/services/VOMSSaml", host, vo);
-        
-        try {
-
-            AttributeAuthorityServiceLocator loc = new AttributeAuthorityServiceLocator();
-            TypeMapping typeMapping = loc.getTypeMappingRegistry()
-                    .getDefaultTypeMapping();
-
-            typeMapping.register( AttributeQuery.class,
-                    AttributeQuery.TYPE_NAME, new SerializerFactory(),
-                    new DeserializerFactory() );
-
-            typeMapping.register( Response.class, Response.TYPE_NAME,
-                    new SerializerFactory(), new DeserializerFactory() );
-
-            AttributeAuthorityPortType aa = loc
-                    .getAttributeAuthorityPortType( new URL( url ) );
-
-            return aa;
-
-        } catch ( Throwable t ) {
-            printExceptionAndExit( t );
-            
-        }
-
-        return null;
-    }
-
-    void initializeOpenSAML() {
-
-        try {
-
-            DefaultBootstrap.bootstrap();
-
-        } catch ( ConfigurationException e ) {
-
-            printExceptionAndExit( e );
-        }
-    }
-
-    void parseCredentials( String certFile, String keyFile ) {
+    if (args.length < 3) {
+      usage();
+      System.exit(-1);
 
     }
 
-    public void print( XMLObject xmlObject ) {
+    String host = args[0];
+    String vo = args[1];
+    String dn = args[2];
 
-        try {
+    initializeOpenSAML();
 
-            Element element = marshall( xmlObject );
+    List<String> fqans = new ArrayList<String>();
 
-            Transformer tr = TransformerFactory.newInstance().newTransformer();
-            tr.setOutputProperty( OutputKeys.INDENT, "yes" );
-            tr.setOutputProperty( OutputKeys.METHOD, "xml" );
-            tr.setOutputProperty( "{http://xml.apache.org/xslt}indent-amount",
-                    String.valueOf( 4 ) );
-            tr.transform( new DOMSource( element ), new StreamResult(
-                    System.out ) );
+    if (args.length > 2) {
 
-        } catch ( Throwable t ) {
-
-            printExceptionAndExit( t );
-
-        }
+      for (int i = 2; i < args.length; i++)
+        fqans.add(args[i]);
 
     }
 
-    public void printExceptionAndExit( Throwable t ) {
+    AttributeQuery query = buildAttributeQuery(MY_DN, vo, fqans);
 
-        t.printStackTrace();
-        System.exit( 1 );
+    System.out.println("Query:");
+    print(query);
+
+    AttributeAuthorityPortType aa = getVOMSSamlService(host, vo);
+
+    Response response = aa.attributeQuery(query);
+
+    System.out.println("Response:");
+    print(response);
+
+  }
+
+  AttributeQuery buildAttributeQuery(String userDn, String voName,
+    List<String> fqans) {
+
+    XMLObjectBuilderFactory bf = Configuration.getBuilderFactory();
+
+    AttributeQueryBuilder qb = (AttributeQueryBuilder) bf
+      .getBuilder(AttributeQuery.DEFAULT_ELEMENT_NAME);
+
+    AttributeQuery query = qb.buildObject();
+
+    query.setID(UUID.randomUUID().toString());
+    query.setVersion(SAMLVersion.VERSION_20);
+
+    query.setIssueInstant(new DateTime());
+
+    IssuerBuilder issuerBuilder = (IssuerBuilder) bf
+      .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
+
+    Issuer issuer = issuerBuilder.buildObject();
+    issuer.setValue(userDn);
+    issuer.setFormat(NameID.X509_SUBJECT);
+
+    query.setIssuer(issuer);
+
+    SubjectBuilder subjectBuilder = (SubjectBuilder) bf
+      .getBuilder(Subject.DEFAULT_ELEMENT_NAME);
+    Subject subject = subjectBuilder.buildObject();
+
+    NameIDBuilder nameIdBuilder = (NameIDBuilder) bf
+      .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+
+    NameID requester = nameIdBuilder.buildObject();
+    requester.setFormat(NameID.X509_SUBJECT);
+    requester.setValue(userDn);
+
+    subject.setNameID(requester);
+
+    query.setSubject(subject);
+
+    if (!fqans.isEmpty()) {
+      List<Attribute> requestedAttrs = new ArrayList<Attribute>();
+
+      requestedAttrs.add(AttributeWizard.createVOAttribute(voName));
+
+      List<String> groups = new ArrayList<String>();
+      List<String> roles = new ArrayList<String>();
+
+      for (String f : fqans) {
+
+        if (PathNamingScheme.isGroupFQAN(f))
+          groups.add(f);
+        else
+          roles.add(f);
+      }
+
+      requestedAttrs.add(AttributeWizard
+        .createPrimaryGroupAttributeFromString(null));
+
+      requestedAttrs.add(AttributeWizard
+        .createGroupAttributeFromStrings(groups));
+
+      if (!roles.isEmpty()) {
+        requestedAttrs.add(AttributeWizard
+          .createRoleAttributeFromStrings(roles));
+        requestedAttrs.add(AttributeWizard
+          .createPrimaryRoleAttributeFromString(null));
+      }
+
+      query.getAttributes().addAll(requestedAttrs);
+    }
+
+    return query;
+  }
+
+  AttributeAuthorityPortType getVOMSSamlService(String host, String vo) {
+
+    String url = String.format("https://%s:8443/voms/%s/services/VOMSSaml",
+      host, vo);
+
+    try {
+
+      AttributeAuthorityServiceLocator loc = new AttributeAuthorityServiceLocator();
+      TypeMapping typeMapping = loc.getTypeMappingRegistry()
+        .getDefaultTypeMapping();
+
+      typeMapping.register(AttributeQuery.class, AttributeQuery.TYPE_NAME,
+        new SerializerFactory(), new DeserializerFactory());
+
+      typeMapping.register(Response.class, Response.TYPE_NAME,
+        new SerializerFactory(), new DeserializerFactory());
+
+      AttributeAuthorityPortType aa = loc
+        .getAttributeAuthorityPortType(new URL(url));
+
+      return aa;
+
+    } catch (Throwable t) {
+      printExceptionAndExit(t);
 
     }
+
+    return null;
+  }
+
+  void initializeOpenSAML() {
+
+    try {
+
+      DefaultBootstrap.bootstrap();
+
+    } catch (ConfigurationException e) {
+
+      printExceptionAndExit(e);
+    }
+  }
+
+  void parseCredentials(String certFile, String keyFile) {
+
+  }
+
+  public void print(XMLObject xmlObject) {
+
+    try {
+
+      Element element = marshall(xmlObject);
+
+      Transformer tr = TransformerFactory.newInstance().newTransformer();
+      tr.setOutputProperty(OutputKeys.INDENT, "yes");
+      tr.setOutputProperty(OutputKeys.METHOD, "xml");
+      tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+        String.valueOf(4));
+      tr.transform(new DOMSource(element), new StreamResult(System.out));
+
+    } catch (Throwable t) {
+
+      printExceptionAndExit(t);
+
+    }
+
+  }
+
+  public void printExceptionAndExit(Throwable t) {
+
+    t.printStackTrace();
+    System.exit(1);
+
+  }
 }

@@ -34,98 +34,99 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "mappings.jsp"),
-		@Result(name = BaseAction.INPUT, location = "mappings.jsp"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="mappings.jsp")})
-
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "mappings.jsp"),
+  @Result(name = BaseAction.INPUT, location = "mappings.jsp"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "mappings.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "assignRole,addToGroup,removeFromGroup,dismissRole" })
+  "token.includeMethods", "assignRole,addToGroup,removeFromGroup,dismissRole" })
 public class MembershipActions extends UserActionSupport {
 
-	public static final Logger log = LoggerFactory.getLogger(MembershipActions.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(MembershipActions.class);
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long groupId;
-	Long roleId;
+  Long groupId;
+  Long roleId;
 
-	@Action("add-to-group")
-	
-	public String addToGroup() throws Exception {
-		
-		VOMSGroup g = groupById(groupId);
+  @Action("add-to-group")
+  public String addToGroup() throws Exception {
 
-		AddMemberOperation.instance(getModel(), g).execute();
+    VOMSGroup g = groupById(groupId);
 
-		addActionMessage(getText("confirm.user.add_to_group", new String[] {
-				model.getShortName(), g.toString() }));
+    AddMemberOperation.instance(getModel(), g).execute();
 
-		return SUCCESS;
-	}
+    addActionMessage(getText("confirm.user.add_to_group",
+      new String[] { model.getShortName(), g.toString() }));
 
-	@Action(value = "remove-from-group")
-	public String removeFromGroup() throws Exception {
+    return SUCCESS;
+  }
 
-		VOMSGroup g = groupById(groupId);
+  @Action(value = "remove-from-group")
+  public String removeFromGroup() throws Exception {
 
-		RemoveMemberOperation.instance(getModel(), g).execute();
+    VOMSGroup g = groupById(groupId);
 
-		addActionMessage(getText("confirm.user.remove_from_group",
-				new String[] { model.getShortName(), g.toString() }));
+    RemoveMemberOperation.instance(getModel(), g).execute();
 
-		return SUCCESS;
+    addActionMessage(getText("confirm.user.remove_from_group", new String[] {
+      model.getShortName(), g.toString() }));
 
-	}
+    return SUCCESS;
 
-	@Action(value = "assign-role")
-	public String assignRole() throws Exception {
+  }
 
+  @Action(value = "assign-role")
+  public String assignRole() throws Exception {
 
-		VOMSGroup g = groupById(groupId);
-		VOMSRole r = roleById(roleId);
+    VOMSGroup g = groupById(groupId);
+    VOMSRole r = roleById(roleId);
 
-		AssignRoleOperation.instance(getModel(), g, r).execute();
+    AssignRoleOperation.instance(getModel(), g, r).execute();
 
-		addActionMessage(getText("confirm.user.assign_role", new String[] {
-				getModel().getShortName(),r.toString(),g.toString() }));
+    addActionMessage(getText("confirm.user.assign_role", new String[] {
+      getModel().getShortName(), r.toString(), g.toString() }));
 
-		return SUCCESS;
+    return SUCCESS;
 
-	}
+  }
 
-	@Action("dismiss-role")
-	public String dismissRole() throws Exception {
+  @Action("dismiss-role")
+  public String dismissRole() throws Exception {
 
-		VOMSGroup g = groupById(groupId);
-		VOMSRole r = roleById(roleId);
+    VOMSGroup g = groupById(groupId);
+    VOMSRole r = roleById(roleId);
 
-		DismissRoleOperation.instance(getModel(), g, r).execute();
-		addActionMessage(getText("confirm.user.dismiss_role", new String[] {
-				getModel().getShortName(), r.toString(), g.toString() }));
+    DismissRoleOperation.instance(getModel(), g, r).execute();
+    addActionMessage(getText("confirm.user.dismiss_role", new String[] {
+      getModel().getShortName(), r.toString(), g.toString() }));
 
-		return SUCCESS;
+    return SUCCESS;
 
-	}
+  }
 
+  public Long getGroupId() {
 
-	public Long getGroupId() {
-		return groupId;
-	}
+    return groupId;
+  }
 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
+  public void setGroupId(Long groupId) {
 
-	public Long getRoleId() {
-		return roleId;
-	}
+    this.groupId = groupId;
+  }
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+  public Long getRoleId() {
+
+    return roleId;
+  }
+
+  public void setRoleId(Long roleId) {
+
+    this.roleId = roleId;
+  }
 
 }

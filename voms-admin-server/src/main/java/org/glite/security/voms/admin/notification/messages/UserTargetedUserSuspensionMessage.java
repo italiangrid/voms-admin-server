@@ -23,32 +23,32 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserTargetedUserSuspensionMessage extends
-		AbstractVelocityNotification {
+  AbstractVelocityNotification {
 
-	VOMSUser user;
-	String suspensionReason;
-	
-	public UserTargetedUserSuspensionMessage(VOMSUser u, String suspensionReason) {
-		
-		this.user = u;
-		this.suspensionReason = suspensionReason;
+  VOMSUser user;
+  String suspensionReason;
 
-	}
-	
-	@Override
-	protected void buildMessage() {
+  public UserTargetedUserSuspensionMessage(VOMSUser u, String suspensionReason) {
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
+    this.user = u;
+    this.suspensionReason = suspensionReason;
 
-		setSubject("Membership suspension notification");
-		
-		context.put("voName", voName);
-		context.put("recipient", getRecipientList().get(0));
-		context.put("suspensionReason", suspensionReason);
-		context.put("user", user);
-		
-		super.buildMessage();
-	}
+  }
+
+  @Override
+  protected void buildMessage() {
+
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String voName = conf.getVOName();
+
+    setSubject("Membership suspension notification");
+
+    context.put("voName", voName);
+    context.put("recipient", getRecipientList().get(0));
+    context.put("suspensionReason", suspensionReason);
+    context.put("user", user);
+
+    super.buildMessage();
+  }
 
 }

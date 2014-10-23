@@ -37,35 +37,31 @@ import org.xml.sax.SAXException;
  *
  */
 public class Deserializer extends DeserializerImpl {
-		
-    static Logger logger = LoggerFactory.getLogger(Deserializer.class);
-	
-	
-	public void onStartElement(java.lang.String namespace,
-            java.lang.String localName,
-            java.lang.String prefix,
-            org.xml.sax.Attributes attributes,
-            DeserializationContext context) throws SAXException {
-		
 
-		try 
-		{
-			MessageElement messageElement = context.getCurElement();
-			Element element = messageElement.getAsDOM();
+  static Logger logger = LoggerFactory.getLogger(Deserializer.class);
 
-			/* call OpenSAML deserializing */
-			
-			UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
-			Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(element);
-			XMLObject unmarshalled = unmarshaller.unmarshall(element);
-						
-			setValue(unmarshalled);
-		}
-		
-		catch(Exception exception) 
-		{
-			throw new SAXException("Error deserializing " + 
-					" : "  + exception.getClass() + " : " + exception.getMessage());
-		}
-	}
+  public void onStartElement(java.lang.String namespace,
+    java.lang.String localName, java.lang.String prefix,
+    org.xml.sax.Attributes attributes, DeserializationContext context)
+    throws SAXException {
+
+    try {
+      MessageElement messageElement = context.getCurElement();
+      Element element = messageElement.getAsDOM();
+
+      /* call OpenSAML deserializing */
+
+      UnmarshallerFactory unmarshallerFactory = Configuration
+        .getUnmarshallerFactory();
+      Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(element);
+      XMLObject unmarshalled = unmarshaller.unmarshall(element);
+
+      setValue(unmarshalled);
+    }
+
+    catch (Exception exception) {
+      throw new SAXException("Error deserializing " + " : "
+        + exception.getClass() + " : " + exception.getMessage());
+    }
+  }
 }

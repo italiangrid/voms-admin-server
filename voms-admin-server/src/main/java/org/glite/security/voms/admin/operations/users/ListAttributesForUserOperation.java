@@ -26,28 +26,28 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class ListAttributesForUserOperation extends BaseVomsOperation {
 
-	protected VOMSUser _user;
+  protected VOMSUser _user;
 
-	private ListAttributesForUserOperation(VOMSUser u) {
+  private ListAttributesForUserOperation(VOMSUser u) {
 
-		_user = u;
-	}
+    _user = u;
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return _user.getAttributes();
-	}
+    return _user.getAttributes();
+  }
 
-	protected void setupPermissions() {
+  protected void setupPermissions() {
 
-		addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-				.getEmptyPermissions().setAttributesReadPermission());
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getEmptyPermissions().setAttributesReadPermission());
 
-	}
+  }
 
-	public static ListAttributesForUserOperation instance(VOMSUser u) {
+  public static ListAttributesForUserOperation instance(VOMSUser u) {
 
-		return new ListAttributesForUserOperation(u);
-	}
+    return new ListAttributesForUserOperation(u);
+  }
 
 }

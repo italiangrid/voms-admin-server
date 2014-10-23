@@ -20,17 +20,18 @@
 
 package org.italiangrid.voms.aa.impl;
 
-
 public class NullFQANEncoding implements FQANEncoding {
 
-	@Override
-	public String encodeFQAN(String fqan) {
-		return fqan;
-	}
+  @Override
+  public String encodeFQAN(String fqan) {
 
-	@Override
-	public String decodeFQAN(String fqan) {
-		return fqan;
-	}
+    return fqan;
+  }
+
+  @Override
+  public String decodeFQAN(String fqan) {
+
+    return fqan;
+  }
 
 }

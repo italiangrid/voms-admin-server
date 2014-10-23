@@ -24,20 +24,20 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class FindUnsubscribedGroupsOperation extends BaseVoReadOperation {
 
-	Long userId;
+  Long userId;
 
-	private FindUnsubscribedGroupsOperation(Long userId) {
+  private FindUnsubscribedGroupsOperation(Long userId) {
 
-		this.userId = userId;
-	}
+    this.userId = userId;
+  }
 
-	public Object doExecute() {
+  public Object doExecute() {
 
-		return VOMSUserDAO.instance().getUnsubscribedGroups(userId);
-	}
+    return VOMSUserDAO.instance().getUnsubscribedGroups(userId);
+  }
 
-	public static FindUnsubscribedGroupsOperation instance(Long userId) {
+  public static FindUnsubscribedGroupsOperation instance(Long userId) {
 
-		return new FindUnsubscribedGroupsOperation(userId);
-	}
+    return new FindUnsubscribedGroupsOperation(userId);
+  }
 }

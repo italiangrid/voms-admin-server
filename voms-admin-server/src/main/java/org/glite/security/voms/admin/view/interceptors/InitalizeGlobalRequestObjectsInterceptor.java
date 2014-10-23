@@ -31,50 +31,58 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
-public class InitalizeGlobalRequestObjectsInterceptor extends AbstractInterceptor
-		implements StrutsStatics {
+public class InitalizeGlobalRequestObjectsInterceptor extends
+  AbstractInterceptor implements StrutsStatics {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	
-	protected void setupGlobalObjects(HttpServletRequest req){
-		
-		if (!VOMSConfiguration.instance().getVOName().equals("siblings")){
-			
-			AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
-			
-			req.setAttribute("registrationEnabled", VOMSConfiguration.instance().getBoolean(
-					VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
-			
-			req.setAttribute("readOnlyPI", 
-					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,false));
-			
-			req.setAttribute("readOnlyMembershipExpiration", 
-					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,false));
-			
-			req.setAttribute("disableMembershipEndTime", 
-					VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
-			
-			req.setAttribute("defaultAUP", aup);
-			
-		}
-		
-	}
+  private static final long serialVersionUID = 1L;
 
-	public String intercept(ActionInvocation ai) throws Exception {
-		
-		HttpServletRequest req = ServletActionContext.getRequest(); 
-		
-		setupGlobalObjects(req);
+  protected void setupGlobalObjects(HttpServletRequest req) {
 
-		return ai.invoke();
-	}
+    if (!VOMSConfiguration.instance().getVOName().equals("siblings")) {
 
-	
+      AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 
-	
-	
-	
+      req.setAttribute(
+        "registrationEnabled",
+        VOMSConfiguration.instance().getBoolean(
+          VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
+
+      req.setAttribute(
+        "readOnlyPI",
+        VOMSConfiguration.instance().getBoolean(
+          VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
+          false));
+
+      req
+        .setAttribute(
+          "readOnlyMembershipExpiration",
+          VOMSConfiguration
+            .instance()
+            .getBoolean(
+              VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
+              false));
+
+      req.setAttribute(
+        "disableMembershipEndTime",
+        VOMSConfiguration.instance().getBoolean(
+          VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
+
+      req.setAttribute("defaultAUP", aup);
+
+    }
+
+  }
+
+  public String intercept(ActionInvocation ai) throws Exception {
+
+    HttpServletRequest req = ServletActionContext.getRequest();
+
+    setupGlobalObjects(req);
+
+    return ai.invoke();
+  }
+
 }

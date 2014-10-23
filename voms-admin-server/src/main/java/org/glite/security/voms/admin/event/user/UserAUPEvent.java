@@ -26,30 +26,35 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class UserAUPEvent extends GenericEvent {
 
-	VOMSUser user;
-	AUP aup;
+  VOMSUser user;
+  AUP aup;
 
-	public UserAUPEvent(VOMSUser user, AUP aup) {
-		super(EventType.UserAUPEvent);
-		setUser(user);
-		setAup(aup);
+  public UserAUPEvent(VOMSUser user, AUP aup) {
 
-	}
+    super(EventType.UserAUPEvent);
+    setUser(user);
+    setAup(aup);
 
-	public VOMSUser getUser() {
-		return user;
-	}
+  }
 
-	public void setUser(VOMSUser user) {
-		this.user = user;
-	}
+  public VOMSUser getUser() {
 
-	public AUP getAup() {
-		return aup;
-	}
+    return user;
+  }
 
-	public void setAup(AUP aup) {
-		this.aup = aup;
-	}
+  public void setUser(VOMSUser user) {
+
+    this.user = user;
+  }
+
+  public AUP getAup() {
+
+    return aup;
+  }
+
+  public void setAup(AUP aup) {
+
+    this.aup = aup;
+  }
 
 }

@@ -28,29 +28,29 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListMembersOperation extends BaseMemberhipReadOperation {
 
-	private ListMembersOperation(VOMSContext context) {
+  private ListMembersOperation(VOMSContext context) {
 
-		super(context);
+    super(context);
 
-	}
+  }
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		if (!__context.isGroupContext())
-			return VOMSRoleDAO.instance().getMembers(__context.getGroup(),
-					__context.getRole());
+    if (!__context.isGroupContext())
+      return VOMSRoleDAO.instance().getMembers(__context.getGroup(),
+        __context.getRole());
 
-		return VOMSGroupDAO.instance().getMembers(__context.getGroup());
-	}
+    return VOMSGroupDAO.instance().getMembers(__context.getGroup());
+  }
 
-	public static ListMembersOperation instance(VOMSGroup g, VOMSRole r) {
+  public static ListMembersOperation instance(VOMSGroup g, VOMSRole r) {
 
-		return new ListMembersOperation(VOMSContext.instance(g, r));
-	}
+    return new ListMembersOperation(VOMSContext.instance(g, r));
+  }
 
-	public static ListMembersOperation instance(String context) {
+  public static ListMembersOperation instance(String context) {
 
-		return new ListMembersOperation(VOMSContext.instance(context));
+    return new ListMembersOperation(VOMSContext.instance(context));
 
-	}
+  }
 }

@@ -25,34 +25,42 @@ import java.util.List;
 
 import org.italiangrid.voms.VOMSAttribute;
 
-
 public interface VOMSRequest {
 
-	public String getRequesterSubject();
-	public void setRequesterSubject(String requesterSubject);
-	
-	public String getRequesterIssuer();
-	public void setRequesterIssuer(String requesterIssuer);
-	
-	public String getHolderSubject();
-	public void setHolderSubject(String holderSubject);
-	
-	public String getHolderIssuer();
-	public void setHolderIssuer(String holderIssuer);
-	
-	public X509Certificate getHolderCert();
-	public void setHolderCert(X509Certificate holderCert);
-	
-	public List<String> getRequestedFQANs();
-	public void setRequestedFQANs(List<String> fqans);
-	
-	public List<VOMSAttribute> getOwnedAttributes();
-	public void setOwnedAttributes(List<VOMSAttribute> attrs);
-	
-	public long getRequestedValidity();
-	public void setRequestedValidity(long validity);
-	
-	public List<String> getTargets();
-	public void setTargets(List<String> targets);
-	
+  public String getRequesterSubject();
+
+  public void setRequesterSubject(String requesterSubject);
+
+  public String getRequesterIssuer();
+
+  public void setRequesterIssuer(String requesterIssuer);
+
+  public String getHolderSubject();
+
+  public void setHolderSubject(String holderSubject);
+
+  public String getHolderIssuer();
+
+  public void setHolderIssuer(String holderIssuer);
+
+  public X509Certificate getHolderCert();
+
+  public void setHolderCert(X509Certificate holderCert);
+
+  public List<String> getRequestedFQANs();
+
+  public void setRequestedFQANs(List<String> fqans);
+
+  public List<VOMSAttribute> getOwnedAttributes();
+
+  public void setOwnedAttributes(List<VOMSAttribute> attrs);
+
+  public long getRequestedValidity();
+
+  public void setRequestedValidity(long validity);
+
+  public List<String> getTargets();
+
+  public void setTargets(List<String> targets);
+
 }

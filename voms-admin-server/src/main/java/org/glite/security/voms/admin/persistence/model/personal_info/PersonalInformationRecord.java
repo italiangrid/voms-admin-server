@@ -32,73 +32,73 @@ import javax.persistence.Table;
 @Table(name = "personal_info")
 public class PersonalInformationRecord {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_PI_SEQ")
-	@SequenceGenerator(name="VOMS_PI_SEQ", sequenceName="VOMS_PI_SEQ")
-	Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_PI_SEQ")
+  @SequenceGenerator(name = "VOMS_PI_SEQ", sequenceName = "VOMS_PI_SEQ")
+  Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "personal_info_type_id", nullable = false)
-	PersonalInformationType type;
+  @ManyToOne
+  @JoinColumn(name = "personal_info_type_id", nullable = false)
+  PersonalInformationType type;
 
-	String value;
+  String value;
 
-	Boolean visible;
+  Boolean visible;
 
-	public PersonalInformationRecord() {
+  public PersonalInformationRecord() {
 
-		// TODO Auto-generated constructor stub
-	}
+    // TODO Auto-generated constructor stub
+  }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		return id;
-	}
+    return id;
+  }
 
-	/**
-	 * @return the type
-	 */
-	public PersonalInformationType getType() {
+  /**
+   * @return the type
+   */
+  public PersonalInformationType getType() {
 
-		return type;
-	}
+    return type;
+  }
 
-	/**
-	 * @return the value
-	 */
-	public String getValue() {
+  /**
+   * @return the value
+   */
+  public String getValue() {
 
-		return value;
-	}
+    return value;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-		this.id = id;
-	}
+    this.id = id;
+  }
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(PersonalInformationType type) {
+  /**
+   * @param type
+   *          the type to set
+   */
+  public void setType(PersonalInformationType type) {
 
-		this.type = type;
-	}
+    this.type = type;
+  }
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(String value) {
+  /**
+   * @param value
+   *          the value to set
+   */
+  public void setValue(String value) {
 
-		this.value = value;
-	}
+    this.value = value;
+  }
 
 }

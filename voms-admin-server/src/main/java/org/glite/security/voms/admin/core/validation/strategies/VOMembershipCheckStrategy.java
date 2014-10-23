@@ -22,6 +22,6 @@ package org.glite.security.voms.admin.core.validation.strategies;
 
 public interface VOMembershipCheckStrategy {
 
-	public void checkMembershipStatus();
-	
+  public void checkMembershipStatus();
+
 }

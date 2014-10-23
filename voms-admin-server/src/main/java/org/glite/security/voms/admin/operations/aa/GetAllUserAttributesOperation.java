@@ -30,29 +30,30 @@ import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class GetAllUserAttributesOperation extends BaseVomsOperation {
 
-    String voMemberCertSubject;
-    
-    
-    
-    
-    public GetAllUserAttributesOperation(String certSubject) {
-	voMemberCertSubject = certSubject;
-    }
-    
-    @Override
-    protected Object doExecute() {
-	
-	VOMSAttributeAuthority aa = VOMSAA.getVOMSAttributeAuthority();
-	
-	VOMSAttributes attrs = aa.getAllVOMSAttributes(voMemberCertSubject);
-	
-	return attrs;
-    }
+  String voMemberCertSubject;
 
-    @Override
-    protected void setupPermissions() {
-	addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission.getContainerReadPermission().setMembershipReadPermission().setAttributesReadPermission());
+  public GetAllUserAttributesOperation(String certSubject) {
 
-    }
+    voMemberCertSubject = certSubject;
+  }
+
+  @Override
+  protected Object doExecute() {
+
+    VOMSAttributeAuthority aa = VOMSAA.getVOMSAttributeAuthority();
+
+    VOMSAttributes attrs = aa.getAllVOMSAttributes(voMemberCertSubject);
+
+    return attrs;
+  }
+
+  @Override
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission()
+      .setAttributesReadPermission());
+
+  }
 
 }

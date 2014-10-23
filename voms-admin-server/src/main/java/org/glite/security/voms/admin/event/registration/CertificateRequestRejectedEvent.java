@@ -24,9 +24,10 @@ import org.glite.security.voms.admin.persistence.model.request.CertificateReques
 
 public class CertificateRequestRejectedEvent extends CertificateRequestEvent {
 
-	public CertificateRequestRejectedEvent(CertificateRequest req) {
-		super(req);
-		
-	}
+  public CertificateRequestRejectedEvent(CertificateRequest req) {
+
+    super(req);
+
+  }
 
 }

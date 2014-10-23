@@ -29,96 +29,97 @@ import java.io.Serializable;
  */
 public class AttributeValue implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * This GA value attribute class.
-	 */
-	AttributeClass attributeClass;
-	
-	/**
-	 * The context qualifier for this GA value.
-	 */
-	String context;
-	
-	/**
-	 * The GA value.
-	 */
-	String value;
+  /**
+   * This GA value attribute class.
+   */
+  AttributeClass attributeClass;
 
-	/**
-	 * Returns the {@link AttributeClass} related to this GA value.
-	 * 
-	 * @return
-	 * this GA value attribute class
-	 */
-	public AttributeClass getAttributeClass() {
+  /**
+   * The context qualifier for this GA value.
+   */
+  String context;
 
-		return attributeClass;
-	}
+  /**
+   * The GA value.
+   */
+  String value;
 
-	/**
-	 * Sets the {@link AttributeClass} for this GA value object.
-	 * 
-	 * @param attributeClass
-	 * the GA value attribute class
-	 */
-	public void setAttributeClass(AttributeClass attributeClass) {
+  /**
+   * Returns the {@link AttributeClass} related to this GA value.
+   * 
+   * @return this GA value attribute class
+   */
+  public AttributeClass getAttributeClass() {
 
-		this.attributeClass = attributeClass;
-	}
+    return attributeClass;
+  }
 
-	/** 
-	 * Returns the context qualifier for this GA value.
-	 * 
-	 * <ul>
-	 * 	<li>If the attribute was defined at user scope, the context will be the VO name.</li>
-	 * 	<li>If the attributes was defined at group scope, the context will be the group name.</li>
-	 * 	<li>If the attribute was defined at role scope, the context will be the qualified role name.</li>
-	 * </ul>
-	 * 
-	 * @return
-	 * A string representing the context for this GA. 
-	 */
-	public String getContext() {
+  /**
+   * Sets the {@link AttributeClass} for this GA value object.
+   * 
+   * @param attributeClass
+   *          the GA value attribute class
+   */
+  public void setAttributeClass(AttributeClass attributeClass) {
 
-		return context;
-	}
+    this.attributeClass = attributeClass;
+  }
 
-	/**
-	 * Sets the context for this GA value. VOMS will set this for you, so you shouldn't worry. 
-	 * 
-	 * @param context
-	 * A string representing the context for this GA.
-	 */
-	public void setContext(String context) {
+  /**
+   * Returns the context qualifier for this GA value.
+   * 
+   * <ul>
+   * <li>If the attribute was defined at user scope, the context will be the VO
+   * name.</li>
+   * <li>If the attributes was defined at group scope, the context will be the
+   * group name.</li>
+   * <li>If the attribute was defined at role scope, the context will be the
+   * qualified role name.</li>
+   * </ul>
+   * 
+   * @return A string representing the context for this GA.
+   */
+  public String getContext() {
 
-		this.context = context;
-	}
+    return context;
+  }
 
-	/**
-	 * Returns the GA value. 
-	 * 
-	 * @return
-	 * A string representing the GA value.
-	 */
-	public String getValue() {
+  /**
+   * Sets the context for this GA value. VOMS will set this for you, so you
+   * shouldn't worry.
+   * 
+   * @param context
+   *          A string representing the context for this GA.
+   */
+  public void setContext(String context) {
 
-		return value;
-	}
-	
-	/**
-	 * Sets the GA value.
-	 * 
-	 * @param value
-	 * A string representing the GA value.
-	 */
-	public void setValue(String value) {
+    this.context = context;
+  }
 
-		this.value = value;
-	}
+  /**
+   * Returns the GA value.
+   * 
+   * @return A string representing the GA value.
+   */
+  public String getValue() {
+
+    return value;
+  }
+
+  /**
+   * Sets the GA value.
+   * 
+   * @param value
+   *          A string representing the GA value.
+   */
+  public void setValue(String value) {
+
+    this.value = value;
+  }
 
 }

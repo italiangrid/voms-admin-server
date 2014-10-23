@@ -31,64 +31,66 @@ import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
 
 public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 
-	public static final String ERROR_KEY = "voms-authorization-error";
-	public static final Logger log = LoggerFactory
-			.getLogger(AuthzExceptionInterceptor.class);
-	/**
+  public static final String ERROR_KEY = "voms-authorization-error";
+  public static final Logger log = LoggerFactory
+    .getLogger(AuthzExceptionInterceptor.class);
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String intercept(ActionInvocation ai) throws Exception {
+  @Override
+  public String intercept(ActionInvocation ai) throws Exception {
 
-		String result;
-		try {
+    String result;
+    try {
 
-			result = ai.invoke();
-			return result;
+      result = ai.invoke();
+      return result;
 
-		} catch (Exception e) {
+    } catch (Exception e) {
 
-			if (e instanceof VOMSAuthorizationException) {
+      if (e instanceof VOMSAuthorizationException) {
 
-				log.debug("Caught VOMS authorization exception: " + e);
-				
-				if (ai.getAction() instanceof ValidationAware){
-					
-					ValidationAware vaAction = (ValidationAware)ai.getAction();
-					vaAction.addActionError(e.getMessage());
-					
-				}
-				
-				if (ai.getAction() instanceof AuthorizationErrorAware) {
+        log.debug("Caught VOMS authorization exception: " + e);
 
-					AuthorizationErrorAware aeaAction = (AuthorizationErrorAware) ai
-							.getAction();
-					return aeaAction.getAuthorizationErrorResult();
+        if (ai.getAction() instanceof ValidationAware) {
 
-				}
-				return BaseAction.INPUT;
-			}
+          ValidationAware vaAction = (ValidationAware) ai.getAction();
+          vaAction.addActionError(e.getMessage());
 
-			// Fall back to standard exception mapping mechanism for other
-			// exceptions
-			throw e;
-		}
+        }
 
-	}
+        if (ai.getAction() instanceof AuthorizationErrorAware) {
+
+          AuthorizationErrorAware aeaAction = (AuthorizationErrorAware) ai
+            .getAction();
+          return aeaAction.getAuthorizationErrorResult();
+
+        }
+        return BaseAction.INPUT;
+      }
+
+      // Fall back to standard exception mapping mechanism for other
+      // exceptions
+      throw e;
+    }
+
+  }
 }
 
 class AuthzExceptionHolder {
 
-	VOMSAuthorizationException authorizationException;
+  VOMSAuthorizationException authorizationException;
 
-	public AuthzExceptionHolder(VOMSAuthorizationException e) {
-		authorizationException = e;
-	}
+  public AuthzExceptionHolder(VOMSAuthorizationException e) {
 
-	public VOMSAuthorizationException getAuthorizationException() {
-		return authorizationException;
-	}
+    authorizationException = e;
+  }
+
+  public VOMSAuthorizationException getAuthorizationException() {
+
+    return authorizationException;
+  }
 
 }

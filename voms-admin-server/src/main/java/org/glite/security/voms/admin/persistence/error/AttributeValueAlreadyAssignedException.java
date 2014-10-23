@@ -20,16 +20,17 @@
 package org.glite.security.voms.admin.persistence.error;
 
 public class AttributeValueAlreadyAssignedException extends
-		AlreadyExistsException {
+  AlreadyExistsException {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public AttributeValueAlreadyAssignedException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+  public AttributeValueAlreadyAssignedException(String message) {
+
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
 }

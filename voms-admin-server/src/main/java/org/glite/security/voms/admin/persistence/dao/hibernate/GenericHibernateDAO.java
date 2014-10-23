@@ -48,98 +48,110 @@ import org.hibernate.criterion.Example;
  * @author Christian Bauer
  */
 public abstract class GenericHibernateDAO<T, ID extends Serializable>
-		implements GenericDAO<T, ID> {
+  implements GenericDAO<T, ID> {
 
-	private Class<T> persistentClass;
-	private Session session;
+  private Class<T> persistentClass;
+  private Session session;
 
-	@SuppressWarnings("unchecked")
-	public GenericHibernateDAO() {
-		this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
-				.getGenericSuperclass()).getActualTypeArguments()[0];
-		HibernateFactory.beginTransaction();
-	}
+  @SuppressWarnings("unchecked")
+  public GenericHibernateDAO() {
 
-	public void setSession(Session s) {
-		this.session = s;
-	}
+    this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
+      .getGenericSuperclass()).getActualTypeArguments()[0];
+    HibernateFactory.beginTransaction();
+  }
 
-	protected Session getSession() {
+  public void setSession(Session s) {
 
-		if (session != null)
-			return session;
+    this.session = s;
+  }
 
-		return HibernateFactory.getSession();
+  protected Session getSession() {
 
-	}
+    if (session != null)
+      return session;
 
-	public Class<T> getPersistentClass() {
-		return persistentClass;
-	}
+    return HibernateFactory.getSession();
 
-	@SuppressWarnings("unchecked")
-	public T findById(ID id, boolean lock) {
-		T entity;
-		if (lock)
-			entity = (T) getSession().load(getPersistentClass(), id,
-					LockMode.UPGRADE);
-		else
-			entity = (T) getSession().load(getPersistentClass(), id);
+  }
 
-		return entity;
-	}
+  public Class<T> getPersistentClass() {
 
-	public List<T> findAll() {
-		return findByCriteria();
-	}
+    return persistentClass;
+  }
 
-	@SuppressWarnings("unchecked")
-	public List<T> findByExample(T exampleInstance, String... excludeProperty) {
-		Criteria crit = getSession().createCriteria(getPersistentClass());
-		Example example = Example.create(exampleInstance);
-		for (String exclude : excludeProperty) {
-			example.excludeProperty(exclude);
-		}
-		crit.add(example);
-		return crit.list();
-	}
+  @SuppressWarnings("unchecked")
+  public T findById(ID id, boolean lock) {
 
-	public T makePersistent(T entity) {
-		getSession().saveOrUpdate(entity);
-		return entity;
-	}
+    T entity;
+    if (lock)
+      entity = (T) getSession()
+        .load(getPersistentClass(), id, LockMode.UPGRADE);
+    else
+      entity = (T) getSession().load(getPersistentClass(), id);
 
-	public void makeTransient(T entity) {
-		getSession().delete(entity);
-	}
+    return entity;
+  }
 
-	public void flush() {
-		getSession().flush();
-	}
+  public List<T> findAll() {
 
-	public void clear() {
-		getSession().clear();
-	}
+    return findByCriteria();
+  }
 
-	/**
-	 * Use this inside subclasses as a convenience method.
-	 */
-	@SuppressWarnings("unchecked")
-	protected List<T> findByCriteria(Criterion... criterion) {
-		Criteria crit = getSession().createCriteria(getPersistentClass());
-		for (Criterion c : criterion) {
-			crit.add(c);
-		}
-		return crit.list();
-	}
-	
-	protected T findByCriteriaUniqueResult(Criterion... criterion){
-		Criteria crit = getSession().createCriteria(getPersistentClass());
-		for (Criterion c : criterion) {
-			crit.add(c);
-		}
-		
-		return (T) crit.uniqueResult();
-	}
+  @SuppressWarnings("unchecked")
+  public List<T> findByExample(T exampleInstance, String... excludeProperty) {
+
+    Criteria crit = getSession().createCriteria(getPersistentClass());
+    Example example = Example.create(exampleInstance);
+    for (String exclude : excludeProperty) {
+      example.excludeProperty(exclude);
+    }
+    crit.add(example);
+    return crit.list();
+  }
+
+  public T makePersistent(T entity) {
+
+    getSession().saveOrUpdate(entity);
+    return entity;
+  }
+
+  public void makeTransient(T entity) {
+
+    getSession().delete(entity);
+  }
+
+  public void flush() {
+
+    getSession().flush();
+  }
+
+  public void clear() {
+
+    getSession().clear();
+  }
+
+  /**
+   * Use this inside subclasses as a convenience method.
+   */
+  @SuppressWarnings("unchecked")
+  protected List<T> findByCriteria(Criterion... criterion) {
+
+    Criteria crit = getSession().createCriteria(getPersistentClass());
+    for (Criterion c : criterion) {
+      crit.add(c);
+    }
+    return crit.list();
+  }
+
+  protected T findByCriteriaUniqueResult(Criterion... criterion) {
+
+    Criteria crit = getSession().createCriteria(getPersistentClass());
+    for (Criterion c : criterion) {
+      crit.add(c);
+    }
+
+    return (T) crit.uniqueResult();
+  }
 
 }

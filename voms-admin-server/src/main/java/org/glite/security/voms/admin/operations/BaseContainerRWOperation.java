@@ -20,15 +20,16 @@
 package org.glite.security.voms.admin.operations;
 
 public abstract class BaseContainerRWOperation extends
-		SingleContextVomsOperation {
+  SingleContextVomsOperation {
 
-	protected BaseContainerRWOperation(VOMSContext ctxt) {
-		super(ctxt);
-	}
+  protected BaseContainerRWOperation(VOMSContext ctxt) {
 
-	protected void setupPermissions() {
-		addRequiredPermission(__context, VOMSPermission
-				.getContainerRWPermissions());
-	}
+    super(ctxt);
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(__context, VOMSPermission.getContainerRWPermissions());
+  }
 
 }

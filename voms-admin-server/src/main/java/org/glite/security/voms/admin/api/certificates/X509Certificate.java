@@ -21,137 +21,141 @@ package org.glite.security.voms.admin.api.certificates;
 
 import java.io.Serializable;
 
-/** 
- * This class models X.509 certificate information as stored in the VOMS database.
+/**
+ * This class models X.509 certificate information as stored in the VOMS
+ * database.
  *
  */
 public class X509Certificate implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The certificate id.
-	 */
-	long id;
+  /**
+   * The certificate id.
+   */
+  long id;
 
-	/**
-	 * The certificate subject.
-	 */
-	String subject;
-	
-	/**
-	 * The certificate issuer subject.
-	 */
-	String issuer;
-	
-	/**
-	 * The certificate expiration date (deprecated).
-	 */
-	String notAfter;
-	
-	/**
-	 * The certificate binary representation.
-	 */
-	byte[] bytes;
+  /**
+   * The certificate subject.
+   */
+  String subject;
 
-	/**
-	 * Returns the certificate bytes.
-	 * @return
-	 */
-	public byte[] getBytes() {
+  /**
+   * The certificate issuer subject.
+   */
+  String issuer;
 
-		return bytes;
-	}
+  /**
+   * The certificate expiration date (deprecated).
+   */
+  String notAfter;
 
-	/** 
-	 * Sets the bytes for this certificate.
-	 * 
-	 * @param bytes
-	 */
-	public void setBytes(byte[] bytes) {
+  /**
+   * The certificate binary representation.
+   */
+  byte[] bytes;
 
-		this.bytes = bytes;
-	}
+  /**
+   * Returns the certificate bytes.
+   * 
+   * @return
+   */
+  public byte[] getBytes() {
 
-	/**
-	 * Returns the certificate issuer subject.
-	 * 
-	 * @return
-	 */
-	public String getIssuer() {
+    return bytes;
+  }
 
-		return issuer;
-	}
+  /**
+   * Sets the bytes for this certificate.
+   * 
+   * @param bytes
+   */
+  public void setBytes(byte[] bytes) {
 
-	/**
-	 * Sets the certificate issuer subject.
-	 * 
-	 * @param issuer
-	 */
-	public void setIssuer(String issuer) {
+    this.bytes = bytes;
+  }
 
-		this.issuer = issuer;
-	}
+  /**
+   * Returns the certificate issuer subject.
+   * 
+   * @return
+   */
+  public String getIssuer() {
 
-	/** 
-	 * Returns the certificate expiration date (as a string)
-	 * @return
-	 */
-	public String getNotAfter() {
+    return issuer;
+  }
 
-		return notAfter;
-	}
+  /**
+   * Sets the certificate issuer subject.
+   * 
+   * @param issuer
+   */
+  public void setIssuer(String issuer) {
 
-	/**
-	 * Sets the certificate expiration date (as a string)
-	 * 
-	 * @param notAfter
-	 */
-	public void setNotAfter(String notAfter) {
+    this.issuer = issuer;
+  }
 
-		this.notAfter = notAfter;
-	}
+  /**
+   * Returns the certificate expiration date (as a string)
+   * 
+   * @return
+   */
+  public String getNotAfter() {
 
-	/** 
-	 * Returns the certificate subject.
-	 * 
-	 * @return
-	 */
-	public String getSubject() {
+    return notAfter;
+  }
 
-		return subject;
-	}
+  /**
+   * Sets the certificate expiration date (as a string)
+   * 
+   * @param notAfter
+   */
+  public void setNotAfter(String notAfter) {
 
-	/**
-	 * Sets the certificate subject.
-	 * 
-	 * @param subject
-	 */
-	public void setSubject(String subject) {
+    this.notAfter = notAfter;
+  }
 
-		this.subject = subject;
-	}
+  /**
+   * Returns the certificate subject.
+   * 
+   * @return
+   */
+  public String getSubject() {
 
-	/**
-	 * Returns the certificate id.
-	 * 
-	 * @return
-	 */
-	public long getId() {
+    return subject;
+  }
 
-		return id;
-	}
+  /**
+   * Sets the certificate subject.
+   * 
+   * @param subject
+   */
+  public void setSubject(String subject) {
 
-	/**
-	 * Sets the certificate id.
-	 * @param id
-	 */
-	public void setId(long id) {
+    this.subject = subject;
+  }
 
-		this.id = id;
-	}
+  /**
+   * Returns the certificate id.
+   * 
+   * @return
+   */
+  public long getId() {
+
+    return id;
+  }
+
+  /**
+   * Sets the certificate id.
+   * 
+   * @param id
+   */
+  public void setId(long id) {
+
+    this.id = id;
+  }
 
 }

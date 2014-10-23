@@ -30,73 +30,79 @@ import org.glite.security.voms.admin.core.VOMSServiceConstants;
 
 public class DivTag extends TagSupport {
 
-	String id;
+  String id;
 
-	String cssClass;
+  String cssClass;
 
-	public String getId() {
-		return id;
-	}
+  public String getId() {
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    return id;
+  }
 
-	protected boolean isVisible() {
-		Map statusMap = (Map) pageContext
-				.findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
+  public void setId(String id) {
 
-		if (statusMap == null)
-			return true;
+    this.id = id;
+  }
 
-		Boolean status = (Boolean) statusMap.get(getId());
+  protected boolean isVisible() {
 
-		if (status == null)
-			return true;
+    Map statusMap = (Map) pageContext
+      .findAttribute(VOMSServiceConstants.STATUS_MAP_KEY);
 
-		return status;
-	}
+    if (statusMap == null)
+      return true;
 
-	public String getCssClass() {
-		return cssClass;
-	}
+    Boolean status = (Boolean) statusMap.get(getId());
 
-	public void setCssClass(String cssClass) {
-		this.cssClass = cssClass;
-	}
+    if (status == null)
+      return true;
 
-	@Override
-	public int doStartTag() throws JspException {
+    return status;
+  }
 
-		String styleContent = "";
+  public String getCssClass() {
 
-		if (!isVisible())
-			styleContent = "display:none";
+    return cssClass;
+  }
 
-		String startTag = String.format(
-				"<div id=\"%s\" class=\"%s\" style=\"%s\">", getId(),
-				getCssClass(), styleContent);
+  public void setCssClass(String cssClass) {
 
-		try {
-			pageContext.getOut().write(startTag);
+    this.cssClass = cssClass;
+  }
 
-		} catch (IOException e) {
-			throw new JspTagException("Error writing to jsp writer!", e);
-		}
+  @Override
+  public int doStartTag() throws JspException {
 
-		return EVAL_BODY_INCLUDE;
-	}
+    String styleContent = "";
 
-	@Override
-	public int doEndTag() throws JspException {
-		try {
-			pageContext.getOut().write("\n</div><!-- " + getId() + "-->");
+    if (!isVisible())
+      styleContent = "display:none";
 
-		} catch (IOException e) {
-			throw new JspTagException("Error writing to jsp writer!", e);
-		}
+    String startTag = String.format(
+      "<div id=\"%s\" class=\"%s\" style=\"%s\">", getId(), getCssClass(),
+      styleContent);
 
-		return EVAL_PAGE;
-	}
+    try {
+      pageContext.getOut().write(startTag);
+
+    } catch (IOException e) {
+      throw new JspTagException("Error writing to jsp writer!", e);
+    }
+
+    return EVAL_BODY_INCLUDE;
+  }
+
+  @Override
+  public int doEndTag() throws JspException {
+
+    try {
+      pageContext.getOut().write("\n</div><!-- " + getId() + "-->");
+
+    } catch (IOException e) {
+      throw new JspTagException("Error writing to jsp writer!", e);
+    }
+
+    return EVAL_PAGE;
+  }
 
 }

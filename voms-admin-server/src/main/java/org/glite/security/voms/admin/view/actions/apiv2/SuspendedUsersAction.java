@@ -32,27 +32,29 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage("json")
-@Results( { @Result(name = BaseAction.SUCCESS, type = "json") })
-public class SuspendedUsersAction extends BaseAction{
-	
-	/**
+@Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
+public class SuspendedUsersAction extends BaseAction {
+
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	List<VOMSUserJSON> suspendedUsers;
-	
-	@Override
-	public String execute() throws Exception {
-		
-		suspendedUsers = JSONSerializer.serialize((List<VOMSUser>)ListSuspendedUsersOperation.instance().execute());
-		
-		return BaseAction.SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
 
-	public List<VOMSUserJSON> getSuspendedUsers() {
-		return suspendedUsers;
-	}
-		
+  List<VOMSUserJSON> suspendedUsers;
+
+  @Override
+  public String execute() throws Exception {
+
+    suspendedUsers = JSONSerializer
+      .serialize((List<VOMSUser>) ListSuspendedUsersOperation.instance()
+        .execute());
+
+    return BaseAction.SUCCESS;
+  }
+
+  public List<VOMSUserJSON> getSuspendedUsers() {
+
+    return suspendedUsers;
+  }
+
 }

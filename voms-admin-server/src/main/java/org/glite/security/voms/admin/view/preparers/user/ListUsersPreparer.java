@@ -36,32 +36,32 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ListUsersPreparer implements ViewPreparer {
 
-	private static Logger log = LoggerFactory.getLogger(ListUsersPreparer.class);
+  private static Logger log = LoggerFactory.getLogger(ListUsersPreparer.class);
 
-	public void execute(TilesRequestContext context,
-			AttributeContext attributeContext) throws PreparerException {
+  public void execute(TilesRequestContext context,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSGroup> groups;
-		List<VOMSRole> roles; 
-		
-		try{
-			
-			groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
-			roles = (List<VOMSRole>)ListRolesOperation.instance().execute();
-			
-		}catch(VOMSAuthorizationException e){
-			
-			log.warn(e.getMessage());
-			if (log.isDebugEnabled())
-				log.warn(e.getMessage(),e);
-			
-			groups = Collections.EMPTY_LIST;
-			roles = Collections.EMPTY_LIST;
-		}
-		
-		context.getRequestScope().put("voGroups", groups);
-		context.getRequestScope().put("voRoles", roles);
-		
-	}
+    List<VOMSGroup> groups;
+    List<VOMSRole> roles;
+
+    try {
+
+      groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
+      roles = (List<VOMSRole>) ListRolesOperation.instance().execute();
+
+    } catch (VOMSAuthorizationException e) {
+
+      log.warn(e.getMessage());
+      if (log.isDebugEnabled())
+        log.warn(e.getMessage(), e);
+
+      groups = Collections.EMPTY_LIST;
+      roles = Collections.EMPTY_LIST;
+    }
+
+    context.getRequestScope().put("voGroups", groups);
+    context.getRequestScope().put("voRoles", roles);
+
+  }
 
 }

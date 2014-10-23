@@ -20,11 +20,12 @@
 
 package it.infn.cnaf.voms.saml.exceptions;
 
+public class X509SubjectWrongNameIDFormatException extends Exception {
 
-public class X509SubjectWrongNameIDFormatException extends Exception
-{
-  public X509SubjectWrongNameIDFormatException(String format)
-  {
-    super("Wrong Format, must match urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName but was " + format);
+  public X509SubjectWrongNameIDFormatException(String format) {
+
+    super(
+      "Wrong Format, must match urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName but was "
+        + format);
   }
 }

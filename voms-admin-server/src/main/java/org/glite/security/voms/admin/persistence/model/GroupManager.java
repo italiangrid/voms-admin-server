@@ -40,162 +40,163 @@ import javax.persistence.Table;
 @Table(name = "managers")
 public class GroupManager {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_GRPMAN_SEQ")
-	@SequenceGenerator(name = "VOMS_GRPMAN_SEQ", sequenceName = "VOMS_GRPMAN_SEQ")
-	Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_GRPMAN_SEQ")
+  @SequenceGenerator(name = "VOMS_GRPMAN_SEQ", sequenceName = "VOMS_GRPMAN_SEQ")
+  Long id;
 
-	@Column(name = "name", nullable = false, unique=true)
-	String name;
-	
-	@Column(nullable=false)
-	String description;
+  @Column(name = "name", nullable = false, unique = true)
+  String name;
 
-	@Column(name="email_address", nullable=false)
-	String emailAddress;
-	
-	@ManyToMany(fetch=FetchType.EAGER, cascade={ CascadeType.PERSIST })
-	@JoinTable(
-		name="managers_groups",
-		joinColumns={@JoinColumn(name="manager_id", referencedColumnName="id")},
-		inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gid")})
-	Set<VOMSGroup> managedGroups = new TreeSet<VOMSGroup>();
+  @Column(nullable = false)
+  String description;
 
-	public GroupManager() {
+  @Column(name = "email_address", nullable = false)
+  String emailAddress;
 
-	}
+  @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+  @JoinTable(name = "managers_groups", joinColumns = { @JoinColumn(
+    name = "manager_id", referencedColumnName = "id") },
+    inverseJoinColumns = { @JoinColumn(name = "group_id",
+      referencedColumnName = "gid") })
+  Set<VOMSGroup> managedGroups = new TreeSet<VOMSGroup>();
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  public GroupManager() {
 
-		return id;
-	}
+  }
 
-	/**
-	 * @param id
-	 *          the id to set
-	 */
-	public void setId(Long id) {
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		this.id = id;
-	}
+    return id;
+  }
 
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-	/**
-	 * @return the managedGroups
-	 */
-	public Set<VOMSGroup> getManagedGroups() {
+    this.id = id;
+  }
 
-		return managedGroups;
-	}
+  /**
+   * @return the managedGroups
+   */
+  public Set<VOMSGroup> getManagedGroups() {
 
-	/**
-	 * @param managedGroups
-	 *          the managedGroups to set
-	 */
-	public void setManagedGroups(Set<VOMSGroup> managedGroups) {
+    return managedGroups;
+  }
 
-		this.managedGroups = managedGroups;
-	}
+  /**
+   * @param managedGroups
+   *          the managedGroups to set
+   */
+  public void setManagedGroups(Set<VOMSGroup> managedGroups) {
 
-	
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-	
-		return name;
-	}
+    this.managedGroups = managedGroups;
+  }
 
-	
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-	
-		this.name = name;
-	}
+  /**
+   * @return the name
+   */
+  public String getName() {
 
-	
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-	
-		return description;
-	}
+    return name;
+  }
 
-	
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-	
-		this.description = description;
-	}
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
+    this.name = name;
+  }
 
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+  /**
+   * @return the description
+   */
+  public String getDescription() {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
+    return description;
+  }
 
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GroupManager other = (GroupManager) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
+  /**
+   * @param description
+   *          the description to set
+   */
+  public void setDescription(String description) {
 
-	
-	/**
-	 * @return the emailAddress
-	 */
-	public String getEmailAddress() {
-	
-		return emailAddress;
-	}
+    this.description = description;
+  }
 
-	
-	/**
-	 * @param emailAddress the emailAddress to set
-	 */
-	public void setEmailAddress(String emailAddress) {
-	
-		this.emailAddress = emailAddress;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    return result;
+  }
 
-		return "GroupManager [id=" + id + ", name=" + name + ", emailAddress="
-			+ emailAddress + ", managedGroups=" + managedGroups + "]";
-	}
-	
-	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    GroupManager other = (GroupManager) obj;
+    if (name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!name.equals(other.name))
+      return false;
+    return true;
+  }
+
+  /**
+   * @return the emailAddress
+   */
+  public String getEmailAddress() {
+
+    return emailAddress;
+  }
+
+  /**
+   * @param emailAddress
+   *          the emailAddress to set
+   */
+  public void setEmailAddress(String emailAddress) {
+
+    this.emailAddress = emailAddress;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+
+    return "GroupManager [id=" + id + ", name=" + name + ", emailAddress="
+      + emailAddress + ", managedGroups=" + managedGroups + "]";
+  }
+
 }

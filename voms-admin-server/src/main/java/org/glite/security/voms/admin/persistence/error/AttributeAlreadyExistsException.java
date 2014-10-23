@@ -21,22 +21,22 @@ package org.glite.security.voms.admin.persistence.error;
 
 public class AttributeAlreadyExistsException extends AlreadyExistsException {
 
-	public AttributeAlreadyExistsException(String message) {
+  public AttributeAlreadyExistsException(String message) {
 
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    super(message);
+    // TODO Auto-generated constructor stub
+  }
 
-	public AttributeAlreadyExistsException(String message, Throwable t) {
+  public AttributeAlreadyExistsException(String message, Throwable t) {
 
-		super(message, t);
-		// TODO Auto-generated constructor stub
-	}
+    super(message, t);
+    // TODO Auto-generated constructor stub
+  }
 
-	public AttributeAlreadyExistsException(Throwable t) {
+  public AttributeAlreadyExistsException(Throwable t) {
 
-		super(t);
-		// TODO Auto-generated constructor stub
-	}
+    super(t);
+    // TODO Auto-generated constructor stub
+  }
 
 }

@@ -23,6 +23,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface OrgDBMissingMembershipRecordStrategy {
 
-	public void handleMissingMembershipRecord(VOMSUser u);
+  public void handleMissingMembershipRecord(VOMSUser u);
 
 }

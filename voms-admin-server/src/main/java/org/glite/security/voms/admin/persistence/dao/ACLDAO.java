@@ -33,206 +33,204 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class ACLDAO {
 
-	private ACLDAO() {
+  private ACLDAO() {
 
-		HibernateFactory.beginTransaction();
-	}
+    HibernateFactory.beginTransaction();
+  }
 
-	public ACL getById(Long id) {
+  public ACL getById(Long id) {
 
-		return (ACL) HibernateFactory.getSession().load(ACL.class, id);
-	}
+    return (ACL) HibernateFactory.getSession().load(ACL.class, id);
+  }
 
-	public ACL create(VOMSGroup g, boolean isDefault) {
-		if (g == null)
-			throw new NullArgumentException(
-					"Cannot create an ACL for a null group!");
+  public ACL create(VOMSGroup g, boolean isDefault) {
 
-		ACL acl = new ACL(g, isDefault);
-		HibernateFactory.getSession().save(acl);
-		g.getAcls().add(acl);
-		HibernateFactory.getSession().save(g);
+    if (g == null)
+      throw new NullArgumentException("Cannot create an ACL for a null group!");
 
-		return acl;
+    ACL acl = new ACL(g, isDefault);
+    HibernateFactory.getSession().save(acl);
+    g.getAcls().add(acl);
+    HibernateFactory.getSession().save(g);
 
-	}
+    return acl;
 
-	public void delete(ACL acl) {
+  }
 
-		if (acl == null)
-			throw new NullArgumentException("Cannot delete a null ACL!");
+  public void delete(ACL acl) {
 
-		VOMSContext context = acl.getContext();
-		if (context.isGroupContext() && acl.isDefautlACL()
-				&& acl.getPermissions().isEmpty()) {
-			context.getGroup().getAcls().remove(acl);
-			HibernateFactory.getSession().delete(acl);
-			HibernateFactory.getSession().update(context.getGroup());
-		}
-	}
+    if (acl == null)
+      throw new NullArgumentException("Cannot delete a null ACL!");
 
-	public void deletePermissionsForRole(VOMSRole r) {
+    VOMSContext context = acl.getContext();
+    if (context.isGroupContext() && acl.isDefautlACL()
+      && acl.getPermissions().isEmpty()) {
+      context.getGroup().getAcls().remove(acl);
+      HibernateFactory.getSession().delete(acl);
+      HibernateFactory.getSession().update(context.getGroup());
+    }
+  }
 
-		List roleAdmins = VOMSAdminDAO.instance().getRoleAdmins(r);
+  public void deletePermissionsForRole(VOMSRole r) {
 
-		Iterator i = roleAdmins.iterator();
+    List roleAdmins = VOMSAdminDAO.instance().getRoleAdmins(r);
 
-		while (i.hasNext())
-			deletePermissionsForAdmin((VOMSAdmin) i.next());
+    Iterator i = roleAdmins.iterator();
 
-	}
+    while (i.hasNext())
+      deletePermissionsForAdmin((VOMSAdmin) i.next());
 
-	public void deletePermissionsForAdmin(VOMSAdmin a) {
+  }
 
-		String query = "select a from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
-		Iterator i = HibernateFactory.getSession().createQuery(query).setLong(
-				"adminId", a.getId().longValue()).iterate();
+  public void deletePermissionsForAdmin(VOMSAdmin a) {
 
-		while (i.hasNext()) {
+    String query = "select a from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
+    Iterator i = HibernateFactory.getSession().createQuery(query)
+      .setLong("adminId", a.getId().longValue()).iterate();
 
-			ACL acl = (ACL) i.next();
-			acl.removePermissions(a);
-			HibernateFactory.getSession().save(acl);
-		}
+    while (i.hasNext()) {
 
-	}
+      ACL acl = (ACL) i.next();
+      acl.removePermissions(a);
+      HibernateFactory.getSession().save(acl);
+    }
 
-	public List<VOMSAdmin> getAdminsWithoutActivePermissions(){
-	    	    
-	    String query = "from VOMSAdmin a where a.dn not like '/O=VOMS%' and a not in (select distinct(index(p)) from ACL a join a.permissions p)";
-	    return HibernateFactory.getSession().createQuery(query).list();
-	}
-	
-	
-	public boolean hasActivePermissions(VOMSAdmin a) {
+  }
 
-		String query = "select count(*) from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
-		Long count = (Long) HibernateFactory.getSession().createQuery(query)
-				.setLong("adminId", a.getId().longValue()).uniqueResult();
+  public List<VOMSAdmin> getAdminsWithoutActivePermissions() {
 
-		return (count.longValue() > 0);
-	}
+    String query = "from VOMSAdmin a where a.dn not like '/O=VOMS%' and a not in (select distinct(index(p)) from ACL a join a.permissions p)";
+    return HibernateFactory.getSession().createQuery(query).list();
+  }
 
-	public void recursiveSaveACLEntry(ACL acl, VOMSAdmin admin,
-			VOMSPermission perms) {
+  public boolean hasActivePermissions(VOMSAdmin a) {
 
-		if (acl == null)
-			throw new NullArgumentException("acl cannot be null!");
+    String query = "select count(*) from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
+    Long count = (Long) HibernateFactory.getSession().createQuery(query)
+      .setLong("adminId", a.getId().longValue()).uniqueResult();
 
-		if (admin == null)
-			throw new NullArgumentException("admin cannot be null!");
+    return (count.longValue() > 0);
+  }
 
-		if (perms == null)
-			throw new NullArgumentException("perms cannot be null!");
+  public void recursiveSaveACLEntry(ACL acl, VOMSAdmin admin,
+    VOMSPermission perms) {
 
-		saveACLEntry(acl, admin, perms);
+    if (acl == null)
+      throw new NullArgumentException("acl cannot be null!");
 
-		if (acl.getContext().isGroupContext() && !acl.isDefautlACL()) {
+    if (admin == null)
+      throw new NullArgumentException("admin cannot be null!");
 
-			List childrenGroups = VOMSGroupDAO.instance().getChildren(
-					acl.getGroup());
+    if (perms == null)
+      throw new NullArgumentException("perms cannot be null!");
 
-			Iterator childGroupIter = childrenGroups.iterator();
+    saveACLEntry(acl, admin, perms);
 
-			while (childGroupIter.hasNext()) {
+    if (acl.getContext().isGroupContext() && !acl.isDefautlACL()) {
 
-				VOMSGroup childGroup = (VOMSGroup) childGroupIter.next();
-				recursiveSaveACLEntry(childGroup.getACL(), admin, perms);
-			}
-		}
-	}
+      List childrenGroups = VOMSGroupDAO.instance().getChildren(acl.getGroup());
 
-	public void saveACLEntry(ACL acl, VOMSAdmin admin, VOMSPermission perms) {
+      Iterator childGroupIter = childrenGroups.iterator();
 
-		if (acl == null)
-			throw new NullArgumentException("acl cannot be null!");
+      while (childGroupIter.hasNext()) {
 
-		if (admin == null)
-			throw new NullArgumentException("admin cannot be null!");
+        VOMSGroup childGroup = (VOMSGroup) childGroupIter.next();
+        recursiveSaveACLEntry(childGroup.getACL(), admin, perms);
+      }
+    }
+  }
 
-		if (perms == null)
-			throw new NullArgumentException("perms cannot be null!");
+  public void saveACLEntry(ACL acl, VOMSAdmin admin, VOMSPermission perms) {
 
-		acl.setPermissions(admin, perms);
-		HibernateFactory.getSession().save(acl);
+    if (acl == null)
+      throw new NullArgumentException("acl cannot be null!");
 
-		if (acl.getContext().isGroupContext()) {
+    if (admin == null)
+      throw new NullArgumentException("admin cannot be null!");
 
-			// add entry to 'children' role contexts
-			List roles = VOMSRoleDAO.instance().getAll();
-			Iterator r = roles.iterator();
+    if (perms == null)
+      throw new NullArgumentException("perms cannot be null!");
 
-			while (r.hasNext()) {
+    acl.setPermissions(admin, perms);
+    HibernateFactory.getSession().save(acl);
 
-				VOMSRole childRole = (VOMSRole) r.next();
-				ACL childRoleACL = childRole.getACL(acl.getGroup());
-				childRoleACL.setPermissions(admin, perms);
-				HibernateFactory.getSession().save(childRoleACL);
-			}
-		}
+    if (acl.getContext().isGroupContext()) {
 
-	}
+      // add entry to 'children' role contexts
+      List roles = VOMSRoleDAO.instance().getAll();
+      Iterator r = roles.iterator();
 
-	public void recursiveDeleteACLEntry(ACL acl, VOMSAdmin admin) {
+      while (r.hasNext()) {
 
-		if (acl == null)
-			throw new NullArgumentException("acl cannot be null!");
+        VOMSRole childRole = (VOMSRole) r.next();
+        ACL childRoleACL = childRole.getACL(acl.getGroup());
+        childRoleACL.setPermissions(admin, perms);
+        HibernateFactory.getSession().save(childRoleACL);
+      }
+    }
 
-		if (admin == null)
-			throw new NullArgumentException("admin cannot be null!");
+  }
 
-		if (acl.getContext().isGroupContext() && !acl.isDefautlACL()) {
+  public void recursiveDeleteACLEntry(ACL acl, VOMSAdmin admin) {
 
-			List childrenGroups = VOMSGroupDAO.instance().getChildren(
-					acl.getGroup());
+    if (acl == null)
+      throw new NullArgumentException("acl cannot be null!");
 
-			Iterator childGroupIter = childrenGroups.iterator();
+    if (admin == null)
+      throw new NullArgumentException("admin cannot be null!");
 
-			while (childGroupIter.hasNext()) {
+    if (acl.getContext().isGroupContext() && !acl.isDefautlACL()) {
 
-				VOMSGroup childGroup = (VOMSGroup) childGroupIter.next();
-				recursiveDeleteACLEntry(childGroup.getACL(), admin);
+      List childrenGroups = VOMSGroupDAO.instance().getChildren(acl.getGroup());
 
-			}
-		}
+      Iterator childGroupIter = childrenGroups.iterator();
 
-		deleteACLEntry(acl, admin);
+      while (childGroupIter.hasNext()) {
 
-	}
+        VOMSGroup childGroup = (VOMSGroup) childGroupIter.next();
+        recursiveDeleteACLEntry(childGroup.getACL(), admin);
 
-	public void deleteACLEntry(ACL acl, VOMSAdmin admin) {
+      }
+    }
 
-		if (acl == null)
-			throw new NullArgumentException("acl cannot be null!");
+    deleteACLEntry(acl, admin);
 
-		if (admin == null)
-			throw new NullArgumentException("admin cannot be null!");
+  }
 
-		acl.removePermissions(admin);
+  public void deleteACLEntry(ACL acl, VOMSAdmin admin) {
 
-		if (acl.getPermissions().isEmpty() && acl.isDefautlACL())
-			ACLDAO.instance().delete(acl);
-		else
-			HibernateFactory.getSession().save(acl);
+    if (acl == null)
+      throw new NullArgumentException("acl cannot be null!");
 
-		if (acl.getContext().isGroupContext()) {
+    if (admin == null)
+      throw new NullArgumentException("admin cannot be null!");
 
-			// delete entry from 'children' role contexts
-			List roles = VOMSRoleDAO.instance().getAll();
-			Iterator r = roles.iterator();
+    acl.removePermissions(admin);
 
-			while (r.hasNext()) {
+    if (acl.getPermissions().isEmpty() && acl.isDefautlACL())
+      ACLDAO.instance().delete(acl);
+    else
+      HibernateFactory.getSession().save(acl);
 
-				VOMSRole childRole = (VOMSRole) r.next();
-				ACL childRoleACL = childRole.getACL(acl.getGroup());
-				childRoleACL.removePermissions(admin);
-				HibernateFactory.getSession().save(childRoleACL);
-			}
-		}
+    if (acl.getContext().isGroupContext()) {
 
-	}
+      // delete entry from 'children' role contexts
+      List roles = VOMSRoleDAO.instance().getAll();
+      Iterator r = roles.iterator();
 
-	public static ACLDAO instance() {
-		return new ACLDAO();
-	}
+      while (r.hasNext()) {
+
+        VOMSRole childRole = (VOMSRole) r.next();
+        ACL childRoleACL = childRole.getACL(acl.getGroup());
+        childRoleACL.removePermissions(admin);
+        HibernateFactory.getSession().save(childRoleACL);
+      }
+    }
+
+  }
+
+  public static ACLDAO instance() {
+
+    return new ACLDAO();
+  }
 }

@@ -25,82 +25,82 @@ import java.util.Date;
 import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 
 public abstract class BaseConditionalNotificationStrategy implements
-	ConditionalSendNotificationStrategy {
+  ConditionalSendNotificationStrategy {
 
-	protected NotificationTimeStorage notificationTimeStorage;
-	protected NotificationServiceIF notificationService;
-	protected VOMSNotification lastNotificationSent;
+  protected NotificationTimeStorage notificationTimeStorage;
+  protected NotificationServiceIF notificationService;
+  protected VOMSNotification lastNotificationSent;
 
-	protected BaseConditionalNotificationStrategy(
-		NotificationTimeStorage timeStorage,
-		NotificationServiceIF notificationService) {
+  protected BaseConditionalNotificationStrategy(
+    NotificationTimeStorage timeStorage,
+    NotificationServiceIF notificationService) {
 
-		notificationTimeStorage = timeStorage;
-		this.notificationService = notificationService;
-	}
+    notificationTimeStorage = timeStorage;
+    this.notificationService = notificationService;
+  }
 
-	/**
-	 * @return the notificationTimeStorage
-	 */
-	public NotificationTimeStorage getNotificationTimeStorage() {
+  /**
+   * @return the notificationTimeStorage
+   */
+  public NotificationTimeStorage getNotificationTimeStorage() {
 
-		return notificationTimeStorage;
-	}
+    return notificationTimeStorage;
+  }
 
-	/**
-	 * @param notificationTimeStorage
-	 *          the notificationTimeStorage to set
-	 */
-	public void setNotificationTimeStorage(
-		NotificationTimeStorage notificationTimeStorage) {
+  /**
+   * @param notificationTimeStorage
+   *          the notificationTimeStorage to set
+   */
+  public void setNotificationTimeStorage(
+    NotificationTimeStorage notificationTimeStorage) {
 
-		this.notificationTimeStorage = notificationTimeStorage;
-	}
+    this.notificationTimeStorage = notificationTimeStorage;
+  }
 
-	/**
-	 * @return the notificationService
-	 */
-	public NotificationServiceIF getNotificationService() {
+  /**
+   * @return the notificationService
+   */
+  public NotificationServiceIF getNotificationService() {
 
-		return notificationService;
-	}
+    return notificationService;
+  }
 
-	/**
-	 * @param notificationService
-	 *          the notificationService to set
-	 */
-	public void setNotificationService(NotificationServiceIF notificationService) {
+  /**
+   * @param notificationService
+   *          the notificationService to set
+   */
+  public void setNotificationService(NotificationServiceIF notificationService) {
 
-		this.notificationService = notificationService;
-	}
+    this.notificationService = notificationService;
+  }
 
-	/**
-	 * @return the lastNotificationSent
-	 */
-	public VOMSNotification getLastNotificationSent() {
+  /**
+   * @return the lastNotificationSent
+   */
+  public VOMSNotification getLastNotificationSent() {
 
-		return lastNotificationSent;
-	}
+    return lastNotificationSent;
+  }
 
-	/**
-	 * @param lastNotificationSent
-	 *          the lastNotificationSent to set
-	 */
-	public void setLastNotificationSent(VOMSNotification lastNotificationSent) {
+  /**
+   * @param lastNotificationSent
+   *          the lastNotificationSent to set
+   */
+  public void setLastNotificationSent(VOMSNotification lastNotificationSent) {
 
-		this.lastNotificationSent = lastNotificationSent;
-	}
+    this.lastNotificationSent = lastNotificationSent;
+  }
 
-	@Override
-	public synchronized void sendNotification(VOMSNotification n) {
+  @Override
+  public synchronized void sendNotification(VOMSNotification n) {
 
-		if (notificationRequired()) {
+    if (notificationRequired()) {
 
-			notificationService.send(n);
-			notificationTimeStorage.setLastNotificationTime(new Date().getTime());
-			setLastNotificationSent(n);
-		}
+      notificationService.send(n);
+      notificationTimeStorage.setLastNotificationTime(new Date().getTime());
+      setLastNotificationSent(n);
+    }
 
-	}
+  }
 
 }

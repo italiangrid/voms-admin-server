@@ -36,69 +36,73 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OrgDBSessionFactory {
-	
-	static final Logger log = LoggerFactory.getLogger(OrgDBSessionFactory.class);
-	
-	private static volatile SessionFactory orgDbSessionFactory;
-	
-	
-	public static AnnotationConfiguration buildConfiguration(Properties orgDbHibernateProperties){
-		
-		AnnotationConfiguration cfg = new AnnotationConfiguration()
-			.addAnnotatedClass(Country.class)
-			.addAnnotatedClass(Experiment.class)
-			.addAnnotatedClass(Institute.class)
-			.addAnnotatedClass(InstituteAddress.class)
-			.addAnnotatedClass(Participation.class)
-			.addAnnotatedClass(VOMSOrgDBPerson.class)
-			.setProperties(orgDbHibernateProperties);
-		
-		// Hardwired configuration properties
-		Properties p = new Properties();
-		p.setProperty("hibernate.current_session_context_class", ThreadLocalSessionContext.class.getName());
-		// p.setProperty("hibernate.show_sql", "true");
-		
-		log.debug("Hardwired configuration properties: {}",p);
-		
-		cfg.addProperties(p);
-		
-		return cfg;
-		
-	}
-	public synchronized static void initialize(Properties orgbHibernateProperties){
-		
-		if (orgDbSessionFactory != null)
-			throw new OrgDBError("Session factory already initialized!");
-		
-		try{
-			
-			AnnotationConfiguration cfg = buildConfiguration(orgbHibernateProperties);
-			
-			orgDbSessionFactory = cfg.configure().buildSessionFactory();
-		
-		}catch (HibernateException e) {
-			
-			String errorMsg = String.format("Cannot initialize OrgDB database connection: %s", e.getMessage());
-			log.error(errorMsg,e);
-			throw new OrgDBError(errorMsg,e);
-			
-		}
-	}
-	
-	
-	public static SessionFactory getSessionFactory(){
-		
-		if (orgDbSessionFactory == null)
-			throw new OrgDBError("Session factory not initialized!");
-		
-		return orgDbSessionFactory;
-	}
-	
-	public static void shutdown(){
-		if (getSessionFactory() != null)
-			getSessionFactory().close();
-		
-	}
-	
-	private OrgDBSessionFactory(){}
+
+  static final Logger log = LoggerFactory.getLogger(OrgDBSessionFactory.class);
+
+  private static volatile SessionFactory orgDbSessionFactory;
+
+  public static AnnotationConfiguration buildConfiguration(
+    Properties orgDbHibernateProperties) {
+
+    AnnotationConfiguration cfg = new AnnotationConfiguration()
+      .addAnnotatedClass(Country.class).addAnnotatedClass(Experiment.class)
+      .addAnnotatedClass(Institute.class)
+      .addAnnotatedClass(InstituteAddress.class)
+      .addAnnotatedClass(Participation.class)
+      .addAnnotatedClass(VOMSOrgDBPerson.class)
+      .setProperties(orgDbHibernateProperties);
+
+    // Hardwired configuration properties
+    Properties p = new Properties();
+    p.setProperty("hibernate.current_session_context_class",
+      ThreadLocalSessionContext.class.getName());
+    // p.setProperty("hibernate.show_sql", "true");
+
+    log.debug("Hardwired configuration properties: {}", p);
+
+    cfg.addProperties(p);
+
+    return cfg;
+
+  }
+
+  public synchronized static void initialize(Properties orgbHibernateProperties) {
+
+    if (orgDbSessionFactory != null)
+      throw new OrgDBError("Session factory already initialized!");
+
+    try {
+
+      AnnotationConfiguration cfg = buildConfiguration(orgbHibernateProperties);
+
+      orgDbSessionFactory = cfg.configure().buildSessionFactory();
+
+    } catch (HibernateException e) {
+
+      String errorMsg = String.format(
+        "Cannot initialize OrgDB database connection: %s", e.getMessage());
+      log.error(errorMsg, e);
+      throw new OrgDBError(errorMsg, e);
+
+    }
+  }
+
+  public static SessionFactory getSessionFactory() {
+
+    if (orgDbSessionFactory == null)
+      throw new OrgDBError("Session factory not initialized!");
+
+    return orgDbSessionFactory;
+  }
+
+  public static void shutdown() {
+
+    if (getSessionFactory() != null)
+      getSessionFactory().close();
+
+  }
+
+  private OrgDBSessionFactory() {
+
+  }
 }

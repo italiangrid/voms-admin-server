@@ -21,5 +21,5 @@ package org.glite.security.voms.admin.persistence.model;
 
 public interface NamedType {
 
-	public String getTypeName();
+  public String getTypeName();
 }

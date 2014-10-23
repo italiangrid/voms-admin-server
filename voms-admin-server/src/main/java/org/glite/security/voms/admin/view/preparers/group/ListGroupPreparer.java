@@ -30,14 +30,14 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
 public class ListGroupPreparer extends ViewPreparerSupport {
 
-	public void execute(TilesRequestContext requestContext,
-			AttributeContext attributeContext) throws PreparerException {
+  public void execute(TilesRequestContext requestContext,
+    AttributeContext attributeContext) throws PreparerException {
 
-		List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation
-				.instance().execute();
+    List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance()
+      .execute();
 
-		requestContext.getRequestScope().put("voGroups", groups);
+    requestContext.getRequestScope().put("voGroups", groups);
 
-	}
+  }
 
 }

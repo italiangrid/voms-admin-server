@@ -38,192 +38,184 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateFactory {
 
-	private static final Logger log = LoggerFactory.getLogger(HibernateFactory.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(HibernateFactory.class);
 
-	private static final SessionFactory sessionFactory;
+  private static final SessionFactory sessionFactory;
 
-	private static final ThreadLocal threadSession = new ThreadLocal();
+  private static final ThreadLocal threadSession = new ThreadLocal();
 
-	private static final ThreadLocal threadTransaction = new ThreadLocal();
+  private static final ThreadLocal threadTransaction = new ThreadLocal();
 
-	private static final ThreadLocal threadInterceptor = new ThreadLocal();
+  private static final ThreadLocal threadInterceptor = new ThreadLocal();
 
-	
+  static {
 
-	static {
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+    try {
 
-		try {
+      Configuration hibernateConf = new AnnotationConfiguration();
+      hibernateConf.addProperties(conf.getDatabaseProperties());
 
-			Configuration hibernateConf = new AnnotationConfiguration();
-			hibernateConf.addProperties(conf.getDatabaseProperties());
+      sessionFactory = hibernateConf.configure().buildSessionFactory();
 
-			sessionFactory = hibernateConf.configure().buildSessionFactory();
+    } catch (HibernateException e) {
 
-		} catch (HibernateException e) {
+      log.error("Hibernate session factory creation failed!", e);
+      throw new ExceptionInInitializerError(e);
 
-			log.error("Hibernate session factory creation failed!", e);
-			throw new ExceptionInInitializerError(e);
+    }
 
-		}
+  }
 
-	}
+  public static synchronized void shutdown() {
 
-	
-	
-	public static synchronized void shutdown(){
-	    
-	    if (sessionFactory != null)
-	    	sessionFactory.close();
-	    
-	    unregisterSQLDrivers();
-	    cleanupThreadLocals();
-	    
-	}
-	
-	protected static void unregisterSQLDrivers(){
-		
-		Enumeration<Driver> drivers = DriverManager.getDrivers();
-	    
-	    while(drivers.hasMoreElements()){
-	    	Driver driver = drivers.nextElement();
-	    	try{
-	    		
-	    		DriverManager.deregisterDriver(driver);
-	    		
-	    	}catch (SQLException e) {
-				log.warn("Error deregistering driver {}", driver ,e);
-			}
-	    	
-	    }
-		
-	}
-	
-	
-	protected static void cleanupThreadLocals(){
-		
-		if (threadSession != null){
-			threadSession.remove();
-		}
-		
-		if (threadTransaction != null){
-			
-			threadTransaction.remove();
-		}
-		
-		if (threadInterceptor != null){
-			
-			threadInterceptor.remove();
-		}
-	}
-	public static SessionFactory getFactory() {
+    if (sessionFactory != null)
+      sessionFactory.close();
 
-		return sessionFactory;
-	}
+    unregisterSQLDrivers();
+    cleanupThreadLocals();
 
-	public static Session getSession() {
+  }
 
-		log.debug("Getting session for thread: " + Thread.currentThread());
-		Session s = (Session) threadSession.get();
-		try {
+  protected static void unregisterSQLDrivers() {
 
-			if (s == null) {
+    Enumeration<Driver> drivers = DriverManager.getDrivers();
 
-				s = sessionFactory.openSession();
-				threadSession.set(s);
+    while (drivers.hasMoreElements()) {
+      Driver driver = drivers.nextElement();
+      try {
 
-				log.debug("Opening new session for thread "
-						+ Thread.currentThread());
+        DriverManager.deregisterDriver(driver);
 
-			}
+      } catch (SQLException e) {
+        log.warn("Error deregistering driver {}", driver, e);
+      }
 
-		} catch (HibernateException ex) {
+    }
 
-			log.error("Error getting hibernate session!", ex);
-			throw new VOMSFatalException(ex.getMessage(), ex);
-		}
-		return s;
-	}
+  }
 
-	public static void closeSession() {
+  protected static void cleanupThreadLocals() {
 
-		try {
+    if (threadSession != null) {
+      threadSession.remove();
+    }
 
-			Session s = (Session) threadSession.get();
-			threadSession.set(null);
+    if (threadTransaction != null) {
 
-			if (s != null && s.isOpen()) {
-				log.debug("Closing session for thread "
-						+ Thread.currentThread());
-				s.close();
-			}
+      threadTransaction.remove();
+    }
 
-		} catch (HibernateException ex) {
+    if (threadInterceptor != null) {
 
-			log.error("Error closing hibernate session!", ex);
-			throw new VOMSDatabaseException(ex.getMessage(), ex);
-		}
-	}
+      threadInterceptor.remove();
+    }
+  }
 
-	public static void beginTransaction() {
+  public static SessionFactory getFactory() {
 
-		Transaction tx = (Transaction) threadTransaction.get();
-		try {
+    return sessionFactory;
+  }
 
-			if (tx == null) {
-				tx = getSession().beginTransaction();
-				threadTransaction.set(tx);
-			}
-		} catch (HibernateException ex) {
+  public static Session getSession() {
 
-			log.error("Error creating hibernate transaction!", ex);
-			throw new VOMSDatabaseException(ex.getMessage(), ex);
+    log.debug("Getting session for thread: " + Thread.currentThread());
+    Session s = (Session) threadSession.get();
+    try {
 
-		}
-	}
+      if (s == null) {
 
-	public static void commitTransaction() {
+        s = sessionFactory.openSession();
+        threadSession.set(s);
 
-		Transaction tx = (Transaction) threadTransaction.get();
-		try {
+        log.debug("Opening new session for thread " + Thread.currentThread());
 
-			if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
-				tx.commit();
-			threadTransaction.set(null);
-		} catch (HibernateException ex) {
-			rollbackTransaction();
-			log.error("Error committing hibernate transaction:"
-					+ ex.getMessage());
+      }
 
-			if (log.isDebugEnabled())
-				log.error("Error committing hibernate transaction!", ex);
+    } catch (HibernateException ex) {
 
-			throw new VOMSDatabaseException(ex.getMessage(), ex);
-		}
-	}
+      log.error("Error getting hibernate session!", ex);
+      throw new VOMSFatalException(ex.getMessage(), ex);
+    }
+    return s;
+  }
 
-	public static void rollbackTransaction() {
+  public static void closeSession() {
 
-		Transaction tx = (Transaction) threadTransaction.get();
-		try {
+    try {
 
-			threadTransaction.set(null);
-			if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
-				tx.rollback();
-		} catch (HibernateException ex) {
-			log.error("Error rolling back hibernate transaction:"
-					+ ex.getMessage());
+      Session s = (Session) threadSession.get();
+      threadSession.set(null);
 
-			if (log.isDebugEnabled())
-				log.error("Error committing hibernate transaction!", ex);
+      if (s != null && s.isOpen()) {
+        log.debug("Closing session for thread " + Thread.currentThread());
+        s.close();
+      }
 
-			throw new VOMSDatabaseException(ex.getMessage(), ex);
+    } catch (HibernateException ex) {
 
-		} finally {
-			closeSession();
-		}
+      log.error("Error closing hibernate session!", ex);
+      throw new VOMSDatabaseException(ex.getMessage(), ex);
+    }
+  }
 
-	}
+  public static void beginTransaction() {
+
+    Transaction tx = (Transaction) threadTransaction.get();
+    try {
+
+      if (tx == null) {
+        tx = getSession().beginTransaction();
+        threadTransaction.set(tx);
+      }
+    } catch (HibernateException ex) {
+
+      log.error("Error creating hibernate transaction!", ex);
+      throw new VOMSDatabaseException(ex.getMessage(), ex);
+
+    }
+  }
+
+  public static void commitTransaction() {
+
+    Transaction tx = (Transaction) threadTransaction.get();
+    try {
+
+      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
+        tx.commit();
+      threadTransaction.set(null);
+    } catch (HibernateException ex) {
+      rollbackTransaction();
+      log.error("Error committing hibernate transaction:" + ex.getMessage());
+
+      if (log.isDebugEnabled())
+        log.error("Error committing hibernate transaction!", ex);
+
+      throw new VOMSDatabaseException(ex.getMessage(), ex);
+    }
+  }
+
+  public static void rollbackTransaction() {
+
+    Transaction tx = (Transaction) threadTransaction.get();
+    try {
+
+      threadTransaction.set(null);
+      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
+        tx.rollback();
+    } catch (HibernateException ex) {
+      log.error("Error rolling back hibernate transaction:" + ex.getMessage());
+
+      if (log.isDebugEnabled())
+        log.error("Error committing hibernate transaction!", ex);
+
+      throw new VOMSDatabaseException(ex.getMessage(), ex);
+
+    } finally {
+      closeSession();
+    }
+
+  }
 }

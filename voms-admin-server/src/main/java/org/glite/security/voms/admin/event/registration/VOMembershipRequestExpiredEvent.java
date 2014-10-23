@@ -23,8 +23,9 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestExpiredEvent extends VOMembershipRequestEvent {
 
-	public VOMembershipRequestExpiredEvent(NewVOMembershipRequest r) {
-		super(r);
-	}
+  public VOMembershipRequestExpiredEvent(NewVOMembershipRequest r) {
+
+    super(r);
+  }
 
 }

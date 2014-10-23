@@ -38,72 +38,72 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
 public class VOMembershipNotificationDispatcher extends
-		BaseNotificationDispatcher {
+  BaseNotificationDispatcher {
 
-	private static VOMembershipNotificationDispatcher instance;
-	
-	public static VOMembershipNotificationDispatcher instance(){
-		
-		if (instance == null)
-			instance = new VOMembershipNotificationDispatcher();
-		
-		return instance;
-	}
-	
-	
-	private VOMembershipNotificationDispatcher() {
-		super(new EventMask(EventType.VOMembershipRequestEvent));
-		
-	}
-	
-	public List<String> resolveEmailAddresses(VOMembershipRequestConfirmedEvent e){
-		if (e.getRequest().getRequesterInfo().getManagerEmail() == null){
-			return NotificationUtil.getAdministratorsEmailList(
-				VOMSContext.getVoContext(),
-				VOMSPermission.getRequestsRWPermissions());
-		}
-		
-		return Arrays.asList(e.getRequest().getRequesterInfo().getManagerEmail());
-		
-	}
-	
-	public void fire(Event e) {
-		
-		if (e instanceof VOMembershipRequestSubmittedEvent) {
-			VOMembershipRequestSubmittedEvent ee = (VOMembershipRequestSubmittedEvent) e;
+  private static VOMembershipNotificationDispatcher instance;
 
-			String recipient = ee.getRequest().getRequesterInfo()
-					.getEmailAddress();
+  public static VOMembershipNotificationDispatcher instance() {
 
-			ConfirmRequest msg = new ConfirmRequest(recipient, ee
-					.getConfirmURL(), ee.getCancelURL());
-			NotificationService.instance().send(msg);
+    if (instance == null)
+      instance = new VOMembershipNotificationDispatcher();
 
-		} else if (e instanceof VOMembershipRequestConfirmedEvent) {
+    return instance;
+  }
 
-			VOMembershipRequestConfirmedEvent ee = (VOMembershipRequestConfirmedEvent) e;
-			
-			List<String> admins =	resolveEmailAddresses(ee); 
-			
-			HandleRequest msg = new HandleRequest(ee.getRequest(), 
-					ee.getUrl(), admins );
+  private VOMembershipNotificationDispatcher() {
 
-			NotificationService.instance().send(msg);
-		
-		} else if (e instanceof VOMembershipRequestApprovedEvent) {
+    super(new EventMask(EventType.VOMembershipRequestEvent));
 
-			RequestApproved msg = new RequestApproved(
-					((VOMembershipRequestApprovedEvent) e).getRequest());
+  }
 
-			NotificationService.instance().send(msg);
-		
-		} else if (e instanceof VOMembershipRequestRejectedEvent) {
-			
-			RequestRejected msg = new RequestRejected(((VOMembershipRequestRejectedEvent) e).getRequest(), null);
-			NotificationService.instance().send(msg);
-					
-		}
+  public List<String> resolveEmailAddresses(VOMembershipRequestConfirmedEvent e) {
 
-	}
+    if (e.getRequest().getRequesterInfo().getManagerEmail() == null) {
+      return NotificationUtil.getAdministratorsEmailList(
+        VOMSContext.getVoContext(), VOMSPermission.getRequestsRWPermissions());
+    }
+
+    return Arrays.asList(e.getRequest().getRequesterInfo().getManagerEmail());
+
+  }
+
+  public void fire(Event e) {
+
+    if (e instanceof VOMembershipRequestSubmittedEvent) {
+      VOMembershipRequestSubmittedEvent ee = (VOMembershipRequestSubmittedEvent) e;
+
+      String recipient = ee.getRequest().getRequesterInfo().getEmailAddress();
+
+      ConfirmRequest msg = new ConfirmRequest(recipient, ee.getConfirmURL(),
+        ee.getCancelURL());
+      NotificationService.instance().send(msg);
+
+    } else if (e instanceof VOMembershipRequestConfirmedEvent) {
+
+      VOMembershipRequestConfirmedEvent ee = (VOMembershipRequestConfirmedEvent) e;
+
+      List<String> admins = resolveEmailAddresses(ee);
+
+      HandleRequest msg = new HandleRequest(ee.getRequest(), ee.getUrl(),
+        admins);
+
+      NotificationService.instance().send(msg);
+
+    } else if (e instanceof VOMembershipRequestApprovedEvent) {
+
+      RequestApproved msg = new RequestApproved(
+        ((VOMembershipRequestApprovedEvent) e).getRequest());
+
+      NotificationService.instance().send(msg);
+
+    } else if (e instanceof VOMembershipRequestRejectedEvent) {
+
+      RequestRejected msg = new RequestRejected(
+        ((VOMembershipRequestRejectedEvent) e).getRequest(), null);
+      NotificationService.instance().send(msg);
+
+    }
+
+  }
 
 }

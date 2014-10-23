@@ -39,126 +39,133 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
 public class UserActionSupport extends BaseAction implements
-		ModelDriven<VOMSUser>, Preparable, SessionAware {
+  ModelDriven<VOMSUser>, Preparable, SessionAware {
 
-	public static final Logger log = LoggerFactory.getLogger(UserActionSupport.class);
-	/**
+  public static final Logger log = LoggerFactory
+    .getLogger(UserActionSupport.class);
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static String LOAD_THIS_USER_KEY = "loadUserId";
-	
-	Long userId = -1L;
+  public static String LOAD_THIS_USER_KEY = "loadUserId";
 
-	VOMSUser model;
+  Long userId = -1L;
 
-	protected List<Request> requests;;
-	
-	protected List<GroupMembershipRequest> pendingGroupMembershipRequests;
+  VOMSUser model;
 
-	protected List<RoleMembershipRequest> pendingRoleMembershipRequests;
-	
-	protected List<CertificateRequest> pendingCertificateRequests;
-	
-	protected List<MembershipRemovalRequest> pendingMembershipRemovalRequests;
-	
-	protected Map<String, Object> theSession;
-	
-	public VOMSUser getModel() {
+  protected List<Request> requests;;
 
-		return model;
-	}
+  protected List<GroupMembershipRequest> pendingGroupMembershipRequests;
 
-	public void prepare() throws Exception {
+  protected List<RoleMembershipRequest> pendingRoleMembershipRequests;
 
-		if (getModel() == null) {
+  protected List<CertificateRequest> pendingCertificateRequests;
 
-			if (getUserId() != -1)
-				model = userById(getUserId());		
-			else{
-				Long loadThisUserKey = (Long) theSession.get(LOAD_THIS_USER_KEY);
-				
-				if (loadThisUserKey != null){
-					model = userById(loadThisUserKey);
-					theSession.remove(LOAD_THIS_USER_KEY);
-				}
-				
-			}
-		}
-			
-		if (getModel()!= null)
-			refreshPendingRequests();
+  protected List<MembershipRemovalRequest> pendingMembershipRemovalRequests;
 
-	}
-		
-		
+  protected Map<String, Object> theSession;
 
-	public Long getUserId() {
-		return userId;
-	}
+  public VOMSUser getModel() {
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    return model;
+  }
 
-	public List<GroupMembershipRequest> getPendingGroupMembershipRequests() {
-		return pendingGroupMembershipRequests;
-	}
+  public void prepare() throws Exception {
 
-	public List<RoleMembershipRequest> getPendingRoleMembershipRequests() {
-		return pendingRoleMembershipRequests;
-	}
-	
-	
-	public List<CertificateRequest> getPendingCertificateRequests() {
-		return pendingCertificateRequests;
-	}
-	
-	
-	public List<MembershipRemovalRequest> getPendingMembershipRemovalRequests() {
-	    return pendingMembershipRemovalRequests;
-	}
+    if (getModel() == null) {
 
-	protected void refreshPendingRequests(){
-		
-		RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
-		
-		requests = rDAO.findRequestsFromUser(model);
-		
-		pendingGroupMembershipRequests = rDAO.findPendingUserGroupMembershipRequests(model);
-		
-		pendingRoleMembershipRequests = rDAO.findPendingUserRoleMembershipRequests(model);
-		
-		pendingCertificateRequests =rDAO.findPendingUserCertificateRequests(model);
-		
-		pendingMembershipRemovalRequests = rDAO.findPendingUserMembershipRemovalRequests(model);
-		
-	}
+      if (getUserId() != -1)
+        model = userById(getUserId());
+      else {
+        Long loadThisUserKey = (Long) theSession.get(LOAD_THIS_USER_KEY);
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+        if (loadThisUserKey != null) {
+          model = userById(loadThisUserKey);
+          theSession.remove(LOAD_THIS_USER_KEY);
+        }
 
-	public List<Request> getRequests() {
-		return requests;
-	}
+      }
+    }
 
-	public void setSession(Map<String, Object> session) {
-		
-		log.debug("Setting session: "+session);
-		this.theSession = session;
-		
-		
-	}
-	
-	public boolean hasValidAUPAcceptanceRecord(){
-		
-		AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
-		
-		return (getModel().getAUPAccceptanceRecord(aup.getActiveVersion()).getValid() == true);
-		
-	}
+    if (getModel() != null)
+      refreshPendingRequests();
+
+  }
+
+  public Long getUserId() {
+
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+
+    this.userId = userId;
+  }
+
+  public List<GroupMembershipRequest> getPendingGroupMembershipRequests() {
+
+    return pendingGroupMembershipRequests;
+  }
+
+  public List<RoleMembershipRequest> getPendingRoleMembershipRequests() {
+
+    return pendingRoleMembershipRequests;
+  }
+
+  public List<CertificateRequest> getPendingCertificateRequests() {
+
+    return pendingCertificateRequests;
+  }
+
+  public List<MembershipRemovalRequest> getPendingMembershipRemovalRequests() {
+
+    return pendingMembershipRemovalRequests;
+  }
+
+  protected void refreshPendingRequests() {
+
+    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+
+    requests = rDAO.findRequestsFromUser(model);
+
+    pendingGroupMembershipRequests = rDAO
+      .findPendingUserGroupMembershipRequests(model);
+
+    pendingRoleMembershipRequests = rDAO
+      .findPendingUserRoleMembershipRequests(model);
+
+    pendingCertificateRequests = rDAO.findPendingUserCertificateRequests(model);
+
+    pendingMembershipRemovalRequests = rDAO
+      .findPendingUserMembershipRemovalRequests(model);
+
+  }
+
+  public static long getSerialversionuid() {
+
+    return serialVersionUID;
+  }
+
+  public List<Request> getRequests() {
+
+    return requests;
+  }
+
+  public void setSession(Map<String, Object> session) {
+
+    log.debug("Setting session: " + session);
+    this.theSession = session;
+
+  }
+
+  public boolean hasValidAUPAcceptanceRecord() {
+
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+
+    return (getModel().getAUPAccceptanceRecord(aup.getActiveVersion())
+      .getValid() == true);
+
+  }
 }

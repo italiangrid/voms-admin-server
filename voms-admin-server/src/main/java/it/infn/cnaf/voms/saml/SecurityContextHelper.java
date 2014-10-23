@@ -26,7 +26,7 @@
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,12 +37,10 @@
  File : SecurityContextImpl.java
 
  Authors: Valerio Venturi <valerio.venturi@cnaf.infn.it>
- 
-**************************************************************************/
+
+ **************************************************************************/
 
 package it.infn.cnaf.voms.saml;
-
-
 
 import java.security.cert.X509Certificate;
 
@@ -53,59 +51,70 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.util.DNUtil;
 
-
 /**
  * @author Valerio Venturi <valerio.venturi@cnaf.infn.it>
  *
  */
-public class SecurityContextHelper 
-{
-  static private Logger logger = LoggerFactory.getLogger(SecurityContextHelper.class);
-  
+public class SecurityContextHelper {
+
+  static private Logger logger = LoggerFactory
+    .getLogger(SecurityContextHelper.class);
+
   private X509Certificate[] certificateChain;
-  
+
   /**
    * 
    */
-  public SecurityContextHelper(HttpServletRequest httpServletRequest)
-  {
-    certificateChain = 
-      (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
-    
+  public SecurityContextHelper(HttpServletRequest httpServletRequest) {
+
+    certificateChain = (X509Certificate[]) httpServletRequest
+      .getAttribute("javax.servlet.request.X509Certificate");
+
     if (certificateChain == null)
       throw new Error("Not authenticated.");
-    
-    logger.info("Authenticated subject " + 
-                DNUtil.getOpenSSLSubject(certificateChain[0].getSubjectX500Principal()));
+
+    logger
+      .info("Authenticated subject "
+        + DNUtil.getOpenSSLSubject(certificateChain[0]
+          .getSubjectX500Principal()));
   }
-  
-  /* (non-Javadoc)
-   * @see it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getCertificate()
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getCertificate()
    */
-  public X509Certificate getCertificate()
-  {
+  public X509Certificate getCertificate() {
+
     return certificateChain[0];
   }
 
-  /* (non-Javadoc)
-   * @see it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getCertificateChain()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getCertificateChain
+   * ()
    */
-  public X509Certificate[] getCertificateChain()
-  {
+  public X509Certificate[] getCertificateChain() {
+
     return certificateChain;
   }
 
-  /* (non-Javadoc)
-   * @see it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getPrincipal()
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.infn.cnaf.voms.aa.presentation.security.SecurityContext#getPrincipal()
    */
-  public X500Principal getX500Principal()
-  {
+  public X500Principal getX500Principal() {
+
     return certificateChain[0].getSubjectX500Principal();
   }
 
-  
-  public boolean is(X500Principal issuer)
-  {
+  public boolean is(X500Principal issuer) {
+
     return certificateChain[0].getSubjectX500Principal().equals(issuer);
   }
 

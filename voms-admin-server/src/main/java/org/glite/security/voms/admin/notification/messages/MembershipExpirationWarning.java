@@ -25,27 +25,27 @@ import java.util.List;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class MembershipExpirationWarning extends
-		AbstractVelocityNotification {
+public class MembershipExpirationWarning extends AbstractVelocityNotification {
 
-	String subject;
-	List<VOMSUser> users;
+  String subject;
+  List<VOMSUser> users;
 
-	public MembershipExpirationWarning(List<VOMSUser> users) {
-		this.users = users;
-	}
+  public MembershipExpirationWarning(List<VOMSUser> users) {
 
-	@Override
-	protected void buildMessage() {
+    this.users = users;
+  }
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
-		String voName = conf.getVOName();
+  @Override
+  protected void buildMessage() {
 
-		setSubject(String.format("Membership expiration notice for VO %s.", voName));
-		context.put("voName", voName);
-		context.put("expiringUsers", users);
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    String voName = conf.getVOName();
 
-		super.buildMessage();
-	}
+    setSubject(String.format("Membership expiration notice for VO %s.", voName));
+    context.put("voName", voName);
+    context.put("expiringUsers", users);
+
+    super.buildMessage();
+  }
 
 }

@@ -25,62 +25,65 @@ import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 
 public class VOMSAuthorizationException extends VOMSSecurityException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private VOMSAdmin admin;
+  private VOMSAdmin admin;
 
-	private VOMSOperation operation;
+  private VOMSOperation operation;
 
-	private AuthorizationResponse authorizationResponse;
+  private AuthorizationResponse authorizationResponse;
 
-	public VOMSAdmin getAdmin() {
+  public VOMSAdmin getAdmin() {
 
-		return admin;
-	}
+    return admin;
+  }
 
-	public void setAdmin(VOMSAdmin admin) {
+  public void setAdmin(VOMSAdmin admin) {
 
-		this.admin = admin;
-	}
+    this.admin = admin;
+  }
 
-	public VOMSOperation getOperation() {
+  public VOMSOperation getOperation() {
 
-		return operation;
-	}
+    return operation;
+  }
 
-	public void setOperation(VOMSOperation operation) {
+  public void setOperation(VOMSOperation operation) {
 
-		this.operation = operation;
-	}
+    this.operation = operation;
+  }
 
-	public VOMSAuthorizationException(VOMSAdmin a, VOMSOperation o,
-			AuthorizationResponse response) {
+  public VOMSAuthorizationException(VOMSAdmin a, VOMSOperation o,
+    AuthorizationResponse response) {
 
-		this.admin = a;
-		this.operation = o;
-		this.authorizationResponse = response;
+    this.admin = a;
+    this.operation = o;
+    this.authorizationResponse = response;
 
-	}
+  }
 
-	@Override
-	public String getMessage() {
+  @Override
+  public String getMessage() {
 
-		return String.format("Insufficient privileges to execute '%s'.",
-				operation.getName());
-	}
+    return String.format("Insufficient privileges to execute '%s'.",
+      operation.getName());
+  }
 
-	public AuthorizationResponse getAuthorizationResponse() {
-		return authorizationResponse;
-	}
+  public AuthorizationResponse getAuthorizationResponse() {
 
-	public void setAuthorizationResponse(
-			AuthorizationResponse authorizationResponse) {
-		this.authorizationResponse = authorizationResponse;
-	}
+    return authorizationResponse;
+  }
 
-	@Override
-	public String toString() {
-		return getClass().getName() + ":" + getMessage();
-	}
+  public void setAuthorizationResponse(
+    AuthorizationResponse authorizationResponse) {
+
+    this.authorizationResponse = authorizationResponse;
+  }
+
+  @Override
+  public String toString() {
+
+    return getClass().getName() + ":" + getMessage();
+  }
 
 }

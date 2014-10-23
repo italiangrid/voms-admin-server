@@ -26,28 +26,29 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 
 public class DeleteAttributeDescriptionOperation extends BaseVomsOperation {
 
-	String name;
+  String name;
 
-	private DeleteAttributeDescriptionOperation(String name) {
-		this.name = name;
-	}
+  private DeleteAttributeDescriptionOperation(String name) {
 
-	protected Object doExecute() {
+    this.name = name;
+  }
 
-		return VOMSAttributeDAO.instance().deleteAttributeDescription(name);
-	}
+  protected Object doExecute() {
 
-	protected void setupPermissions() {
+    return VOMSAttributeDAO.instance().deleteAttributeDescription(name);
+  }
 
-		VOMSContext voContext = VOMSContext.getVoContext();
+  protected void setupPermissions() {
 
-		addRequiredPermission(voContext, VOMSPermission
-				.getContainerRWPermissions().setAttributesReadPermission()
-				.setAttributesWritePermission());
-	}
+    VOMSContext voContext = VOMSContext.getVoContext();
 
-	public static DeleteAttributeDescriptionOperation instance(String name) {
-		return new DeleteAttributeDescriptionOperation(name);
-	}
+    addRequiredPermission(voContext, VOMSPermission.getContainerRWPermissions()
+      .setAttributesReadPermission().setAttributesWritePermission());
+  }
+
+  public static DeleteAttributeDescriptionOperation instance(String name) {
+
+    return new DeleteAttributeDescriptionOperation(name);
+  }
 
 }

@@ -22,15 +22,16 @@ package org.glite.security.voms.admin.core.tasks;
 
 public abstract class BaseTaskWrapper implements Runnable {
 
-	
-	Runnable task;
-		
-	public BaseTaskWrapper(Runnable task) {
-		this.task  = task;
-	}
-	
-	public Runnable getTask() {
-		return task;
-	}
+  Runnable task;
+
+  public BaseTaskWrapper(Runnable task) {
+
+    this.task = task;
+  }
+
+  public Runnable getTask() {
+
+    return task;
+  }
 
 }

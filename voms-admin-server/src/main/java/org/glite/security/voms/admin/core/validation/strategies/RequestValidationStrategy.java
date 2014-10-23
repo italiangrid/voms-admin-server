@@ -24,7 +24,7 @@ import org.glite.security.voms.admin.core.validation.RequestValidationResult;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 
 public interface RequestValidationStrategy<RequestType extends Request> {
-	
-	public RequestValidationResult validateRequest(RequestType r);
+
+  public RequestValidationResult validateRequest(RequestType r);
 
 }

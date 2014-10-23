@@ -26,42 +26,45 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "register"),
-		@Result(name = RegisterActionSupport.CONFIRMATION_NEEDED, location = "registerWaitsConfirmation"),
-		@Result(name = RegisterActionSupport.PLEASE_WAIT, location = "registerLimbo"),
-		@Result(name = RegisterActionSupport.ALREADY_MEMBER, location = "/user/home.action", type = "redirect"),
-		@Result(name = RegisterActionSupport.REGISTRATION_DISABLED, location = "registrationDisabled"),
-		@Result(name = RegisterActionSupport.UNAUTHENTICATED_CLIENT, location = "guest")
-})
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "register"),
+  @Result(name = RegisterActionSupport.CONFIRMATION_NEEDED,
+    location = "registerWaitsConfirmation"),
+  @Result(name = RegisterActionSupport.PLEASE_WAIT, location = "registerLimbo"),
+  @Result(name = RegisterActionSupport.ALREADY_MEMBER,
+    location = "/user/home.action", type = "redirect"),
+  @Result(name = RegisterActionSupport.REGISTRATION_DISABLED,
+    location = "registrationDisabled"),
+  @Result(name = RegisterActionSupport.UNAUTHENTICATED_CLIENT,
+    location = "guest") })
 public class StartAction extends RegisterActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public String execute() throws Exception {
+  private static final long serialVersionUID = 1L;
 
-		if (!registrationEnabled())
-			return REGISTRATION_DISABLED;
-		
-		if (VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.READONLY, false))
-		    	return REGISTRATION_DISABLED;
-		
-		if (CurrentAdmin.instance().isUnauthenticated())
-			return UNAUTHENTICATED_CLIENT;
+  @Override
+  public String execute() throws Exception {
 
-		if (CurrentAdmin.instance().getVoUser() != null)
-			return ALREADY_MEMBER;
+    if (!registrationEnabled())
+      return REGISTRATION_DISABLED;
 
-		String result = checkExistingPendingRequests();
+    if (VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.READONLY, false))
+      return REGISTRATION_DISABLED;
 
-		if (result != null)
-			return result;
+    if (CurrentAdmin.instance().isUnauthenticated())
+      return UNAUTHENTICATED_CLIENT;
 
-		return SUCCESS;
-	}
+    if (CurrentAdmin.instance().getVoUser() != null)
+      return ALREADY_MEMBER;
+
+    String result = checkExistingPendingRequests();
+
+    if (result != null)
+      return result;
+
+    return SUCCESS;
+  }
 }

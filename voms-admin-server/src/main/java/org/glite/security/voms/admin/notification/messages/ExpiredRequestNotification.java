@@ -24,25 +24,25 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class ExpiredRequestNotification extends VelocityEmailNotification {
 
-	static String templateFilename = "RequestExpired.vm";
+  static String templateFilename = "RequestExpired.vm";
 
-	public ExpiredRequestNotification(String recipient) {
+  public ExpiredRequestNotification(String recipient) {
 
-		setTemplateFile(templateFilename);
-		addRecipient(recipient);
+    setTemplateFile(templateFilename);
+    addRecipient(recipient);
 
-	}
+  }
 
-	protected void buildMessage() {
+  protected void buildMessage() {
 
-		setSubject("You vo membership request has expired!");
+    setSubject("You vo membership request has expired!");
 
-		VelocityContext context = new VelocityContext();
-		context.put("recipient", getRecipientList().get(0));
-		context.put("voName", VOMSConfiguration.instance().getVOName());
+    VelocityContext context = new VelocityContext();
+    context.put("recipient", getRecipientList().get(0));
+    context.put("voName", VOMSConfiguration.instance().getVOName());
 
-		buildMessageFromTemplate(context);
+    buildMessageFromTemplate(context);
 
-	}
+  }
 
 }

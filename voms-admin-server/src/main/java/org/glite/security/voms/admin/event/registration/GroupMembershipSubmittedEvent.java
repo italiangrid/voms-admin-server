@@ -23,23 +23,23 @@ import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRe
 
 public class GroupMembershipSubmittedEvent extends GroupMembershipRequestEvent {
 
-	String managementURL;
-	
-	public GroupMembershipSubmittedEvent(GroupMembershipRequest req, String url) {
-		super(req);
-		this.managementURL = url;
-		
-	}
+  String managementURL;
 
-	public String getManagementURL() {
-		return managementURL;
-	}
+  public GroupMembershipSubmittedEvent(GroupMembershipRequest req, String url) {
 
-	public void setManagementURL(String managementURL) {
-		this.managementURL = managementURL;
-	}
-	
-	
-	
+    super(req);
+    this.managementURL = url;
+
+  }
+
+  public String getManagementURL() {
+
+    return managementURL;
+  }
+
+  public void setManagementURL(String managementURL) {
+
+    this.managementURL = managementURL;
+  }
 
 }

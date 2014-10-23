@@ -28,28 +28,29 @@ import org.glite.security.voms.admin.operations.roles.DeleteRoleOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-		@Result(name = BaseAction.INPUT, location = "roles"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="search", type="chain") })
-
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "roles"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "search",
+    type = "chain") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class DeleteAction extends RoleActionSupport {
 
-	/**
+  /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public String execute() throws Exception {
 
-		VOMSRole r = (VOMSRole) DeleteRoleOperation.instance(getModel())
-				.execute();
-		if (r != null)
-			addActionMessage(getText("confirm.role.deletion", new String[]{r.getName()}));
-		return SUCCESS;
-	}
+    VOMSRole r = (VOMSRole) DeleteRoleOperation.instance(getModel()).execute();
+    if (r != null)
+      addActionMessage(getText("confirm.role.deletion",
+        new String[] { r.getName() }));
+    return SUCCESS;
+  }
 
 }

@@ -38,71 +38,71 @@ import org.slf4j.LoggerFactory;
 
 public class OrgDBMembershipSynchronizationTask implements Runnable {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(OrgDBMembershipSynchronizationTask.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(OrgDBMembershipSynchronizationTask.class);
 
-	protected String experimentName;
+  protected String experimentName;
 
-	protected OrgDBMissingMembershipRecordStrategy missingMembershipStrategy;
-	protected OrgDbExpiredParticipationStrategy expiredParticipationStrategy;
-	protected OrgDBMembershipSynchronizationStrategy synchronizationStrategy;
-	
-	
-	public OrgDBMembershipSynchronizationTask(String experiment, 
-			OrgDBMissingMembershipRecordStrategy invalidMembershipStrategy,
-			OrgDbExpiredParticipationStrategy expiredParticaptionStrategy,
-			OrgDBMembershipSynchronizationStrategy membershipSynchronizationStrategy) {
-	
-		experimentName = experiment;
-		this.missingMembershipStrategy = invalidMembershipStrategy;
-		this.expiredParticipationStrategy = expiredParticaptionStrategy;
-		this.synchronizationStrategy = membershipSynchronizationStrategy;
-		
-	}
-	
-	public void run() {
+  protected OrgDBMissingMembershipRecordStrategy missingMembershipStrategy;
+  protected OrgDbExpiredParticipationStrategy expiredParticipationStrategy;
+  protected OrgDBMembershipSynchronizationStrategy synchronizationStrategy;
 
-		SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
+  public OrgDBMembershipSynchronizationTask(String experiment,
+    OrgDBMissingMembershipRecordStrategy invalidMembershipStrategy,
+    OrgDbExpiredParticipationStrategy expiredParticaptionStrategy,
+    OrgDBMembershipSynchronizationStrategy membershipSynchronizationStrategy) {
 
-		try {
+    experimentName = experiment;
+    this.missingMembershipStrategy = invalidMembershipStrategy;
+    this.expiredParticipationStrategy = expiredParticaptionStrategy;
+    this.synchronizationStrategy = membershipSynchronizationStrategy;
 
-			OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
-					.getVOMSPersonDAO();
+  }
 
-			List<VOMSUser> allUsers = VOMSUserDAO.instance().findAll();
+  public void run() {
 
-			for (VOMSUser u : allUsers) {
+    SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
 
-				VOMSOrgDBPerson orgDbPerson = dao.findPersonByEmail(u
-						.getEmailAddress());
+    try {
 
-				if (orgDbPerson != null){
-					
-					synchronizationStrategy.synchronizeMemberInformation(u, orgDbPerson, experimentName);
-					
-					if (!orgDbPerson.hasValidParticipationForExperiment(experimentName))
-						expiredParticipationStrategy.handleOrgDbExpiredParticipation(u, orgDbPerson, experimentName);
-					
-				}else {
-					
-					log	.warn("No OrgDB record found for user {}.", u);
-					missingMembershipStrategy.handleMissingMembershipRecord(u);
-				}
-			}
+      OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
 
-			sf.getCurrentSession().getTransaction().commit();
-			sf.getCurrentSession().close();
+      List<VOMSUser> allUsers = VOMSUserDAO.instance().findAll();
 
-		} catch (OrgDBError e) {
+      for (VOMSUser u : allUsers) {
 
-			log.error("OrgDB exception caught: {}", e.getMessage());
+        VOMSOrgDBPerson orgDbPerson = dao
+          .findPersonByEmail(u.getEmailAddress());
 
-			if (log.isDebugEnabled()) {
-				log.error("OrgDB exception caught: {}", e.getMessage(), e);
-			}
+        if (orgDbPerson != null) {
 
-		}
+          synchronizationStrategy.synchronizeMemberInformation(u, orgDbPerson,
+            experimentName);
 
-	}
+          if (!orgDbPerson.hasValidParticipationForExperiment(experimentName))
+            expiredParticipationStrategy.handleOrgDbExpiredParticipation(u,
+              orgDbPerson, experimentName);
+
+        } else {
+
+          log.warn("No OrgDB record found for user {}.", u);
+          missingMembershipStrategy.handleMissingMembershipRecord(u);
+        }
+      }
+
+      sf.getCurrentSession().getTransaction().commit();
+      sf.getCurrentSession().close();
+
+    } catch (OrgDBError e) {
+
+      log.error("OrgDB exception caught: {}", e.getMessage());
+
+      if (log.isDebugEnabled()) {
+        log.error("OrgDB exception caught: {}", e.getMessage(), e);
+      }
+
+    }
+
+  }
 
 }

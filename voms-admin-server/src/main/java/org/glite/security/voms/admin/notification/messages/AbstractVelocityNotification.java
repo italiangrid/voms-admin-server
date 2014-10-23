@@ -24,60 +24,63 @@ import org.apache.velocity.VelocityContext;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 
 public abstract class AbstractVelocityNotification extends
-		VelocityEmailNotification {
+  VelocityEmailNotification {
 
-	public static final String subjectPrefix = "[VOMS Admin]";
-	VelocityContext context;
-	String templatePrefix;
+  public static final String subjectPrefix = "[VOMS Admin]";
+  VelocityContext context;
+  String templatePrefix;
 
-	public AbstractVelocityNotification() {
-		setTemplatePrefix("/templates");
-		context = new VelocityContext();
-	}
+  public AbstractVelocityNotification() {
 
-	public void addToContext(String key, String value) {
-		context.put(key, value);
-	}
+    setTemplatePrefix("/templates");
+    context = new VelocityContext();
+  }
 
-	protected void setupContext(){
-		context.put("serviceManagementURL", NotificationUtil.getServiceURL());
-	}
-	
-	
-	@Override
-	protected void buildMessage() {
+  public void addToContext(String key, String value) {
 
-		setupContext();
-		
-		String templateFileName = String.format("/%s/%s.vm",
-				getTemplatePrefix(), getClass().getSimpleName());
-		
-		setTemplateFile(templateFileName);
+    context.put(key, value);
+  }
 
-		buildMessageFromTemplate(context);
+  protected void setupContext() {
 
-	}
+    context.put("serviceManagementURL", NotificationUtil.getServiceURL());
+  }
 
-	public String getTemplatePrefix() {
-		return templatePrefix;
-	}
+  @Override
+  protected void buildMessage() {
 
-	public void setTemplatePrefix(String templatePrefix) {
-		this.templatePrefix = templatePrefix;
-	}
-	
+    setupContext();
 
-	@Override
-	public void setSubject(String subject) {
+    String templateFileName = String.format("/%s/%s.vm", getTemplatePrefix(),
+      getClass().getSimpleName());
 
-		super.setSubject(subjectPrefix + " " + subject);
-	}
+    setTemplateFile(templateFileName);
 
-	@Override
-	public String toString() {
-		return "" + super.toString() + "[subject='" + getSubject()
-				+ "',recipients='" + StringUtils.join(getRecipientList(), ",")
-				+ "']";
-	}
+    buildMessageFromTemplate(context);
+
+  }
+
+  public String getTemplatePrefix() {
+
+    return templatePrefix;
+  }
+
+  public void setTemplatePrefix(String templatePrefix) {
+
+    this.templatePrefix = templatePrefix;
+  }
+
+  @Override
+  public void setSubject(String subject) {
+
+    super.setSubject(subjectPrefix + " " + subject);
+  }
+
+  @Override
+  public String toString() {
+
+    return "" + super.toString() + "[subject='" + getSubject()
+      + "',recipients='" + StringUtils.join(getRecipientList(), ",") + "']";
+  }
 
 }

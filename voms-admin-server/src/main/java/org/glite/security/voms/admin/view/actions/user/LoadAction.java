@@ -24,19 +24,17 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "userDetail")})
-
+@Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail") })
 public class LoadAction extends UserActionSupport {
 
-    /**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-    public String execute() throws Exception {
-        
-        return SUCCESS;
-    }
+  @Override
+  public String execute() throws Exception {
+
+    return SUCCESS;
+  }
 }

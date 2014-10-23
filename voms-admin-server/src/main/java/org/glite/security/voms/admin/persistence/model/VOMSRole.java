@@ -41,272 +41,276 @@ import org.hibernate.annotations.SortType;
 
 public class VOMSRole implements Serializable, Comparable<VOMSRole> {
 
-	private static final long serialVersionUID = -5063337678658382573L;
+  private static final long serialVersionUID = -5063337678658382573L;
 
-	public VOMSRole() {
+  public VOMSRole() {
 
-	}
+  }
 
-	public VOMSRole(String name) {
+  public VOMSRole(String name) {
 
-		this.name = name;
-	}
+    this.name = name;
+  }
 
-	@Id
-	@Column(name = "rid")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_ROLE_SEQ")
-	@SequenceGenerator(name="VOMS_ROLE_SEQ", sequenceName="VOMS_ROLE_SEQ")
-	Long id;
+  @Id
+  @Column(name = "rid")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_ROLE_SEQ")
+  @SequenceGenerator(name = "VOMS_ROLE_SEQ", sequenceName = "VOMS_ROLE_SEQ")
+  Long id;
 
-	@Column(name="role", nullable=false, unique=true)
-	String name;
+  @Column(name = "role", nullable = false, unique = true)
+  String name;
 
-	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="role")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<VOMSRoleAttribute> attributes = new HashSet<VOMSRoleAttribute>();
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<VOMSRoleAttribute> attributes = new HashSet<VOMSRoleAttribute>();
 
-	@OneToMany(cascade={ CascadeType.REMOVE }, mappedBy="role", 
-		fetch = FetchType.EAGER)
-	@Sort(type = SortType.NATURAL)
-	Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+  @OneToMany(cascade = { CascadeType.REMOVE }, mappedBy = "role",
+    fetch = FetchType.EAGER)
+  @Sort(type = SortType.NATURAL)
+  Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-	@OneToMany(cascade={ CascadeType.ALL }, mappedBy="role")
-	@org.hibernate.annotations.Cascade(value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	Set<ACL> acls = new HashSet<ACL>();
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role")
+  @org.hibernate.annotations.Cascade(
+    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  Set<ACL> acls = new HashSet<ACL>();
 
-	/**
-	 * @return Returns the id.
-	 */
-	public Long getId() {
+  /**
+   * @return Returns the id.
+   */
+  public Long getId() {
 
-		return id;
-	}
+    return id;
+  }
 
-	/**
-	 * @param id
-	 *          The id to set.
-	 */
-	public void setId(Long id) {
+  /**
+   * @param id
+   *          The id to set.
+   */
+  public void setId(Long id) {
 
-		this.id = id;
-	}
+    this.id = id;
+  }
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
+  /**
+   * @return Returns the name.
+   */
+  public String getName() {
 
-		return name;
-	}
+    return name;
+  }
 
-	/**
-	 * @param name
-	 *          The name to set.
-	 */
-	public void setName(String name) {
+  /**
+   * @param name
+   *          The name to set.
+   */
+  public void setName(String name) {
 
-		this.name = name;
-	}
+    this.name = name;
+  }
 
-	public boolean equals(Object other) {
+  public boolean equals(Object other) {
 
-		if (this == other)
-			return true;
+    if (this == other)
+      return true;
 
-		if (!(other instanceof VOMSRole))
-			return false;
+    if (!(other instanceof VOMSRole))
+      return false;
 
-		VOMSRole that = (VOMSRole) other;
+    VOMSRole that = (VOMSRole) other;
 
-		if (that == null)
-			return false;
+    if (that == null)
+      return false;
 
-		return getName().equals(that.getName());
-	}
+    return getName().equals(that.getName());
+  }
 
-	public int hashCode() {
+  public int hashCode() {
 
-		return getName().hashCode();
-	}
+    return getName().hashCode();
+  }
 
-	public int compareTo(VOMSRole that) {
+  public int compareTo(VOMSRole that) {
 
-		if (this.equals(that))
-			return 0;
-		
-		if ((that.name == null) && (this.name == null))
-			return 1;
+    if (this.equals(that))
+      return 0;
 
-		if ((that.name == null) || (this.name == null))
-			return -1;
+    if ((that.name == null) && (this.name == null))
+      return 1;
 
-		return this.name.compareTo(that.name);
-	}
+    if ((that.name == null) || (this.name == null))
+      return -1;
 
-	public String toString() {
+    return this.name.compareTo(that.name);
+  }
 
-		return "Role=" + name;
-	}
+  public String toString() {
 
-	public Set<VOMSMapping> getMappings() {
+    return "Role=" + name;
+  }
 
-		return mappings;
-	}
+  public Set<VOMSMapping> getMappings() {
 
-	public void setMappings(Set<VOMSMapping> mappings) {
+    return mappings;
+  }
 
-		this.mappings = mappings;
-	}
+  public void setMappings(Set<VOMSMapping> mappings) {
 
-	public Set<VOMSUser> getUsers(VOMSGroup g) {
+    this.mappings = mappings;
+  }
 
-		SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
-		Iterator<VOMSMapping> mIter = mappings.iterator();
+  public Set<VOMSUser> getUsers(VOMSGroup g) {
 
-		while (mIter.hasNext()) {
+    SortedSet<VOMSUser> res = new TreeSet<VOMSUser>();
+    Iterator<VOMSMapping> mIter = mappings.iterator();
 
-			VOMSMapping m = mIter.next();
-			if (m.getGroup().equals(g))
-				res.add(m.getUser());
-		}
+    while (mIter.hasNext()) {
 
-		return Collections.unmodifiableSortedSet(res);
-	}
+      VOMSMapping m = mIter.next();
+      if (m.getGroup().equals(g))
+        res.add(m.getUser());
+    }
 
-	public Set<String> getMembersEmailAddresses(VOMSGroup g) {
+    return Collections.unmodifiableSortedSet(res);
+  }
 
-		SortedSet<String> res = new TreeSet<String>();
-		Iterator<VOMSMapping> mIter = mappings.iterator();
+  public Set<String> getMembersEmailAddresses(VOMSGroup g) {
 
-		while (mIter.hasNext()) {
+    SortedSet<String> res = new TreeSet<String>();
+    Iterator<VOMSMapping> mIter = mappings.iterator();
 
-			VOMSMapping m = mIter.next();
-			if (m.getGroup().equals(g))
-				res.add(m.getUser().getEmailAddress());
-		}
+    while (mIter.hasNext()) {
 
-		return Collections.unmodifiableSortedSet(res);
-	}
+      VOMSMapping m = mIter.next();
+      if (m.getGroup().equals(g))
+        res.add(m.getUser().getEmailAddress());
+    }
 
-	public boolean isAssignedTo(VOMSGroup g, VOMSUser u) {
+    return Collections.unmodifiableSortedSet(res);
+  }
 
-		if (g == null)
-			throw new IllegalArgumentException("g must not be null!");
+  public boolean isAssignedTo(VOMSGroup g, VOMSUser u) {
 
-		if (u == null)
-			throw new IllegalArgumentException("u must not be null!");
+    if (g == null)
+      throw new IllegalArgumentException("g must not be null!");
 
-		VOMSMapping m = new VOMSMapping(u, g, this);
-		return mappings.contains(m);
-	}
+    if (u == null)
+      throw new IllegalArgumentException("u must not be null!");
 
-	public VOMSRoleAttribute getAttributeByName(VOMSGroup g, String attrName) {
+    VOMSMapping m = new VOMSMapping(u, g, this);
+    return mappings.contains(m);
+  }
 
-		Iterator<VOMSRoleAttribute> i = attributes.iterator();
-		while (i.hasNext()) {
-			VOMSRoleAttribute rav = i.next();
-			if (rav.getGroup().equals(g) && rav.getName().equals(attrName))
-				return rav;
-		}
+  public VOMSRoleAttribute getAttributeByName(VOMSGroup g, String attrName) {
 
-		return null;
-	}
+    Iterator<VOMSRoleAttribute> i = attributes.iterator();
+    while (i.hasNext()) {
+      VOMSRoleAttribute rav = i.next();
+      if (rav.getGroup().equals(g) && rav.getName().equals(attrName))
+        return rav;
+    }
 
-	public Set<VOMSRoleAttribute> getAttributesInGroup(VOMSGroup g) {
+    return null;
+  }
 
-		Set<VOMSRoleAttribute> result = new HashSet<VOMSRoleAttribute>();
-		Iterator<VOMSRoleAttribute> i = attributes.iterator();
+  public Set<VOMSRoleAttribute> getAttributesInGroup(VOMSGroup g) {
 
-		while (i.hasNext()) {
-			VOMSRoleAttribute rav = i.next();
-			if (rav.getGroup().equals(g))
-				result.add(rav);
-		}
+    Set<VOMSRoleAttribute> result = new HashSet<VOMSRoleAttribute>();
+    Iterator<VOMSRoleAttribute> i = attributes.iterator();
 
-		return result;
+    while (i.hasNext()) {
+      VOMSRoleAttribute rav = i.next();
+      if (rav.getGroup().equals(g))
+        result.add(rav);
+    }
 
-	}
+    return result;
 
-	public void addAttribute(VOMSRoleAttribute val) {
+  }
 
-		attributes.add(val);
+  public void addAttribute(VOMSRoleAttribute val) {
 
-	}
+    attributes.add(val);
 
-	public void deleteAttribute(VOMSRoleAttribute val) {
+  }
 
-		if (!attributes.contains(val))
-			throw new NoSuchAttributeException("Attribute \"" + val.getName()
-				+ "\" not defined for \"" + this + "\" in group \"" + val.getGroup()
-				+ "\".");
+  public void deleteAttribute(VOMSRoleAttribute val) {
 
-		attributes.remove(val);
+    if (!attributes.contains(val))
+      throw new NoSuchAttributeException("Attribute \"" + val.getName()
+        + "\" not defined for \"" + this + "\" in group \"" + val.getGroup()
+        + "\".");
 
-	}
-	
-	public void addMapping(VOMSMapping m){
-		getMappings().add(m);
-	}
-	
-	public boolean removeMapping(VOMSMapping m){
-		return getMappings().remove(m);
-	}
+    attributes.remove(val);
 
-	public Set<VOMSRoleAttribute> getAttributes() {
+  }
 
-		return attributes;
-	}
+  public void addMapping(VOMSMapping m) {
 
-	public void setAttributes(Set<VOMSRoleAttribute> attributes) {
+    getMappings().add(m);
+  }
 
-		this.attributes = attributes;
-	}
+  public boolean removeMapping(VOMSMapping m) {
 
-	public Set<ACL> getAcls() {
+    return getMappings().remove(m);
+  }
 
-		return acls;
-	}
+  public Set<VOMSRoleAttribute> getAttributes() {
 
-	public void setAcls(Set<ACL> acls) {
+    return attributes;
+  }
 
-		this.acls = acls;
-	}
+  public void setAttributes(Set<VOMSRoleAttribute> attributes) {
 
-	public ACL getACL(VOMSGroup g) {
+    this.attributes = attributes;
+  }
 
-		ACL result = null;
+  public Set<ACL> getAcls() {
 
-		Iterator<ACL> i = getAcls().iterator();
+    return acls;
+  }
 
-		while (i.hasNext()) {
+  public void setAcls(Set<ACL> acls) {
 
-			ACL tmp = i.next();
-			if (tmp.getGroup().equals(g) && (!tmp.getContext().isGroupContext())) {
+    this.acls = acls;
+  }
 
-				result = tmp;
-				break;
-			}
-		}
+  public ACL getACL(VOMSGroup g) {
 
-		return result;
+    ACL result = null;
 
-	}
+    Iterator<ACL> i = getAcls().iterator();
 
-	public void importACL(VOMSGroup g) {
+    while (i.hasNext()) {
 
-		ACL groupACL;
+      ACL tmp = i.next();
+      if (tmp.getGroup().equals(g) && (!tmp.getContext().isGroupContext())) {
 
-		if (g.getDefaultACL() == null)
-			groupACL = g.getACL();
-		else
-			groupACL = g.getDefaultACL();
+        result = tmp;
+        break;
+      }
+    }
 
-		ACL newACL = new ACL(g, this, false);
+    return result;
 
-		newACL.getPermissions().putAll(groupACL.getPermissions());
+  }
 
-		getAcls().add(newACL);
+  public void importACL(VOMSGroup g) {
 
-	}
+    ACL groupACL;
+
+    if (g.getDefaultACL() == null)
+      groupACL = g.getACL();
+    else
+      groupACL = g.getDefaultACL();
+
+    ACL newACL = new ACL(g, this, false);
+
+    newACL.getPermissions().putAll(groupACL.getPermissions());
+
+    getAcls().add(newACL);
+
+  }
 
 }

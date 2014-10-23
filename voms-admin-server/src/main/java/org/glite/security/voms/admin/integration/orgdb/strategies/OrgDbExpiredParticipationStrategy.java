@@ -24,7 +24,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface OrgDbExpiredParticipationStrategy {
 
-	public void handleOrgDbExpiredParticipation(VOMSUser u,
-		VOMSOrgDBPerson orgDBPerson, String experimentName);
+  public void handleOrgDbExpiredParticipation(VOMSUser u,
+    VOMSOrgDBPerson orgDBPerson, String experimentName);
 
 }

@@ -25,81 +25,89 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( { @Result(name = BaseAction.SUCCESS, location = "aclDetail.jsp"),
-		@Result(name = BaseAction.INPUT, location = "aclManage.jsp") })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "aclDetail.jsp"),
+  @Result(name = BaseAction.INPUT, location = "aclManage.jsp") })
 public class AjaxLoadAction extends ACLActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	Long aclGroupId = -1L;
-	Long aclRoleId = -1L;
+  Long aclGroupId = -1L;
+  Long aclRoleId = -1L;
 
-	Boolean showDefaultACL;
+  Boolean showDefaultACL;
 
-	VOMSContext vomsContext;
+  VOMSContext vomsContext;
 
-	@SkipValidation
-	public String execute() throws Exception {
-		return SUCCESS;
-	}
+  @SkipValidation
+  public String execute() throws Exception {
 
-	@Override
-	public void prepare() throws Exception {
+    return SUCCESS;
+  }
 
-		vomsContext = null;
+  @Override
+  public void prepare() throws Exception {
 
-		if (getModel() == null) {
-			if (aclGroupId != -1L && aclRoleId != -1L)
-				vomsContext = VOMSContext.instance(aclGroupId, aclRoleId);
-			else if (aclGroupId != -1L)
-				vomsContext = VOMSContext.instance(groupById(aclGroupId));
+    vomsContext = null;
 
-			if (vomsContext != null) {
+    if (getModel() == null) {
+      if (aclGroupId != -1L && aclRoleId != -1L)
+        vomsContext = VOMSContext.instance(aclGroupId, aclRoleId);
+      else if (aclGroupId != -1L)
+        vomsContext = VOMSContext.instance(groupById(aclGroupId));
 
-				if (showDefaultACL != null && vomsContext.isGroupContext())
-					model = vomsContext.getGroup().getDefaultACL();
-				else
-					model = vomsContext.getACL();
-			}
+      if (vomsContext != null) {
 
-		}
+        if (showDefaultACL != null && vomsContext.isGroupContext())
+          model = vomsContext.getGroup().getDefaultACL();
+        else
+          model = vomsContext.getACL();
+      }
 
-	}
+    }
 
-	public Long getAclGroupId() {
-		return aclGroupId;
-	}
+  }
 
-	public void setAclGroupId(Long aclGroupId) {
-		this.aclGroupId = aclGroupId;
-	}
+  public Long getAclGroupId() {
 
-	public Long getAclRoleId() {
-		return aclRoleId;
-	}
+    return aclGroupId;
+  }
 
-	public void setAclRoleId(Long aclRoleId) {
-		this.aclRoleId = aclRoleId;
-	}
+  public void setAclGroupId(Long aclGroupId) {
 
-	public Boolean getShowDefaultACL() {
-		return showDefaultACL;
-	}
+    this.aclGroupId = aclGroupId;
+  }
 
-	public void setShowDefaultACL(Boolean showDefaultACL) {
-		this.showDefaultACL = showDefaultACL;
-	}
+  public Long getAclRoleId() {
 
-	public VOMSContext getVomsContext() {
-		return vomsContext;
-	}
+    return aclRoleId;
+  }
 
-	public void setVomsContext(VOMSContext vomsContext) {
-		this.vomsContext = vomsContext;
-	}
+  public void setAclRoleId(Long aclRoleId) {
+
+    this.aclRoleId = aclRoleId;
+  }
+
+  public Boolean getShowDefaultACL() {
+
+    return showDefaultACL;
+  }
+
+  public void setShowDefaultACL(Boolean showDefaultACL) {
+
+    this.showDefaultACL = showDefaultACL;
+  }
+
+  public VOMSContext getVomsContext() {
+
+    return vomsContext;
+  }
+
+  public void setVomsContext(VOMSContext vomsContext) {
+
+    this.vomsContext = vomsContext;
+  }
 
 }

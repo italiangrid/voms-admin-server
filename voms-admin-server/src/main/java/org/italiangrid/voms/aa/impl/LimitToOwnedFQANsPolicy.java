@@ -23,30 +23,31 @@ package org.italiangrid.voms.aa.impl;
 import org.italiangrid.voms.VOMSAttribute;
 import org.italiangrid.voms.aa.RequestContext;
 
-
 public class LimitToOwnedFQANsPolicy implements FQANFilteringPolicy {
-	
-	public LimitToOwnedFQANsPolicy() {}
 
-	@Override
-	public boolean filterIssuedFQANs(RequestContext context) {
+  public LimitToOwnedFQANsPolicy() {
 
-		if (context.getRequest().getOwnedAttributes().isEmpty())
-			return false;
-		
-		boolean modified = false;
-		
-		for (VOMSAttribute a: context.getRequest().getOwnedAttributes()){
-			
-			// Only consider valid VOMS attributes for this VO
-			if (!a.getVO().equals(context.getVOName()))
-				continue;
-			
-			// Limit issued FQANs to the owned attributes
-			modified = context.getResponse().getIssuedFQANs().retainAll(a.getFQANs());
-		}
-		
-		return modified;
-	}
+  }
+
+  @Override
+  public boolean filterIssuedFQANs(RequestContext context) {
+
+    if (context.getRequest().getOwnedAttributes().isEmpty())
+      return false;
+
+    boolean modified = false;
+
+    for (VOMSAttribute a : context.getRequest().getOwnedAttributes()) {
+
+      // Only consider valid VOMS attributes for this VO
+      if (!a.getVO().equals(context.getVOName()))
+        continue;
+
+      // Limit issued FQANs to the owned attributes
+      modified = context.getResponse().getIssuedFQANs().retainAll(a.getFQANs());
+    }
+
+    return modified;
+  }
 
 }

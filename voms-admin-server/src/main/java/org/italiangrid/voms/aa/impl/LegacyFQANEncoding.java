@@ -22,34 +22,35 @@ package org.italiangrid.voms.aa.impl;
 
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
-
 public class LegacyFQANEncoding implements FQANEncoding {
 
-	private final String NULL_CAPABILITY = "Capability=NULL";
-	private final String NULL_ROLE = "Role=NULL";
-	
-	@Override
-	public String encodeFQAN(String fqan) {
-		String result = null;
-		
-		if (PathNamingScheme.isQualifiedRole(fqan)) {
-			result = String.format("%s/%s", fqan, NULL_CAPABILITY);
-		} else if (PathNamingScheme.isGroup(fqan)) {
-			result = String.format("%s/%s/%s", fqan, NULL_ROLE, NULL_CAPABILITY);
-		}
-		
-		return result;
-	}
+  private final String NULL_CAPABILITY = "Capability=NULL";
+  private final String NULL_ROLE = "Role=NULL";
 
-	@Override
-	public String decodeFQAN(String fqan) {
-		int index = fqan.indexOf("/"+NULL_ROLE); 
-		
-		if ( index > 0)
-			return fqan.substring(0, index);
-		
-		return fqan.substring(0, fqan.indexOf("/"+NULL_CAPABILITY));
-		
-	}
+  @Override
+  public String encodeFQAN(String fqan) {
+
+    String result = null;
+
+    if (PathNamingScheme.isQualifiedRole(fqan)) {
+      result = String.format("%s/%s", fqan, NULL_CAPABILITY);
+    } else if (PathNamingScheme.isGroup(fqan)) {
+      result = String.format("%s/%s/%s", fqan, NULL_ROLE, NULL_CAPABILITY);
+    }
+
+    return result;
+  }
+
+  @Override
+  public String decodeFQAN(String fqan) {
+
+    int index = fqan.indexOf("/" + NULL_ROLE);
+
+    if (index > 0)
+      return fqan.substring(0, index);
+
+    return fqan.substring(0, fqan.indexOf("/" + NULL_CAPABILITY));
+
+  }
 
 }

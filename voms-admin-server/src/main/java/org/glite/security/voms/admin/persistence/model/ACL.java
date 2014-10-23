@@ -36,259 +36,259 @@ import org.slf4j.LoggerFactory;
 
 public class ACL implements Serializable {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private static final Logger log = LoggerFactory.getLogger(ACL.class);
+  private static final Logger log = LoggerFactory.getLogger(ACL.class);
 
-	
-	Long id;
-	
-	VOMSGroup group = null;
+  Long id;
 
-	Boolean defaultACL;
+  VOMSGroup group = null;
 
-	VOMSRole role = null;
+  Boolean defaultACL;
 
-	Map<VOMSAdmin, VOMSPermission> permissions = new HashMap<VOMSAdmin, VOMSPermission>();
+  VOMSRole role = null;
 
-	public ACL() {
+  Map<VOMSAdmin, VOMSPermission> permissions = new HashMap<VOMSAdmin, VOMSPermission>();
 
-	}
+  public ACL() {
 
-	public ACL(VOMSGroup g, VOMSRole r, boolean isDefaultACL) {
+  }
 
-		this.group = g;
-		this.role = r;
-		this.defaultACL = new Boolean(isDefaultACL);
-	}
+  public ACL(VOMSGroup g, VOMSRole r, boolean isDefaultACL) {
 
-	public ACL(VOMSGroup g, boolean isDefaultACL) {
+    this.group = g;
+    this.role = r;
+    this.defaultACL = new Boolean(isDefaultACL);
+  }
 
-		this(g, null, isDefaultACL);
-	}
+  public ACL(VOMSGroup g, boolean isDefaultACL) {
 
-	public VOMSGroup getGroup() {
+    this(g, null, isDefaultACL);
+  }
 
-		return group;
-	}
+  public VOMSGroup getGroup() {
 
-	public void setGroup(VOMSGroup group) {
+    return group;
+  }
 
-		this.group = group;
-	}
+  public void setGroup(VOMSGroup group) {
 
-	public Map<VOMSAdmin, VOMSPermission> getPermissions() {
+    this.group = group;
+  }
 
-		return permissions;
-	}
+  public Map<VOMSAdmin, VOMSPermission> getPermissions() {
 
-	public void setPermissions(Map<VOMSAdmin, VOMSPermission> permissions) {
+    return permissions;
+  }
 
-		this.permissions = permissions;
-	}
+  public void setPermissions(Map<VOMSAdmin, VOMSPermission> permissions) {
 
-	public VOMSRole getRole() {
+    this.permissions = permissions;
+  }
 
-		return role;
-	}
+  public VOMSRole getRole() {
 
-	public void setRole(VOMSRole role) {
+    return role;
+  }
 
-		this.role = role;
-	}
+  public void setRole(VOMSRole role) {
 
-	public boolean equals(Object other) {
+    this.role = role;
+  }
 
-		if (this == other)
-			return true;
-		if (!(other instanceof ACL))
-			return false;
+  public boolean equals(Object other) {
 
-		ACL that = (ACL) other;
+    if (this == other)
+      return true;
+    if (!(other instanceof ACL))
+      return false;
 
-		if (that == null)
-			return false;
+    ACL that = (ACL) other;
 
-		if (getGroup().equals(that.getGroup())) {
+    if (that == null)
+      return false;
 
-			if ((getRole() == null) && (that.getRole() == null)) {
+    if (getGroup().equals(that.getGroup())) {
 
-				return getDefaultACL().equals(that.getDefaultACL());
-			}
+      if ((getRole() == null) && (that.getRole() == null)) {
 
-			if ((getRole() != null) && (that.getRole() != null))
-				return getRole().equals(that.getRole());
-		}
+        return getDefaultACL().equals(that.getDefaultACL());
+      }
 
-		return false;
-	}
+      if ((getRole() != null) && (that.getRole() != null))
+        return getRole().equals(that.getRole());
+    }
 
-	public int hashCode() {
+    return false;
+  }
 
-		int result = 14;
+  public int hashCode() {
 
-		result = 29 * result + getGroup().hashCode();
+    int result = 14;
 
-		if (getRole() != null)
-			result = 29 * result + getRole().hashCode();
+    result = 29 * result + getGroup().hashCode();
 
-		return result;
-	}
+    if (getRole() != null)
+      result = 29 * result + getRole().hashCode();
 
-	public Boolean getDefaultACL() {
+    return result;
+  }
 
-		return defaultACL;
-	}
+  public Boolean getDefaultACL() {
 
-	public void setDefaultACL(Boolean defaultACL) {
+    return defaultACL;
+  }
 
-		this.defaultACL = defaultACL;
-	}
+  public void setDefaultACL(Boolean defaultACL) {
 
-	public Long getId() {
+    this.defaultACL = defaultACL;
+  }
 
-		return id;
-	}
+  public Long getId() {
 
-	public void setPermissions(VOMSAdmin a, VOMSPermission p) {
+    return id;
+  }
 
-		getPermissions().put(a, p);
+  public void setPermissions(VOMSAdmin a, VOMSPermission p) {
 
-	}
+    getPermissions().put(a, p);
 
-	public void removePermissions(VOMSAdmin a) {
+  }
 
-		getPermissions().remove(a);
+  public void removePermissions(VOMSAdmin a) {
 
-	}
+    getPermissions().remove(a);
 
-	public void setId(Long id) {
+  }
 
-		this.id = id;
-	}
+  public void setId(Long id) {
 
-	public boolean isDefautlACL() {
+    this.id = id;
+  }
 
-		return defaultACL.booleanValue();
-	}
+  public boolean isDefautlACL() {
 
-	public VOMSPermission getPermissions(VOMSAdmin a) {
+    return defaultACL.booleanValue();
+  }
 
-		return getPermissions().get(a);
+  public VOMSPermission getPermissions(VOMSAdmin a) {
 
-	}
+    return getPermissions().get(a);
 
-	public Map<VOMSAdmin, VOMSPermission> getRolePermissions() {
+  }
 
-		Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
+  public Map<VOMSAdmin, VOMSPermission> getRolePermissions() {
 
-		for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
-				.entrySet()) {
+    Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
 
-			VOMSAdmin admin = entry.getKey();
+    for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
+      .entrySet()) {
 
-			if (admin.getCa().getSubjectString().equals(
-					VOMSServiceConstants.ROLE_CA))
-				result.put(admin, entry.getValue());
-		}
+      VOMSAdmin admin = entry.getKey();
 
-		return result;
-	}
+      if (admin.getCa().getSubjectString().equals(VOMSServiceConstants.ROLE_CA))
+        result.put(admin, entry.getValue());
+    }
 
-	public Map<VOMSAdmin, VOMSPermission> getGroupPermissions() {
+    return result;
+  }
 
-		Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
+  public Map<VOMSAdmin, VOMSPermission> getGroupPermissions() {
 
-		for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
-				.entrySet()) {
+    Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
 
-			VOMSAdmin admin = entry.getKey();
+    for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
+      .entrySet()) {
 
-			if (admin.getCa().getSubjectString().equals(
-					VOMSServiceConstants.GROUP_CA))
-				result.put(admin, entry.getValue());
+      VOMSAdmin admin = entry.getKey();
 
-		}
+      if (admin.getCa().getSubjectString()
+        .equals(VOMSServiceConstants.GROUP_CA))
+        result.put(admin, entry.getValue());
 
-		return result;
-	}
+    }
 
-	public Set<VOMSAdmin> getAdminsWithPermissions(
-			VOMSPermission requiredPermission) {
+    return result;
+  }
 
-		Set<VOMSAdmin> results = new HashSet<VOMSAdmin>();
+  public Set<VOMSAdmin> getAdminsWithPermissions(
+    VOMSPermission requiredPermission) {
 
-		for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
-				.entrySet()) {
+    Set<VOMSAdmin> results = new HashSet<VOMSAdmin>();
 
-			VOMSAdmin a = entry.getKey();
-			VOMSPermission p = entry.getValue();
+    for (Map.Entry<VOMSAdmin, VOMSPermission> entry : getPermissions()
+      .entrySet()) {
 
-			// Here the historic behavior was to return only group or role admins.
-			// This is being changed now (Mar 17 Ago 2010 15:26:16 CEST) as it does not
-			// make a lot of sense to me currently.
-			if (p.satisfies(requiredPermission))
-				results.add(a);
+      VOMSAdmin a = entry.getKey();
+      VOMSPermission p = entry.getValue();
 
-		}
+      // Here the historic behavior was to return only group or role admins.
+      // This is being changed now (Mar 17 Ago 2010 15:26:16 CEST) as it does
+      // not
+      // make a lot of sense to me currently.
+      if (p.satisfies(requiredPermission))
+        results.add(a);
 
-		return results;
+    }
 
-	}
+    return results;
 
-	public VOMSPermission getAnyAuthenticatedUserPermissions() {
+  }
 
-		VOMSAdmin anyAuthenticatedUserAdmin = VOMSAdminDAO.instance()
-				.getAnyAuthenticatedUserAdmin();
-		return permissions.get(anyAuthenticatedUserAdmin);
-	}
+  public VOMSPermission getAnyAuthenticatedUserPermissions() {
 
-	public VOMSPermission getUnauthenticatedClientPermissions() {
-		
-		VOMSAdmin unauthenticatedClient = VOMSAdminDAO.instance().getUnauthenticatedClientAdmin();
-		
-		if (unauthenticatedClient == null)
-			return null;
-		
-		return permissions.get(unauthenticatedClient);
-	}
-	public Map<VOMSAdmin, VOMSPermission> getExternalPermissions() {
+    VOMSAdmin anyAuthenticatedUserAdmin = VOMSAdminDAO.instance()
+      .getAnyAuthenticatedUserAdmin();
+    return permissions.get(anyAuthenticatedUserAdmin);
+  }
 
-		Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
+  public VOMSPermission getUnauthenticatedClientPermissions() {
 
-		Iterator<VOMSAdmin> admins = permissions.keySet().iterator();
+    VOMSAdmin unauthenticatedClient = VOMSAdminDAO.instance()
+      .getUnauthenticatedClientAdmin();
 
-		while (admins.hasNext()) {
+    if (unauthenticatedClient == null)
+      return null;
 
-			VOMSAdmin admin = admins.next();
+    return permissions.get(unauthenticatedClient);
+  }
 
-			if ((admin.getDn().equals(VOMSServiceConstants.ANYUSER_ADMIN))
-					|| 
-					(admin.getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT))
-					||
-					(!admin.getDn().startsWith(
-							VOMSServiceConstants.INTERNAL_DN_PREFIX)))
-				result.put(admin, permissions.get(admin));
+  public Map<VOMSAdmin, VOMSPermission> getExternalPermissions() {
 
-		}
+    Map<VOMSAdmin, VOMSPermission> result = new HashMap<VOMSAdmin, VOMSPermission>();
 
-		return result;
-	}
+    Iterator<VOMSAdmin> admins = permissions.keySet().iterator();
 
-	public VOMSContext getContext() {
+    while (admins.hasNext()) {
 
-		return VOMSContext.instance(getGroup(), getRole());
-	}
+      VOMSAdmin admin = admins.next();
 
-	public String toString() {
-		
-		ToStringBuilder builder = new ToStringBuilder(this);
-		builder.append("id",id).append("defaultACL", defaultACL).append("group", group).append("role", role).append("permissions",permissions);
+      if ((admin.getDn().equals(VOMSServiceConstants.ANYUSER_ADMIN))
+        || (admin.getDn().equals(VOMSServiceConstants.UNAUTHENTICATED_CLIENT))
+        || (!admin.getDn().startsWith(VOMSServiceConstants.INTERNAL_DN_PREFIX)))
+        result.put(admin, permissions.get(admin));
 
-		return builder.toString();
+    }
 
-	}
+    return result;
+  }
+
+  public VOMSContext getContext() {
+
+    return VOMSContext.instance(getGroup(), getRole());
+  }
+
+  public String toString() {
+
+    ToStringBuilder builder = new ToStringBuilder(this);
+    builder.append("id", id).append("defaultACL", defaultACL)
+      .append("group", group).append("role", role)
+      .append("permissions", permissions);
+
+    return builder.toString();
+
+  }
 }

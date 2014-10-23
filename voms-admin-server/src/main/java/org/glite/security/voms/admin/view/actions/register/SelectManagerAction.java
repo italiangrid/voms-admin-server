@@ -35,100 +35,101 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-@Results( { @Result(name = BaseAction.INPUT, location = "selectManager"),
-	@Result(name = RegisterActionSupport.REQUEST_ATTRIBUTES, location = "requestAttributes"),
-	@Result(name = BaseAction.SUCCESS, location = "set-request-confirmed", type="chain"),
-	@Result(name = BaseAction.ERROR, location = "registrationConfirmationError")
-})
+@Results({
+  @Result(name = BaseAction.INPUT, location = "selectManager"),
+  @Result(name = RegisterActionSupport.REQUEST_ATTRIBUTES,
+    location = "requestAttributes"),
+  @Result(name = BaseAction.SUCCESS, location = "set-request-confirmed",
+    type = "chain"),
+  @Result(name = BaseAction.ERROR, location = "registrationConfirmationError") })
 public class SelectManagerAction extends RegisterActionSupport {
 
-
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = -7576052921720818553L;
-	
-	Long managerId = -1L;
-	String confirmationId;
-	GroupManager manager; 
-	
-	
-	@Override
-	public void validate() {
-		
-		if (managerId != -1L){
-			manager = DAOFactory.instance().getGroupManagerDAO().findById(managerId, 
-			false);
-		
-			if (manager == null){
-				addActionError("No manager found for id '"+managerId+"'.");
-			}
-			
-		}else{
-		  
-		  addActionError("Please select a group manager.");
-		 
-		}
-		
-		super.validate();
-	}
-	@Override
-	public String execute() throws Exception {
-	
-		if (!getModel().getStatus().equals(STATUS.SUBMITTED)){
-			addActionError("Your request has already been confirmed!");
-			return ERROR;
-		}
-		
-		if (manager != null){
-			
-			getModel().getRequesterInfo().setManagerEmail(manager
-				.getEmailAddress());
-			
-		}
-		
-		List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
-		if (attributeRequestsEnabled() && groups.size() > 1){
-				
-				// All members are included in the root group by default, so
-				// the root group is removed from the list of groups that could be 
-				// requested
-				if (groups.size() > 1)
-					groups = groups.subList(1, groups.size());
-				
-				ServletActionContext.getRequest().setAttribute("voGroups", groups);
-				return REQUEST_ATTRIBUTES;
-		}
-		
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = -7576052921720818553L;
 
-	@RequiredFieldValidator(type = ValidatorType.FIELD, 
-		message = "A confirmation id is required!")
-	public String getConfirmationId() {
-		return confirmationId;
-	}
+  Long managerId = -1L;
+  String confirmationId;
+  GroupManager manager;
 
-	public void setConfirmationId(String confirmationId) {
-		this.confirmationId = confirmationId;
-	}
-	
-	/**
-	 * @return the managerId
-	 */
-	public Long getManagerId() {
-	
-		return managerId;
-	}
-	
-	/**
-	 * @param managerId the managerId to set
-	 */
-	public void setManagerId(Long managerId) {
-	
-		this.managerId = managerId;
-	}
+  @Override
+  public void validate() {
 
-	
+    if (managerId != -1L) {
+      manager = DAOFactory.instance().getGroupManagerDAO()
+        .findById(managerId, false);
+
+      if (manager == null) {
+        addActionError("No manager found for id '" + managerId + "'.");
+      }
+
+    } else {
+
+      addActionError("Please select a group manager.");
+
+    }
+
+    super.validate();
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    if (!getModel().getStatus().equals(STATUS.SUBMITTED)) {
+      addActionError("Your request has already been confirmed!");
+      return ERROR;
+    }
+
+    if (manager != null) {
+
+      getModel().getRequesterInfo().setManagerEmail(manager.getEmailAddress());
+
+    }
+
+    List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
+    if (attributeRequestsEnabled() && groups.size() > 1) {
+
+      // All members are included in the root group by default, so
+      // the root group is removed from the list of groups that could be
+      // requested
+      if (groups.size() > 1)
+        groups = groups.subList(1, groups.size());
+
+      ServletActionContext.getRequest().setAttribute("voGroups", groups);
+      return REQUEST_ATTRIBUTES;
+    }
+
+    return SUCCESS;
+  }
+
+  @RequiredFieldValidator(type = ValidatorType.FIELD,
+    message = "A confirmation id is required!")
+  public String getConfirmationId() {
+
+    return confirmationId;
+  }
+
+  public void setConfirmationId(String confirmationId) {
+
+    this.confirmationId = confirmationId;
+  }
+
+  /**
+   * @return the managerId
+   */
+  public Long getManagerId() {
+
+    return managerId;
+  }
+
+  /**
+   * @param managerId
+   *          the managerId to set
+   */
+  public void setManagerId(Long managerId) {
+
+    this.managerId = managerId;
+  }
+
 }

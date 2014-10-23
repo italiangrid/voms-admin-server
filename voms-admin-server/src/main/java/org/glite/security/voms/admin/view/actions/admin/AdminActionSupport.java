@@ -26,30 +26,29 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-
 public class AdminActionSupport extends BaseAction implements
-		ModelDriven<VOMSAdmin>, Preparable {
+  ModelDriven<VOMSAdmin>, Preparable {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	VOMSAdmin admin;
+  VOMSAdmin admin;
 
-	public VOMSAdmin getModel() {
+  public VOMSAdmin getModel() {
 
-		return admin;
-	}
+    return admin;
+  }
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-		admin = CurrentAdmin.instance().getAdmin();
+    admin = CurrentAdmin.instance().getAdmin();
 
-	}
+  }
 
-	public String getRealSubject(){
-		
-		return CurrentAdmin.instance().getRealSubject();
-	}
+  public String getRealSubject() {
+
+    return CurrentAdmin.instance().getRealSubject();
+  }
 }

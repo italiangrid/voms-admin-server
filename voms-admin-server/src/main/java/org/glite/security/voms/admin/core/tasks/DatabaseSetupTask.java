@@ -54,189 +54,187 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseSetupTask extends TimerTask {
 
-	private static final Logger log = LoggerFactory.getLogger(DatabaseSetupTask.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(DatabaseSetupTask.class);
 
-	private Timer timer;
+  private Timer timer;
 
-	private static DatabaseSetupTask instance = null;
+  private static DatabaseSetupTask instance = null;
 
-	public static DatabaseSetupTask instance() {
-		return instance(null);
-	}
+  public static DatabaseSetupTask instance() {
 
-	public static DatabaseSetupTask instance(Timer t) {
+    return instance(null);
+  }
 
-		if (instance == null)
-			instance = new DatabaseSetupTask(t);
-		return instance;
+  public static DatabaseSetupTask instance(Timer t) {
 
-	}
+    if (instance == null)
+      instance = new DatabaseSetupTask(t);
+    return instance;
 
-	private DatabaseSetupTask(Timer timer) {
+  }
 
-		this.timer = timer;
-	}
+  private DatabaseSetupTask(Timer timer) {
 
-	private void setupRootGroup() {
+    this.timer = timer;
+  }
 
-		try{
-			
-			VOMSGroupDAO.instance().getVOGroup();
-		
-		}catch(VOMSInconsistentDatabaseException ex){
-			log.info("Setting up VO root group...");
-			VOMSGroupDAO.instance().createVOGroup();
-			
-		}
-	}
+  private void setupRootGroup() {
 
-	private void setupInternalCAs() {
+    try {
 
-		log.info("Setting up voms-admin internal CAs..");
+      VOMSGroupDAO.instance().getVOGroup();
 
-		VOMSCADAO caDAO = VOMSCADAO.instance();
+    } catch (VOMSInconsistentDatabaseException ex) {
+      log.info("Setting up VO root group...");
+      VOMSGroupDAO.instance().createVOGroup();
 
-		caDAO
-				.createIfMissing(VOMSServiceConstants.VIRTUAL_CA,
-						"A dummy CA for local org.glite.security.voms.admin.persistence.error mainteneance");
-		caDAO.createIfMissing(VOMSServiceConstants.GROUP_CA,
-				"A virtual CA for VOMS groups.");
-		caDAO.createIfMissing(VOMSServiceConstants.ROLE_CA,
-				"A virtual CA for VOMS roles.");
-		caDAO.createIfMissing(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
-				"A virtual CA for authz manager attributes");
+    }
+  }
 
-	}
+  private void setupInternalCAs() {
 
-	private void setupInternalAdmins() {
+    log.info("Setting up voms-admin internal CAs..");
 
-		List<VOMSAdmin> admins = VOMSAdminDAO.instance().getAll();
+    VOMSCADAO caDAO = VOMSCADAO.instance();
 
-		if (admins.isEmpty()) {
+    caDAO
+      .createIfMissing(
+        VOMSServiceConstants.VIRTUAL_CA,
+        "A dummy CA for local org.glite.security.voms.admin.persistence.error mainteneance");
+    caDAO.createIfMissing(VOMSServiceConstants.GROUP_CA,
+      "A virtual CA for VOMS groups.");
+    caDAO.createIfMissing(VOMSServiceConstants.ROLE_CA,
+      "A virtual CA for VOMS roles.");
+    caDAO.createIfMissing(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
+      "A virtual CA for authz manager attributes");
 
-			log.info("Setting up voms-admin internal administrators...");
-			
-			VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
-			if (voGroup == null)
-				setupRootGroup();
+  }
 
-			VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
+  private void setupInternalAdmins() {
 
-			VOMSAdmin internalAdmin = adminDAO.create(
-					VOMSServiceConstants.INTERNAL_ADMIN,
-					VOMSServiceConstants.VIRTUAL_CA);
+    List<VOMSAdmin> admins = VOMSAdminDAO.instance().getAll();
 
-			VOMSAdmin localAdmin = adminDAO.create(
-					VOMSServiceConstants.LOCAL_ADMIN,
-					VOMSServiceConstants.VIRTUAL_CA);
+    if (admins.isEmpty()) {
 
-			adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
-					VOMSServiceConstants.VIRTUAL_CA);
+      log.info("Setting up voms-admin internal administrators...");
 
-			adminDAO.create(VOMSServiceConstants.ANYUSER_ADMIN,
-					VOMSServiceConstants.VIRTUAL_CA);
-			
-			adminDAO.create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
-					VOMSServiceConstants.VIRTUAL_CA);
+      VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
+      if (voGroup == null)
+        setupRootGroup();
 
-			VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
-			
+      VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
 
-			ACL voGroupACL = new ACL(voGroup, false);
-			voGroup.getAcls().add(voGroupACL);
+      VOMSAdmin internalAdmin = adminDAO.create(
+        VOMSServiceConstants.INTERNAL_ADMIN, VOMSServiceConstants.VIRTUAL_CA);
 
-			voGroupACL.setPermissions(localAdmin, allPermissions);
-			voGroupACL.setPermissions(internalAdmin, allPermissions);
+      VOMSAdmin localAdmin = adminDAO.create(VOMSServiceConstants.LOCAL_ADMIN,
+        VOMSServiceConstants.VIRTUAL_CA);
 
-			// Create VO-Admin role and admin
+      adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
+        VOMSServiceConstants.VIRTUAL_CA);
 
-			VOMSRole voAdminRole = VOMSRoleDAO.instance().create("VO-Admin");
+      adminDAO.create(VOMSServiceConstants.ANYUSER_ADMIN,
+        VOMSServiceConstants.VIRTUAL_CA);
 
-			VOMSAdmin voAdmin = VOMSAdminDAO.instance().create(
-					voGroup.getName() + "/Role=VO-Admin");
+      adminDAO.create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
+        VOMSServiceConstants.VIRTUAL_CA);
 
-			voGroupACL.setPermissions(voAdmin, allPermissions);
+      VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
 
-			voAdminRole.importACL(voGroup);
-			
-		}
-	}
+      ACL voGroupACL = new ACL(voGroup, false);
+      voGroup.getAcls().add(voGroupACL);
 
-	public void setupTasks() {
+      voGroupACL.setPermissions(localAdmin, allPermissions);
+      voGroupACL.setPermissions(internalAdmin, allPermissions);
 
-		TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
-				.getTaskTypeDAO();
+      // Create VO-Admin role and admin
 
-		if (ttDAO.findAll().isEmpty()) {
-			
-			log.info("Setting up voms-admin task infrastructure...");
+      VOMSRole voAdminRole = VOMSRoleDAO.instance().create("VO-Admin");
 
-			TaskType signAupTaskType = new TaskType();
+      VOMSAdmin voAdmin = VOMSAdminDAO.instance().create(
+        voGroup.getName() + "/Role=VO-Admin");
 
-			signAupTaskType.setName("SignAUPTask");
-			signAupTaskType
-					.setDescription("Tasks of this type are assigned to users that need to sign, or resign an AUP.");
+      voGroupACL.setPermissions(voAdmin, allPermissions);
 
-			TaskType approveUserRequestTaskType = new TaskType();
-			approveUserRequestTaskType.setName("ApproveUserRequestTask");
-			approveUserRequestTaskType
-					.setDescription("Tasks of this type are assigned to VO admins that need to approve users' requests.");
+      voAdminRole.importACL(voGroup);
 
-			ttDAO.makePersistent(signAupTaskType);
-			ttDAO.makePersistent(approveUserRequestTaskType);
+    }
+  }
 
-		}
+  public void setupTasks() {
 
-	}
+    TaskTypeDAO ttDAO = DAOFactory.instance(DAOFactory.HIBERNATE)
+      .getTaskTypeDAO();
 
-	public void setupAUP() {
+    if (ttDAO.findAll().isEmpty()) {
 
-		AUPDAO dao = DAOFactory.instance().getAUPDAO();
+      log.info("Setting up voms-admin task infrastructure...");
 
-		if (dao.findAll().isEmpty()) {
+      TaskType signAupTaskType = new TaskType();
 
-			log.info("Setting up voms-admin aup infrastructure...");
-			// Setup VO AUP
-			String voAUPUrlString = VOMSConfiguration.instance().getString(
-					VOMSConfigurationConstants.VO_AUP_URL,
-					VOMSConfiguration.instance().getDefaultVOAUPURL());
+      signAupTaskType.setName("SignAUPTask");
+      signAupTaskType
+        .setDescription("Tasks of this type are assigned to users that need to sign, or resign an AUP.");
 
-			if (voAUPUrlString.trim().equals("")) {
-				log.warn("No url defined for VO AUP, using default setting...");
-				voAUPUrlString = VOMSConfiguration.instance()
-						.getDefaultVOAUPURL();
-			}
+      TaskType approveUserRequestTaskType = new TaskType();
+      approveUserRequestTaskType.setName("ApproveUserRequestTask");
+      approveUserRequestTaskType
+        .setDescription("Tasks of this type are assigned to VO admins that need to approve users' requests.");
 
-			try {
+      ttDAO.makePersistent(signAupTaskType);
+      ttDAO.makePersistent(approveUserRequestTaskType);
 
-				URL voAUPURL = new URL(voAUPUrlString);
+    }
 
-				AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+  }
 
-				aupDAO.createVOAUP("", "1.0", voAUPURL);
+  public void setupAUP() {
 
-			} catch (MalformedURLException e) {
-				log.error("Error parsing AUP url: " + e.getMessage());
-				log.error("Skipping creation of AUPs");
-			}
-		}
+    AUPDAO dao = DAOFactory.instance().getAUPDAO();
 
-	}
+    if (dao.findAll().isEmpty()) {
 
-	
-	public void run() {
+      log.info("Setting up voms-admin aup infrastructure...");
+      // Setup VO AUP
+      String voAUPUrlString = VOMSConfiguration.instance().getString(
+        VOMSConfigurationConstants.VO_AUP_URL,
+        VOMSConfiguration.instance().getDefaultVOAUPURL());
 
-		setupRootGroup();
-		setupInternalCAs();
-		setupInternalAdmins();
-		
-		VOMSVersionDAO.instance().setupVersion();
+      if (voAUPUrlString.trim().equals("")) {
+        log.warn("No url defined for VO AUP, using default setting...");
+        voAUPUrlString = VOMSConfiguration.instance().getDefaultVOAUPURL();
+      }
 
-		setupTasks();
-		setupAUP();
+      try {
 
-		HibernateFactory.commitTransaction();
+        URL voAUPURL = new URL(voAUPUrlString);
 
-	}
+        AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+
+        aupDAO.createVOAUP("", "1.0", voAUPURL);
+
+      } catch (MalformedURLException e) {
+        log.error("Error parsing AUP url: " + e.getMessage());
+        log.error("Skipping creation of AUPs");
+      }
+    }
+
+  }
+
+  public void run() {
+
+    setupRootGroup();
+    setupInternalCAs();
+    setupInternalAdmins();
+
+    VOMSVersionDAO.instance().setupVersion();
+
+    setupTasks();
+    setupAUP();
+
+    HibernateFactory.commitTransaction();
+
+  }
 
 }

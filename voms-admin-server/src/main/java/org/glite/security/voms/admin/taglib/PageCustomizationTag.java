@@ -31,80 +31,79 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 
 public class PageCustomizationTag extends TagSupport {
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	String pageName;
-	String styleClass;
+  String pageName;
+  String styleClass;
 
-	public int doStartTag() throws JspException {
+  public int doStartTag() throws JspException {
 
-		assert pageName != null : "pageName cannot be null!";
+    assert pageName != null : "pageName cannot be null!";
 
-		if (styleClass == null)
-			styleClass = "";
+    if (styleClass == null)
+      styleClass = "";
 
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+    VOMSConfiguration conf = VOMSConfiguration.instance();
 
-		if (conf.pageHasCustomization(pageName)) {
+    if (conf.pageHasCustomization(pageName)) {
 
-			String customizationFilePath = conf
-					.getCustomizationPageAbsolutePath(pageName);
+      String customizationFilePath = conf
+        .getCustomizationPageAbsolutePath(pageName);
 
-			try {
+      try {
 
-				String header = "<div class='"
-						+ styleClass
-						+ "'><div class='customized-content-title'>VO customized content</div>\n";
-				pageContext.getOut().write(header);
+        String header = "<div class='"
+          + styleClass
+          + "'><div class='customized-content-title'>VO customized content</div>\n";
+        pageContext.getOut().write(header);
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						customizationFilePath));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
+        BufferedReader reader = new BufferedReader(new FileReader(
+          customizationFilePath));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
 
-					pageContext.getOut().write(line + "\n");
+          pageContext.getOut().write(line + "\n");
 
-				}
+        }
 
-				pageContext.getOut().write("</div>");
+        pageContext.getOut().write("</div>");
 
-			} catch (FileNotFoundException e) {
-				throw new JspException("Customization file not found: "
-						+ e.getMessage());
+      } catch (FileNotFoundException e) {
+        throw new JspException("Customization file not found: "
+          + e.getMessage());
 
-			} catch (IOException e) {
-				throw new JspException(
-						"Error writing customization file content!");
-			}
+      } catch (IOException e) {
+        throw new JspException("Error writing customization file content!");
+      }
 
-			return SKIP_BODY;
+      return SKIP_BODY;
 
-		}
+    }
 
-		return SKIP_BODY;
-	}
+    return SKIP_BODY;
+  }
 
-	public String getPageName() {
+  public String getPageName() {
 
-		return pageName;
-	}
+    return pageName;
+  }
 
-	public void setPageName(String pageName) {
+  public void setPageName(String pageName) {
 
-		this.pageName = pageName;
-	}
+    this.pageName = pageName;
+  }
 
-	public String getStyleClass() {
+  public String getStyleClass() {
 
-		return styleClass;
-	}
+    return styleClass;
+  }
 
-	public void setStyleClass(String styleClass) {
+  public void setStyleClass(String styleClass) {
 
-		this.styleClass = styleClass;
-	}
+    this.styleClass = styleClass;
+  }
 
 }

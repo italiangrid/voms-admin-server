@@ -32,47 +32,56 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExpiredRequestsPurgerTask implements Runnable, RegistrationServiceTask{
+public class ExpiredRequestsPurgerTask implements Runnable,
+  RegistrationServiceTask {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(ExpiredRequestsPurgerTask.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(ExpiredRequestsPurgerTask.class);
 
-	private long requestLifetime;
+  private long requestLifetime;
 
-	private boolean warnUsers;
+  private boolean warnUsers;
 
-	public ExpiredRequestsPurgerTask() {
-		
-		VOMSConfiguration conf = VOMSConfiguration.instance();
+  public ExpiredRequestsPurgerTask() {
 
-		requestLifetime = conf.getLong(VOMSConfigurationConstants.UNCONFIRMED_REQUESTS_EXPIRATION_TIME,
-				TimeUnit.DAYS.toSeconds(7));
-		
-		warnUsers = conf.getBoolean(VOMSConfigurationConstants.VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY, false);
-		
-	}
-	 
-	public void run() {
-		
-		if (requestLifetime < 0){
-			log.debug("Request purger NOT STARTED since a negative lifetime for requests was set in configuration.");
-			return;
-		}
-			
-		RequestDAO dao = DAOFactory.instance().getRequestDAO();
-		
-		List<NewVOMembershipRequest> expiredRequests = dao.findExpiredVOMembershipRequests();
-				
-		for (NewVOMembershipRequest req: expiredRequests){
-			
-			log.info("Removing unconfirmed request '{}' from database since the confirmation period has expired.", req);
-			dao.makeTransient(req);
-			
-			if (warnUsers)
-				EventManager.dispatch(new VOMembershipRequestExpiredEvent(req));			
-			
-		}
-		
-	}
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+
+    requestLifetime = conf.getLong(
+      VOMSConfigurationConstants.UNCONFIRMED_REQUESTS_EXPIRATION_TIME,
+      TimeUnit.DAYS.toSeconds(7));
+
+    warnUsers = conf.getBoolean(
+      VOMSConfigurationConstants.VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY,
+      false);
+
+  }
+
+  public void run() {
+
+    if (requestLifetime < 0) {
+      log
+        .debug("Request purger NOT STARTED since a negative lifetime for requests was set in configuration.");
+      return;
+    }
+
+    RequestDAO dao = DAOFactory.instance().getRequestDAO();
+
+    List<NewVOMembershipRequest> expiredRequests = dao
+      .findExpiredVOMembershipRequests();
+
+    for (NewVOMembershipRequest req : expiredRequests) {
+
+      log
+        .info(
+          "Removing unconfirmed request '{}' from database since the confirmation period has expired.",
+          req);
+      dao.makeTransient(req);
+
+      if (warnUsers)
+        EventManager.dispatch(new VOMembershipRequestExpiredEvent(req));
+
+    }
+
+  }
 
 }

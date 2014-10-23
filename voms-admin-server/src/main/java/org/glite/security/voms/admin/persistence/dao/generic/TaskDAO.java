@@ -30,18 +30,18 @@ import org.glite.security.voms.admin.persistence.model.task.Task;
 
 public interface TaskDAO extends GenericDAO<Task, Long> {
 
-	SignAUPTask createSignAUPTask(AUP aup);
+  SignAUPTask createSignAUPTask(AUP aup);
 
-	SignAUPTask createSignAUPTask(AUP aup, Date expiryDate);
+  SignAUPTask createSignAUPTask(AUP aup, Date expiryDate);
 
-	ApproveUserRequestTask createApproveUserRequestTask(Request req);
+  ApproveUserRequestTask createApproveUserRequestTask(Request req);
 
-	List<Task> findSignAUPTasks();
+  List<Task> findSignAUPTasks();
 
-	List<Task> findApproveUserRequestTasks();
+  List<Task> findApproveUserRequestTasks();
 
-	void removeAllTasks();
+  void removeAllTasks();
 
-	List<Task> getActiveTasks();
+  List<Task> getActiveTasks();
 
 }

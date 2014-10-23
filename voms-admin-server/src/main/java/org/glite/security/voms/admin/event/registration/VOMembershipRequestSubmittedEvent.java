@@ -23,33 +23,38 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 
 public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent {
 
-	String confirmURL;
-	String cancelURL;
+  String confirmURL;
+  String cancelURL;
 
-	public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r,
-			String confirmURL, String cancelURL) {
-		super(r);
+  public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r,
+    String confirmURL, String cancelURL) {
 
-		request = r;
-		this.confirmURL = confirmURL;
-		this.cancelURL = cancelURL;
+    super(r);
 
-	}
+    request = r;
+    this.confirmURL = confirmURL;
+    this.cancelURL = cancelURL;
 
-	public String getConfirmURL() {
-		return confirmURL;
-	}
+  }
 
-	public void setConfirmURL(String confirmURL) {
-		this.confirmURL = confirmURL;
-	}
+  public String getConfirmURL() {
 
-	public String getCancelURL() {
-		return cancelURL;
-	}
+    return confirmURL;
+  }
 
-	public void setCancelURL(String cancelURL) {
-		this.cancelURL = cancelURL;
-	}
+  public void setConfirmURL(String confirmURL) {
+
+    this.confirmURL = confirmURL;
+  }
+
+  public String getCancelURL() {
+
+    return cancelURL;
+  }
+
+  public void setCancelURL(String cancelURL) {
+
+    this.cancelURL = cancelURL;
+  }
 
 }

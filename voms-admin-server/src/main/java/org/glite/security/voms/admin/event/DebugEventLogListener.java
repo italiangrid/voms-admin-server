@@ -24,30 +24,33 @@ import org.slf4j.LoggerFactory;
 
 public class DebugEventLogListener implements EventListener {
 
-	public static final Logger log = LoggerFactory.getLogger(DebugEventLogListener.class);
+  public static final Logger log = LoggerFactory
+    .getLogger(DebugEventLogListener.class);
 
-	private static DebugEventLogListener instance;
-	
-	public static DebugEventLogListener instance(){
-		
-		if (instance == null)
-			instance = new DebugEventLogListener();
-		
-		return instance;
-		
-	}
-	
-	private DebugEventLogListener() {
-		EventManager.instance().register(this);
-	}
+  private static DebugEventLogListener instance;
 
-	public void fire(Event e) {
-		log.debug("Event received: " + e);
-	}
+  public static DebugEventLogListener instance() {
 
-	public EventMask getMask() {
+    if (instance == null)
+      instance = new DebugEventLogListener();
 
-		return null;
-	}
+    return instance;
+
+  }
+
+  private DebugEventLogListener() {
+
+    EventManager.instance().register(this);
+  }
+
+  public void fire(Event e) {
+
+    log.debug("Event received: " + e);
+  }
+
+  public EventMask getMask() {
+
+    return null;
+  }
 
 }

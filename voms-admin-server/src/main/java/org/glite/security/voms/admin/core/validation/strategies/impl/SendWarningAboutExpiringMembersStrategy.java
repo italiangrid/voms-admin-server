@@ -34,38 +34,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SendWarningAboutExpiringMembersStrategy implements
-		HandleExpiringMembersStrategy {
+  HandleExpiringMembersStrategy {
 
-	public static final Logger log = LoggerFactory
-			.getLogger(SendWarningAboutExpiringMembersStrategy.class);
-	
-	public static final String NOTIFICATION_KEY = "expiring-members";
+  public static final Logger log = LoggerFactory
+    .getLogger(SendWarningAboutExpiringMembersStrategy.class);
 
-	ConditionalSendNotificationStrategy notificationStrategy;
-	
-	public SendWarningAboutExpiringMembersStrategy() {
+  public static final String NOTIFICATION_KEY = "expiring-members";
 
-		notificationStrategy = new TimeIntervalNotificationStrategy(
-			new PeriodicNotificationsTimeStorage(NOTIFICATION_KEY),
-			NotificationService.instance());
-	}
-	
-	public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
+  ConditionalSendNotificationStrategy notificationStrategy;
 
-		if (log.isDebugEnabled())
-			log.debug("Handling members about to expire: {}", expiringMembers);
-		
-		
-		if (expiringMembers == null | expiringMembers.isEmpty())
-			return;
-		
-		if (notificationStrategy.notificationRequired()){
-						
-			log.debug("Sending out notification about expiring VO members.");
-			MembershipExpirationWarning m = new MembershipExpirationWarning(expiringMembers);
-			m.addRecipients(NotificationUtil.getAdministratorsEmailList());
-			notificationStrategy.sendNotification(m);
-		}			
-	}
+  public SendWarningAboutExpiringMembersStrategy() {
+
+    notificationStrategy = new TimeIntervalNotificationStrategy(
+      new PeriodicNotificationsTimeStorage(NOTIFICATION_KEY),
+      NotificationService.instance());
+  }
+
+  public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {
+
+    if (log.isDebugEnabled())
+      log.debug("Handling members about to expire: {}", expiringMembers);
+
+    if (expiringMembers == null | expiringMembers.isEmpty())
+      return;
+
+    if (notificationStrategy.notificationRequired()) {
+
+      log.debug("Sending out notification about expiring VO members.");
+      MembershipExpirationWarning m = new MembershipExpirationWarning(
+        expiringMembers);
+      m.addRecipients(NotificationUtil.getAdministratorsEmailList());
+      notificationStrategy.sendNotification(m);
+    }
+  }
 
 }

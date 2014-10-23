@@ -31,27 +31,29 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 public class SearchAwareInterceptor extends AbstractInterceptor {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String intercept(ActionInvocation invocation) throws Exception {
-		
-		Action action = (Action) invocation.getAction();
-		
-		Map<String, Object> session  = (Map<String, Object>) invocation.getInvocationContext().getSession();
-		
-		if (action instanceof SearchAware)
-			if (session.containsKey("searchData") && session.containsKey("searchResults")){
-				
-				SearchAware saAction = (SearchAware)action;
-				saAction.setSearchData((SearchData) session.get("searchData"));
-				saAction.setSearchResults((SearchResults) session.get("searchResults"));
-			}
-		
-		return invocation.invoke();
-	}
+  @Override
+  public String intercept(ActionInvocation invocation) throws Exception {
+
+    Action action = (Action) invocation.getAction();
+
+    Map<String, Object> session = (Map<String, Object>) invocation
+      .getInvocationContext().getSession();
+
+    if (action instanceof SearchAware)
+      if (session.containsKey("searchData")
+        && session.containsKey("searchResults")) {
+
+        SearchAware saAction = (SearchAware) action;
+        saAction.setSearchData((SearchData) session.get("searchData"));
+        saAction.setSearchResults((SearchResults) session.get("searchResults"));
+      }
+
+    return invocation.invoke();
+  }
 
 }

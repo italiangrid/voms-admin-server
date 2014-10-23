@@ -27,69 +27,76 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class AuthorizedTag extends TagSupport {
 
-	String context;
+  String context;
 
-	String permission;
+  String permission;
 
-	String message;
+  String message;
 
-	String style;
+  String style;
 
-	public String getContext() {
-		return context;
-	}
+  public String getContext() {
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+    return context;
+  }
 
-	public String getMessage() {
-		return message;
-	}
+  public void setContext(String context) {
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    this.context = context;
+  }
 
-	public String getPermission() {
-		return permission;
-	}
+  public String getMessage() {
 
-	public void setPermission(String permission) {
-		this.permission = permission;
-	}
+    return message;
+  }
 
-	public String getStyle() {
-		return style;
-	}
+  public void setMessage(String message) {
 
-	public void setStyle(String style) {
-		this.style = style;
-	}
+    this.message = message;
+  }
 
-	public int doStartTag() throws JspException {
+  public String getPermission() {
 
-		if (TagUtils.isAuthorized(pageContext, context, permission))
-			return EVAL_BODY_INCLUDE;
+    return permission;
+  }
 
-		if (message != null) {
+  public void setPermission(String permission) {
 
-			if (style == null)
-				style = "";
+    this.permission = permission;
+  }
 
-			String content = "<div class=\"" + style + "\">" + message
-					+ "</div>";
-			try {
+  public String getStyle() {
 
-				pageContext.getOut().write(content);
+    return style;
+  }
 
-			} catch (IOException e) {
-				throw new JspTagException("Error writing jsp page content: "
-						+ e.getMessage());
-			}
-		}
+  public void setStyle(String style) {
 
-		return SKIP_BODY;
-	}
+    this.style = style;
+  }
+
+  public int doStartTag() throws JspException {
+
+    if (TagUtils.isAuthorized(pageContext, context, permission))
+      return EVAL_BODY_INCLUDE;
+
+    if (message != null) {
+
+      if (style == null)
+        style = "";
+
+      String content = "<div class=\"" + style + "\">" + message + "</div>";
+      try {
+
+        pageContext.getOut().write(content);
+
+      } catch (IOException e) {
+        throw new JspTagException("Error writing jsp page content: "
+          + e.getMessage());
+      }
+    }
+
+    return SKIP_BODY;
+  }
 
 }

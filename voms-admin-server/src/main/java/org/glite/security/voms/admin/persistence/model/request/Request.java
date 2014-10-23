@@ -47,237 +47,238 @@ import org.glite.security.voms.admin.persistence.model.NamedType;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Request implements Serializable, NamedType {
 
-	public enum STATUS {
-		SUBMITTED, CONFIRMED, PENDING, APPROVED, REJECTED
-	}
+  public enum STATUS {
+    SUBMITTED, CONFIRMED, PENDING, APPROVED, REJECTED
+  }
 
-	/**
+  /**
      * 
      */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator="VOMS_REQ_SEQ")
-	@SequenceGenerator(name="VOMS_REQ_SEQ", sequenceName="VOMS_REQ_SEQ")
-	@Column(name = "request_id")
-	Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_REQ_SEQ")
+  @SequenceGenerator(name = "VOMS_REQ_SEQ", sequenceName = "VOMS_REQ_SEQ")
+  @Column(name = "request_id")
+  Long id;
 
-	Date creationDate;
-	Date expirationDate;
-	Date completionDate;
+  Date creationDate;
+  Date expirationDate;
+  Date completionDate;
 
-	@OneToOne(optional = false, cascade = { CascadeType.ALL })
-	@JoinColumn(name = "requester_info_id", nullable = false, updatable = false)
-	RequesterInfo requesterInfo;
+  @OneToOne(optional = false, cascade = { CascadeType.ALL })
+  @JoinColumn(name = "requester_info_id", nullable = false, updatable = false)
+  RequesterInfo requesterInfo;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	STATUS status;
-	
-	@Column(name="approver_dn")
-	String approverDN;
-	
-	@Column(name="approver_ca")
-	String approverCA;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  STATUS status;
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
+  @Column(name = "approver_dn")
+  String approverDN;
 
-		return id;
-	}
+  @Column(name = "approver_ca")
+  String approverCA;
 
-	/**
-	 * @return the creationDate
-	 */
-	public Date getCreationDate() {
+  /**
+   * @return the id
+   */
+  public Long getId() {
 
-		return creationDate;
-	}
+    return id;
+  }
 
-	/**
-	 * @return the expirationDate
-	 */
-	public Date getExpirationDate() {
+  /**
+   * @return the creationDate
+   */
+  public Date getCreationDate() {
 
-		return expirationDate;
-	}
+    return creationDate;
+  }
 
-	/**
-	 * @return the completionDate
-	 */
-	public Date getCompletionDate() {
+  /**
+   * @return the expirationDate
+   */
+  public Date getExpirationDate() {
 
-		return completionDate;
-	}
+    return expirationDate;
+  }
 
-	/**
-	 * @return the requesterInfo
-	 */
-	public RequesterInfo getRequesterInfo() {
+  /**
+   * @return the completionDate
+   */
+  public Date getCompletionDate() {
 
-		return requesterInfo;
-	}
+    return completionDate;
+  }
 
-	/**
-	 * @return the status
-	 */
-	public STATUS getStatus() {
+  /**
+   * @return the requesterInfo
+   */
+  public RequesterInfo getRequesterInfo() {
 
-		return status;
-	}
+    return requesterInfo;
+  }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
+  /**
+   * @return the status
+   */
+  public STATUS getStatus() {
 
-		this.id = id;
-	}
+    return status;
+  }
 
-	/**
-	 * @param creationDate
-	 *            the creationDate to set
-	 */
-	public void setCreationDate(Date creationDate) {
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(Long id) {
 
-		this.creationDate = creationDate;
-	}
+    this.id = id;
+  }
 
-	/**
-	 * @param expirationDate
-	 *            the expirationDate to set
-	 */
-	public void setExpirationDate(Date expirationDate) {
+  /**
+   * @param creationDate
+   *          the creationDate to set
+   */
+  public void setCreationDate(Date creationDate) {
 
-		this.expirationDate = expirationDate;
-	}
+    this.creationDate = creationDate;
+  }
 
-	/**
-	 * @param completionDate
-	 *            the completionDate to set
-	 */
-	public void setCompletionDate(Date completionDate) {
+  /**
+   * @param expirationDate
+   *          the expirationDate to set
+   */
+  public void setExpirationDate(Date expirationDate) {
 
-		this.completionDate = completionDate;
-	}
+    this.expirationDate = expirationDate;
+  }
 
-	/**
-	 * @param requesterInfo
-	 *            the requesterInfo to set
-	 */
-	public void setRequesterInfo(RequesterInfo requesterInfo) {
+  /**
+   * @param completionDate
+   *          the completionDate to set
+   */
+  public void setCompletionDate(Date completionDate) {
 
-		this.requesterInfo = requesterInfo;
-	}
+    this.completionDate = completionDate;
+  }
 
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(STATUS status) {
+  /**
+   * @param requesterInfo
+   *          the requesterInfo to set
+   */
+  public void setRequesterInfo(RequesterInfo requesterInfo) {
 
-		this.status = status;
-	}
+    this.requesterInfo = requesterInfo;
+  }
 
-	@Override
-	public boolean equals(Object other) {
+  /**
+   * @param status
+   *          the status to set
+   */
+  public void setStatus(STATUS status) {
 
-		if (this == other)
-			return true;
+    this.status = status;
+  }
 
-		if (!(other instanceof Request))
-			return false;
+  @Override
+  public boolean equals(Object other) {
 
-		if (other == null)
-			return false;
+    if (this == other)
+      return true;
 
-		final Request that = (Request) other;
+    if (!(other instanceof Request))
+      return false;
 
-		EqualsBuilder builder = new EqualsBuilder();
+    if (other == null)
+      return false;
 
-		builder.append(creationDate, that.creationDate).append(requesterInfo,
-				that.requesterInfo).append(status, that.status).append(
-				completionDate, that.completionDate).append(expirationDate,
-				that.expirationDate);
+    final Request that = (Request) other;
 
-		return builder.isEquals();
-	}
+    EqualsBuilder builder = new EqualsBuilder();
 
-	@Override
-	public int hashCode() {
-		HashCodeBuilder builder = new HashCodeBuilder(17, 37);
+    builder.append(creationDate, that.creationDate)
+      .append(requesterInfo, that.requesterInfo).append(status, that.status)
+      .append(completionDate, that.completionDate)
+      .append(expirationDate, that.expirationDate);
 
-		builder.append(creationDate).append(requesterInfo).append(status)
-				.append(completionDate).append(expirationDate);
-		return builder.toHashCode();
-	}
+    return builder.isEquals();
+  }
 
-	public void approve(String approverDN, String approverCA) {
+  @Override
+  public int hashCode() {
 
-		setStatus(STATUS.APPROVED);
-		setCompletionDate(new Date());
-		setApproverDN(approverDN);
-		setApproverCA(approverCA);
-	}
+    HashCodeBuilder builder = new HashCodeBuilder(17, 37);
 
-	public void reject(String approverDN, String approverCA) {
+    builder.append(creationDate).append(requesterInfo).append(status)
+      .append(completionDate).append(expirationDate);
+    return builder.toHashCode();
+  }
 
-		setStatus(STATUS.REJECTED);
-		setCompletionDate(new Date());
-		setApproverDN(approverDN);
-		setApproverCA(approverCA);
-	}
+  public void approve(String approverDN, String approverCA) {
 
-	@Override
-	public String toString() {
-		ToStringBuilder builder = new ToStringBuilder(this);
-		
-		builder.append("id",id).
-			append("status", status).
-			append("requesterInfo", requesterInfo).
-			append("creationDate",creationDate).append("expirationDate",expirationDate).append("completionDate",completionDate);
-		
-		return builder.toString();
-	}
+    setStatus(STATUS.APPROVED);
+    setCompletionDate(new Date());
+    setApproverDN(approverDN);
+    setApproverCA(approverCA);
+  }
 
-	
-	/**
-	 * @return the approverDN
-	 */
-	public String getApproverDN() {
-	
-		return approverDN;
-	}
+  public void reject(String approverDN, String approverCA) {
 
-	
-	/**
-	 * @param approverDN the approverDN to set
-	 */
-	public void setApproverDN(String approverDN) {
-	
-		this.approverDN = approverDN;
-	}
+    setStatus(STATUS.REJECTED);
+    setCompletionDate(new Date());
+    setApproverDN(approverDN);
+    setApproverCA(approverCA);
+  }
 
-	
-	/**
-	 * @return the approverCA
-	 */
-	public String getApproverCA() {
-	
-		return approverCA;
-	}
+  @Override
+  public String toString() {
 
-	
-	/**
-	 * @param approverCA the approverCA to set
-	 */
-	public void setApproverCA(String approverCA) {
-	
-		this.approverCA = approverCA;
-	}
-	
-	public abstract String getTypeName();
+    ToStringBuilder builder = new ToStringBuilder(this);
+
+    builder.append("id", id).append("status", status)
+      .append("requesterInfo", requesterInfo)
+      .append("creationDate", creationDate)
+      .append("expirationDate", expirationDate)
+      .append("completionDate", completionDate);
+
+    return builder.toString();
+  }
+
+  /**
+   * @return the approverDN
+   */
+  public String getApproverDN() {
+
+    return approverDN;
+  }
+
+  /**
+   * @param approverDN
+   *          the approverDN to set
+   */
+  public void setApproverDN(String approverDN) {
+
+    this.approverDN = approverDN;
+  }
+
+  /**
+   * @return the approverCA
+   */
+  public String getApproverCA() {
+
+    return approverCA;
+  }
+
+  /**
+   * @param approverCA
+   *          the approverCA to set
+   */
+  public void setApproverCA(String approverCA) {
+
+    this.approverCA = approverCA;
+  }
+
+  public abstract String getTypeName();
 }

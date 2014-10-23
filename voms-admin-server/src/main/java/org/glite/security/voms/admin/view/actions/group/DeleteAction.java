@@ -30,42 +30,43 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-
-@Results( { 
-	@Result(name = BaseAction.SUCCESS, location = "search", type = "chain"), 
-	@Result(name = BaseAction.INPUT, location = "search", type = "chain"),
-	@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="groups")
-})
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "search", type = "chain"),
+  @Result(name = BaseAction.INPUT, location = "search", type = "chain"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "groups") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class DeleteAction extends GroupActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public void validate() {
-		
-		VOMSGroupDAO dao = VOMSGroupDAO.instance();
-		
-		List<VOMSGroup> childrenGroups = dao.getChildren(getModel());
-		
-		if (!childrenGroups.isEmpty())
-			addActionError("The group '"+getModel().getName()+"' cannot be deleted since it contains subgroups. Delete subgroups first.");
-	}
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public String execute() throws Exception {
+  @Override
+  public void validate() {
 
-		VOMSGroup g = (VOMSGroup) DeleteGroupOperation.instance(getModel())
-				.execute();
+    VOMSGroupDAO dao = VOMSGroupDAO.instance();
 
-		if (g != null)
-			addActionMessage(getText("confirm.group.deletion", new String[]{g.getName()}));
+    List<VOMSGroup> childrenGroups = dao.getChildren(getModel());
 
-		return SUCCESS;
-	}
+    if (!childrenGroups.isEmpty())
+      addActionError("The group '"
+        + getModel().getName()
+        + "' cannot be deleted since it contains subgroups. Delete subgroups first.");
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    VOMSGroup g = (VOMSGroup) DeleteGroupOperation.instance(getModel())
+      .execute();
+
+    if (g != null)
+      addActionMessage(getText("confirm.group.deletion",
+        new String[] { g.getName() }));
+
+    return SUCCESS;
+  }
 
 }

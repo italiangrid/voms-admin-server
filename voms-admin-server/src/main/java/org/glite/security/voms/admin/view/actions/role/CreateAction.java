@@ -33,68 +33,71 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
-
-@Results( {
-		@Result(name = BaseAction.SUCCESS, location = "search", type = "redirectAction"),
-		@Result(name = BaseAction.INPUT, location = "roleCreate"),
-		@Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location ="roleCreate")
-})
-
-@InterceptorRef(value = "authenticatedStack", params = {"token.includeMethods", "execute" })
+@Results({
+  @Result(name = BaseAction.SUCCESS, location = "search",
+    type = "redirectAction"),
+  @Result(name = BaseAction.INPUT, location = "roleCreate"),
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "roleCreate") })
+@InterceptorRef(value = "authenticatedStack", params = {
+  "token.includeMethods", "execute" })
 public class CreateAction extends RoleActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	VOMSRole role;
-	String roleName;
+  VOMSRole role;
+  String roleName;
 
-	public VOMSRole getModel() {
+  public VOMSRole getModel() {
 
-		return role;
-	}
+    return role;
+  }
 
-	public void prepare() throws Exception {
+  public void prepare() throws Exception {
 
-	}
+  }
 
-	public String execute() throws Exception {
+  public String execute() throws Exception {
 
-		VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName())
-				.execute();
-		if (r != null)
-			addActionMessage(getText("confirm.role.creation", r.getName()));
+    VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName())
+      .execute();
+    if (r != null)
+      addActionMessage(getText("confirm.role.creation", r.getName()));
 
-		return SUCCESS;
-	}
+    return SUCCESS;
+  }
 
-	@RequiredStringValidator(type = ValidatorType.FIELD, message = "A name for the role is required!")
-	@RegexFieldValidator(type = ValidatorType.FIELD, message = "The role name field contains illegal characters!", expression = "^[\\w.-]+$")
-	public String getRoleName() {
-		return roleName;
-	}
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "A name for the role is required!")
+  @RegexFieldValidator(type = ValidatorType.FIELD,
+    message = "The role name field contains illegal characters!",
+    expression = "^[\\w.-]+$")
+  public String getRoleName() {
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
-	
-	@Override
-	public void validate() {
-		
-		
-		if (getRoleName().contains("/")){
-			
-			addFieldError("roleName", "'"+getRoleName()+"' is not a valid VOMS role name.");
-			return;
-		}
-		
-		
-		VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
-		if (r != null)
-			addFieldError("roleName", "Role '"+roleName+"' already exists!");
-		
-	}
+    return roleName;
+  }
+
+  public void setRoleName(String roleName) {
+
+    this.roleName = roleName;
+  }
+
+  @Override
+  public void validate() {
+
+    if (getRoleName().contains("/")) {
+
+      addFieldError("roleName", "'" + getRoleName()
+        + "' is not a valid VOMS role name.");
+      return;
+    }
+
+    VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+    if (r != null)
+      addFieldError("roleName", "Role '" + roleName + "' already exists!");
+
+  }
 
 }

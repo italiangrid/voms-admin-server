@@ -34,82 +34,90 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-
 @Results({
-	
-	@Result(name=UserActionSupport.SUCCESS,location="mappingsRequest.jsp"),
-	@Result(name=UserActionSupport.ERROR,location="mappingsRequest.jsp"),
-	@Result(name=UserActionSupport.INPUT,location="mappingsRequest.jsp")
-})
 
+@Result(name = UserActionSupport.SUCCESS, location = "mappingsRequest.jsp"),
+  @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
+  @Result(name = UserActionSupport.INPUT, location = "mappingsRequest.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
-		"token.includeMethods", "execute" })
+  "token.includeMethods", "execute" })
 public class RequestRoleMembershipAction extends UserActionSupport {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	Long groupId;
-	Long roleId;
-	
-	@Override
-	public void validate() {
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		VOMSGroup g = groupById(groupId);
-		VOMSRole r = roleById(roleId);
-		
-		if (g == null)
-			throw new NoSuchGroupException("Group with id '"+groupId+"' not found!");
-		
-		if (r == null)
-			throw new NoSuchRoleException("Role with id '"+roleId+"' not found!");
-		
-		
-		if (model.hasRole(g, r))
-			addActionError(getText("role_request.user.already_member", new String[]{model.toString(), r.getName(), g.getName()}));
-		
-		if (reqDAO.userHasPendingRoleMembershipRequest(model, g, r))
-			addActionError(getText("role_request.user.has_pending_request", new String[]{model.toString(), r.getName(), g.getName()}));
-		
-	}
-	
-	public Long getGroupId() {
-		return groupId;
-	}
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-	public Long getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
-	
-	@Override
-	public String execute() throws Exception {
-		
-		if (!VOMSConfiguration.instance().getBoolean(
-				VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
-			return "registrationDisabled";
-		
-		if (hasActionErrors())
-			return ERROR;
-		
-		RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-		
-		VOMSGroup g = groupById(groupId);
-		VOMSRole r = roleById(roleId);
-		
-		RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model, g, r, getDefaultFutureDate());
-		EventManager.dispatch(new RoleMembershipSubmittedEvent(request, getHomeURL()));
-		
-		refreshPendingRequests();
-		
-		return SUCCESS;
-	}
+  private static final long serialVersionUID = 1L;
+
+  Long groupId;
+  Long roleId;
+
+  @Override
+  public void validate() {
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+
+    VOMSGroup g = groupById(groupId);
+    VOMSRole r = roleById(roleId);
+
+    if (g == null)
+      throw new NoSuchGroupException("Group with id '" + groupId
+        + "' not found!");
+
+    if (r == null)
+      throw new NoSuchRoleException("Role with id '" + roleId + "' not found!");
+
+    if (model.hasRole(g, r))
+      addActionError(getText("role_request.user.already_member", new String[] {
+        model.toString(), r.getName(), g.getName() }));
+
+    if (reqDAO.userHasPendingRoleMembershipRequest(model, g, r))
+      addActionError(getText("role_request.user.has_pending_request",
+        new String[] { model.toString(), r.getName(), g.getName() }));
+
+  }
+
+  public Long getGroupId() {
+
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+
+    this.groupId = groupId;
+  }
+
+  public Long getRoleId() {
+
+    return roleId;
+  }
+
+  public void setRoleId(Long roleId) {
+
+    this.roleId = roleId;
+  }
+
+  @Override
+  public String execute() throws Exception {
+
+    if (!VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+      return "registrationDisabled";
+
+    if (hasActionErrors())
+      return ERROR;
+
+    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+
+    VOMSGroup g = groupById(groupId);
+    VOMSRole r = roleById(roleId);
+
+    RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model,
+      g, r, getDefaultFutureDate());
+    EventManager.dispatch(new RoleMembershipSubmittedEvent(request,
+      getHomeURL()));
+
+    refreshPendingRequests();
+
+    return SUCCESS;
+  }
 }

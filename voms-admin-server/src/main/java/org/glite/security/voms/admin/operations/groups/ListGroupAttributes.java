@@ -25,14 +25,15 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 
 public class ListGroupAttributes extends BaseVomsOperation {
 
-	protected Object doExecute() {
+  protected Object doExecute() {
 
-		return VOMSAttributeDAO.instance().getGroupAttributes();
-	}
+    return VOMSAttributeDAO.instance().getGroupAttributes();
+  }
 
-	protected void setupPermissions() {
-		addRequiredPermissionOnAllGroups(VOMSPermission.getEmptyPermissions()
-				.setAttributesReadPermission());
-	}
+  protected void setupPermissions() {
+
+    addRequiredPermissionOnAllGroups(VOMSPermission.getEmptyPermissions()
+      .setAttributesReadPermission());
+  }
 
 }
