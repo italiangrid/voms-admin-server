@@ -143,8 +143,8 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
-* Tue Sep 10 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.0-1
-- Bumped version to 3.3.0.
+* Fri Oct 24 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.0-1
+- Bumped version to 3.3.0 and adapted build to multi-module structure.
 
 * Tue Jun 25 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.2.0-1
 - Fixes for:
@@ -161,7 +161,7 @@ fi
 - [VOMS-235] - Allow easier search of users with pending Sign AUP requests
 
 * Wed Jul 11 2012 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.0.0-1
-- VOMS admin now runs as a process in an embedded container 
+- VOMS admin now runs as a process in an embedded container
 
 * Fri Dec 16 2011 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 2.7.0-1
 - Self-managed packaging
