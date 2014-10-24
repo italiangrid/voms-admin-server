@@ -81,6 +81,15 @@ getent passwd voms > /dev/null || useradd -r -g voms \
 if [ -d "/var/lib/voms-admin/lib" ]; then
 	rm -rf /var/lib/voms-admin/lib/*.jar 
 fi
+
+if [ -d "/usr/share/voms-admin/vo.d" ]; then
+	rm -rf /usr/share/voms-admin/vo.d
+fi
+
+if [ -d "/usr/share/voms-admin/work" ]; then
+	rm -rf /usr/share/voms-admin/work
+fi
+
 exit 0
 
 %post 
@@ -135,11 +144,11 @@ fi
 %dir %{_datadir}/voms-admin/wsdls
 %{_datadir}/voms-admin/wsdls/*
 
-%dir %{_datadir}/voms-admin/vo.d
-%attr(-,voms,voms) %{_datadir}/voms-admin/work
-
 /var/lib/voms-admin/lib/*.jar
 /var/lib/voms-admin/tools/*
+
+%dir %{_localstatedir}/lib/voms-admin/vo.d
+%attr(-,voms,voms) %dir %{_localstatedir}/lib/voms-admin/work
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog

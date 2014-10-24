@@ -68,7 +68,7 @@
         <!-- Empty fileset to create empty directory -->
         <fileSet>
           <directory>src</directory>
-          <outputDirectory>/usr/share/voms-admin/vo.d</outputDirectory>
+          <outputDirectory>/var/lib/voms-admin/vo.d</outputDirectory>
           <excludes>
             <exclude>**/*</exclude>
           </excludes>
@@ -78,7 +78,7 @@
         <!-- Empty fileset to create empty directory -->
         <fileSet>
           <directory>src</directory>
-          <outputDirectory>/usr/share/voms-admin/work</outputDirectory>
+          <outputDirectory>/var/lib/voms-admin/work</outputDirectory>
           <excludes>
             <exclude>**/*</exclude>
           </excludes>

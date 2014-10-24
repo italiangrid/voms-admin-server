@@ -60,8 +60,8 @@ public class Container {
   public static final String DEFAULT_WAR = "/usr/share/webapps/voms-admin.war";
 
   public static final String DEFAULT_TMP_PREFIX = "/var/tmp";
-  public static final String DEFAULT_DEPLOY_DIR = "/usr/share/voms-admin/vo.d";
-  public static final String DEFAULT_WORK_DIR = "/usr/share/voms-admin/work";
+  public static final String DEFAULT_DEPLOY_DIR = "/var/lib/voms-admin/vo.d";
+  public static final String DEFAULT_WORK_DIR = "/var/lib/voms-admin/work";
 
   public static final String HTTP_CONNECTOR_NAME = "voms-http";
   public static final String HTTPS_CONNECTOR_NAME = "voms-https";

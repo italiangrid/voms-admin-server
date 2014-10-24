@@ -82,7 +82,7 @@ if [ -z "$VOMS_STATUS_PORT" ]; then
 fi
 
 pid_file="${PREFIX%/}/var/lock/subsys/voms-container"
-deploy_dir="${PREFIX%/}/usr/share/voms-admin/vo.d"
+deploy_dir="${PREFIX%/}/var/lib/voms-admin/vo.d"
 configured_vos=`find $CONF_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \;`
 
 print_vo_status(){
