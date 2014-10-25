@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://glite.org/wsdl/services/org.glite.security.voms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="VOMSException">
+    <sequence/>
+   </complexType>
+   <complexType name="User">
+    <sequence>
+     <element name="CA" nillable="true" type="soapenc:string"/>
+     <element name="CN" nillable="true" type="soapenc:string"/>
+     <element name="DN" nillable="true" type="soapenc:string"/>
+     <element name="certUri" nillable="true" type="soapenc:string"/>
+     <element name="mail" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AttributeClass">
+    <sequence>
+     <element name="description" nillable="true" type="soapenc:string"/>
+     <element name="name" nillable="true" type="soapenc:string"/>
+     <element name="uniquenessChecked" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfAttributeClass">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:AttributeClass[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="AttributeValue">
+    <sequence>
+     <element name="attributeClass" nillable="true" type="impl:AttributeClass"/>
+     <element name="context" nillable="true" type="soapenc:string"/>
+     <element name="value" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfAttributeValue">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:AttributeValue[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="createAttributeClassResponse2">
+
+   </wsdl:message>
+
+   <wsdl:message name="createAttributeClassResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="createAttributeClassResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="setRoleAttributeRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupAttributeResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="listUserAttributesResponse">
+
+      <wsdl:part name="listUserAttributesReturn" type="impl:ArrayOfAttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserAttributeRequest">
+
+      <wsdl:part name="in0" type="tns2:User"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupAttributeRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="saveAttributeClassRequest">
+
+      <wsdl:part name="in0" type="impl:AttributeClass"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleAttributeResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleAttributeRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listRoleAttributesResponse">
+
+      <wsdl:part name="listRoleAttributesReturn" type="impl:ArrayOfAttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listGroupAttributesRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="VOMSException">
+
+      <wsdl:part name="fault" type="tns2:VOMSException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setGroupAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listAttributeClassesResponse">
+
+      <wsdl:part name="listAttributeClassesReturn" type="impl:ArrayOfAttributeClass"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupAttributeRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createAttributeClassRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserAttributeRequest1">
+
+      <wsdl:part name="in0" type="tns2:User"/>
+
+      <wsdl:part name="in1" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="saveAttributeClassResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteAttributeClassResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="listRoleAttributesRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserAttributeResponse1">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteAttributeClassResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listGroupAttributesResponse">
+
+      <wsdl:part name="listGroupAttributesReturn" type="impl:ArrayOfAttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAttributeClassResponse">
+
+      <wsdl:part name="getAttributeClassReturn" type="impl:AttributeClass"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createAttributeClassRequest2">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createAttributeClassRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteAttributeClassRequest1">
+
+      <wsdl:part name="in0" type="impl:AttributeClass"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setRoleAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="listAttributeClassesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setUserAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getAttributeClassRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listUserAttributesRequest">
+
+      <wsdl:part name="in0" type="tns2:User"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteRoleAttributeRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteAttributeClassRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteGroupAttributeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setGroupAttributeRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setUserAttributeRequest">
+
+      <wsdl:part name="in0" type="tns2:User"/>
+
+      <wsdl:part name="in1" type="impl:AttributeValue"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSAttributes">
+
+      <wsdl:operation name="createAttributeClass" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:createAttributeClassRequest" name="createAttributeClassRequest"/>
+
+         <wsdl:output message="impl:createAttributeClassResponse" name="createAttributeClassResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createAttributeClass" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:createAttributeClassRequest1" name="createAttributeClassRequest1"/>
+
+         <wsdl:output message="impl:createAttributeClassResponse1" name="createAttributeClassResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createAttributeClass" parameterOrder="in0">
+
+         <wsdl:input message="impl:createAttributeClassRequest2" name="createAttributeClassRequest2"/>
+
+         <wsdl:output message="impl:createAttributeClassResponse2" name="createAttributeClassResponse2"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAttributeClass" parameterOrder="in0">
+
+         <wsdl:input message="impl:getAttributeClassRequest" name="getAttributeClassRequest"/>
+
+         <wsdl:output message="impl:getAttributeClassResponse" name="getAttributeClassResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="saveAttributeClass" parameterOrder="in0">
+
+         <wsdl:input message="impl:saveAttributeClassRequest" name="saveAttributeClassRequest"/>
+
+         <wsdl:output message="impl:saveAttributeClassResponse" name="saveAttributeClassResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteAttributeClass" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteAttributeClassRequest" name="deleteAttributeClassRequest"/>
+
+         <wsdl:output message="impl:deleteAttributeClassResponse" name="deleteAttributeClassResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteAttributeClass" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteAttributeClassRequest1" name="deleteAttributeClassRequest1"/>
+
+         <wsdl:output message="impl:deleteAttributeClassResponse1" name="deleteAttributeClassResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listAttributeClasses">
+
+         <wsdl:input message="impl:listAttributeClassesRequest" name="listAttributeClassesRequest"/>
+
+         <wsdl:output message="impl:listAttributeClassesResponse" name="listAttributeClassesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUserAttributes" parameterOrder="in0">
+
+         <wsdl:input message="impl:listUserAttributesRequest" name="listUserAttributesRequest"/>
+
+         <wsdl:output message="impl:listUserAttributesResponse" name="listUserAttributesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setUserAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setUserAttributeRequest" name="setUserAttributeRequest"/>
+
+         <wsdl:output message="impl:setUserAttributeResponse" name="setUserAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:deleteUserAttributeRequest" name="deleteUserAttributeRequest"/>
+
+         <wsdl:output message="impl:deleteUserAttributeResponse" name="deleteUserAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:deleteUserAttributeRequest1" name="deleteUserAttributeRequest1"/>
+
+         <wsdl:output message="impl:deleteUserAttributeResponse1" name="deleteUserAttributeResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setGroupAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setGroupAttributeRequest" name="setGroupAttributeRequest"/>
+
+         <wsdl:output message="impl:setGroupAttributeResponse" name="setGroupAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroupAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:deleteGroupAttributeRequest" name="deleteGroupAttributeRequest"/>
+
+         <wsdl:output message="impl:deleteGroupAttributeResponse" name="deleteGroupAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroupAttribute" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:deleteGroupAttributeRequest1" name="deleteGroupAttributeRequest1"/>
+
+         <wsdl:output message="impl:deleteGroupAttributeResponse1" name="deleteGroupAttributeResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listGroupAttributes" parameterOrder="in0">
+
+         <wsdl:input message="impl:listGroupAttributesRequest" name="listGroupAttributesRequest"/>
+
+         <wsdl:output message="impl:listGroupAttributesResponse" name="listGroupAttributesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setRoleAttribute" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:setRoleAttributeRequest" name="setRoleAttributeRequest"/>
+
+         <wsdl:output message="impl:setRoleAttributeResponse" name="setRoleAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRoleAttribute" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:deleteRoleAttributeRequest" name="deleteRoleAttributeRequest"/>
+
+         <wsdl:output message="impl:deleteRoleAttributeResponse" name="deleteRoleAttributeResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRoleAttribute" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:deleteRoleAttributeRequest1" name="deleteRoleAttributeRequest1"/>
+
+         <wsdl:output message="impl:deleteRoleAttributeResponse1" name="deleteRoleAttributeResponse1"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoleAttributes" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:listRoleAttributesRequest" name="listRoleAttributesRequest"/>
+
+         <wsdl:output message="impl:listRoleAttributesResponse" name="listRoleAttributesResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSAttributesSoapBinding" type="impl:VOMSAttributes">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="createAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createAttributeClassRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createAttributeClassResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createAttributeClassRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createAttributeClassResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createAttributeClassRequest2">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createAttributeClassResponse2">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAttributeClassRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAttributeClassResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="saveAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="saveAttributeClassRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="saveAttributeClassResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteAttributeClassRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteAttributeClassResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteAttributeClass">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteAttributeClassRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteAttributeClassResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listAttributeClasses">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listAttributeClassesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listAttributeClassesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listUserAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listUserAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listUserAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setUserAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setUserAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setUserAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserAttributeRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserAttributeResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setGroupAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setGroupAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setGroupAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroupAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteGroupAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteGroupAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteGroupAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteGroupAttributeRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteGroupAttributeResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listGroupAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listGroupAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listGroupAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setRoleAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setRoleAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setRoleAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRoleAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteRoleAttributeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteRoleAttributeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteRoleAttribute">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteRoleAttributeRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteRoleAttributeResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listRoleAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listRoleAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listRoleAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSAttributesService">
+
+      <wsdl:port binding="impl:VOMSAttributesSoapBinding" name="VOMSAttributes">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSAttributes"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

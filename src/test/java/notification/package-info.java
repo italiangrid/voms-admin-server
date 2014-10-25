@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author andreaceccanti
- * 
- */
-package notification;

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
+    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Authors:
+    	Andrea Ceccanti (INFN)
+
+-->
+
+
+<configuration scan="true" scanPeriod="60 seconds">
+    
+    <!-- 
+        This logger controls the MAIN voms admin log messages. Set the level to DEBUG 
+        for maximum detail.  
+     -->
+    <logger name="org.glite.security.voms.admin" level="INFO" />
+    
+    <!--
+         This logger controls the main validation service VOMS Admin log messages.
+         Set the level to DEBUG for maximum detail.
+    -->
+    <logger name="org.glite.security.voms.admin.core.validation" level="INFO"/>
+    
+    <!--  
+          This logger controls the verbosity of the VOMS X.509 attribute
+          authority service. 
+          The default configuration shows successfull and failed requests.
+          Set the level to OFF to turn this logging off.
+     -->
+    <logger name="VOMS-X509-AA" level="INFO" />
+    
+    <!-- 
+        This logger controls the log messages produced when exceptions are raised 
+        by a call to the voms admin web services. 
+        Set the level to DEBUG for maximum detail.  
+     -->
+    <logger
+        name="org.glite.security.voms.admin.service.ServiceExceptionHelper"
+        level="DEBUG" />
+    
+    <!-- 
+        The loggers below control the amount of logging produced by the main frameworks used by voms admin. Normally
+        you shouldn't change the defaults listed here.
+     -->
+    <logger name="org.opensaml" level="ERROR" />
+    
+    <!-- 
+        Set the level to INFO (or DEBUG) for the hibernate logging if you want to have more detailed log messages regarding
+        the persistence management in voms-admin.
+     -->
+    <logger name="org.hibernate" level="ERROR" />
+    
+    <logger name="org.apache.struts2" level="WARN" />
+    <logger name="com.opensymphony.xwork2" level="WARN" />
+    <logger name="com.opensymphony.xwork2.config.providers.XmlConfigurationProvider" level="ERROR" />
+    
+    <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
+    <appender name="FILE"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${package.prefix}/${log.dir}/voms-admin-${voms.vo.name}.log</File>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${package.prefix}/${log.dir}/voms-admin-${voms.vo.name}-%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</pattern>
+        </encoder>
+    </appender>    
+    
+    <root level="WARN">
+        <appender-ref ref="FILE" />
+    </root>
+    
+</configuration>

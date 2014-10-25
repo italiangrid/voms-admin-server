@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" xmlns:intf="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://glite.org/wsdl/services/org.glite.security.voms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ACLEntry">
+    <sequence>
+     <element name="adminIssuer" nillable="true" type="soapenc:string"/>
+     <element name="adminSubject" nillable="true" type="soapenc:string"/>
+     <element name="vomsPermissionBits" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfACLEntry">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:ACLEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://glite.org/wsdl/services/org.glite.security.voms" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="VOMSException">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="addDefaultACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDefaultACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setDefaultACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ArrayOfACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ACLEntry"/>
+
+      <wsdl:part name="in2" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDefaultACLResponse">
+
+      <wsdl:part name="getDefaultACLReturn" type="impl:ArrayOfACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setACLResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getACLResponse">
+
+      <wsdl:part name="getACLReturn" type="impl:ArrayOfACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ArrayOfACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getDefaultACLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setDefaultACLResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="VOMSException">
+
+      <wsdl:part name="fault" type="tns2:VOMSException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addDefaultACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="removeACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ACLEntry"/>
+
+      <wsdl:part name="in2" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeACLEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDefaultACLEntryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="impl:ACLEntry"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="VOMSACL">
+
+      <wsdl:operation name="getACL" parameterOrder="in0">
+
+         <wsdl:input message="impl:getACLRequest" name="getACLRequest"/>
+
+         <wsdl:output message="impl:getACLResponse" name="getACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setACL" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setACLRequest" name="setACLRequest"/>
+
+         <wsdl:output message="impl:setACLResponse" name="setACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addACLEntry" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:addACLEntryRequest" name="addACLEntryRequest"/>
+
+         <wsdl:output message="impl:addACLEntryResponse" name="addACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeACLEntry" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:removeACLEntryRequest" name="removeACLEntryRequest"/>
+
+         <wsdl:output message="impl:removeACLEntryResponse" name="removeACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDefaultACL" parameterOrder="in0">
+
+         <wsdl:input message="impl:getDefaultACLRequest" name="getDefaultACLRequest"/>
+
+         <wsdl:output message="impl:getDefaultACLResponse" name="getDefaultACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setDefaultACL" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:setDefaultACLRequest" name="setDefaultACLRequest"/>
+
+         <wsdl:output message="impl:setDefaultACLResponse" name="setDefaultACLResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addDefaultACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:addDefaultACLEntryRequest" name="addDefaultACLEntryRequest"/>
+
+         <wsdl:output message="impl:addDefaultACLEntryResponse" name="addDefaultACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDefaultACLEntry" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:removeDefaultACLEntryRequest" name="removeDefaultACLEntryRequest"/>
+
+         <wsdl:output message="impl:removeDefaultACLEntryResponse" name="removeDefaultACLEntryResponse"/>
+
+         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="VOMSACLSoapBinding" type="impl:VOMSACL">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDefaultACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDefaultACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDefaultACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setDefaultACL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setDefaultACLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setDefaultACLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addDefaultACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addDefaultACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addDefaultACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDefaultACLEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeDefaultACLEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeDefaultACLEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="VOMSException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.acl" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="VOMSACLService">
+
+      <wsdl:port binding="impl:VOMSACLSoapBinding" name="VOMSACL">
+
+         <wsdlsoap:address location="https://localhost:8443/glite-security-voms-admin-interface/VOMSACL"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
