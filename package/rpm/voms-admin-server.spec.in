@@ -1,7 +1,9 @@
 ## Turn off meaningless jar repackaging 
 %define __jar_repack 0
 
-%global base_version 3.3.0
+%global random_num %(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 8)
+
+%global base_version 3.3.1
 %global base_release 1
 
 %global pom_version @@POM_VERSION@@
@@ -22,11 +24,11 @@ Version: %{package_version}
 Release: %{release_version}%{?dist}
 Summary: The VOMS Administration service
 
-Group:		Applications/Internet
+Group:  Applications/Internet
 License:    ASL 2.0
 URL: https://twiki.cnaf.infn.it/twiki/bin/view/VOMS
 Source:  %{name}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)-%{random_num}
 
 BuildArch:      noarch
 
@@ -36,7 +38,7 @@ BuildRequires:  java-1.6.0-openjdk-devel
 BuildRequires:  oracle-instantclient-basic
 
 Requires: java-1.6.0-openjdk-devel
-Requires: python(abi) = 2.6 
+Requires: python(abi) = 2.6
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -152,6 +154,9 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
+* Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.1-1
+- Bumped version to 3.3.1.
+
 * Fri Oct 24 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.0-1
 - Bumped version to 3.3.0 and adapted build to multi-module structure.
 
