@@ -19,7 +19,13 @@ public enum ConfigurationProperty {
 
   MAX_REQUEST_QUEUE_SIZE("max_request_queue_size", "200"),
 
-  BIND_ADDRESS("bind_address", null);
+  BIND_ADDRESS("bind_address", null),
+  
+  TLS_EXCLUDE_PROTOCOLS("tls_exclude_protocols", null),
+  TLS_INCLUDE_PROTOCOLS("tls_include_protocols", null),
+  
+  TLS_EXCLUDE_CIPHER_SUITES("tls_exclude_cipher_suites", null),
+  TLS_INCLUDE_CIPHER_SUITES("tls_include_cipher_suites", null);
 
   private ConfigurationProperty(String propertyName, String defaultValue) {
 
