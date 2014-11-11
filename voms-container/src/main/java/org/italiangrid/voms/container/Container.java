@@ -96,11 +96,17 @@ public class Container {
 
   private String bindAddress;
 
+  private String tlsExcludeProtocols;
+  private String tlsIncludeProtocols;
+  private String tlsExcludeCipherSuites;
+  private String tlsIncludeCipherSuites;
+
   private Server server;
   private DeploymentManager deploymentManager;
   private HandlerCollection handlers = new HandlerCollection();
   private ContextHandlerCollection contexts = new ContextHandlerCollection();
-
+  
+  
   protected SSLOptions getSSLOptions() {
 
     SSLOptions options = new SSLOptions();
@@ -110,6 +116,22 @@ public class Container {
     options.setTrustStoreDirectory(trustDir);
     options.setTrustStoreRefreshIntervalInMsec(trustDirRefreshIntervalInMsec);
 
+    if (tlsExcludeCipherSuites != null){
+      options.setExcludeCipherSuites(tlsExcludeCipherSuites.split(","));
+    }
+    
+    if (tlsIncludeCipherSuites != null){
+      options.setIncludeCipherSuites(tlsIncludeCipherSuites.split(","));
+    }
+    
+    if (tlsExcludeProtocols != null){
+      options.setExcludeProtocols(tlsExcludeProtocols.split(","));
+    }
+    
+    if (tlsIncludeProtocols != null){
+      options.setIncludeProtocols(tlsIncludeProtocols.split(","));
+    }
+    
     return options;
 
   }
@@ -421,6 +443,18 @@ public class Container {
 
     trustDir = getConfigurationProperty(ConfigurationProperty.TRUST_ANCHORS_DIR);
 
+    tlsIncludeCipherSuites = getConfigurationProperty(
+      ConfigurationProperty.TLS_INCLUDE_CIPHER_SUITES);
+    
+    tlsExcludeCipherSuites = getConfigurationProperty(
+      ConfigurationProperty.TLS_EXCLUDE_CIPHER_SUITES);
+    
+    tlsExcludeProtocols = getConfigurationProperty(
+      ConfigurationProperty.TLS_EXCLUDE_PROTOCOLS);
+    
+    tlsIncludeProtocols = getConfigurationProperty(
+      ConfigurationProperty.TLS_INCLUDE_PROTOCOLS);
+
     long refreshIntervalInSeconds = Long
       .parseLong(getConfigurationProperty(ConfigurationProperty.TRUST_ANCHORS_REFRESH_PERIOD));
 
@@ -512,11 +546,27 @@ public class Container {
 
     log.info("VOMS Admin version {}.", Version.version());
     log.info("Hostname: {}", host);
-    
-    if (bindAddress != null){
+
+    if (bindAddress != null) {
       log.info("Binding on: {}:{}", bindAddress, port);
-    } else{
+    } else {
       log.info("Binding on all interfaces on port: {}", port);
+    }
+
+    if (tlsIncludeProtocols != null){
+      log.info("TLS included protocols: {}", tlsIncludeProtocols);
+    }
+    
+    if (tlsExcludeProtocols != null){
+      log.info("TLS excluded protocols: {}", tlsExcludeProtocols);
+    }
+    
+    if (tlsIncludeCipherSuites != null){
+      log.info("TLS included cipher suites: {}", tlsIncludeCipherSuites);
+    }
+    
+    if (tlsExcludeCipherSuites != null){
+      log.info("TLS excluded cipher suites: {}", tlsExcludeCipherSuites);
     }
     
     log.info("HTTP status handler listening on: {}", statusPort);
