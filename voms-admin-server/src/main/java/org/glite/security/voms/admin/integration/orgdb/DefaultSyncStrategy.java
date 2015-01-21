@@ -163,7 +163,7 @@ public class DefaultSyncStrategy implements
       } else {
 
         log.debug("Null institution in OrgDB record for user {}. "
-          + "Updating VOMS institution field.");
+          + "Updating VOMS institution field.", u);
 
         u.setInstitution(null);
       }
@@ -189,7 +189,7 @@ public class DefaultSyncStrategy implements
       } else {
   
         log.debug("Null PhoneNumber in OrgDB record for user {}. "
-          + "Updating VOMS PhoneNumber field.");
+          + "Updating VOMS PhoneNumber field.", u);
   
         u.setPhoneNumber(null);
       }
