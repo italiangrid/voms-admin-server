@@ -170,6 +170,30 @@ public class DefaultSyncStrategy implements
     }
   }
 
+  protected void synchronizePhoneNumber(VOMSUser u,
+    VOMSOrgDBPerson orgDbPerson) {
+
+    // The PhoneNumber can be null sometimes
+    if (orgDbPerson.getTel1() != null)  {
+      if (u.getPhoneNumber() == null
+        || !u.getPhoneNumber().equals(orgDbPerson.getTel1())) {
+
+        u.setPhoneNumber(orgDbPerson.getTel1());
+
+        log.debug(
+          "PhoneNumber for VOMS user {} and orgDbPerson {} do not match. "
+            + "Updating VOMS PhoneNumber field.", u, orgDbPerson);
+      }
+    } else {
+
+      log.debug("Null PhoneNumber in OrgDB record for user {}. "
+        + "Updating VOMS PhoneNumber field.");
+
+      u.setPhoneNumber(null);
+    }
+  }
+
+
   public void synchronizeMemberInformation(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName) {
 
@@ -180,6 +204,8 @@ public class DefaultSyncStrategy implements
 
     synchronizeMembershipExpirationDate(u, orgDbPerson, experimentName);
     synchronizeMembershipInstitutionInfo(u, orgDbPerson, experimentName);
+    synchronizePhoneNumber(u, orgDbPerson);
+
 
   }
 
