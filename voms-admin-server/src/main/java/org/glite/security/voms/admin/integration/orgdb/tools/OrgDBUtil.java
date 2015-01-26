@@ -21,6 +21,7 @@
 package org.glite.security.voms.admin.integration.orgdb.tools;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -71,7 +73,13 @@ public class OrgDBUtil {
   protected String indentSpace = "  ";
 
   enum Command {
-    list, find, create, expire, restore, delete
+    list,
+    find,
+    create,
+    expire,
+    restore,
+    delete,
+    createFromFile
   }
 
   protected void parseCommandLine(String[] args) throws ParseException {
@@ -156,6 +164,13 @@ public class OrgDBUtil {
       .withDescription(
         "Specifies the OrgDB id to be used when searching/creating users.")
       .hasArg().create("experiment"));
+
+    options
+      .addOption(OptionBuilder
+        .withLongOpt("user_file")
+        .withDescription(
+          "A file containing user information to be used when creating multiple users.")
+        .hasArg().create("user_file"));
 
     options.addOption(OptionBuilder.withLongOpt("verbose")
       .withDescription("Produce verbose output.").create("v"));
@@ -331,15 +346,23 @@ public class OrgDBUtil {
 
   }
 
-  protected void doCreate() throws IOException {
+  protected void doCreateFromFile() throws IOException {
 
-    String name, surname, email, id, experiment, institute;
+    File file = new File(getValueFromConsoleIfOptionUndefined("user_file"));
+    Scanner scanner = new Scanner(file);
 
-    name = getValueFromConsoleIfOptionUndefined("name").trim();
-    surname = getValueFromConsoleIfOptionUndefined("surname").trim();
-    email = getValueFromConsoleIfOptionUndefined("email").trim();
-    experiment = EXPERIMENT_NAME;
-    institute = INSTITUTE_CODE;
+    while (scanner.hasNext()) {
+      String line = scanner.nextLine();
+      String[] tokens = line.split(",");
+      
+      createUser(tokens[1], tokens[2], tokens[4], tokens[5], tokens[6]); 
+    }
+    
+    scanner.close();
+  }
+
+  protected void createUser(String name, String surname, String email,
+    String phone, String experiment) {
 
     OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
 
@@ -351,9 +374,9 @@ public class OrgDBUtil {
 
     Experiment e = findExperiment(experiment);
     if (e == null)
-      printErrorMessageAndExit("Experiment not found");
+      printErrorMessageAndExit("Experiment "+experiment+" not found");
 
-    Institute i = findInstitute(institute);
+    Institute i = findInstitute(INSTITUTE_CODE);
 
     if (i == null)
       printErrorMessageAndExit("Institute not found");
@@ -381,6 +404,19 @@ public class OrgDBUtil {
 
     System.out.println("Created: ");
     printVOMSPerson(realNew);
+
+  }
+
+  protected void doCreate() throws IOException {
+
+    String name, surname, email, id, experiment, institute;
+
+    name = getValueFromConsoleIfOptionUndefined("name").trim();
+    surname = getValueFromConsoleIfOptionUndefined("surname").trim();
+    email = getValueFromConsoleIfOptionUndefined("email").trim();
+    experiment = getValueFromConsoleIfOptionUndefined("experiment").trim();
+
+    createUser(name, surname, email, null, experiment);
 
   }
 
@@ -497,6 +533,10 @@ public class OrgDBUtil {
 
     case delete:
       doDelete();
+      break;
+      
+    case createFromFile:
+      doCreateFromFile();
       break;
 
     default:

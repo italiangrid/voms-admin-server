@@ -23,6 +23,11 @@ import org.glite.security.voms.admin.error.VOMSException;
 
 public class VOMSConfigurationException extends VOMSException {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public VOMSConfigurationException(String message) {
 
     super(message);

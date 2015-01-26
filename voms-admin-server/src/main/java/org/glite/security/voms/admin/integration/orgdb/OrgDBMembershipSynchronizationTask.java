@@ -21,6 +21,7 @@
 package org.glite.security.voms.admin.integration.orgdb;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
@@ -32,6 +33,7 @@ import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBMissingMe
 import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDbExpiredParticipationStrategy;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.hibernate.ScrollableResults;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,8 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
   public static final Logger log = LoggerFactory
     .getLogger(OrgDBMembershipSynchronizationTask.class);
+
+  public static final int UPDATE_COUNT_BATCH = 50;
 
   protected String experimentName;
 
@@ -63,19 +67,26 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
     SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
 
+    long startTime = System.currentTimeMillis();
+    
     try {
 
       OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
 
-      List<VOMSUser> allUsers = VOMSUserDAO.instance().findAll();
+      ScrollableResults allUserCursor = VOMSUserDAO.instance()
+        .findAllWithCursor();
 
-      for (VOMSUser u : allUsers) {
+      int updateCount = 0;
+      
+      while (allUserCursor.next()) {
+
+        VOMSUser u = (VOMSUser) allUserCursor.get(0);
 
         VOMSOrgDBPerson orgDbPerson = dao
           .findPersonByEmail(u.getEmailAddress());
 
         if (orgDbPerson != null) {
-
+          updateCount++;
           synchronizationStrategy.synchronizeMemberInformation(u, orgDbPerson,
             experimentName);
 
@@ -83,15 +94,28 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
             expiredParticipationStrategy.handleOrgDbExpiredParticipation(u,
               orgDbPerson, experimentName);
 
+          // Flush some updates out and release memory
+          
+          if (updateCount % UPDATE_COUNT_BATCH == 0) {
+
+            log.debug("Flushing session after {} updates.", updateCount);
+
+            sf.getCurrentSession().flush();
+            sf.getCurrentSession().clear();
+          }
+
         } else {
 
           log.warn("No OrgDB record found for user {}.", u);
           missingMembershipStrategy.handleMissingMembershipRecord(u);
         }
+
       }
 
       sf.getCurrentSession().getTransaction().commit();
       sf.getCurrentSession().close();
+      
+      
 
     } catch (OrgDBError e) {
 
@@ -101,6 +125,12 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
         log.error("OrgDB exception caught: {}", e.getMessage(), e);
       }
 
+    }finally{
+     
+      long elapsedTime = System.currentTimeMillis() - startTime;
+      log.info("OrgDB synchronization took {} seconds.", 
+        TimeUnit.MILLISECONDS.toSeconds(elapsedTime));
+      
     }
 
   }

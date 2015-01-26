@@ -69,16 +69,16 @@ used to contact you in relation to this activity.
       <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField" readonly="true" value="%{requester.institution}"/>
     </li>
     <li>
-      <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField" />
+      <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField" value="%{requester.phoneNumber}" />
     </li>
     <li>
-      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField" />
+      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField" value="%{requester.address}" />
     </li>
     <li>
       <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}" cssClass="registrationField" readonly="true"/>
     </li>
     <li>
-     <h2 style="color: black">The VO AUP:</h2>
+     <h2 style="color: black">The VO Acceptable Usage Policy (AUP):</h2>
       <s:textarea rows="20" cols="80" value="%{currentAUPVersion.URLContent}" readonly="true"/>
     </li>
     <li class="aupAcceptance">

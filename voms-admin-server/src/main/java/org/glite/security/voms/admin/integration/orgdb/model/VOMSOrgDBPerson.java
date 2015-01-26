@@ -719,4 +719,22 @@ public class VOMSOrgDBPerson implements Serializable {
     return null;
   }
 
+  public String getAddressForVOMS() {
+
+    if ("Y".equals(atCern)) {
+
+      StringBuilder address = new StringBuilder();
+
+      address.append(getBuilding());
+      address.append("/");
+      address.append(getFloor());
+      address.append("-");
+      address.append(getRoom());
+
+      return address.toString();
+
+    }
+
+    return null;
+  }
 }
