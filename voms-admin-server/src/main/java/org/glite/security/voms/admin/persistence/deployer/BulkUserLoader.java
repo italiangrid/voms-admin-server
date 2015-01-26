@@ -9,6 +9,7 @@ import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.hibernate.dialect.Dialect;
@@ -123,14 +124,17 @@ public class BulkUserLoader implements Runnable {
         u.setDn(String.format("/C=IT/O=IGI/CN=%s", tokens[3]));
 
         dao.create(u, "/C=IT/O=IGI/CN=Test CA");
+        
+        // Create AUP signature record
+        dao.signAUP(u, DAOFactory.instance().getAUPDAO().getVOAUP());
 
         log.info("Created {}", u.getShortName());
-        
+
       }
 
     } catch (FileNotFoundException e) {
       logExceptionAndExit(e);
-    
+
     } finally {
 
       if (scanner != null) {

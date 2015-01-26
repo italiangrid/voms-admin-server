@@ -37,21 +37,19 @@ public class DefaultSyncStrategy implements
     .getLogger(DefaultSyncStrategy.class);
 
   protected void synchronizeMembershipExpirationDate(VOMSUser u,
-    VOMSOrgDBPerson orgDbPerson, String experimentName) {
+    VOMSOrgDBPerson orgDbPerson, String experimentName,
+    Participation validParticipation) {
 
-    if (orgDbPerson.hasValidParticipationForExperiment(experimentName)) {
+    if (validParticipation != null) {
 
-      Participation p = orgDbPerson
-        .getValidParticipationForExperiment(experimentName);
-
-      if (p.getEndDate() != null) {
+      if (validParticipation.getEndDate() != null) {
 
         // Participation has an end date, use that for the VOMS
         // membership expiration.
         log.debug("Setting {} expiration date to {}. Previous value was: {}",
-          new Object[] { u, p.getEndDate(), u.getEndTime() });
+          new Object[] { u, validParticipation.getEndDate(), u.getEndTime() });
 
-        u.setEndTime(p.getEndDate());
+        u.setEndTime(validParticipation.getEndDate());
 
       } else {
 
@@ -88,6 +86,7 @@ public class DefaultSyncStrategy implements
       }
 
       restoreMembershipIfNeeded(u);
+
     } else {
 
       // No valid participation found for experiment. We sync anyway against
@@ -127,7 +126,6 @@ public class DefaultSyncStrategy implements
 
         }
       }
-
     }
   }
 
@@ -140,62 +138,55 @@ public class DefaultSyncStrategy implements
   }
 
   protected void synchronizeMembershipInstitutionInfo(VOMSUser u,
-    VOMSOrgDBPerson orgDbPerson, String experimentName) {
+    VOMSOrgDBPerson orgDbPerson, String experimentName,
+    Participation validParticipation) {
 
-    if (orgDbPerson.hasValidParticipationForExperiment(experimentName)) {
+    // The institute can be null sometimes
+    if (validParticipation.getInstitute() != null) {
 
-      Participation p = orgDbPerson
-        .getValidParticipationForExperiment(experimentName);
+      if (u.getInstitution() == null
+        || !u.getInstitution().equals(
+          validParticipation.getInstitute().getOriginalName())) {
 
-      // The institute can be null sometimes
-      if (p.getInstitute() != null) {
+        u.setInstitution(validParticipation.getInstitute().getOriginalName());
 
-        if (u.getInstitution() == null
-          || !u.getInstitution().equals(p.getInstitute().getOriginalName())) {
-
-          u.setInstitution(p.getInstitute().getOriginalName());
-
-          log.debug(
-            "Institution for user {} and participation {} do not match. "
-              + "Updating VOMS institution field.", u, p);
-        }
-
-      } else {
-
-        log.debug("Null institution in OrgDB record for user {}. "
-          + "Updating VOMS institution field.", u);
-
-        u.setInstitution(null);
+        log.debug("Institution for user {} and participation {} do not match. "
+          + "Updating VOMS institution field from OrgDB record.", u, 
+          validParticipation);
       }
+
+    } else {
+
+      log.debug("Null institution in OrgDB record for user {}. "
+        + "Setting institution null for VOMS user as well.", u);
+
+      u.setInstitution(null);
     }
   }
 
   protected void synchronizeMembershipPhoneNumber(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName) {
-    
-    if (orgDbPerson.hasValidParticipationForExperiment(experimentName)) {
 
-      // The PhoneNumber can be null sometimes
-      if (orgDbPerson.getTel1() != null)  {
-        if (u.getPhoneNumber() == null
-          || !u.getPhoneNumber().equals(orgDbPerson.getTel1())) {
-  
-          u.setPhoneNumber(orgDbPerson.getTel1());
-  
-          log.debug(
-            "PhoneNumber for VOMS user {} and orgDbPerson {} do not match. "
-              + "Updating VOMS PhoneNumber field.", u, orgDbPerson);
-        }
-      } else {
-  
-        log.debug("Null PhoneNumber in OrgDB record for user {}. "
-          + "Updating VOMS PhoneNumber field.", u);
-  
-        u.setPhoneNumber(null);
+    // The PhoneNumber can be null sometimes
+    if (orgDbPerson.getTel1() != null) {
+      if (u.getPhoneNumber() == null
+        || !u.getPhoneNumber().equals(orgDbPerson.getTel1())) {
+
+        u.setPhoneNumber(orgDbPerson.getTel1());
+
+        log.debug(
+          "PhoneNumber for VOMS user {} and orgDbPerson {} do not match. "
+            + "Updating VOMS PhoneNumber field from OrgDB record.", u, orgDbPerson);
       }
-    }
-  }
+    } else {
 
+      log.debug("Null PhoneNumber in OrgDB record for user {}. "
+        + "Setting phoneNumber to null for VOMS user as well.", u);
+
+      u.setPhoneNumber(null);
+    }
+
+  }
 
   public void synchronizeMemberInformation(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName) {
@@ -205,10 +196,18 @@ public class DefaultSyncStrategy implements
         "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
         new Object[] { u, orgDbPerson, experimentName });
 
-    synchronizeMembershipExpirationDate(u, orgDbPerson, experimentName);
-    synchronizeMembershipInstitutionInfo(u, orgDbPerson, experimentName);
-    synchronizeMembershipPhoneNumber(u, orgDbPerson, experimentName);
+    Participation validParticipation = orgDbPerson
+      .getValidParticipationForExperiment(experimentName);
 
+    synchronizeMembershipExpirationDate(u, orgDbPerson, experimentName,
+      validParticipation);
+
+    if (validParticipation != null) {
+      synchronizeMembershipInstitutionInfo(u, orgDbPerson, experimentName,
+        validParticipation);
+      
+      synchronizeMembershipPhoneNumber(u, orgDbPerson, experimentName);
+    }
 
   }
 
