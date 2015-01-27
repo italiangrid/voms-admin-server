@@ -126,6 +126,14 @@ def setup_cl_options():
                                help="Sets the configured VO as non-browsable by authenticated clients",
                                default="True")
     
+    admin_opt_group.add_option("--admin-skip-ca-check", 
+                               dest="admin_skip_ca_check",
+                               action="store_true",
+                               help="Skips the check on the certificate issuer when authenticating VOMS Admin clients",
+                               default=False)
+    
+    
+    
     parser.add_option_group(admin_opt_group)
     
     
