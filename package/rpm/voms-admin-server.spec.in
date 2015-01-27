@@ -152,6 +152,9 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
+* Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.2-1
+- Bumped version to 3.3.2.
+
 * Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.1-1
 - Bumped version to 3.3.1.
 
