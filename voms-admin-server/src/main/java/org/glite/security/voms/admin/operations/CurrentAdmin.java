@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
@@ -53,15 +55,29 @@ public class CurrentAdmin {
     this.admin = a;
   }
 
-  public static CurrentAdmin instance() {
+  private static VOMSAdmin lookupAdmin() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+    VOMSSecurityContext ctxt = (VOMSSecurityContext) CurrentSecurityContext
       .get();
 
-    String adminDN = theContext.getClientName();
-    String caDN = theContext.getIssuerName();
+    boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
 
-    VOMSAdmin admin = VOMSAdminDAO.instance().getByName(adminDN, caDN);
+    VOMSAdmin admin = null;
+
+    if (skipCACheck) {
+      admin = VOMSAdminDAO.instance().getBySubject(ctxt.getClientName());
+    } else {
+      admin = VOMSAdminDAO.instance().getByName(ctxt.getClientName(),
+        ctxt.getIssuerName());
+    }
+
+    return admin;
+  }
+
+  public static CurrentAdmin instance() {
+
+    VOMSAdmin admin = lookupAdmin();
 
     if (admin == null)
       admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();

@@ -3,7 +3,7 @@
 
 %global random_num %(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 8)
 
-%global base_version 3.3.1
+%global base_version 3.3.2
 %global base_release 1
 
 %global pom_version @@POM_VERSION@@
@@ -12,15 +12,13 @@
 %global oracle_jar_name @@ORACLE_JAR@@
 
 %if %{?build_number:1}%{!?build_number:0}
-%define package_version %{base_version}.dev.%{build_number}
-%define release_version 0
+%define release_version 0.dev.%{build_number}
 %else
-%define package_version %{base_version}
 %define release_version %{base_release}
 %endif
 
 Name: voms-admin-server
-Version: %{package_version}
+Version: %{base_version}
 Release: %{release_version}%{?dist}
 Summary: The VOMS Administration service
 
@@ -154,6 +152,9 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
+* Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.2-1
+- Bumped version to 3.3.2.
+
 * Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.1-1
 - Bumped version to 3.3.1.
 

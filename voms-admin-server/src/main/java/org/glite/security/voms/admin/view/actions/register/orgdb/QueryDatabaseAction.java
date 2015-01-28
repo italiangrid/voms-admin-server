@@ -23,7 +23,6 @@ package org.glite.security.voms.admin.view.actions.register.orgdb;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.integration.PluginConfigurator;
@@ -60,9 +59,6 @@ public class QueryDatabaseAction extends BaseAction implements
 
   String emailAddress;
 
-  String name;
-  String surname;
-
   List<VOMSOrgDBPerson> searchResults;
 
   String experimentName;
@@ -71,6 +67,7 @@ public class QueryDatabaseAction extends BaseAction implements
 
     RequesterInfo i = new RequesterInfo();
     CurrentAdmin admin = CurrentAdmin.instance();
+    
     i.setCertificateSubject(admin.getRealSubject());
     i.setCertificateIssuer(admin.getRealIssuer());
     i.setEmailAddress(admin.getRealEmailAddress());
@@ -89,8 +86,6 @@ public class QueryDatabaseAction extends BaseAction implements
 
     try {
 
-      requester.setName(name);
-      requester.setSurname(surname);
       requester.setEmailAddress(emailAddress);
 
       PluginConfigurator configuredPlugin = PluginManager.instance()
@@ -103,30 +98,27 @@ public class QueryDatabaseAction extends BaseAction implements
 
       searchResults = new ArrayList<VOMSOrgDBPerson>();
 
-      VOMSOrgDBPerson exactMatch = dao
+      VOMSOrgDBPerson orgDBRecord = dao
         .findPersonWithValidExperimentParticipationByEmail(emailAddress,
           experimentName);
 
-      if (exactMatch == null) {
-
-        searchResults = dao.findPersonsWithValidExperimentParticipationByName(
-          name, surname, experimentName);
-
-        if (searchResults.isEmpty()) {
-          addActionError(String.format(
-            "No valid participation found for '%s %s' for experiment '%s'",
-            name, surname, experimentName));
-        } else {
-          addActionMessage(String.format(
-            "Matches found for name '%s %s' for experiment '%s'", name,
-            surname, experimentName));
-        }
-
+      if (orgDBRecord == null) {
+      
+        addActionError(String.format(
+          "No valid participation found for email '%s' in experiment '%s'",
+          emailAddress, experimentName));
+      
       } else {
-
-        addActionMessage("Found the following match for email '" + emailAddress
-          + "'.");
-        searchResults.add(exactMatch);
+        
+        // Get membership information from OrgDB record
+        requester.setName(orgDBRecord.getFirstName());
+        requester.setSurname(orgDBRecord.getName());
+        
+        
+        requester.setAddress(orgDBRecord.getAddressForVOMS()); 
+        requester.setPhoneNumber(orgDBRecord.getTel1());
+        
+        searchResults.add(orgDBRecord);
       }
 
     } catch (Exception e) {
@@ -153,30 +145,6 @@ public class QueryDatabaseAction extends BaseAction implements
   public void setEmailAddress(String emailAddress) {
 
     this.emailAddress = emailAddress;
-  }
-
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please enter your name.")
-  public String getName() {
-
-    return name;
-  }
-
-  public void setName(String name) {
-
-    this.name = name;
-  }
-
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please enter your surname.")
-  public String getSurname() {
-
-    return surname;
-  }
-
-  public void setSurname(String surname) {
-
-    this.surname = surname;
   }
 
   public List<VOMSOrgDBPerson> getModel() {

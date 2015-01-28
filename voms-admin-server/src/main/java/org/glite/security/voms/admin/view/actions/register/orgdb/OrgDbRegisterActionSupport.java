@@ -89,6 +89,9 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
     requester.setInstitution(orgDbPerson
       .getValidParticipationForExperiment(experimentName).getInstitute()
       .getOriginalName());
+    
+    requester.setPhoneNumber(orgDbPerson.getTel1());
+    requester.setAddress(orgDbPerson.getAddressForVOMS());
 
   }
 

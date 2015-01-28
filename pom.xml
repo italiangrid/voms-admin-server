@@ -5,7 +5,7 @@
 
   <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-parent</artifactId>
-  <version>3.3.1</version>
+  <version>3.3.2</version>
   <packaging>pom</packaging>
   <name>VOMS Admin Parent POM</name>
 
@@ -33,7 +33,7 @@
     <junit.version>4.11</junit.version>
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.6</logback.version>
-    <https-utils.version>0.3.5.rc1</https-utils.version>
+    <https-utils.version>0.3.6</https-utils.version>
     <axis.version>1.2.1</axis.version>
     <javax.mail.version>1.4</javax.mail.version>
 

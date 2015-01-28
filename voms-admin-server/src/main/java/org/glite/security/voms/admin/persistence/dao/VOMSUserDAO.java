@@ -62,9 +62,12 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -790,7 +793,17 @@ public class VOMSUserDAO {
 
     return (VOMSUser) HibernateFactory.getSession().get(VOMSUser.class, userId);
   }
-
+  
+  public ScrollableResults findAllWithCursor(){
+    Query q = HibernateFactory.getSession().createQuery(
+      "select u from VOMSUser u order by u.surname asc");
+    
+    q.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
+    
+    return q.scroll();
+    
+  }
+  
   public List findAll() {
 
     Query q = HibernateFactory.getSession().createQuery(
