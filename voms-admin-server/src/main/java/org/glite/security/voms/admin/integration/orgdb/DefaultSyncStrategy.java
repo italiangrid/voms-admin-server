@@ -146,9 +146,9 @@ public class DefaultSyncStrategy implements
 
       if (u.getInstitution() == null
         || !u.getInstitution().equals(
-          validParticipation.getInstitute().getOriginalName())) {
+          validParticipation.getInstitute().getName())) {
 
-        u.setInstitution(validParticipation.getInstitute().getOriginalName());
+        u.setInstitution(validParticipation.getInstitute().getName());
 
         log.debug("Institution for user {} and participation {} do not match. "
           + "Updating VOMS institution field from OrgDB record.", u, 

@@ -25,11 +25,15 @@ import java.util.List;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginConfigurator;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
+import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
+import org.glite.security.voms.admin.integration.orgdb.model.Institute;
+import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
@@ -67,7 +71,7 @@ public class QueryDatabaseAction extends BaseAction implements
 
     RequesterInfo i = new RequesterInfo();
     CurrentAdmin admin = CurrentAdmin.instance();
-    
+
     i.setCertificateSubject(admin.getRealSubject());
     i.setCertificateIssuer(admin.getRealIssuer());
     i.setEmailAddress(admin.getRealEmailAddress());
@@ -103,21 +107,35 @@ public class QueryDatabaseAction extends BaseAction implements
           experimentName);
 
       if (orgDBRecord == null) {
-      
+
         addActionError(String.format(
           "No valid participation found for email '%s' in experiment '%s'",
           emailAddress, experimentName));
-      
+
       } else {
-        
+
         // Get membership information from OrgDB record
         requester.setName(orgDBRecord.getFirstName());
         requester.setSurname(orgDBRecord.getName());
+
+        Institute institute = orgDBRecord.getValidParticipationForExperiment(
+          experimentName).getInstitute();
+
+        if (institute == null) {
+          String errorMessage = String.format(
+            "Null institute found for valid participation."
+              + " Requester email address: %s. Experiment: %s",
+            requester.getEmailAddress(), experimentName);
+
+          throw new OrgDBError(errorMessage);
+
+        }
         
+        requester.setInstitution(institute.getName());
         
-        requester.setAddress(orgDBRecord.getAddressForVOMS()); 
+        requester.setAddress(orgDBRecord.getAddressForVOMS());
         requester.setPhoneNumber(orgDBRecord.getTel1());
-        
+
         searchResults.add(orgDBRecord);
       }
 
