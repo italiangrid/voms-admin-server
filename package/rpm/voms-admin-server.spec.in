@@ -3,7 +3,7 @@
 
 %global random_num %(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 8)
 
-%global base_version 3.3.2
+%global base_version 3.3.3
 %global base_release 1
 
 %global pom_version @@POM_VERSION@@
@@ -152,6 +152,8 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
+* Mon Nov 3 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.3-1
+- Bumped version to 3.3.3.
 * Mon Nov 3 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.2-1
 - Bumped version to 3.3.2.
 
