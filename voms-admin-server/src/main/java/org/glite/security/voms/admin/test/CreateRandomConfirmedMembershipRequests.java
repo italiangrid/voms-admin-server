@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
@@ -41,6 +43,8 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
 
   public void run() {
 
+    HibernateFactory.beginTransaction();
+
     long requestLifetime = VOMSConfiguration.instance().getLong(
       "voms.request.vo_membership.lifetime", 300);
 
@@ -50,12 +54,7 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
 
     Date expirationDate = now.getTime();
 
-    List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
-
-    groups = groups.subList(1, groups.size());
-
     RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-    Integer groupSize = groups.size();
 
     Random r = new Random();
 
@@ -69,18 +68,26 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
       ri.setCertificateSubject("Test " + i);
       ri.setCertificateIssuer("/C=IT/O=INFN/CN=INFN CA");
 
-      Integer randomGroupSize = r.nextInt(15);
+      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup", "3");
 
-      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup",
-        randomGroupSize.toString());
-
-      for (int j = 0; j < randomGroupSize; j++)
-        ri.addInfo("requestedGroup" + j, groups.get(j).getName());
+      ri.addInfo("requestedGroup0", "/test/g0");
+      ri.addInfo("requestedGroup1", "/test/g1");
+      ri.addInfo("requestedGroup2", "/test/g2");
 
       NewVOMembershipRequest request = reqDAO.createVOMembershipRequest(ri,
         expirationDate);
+      
       request.setStatus(STATUS.CONFIRMED);
 
     }
+    
+    HibernateFactory.commitTransaction();
+  }
+  
+  public static void main(String[] args) {
+    System.setProperty(VOMSConfigurationConstants.VO_NAME, args[0]);
+    VOMSConfiguration.load(null);
+    new CreateRandomConfirmedMembershipRequests().run();
+    
   }
 }
