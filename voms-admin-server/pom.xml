@@ -418,7 +418,7 @@
     </profile>
 
     <profile>
-      <id>local</id>
+      <id>dev</id>
       <properties>
         <!-- Always keep trailing slashes in package.prefix -->
         <package.prefix>/opt/voms/</package.prefix>

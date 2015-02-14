@@ -20,7 +20,6 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
 <s:set value="pendingRequests.{? #this instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest and 
       #this.status == @org.glite.security.voms.admin.persistence.model.request.Request$STATUS@CONFIRMED }" 
       var="pendingMembershipReqs"/>
