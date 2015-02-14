@@ -155,6 +155,13 @@ public abstract class RegisterActionSupport extends BaseAction implements
 
   }
 
+  public boolean requireGroupManagerSelection() {
+
+    return VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.VO_MEMBERSHIP_REQUIRE_GROUP_MANAGER_SELECTION,
+      true);
+  }
+
   public AUPVersion getCurrentAUPVersion() {
 
     return currentAUPVersion;

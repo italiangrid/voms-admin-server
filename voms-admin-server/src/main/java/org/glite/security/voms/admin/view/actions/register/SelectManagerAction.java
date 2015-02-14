@@ -66,7 +66,11 @@ public class SelectManagerAction extends RegisterActionSupport {
 
     } else {
 
-      addActionError("Please select a group manager.");
+      if (requireGroupManagerSelection()) {
+        
+        addActionError("Please select a group manager.");
+      
+      }
 
     }
 
