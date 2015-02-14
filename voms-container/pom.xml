@@ -160,7 +160,7 @@
       </build>
     </profile>
     <profile>
-      <id>local</id>
+      <id>dev</id>
       <properties>
         <!-- Please keep trailing / ! -->
         <package.prefix>/opt/voms/</package.prefix>
