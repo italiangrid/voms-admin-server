@@ -477,7 +477,7 @@ public class Container {
       String classpath = java.lang.System.getProperty("java.class.path");
       String entries[] = classpath.split(System.getProperty("path.separator"));
 
-      if (entries.length == 1) {
+      if (entries.length >= 1) {
 
         JarFile f = new JarFile(entries[0]);
         Attributes attrs = f.getManifest().getMainAttributes();
