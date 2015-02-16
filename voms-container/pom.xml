@@ -23,6 +23,7 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>packaging.properties</include>
+          <include>rebel.xml</include>
         </includes>
         <filtering>true</filtering>
       </resource>
