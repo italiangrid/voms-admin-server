@@ -236,6 +236,12 @@ def setup_cl_options():
 
     registration_opt_group.add_option("--enable-attribute-requests", dest="enable_attribute_requests", action="store_true",
                                       help="Enable attribute request at registration time.", default=False)
+    
+    registration_opt_group.add_option("--disable-mandatory-group-manager-selection", 
+                                      dest="require_group_manager_selection", 
+                                      action="store_false",
+                                      help="Disable manadatory group manager selection.", 
+                                      default=True)
 
     registration_opt_group.add_option("--membership-request-lifetime", type="int", dest="membership_request_lifetime",
                                       help="Time (in seconds) that unconfirmed membership request are maintained in the VOMS database.",
