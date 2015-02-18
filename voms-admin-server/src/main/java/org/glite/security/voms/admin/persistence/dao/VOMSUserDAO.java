@@ -649,16 +649,16 @@ public class VOMSUserDAO {
 
   public void delete(VOMSUser u) {
 
-    log.debug("Deleting user \"" + u + "\".");
+    log.debug("Deleting user \"{}\"", u);
 
+    DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
+    
     u.getCertificates().clear();
     u.getMappings().clear();
     u.getAttributes().clear();
     u.getAupAcceptanceRecords().clear();
     u.getPersonalInformations().clear();
     u.getTasks().clear();
-
-    DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
 
     HibernateFactory.getSession().delete(u);
 
