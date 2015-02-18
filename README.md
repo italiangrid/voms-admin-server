@@ -31,4 +31,4 @@ point it to this project root directory.
 
 ## RPM package build
 
-See README.md in ./package/centos directory.
+See README.md in ./package/rpm directory.
