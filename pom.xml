@@ -45,8 +45,8 @@
     <commons-cli.version>1.1</commons-cli.version>
     <license-plugin.version>1.9.0</license-plugin.version>
     <log.dir>var/log/voms-admin</log.dir>
-    
-    <voms.source.prefix>/opt/voms-admin</voms.source.prefix>
+
+    <voms.source.prefix>/code</voms.source.prefix>
   </properties>
 
   <dependencyManagement>
@@ -184,7 +184,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <!-- 
+      <!--
       <plugin>
         <groupId>org.zeroturnaround</groupId>
         <artifactId>jrebel-maven-plugin</artifactId>
@@ -201,7 +201,7 @@
       </plugin>
        -->
       <plugin>
-      
+
         <inherited>true</inherited>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
