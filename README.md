@@ -10,15 +10,18 @@ The VOMS Admin service is a web application providing tools for administering
 the VOMS VO structure. It provides an intuitive web user interface for daily
 administration tasks.
 
-## Build instructions
+## Build with Maven
 
-You will need maven 3 to build this project.
+Requirements:
+
+- Java 6
+- Maven 3
+
+Build it with the following command:
 
   mvn package
 
-will build the artifacts.
-
-### Eclipse import instructions
+## Eclipse import instructions
 
 To import the project in Eclipse for development, do as follows:
 
@@ -28,7 +31,21 @@ To import the project in Eclipse for development, do as follows:
 From Eclipse menu, select “Import Existing Maven projects...”, and
 point it to this project root directory.
 
+## Dockerized development environment
+
+Reauirements:
+
+- Docker >= v.1.5.0
+- Fig >= 1.0.1
+
+Running
+
+  fig up
+
+Will setup a running voms-admin-server instance, running a single VO named test.
 
 ## RPM package build
 
-See README.md in ./package/centos directory.
+See README.md in ./package/rpm directory.
+
+

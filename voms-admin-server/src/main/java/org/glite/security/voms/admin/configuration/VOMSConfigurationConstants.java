@@ -64,6 +64,8 @@ public interface VOMSConfigurationConstants {
    */
   public static final String VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST = "voms.request.vo_membership.enable_attribute_requests";
 
+  public static final String VO_MEMBERSHIP_REQUIRE_GROUP_MANAGER_SELECTION = "voms.request.vo_membership.require_group_manager_selection";
+  
   public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
   public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
   public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";

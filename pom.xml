@@ -5,7 +5,7 @@
 
   <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-parent</artifactId>
-  <version>3.3.2</version>
+  <version>3.3.3</version>
   <packaging>pom</packaging>
   <name>VOMS Admin Parent POM</name>
 
@@ -45,6 +45,8 @@
     <commons-cli.version>1.1</commons-cli.version>
     <license-plugin.version>1.9.0</license-plugin.version>
     <log.dir>var/log/voms-admin</log.dir>
+
+    <voms.source.prefix>/code</voms.source.prefix>
   </properties>
 
   <dependencyManagement>
@@ -182,7 +184,24 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <!--
       <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <version>1.1.5</version>
+        <executions>
+          <execution>
+            <id>generate-rebel-xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+       -->
+      <plugin>
+
         <inherited>true</inherited>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>

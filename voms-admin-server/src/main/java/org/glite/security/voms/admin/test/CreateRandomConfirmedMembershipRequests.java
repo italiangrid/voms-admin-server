@@ -22,21 +22,19 @@ package org.glite.security.voms.admin.test;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 
 public class CreateRandomConfirmedMembershipRequests implements Runnable {
 
-  public static final int NUM_REQUEST = 5;
+  public static final int NUM_REQUEST = 20;
   public static final String EMAIL = "andrea.ceccanti@cnaf.infn.it";
 
   public void run() {
@@ -50,37 +48,40 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
 
     Date expirationDate = now.getTime();
 
-    List<VOMSGroup> groups = VOMSGroupDAO.instance().getAll();
-
-    groups = groups.subList(1, groups.size());
-
     RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
-    Integer groupSize = groups.size();
-
-    Random r = new Random();
 
     for (int i = 0; i < NUM_REQUEST; i++) {
 
       RequesterInfo ri = new RequesterInfo();
-      ri.setName("Ille " + i);
-      ri.setSurname("Camughe " + i);
+      ri.setName("Test");
+      ri.setSurname("User " + i);
       ri.setEmailAddress(EMAIL);
       ri.setInstitution("IGI");
-      ri.setCertificateSubject("Test " + i);
+      ri.setCertificateSubject("/C=IT/O=INFN/CN=test user " + i);
       ri.setCertificateIssuer("/C=IT/O=INFN/CN=INFN CA");
 
-      Integer randomGroupSize = r.nextInt(15);
+      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup", "3");
 
-      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup",
-        randomGroupSize.toString());
-
-      for (int j = 0; j < randomGroupSize; j++)
-        ri.addInfo("requestedGroup" + j, groups.get(j).getName());
+      ri.addInfo("requestedGroup0", "/test/g0");
+      ri.addInfo("requestedGroup1", "/test/g1");
+      ri.addInfo("requestedGroup2", "/test/g2");
 
       NewVOMembershipRequest request = reqDAO.createVOMembershipRequest(ri,
         expirationDate);
+
       request.setStatus(STATUS.CONFIRMED);
 
     }
+
+  }
+
+  public static void main(String[] args) {
+
+    System.setProperty(VOMSConfigurationConstants.VO_NAME, args[0]);
+    VOMSConfiguration.load(null);
+    HibernateFactory.beginTransaction();
+    new CreateRandomConfirmedMembershipRequests().run();
+    HibernateFactory.commitTransaction();
+
   }
 }

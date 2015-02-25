@@ -28,6 +28,8 @@ import org.glite.security.voms.admin.integration.PluginConfigurator;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
+import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
+import org.glite.security.voms.admin.integration.orgdb.model.Institute;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.view.actions.register.RegisterActionSupport;
 
@@ -85,11 +87,21 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
     requester.setName(orgDbPerson.getFirstName());
     requester.setSurname(orgDbPerson.getName());
     requester.setEmailAddress(orgDbPerson.getPhysicalEmail());
-
-    requester.setInstitution(orgDbPerson
-      .getValidParticipationForExperiment(experimentName).getInstitute()
-      .getOriginalName());
     
+    Institute institute = orgDbPerson.getValidParticipationForExperiment(
+      experimentName).getInstitute();
+
+    if (institute == null) {
+      String errorMessage = String.format(
+        "Null institute found for valid participation."
+          + " Requester email address: %s. Experiment: %s",
+        requester.getEmailAddress(), experimentName);
+
+      throw new OrgDBError(errorMessage);
+
+    }
+    
+    requester.setInstitution(institute.getName());
     requester.setPhoneNumber(orgDbPerson.getTel1());
     requester.setAddress(orgDbPerson.getAddressForVOMS());
 

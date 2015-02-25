@@ -89,6 +89,15 @@ public class MembershipDecisionAction extends DecisionAction {
     new HandleVOMembershipRequest((NewVOMembershipRequest) request,
       theDecision, approvedGroups).execute();
 
+    if (theDecision == DECISION.APPROVE) {
+      
+      addActionMessage("Request approved.");
+      
+    } else {
+      
+      addActionMessage("Request rejected.");
+    }
+
     refreshPendingRequests();
 
     setDecision(null);

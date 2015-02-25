@@ -21,10 +21,9 @@
 
 -->
 
-<configuration>    
+<configuration scan="true">
 
     <logger name="org.eclipse.jetty" level="ERROR" />
-        
     <!-- NORMALLY YOU SHOULD NOT EDIT BELOW THIS POINT  -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -35,5 +34,5 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
-    
+
 </configuration>
