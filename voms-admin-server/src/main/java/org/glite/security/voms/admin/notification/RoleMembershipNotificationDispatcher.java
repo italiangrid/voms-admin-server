@@ -79,19 +79,19 @@ public class RoleMembershipNotificationDispatcher extends
           VOMSPermission.getRequestsRWPermissions());
 
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     }
 
     if (e instanceof RoleMembershipApprovedEvent) {
 
-      NotificationService.instance().send(new RequestApproved(req));
+      NotificationServiceFactory.getNotificationService().send(new RequestApproved(req));
 
     }
 
     if (e instanceof RoleMembershipRejectedEvent) {
 
-      NotificationService.instance().send(new RequestRejected(req, null));
+      NotificationServiceFactory.getNotificationService().send(new RequestRejected(req, null));
 
     }
 

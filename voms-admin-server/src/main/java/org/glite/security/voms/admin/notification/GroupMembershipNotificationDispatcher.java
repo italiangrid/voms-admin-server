@@ -81,14 +81,14 @@ public class GroupMembershipNotificationDispatcher extends
 
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     }
 
     if (e instanceof GroupMembershipApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(req);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     }
 
@@ -96,7 +96,7 @@ public class GroupMembershipNotificationDispatcher extends
 
       RequestRejected msg = new RequestRejected(req, null);
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
     }
   }
 }

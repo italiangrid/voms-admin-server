@@ -57,20 +57,20 @@ public class CertificateRequestsNotificationDispatcher extends
       HandleRequest msg = new HandleRequest(ee.getRequest(),
         ee.getManagementURL());
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
     }
 
     if (e instanceof CertificateRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((CertificateRequestApprovedEvent) e).getRequest());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
     }
 
     if (e instanceof CertificateRequestRejectedEvent) {
       RequestRejected msg = new RequestRejected(
         ((CertificateRequestRejectedEvent) e).getRequest(), null);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
     }
 
   }

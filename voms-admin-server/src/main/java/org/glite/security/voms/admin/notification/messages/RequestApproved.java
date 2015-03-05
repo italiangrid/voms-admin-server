@@ -33,7 +33,8 @@ public class RequestApproved extends AbstractVelocityNotification {
 
   }
 
-  protected void buildMessage() {
+  @Override
+  public void buildMessage() {
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
     String voName = conf.getVOName();

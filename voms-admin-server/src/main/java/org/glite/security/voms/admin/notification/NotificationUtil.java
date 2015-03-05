@@ -19,6 +19,8 @@
 
 package org.glite.security.voms.admin.notification;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;

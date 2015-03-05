@@ -45,11 +45,14 @@ import org.glite.security.voms.admin.notification.CertificateRequestsNotificatio
 import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.MembershipRemovalNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
+import org.glite.security.voms.admin.notification.PersistentNotificationService;
 import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.VOMSNotificationSettings;
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -150,6 +153,17 @@ public final class VOMSService {
     es.startBackgroundTask(new UserStatsTask(),
       VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
       UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+
+  }
+
+  protected static void startNotificationService() {
+
+    PersistentNotificationService ns = PersistentNotificationService.INSTANCE;
+
+    ns.setNotificationSettings(VOMSNotificationSettings.fromVOMSConfiguration());
+    ns.setDao(DAOFactory.instance().getNotificationDAO());
+
+    ns.start();
 
   }
 
@@ -258,6 +272,8 @@ public final class VOMSService {
 
     startBackgroundTasks();
 
+    startNotificationService();
+
     bootstrapAttributeAuthorityServices();
 
     PluginManager.instance().configurePlugins();
@@ -271,7 +287,7 @@ public final class VOMSService {
 
     VOMSExecutorService.shutdown();
 
-    NotificationService.shutdown();
+    NotificationServiceFactory.getNotificationService().shutdownNow();
 
     HibernateFactory.shutdown();
 

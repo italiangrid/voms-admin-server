@@ -26,6 +26,8 @@ import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 
 public interface NotificationServiceIF {
 
+  public void start();
+  
   public void send(VOMSNotification n);
 
   public List<Runnable> shutdownNow();

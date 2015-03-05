@@ -86,8 +86,8 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
     msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
     usrMsg.addRecipient(e.getUser().getEmailAddress());
 
-    NotificationService.instance().send(msg);
-    NotificationService.instance().send(usrMsg);
+    NotificationServiceFactory.getNotificationService().send(msg);
+    NotificationServiceFactory.getNotificationService().send(usrMsg);
 
   }
 
@@ -95,7 +95,7 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
     SignAUPMessage msg = new SignAUPMessage(e.getUser(), e.getAup());
     msg.addRecipient(e.getUser().getEmailAddress());
-    NotificationService.instance().send(msg);
+    NotificationServiceFactory.getNotificationService().send(msg);
 
   }
 
@@ -104,7 +104,7 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
     UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
       ((UserMembershipExpired) e).getUser());
     msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
-    NotificationService.instance().send(msg);
+    NotificationServiceFactory.getNotificationService().send(msg);
 
   }
 

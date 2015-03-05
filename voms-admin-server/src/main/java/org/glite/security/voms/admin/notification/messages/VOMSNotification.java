@@ -20,8 +20,17 @@
 
 package org.glite.security.voms.admin.notification.messages;
 
+import java.util.List;
+
 public interface VOMSNotification {
 
+  public void buildMessage();
+  
+  public String getSubject();
+  public String getMessage();
+  
+  public List<String> getRecipientList();
+  
   public void send();
 
   public int getDeliveryAttemptCount();

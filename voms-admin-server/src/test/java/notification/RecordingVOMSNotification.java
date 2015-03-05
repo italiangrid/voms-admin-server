@@ -51,4 +51,26 @@ public class RecordingVOMSNotification implements VOMSNotification {
     return sendTimes;
   }
 
+  public String getMessage() {
+
+    return null;
+  }
+
+  public List<String> getRecipientList() {
+
+    return null;
+  }
+
+  @Override
+  public String getSubject() {
+
+    return null;
+  }
+
+  @Override
+  public void buildMessage() {
+
+    // TODO Auto-generated method stub
+    
+  }
 }

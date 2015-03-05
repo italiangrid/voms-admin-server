@@ -26,6 +26,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.NotificationDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.PeriodicNotificationsDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequesterInfoDAO;
@@ -36,6 +37,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.UserDAO;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.notification.Notification;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.LogRecord;
 import org.glite.security.voms.admin.persistence.model.task.Task;
@@ -178,6 +180,12 @@ public class HibernateDAOFactory extends DAOFactory {
 
     return (GroupManagerDAO) instantiateDAO(GroupManagerDAOHibernate.class);
 
+  }
+
+  @Override
+  public NotificationDAO getNotificationDAO() {
+
+    return (NotificationDAO) instantiateDAO(NotificationDAOHibernate.class);
   }
 
 }

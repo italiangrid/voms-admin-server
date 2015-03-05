@@ -34,7 +34,7 @@ public class HandleGroupRequest extends AbstractVelocityNotification {
   }
 
   @Override
-  protected void buildMessage() {
+  public void buildMessage() {
 
     String voName = VOMSConfiguration.instance().getVOName();
     setSubject("A GROUP membership request for VO " + voName

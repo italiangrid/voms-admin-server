@@ -76,7 +76,7 @@ public class VOMembershipNotificationDispatcher extends
 
       ConfirmRequest msg = new ConfirmRequest(recipient, ee.getConfirmURL(),
         ee.getCancelURL());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     } else if (e instanceof VOMembershipRequestConfirmedEvent) {
 
@@ -87,20 +87,20 @@ public class VOMembershipNotificationDispatcher extends
       HandleRequest msg = new HandleRequest(ee.getRequest(), ee.getUrl(),
         admins);
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     } else if (e instanceof VOMembershipRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((VOMembershipRequestApprovedEvent) e).getRequest());
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     } else if (e instanceof VOMembershipRequestRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
         ((VOMembershipRequestRejectedEvent) e).getRequest(), null);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     }
 

@@ -61,19 +61,19 @@ public class MembershipRemovalNotificationDispatcher extends
 
       MembershipRemovalSubmittedEvent ee = (MembershipRemovalSubmittedEvent) event;
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     } else if (event instanceof MembershipRemovalApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((MembershipRemovalApprovedEvent) event).getRequest());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
 
     } else if (event instanceof MembershipRemovalRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
         ((MembershipRemovalRejectedEvent) event).getRequest(), null);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService().send(msg);
     }
 
   }
