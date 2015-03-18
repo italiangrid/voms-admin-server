@@ -26,7 +26,10 @@ import org.hibernate.annotations.Index;
 public class Notification {
 
   public static enum NotificationStatus {
-    QUEUED, IN_DELIVERY, DELIVERED, ERROR
+    QUEUED,
+    IN_DELIVERY,
+    DELIVERED,
+    ERROR
   }
 
   @Id
@@ -36,6 +39,10 @@ public class Notification {
   @CollectionOfElements(fetch = FetchType.EAGER)
   @JoinTable(name = "notification_recipients")
   List<String> recipients = new ArrayList<String>();
+
+  @Column(nullable = false, columnDefinition = "varchar(512)")
+  @Index(name="notification_msg_type_idx")
+  String messageType;
 
   @Column(nullable = false, columnDefinition = "text")
   String subject;
@@ -51,7 +58,7 @@ public class Notification {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  @Index(name="notification_status_idx")
+  @Index(name = "notification_status_idx")
   NotificationStatus status = NotificationStatus.QUEUED;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "notification")
@@ -131,6 +138,16 @@ public class Notification {
     this.subject = subject;
   }
 
+  public String getMessageType() {
+
+    return messageType;
+  }
+
+  public void setMessageType(String messageType) {
+
+    this.messageType = messageType;
+  }
+
   @Override
   public int hashCode() {
 
@@ -172,27 +189,28 @@ public class Notification {
   public String toString() {
 
     return "Notification [id=" + id + ", recipients=" + recipients
-      + ", message=" + message + ", handlerId=" + handlerId + ", creationTime="
-      + creationTime + ", status=" + status + ", deliveryAttempts="
-      + deliveryAttempts + "]";
+      + ", messageType=" + messageType + ", subject=" + subject + ", message="
+      + message + ", handlerId=" + handlerId + ", creationTime=" + creationTime
+      + ", status=" + status + ", deliveryAttempts=" + deliveryAttempts + "]";
   }
 
   public void succesfullDelivery(String handlerId) {
-    
+
     setHandlerId(handlerId);
-    
+
     NotificationDelivery d = new NotificationDelivery(this);
     getDeliveryAttempts().add(d);
     d.setStatus(NotificationDeliveryStatus.SUCCESS);
     setStatus(NotificationStatus.DELIVERED);
   }
-  
-  public void addDeliveryError(Throwable t, String handlerId){
+
+  public void addDeliveryError(Throwable t, String handlerId) {
+
     setHandlerId(handlerId);
-    
+
     NotificationDelivery d = new NotificationDelivery(this);
     d.setErrorMessage(t.getMessage());
-    
+
     getDeliveryAttempts().add(d);
     d.setStatus(NotificationDeliveryStatus.ERROR);
     setStatus(NotificationStatus.ERROR);

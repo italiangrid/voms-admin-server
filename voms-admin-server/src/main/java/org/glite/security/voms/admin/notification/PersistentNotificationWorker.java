@@ -45,32 +45,18 @@ public class PersistentNotificationWorker implements Runnable {
       dao.setSession(session);
 
       tx = session.beginTransaction();
-      int markedJobs = dao.markJobs(numJobs, serviceID);
-      tx.commit();
 
-      if (markedJobs > 0) {
+      List<Notification> notifications = dao.fetchJobs(numJobs, serviceID);
 
-        log.debug("Marked {} notification for delivery", markedJobs);
-
-        tx = session.beginTransaction();
-
-        List<Notification> notifications = dao.fetchJobs(numJobs, serviceID);
-
-        log.debug("Fetched {} notifications.", notifications.size());
-
-        if (notifications.size() != markedJobs) {
-          log.warn(
-            "Marked {} jobs but fetched {} notifications from database!",
-            numJobs, notifications.size());
-        }
+      if (notifications.size() > 0) {
+        log.info("Fetched {} notifications.", notifications.size());
 
         for (Notification n : notifications) {
           handleNotification(n);
         }
-
-        tx.commit();
-
       }
+
+      tx.commit();
 
     } catch (Throwable t) {
 
@@ -133,7 +119,7 @@ public class PersistentNotificationWorker implements Runnable {
       SimpleEmail e = makeEmail(n);
       String msgID = e.send();
 
-      log.debug("Successful delivery of notification {}. Msg id: {}", n, msgID);
+      log.info("Successful delivery of notification {}. Msg id: {}", n, msgID);
 
       n.succesfullDelivery(serviceID);
 
@@ -161,7 +147,7 @@ public class PersistentNotificationWorker implements Runnable {
 
     e.setHostName(notificationSettings.getSMTPHost());
     e.setSmtpPort(notificationSettings.getSMTPPort());
-    
+
     e.setFrom(notificationSettings.getSender(), notificationSettings.getFrom());
 
     if (notificationSettings.getUsername() != null

@@ -24,10 +24,6 @@ public enum PersistentNotificationService implements NotificationServiceIF {
   private static final Logger log = LoggerFactory
     .getLogger(PersistentNotificationService.class);
 
-  private int maxDeliveryAttemptCount = 5;
-
-  private long sleepTimeBeforeRetry = 30;
-
   private NotificationSettings notificationSettings;
   private NotificationDAO dao;
 
@@ -49,9 +45,10 @@ public enum PersistentNotificationService implements NotificationServiceIF {
   private Notification makeNotification(VOMSNotification n) {
 
     n.buildMessage();
-    
+
     Notification persistentNotification = new Notification();
 
+    persistentNotification.setMessageType(n.getClass().getName());
     persistentNotification.setRecipients(n.getRecipientList());
     persistentNotification.setSubject(n.getSubject());
     persistentNotification.setCreationTime(new Date());
@@ -59,7 +56,7 @@ public enum PersistentNotificationService implements NotificationServiceIF {
 
     return persistentNotification;
   }
-  
+
   private void persistNotification(Notification n) {
 
     Session s = HibernateFactory.getFactory().openSession();
@@ -69,6 +66,8 @@ public enum PersistentNotificationService implements NotificationServiceIF {
     try {
 
       dao.makePersistent(n);
+      log.debug("Persisting notification {}", n);
+
       tx.commit();
 
     } catch (Throwable e) {
@@ -95,25 +94,15 @@ public enum PersistentNotificationService implements NotificationServiceIF {
   }
 
   @Override
-  public void send(VOMSNotification n) {
+  public synchronized void send(VOMSNotification n) {
 
     Validate.isTrue(started, "Notification service was not initialized");
     Validate.notNull(n, "n must not be null");
-    
+
     preconditionsCheck();
 
     persistNotification(makeNotification(n));
 
-  }
-
-  public int getMaxDeliveryAttemptCount() {
-
-    return maxDeliveryAttemptCount;
-  }
-
-  public void setMaxDeliveryAttemptCount(int maxDeliveryAttemptCount) {
-
-    this.maxDeliveryAttemptCount = maxDeliveryAttemptCount;
   }
 
   public NotificationSettings getNotificationSettings() {
@@ -161,22 +150,25 @@ public enum PersistentNotificationService implements NotificationServiceIF {
     Validate.notNull(dao, "dao must not be null");
   }
 
-  private void startDispatcher(){
-    PersistentNotificationWorker worker = new PersistentNotificationWorker(
-      dao,
-      notificationSettings,
-      ServiceID.getServiceID());
-    
-    log.info("Starting notification dispatcher with period: {} seconds", dispatchingPeriodInSeconds);
-    
-    executorService.scheduleAtFixedRate(worker, 30, dispatchingPeriodInSeconds, TimeUnit.SECONDS);
+  private void startDispatcher() {
+
+    PersistentNotificationWorker worker = new PersistentNotificationWorker(dao,
+      notificationSettings, ServiceID.getServiceID());
+
+    log.info("Starting notification dispatcher with period: {} seconds",
+      dispatchingPeriodInSeconds);
+
+    executorService.scheduleAtFixedRate(worker, 
+      dispatchingPeriodInSeconds, 
+      dispatchingPeriodInSeconds,
+      TimeUnit.SECONDS);
   }
-  
+
   @Override
   public synchronized void start() {
 
     preconditionsCheck();
-    if (dispatchingEnabled){
+    if (dispatchingEnabled) {
       startDispatcher();
     }
     started = true;
