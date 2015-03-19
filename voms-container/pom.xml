@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>3.3.3</version>
+    <version>3.3.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>voms-container</artifactId>
