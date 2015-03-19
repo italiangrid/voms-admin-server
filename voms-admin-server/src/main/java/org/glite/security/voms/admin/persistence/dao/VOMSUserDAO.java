@@ -237,8 +237,8 @@ public class VOMSUserDAO {
 
     result.addAll(noRecordUsers);
 
-    log.debug("Users without acceptance records for currently active aup:"
-      + result);
+    log.debug("Users without acceptance records for currently active aup: {}"
+      , result);
 
     // Add users that have an expired aup acceptance record due to aup
     // update or acceptance retriggering.
@@ -246,7 +246,11 @@ public class VOMSUserDAO {
 
     Query q2 = HibernateFactory.getSession().createQuery(qString);
 
-    q2.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+    Date aupLastUpdateTime = activeVersion.getLastUpdateTime();
+    
+    log.debug("AUP version lastUpdateTime: {}", aupLastUpdateTime);
+    q2.setTimestamp("lastUpdateTime", aupLastUpdateTime);
+    
     List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
     result.addAll(expiredDueToAUPUpdateUsers);
 
@@ -262,7 +266,7 @@ public class VOMSUserDAO {
         "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
           + " and r.lastAcceptanceDate > :lastUpdateTime ");
 
-    q3.setTimestamp("lastUpdateTime", activeVersion.getLastUpdateTime());
+    q3.setTimestamp("lastUpdateTime", aupLastUpdateTime );
 
     List<VOMSUser> potentiallyExpiredUsers = q3.list();
     HibernateFactory.getSession().flush();

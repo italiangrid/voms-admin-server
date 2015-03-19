@@ -71,7 +71,8 @@ public class SuspendAUPFailingMembersStrategy implements
 
       SignAUPTask t = taskDAO.createSignAUPTask(aup);
       u.assignTask(t);
-      log.debug("Sign aup task assigned to user '{}'", u);
+      log.info("Sign aup task assigned to user '{}'. Will expire on {}", u,
+        t.getExpiryDate());
       EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
 
     } else {
