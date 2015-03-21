@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.event.EventType;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.GenericEvent;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
@@ -29,7 +29,7 @@ public abstract class VOMembershipRequestEvent extends GenericEvent {
 
   public VOMembershipRequestEvent(NewVOMembershipRequest r) {
 
-    super(EventType.VOMembershipRequestEvent);
+    super(EventCategory.VOMembershipRequestEvent);
     request = r;
 
   }

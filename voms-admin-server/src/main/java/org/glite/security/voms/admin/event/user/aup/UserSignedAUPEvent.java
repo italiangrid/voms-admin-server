@@ -17,29 +17,16 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event;
+package org.glite.security.voms.admin.event.user.aup;
 
-public enum EventType {
+import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-  UserMembershipEvent(0),
-  UserAUPEvent(1),
-  UserSuspensionEvent(2),
-  VOMembershipRequestEvent(3),
-  GroupMembershipRequestEvent(4),
-  RoleMembershipRequestEvent(5),
-  MembershipRemovalRequestEvent(6),
-  CertificateRequestEvent(7);
+public class UserSignedAUPEvent extends UserAUPEvent {
 
-  int bitNo;
+  public UserSignedAUPEvent(VOMSUser user, AUP aup) {
 
-  private EventType(int b) {
-
-    bitNo = b;
-  }
-
-  public int getBitNo() {
-
-    return bitNo;
+    super(user, aup);
   }
 
 }

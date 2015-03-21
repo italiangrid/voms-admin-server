@@ -17,30 +17,28 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.dispatchers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventMask;
-import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
-import org.glite.security.voms.admin.event.user.UserSuspendedEvent;
-import org.glite.security.voms.admin.notification.messages.AdminTargetedUserSuspensionMessage;
+import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
+import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.SignAUPMessage;
 import org.glite.security.voms.admin.notification.messages.UserMembershipExpiredMessage;
-import org.glite.security.voms.admin.notification.messages.UserTargetedUserSuspensionMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
   public static final Logger log = LoggerFactory
     .getLogger(DefaultNotificationDispatcher.class);
 
-  private static DefaultNotificationDispatcher instance = null;
+  private static volatile DefaultNotificationDispatcher instance = null;
 
   private DefaultNotificationDispatcher() {
 
-    super(null);
   }
 
   public static final DefaultNotificationDispatcher instance() {
@@ -54,11 +52,7 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
   public void fire(Event e) {
 
-    if (e instanceof UserSuspendedEvent) {
-
-      handle((UserSuspendedEvent) e);
-
-    } else if (e instanceof SignAUPTaskAssignedEvent) {
+   if (e instanceof SignAUPTaskAssignedEvent) {
 
       handle((SignAUPTaskAssignedEvent) e);
 
@@ -69,32 +63,12 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
     }
 
   }
-
-  public EventMask getMask() {
-
-    return null;
-  }
-
-  protected void handle(UserSuspendedEvent e) {
-
-    AdminTargetedUserSuspensionMessage msg = new AdminTargetedUserSuspensionMessage(
-      e.getUser(), e.getReason().getMessage());
-
-    UserTargetedUserSuspensionMessage usrMsg = new UserTargetedUserSuspensionMessage(
-      e.getUser(), e.getReason().getMessage());
-
-    msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
-    usrMsg.addRecipient(e.getUser().getEmailAddress());
-
-    NotificationService.instance().send(msg);
-    NotificationService.instance().send(usrMsg);
-
-  }
+  
 
   protected void handle(SignAUPTaskAssignedEvent e) {
 
-    SignAUPMessage msg = new SignAUPMessage(e.getUser(), e.getAup());
-    msg.addRecipient(e.getUser().getEmailAddress());
+    SignAUPMessage msg = new SignAUPMessage(e.getPayload(), e.getAup());
+    msg.addRecipient(e.getPayload().getEmailAddress());
     NotificationService.instance().send(msg);
 
   }
@@ -102,7 +76,7 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
   protected void handle(UserMembershipExpired e) {
 
     UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
-      ((UserMembershipExpired) e).getUser());
+      ((UserMembershipExpired) e).getPayload());
     msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
     NotificationService.instance().send(msg);
 

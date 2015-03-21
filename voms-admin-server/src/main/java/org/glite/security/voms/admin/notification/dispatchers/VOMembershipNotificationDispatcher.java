@@ -18,18 +18,21 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.dispatchers;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventMask;
-import org.glite.security.voms.admin.event.EventType;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
+import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.ConfirmRequest;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
@@ -52,7 +55,7 @@ public class VOMembershipNotificationDispatcher extends
 
   private VOMembershipNotificationDispatcher() {
 
-    super(new EventMask(EventType.VOMembershipRequestEvent));
+    super(EnumSet.of(EventCategory.VOMembershipRequestEvent));
 
   }
 

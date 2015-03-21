@@ -64,13 +64,14 @@ public class EventManager {
     try {
       for (EventListener l : getListeners()) {
 
-        if (l.getMask() == null || l.getMask().get(e.getType().bitNo))
+        if (l.getCategoryMask().contains(e.getCategory())) {
           l.fire(e);
+        }
+
       }
     } catch (Throwable t) {
-      log.error("Error dispatching event '" + e + "': " + t.getMessage());
-      if (log.isDebugEnabled())
-        log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
+
+      log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
     }
   }
 

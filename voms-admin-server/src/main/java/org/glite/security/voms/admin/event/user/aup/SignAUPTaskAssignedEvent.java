@@ -17,17 +17,39 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.user;
+package org.glite.security.voms.admin.event.user.aup;
 
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 
-public class UserSignedAUPEvent extends UserAUPEvent {
+import static org.glite.security.voms.admin.event.auditing.NullHelper.nullSafeValue;
 
-  public UserSignedAUPEvent(VOMSUser user, AUP aup) {
+public class SignAUPTaskAssignedEvent extends UserAUPEvent {
+
+  final SignAUPTask task;
+
+  public SignAUPTaskAssignedEvent(VOMSUser user, AUP aup, SignAUPTask task) {
 
     super(user, aup);
-    // TODO Auto-generated constructor stub
+    Validate.notNull(task);
+    this.task = task;
+
   }
 
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+
+    super.decorateAuditEvent(e);
+    e.addDataPoint("taskExpirationDate", nullSafeValue(task.getExpiryDate()));
+
+  }
+  
+  
+  public SignAUPTask getTask() {
+
+    return task;
+  }
 }

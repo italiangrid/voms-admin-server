@@ -17,44 +17,24 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.user;
+package org.glite.security.voms.admin.event;
 
-import org.glite.security.voms.admin.event.EventType;
-import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.persistence.model.AUP;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import java.util.EnumSet;
 
-public class UserAUPEvent extends GenericEvent {
+public enum EventCategory {
 
-  VOMSUser user;
-  AUP aup;
-
-  public UserAUPEvent(VOMSUser user, AUP aup) {
-
-    super(EventType.UserAUPEvent);
-    setUser(user);
-    setAup(aup);
-
-  }
-
-  public VOMSUser getUser() {
-
-    return user;
-  }
-
-  public void setUser(VOMSUser user) {
-
-    this.user = user;
-  }
-
-  public AUP getAup() {
-
-    return aup;
-  }
-
-  public void setAup(AUP aup) {
-
-    this.aup = aup;
-  }
+  UserMembershipEvent,
+  UserLifecycleEvent,
+  UserAUPEvent,
+  UserCertificateEvent,
+  UserAttributeEvent,
+  VOMembershipRequestEvent,
+  GroupMembershipRequestEvent,
+  RoleMembershipRequestEvent,
+  MembershipRemovalRequestEvent,
+  CertificateRequestEvent,
+  VOLifecycleEvent;
+  
+  public static EnumSet<EventCategory> ALL_CATEGORIES = EnumSet.allOf(EventCategory.class);
 
 }

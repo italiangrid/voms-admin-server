@@ -19,7 +19,7 @@
  */
 package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.event.EventType;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.GenericEvent;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
@@ -29,7 +29,7 @@ public class MembershipRemovalRequestEvent extends GenericEvent {
 
   public MembershipRemovalRequestEvent(MembershipRemovalRequest req) {
 
-    super(EventType.MembershipRemovalRequestEvent);
+    super(EventCategory.MembershipRemovalRequestEvent);
     this.request = req;
 
   }

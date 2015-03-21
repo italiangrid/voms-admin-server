@@ -53,8 +53,10 @@ public class SaveUserPersonalInfoOperation extends
   @Override
   protected Object doExecute() {
 
-    if (targetUser == null)
+    if (targetUser == null){
       targetUser = getAuthorizedUser();
+    }
+    
     targetUser.setName(name);
     targetUser.setSurname(surname);
 

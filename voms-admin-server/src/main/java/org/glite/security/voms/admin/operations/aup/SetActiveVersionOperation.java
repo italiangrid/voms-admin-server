@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.aup;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.aup.AUPVersionSetActiveEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -45,7 +47,11 @@ public class SetActiveVersionOperation extends BaseVomsOperation {
     AUPDAO dao = DAOFactory.instance().getAUPDAO();
 
     dao.setActiveVersion(aup, version);
-    return null;
+    
+    EventManager.dispatch(new AUPVersionSetActiveEvent(aup, 
+      aup.getActiveVersion()));
+    
+    return aup;
   }
 
   @Override

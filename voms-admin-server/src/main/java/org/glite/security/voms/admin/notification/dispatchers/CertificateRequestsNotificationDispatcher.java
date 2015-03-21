@@ -18,14 +18,17 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.dispatchers;
+
+import java.util.EnumSet;
 
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventMask;
-import org.glite.security.voms.admin.event.EventType;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.registration.CertificateRequestApprovedEvent;
 import org.glite.security.voms.admin.event.registration.CertificateRequestRejectedEvent;
 import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
+import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
@@ -33,7 +36,7 @@ import org.glite.security.voms.admin.notification.messages.RequestRejected;
 public class CertificateRequestsNotificationDispatcher extends
   BaseNotificationDispatcher {
 
-  private static CertificateRequestsNotificationDispatcher INSTANCE;
+  private static volatile CertificateRequestsNotificationDispatcher INSTANCE;
 
   public static CertificateRequestsNotificationDispatcher instance() {
 
@@ -45,7 +48,7 @@ public class CertificateRequestsNotificationDispatcher extends
 
   private CertificateRequestsNotificationDispatcher() {
 
-    super(new EventMask(EventType.CertificateRequestEvent));
+    super(EnumSet.of(EventCategory.CertificateRequestEvent));
   }
 
   public void fire(Event e) {

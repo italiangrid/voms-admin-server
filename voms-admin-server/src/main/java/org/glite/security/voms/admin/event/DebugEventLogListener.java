@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.event;
 
+import java.util.EnumSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,18 +41,17 @@ public class DebugEventLogListener implements EventListener {
   }
 
   private DebugEventLogListener() {
-
-    EventManager.instance().register(this);
   }
 
   public void fire(Event e) {
 
-    log.debug("Event received: " + e);
+    log.info("Event received: {}", e);
   }
 
-  public EventMask getMask() {
+  @Override
+  public EnumSet<EventCategory> getCategoryMask() {
 
-    return null;
+    return EventCategory.ALL_CATEGORIES;
   }
 
 }

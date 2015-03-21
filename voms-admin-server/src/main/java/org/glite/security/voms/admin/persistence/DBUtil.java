@@ -51,10 +51,7 @@ public class DBUtil {
         + e.getMessage(), e);
     }
 
-    Configuration cfg = new AnnotationConfiguration().addProperties(
-      dbProperties).configure();
-
-    return cfg;
+    return new AnnotationConfiguration().addProperties(dbProperties);
 
   }
 

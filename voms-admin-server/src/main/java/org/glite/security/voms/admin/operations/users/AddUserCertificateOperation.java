@@ -23,10 +23,13 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateAddedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddUserCertificateOperation extends BaseVomsOperation {
@@ -85,12 +88,17 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 
   protected Object doExecute() {
 
-    if (theCert != null)
-      VOMSUserDAO.instance().addCertificate(theUser, theCert);
-    else
-      VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
+    Certificate cert = null;
 
-    return null;
+    if (theCert != null) {
+      cert = VOMSUserDAO.instance().addCertificate(theUser, theCert);
+    } else {
+      cert = VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
+    }
+
+    EventManager.dispatch(new UserCertificateAddedEvent(theUser, cert));
+
+    return cert;
   }
 
   protected void setupPermissions() {

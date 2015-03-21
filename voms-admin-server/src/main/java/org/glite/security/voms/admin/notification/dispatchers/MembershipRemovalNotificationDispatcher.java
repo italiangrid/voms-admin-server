@@ -18,15 +18,18 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.dispatchers;
+
+import java.util.EnumSet;
 
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventMask;
-import org.glite.security.voms.admin.event.EventType;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.registration.MembershipRemovalApprovedEvent;
 import org.glite.security.voms.admin.event.registration.MembershipRemovalRejectedEvent;
 import org.glite.security.voms.admin.event.registration.MembershipRemovalRequestEvent;
 import org.glite.security.voms.admin.event.registration.MembershipRemovalSubmittedEvent;
+import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
@@ -48,7 +51,7 @@ public class MembershipRemovalNotificationDispatcher extends
 
   private MembershipRemovalNotificationDispatcher() {
 
-    super(new EventMask(EventType.MembershipRemovalRequestEvent));
+    super(EnumSet.of(EventCategory.MembershipRemovalRequestEvent));
 
   }
 

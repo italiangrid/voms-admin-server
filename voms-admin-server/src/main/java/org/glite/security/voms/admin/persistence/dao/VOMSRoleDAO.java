@@ -41,12 +41,13 @@ public class VOMSRoleDAO {
     HibernateFactory.beginTransaction();
   }
 
-  public List findAll() {
+  public List<VOMSRole> findAll() {
 
     return getAll();
   }
 
-  public List getAll() {
+  @SuppressWarnings("unchecked")
+  public List<VOMSRole> getAll() {
 
     String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 

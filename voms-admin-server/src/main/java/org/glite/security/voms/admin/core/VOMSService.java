@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.Validate;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -40,16 +41,20 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.auditing.AuditLog;
 import org.glite.security.voms.admin.integration.PluginManager;
-import org.glite.security.voms.admin.notification.CertificateRequestsNotificationDispatcher;
-import org.glite.security.voms.admin.notification.DefaultNotificationDispatcher;
-import org.glite.security.voms.admin.notification.GroupMembershipNotificationDispatcher;
-import org.glite.security.voms.admin.notification.MembershipRemovalNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
-import org.glite.security.voms.admin.notification.RoleMembershipNotificationDispatcher;
-import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.CertificateRequestsNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.DefaultNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.GroupMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.MembershipRemovalNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.RoleMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.UserSuspendedDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.VOMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.operations.DefaultPrincipalProvider;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -118,21 +123,22 @@ public final class VOMSService {
 
   protected static void configureEventManager() {
 
-    EventManager.instance();
+    EventManager manager = EventManager.instance();
 
-    DebugEventLogListener.instance();
+    AuditLog.INSTANCE.setPrincipalProvider(new DefaultPrincipalProvider());
+    AuditLog.INSTANCE.setDaoFactory(DAOFactory.instance());
 
-    DefaultNotificationDispatcher.instance();
-
-    GroupMembershipNotificationDispatcher.instance();
-
-    RoleMembershipNotificationDispatcher.instance();
-
-    VOMembershipNotificationDispatcher.instance();
-
-    CertificateRequestsNotificationDispatcher.instance();
-
-    MembershipRemovalNotificationDispatcher.instance();
+    manager.register(AuditLog.INSTANCE);
+    
+    manager.register(DebugEventLogListener.instance());
+    manager.register(UserSuspendedDispatcher.instance());
+    manager.register(DefaultNotificationDispatcher.instance());
+    manager.register(GroupMembershipNotificationDispatcher.instance());
+    manager.register(RoleMembershipNotificationDispatcher.instance());
+    manager.register(VOMembershipNotificationDispatcher.instance());
+    manager.register(CertificateRequestsNotificationDispatcher.instance());
+    manager.register(MembershipRemovalNotificationDispatcher.instance());
+    
   }
 
   protected static void startBackgroundTasks() {
@@ -230,6 +236,13 @@ public final class VOMSService {
     StatusPrinter.printIfErrorsOccured(lc);
   }
 
+  public static void bootstrapPersistence(VOMSConfiguration configuration) {
+
+    Validate.notNull(configuration);
+    HibernateFactory.initialize(configuration.getDatabaseProperties());
+
+  }
+
   public static void start(ServletContext ctxt) {
 
     Thread
@@ -249,6 +262,8 @@ public final class VOMSService {
     }
 
     log.info("VOMS-Admin starting for VO: " + conf.getVOName());
+
+    bootstrapPersistence(conf);
 
     checkDatabaseVersion();
 

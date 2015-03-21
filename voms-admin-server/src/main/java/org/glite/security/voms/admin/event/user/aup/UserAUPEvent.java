@@ -17,17 +17,38 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.user;
+package org.glite.security.voms.admin.event.user.aup;
 
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.event.user.UserEvent;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
-public class SignAUPTaskAssignedEvent extends UserAUPEvent {
+public class UserAUPEvent extends UserEvent {
 
-  public SignAUPTaskAssignedEvent(VOMSUser user, AUP aup) {
+  final AUP aup;
 
-    super(user, aup);
+  public UserAUPEvent(VOMSUser user, AUP aup) {
 
+    super(EventCategory.UserAUPEvent, user);
+    this.aup = aup;
+
+  }
+
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+  
+    super.decorateAuditEvent(e);
+    e.addDataPoint("aupName", aup.getName());
+    e.addDataPoint("aupVersion", aup.getActiveVersion().getVersion());
+    
+  }
+  
+  
+  public AUP getAup() {
+
+    return aup;
   }
 
 }

@@ -17,55 +17,37 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.user;
+package org.glite.security.voms.admin.event.user.membership;
 
-import org.glite.security.voms.admin.event.EventType;
-import org.glite.security.voms.admin.event.GenericEvent;
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.event.user.UserEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
-public abstract class UserMembershipEvent extends GenericEvent {
+public abstract class UserMembershipEvent extends UserEvent {
 
-  VOMSUser user;
+  final VOMSGroup group;
+  final VOMSRole role;
 
-  VOMSGroup group;
-  VOMSRole role;
+  protected UserMembershipEvent(VOMSUser payload, VOMSGroup group, VOMSRole r) {
 
-  public UserMembershipEvent(VOMSUser user) {
-
-    super(EventType.UserMembershipEvent);
-    setUser(user);
-  }
-
-  public VOMSUser getUser() {
-
-    return user;
-  }
-
-  public void setUser(VOMSUser user) {
-
-    this.user = user;
-  }
-
-  public VOMSGroup getGroup() {
-
-    return group;
-  }
-
-  public void setGroup(VOMSGroup group) {
-
+    super(EventCategory.UserMembershipEvent, payload);
     this.group = group;
+    this.role = r;
+
   }
-
-  public VOMSRole getRole() {
-
-    return role;
-  }
-
-  public void setRole(VOMSRole role) {
-
-    this.role = role;
+  
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+  
+    super.decorateAuditEvent(e);
+    e.addDataPoint("groupName", group.getName());
+    
+    if (role != null){
+      e.addDataPoint("roleName", role.getName());
+    }
   }
 
 }

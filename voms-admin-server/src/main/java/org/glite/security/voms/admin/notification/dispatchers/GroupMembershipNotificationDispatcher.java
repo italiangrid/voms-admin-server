@@ -18,55 +18,59 @@
  * 	Andrea Ceccanti (INFN)
  */
 
-package org.glite.security.voms.admin.notification;
+package org.glite.security.voms.admin.notification.dispatchers;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
-import org.glite.security.voms.admin.event.EventMask;
-import org.glite.security.voms.admin.event.EventType;
-import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRequestEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
+import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
+import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
+import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
-import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-public class RoleMembershipNotificationDispatcher extends
+public class GroupMembershipNotificationDispatcher extends
   BaseNotificationDispatcher {
 
-  private static RoleMembershipNotificationDispatcher instance;
+  private static GroupMembershipNotificationDispatcher instance = null;
 
-  public static RoleMembershipNotificationDispatcher instance() {
+  public static GroupMembershipNotificationDispatcher instance() {
 
     if (instance == null)
-      instance = new RoleMembershipNotificationDispatcher();
+      instance = new GroupMembershipNotificationDispatcher();
 
     return instance;
   }
 
-  private RoleMembershipNotificationDispatcher() {
+  private GroupMembershipNotificationDispatcher() {
 
-    super(new EventMask(EventType.RoleMembershipRequestEvent));
+    super(EnumSet.of(EventCategory.GroupMembershipRequestEvent));
   }
 
   public void fire(Event event) {
 
-    RoleMembershipRequestEvent e = (RoleMembershipRequestEvent) event;
+    GroupMembershipRequestEvent e = (GroupMembershipRequestEvent) event;
 
-    RoleMembershipRequest req = e.getRequest();
+    GroupMembershipRequest req = e.getRequest();
 
-    if (e instanceof RoleMembershipSubmittedEvent) {
+    if (e instanceof GroupMembershipSubmittedEvent) {
 
-      RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent) e;
+      GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent) e;
 
-      VOMSContext context = VOMSContext.instance(ee.getRequest().getFQAN());
+      VOMSContext context = VOMSContext
+        .instance(ee.getRequest().getGroupName());
 
       List<String> admins;
 
@@ -79,22 +83,23 @@ public class RoleMembershipNotificationDispatcher extends
           VOMSPermission.getRequestsRWPermissions());
 
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
+
       NotificationService.instance().send(msg);
 
     }
 
-    if (e instanceof RoleMembershipApprovedEvent) {
+    if (e instanceof GroupMembershipApprovedEvent) {
 
-      NotificationService.instance().send(new RequestApproved(req));
-
-    }
-
-    if (e instanceof RoleMembershipRejectedEvent) {
-
-      NotificationService.instance().send(new RequestRejected(req, null));
+      RequestApproved msg = new RequestApproved(req);
+      NotificationService.instance().send(msg);
 
     }
 
+    if (e instanceof GroupMembershipRejectedEvent) {
+
+      RequestRejected msg = new RequestRejected(req, null);
+
+      NotificationService.instance().send(msg);
+    }
   }
-
 }

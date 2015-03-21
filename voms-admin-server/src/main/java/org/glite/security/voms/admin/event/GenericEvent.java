@@ -21,7 +21,7 @@ package org.glite.security.voms.admin.event;
 
 public class GenericEvent extends AbstractEvent {
 
-  public GenericEvent(EventType type) {
+  public GenericEvent(EventCategory type) {
 
     super(type);
 
@@ -30,7 +30,8 @@ public class GenericEvent extends AbstractEvent {
   @Override
   public String toString() {
 
-    return String.format("Event[type:%s, name:%s]", getType(), getName());
+    return String.format("Event[category:%s, name:%s]", getCategory(),
+      getName());
   }
 
 }

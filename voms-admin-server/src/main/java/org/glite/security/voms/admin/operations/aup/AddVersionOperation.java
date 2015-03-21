@@ -23,12 +23,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.aup.AUPVersionCreatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 
 public class AddVersionOperation extends BaseVomsOperation {
 
@@ -52,7 +55,9 @@ public class AddVersionOperation extends BaseVomsOperation {
 
     try {
 
-      dao.addVersion(aup, version, new URL(url));
+      AUPVersion v  = dao.addVersion(aup, version, new URL(url));
+      
+      EventManager.dispatch(new AUPVersionCreatedEvent(aup, v));
 
     } catch (MalformedURLException e) {
 

@@ -172,14 +172,13 @@ public class VOMSAdmin implements Serializable, Cloneable {
     return newInstance;
   }
 
-  /* Service methods */
+  
 
+  @Override
   public String toString() {
 
-    ToStringBuilder builder = new ToStringBuilder(this);
-
-    return builder.append(dn).append(ca.getSubjectString()).toString();
-
+    return "[dn=" + dn + ", ca=" + ca + ", emailAddress="
+      + emailAddress + "]";
   }
 
   public String getEmailAddress() {
