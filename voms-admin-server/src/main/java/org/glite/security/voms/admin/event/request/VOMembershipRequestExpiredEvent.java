@@ -17,30 +17,15 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class RoleMembershipRequestEvent extends GenericEvent {
+public class VOMembershipRequestExpiredEvent extends VOMembershipRequestEvent {
 
-  RoleMembershipRequest request;
+  public VOMembershipRequestExpiredEvent(NewVOMembershipRequest r) {
 
-  public RoleMembershipRequestEvent(RoleMembershipRequest req) {
-
-    super(EventCategory.RoleMembershipRequestEvent);
-    this.request = req;
-  }
-
-  public RoleMembershipRequest getRequest() {
-
-    return request;
-  }
-
-  public void setRequest(RoleMembershipRequest request) {
-
-    this.request = request;
+    super(r);
   }
 
 }

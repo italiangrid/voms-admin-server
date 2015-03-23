@@ -21,9 +21,9 @@ package org.glite.security.voms.admin.event;
 
 import java.util.EnumSet;
 
-public interface EventListener {
+public interface EventListener<T extends Event> {
 
   public EnumSet<EventCategory> getCategoryMask();
 
-  public void fire(Event e);
+  public void fire(T e);
 }

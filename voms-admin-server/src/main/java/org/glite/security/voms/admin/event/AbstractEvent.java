@@ -48,4 +48,11 @@ public class AbstractEvent implements Event {
     return category;
   }
 
+  @Override
+  public String toString() {
+
+    return String.format("%s [category = %s, creationTime = %s]", getName(),
+      getCategory(), getCreationTime());
+  }
+
 }

@@ -21,8 +21,8 @@
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.CertificateRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.CertificateRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestRejectedEvent;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;

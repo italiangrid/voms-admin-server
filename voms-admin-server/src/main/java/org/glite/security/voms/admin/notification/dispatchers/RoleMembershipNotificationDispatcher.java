@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRequestEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipRequestEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationUtil;
@@ -63,13 +63,13 @@ public class RoleMembershipNotificationDispatcher extends
 
     RoleMembershipRequestEvent e = (RoleMembershipRequestEvent) event;
 
-    RoleMembershipRequest req = e.getRequest();
+    RoleMembershipRequest req = e.getPayload();
 
     if (e instanceof RoleMembershipSubmittedEvent) {
 
       RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent) e;
 
-      VOMSContext context = VOMSContext.instance(ee.getRequest().getFQAN());
+      VOMSContext context = VOMSContext.instance(ee.getPayload().getFQAN());
 
       List<String> admins;
 

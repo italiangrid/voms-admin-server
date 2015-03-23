@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserPersonalInformationUpdatedEvent;
 import org.glite.security.voms.admin.operations.BaseUserAdministrativeOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -67,7 +69,9 @@ public class SaveUserPersonalInfoOperation extends
 
     VOMSUserDAO.instance().update(targetUser);
 
-    return null;
+    EventManager.dispatch(new UserPersonalInformationUpdatedEvent(targetUser));
+    
+    return targetUser;
   }
 
   @Override

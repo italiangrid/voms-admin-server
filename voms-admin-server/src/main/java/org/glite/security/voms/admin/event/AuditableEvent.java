@@ -6,7 +6,7 @@ import java.util.Date;
 import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
-public abstract class AuditableEvent extends GenericEvent {
+public abstract class AuditableEvent extends AbstractEvent {
 
   private volatile AuditEvent auditEvent;
 

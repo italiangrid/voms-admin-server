@@ -17,32 +17,33 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
+package org.glite.security.voms.admin.event.request;
 
-package org.glite.security.voms.admin.event.registration;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent {
 
-public class CertificateRequestEvent extends GenericEvent {
+  final String confirmURL;
+  final String cancelURL;
 
-  CertificateRequest request;
+  public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r,
+    String confirmURL, String cancelURL) {
 
-  public CertificateRequestEvent(CertificateRequest req) {
+    super(r);
 
-    super(EventCategory.CertificateRequestEvent);
-    setRequest(req);
+    this.confirmURL = confirmURL;
+    this.cancelURL = cancelURL;
 
   }
 
-  public CertificateRequest getRequest() {
+  public String getConfirmURL() {
 
-    return request;
+    return confirmURL;
   }
 
-  public void setRequest(CertificateRequest request) {
+  public String getCancelURL() {
 
-    this.request = request;
+    return cancelURL;
   }
 
 }

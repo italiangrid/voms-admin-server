@@ -17,30 +17,16 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-public class MembershipRemovalSubmittedEvent extends
-  MembershipRemovalRequestEvent {
+public class RoleMembershipRejectedEvent extends RoleMembershipRequestEvent {
 
-  String managementURL;
-
-  public MembershipRemovalSubmittedEvent(MembershipRemovalRequest req,
-    String managementURL) {
+  public RoleMembershipRejectedEvent(RoleMembershipRequest req) {
 
     super(req);
-    this.managementURL = managementURL;
-  }
-
-  public String getManagementURL() {
-
-    return managementURL;
-  }
-
-  public void setManagementURL(String managementURL) {
-
-    this.managementURL = managementURL;
+    // TODO Auto-generated constructor stub
   }
 
 }

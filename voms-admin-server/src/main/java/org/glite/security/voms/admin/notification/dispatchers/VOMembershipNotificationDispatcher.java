@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestConfirmedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationUtil;
@@ -61,12 +61,12 @@ public class VOMembershipNotificationDispatcher extends
 
   public List<String> resolveEmailAddresses(VOMembershipRequestConfirmedEvent e) {
 
-    if (e.getRequest().getRequesterInfo().getManagerEmail() == null) {
+    if (e.getPayload().getRequesterInfo().getManagerEmail() == null) {
       return NotificationUtil.getAdministratorsEmailList(
         VOMSContext.getVoContext(), VOMSPermission.getRequestsRWPermissions());
     }
 
-    return Arrays.asList(e.getRequest().getRequesterInfo().getManagerEmail());
+    return Arrays.asList(e.getPayload().getRequesterInfo().getManagerEmail());
 
   }
 
@@ -75,7 +75,7 @@ public class VOMembershipNotificationDispatcher extends
     if (e instanceof VOMembershipRequestSubmittedEvent) {
       VOMembershipRequestSubmittedEvent ee = (VOMembershipRequestSubmittedEvent) e;
 
-      String recipient = ee.getRequest().getRequesterInfo().getEmailAddress();
+      String recipient = ee.getPayload().getRequesterInfo().getEmailAddress();
 
       ConfirmRequest msg = new ConfirmRequest(recipient, ee.getConfirmURL(),
         ee.getCancelURL());
@@ -87,7 +87,7 @@ public class VOMembershipNotificationDispatcher extends
 
       List<String> admins = resolveEmailAddresses(ee);
 
-      HandleRequest msg = new HandleRequest(ee.getRequest(), ee.getUrl(),
+      HandleRequest msg = new HandleRequest(ee.getPayload(), ee.getUrl(),
         admins);
 
       NotificationService.instance().send(msg);
@@ -95,14 +95,14 @@ public class VOMembershipNotificationDispatcher extends
     } else if (e instanceof VOMembershipRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
-        ((VOMembershipRequestApprovedEvent) e).getRequest());
+        ((VOMembershipRequestApprovedEvent) e).getPayload());
 
       NotificationService.instance().send(msg);
 
     } else if (e instanceof VOMembershipRequestRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
-        ((VOMembershipRequestRejectedEvent) e).getRequest(), null);
+        ((VOMembershipRequestRejectedEvent) e).getPayload(), null);
       NotificationService.instance().send(msg);
 
     }

@@ -17,16 +17,16 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
-public class VOMembershipRequestApprovedEvent extends VOMembershipRequestEvent {
+public class MembershipRemovalRejectedEvent extends
+  MembershipRemovalRequestEvent {
 
-  public VOMembershipRequestApprovedEvent(NewVOMembershipRequest r) {
+  public MembershipRemovalRejectedEvent(MembershipRemovalRequest req) {
 
-    super(r);
-    // TODO Auto-generated constructor stub
+    super(req);
   }
 
 }

@@ -17,44 +17,16 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class VOMembershipRequestSubmittedEvent extends VOMembershipRequestEvent {
+public class VOMembershipRequestCanceledEvent extends VOMembershipRequestEvent {
 
-  String confirmURL;
-  String cancelURL;
-
-  public VOMembershipRequestSubmittedEvent(NewVOMembershipRequest r,
-    String confirmURL, String cancelURL) {
+  public VOMembershipRequestCanceledEvent(NewVOMembershipRequest r) {
 
     super(r);
-
-    request = r;
-    this.confirmURL = confirmURL;
-    this.cancelURL = cancelURL;
-
-  }
-
-  public String getConfirmURL() {
-
-    return confirmURL;
-  }
-
-  public void setConfirmURL(String confirmURL) {
-
-    this.confirmURL = confirmURL;
-  }
-
-  public String getCancelURL() {
-
-    return cancelURL;
-  }
-
-  public void setCancelURL(String cancelURL) {
-
-    this.cancelURL = cancelURL;
+    // TODO Auto-generated constructor stub
   }
 
 }

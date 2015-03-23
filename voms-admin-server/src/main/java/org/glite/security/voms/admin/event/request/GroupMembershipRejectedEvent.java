@@ -17,29 +17,15 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.GenericEvent;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-public class GroupMembershipRequestEvent extends GenericEvent {
+public class GroupMembershipRejectedEvent extends GroupMembershipRequestEvent {
 
-  GroupMembershipRequest request;
+  public GroupMembershipRejectedEvent(GroupMembershipRequest req) {
 
-  public GroupMembershipRequestEvent(GroupMembershipRequest req) {
-
-    super(EventCategory.GroupMembershipRequestEvent);
-    request = req;
+    super(req);
   }
 
-  public GroupMembershipRequest getRequest() {
-
-    return request;
-  }
-
-  public void setRequest(GroupMembershipRequest request) {
-
-    this.request = request;
-  }
 }

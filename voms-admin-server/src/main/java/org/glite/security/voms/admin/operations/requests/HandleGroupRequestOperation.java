@@ -21,8 +21,8 @@
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.groups.AddMemberOperation;

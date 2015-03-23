@@ -19,8 +19,6 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.attribute.UserAttributeSetEvent;
@@ -34,9 +32,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetUserAttributeOperation extends BaseVomsOperation {
-
-  private static final Logger log = LoggerFactory
-    .getLogger(SetUserAttributeOperation.class);
 
   VOMSUser user;
 

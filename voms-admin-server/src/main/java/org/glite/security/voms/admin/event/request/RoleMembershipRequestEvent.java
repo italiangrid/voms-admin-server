@@ -17,21 +17,27 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event;
+package org.glite.security.voms.admin.event.request;
 
-public class GenericEvent extends AbstractEvent {
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-  public GenericEvent(EventCategory type) {
+public class RoleMembershipRequestEvent extends
+  UserRequestEvent<RoleMembershipRequest> {
 
-    super(type);
+  public RoleMembershipRequestEvent(RoleMembershipRequest req) {
+
+    super(EventCategory.RoleMembershipRequestEvent, req);
 
   }
 
   @Override
-  public String toString() {
-
-    return String.format("Event[category:%s, name:%s]", getCategory(),
-      getName());
+  protected void decorateAuditEvent(AuditEvent e) {
+  
+    super.decorateAuditEvent(e);
+    
+    e.addDataPoint("requestedRoleGroupName", getPayload().getGroupName());
+    e.addDataPoint("requestedRoleName", getPayload().getRoleName());
   }
-
 }

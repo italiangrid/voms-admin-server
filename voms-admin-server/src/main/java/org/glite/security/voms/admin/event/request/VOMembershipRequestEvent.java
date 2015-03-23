@@ -17,17 +17,25 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class MembershipRemovalApprovedEvent extends
-  MembershipRemovalRequestEvent {
+public abstract class VOMembershipRequestEvent extends
+  UserRequestEvent<NewVOMembershipRequest> {
 
-  public MembershipRemovalApprovedEvent(MembershipRemovalRequest req) {
+  public VOMembershipRequestEvent(NewVOMembershipRequest r) {
 
-    super(req);
-    // TODO Auto-generated constructor stub
+    super(EventCategory.VOMembershipRequestEvent, r);
+
   }
 
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+  
+    super.decorateAuditEvent(e);
+    
+  }
 }

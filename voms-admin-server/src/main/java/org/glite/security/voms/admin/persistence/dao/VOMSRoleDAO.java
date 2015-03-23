@@ -382,7 +382,7 @@ public class VOMSRoleDAO {
 
   }
 
-  public void deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
+  public VOMSRoleAttribute deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
 
     VOMSRoleAttribute attr = r.getAttributeByName(g, attrName);
 
@@ -391,6 +391,8 @@ public class VOMSRoleDAO {
         + "' not defined for role '" + r.getName() + "' in group '" + g + "'.");
 
     deleteAttribute(r, attr);
+    
+    return attr;
 
   }
 

@@ -17,16 +17,16 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
+package org.glite.security.voms.admin.event.request;
 
-package org.glite.security.voms.admin.event.registration;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+public class GroupMembershipApprovedEvent extends GroupMembershipRequestEvent {
 
-public class CertificateRequestApprovedEvent extends CertificateRequestEvent {
-
-  public CertificateRequestApprovedEvent(CertificateRequest req) {
+  public GroupMembershipApprovedEvent(GroupMembershipRequest req) {
 
     super(req);
+
   }
 
 }

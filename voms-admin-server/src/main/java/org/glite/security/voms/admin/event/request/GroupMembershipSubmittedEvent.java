@@ -17,19 +17,24 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-public class VOMembershipRequestRejectedEvent extends VOMembershipRequestEvent {
+public class GroupMembershipSubmittedEvent extends GroupMembershipRequestEvent {
 
-  String reason;
+  final String managementURL;
 
-  public VOMembershipRequestRejectedEvent(NewVOMembershipRequest r,
-    String reason) {
+  public GroupMembershipSubmittedEvent(GroupMembershipRequest req, String url) {
 
-    super(r);
-    this.reason = reason;
+    super(req);
+    this.managementURL = url;
+
+  }
+
+  public String getManagementURL() {
+
+    return managementURL;
   }
 
 }

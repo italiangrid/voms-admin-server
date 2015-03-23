@@ -22,11 +22,11 @@ package org.glite.security.voms.admin.notification.dispatchers;
 
 import java.util.EnumSet;
 
-import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.registration.CertificateRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.CertificateRequestRejectedEvent;
-import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
@@ -34,7 +34,7 @@ import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 
 public class CertificateRequestsNotificationDispatcher extends
-  BaseNotificationDispatcher {
+  BaseNotificationDispatcher<CertificateRequestEvent> {
 
   private static volatile CertificateRequestsNotificationDispatcher INSTANCE;
 
@@ -51,13 +51,13 @@ public class CertificateRequestsNotificationDispatcher extends
     super(EnumSet.of(EventCategory.CertificateRequestEvent));
   }
 
-  public void fire(Event e) {
+  public void fire(CertificateRequestEvent e) {
 
     if (e instanceof CertificateRequestSubmittedEvent) {
 
       CertificateRequestSubmittedEvent ee = (CertificateRequestSubmittedEvent) e;
 
-      HandleRequest msg = new HandleRequest(ee.getRequest(),
+      HandleRequest msg = new HandleRequest(ee.getPayload(),
         ee.getManagementURL());
 
       NotificationService.instance().send(msg);
@@ -66,13 +66,14 @@ public class CertificateRequestsNotificationDispatcher extends
     if (e instanceof CertificateRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
-        ((CertificateRequestApprovedEvent) e).getRequest());
+        ((CertificateRequestApprovedEvent) e).getPayload());
+      
       NotificationService.instance().send(msg);
     }
 
     if (e instanceof CertificateRequestRejectedEvent) {
       RequestRejected msg = new RequestRejected(
-        ((CertificateRequestRejectedEvent) e).getRequest(), null);
+        ((CertificateRequestRejectedEvent) e).getPayload(), null);
       NotificationService.instance().send(msg);
     }
 

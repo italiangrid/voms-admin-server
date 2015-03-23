@@ -17,31 +17,25 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.GenericEvent;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
-public class MembershipRemovalRequestEvent extends GenericEvent {
+public class MembershipRemovalSubmittedEvent extends
+  MembershipRemovalRequestEvent {
 
-  MembershipRemovalRequest request;
+  final String managementURL;
 
-  public MembershipRemovalRequestEvent(MembershipRemovalRequest req) {
+  public MembershipRemovalSubmittedEvent(MembershipRemovalRequest req,
+    String managementURL) {
 
-    super(EventCategory.MembershipRemovalRequestEvent);
-    this.request = req;
-
+    super(req);
+    this.managementURL = managementURL;
   }
 
-  public MembershipRemovalRequest getRequest() {
+  public String getManagementURL() {
 
-    return request;
-  }
-
-  public void setRequest(MembershipRemovalRequest request) {
-
-    this.request = request;
+    return managementURL;
   }
 
 }

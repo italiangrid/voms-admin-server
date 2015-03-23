@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
-import org.glite.security.voms.admin.event.registration.GroupMembershipRequestEvent;
-import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipRequestEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.NotificationUtil;
@@ -63,14 +63,14 @@ public class GroupMembershipNotificationDispatcher extends
 
     GroupMembershipRequestEvent e = (GroupMembershipRequestEvent) event;
 
-    GroupMembershipRequest req = e.getRequest();
+    GroupMembershipRequest req = e.getPayload();
 
     if (e instanceof GroupMembershipSubmittedEvent) {
 
       GroupMembershipSubmittedEvent ee = (GroupMembershipSubmittedEvent) e;
 
       VOMSContext context = VOMSContext
-        .instance(ee.getRequest().getGroupName());
+        .instance(ee.getPayload().getGroupName());
 
       List<String> admins;
 

@@ -17,16 +17,24 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
+package org.glite.security.voms.admin.event.request;
 
-import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
-public class GroupMembershipApprovedEvent extends GroupMembershipRequestEvent {
+public class VOMembershipRequestConfirmedEvent extends VOMembershipRequestEvent {
 
-  public GroupMembershipApprovedEvent(GroupMembershipRequest req) {
+  String url;
 
-    super(req);
-    // TODO Auto-generated constructor stub
+  public VOMembershipRequestConfirmedEvent(NewVOMembershipRequest r,
+    String managementURL) {
+
+    super(r);
+    url = managementURL;
+  }
+
+  public String getUrl() {
+
+    return url;
   }
 
 }

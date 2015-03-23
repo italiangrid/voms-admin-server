@@ -24,10 +24,10 @@ import java.util.EnumSet;
 
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalApprovedEvent;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalRejectedEvent;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalRequestEvent;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalSubmittedEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalApprovedEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalRejectedEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalRequestEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
 import org.glite.security.voms.admin.notification.NotificationService;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
@@ -58,7 +58,7 @@ public class MembershipRemovalNotificationDispatcher extends
   public void fire(Event e) {
 
     MembershipRemovalRequestEvent event = (MembershipRemovalRequestEvent) e;
-    MembershipRemovalRequest req = event.getRequest();
+    MembershipRemovalRequest req = event.getPayload();
 
     if (event instanceof MembershipRemovalSubmittedEvent) {
 
@@ -69,13 +69,13 @@ public class MembershipRemovalNotificationDispatcher extends
     } else if (event instanceof MembershipRemovalApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
-        ((MembershipRemovalApprovedEvent) event).getRequest());
+        ((MembershipRemovalApprovedEvent) event).getPayload());
       NotificationService.instance().send(msg);
 
     } else if (event instanceof MembershipRemovalRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
-        ((MembershipRemovalRejectedEvent) event).getRequest(), null);
+        ((MembershipRemovalRejectedEvent) event).getPayload(), null);
       NotificationService.instance().send(msg);
     }
 

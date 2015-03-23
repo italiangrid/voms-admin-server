@@ -19,11 +19,14 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.group.GroupAttributeDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 
 public class DeleteGroupAttributeOperation extends BaseAttributeRWOperation {
 
@@ -37,9 +40,13 @@ public class DeleteGroupAttributeOperation extends BaseAttributeRWOperation {
 
   protected Object doExecute() {
 
-    VOMSGroupDAO.instance()
+    VOMSGroupAttribute ga = VOMSGroupDAO.instance()
       .deleteAttribute(__context.getGroup(), attributeName);
-    return null;
+    
+    EventManager.dispatch(new GroupAttributeDeletedEvent(__context.getGroup(), 
+      ga));
+    
+    return ga;
   }
 
   public static DeleteGroupAttributeOperation instance(VOMSGroup g, String aName) {

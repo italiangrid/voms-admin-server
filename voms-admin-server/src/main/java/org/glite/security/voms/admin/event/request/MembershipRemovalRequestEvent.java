@@ -17,30 +17,26 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
+package org.glite.security.voms.admin.event.request;
 
-package org.glite.security.voms.admin.event.registration;
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
-import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
+public class MembershipRemovalRequestEvent extends
+  UserRequestEvent<MembershipRemovalRequest> {
 
-public class CertificateRequestSubmittedEvent extends CertificateRequestEvent {
+  public MembershipRemovalRequestEvent(MembershipRemovalRequest req) {
 
-  private String managementURL;
+    super(EventCategory.MembershipRemovalRequestEvent, req);
 
-  public CertificateRequestSubmittedEvent(CertificateRequest req,
-    String managementURL) {
-
-    super(req);
-    setManagementURL(managementURL);
   }
 
-  public String getManagementURL() {
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
 
-    return managementURL;
-  }
-
-  public void setManagementURL(String managementURL) {
-
-    this.managementURL = managementURL;
+    super.decorateAuditEvent(e);
+    e.addDataPoint("requestReason", getPayload().getReason());
   }
 
 }

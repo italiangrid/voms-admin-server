@@ -34,7 +34,8 @@ public enum EventCategory {
   MembershipRemovalRequestEvent,
   CertificateRequestEvent,
   VOLifecycleEvent;
-  
-  public static EnumSet<EventCategory> ALL_CATEGORIES = EnumSet.allOf(EventCategory.class);
+
+  public static final EnumSet<EventCategory> ALL_CATEGORIES = EnumSet
+    .allOf(EventCategory.class);
 
 }

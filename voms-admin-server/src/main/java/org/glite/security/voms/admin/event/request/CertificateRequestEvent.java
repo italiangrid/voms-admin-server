@@ -17,15 +17,29 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+package org.glite.security.voms.admin.event.request;
 
-public class VOMembershipRequestExpiredEvent extends VOMembershipRequestEvent {
+import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 
-  public VOMembershipRequestExpiredEvent(NewVOMembershipRequest r) {
+public class CertificateRequestEvent extends
+  UserRequestEvent<CertificateRequest> {
 
-    super(r);
+  public CertificateRequestEvent(CertificateRequest req) {
+
+    super(EventCategory.CertificateRequestEvent, req);
+
   }
 
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+
+    super.decorateAuditEvent(e);
+    
+    e.addDataPoint("certificateSubject", getPayload().getCertificateSubject());
+    e.addDataPoint("certificateIssuer", getPayload().getCertificateIssuer());
+
+  }
 }

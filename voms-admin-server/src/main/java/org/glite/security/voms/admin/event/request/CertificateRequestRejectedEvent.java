@@ -17,31 +17,17 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.event.registration;
 
-import org.glite.security.voms.admin.event.EventCategory;
-import org.glite.security.voms.admin.event.GenericEvent;
-import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+package org.glite.security.voms.admin.event.request;
 
-public abstract class VOMembershipRequestEvent extends GenericEvent {
+import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 
-  NewVOMembershipRequest request;
+public class CertificateRequestRejectedEvent extends CertificateRequestEvent {
 
-  public VOMembershipRequestEvent(NewVOMembershipRequest r) {
+  public CertificateRequestRejectedEvent(CertificateRequest req) {
 
-    super(EventCategory.VOMembershipRequestEvent);
-    request = r;
+    super(req);
 
-  }
-
-  public NewVOMembershipRequest getRequest() {
-
-    return request;
-  }
-
-  public void setRequest(NewVOMembershipRequest request) {
-
-    this.request = request;
   }
 
 }

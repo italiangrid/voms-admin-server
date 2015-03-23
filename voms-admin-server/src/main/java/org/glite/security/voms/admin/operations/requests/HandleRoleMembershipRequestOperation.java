@@ -21,8 +21,8 @@
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
