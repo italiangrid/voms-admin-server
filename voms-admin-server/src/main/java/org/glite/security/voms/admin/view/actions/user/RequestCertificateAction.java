@@ -97,7 +97,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
       }
 
-    } else if (subject != null && !"".equals(subject)) {
+    } else if (subject != null && !"".equals(subject) && !caSubject.equals("-1")) {
 
       if (dao.findByDNCA(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
