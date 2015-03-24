@@ -1,0 +1,33 @@
+Dear $recipient,
+
+this is a reminder from the VOMS-Admin registration
+service for VO $voName.
+
+You are requested to sign the VO $voName Acceptable Usage Policy
+(AUP) in order to continue to be part of the  $voName VO.
+
+The AUP must be signed before the following date:
+
+$expirationDate
+
+After this date your membership will be _suspended_
+and you will NOT be able to obtain VOMS credentials
+for the $voName VO.
+
+Note however that you can restore your membership at 
+*any* time by simply pointing your browser to the 
+URL given below an accepting the VO AUP.
+
+To sign the AUP, point your browser to the following 
+URL:
+
+$signAUPURL
+
+Be sure that a trusted and valid certificate linked
+to your VO membership in installed in the browser
+that you use to access the sign AUP web page,
+or VOMS Admin will not be able to authenticate you 
+properly.
+
+Kind regards,
+the VOMS-Admin registration service for VO $voName

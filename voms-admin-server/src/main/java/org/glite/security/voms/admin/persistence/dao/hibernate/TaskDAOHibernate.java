@@ -38,6 +38,8 @@ import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Restrictions;
 
 public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
@@ -125,6 +127,17 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
     return findByCriteria(Restrictions.ne("status", TaskStatus.COMPLETED),
       Restrictions.ne("status", TaskStatus.EXPIRED));
 
+  }
+
+  @Override
+  public List<SignAUPTask> findActiveSingAUPTasks() {
+
+    Criteria crit = getSession()
+      .createCriteria(SignAUPTask.class);
+    
+    crit.add(Restrictions.eq("status", TaskStatus.CREATED));
+    
+    return crit.list();
   }
 
 }

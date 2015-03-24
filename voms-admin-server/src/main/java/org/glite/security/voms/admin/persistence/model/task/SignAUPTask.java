@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.persistence.model.task;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -44,9 +45,11 @@ public class SignAUPTask extends Task implements Serializable {
   @JoinColumn(name = "aup_id", nullable = false)
   AUP aup;
 
+  @Column(name = "last_notification_time")
+  Date lastNotificationTime;
+
   public SignAUPTask() {
 
-    // TODO Auto-generated constructor stub
   }
 
   public SignAUPTask(TaskType tt, AUP a, Date expiryDate) {
@@ -81,24 +84,29 @@ public class SignAUPTask extends Task implements Serializable {
   @Override
   public String toString() {
 
-    return String.format(
-      "SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s]", getId(),
-      getStatus(), getAup(), getUser().toString(), getExpiryDate());
+    return String
+      .format(
+        "SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s, lastNotificationTime: %s]",
+        getId(), getStatus(), getAup(), getUser().toString(), getExpiryDate(),
+        lastNotificationTime);
 
   }
 
   @Override
   public boolean equals(Object other) {
 
-    if (this == other)
+    if (this == other){
       return true;
-
-    if (!(other instanceof Task))
+    }
+    
+    if (!(other instanceof Task)){
       return false;
-
-    if (other == null)
+    }
+    
+    if (other == null){
       return false;
-
+    }
+    
     SignAUPTask that = (SignAUPTask) other;
 
     EqualsBuilder builder = new EqualsBuilder();
@@ -113,6 +121,16 @@ public class SignAUPTask extends Task implements Serializable {
     HashCodeBuilder builder = new HashCodeBuilder(17, 57).appendSuper(
       super.hashCode()).append(aup);
     return builder.toHashCode();
+  }
+
+  public Date getLastNotificationTime() {
+
+    return lastNotificationTime;
+  }
+
+  public void setLastNotificationTime(Date lastNotificationTime) {
+
+    this.lastNotificationTime = lastNotificationTime;
   }
 
 }

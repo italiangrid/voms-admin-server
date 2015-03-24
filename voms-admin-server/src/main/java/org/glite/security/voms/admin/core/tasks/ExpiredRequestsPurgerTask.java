@@ -75,10 +75,12 @@ public class ExpiredRequestsPurgerTask implements Runnable,
         .info(
           "Removing unconfirmed request '{}' from database since the confirmation period has expired.",
           req);
+      
       dao.makeTransient(req);
 
-      if (warnUsers)
+      if (warnUsers){
         EventManager.dispatch(new VOMembershipRequestExpiredEvent(req));
+      }
 
     }
 
