@@ -125,20 +125,24 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
 
   }
 
-  public void addVersion(AUP aup, String version, URL url) {
+  public AUPVersion addVersion(AUP aup, String version, URL url) {
 
     AUPVersion v = newAUPVersion(aup, version);
 
     v.setUrl(url.toString());
     aup.getVersions().add(v);
+    
+    return v;
 
   }
 
-  public void addVersion(AUP aup, String version, String text) {
+  public AUPVersion addVersion(AUP aup, String version, String text) {
 
     AUPVersion v = newAUPVersion(aup, version);
     v.setText(text);
     aup.getVersions().add(v);
+    
+    return v;
   }
 
   public AUPVersion removeVersion(AUP aup, String version) {
@@ -192,7 +196,7 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
     return createAUP(AUP.VO_AUP_NAME, description, version, text);
   }
 
-  public void setActiveVersion(AUP aup, String version) {
+  public AUPVersion setActiveVersion(AUP aup, String version) {
 
     if (aup == null)
       throw new NullArgumentException("aup cannot be null!");
@@ -207,6 +211,8 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
         + "' not defined for AUP '" + aup.getName() + "'.");
 
     aup.setActiveVersion(v);
+    
+    return v;
   }
 
   private void dropAcceptanceRecordsForAUPVersion(AUPVersion aupVersion) {

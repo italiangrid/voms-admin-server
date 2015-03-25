@@ -338,4 +338,9 @@ public class CurrentAdmin {
     return admin.isUnauthenticated();
 
   }
+
+  public String getName() {
+
+    return String.format("(%s,%s)", getRealSubject(), getRealIssuer());
+  }
 }

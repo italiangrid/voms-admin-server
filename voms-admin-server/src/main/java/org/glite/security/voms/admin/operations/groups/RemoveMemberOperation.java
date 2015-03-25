@@ -22,6 +22,8 @@ package org.glite.security.voms.admin.operations.groups;
 import java.util.Iterator;
 import java.util.List;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.membership.UserRemovedFromGroupEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -61,6 +63,9 @@ public class RemoveMemberOperation extends BaseVomsOperation {
     }
 
     VOMSUserDAO.instance().removeFromGroup(user, group);
+
+    EventManager.dispatch(new UserRemovedFromGroupEvent(user, group));
+
     return null;
   }
 

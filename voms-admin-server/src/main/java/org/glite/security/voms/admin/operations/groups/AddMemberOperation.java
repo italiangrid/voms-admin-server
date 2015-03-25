@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.membership.UserAddedToGroupEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -53,7 +55,8 @@ public class AddMemberOperation extends BaseVomsOperation {
 
     VOMSUserDAO.instance().addToGroup(user, group);
 
-    return null;
+    EventManager.dispatch(new UserAddedToGroupEvent(user, group));
+    return user;
   }
 
   public static AddMemberOperation instance(VOMSUser u, VOMSGroup g) {

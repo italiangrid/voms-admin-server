@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLUpdatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.ACL;
@@ -63,8 +65,10 @@ public class SetACLOperation extends BaseVomsOperation {
 
     // Set the new permission set
     theACL.getPermissions().putAll(permissions);
+    
+    EventManager.dispatch(new ACLUpdatedEvent(theACL));
 
-    return null;
+    return theACL;
   }
 
   @Override

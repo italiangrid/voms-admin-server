@@ -20,6 +20,8 @@
 
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserRestoredEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
@@ -52,6 +54,10 @@ public class ConditionalRestoreUserOperation extends RestoreUserOperation {
       userHasBeenRestored = true;
     }
 
+    if (userHasBeenRestored){
+      EventManager.dispatch(new UserRestoredEvent(user));
+    }
+    
     return userHasBeenRestored;
   }
 

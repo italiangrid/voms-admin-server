@@ -19,12 +19,15 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.group.GroupAttributeSetEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetGroupAttributeOperation extends BaseAttributeRWOperation {
@@ -46,8 +49,12 @@ public class SetGroupAttributeOperation extends BaseAttributeRWOperation {
 
   public Object doExecute() {
 
-    return VOMSGroupDAO.instance().setAttribute(__context.getGroup(),
-      attributeName, attributeValue);
+    VOMSGroupAttribute ga = VOMSGroupDAO.instance().setAttribute(
+      __context.getGroup(), attributeName, attributeValue);
+
+    EventManager.dispatch(new GroupAttributeSetEvent(__context.getGroup(), ga));
+
+    return ga;
   }
 
   public static VOMSOperation instance(String groupName, AttributeValue value) {

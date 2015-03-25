@@ -30,7 +30,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;

@@ -20,10 +20,13 @@
 package org.glite.security.voms.admin.operations.attributes;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.attribute.AttributeDescriptionCreatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class CreateAttributeDescriptionOperation extends BaseVomsOperation {
 
@@ -44,8 +47,12 @@ public class CreateAttributeDescriptionOperation extends BaseVomsOperation {
     if (unique == null)
       unique = new Boolean(false);
 
-    return VOMSAttributeDAO.instance().createAttributeDescription(name,
+    VOMSAttributeDescription attribute = VOMSAttributeDAO.instance()
+      .createAttributeDescription(name,
       description, unique.booleanValue());
+    
+    EventManager.dispatch(new AttributeDescriptionCreatedEvent(attribute));
+    return attribute;
   }
 
   protected void setupPermissions() {

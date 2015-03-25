@@ -41,12 +41,13 @@ public class VOMSRoleDAO {
     HibernateFactory.beginTransaction();
   }
 
-  public List findAll() {
+  public List<VOMSRole> findAll() {
 
     return getAll();
   }
 
-  public List getAll() {
+  @SuppressWarnings("unchecked")
+  public List<VOMSRole> getAll() {
 
     String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
@@ -381,7 +382,7 @@ public class VOMSRoleDAO {
 
   }
 
-  public void deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
+  public VOMSRoleAttribute deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
 
     VOMSRoleAttribute attr = r.getAttributeByName(g, attrName);
 
@@ -390,6 +391,8 @@ public class VOMSRoleDAO {
         + "' not defined for role '" + r.getName() + "' in group '" + g + "'.");
 
     deleteAttribute(r, attr);
+    
+    return attr;
 
   }
 

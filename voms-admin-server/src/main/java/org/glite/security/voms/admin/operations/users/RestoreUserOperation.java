@@ -93,7 +93,8 @@ public class RestoreUserOperation extends BaseVomsOperation {
       EventManager.dispatch(new UserRestoredEvent(user));
 
     }
-    return null;
+    
+    return user;
   }
 
   @Override

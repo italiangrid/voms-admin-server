@@ -22,6 +22,8 @@ package org.glite.security.voms.admin.operations.roles;
 import java.util.Iterator;
 import java.util.List;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.role.RoleCreatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -58,7 +60,9 @@ public class CreateRoleOperation extends BaseVomsOperation {
     setupACLs(r);
 
     HibernateFactory.getSession().save(r);
-
+    
+    EventManager.dispatch(new RoleCreatedEvent(r));
+    
     return r;
   }
 

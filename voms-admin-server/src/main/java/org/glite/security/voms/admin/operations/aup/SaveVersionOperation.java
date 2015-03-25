@@ -20,6 +20,8 @@
 
 package org.glite.security.voms.admin.operations.aup;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.aup.AUPVersionUpdatedEvent;
 import org.glite.security.voms.admin.operations.GenericSaveOrUpdateOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -40,6 +42,8 @@ public class SaveVersionOperation extends
   protected Object doExecute() {
 
     model.setUrl(newURL);
+    EventManager.dispatch(new AUPVersionUpdatedEvent(model.getAup(), model));
+
     return super.doExecute();
   }
 

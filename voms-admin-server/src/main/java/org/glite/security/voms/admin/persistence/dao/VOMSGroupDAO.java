@@ -306,15 +306,12 @@ public class VOMSGroupDAO {
 
     VOMSGroup g = findByName("/" + voName);
 
-    if (g == null)
-      throw new VOMSInconsistentDatabaseException(
-        "VO root group undefined in database!");
-
     return g;
 
   }
 
-  public List getChildren(VOMSGroup parentGroup) {
+  @SuppressWarnings("unchecked")
+  public List<VOMSGroup> getChildren(VOMSGroup parentGroup) {
 
     String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
     Query q = HibernateFactory.getSession().createQuery(query);
@@ -546,7 +543,7 @@ public class VOMSGroupDAO {
 
   }
 
-  public void deleteAttribute(VOMSGroup g, String attrName) {
+  public VOMSGroupAttribute deleteAttribute(VOMSGroup g, String attrName) {
 
     VOMSGroupAttribute ga = g.getAttributeByName(attrName);
 
@@ -555,6 +552,8 @@ public class VOMSGroupDAO {
         + "' not defined for group '" + g.getName() + "'!");
 
     deleteAttribute(g, ga);
+    
+    return ga;
 
   }
 

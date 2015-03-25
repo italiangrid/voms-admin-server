@@ -45,6 +45,11 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.auditing.AuditLogHelper;
+import org.glite.security.voms.admin.event.vo.acl.ACLUpdatedEvent;
+import org.glite.security.voms.admin.event.vo.admin.AdminCreatedEvent;
+import org.glite.security.voms.admin.event.vo.admin.AdminDeletedEvent;
+import org.glite.security.voms.admin.operations.CurrentAdminPrincipal;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.DBUtil;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
@@ -54,6 +59,7 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -103,7 +109,12 @@ public class SchemaDeployer {
 
   SessionFactory sf;
 
-  protected Dialect dialect;
+  Configuration hibernateConfiguration = null;
+
+  Dialect dialect;
+
+  AuditLogHelper auditLogHelper = new AuditLogHelper(
+    CurrentAdminPrincipal.LOCAL_DB_PRINCIPAL);
 
   public SchemaDeployer(String[] args) {
 
@@ -202,6 +213,9 @@ public class SchemaDeployer {
 
     System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
     VOMSConfiguration.load(null);
+
+    hibernateConfiguration = loadHibernateConfiguration();
+    HibernateFactory.initialize(hibernateConfiguration);
 
     if (command.equals("deploy"))
       doDeploy();
@@ -593,8 +607,6 @@ public class SchemaDeployer {
 
     checkVoExistence();
 
-    Configuration hibernateConfig = loadHibernateConfiguration();
-
     int existingDB = checkDatabaseExistence();
 
     if (existingDB == -1) {
@@ -615,8 +627,8 @@ public class SchemaDeployer {
     if (existingDB == 3) {
       boolean upgradePerformed = false;
 
-      upgradePerformed = doUpgrade2_5(hibernateConfig);
-      upgradePerformed = doUpgradeTo3_2(hibernateConfig);
+      upgradePerformed = doUpgrade2_5(hibernateConfiguration);
+      upgradePerformed = doUpgradeTo3_2(hibernateConfiguration);
 
       if (upgradePerformed)
         log.info("The upgrade procedure has changed the VOMS database.");
@@ -643,9 +655,16 @@ public class SchemaDeployer {
         return;
       }
 
-      ACLDAO.instance().deletePermissionsForAdmin(a);
+      List<ACL> affectedACLs = ACLDAO.instance().deletePermissionsForAdmin(a);
+      
       VOMSAdminDAO.instance().delete(a);
+      
+      for (ACL acl : affectedACLs){
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, acl);
+      }
 
+      auditLogHelper.saveAuditEvent(AdminDeletedEvent.class, a);
+      
       HibernateFactory.commitTransaction();
 
       log.info("Administrator '{},{}' removed", new String[] { a.getDn(),
@@ -684,30 +703,38 @@ public class SchemaDeployer {
           + "' not found. It will be created...");
         // Admin does not exist, create it!
         a = VOMSAdminDAO.instance().create(adminDN, adminCA, adminEmailAddress);
+        auditLogHelper.saveAuditEvent(AdminCreatedEvent.class, a);
+
       }
 
-      Iterator i = VOMSGroupDAO.instance().findAll().iterator();
+      Iterator<VOMSGroup> i = VOMSGroupDAO.instance().findAll().iterator();
 
       while (i.hasNext()) {
 
-        VOMSGroup g = (VOMSGroup) i.next();
+        VOMSGroup g = i.next();
         g.getACL().setPermissions(a, VOMSPermission.getAllPermissions());
         log
           .info("Adding ALL permissions on '{}' for admin '{},{}'",
             new String[] { g.toString(), a.getDn(),
               a.getCa().getSubjectString() });
 
-        Iterator rolesIter = VOMSRoleDAO.instance().findAll().iterator();
+        Iterator<VOMSRole> rolesIter = VOMSRoleDAO.instance().findAll()
+          .iterator();
+
         while (rolesIter.hasNext()) {
 
-          VOMSRole r = (VOMSRole) rolesIter.next();
+          VOMSRole r = rolesIter.next();
           r.getACL(g).setPermissions(a, VOMSPermission.getAllPermissions());
           log.info("Adding ALL permissions on role '{}/{}' for admin '{},{}'",
             new String[] { g.toString(), r.toString(), a.getDn(),
               a.getCa().getSubjectString() });
+
           HibernateFactory.getSession().save(r);
+          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
         }
+
         HibernateFactory.getSession().save(g);
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
 
       }
 
@@ -764,6 +791,8 @@ public class SchemaDeployer {
 
     dialect = Dialect.getDialect(cfg.getProperties());
 
+    cfg.configure();
+
     return cfg;
   }
 
@@ -772,7 +801,6 @@ public class SchemaDeployer {
     checkVoExistence();
 
     log.info("Undeploying voms database...");
-    Configuration hibernateConfig = loadHibernateConfiguration();
 
     int existingDB = checkDatabaseExistence();
 
@@ -798,7 +826,7 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport export = new SchemaExport(hibernateConfig);
+    SchemaExport export = new SchemaExport(hibernateConfiguration);
 
     export.drop(false, true);
 
@@ -860,10 +888,14 @@ public class SchemaDeployer {
               new String[] { g.toString(), r.toString() });
 
           HibernateFactory.getSession().save(r);
+          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, 
+            r.getACL(g));
 
         }
 
         HibernateFactory.getSession().save(g);
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, 
+          g.getACL());
       }
 
       HibernateFactory.commitTransaction();
@@ -882,8 +914,6 @@ public class SchemaDeployer {
 
     checkVoExistence();
 
-    Configuration hibernateConfig = loadHibernateConfiguration();
-
     int existingDb = checkDatabaseExistence();
 
     if (existingDb > 0) {
@@ -894,7 +924,7 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport exporter = new SchemaExport(hibernateConfig);
+    SchemaExport exporter = new SchemaExport(hibernateConfiguration);
 
     exporter.execute(true, true, false, true);
 
@@ -1005,11 +1035,11 @@ public class SchemaDeployer {
 
       vo = line.getOptionValue("vo");
 
-      if (line.hasOption("hb-config"))
-        hibernateConfigFile = line.getOptionValue("hb-config");
+      if (line.hasOption("config"))
+        hibernateConfigFile = line.getOptionValue("config");
 
-      if (line.hasOption("hb-properties"))
-        hibernatePropertiesFile = line.getOptionValue("hb-properties");
+      if (line.hasOption("properties"))
+        hibernatePropertiesFile = line.getOptionValue("properties");
 
       if (line.hasOption("dn"))
         adminDN = line.getOptionValue("dn");

@@ -144,6 +144,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable>
     return crit.list();
   }
 
+  @SuppressWarnings("unchecked")
   protected T findByCriteriaUniqueResult(Criterion... criterion) {
 
     Criteria crit = getSession().createCriteria(getPersistentClass());
