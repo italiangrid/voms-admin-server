@@ -51,7 +51,7 @@ public class CreateAttributeDescriptionOperation extends BaseVomsOperation {
       .createAttributeDescription(name,
       description, unique.booleanValue());
     
-    EventManager.dispatch(new AttributeDescriptionCreatedEvent(attribute));
+    EventManager.instance().dispatch(new AttributeDescriptionCreatedEvent(attribute));
     return attribute;
   }
 

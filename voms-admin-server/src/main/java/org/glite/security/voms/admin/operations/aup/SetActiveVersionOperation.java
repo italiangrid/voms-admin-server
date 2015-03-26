@@ -48,7 +48,7 @@ public class SetActiveVersionOperation extends BaseVomsOperation {
 
     dao.setActiveVersion(aup, version);
     
-    EventManager.dispatch(new AUPVersionSetActiveEvent(aup, 
+    EventManager.instance().dispatch(new AUPVersionSetActiveEvent(aup, 
       aup.getActiveVersion()));
     
     return aup;

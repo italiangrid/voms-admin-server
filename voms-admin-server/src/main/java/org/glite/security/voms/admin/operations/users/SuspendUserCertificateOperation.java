@@ -79,7 +79,7 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
 
     certificate.suspend(reason);
     
-    EventManager.dispatch(new UserCertificateSuspended(user, certificate));
+    EventManager.instance().dispatch(new UserCertificateSuspended(user, certificate));
     
     return certificate;
   }

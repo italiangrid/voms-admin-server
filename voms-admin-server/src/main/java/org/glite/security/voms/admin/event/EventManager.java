@@ -25,7 +25,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventManager {
+public class EventManager implements EventDispatcher {
 
   public static final Logger log = LoggerFactory.getLogger(EventManager.class);
 
@@ -59,7 +59,7 @@ public class EventManager {
     return listeners;
   }
 
-  public synchronized void fireEvent(Event e) {
+  public synchronized void dispatch(Event e) {
 
     try {
       for (EventListener l : getListeners()) {
@@ -73,14 +73,6 @@ public class EventManager {
 
       log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
     }
-  }
 
-  public synchronized static void dispatch(Event e) {
-
-    if (instance == null)
-      log
-        .debug("Event manager has not been initialized! The event will be lost...");
-    else
-      instance.fireEvent(e);
   }
 }

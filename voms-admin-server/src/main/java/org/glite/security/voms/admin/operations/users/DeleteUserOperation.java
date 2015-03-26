@@ -51,7 +51,7 @@ public class DeleteUserOperation extends BaseVoRWOperation {
       VOMSUserDAO.instance().delete(usr);
     }
     
-    EventManager.dispatch(new UserDeletedEvent(usr));
+    EventManager.instance().dispatch(new UserDeletedEvent(usr));
     return usr;
   }
 

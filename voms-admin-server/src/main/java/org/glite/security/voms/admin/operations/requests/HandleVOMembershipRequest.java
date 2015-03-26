@@ -89,7 +89,7 @@ public class HandleVOMembershipRequest extends
 
     }
 
-    EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+    EventManager.instance().dispatch(new VOMembershipRequestApprovedEvent(request));
 
   }
 
@@ -98,7 +98,7 @@ public class HandleVOMembershipRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestRejectedEvent(request,
       REJECT_MOTIVATION));
 
     DAOFactory.instance().getRequestDAO().makeTransient(request);

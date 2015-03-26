@@ -44,7 +44,7 @@ public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
     VOMSRoleAttribute ra = VOMSRoleDAO.instance().setAttribute(
       __context.getRole(), __context.getGroup(), attributeName, attributeValue);
 
-    EventManager.dispatch(new RoleAttributeSetEvent(__context.getRole(), ra));
+    EventManager.instance().dispatch(new RoleAttributeSetEvent(__context.getRole(), ra));
 
     return ra;
   }

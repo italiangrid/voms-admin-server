@@ -42,7 +42,7 @@ public class SaveVersionOperation extends
   protected Object doExecute() {
 
     model.setUrl(newURL);
-    EventManager.dispatch(new AUPVersionUpdatedEvent(model.getAup(), model));
+    EventManager.instance().dispatch(new AUPVersionUpdatedEvent(model.getAup(), model));
 
     return super.doExecute();
   }

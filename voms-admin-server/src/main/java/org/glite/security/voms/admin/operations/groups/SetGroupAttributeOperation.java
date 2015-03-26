@@ -52,7 +52,7 @@ public class SetGroupAttributeOperation extends BaseAttributeRWOperation {
     VOMSGroupAttribute ga = VOMSGroupDAO.instance().setAttribute(
       __context.getGroup(), attributeName, attributeValue);
 
-    EventManager.dispatch(new GroupAttributeSetEvent(__context.getGroup(), ga));
+    EventManager.instance().dispatch(new GroupAttributeSetEvent(__context.getGroup(), ga));
 
     return ga;
   }

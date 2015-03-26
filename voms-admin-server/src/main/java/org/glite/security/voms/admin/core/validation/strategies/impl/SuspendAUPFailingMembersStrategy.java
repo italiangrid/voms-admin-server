@@ -73,7 +73,8 @@ public class SuspendAUPFailingMembersStrategy implements
       u.assignTask(t);
       log.info("Sign aup task assigned to user '{}'. Will expire on {}", u,
         t.getExpiryDate());
-      EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup,t));
+      
+      EventManager.instance().dispatch(new SignAUPTaskAssignedEvent(u, aup,t));
 
     } else {
 

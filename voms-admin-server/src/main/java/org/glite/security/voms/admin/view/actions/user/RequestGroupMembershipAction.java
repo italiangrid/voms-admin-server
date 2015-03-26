@@ -82,7 +82,7 @@ public class RequestGroupMembershipAction extends UserActionSupport {
 
     GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(
       getModel(), g, getDefaultFutureDate());
-    EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
+    EventManager.instance().dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
 
     refreshPendingRequests();
 

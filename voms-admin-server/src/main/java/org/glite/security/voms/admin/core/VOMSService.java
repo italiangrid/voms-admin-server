@@ -20,6 +20,7 @@
 package org.glite.security.voms.admin.core;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +33,8 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.core.tasks.PrintX509AAStatsTask;
+import org.glite.security.voms.admin.core.tasks.SignAUPReminderCheckTask;
+import org.glite.security.voms.admin.core.tasks.SystemTimeProvider;
 import org.glite.security.voms.admin.core.tasks.TaskStatusUpdater;
 import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
@@ -140,17 +143,30 @@ public final class VOMSService {
     manager.register(MembershipRemovalNotificationDispatcher.instance());
     
   }
-
+  
   protected static void startBackgroundTasks() {
 
     VOMSExecutorService es = VOMSExecutorService.instance();
 
+    VOMSConfiguration conf = VOMSConfiguration.instance();
+    List<Integer> aupReminders = conf.getAUPReminderIntervals();
+    
+    es.startBackgroundTask(new SignAUPReminderCheckTask(
+      DAOFactory.instance(),
+      EventManager.instance(),
+      SystemTimeProvider.INSTANCE,
+      aupReminders, 
+      TimeUnit.DAYS), 
+      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 
+      300L);
+    
     es.startBackgroundTask(new UpdateCATask(),
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
-    es.startBackgroundTask(new TaskStatusUpdater(), null, 30L);
+    es.startBackgroundTask(new TaskStatusUpdater(), 30L);
 
-    es.startBackgroundTask(new ExpiredRequestsPurgerTask(),
+    es.startBackgroundTask(new ExpiredRequestsPurgerTask(DAOFactory.instance(),
+      EventManager.instance()),
       VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
 
     es.startBackgroundTask(new UserStatsTask(),

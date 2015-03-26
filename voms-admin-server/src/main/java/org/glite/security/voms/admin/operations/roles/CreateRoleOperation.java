@@ -61,7 +61,7 @@ public class CreateRoleOperation extends BaseVomsOperation {
 
     HibernateFactory.getSession().save(r);
     
-    EventManager.dispatch(new RoleCreatedEvent(r));
+    EventManager.instance().dispatch(new RoleCreatedEvent(r));
     
     return r;
   }

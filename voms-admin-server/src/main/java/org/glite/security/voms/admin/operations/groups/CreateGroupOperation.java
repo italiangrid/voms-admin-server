@@ -99,8 +99,8 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
     HibernateFactory.getSession().save(g);
     
-    EventManager.dispatch(new GroupCreatedEvent(g));
-    EventManager.dispatch(new ACLCreatedEvent(g.getACL()));
+    EventManager.instance().dispatch(new GroupCreatedEvent(g));
+    EventManager.instance().dispatch(new ACLCreatedEvent(g.getACL()));
     
     return g;
   }

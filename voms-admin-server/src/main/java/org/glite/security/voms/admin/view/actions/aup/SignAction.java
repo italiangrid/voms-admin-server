@@ -71,7 +71,7 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>,
     if (aupAccepted.equals("true")) {
       
       VOMSUserDAO.instance().signAUP(u, aup);
-      EventManager.dispatch(new UserSignedAUPEvent(u, aup));
+      EventManager.instance().dispatch(new UserSignedAUPEvent(u, aup));
       
     } else {
 

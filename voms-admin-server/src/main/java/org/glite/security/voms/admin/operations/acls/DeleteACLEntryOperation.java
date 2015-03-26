@@ -52,7 +52,7 @@ public class DeleteACLEntryOperation extends BaseVomsOperation {
       log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
         + acl.getContext() + "'.");
       ACLDAO.instance().deleteACLEntry(acl, admin);
-      EventManager.dispatch(new ACLUpdatedEvent(acl));
+      EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
       return acl;
 
     }
@@ -65,7 +65,7 @@ public class DeleteACLEntryOperation extends BaseVomsOperation {
         log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
           + acl.getContext() + "' [recursive].");
         ACLDAO.instance().deleteACLEntry(acl, admin);
-        EventManager.dispatch(new ACLUpdatedEvent(acl));
+        EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
 
         return acl;
 
@@ -86,7 +86,7 @@ public class DeleteACLEntryOperation extends BaseVomsOperation {
         log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
           + acl.getContext() + "' [recursive].");
         ACLDAO.instance().deleteACLEntry(acl, admin);
-        EventManager.dispatch(new ACLUpdatedEvent(acl));
+        EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
 
         return acl;
       }

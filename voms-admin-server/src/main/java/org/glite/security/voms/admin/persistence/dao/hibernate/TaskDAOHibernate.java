@@ -130,7 +130,7 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
   }
 
   @Override
-  public List<SignAUPTask> findActiveSingAUPTasks() {
+  public List<SignAUPTask> findActiveSignAUPTasks() {
 
     Criteria crit = getSession()
       .createCriteria(SignAUPTask.class);

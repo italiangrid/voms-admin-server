@@ -48,7 +48,7 @@ public class DeleteACLOperation extends BaseVomsOperation {
     acl.removePermissions(admin);
 
     HibernateFactory.getSession().save(acl);
-    EventManager.dispatch(new ACLDeletedEvent(acl));
+    EventManager.instance().dispatch(new ACLDeletedEvent(acl));
     
     return acl;
   }

@@ -43,7 +43,7 @@ public class ChangeReacceptancePeriodOperation extends BaseVomsOperation {
 
     aup.setReacceptancePeriod(period);
     
-    EventManager.dispatch(new AUPChangedPeriodEvent(aup));
+    EventManager.instance().dispatch(new AUPChangedPeriodEvent(aup));
     
     return aup;
   }

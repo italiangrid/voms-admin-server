@@ -43,7 +43,7 @@ public class DeleteAttributeDescriptionOperation extends BaseVomsOperation {
     VOMSAttributeDescription desc = dao.getAttributeDescriptionByName(name);
     dao.deleteAttributeDescription(name);
     
-    EventManager.dispatch(new AttributeDescriptionDeletedEvent(desc));
+    EventManager.instance().dispatch(new AttributeDescriptionDeletedEvent(desc));
     return desc;
   }
 

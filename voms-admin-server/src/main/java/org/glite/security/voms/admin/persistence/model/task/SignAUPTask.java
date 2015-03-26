@@ -86,9 +86,10 @@ public class SignAUPTask extends Task implements Serializable {
 
     return String
       .format(
-        "SignAUPTask[id:%d, status:%s, aup:%s, user:%s, expires:%s, lastNotificationTime: %s]",
-        getId(), getStatus(), getAup(), getUser().toString(), getExpiryDate(),
-        lastNotificationTime);
+        "SignAUPTask[id:%d,status:%s,expires:%s,lastNotificationTime:%s,user:%s]",
+        getId(), getStatus(), getExpiryDate(),
+        lastNotificationTime,
+        getUser().getId());
 
   }
 

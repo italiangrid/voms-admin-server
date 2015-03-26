@@ -57,7 +57,7 @@ public class AddVersionOperation extends BaseVomsOperation {
 
       AUPVersion v  = dao.addVersion(aup, version, new URL(url));
       
-      EventManager.dispatch(new AUPVersionCreatedEvent(aup, v));
+      EventManager.instance().dispatch(new AUPVersionCreatedEvent(aup, v));
 
     } catch (MalformedURLException e) {
 

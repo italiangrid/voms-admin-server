@@ -81,8 +81,8 @@ public class DeleteGroupOperation extends BaseVomsOperation {
     ACL groupACL  = group.getACL();
     
     VOMSGroupDAO.instance().delete(group);
-    EventManager.dispatch(new GroupDeletedEvent(group));
-    EventManager.dispatch(new ACLDeletedEvent(groupACL));
+    EventManager.instance().dispatch(new GroupDeletedEvent(group));
+    EventManager.instance().dispatch(new ACLDeletedEvent(groupACL));
     
     return group;
   }

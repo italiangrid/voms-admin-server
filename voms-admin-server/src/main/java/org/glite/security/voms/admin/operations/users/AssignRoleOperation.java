@@ -64,7 +64,7 @@ public class AssignRoleOperation extends BaseVomsOperation {
 
     VOMSUserDAO.instance().assignRole(user, group, role);
 
-    EventManager.dispatch(new RoleAssignedEvent(user, group, role));
+    EventManager.instance().dispatch(new RoleAssignedEvent(user, group, role));
 
     return user;
   }

@@ -96,7 +96,7 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
       cert = VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
     }
 
-    EventManager.dispatch(new UserCertificateAddedEvent(theUser, cert));
+    EventManager.instance().dispatch(new UserCertificateAddedEvent(theUser, cert));
 
     return cert;
   }

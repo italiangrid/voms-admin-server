@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
-import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.EventDispatcher;
 import org.glite.security.voms.admin.event.request.VOMembershipRequestExpiredEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
@@ -41,9 +41,17 @@ public class ExpiredRequestsPurgerTask implements Runnable,
   private long requestLifetime;
 
   private boolean warnUsers;
+  
+  private final DAOFactory daoFactory;
+  private final EventDispatcher eventDispatcher;
+  
 
-  public ExpiredRequestsPurgerTask() {
+  public ExpiredRequestsPurgerTask(DAOFactory daoFactory, EventDispatcher dispatcher) {
 
+    this.daoFactory = daoFactory;
+    this.eventDispatcher = dispatcher;
+    
+    // FIXME: Configuration should be injected
     VOMSConfiguration conf = VOMSConfiguration.instance();
 
     requestLifetime = conf.getLong(
@@ -64,7 +72,7 @@ public class ExpiredRequestsPurgerTask implements Runnable,
       return;
     }
 
-    RequestDAO dao = DAOFactory.instance().getRequestDAO();
+    RequestDAO dao = daoFactory.getRequestDAO();
 
     List<NewVOMembershipRequest> expiredRequests = dao
       .findExpiredVOMembershipRequests();
@@ -79,7 +87,7 @@ public class ExpiredRequestsPurgerTask implements Runnable,
       dao.makeTransient(req);
 
       if (warnUsers){
-        EventManager.dispatch(new VOMembershipRequestExpiredEvent(req));
+        eventDispatcher.dispatch(new VOMembershipRequestExpiredEvent(req));
       }
 
     }

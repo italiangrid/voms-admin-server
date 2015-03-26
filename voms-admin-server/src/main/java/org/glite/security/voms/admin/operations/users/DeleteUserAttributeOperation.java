@@ -49,7 +49,7 @@ public class DeleteUserAttributeOperation extends BaseAttributeRWOperation {
       attributeName);
     
     if (attribute != null) {
-      EventManager.dispatch(new UserAttributeDeletedEvent(user, attribute));
+      EventManager.instance().dispatch(new UserAttributeDeletedEvent(user, attribute));
     }
     return null;
   }

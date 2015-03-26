@@ -44,7 +44,7 @@ public class SetMembershipExpirationOperation extends BaseVomsOperation {
   protected Object doExecute() {
 
     user.setEndTime(expirationDate);
-    EventManager.dispatch(new UserMembershipExpirationDateUpdated(user));
+    EventManager.instance().dispatch(new UserMembershipExpirationDateUpdated(user));
     
     return user;
   }

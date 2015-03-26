@@ -76,7 +76,7 @@ public class CreateUserOperation extends BaseVomsOperation {
 
     VOMSUser user = VOMSUserDAO.instance().create(usr, caDN);
 
-    EventManager.dispatch(new UserCreatedEvent(user));
+    EventManager.instance().dispatch(new UserCreatedEvent(user));
     
     // Create an AUP signature record for this user if the automatically created
     // users are not required to sign the AUP
@@ -86,7 +86,7 @@ public class CreateUserOperation extends BaseVomsOperation {
         false)){
       
       VOMSUserDAO.instance().signAUP(user);
-      EventManager.dispatch(new UserSignedAUPEvent(user, DAOFactory.instance().getAUPDAO().getVOAUP()));
+      EventManager.instance().dispatch(new UserSignedAUPEvent(user, DAOFactory.instance().getAUPDAO().getVOAUP()));
     }
 
     return user;

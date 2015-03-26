@@ -90,7 +90,12 @@ public class VOMSExecutorService {
 
     startBackgroundTask(task, periodPropertyName, null);
   }
-  
+
+  public void startBackgroundTask(Runnable task, Long defaultPeriod) {
+
+    startBackgroundTask(task, null, defaultPeriod);
+  }
+
   public void startBackgroundTask(Runnable task, String periodPropertyName,
     Long defaultPeriod) {
 

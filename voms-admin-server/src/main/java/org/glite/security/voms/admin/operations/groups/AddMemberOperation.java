@@ -54,8 +54,7 @@ public class AddMemberOperation extends BaseVomsOperation {
     }
 
     VOMSUserDAO.instance().addToGroup(user, group);
-
-    EventManager.dispatch(new UserAddedToGroupEvent(user, group));
+    EventManager.instance().dispatch(new UserAddedToGroupEvent(user, group));
     return user;
   }
 

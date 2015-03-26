@@ -165,7 +165,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
     CertificateRequest req = reqDAO.createCertificateRequest(getModel(),
       getSubject(), getCaSubject(), getDefaultFutureDate());
-    EventManager.dispatch(new CertificateRequestSubmittedEvent(req,
+    EventManager.instance().dispatch(new CertificateRequestSubmittedEvent(req,
       getHomeURL()));
 
     refreshPendingRequests();

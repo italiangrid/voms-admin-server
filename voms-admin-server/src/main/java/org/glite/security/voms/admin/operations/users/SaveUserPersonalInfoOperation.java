@@ -69,7 +69,7 @@ public class SaveUserPersonalInfoOperation extends
 
     VOMSUserDAO.instance().update(targetUser);
 
-    EventManager.dispatch(new UserPersonalInformationUpdatedEvent(targetUser));
+    EventManager.instance().dispatch(new UserPersonalInformationUpdatedEvent(targetUser));
     
     return targetUser;
   }

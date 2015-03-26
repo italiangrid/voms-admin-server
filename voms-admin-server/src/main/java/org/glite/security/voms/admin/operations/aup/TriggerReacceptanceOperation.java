@@ -54,7 +54,7 @@ public class TriggerReacceptanceOperation extends BaseVomsOperation {
     if (user == null) {
       aup.getActiveVersion().setLastForcedReacceptanceTime(new Date());
 
-      EventManager.dispatch(new TriggeredForcedReacceptanceEvent(aup));
+      EventManager.instance().dispatch(new TriggeredForcedReacceptanceEvent(aup));
 
     } else {
       AUPAcceptanceRecord record = user.getAUPAccceptanceRecord(aup
@@ -63,7 +63,7 @@ public class TriggerReacceptanceOperation extends BaseVomsOperation {
       if (record != null && !record.hasExpired())
         record.setValid(false);
 
-      EventManager.dispatch(new UserAUPSignatureRequestedEvent(user, aup));
+      EventManager.instance().dispatch(new UserAUPSignatureRequestedEvent(user, aup));
     }
 
     return aup;

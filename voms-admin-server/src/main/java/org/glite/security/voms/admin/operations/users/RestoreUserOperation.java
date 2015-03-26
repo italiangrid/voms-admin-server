@@ -90,7 +90,7 @@ public class RestoreUserOperation extends BaseVomsOperation {
 
       user.restore();
 
-      EventManager.dispatch(new UserRestoredEvent(user));
+      EventManager.instance().dispatch(new UserRestoredEvent(user));
 
     }
     

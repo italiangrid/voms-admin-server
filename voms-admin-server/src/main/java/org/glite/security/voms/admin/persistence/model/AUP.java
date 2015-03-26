@@ -36,8 +36,6 @@ public class AUP implements Serializable {
      */
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(AUP.class);
-
   public static final String VO_AUP_NAME = "VO-AUP";
   public static final String GRID_AUP_NAME = "GRID-AUP";
 
@@ -51,8 +49,6 @@ public class AUP implements Serializable {
   SortedSet<AUPVersion> versions = new TreeSet<AUPVersion>();
 
   public AUP() {
-
-    // TODO Auto-generated constructor stub
   }
 
   @Override

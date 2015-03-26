@@ -55,7 +55,7 @@ public class ConditionalRestoreUserOperation extends RestoreUserOperation {
     }
 
     if (userHasBeenRestored){
-      EventManager.dispatch(new UserRestoredEvent(user));
+      EventManager.instance().dispatch(new UserRestoredEvent(user));
     }
     
     return userHasBeenRestored;

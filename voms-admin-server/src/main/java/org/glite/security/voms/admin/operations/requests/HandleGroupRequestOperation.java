@@ -53,7 +53,7 @@ public class HandleGroupRequestOperation extends
 
     approveRequest();
 
-    EventManager.dispatch(new GroupMembershipApprovedEvent(request));
+    EventManager.instance().dispatch(new GroupMembershipApprovedEvent(request));
 
   }
 
@@ -62,7 +62,7 @@ public class HandleGroupRequestOperation extends
 
     checkRequestStatus(STATUS.SUBMITTED);
     rejectRequest();
-    EventManager.dispatch(new GroupMembershipRejectedEvent(request));
+    EventManager.instance().dispatch(new GroupMembershipRejectedEvent(request));
   }
 
   @Override

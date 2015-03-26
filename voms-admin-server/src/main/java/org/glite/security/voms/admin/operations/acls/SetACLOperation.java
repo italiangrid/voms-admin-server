@@ -66,7 +66,7 @@ public class SetACLOperation extends BaseVomsOperation {
     // Set the new permission set
     theACL.getPermissions().putAll(permissions);
     
-    EventManager.dispatch(new ACLUpdatedEvent(theACL));
+    EventManager.instance().dispatch(new ACLUpdatedEvent(theACL));
 
     return theACL;
   }

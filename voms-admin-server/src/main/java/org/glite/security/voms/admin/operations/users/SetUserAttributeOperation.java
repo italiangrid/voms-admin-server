@@ -55,7 +55,7 @@ public class SetUserAttributeOperation extends BaseVomsOperation {
     VOMSUserAttribute attribute = VOMSUserDAO.instance().setAttribute(user,
       attributeName, attributeValue);
 
-    EventManager.dispatch(new UserAttributeSetEvent(user, attribute));
+    EventManager.instance().dispatch(new UserAttributeSetEvent(user, attribute));
 
     return attribute;
 

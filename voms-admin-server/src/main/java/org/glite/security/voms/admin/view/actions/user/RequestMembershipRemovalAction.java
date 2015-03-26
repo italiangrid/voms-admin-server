@@ -78,7 +78,7 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
     MembershipRemovalRequest req = reqDAO.createMembershipRemovalRequest(
       getModel(), reason, getDefaultFutureDate());
 
-    EventManager
+    EventManager.instance()
       .dispatch(new MembershipRemovalSubmittedEvent(req, getHomeURL()));
 
     refreshPendingRequests();

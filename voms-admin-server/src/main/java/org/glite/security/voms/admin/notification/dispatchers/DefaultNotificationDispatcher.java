@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.notification.dispatchers;
 
+import java.util.Date;
+
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
@@ -67,10 +69,9 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
   protected void handle(SignAUPTaskAssignedEvent e) {
 
-    SignAUPMessage msg = new SignAUPMessage(e.getPayload(), e.getAup());
-    msg.addRecipient(e.getPayload().getEmailAddress());
+    SignAUPMessage msg = new SignAUPMessage(e);
     NotificationService.instance().send(msg);
-
+    e.getTask().setLastNotificationTime(new Date());
   }
 
   protected void handle(UserMembershipExpired e) {

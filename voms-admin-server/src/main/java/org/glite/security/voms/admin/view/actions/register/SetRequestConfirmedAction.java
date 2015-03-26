@@ -55,7 +55,7 @@ public class SetRequestConfirmedAction extends RegisterActionSupport {
 
     getModel().setStatus(STATUS.CONFIRMED);
 
-    EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestConfirmedEvent(request,
       URLBuilder.buildLoginURL()));
 
     return SUCCESS;

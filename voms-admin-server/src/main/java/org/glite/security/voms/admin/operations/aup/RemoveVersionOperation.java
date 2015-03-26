@@ -49,7 +49,7 @@ public class RemoveVersionOperation extends BaseVomsOperation {
 
     dao.removeVersion(aup, version);
 
-    EventManager.dispatch(new AUPVersionDeletedEvent(aup, v));
+    EventManager.instance().dispatch(new AUPVersionDeletedEvent(aup, v));
 
     return aup;
   }

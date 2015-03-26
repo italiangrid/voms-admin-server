@@ -51,7 +51,7 @@ public class HandleCertificateRequestOperation extends
 
     approveRequest();
 
-    EventManager.dispatch(new CertificateRequestApprovedEvent(request));
+    EventManager.instance().dispatch(new CertificateRequestApprovedEvent(request));
 
   }
 
@@ -60,7 +60,7 @@ public class HandleCertificateRequestOperation extends
 
     checkRequestStatus(STATUS.SUBMITTED);
     rejectRequest();
-    EventManager.dispatch(new CertificateRequestRejectedEvent(request));
+    EventManager.instance().dispatch(new CertificateRequestRejectedEvent(request));
 
   }
 

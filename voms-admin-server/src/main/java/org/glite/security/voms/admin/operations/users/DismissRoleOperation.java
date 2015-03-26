@@ -72,7 +72,7 @@ public class DismissRoleOperation extends BaseVomsOperation {
   public Object doExecute() {
 
     VOMSUserDAO.instance().dismissRole(user, group, role);
-    EventManager.dispatch(new RoleDismissedEvent(user, group, role));
+    EventManager.instance().dispatch(new RoleDismissedEvent(user, group, role));
 
     return user;
   }

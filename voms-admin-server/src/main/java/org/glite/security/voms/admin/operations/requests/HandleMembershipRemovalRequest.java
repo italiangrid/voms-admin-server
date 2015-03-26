@@ -48,7 +48,7 @@ public class HandleMembershipRemovalRequest extends
 
     approveRequest();
 
-    EventManager.dispatch(new MembershipRemovalApprovedEvent(request));
+    EventManager.instance().dispatch(new MembershipRemovalApprovedEvent(request));
 
   }
 
@@ -59,7 +59,7 @@ public class HandleMembershipRemovalRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new MembershipRemovalRejectedEvent(request));
+    EventManager.instance().dispatch(new MembershipRemovalRejectedEvent(request));
   }
 
   @Override

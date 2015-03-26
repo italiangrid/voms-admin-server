@@ -61,7 +61,7 @@ public class CreateAcceptanceRecordOperation extends BaseVomsOperation {
 
     VOMSUserDAO.instance().signAUP(user, aup);
 
-    EventManager.dispatch(new UserSignedAUPEvent(user, aup));
+    EventManager.instance().dispatch(new UserSignedAUPEvent(user, aup));
 
     return user;
 

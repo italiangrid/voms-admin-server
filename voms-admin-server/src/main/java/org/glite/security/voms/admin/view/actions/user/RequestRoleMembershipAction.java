@@ -113,7 +113,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
 
     RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model,
       g, r, getDefaultFutureDate());
-    EventManager.dispatch(new RoleMembershipSubmittedEvent(request,
+    EventManager.instance().dispatch(new RoleMembershipSubmittedEvent(request,
       getHomeURL()));
 
     refreshPendingRequests();

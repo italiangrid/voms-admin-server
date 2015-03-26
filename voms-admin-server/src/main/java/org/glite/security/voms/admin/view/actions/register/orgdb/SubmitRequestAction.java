@@ -117,7 +117,7 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
       return PLUGIN_VALIDATION_ERROR;
     }
 
-    EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestSubmittedEvent(request,
       URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
         .buildRequestCancelURL(getModel())));
 

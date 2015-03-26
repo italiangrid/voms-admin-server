@@ -40,7 +40,7 @@ public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
     VOMSRoleAttribute ra = VOMSRoleDAO.instance().deleteAttributeByName(
       __context.getRole(), __context.getGroup(), attributeName);
 
-    EventManager
+    EventManager.instance()
       .dispatch(new RoleAttributeDeletedEvent(__context.getRole(), ra));
 
     return ra;

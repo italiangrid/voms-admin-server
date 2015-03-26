@@ -64,7 +64,7 @@ public class RemoveMemberOperation extends BaseVomsOperation {
 
     VOMSUserDAO.instance().removeFromGroup(user, group);
 
-    EventManager.dispatch(new UserRemovedFromGroupEvent(user, group));
+    EventManager.instance().dispatch(new UserRemovedFromGroupEvent(user, group));
 
     return null;
   }

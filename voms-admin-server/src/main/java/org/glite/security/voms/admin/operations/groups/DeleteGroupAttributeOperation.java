@@ -43,7 +43,7 @@ public class DeleteGroupAttributeOperation extends BaseAttributeRWOperation {
     VOMSGroupAttribute ga = VOMSGroupDAO.instance()
       .deleteAttribute(__context.getGroup(), attributeName);
     
-    EventManager.dispatch(new GroupAttributeDeletedEvent(__context.getGroup(), 
+    EventManager.instance().dispatch(new GroupAttributeDeletedEvent(__context.getGroup(), 
       ga));
     
     return ga;

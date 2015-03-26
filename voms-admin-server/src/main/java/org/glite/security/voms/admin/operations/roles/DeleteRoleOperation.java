@@ -65,7 +65,7 @@ public class DeleteRoleOperation extends BaseVomsOperation {
     }
 
     dao.delete(role);
-    EventManager.dispatch(new RoleDeletedEvent(role));
+    EventManager.instance().dispatch(new RoleDeletedEvent(role));
     return role;
 
   }

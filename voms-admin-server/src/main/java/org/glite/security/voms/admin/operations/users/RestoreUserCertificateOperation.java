@@ -67,7 +67,7 @@ public class RestoreUserCertificateOperation extends BaseVomsOperation {
 
     certificate.restore();
     
-    EventManager.dispatch(new UserCertificateRestored(certificate.getUser(), 
+    EventManager.instance().dispatch(new UserCertificateRestored(certificate.getUser(), 
       certificate));
     
     return certificate;

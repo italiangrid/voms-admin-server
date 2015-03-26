@@ -49,7 +49,7 @@ public class SaveACLEntryOperation extends BaseVomsOperation {
   protected Object doExecute() {
 
     ACLDAO.instance().saveACLEntry(acl, admin, perms);
-    EventManager.dispatch(new ACLUpdatedEvent(acl));
+    EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
 
     if (isRecursive() && acl.getContext().isGroupContext()) {
 
