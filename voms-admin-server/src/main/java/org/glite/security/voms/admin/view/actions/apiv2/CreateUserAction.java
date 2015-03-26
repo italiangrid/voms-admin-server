@@ -85,7 +85,7 @@ public class CreateUserAction extends BaseAction implements ValidationAware {
     message = "Please provide a certificate subject for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The certificate subject contains illegal characters!",
-    expression = "^[^<>&;]*$")
+    regex = "^[^<>&;]*$")
   @JSON(serialize = false)
   public String getCertificateSubject() {
 
@@ -101,7 +101,7 @@ public class CreateUserAction extends BaseAction implements ValidationAware {
     message = "Please provide a CA subject for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The CA certificate subject contains illegal characters!",
-    expression = "^[^<>&;]*$")
+    regex = "^[^<>&;]*$")
   @JSON(serialize = false)
   public String getCaSubject() {
 

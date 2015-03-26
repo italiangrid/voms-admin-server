@@ -28,7 +28,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.DeleteUserAttributeOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
@@ -76,7 +76,7 @@ public class AttributeActions extends UserActionSupport {
   @StringLengthFieldValidator(type = ValidatorType.FIELD,
     message = "The value for this attribute is too long", maxLength = "255")
   // @RegexFieldValidator(type = ValidatorType.FIELD, message =
-  // "This field contains illegal characters!", expression = "^[^<>&=;]*$")
+  // "This field contains illegal characters!", regex = "^[^<>&=;]*$")
   public String getAttributeValue() {
 
     return attributeValue;

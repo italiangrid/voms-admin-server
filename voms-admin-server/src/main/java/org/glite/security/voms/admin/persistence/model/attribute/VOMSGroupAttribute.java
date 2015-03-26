@@ -17,19 +17,24 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.service.attributes.AttributeValue;
 
 @Entity
 @Table(name = "group_attrs")
-@MappedSuperclass
-public class VOMSGroupAttribute extends VOMSBaseAttribute {
+public class VOMSGroupAttribute implements Serializable, GenericAttributeValue {
 
   /**
      * 
@@ -38,12 +43,22 @@ public class VOMSGroupAttribute extends VOMSBaseAttribute {
 
   @Id
   @ManyToOne
+  @JoinColumn(name = "a_id")
+  VOMSAttributeDescription attributeDescription;
+
+  @Id
+  @ManyToOne
   @JoinColumn(name = "g_id")
   VOMSGroup group;
 
+  @Column(name = "a_value")
+  String value;
+
+  @Transient
+  String context;
+
   public VOMSGroupAttribute() {
 
-    // TODO Auto-generated constructor stub
   }
 
   public static VOMSGroupAttribute instance(VOMSAttributeDescription desc,
@@ -55,7 +70,8 @@ public class VOMSGroupAttribute extends VOMSBaseAttribute {
   protected VOMSGroupAttribute(VOMSAttributeDescription desc, String value,
     VOMSGroup g) {
 
-    super(desc, value);
+    this.attributeDescription = desc;
+    this.value = value;
     this.group = g;
 
   }
@@ -106,5 +122,50 @@ public class VOMSGroupAttribute extends VOMSBaseAttribute {
 
     return result;
 
+  }
+
+  @Override
+  public VOMSAttributeDescription getAttributeDescription() {
+
+    return attributeDescription;
+  }
+
+  @Override
+  public void setAttributeDescription(VOMSAttributeDescription desc) {
+
+    this.attributeDescription = desc;
+  }
+
+  @Override
+  public String getValue() {
+
+    return value;
+  }
+
+  @Override
+  public void setValue(String value) {
+
+    this.value = value;
+
+  }
+
+  @Override
+  public void setContext(String context) {
+
+    this.context = context;
+
+  }
+
+  @Override
+  public AttributeValue asAttributeValue() {
+
+    // TODO: fixme
+    return null;
+  }
+
+  @Override
+  public String getName() {
+
+    return attributeDescription.getName();
   }
 }

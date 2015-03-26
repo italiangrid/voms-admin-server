@@ -105,7 +105,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getTheName() {
 
     return theName;
@@ -118,7 +118,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The surname field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getTheSurname() {
 
     return theSurname;
@@ -131,7 +131,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getTheInstitution() {
 
     return theInstitution;
@@ -144,7 +144,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The address field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getTheAddress() {
 
     return theAddress;
@@ -157,7 +157,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The phoneNumber field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getThePhoneNumber() {
 
     return thePhoneNumber;
@@ -174,7 +174,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
     message = "Please enter a valid email address.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The email field name contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getTheEmailAddress() {
 
     return theEmailAddress;

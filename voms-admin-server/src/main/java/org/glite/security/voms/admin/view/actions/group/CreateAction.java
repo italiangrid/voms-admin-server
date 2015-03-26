@@ -120,7 +120,7 @@ public class CreateAction extends GroupActionSupport {
     message = "A name for the group is required!")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The group name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getGroupName() {
 
     return groupName;
@@ -143,7 +143,7 @@ public class CreateAction extends GroupActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The description field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "255",
     message = "The description field size is limited to 255 characters.")
   public String getDescription() {

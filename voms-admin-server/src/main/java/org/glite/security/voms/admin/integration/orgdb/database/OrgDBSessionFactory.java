@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.context.ThreadLocalSessionContext;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.context.internal.ThreadLocalSessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +41,10 @@ public class OrgDBSessionFactory {
 
   private static volatile SessionFactory orgDbSessionFactory;
 
-  public static AnnotationConfiguration buildConfiguration(
+  public static Configuration buildConfiguration(
     Properties orgDbHibernateProperties) {
 
-    AnnotationConfiguration cfg = new AnnotationConfiguration()
+    Configuration cfg = new Configuration()
       .addAnnotatedClass(Country.class).addAnnotatedClass(Experiment.class)
       .addAnnotatedClass(Institute.class)
       .addAnnotatedClass(InstituteAddress.class)
@@ -73,7 +73,7 @@ public class OrgDBSessionFactory {
 
     try {
 
-      AnnotationConfiguration cfg = buildConfiguration(orgbHibernateProperties);
+      Configuration cfg = buildConfiguration(orgbHibernateProperties);
 
       orgDbSessionFactory = cfg.configure().buildSessionFactory();
 

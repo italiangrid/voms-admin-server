@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.hibernate.Query;
 
 public class VOMSAttributeDAO {

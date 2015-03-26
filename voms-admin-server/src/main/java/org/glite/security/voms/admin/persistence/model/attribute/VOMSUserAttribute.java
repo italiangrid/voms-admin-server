@@ -17,17 +17,24 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.service.attributes.AttributeClass;
+import org.glite.security.voms.service.attributes.AttributeValue;
 
 @Entity
 @Table(name = "usr_attrs")
-public class VOMSUserAttribute extends VOMSBaseAttribute {
+public class VOMSUserAttribute implements Serializable, GenericAttributeValue {
 
   /**
      * 
@@ -35,9 +42,17 @@ public class VOMSUserAttribute extends VOMSBaseAttribute {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @PrimaryKeyJoinColumn
-  @ManyToOne(targetEntity = VOMSUser.class)
-  public VOMSUser user;
+  @ManyToOne
+  @JoinColumn(name="a_id")
+  VOMSAttributeDescription attributeDescription;
+
+  @Id
+  @ManyToOne
+  @JoinColumn(name="u_id")
+  VOMSUser user;
+
+  @Column(name = "a_value")
+  String value;
 
   public VOMSUser getUser() {
 
@@ -55,14 +70,16 @@ public class VOMSUserAttribute extends VOMSBaseAttribute {
 
   public VOMSUserAttribute(VOMSAttributeDescription desc, String attrValue) {
 
-    super(desc, attrValue);
+    attributeDescription = desc;
+    value = attrValue;
 
   }
 
   public VOMSUserAttribute(VOMSAttributeDescription desc, String value,
     VOMSUser u) {
 
-    super(desc, value);
+    this(desc, value);
+
     setUser(u);
   }
 
@@ -129,4 +146,53 @@ public class VOMSUserAttribute extends VOMSBaseAttribute {
 
     return null;
   }
+
+  public String getValue() {
+
+    return value;
+  }
+
+  public void setValue(String value) {
+
+    this.value = value;
+  }
+
+  public String getName() {
+
+    return attributeDescription.getName();
+  }
+
+  @Override
+  public VOMSAttributeDescription getAttributeDescription() {
+
+    return attributeDescription;
+  }
+
+  @Override
+  public void setAttributeDescription(VOMSAttributeDescription desc) {
+
+    attributeDescription = desc;
+  }
+
+  @Override
+  public void setContext(String context) {
+
+    // NO-OP
+  }
+
+  @Override
+  public AttributeValue asAttributeValue() {
+
+    AttributeClass aClass = getAttributeDescription().asAttributeClass();
+
+    AttributeValue val = new AttributeValue();
+    val.setAttributeClass(aClass);
+
+    val.setContext(getContext());
+
+    val.setValue(getValue());
+
+    return val;
+  }
+
 }

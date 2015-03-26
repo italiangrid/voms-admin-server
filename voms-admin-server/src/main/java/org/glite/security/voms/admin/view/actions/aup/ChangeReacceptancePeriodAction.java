@@ -76,7 +76,7 @@ public class ChangeReacceptancePeriodAction extends BaseAction implements
 
   @RequiredFieldValidator(type = ValidatorType.FIELD,
     message = "The period (in days) is required.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "[0-9]+",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "[0-9]+",
     message = "Please specify a positive integer number.")
   @IntRangeFieldValidator(type = ValidatorType.FIELD, min = "1", max = "730",
     message = "The input is out of the acceptable range (1 < x < 730)")

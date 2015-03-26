@@ -227,6 +227,16 @@ public class SchemaDeployer {
 
   }
 
+  private DatabaseMetaData getDatabaseMetadata(Session s) {
+
+    GetDatabaseMetadataWork w = new GetDatabaseMetadataWork();
+
+    s.doWork(w);
+
+    return w.getMetadata();
+
+  }
+
   private boolean isOracleBackend() {
 
     Session s = HibernateFactory.getSession();
@@ -237,7 +247,7 @@ public class SchemaDeployer {
 
     try {
 
-      dbMetadata = s.connection().getMetaData();
+      dbMetadata = getDatabaseMetadata(s);
       dbProductName = dbMetadata.getDatabaseProductName();
 
     } catch (HibernateException e) {
@@ -354,21 +364,13 @@ public class SchemaDeployer {
 
     try {
 
-      dbMetadata = s.connection().getMetaData();
+      dbMetadata = getDatabaseMetadata(s);
 
-    } catch (HibernateException e) {
+    } catch (Throwable e) {
 
       log
         .error(
           "Hibernate error accessing database metadata from Hibernate connection!",
-          e);
-      System.exit(-1);
-
-    } catch (SQLException e) {
-
-      log
-        .error(
-          "SQL error while accessing database metadata from Hibernate connection!",
           e);
       System.exit(-1);
 
@@ -549,29 +551,10 @@ public class SchemaDeployer {
         log.info("Upgrading database schema from version {} to version {}",
           adminVersion, targetVersion);
 
-        List<String> upgradeScript = loadUpgradeScript31_32();
-        ArrayList<Exception> exceptions = new ArrayList<Exception>();
-        Statement statement = HibernateFactory.getSession().connection()
-          .createStatement();
+        UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
+          loadUpgradeScript31_32());
 
-        for (String command : upgradeScript) {
-          try {
-
-            log.info(command);
-            statement.executeUpdate(command);
-
-          } catch (SQLException e) {
-            log.error("Error while executing: " + command);
-            exceptions.add(e);
-          }
-        }
-
-        if (!exceptions.isEmpty()) {
-          log.error("Error upgrading voms database!");
-          printExceptions(exceptions);
-          HibernateFactory.rollbackTransaction();
-          System.exit(2);
-        }
+        HibernateFactory.getSession().doWork(upgradeWork);
 
         // Update database version
         VOMSVersionDAO.instance().setupVersion();

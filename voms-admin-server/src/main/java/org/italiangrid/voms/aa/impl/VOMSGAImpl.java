@@ -20,14 +20,14 @@
 
 package org.italiangrid.voms.aa.impl;
 
-import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.GenericAttributeValue;
 import org.italiangrid.voms.VOMSGenericAttribute;
 
 public class VOMSGAImpl implements VOMSGenericAttribute {
 
-  final VOMSBaseAttribute attribute;
+  final GenericAttributeValue attribute;
 
-  public VOMSGAImpl(VOMSBaseAttribute ua) {
+  public VOMSGAImpl(GenericAttributeValue ua) {
 
     this.attribute = ua;
   }

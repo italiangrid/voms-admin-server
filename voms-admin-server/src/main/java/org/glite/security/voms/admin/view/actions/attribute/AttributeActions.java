@@ -27,7 +27,7 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.glite.security.voms.admin.operations.attributes.CreateAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.attributes.DeleteAttributeDescriptionOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
@@ -101,7 +101,7 @@ public class AttributeActions extends BaseAction {
     message = "Attribute name is required.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The attribute name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getAttributeName() {
 
     return attributeName;
@@ -114,7 +114,7 @@ public class AttributeActions extends BaseAction {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The attribute description field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getAttributeDescription() {
 
     return attributeDescription;

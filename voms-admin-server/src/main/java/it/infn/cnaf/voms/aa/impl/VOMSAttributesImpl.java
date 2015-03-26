@@ -35,11 +35,11 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.error.SuspendedUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
-import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 /**

@@ -17,29 +17,49 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.service.attributes.AttributeValue;
 
 @Entity
 @Table(name = "role_attrs")
-public class VOMSRoleAttribute extends VOMSGroupAttribute {
+public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
 
-  /**
-     * 
-     */
   private static final long serialVersionUID = 1L;
+
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "a_id")
+  VOMSAttributeDescription attributeDescription;
+
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "g_id")
+  VOMSGroup group;
 
   @Id
   @ManyToOne
   @JoinColumn(name = "r_id")
   VOMSRole role;
+
+  @Column(name = "a_value")
+  String value;
+
+  @Transient
+  String context;
 
   public VOMSRole getRole() {
 
@@ -58,7 +78,9 @@ public class VOMSRoleAttribute extends VOMSGroupAttribute {
   private VOMSRoleAttribute(VOMSAttributeDescription desc, String value,
     VOMSGroup g, VOMSRole r) {
 
-    super(desc, value, g);
+    this.attributeDescription = desc;
+    this.value = value;
+    this.group = g;
 
     this.role = r;
 
@@ -113,6 +135,55 @@ public class VOMSRoleAttribute extends VOMSGroupAttribute {
 
     return VOMSContext.instance(getGroup(), getRole()).toString();
 
+  }
+
+  public VOMSAttributeDescription getAttributeDescription() {
+
+    return attributeDescription;
+  }
+
+  public void setAttributeDescription(
+    VOMSAttributeDescription attributeDescription) {
+
+    this.attributeDescription = attributeDescription;
+  }
+
+  public VOMSGroup getGroup() {
+
+    return group;
+  }
+
+  public void setGroup(VOMSGroup group) {
+
+    this.group = group;
+  }
+
+  public String getValue() {
+
+    return value;
+  }
+
+  public void setValue(String value) {
+
+    this.value = value;
+  }
+
+  public void setContext(String context) {
+
+    this.context = context;
+  }
+
+  @Override
+  public AttributeValue asAttributeValue() {
+
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getName() {
+
+    return attributeDescription.getName();
   }
 
 }

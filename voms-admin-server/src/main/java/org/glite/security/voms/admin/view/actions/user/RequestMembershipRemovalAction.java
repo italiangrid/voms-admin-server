@@ -86,7 +86,7 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
     return SUCCESS;
   }
 
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters in the reason field!")
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter a reason.")
