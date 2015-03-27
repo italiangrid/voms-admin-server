@@ -10,12 +10,13 @@
   (INFN) -->
 <!DOCTYPE struts PUBLIC
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 
-    <constant name="struts.devMode"
-      value="true" />
-      
+  <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+  
+  <constant name="struts.devMode" value="true"/>
+  
   <constant name="struts.mapper.class"
     value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper" />
     
@@ -76,7 +77,7 @@
         <interceptor-ref name="alias" />
         <interceptor-ref name="i18n" />
         <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
+          <param name="excludeParams">dojo\..*,^struts\..*,token</param>
         </interceptor-ref>
 
         <interceptor-ref name="checkbox" />
@@ -92,7 +93,7 @@
         <interceptor-ref name="actionMappingParams" />
 
         <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
+          <param name="excludeParams">dojo\..*,^struts\..*,token</param>
         </interceptor-ref>
 
 

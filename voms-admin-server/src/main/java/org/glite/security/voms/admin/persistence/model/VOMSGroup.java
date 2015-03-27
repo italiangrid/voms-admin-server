@@ -42,9 +42,7 @@ import javax.persistence.Table;
 
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute;
-import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortNatural;
-import org.hibernate.annotations.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +85,7 @@ public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
   @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", orphanRemoval=true)
   Set<ACL> acls = new HashSet<ACL>();
 
-  @ManyToMany(mappedBy="managedGroups")
+  @ManyToMany(mappedBy="managedGroups", cascade={CascadeType.REMOVE})
   Set<GroupManager> managers = new HashSet<GroupManager>();
 
   Boolean restricted = false;

@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
+import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
@@ -50,6 +51,7 @@ import org.glite.security.voms.admin.notification.RoleMembershipNotificationDisp
 import org.glite.security.voms.admin.notification.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.view.util.DevModeEnabler;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -250,6 +252,8 @@ public final class VOMSService {
 
     log.info("VOMS-Admin starting for VO: " + conf.getVOName());
 
+    setupStrutsDevMode();
+
     checkDatabaseVersion();
 
     configureVelocity();
@@ -265,6 +269,14 @@ public final class VOMSService {
     ValidationManager.instance().startMembershipChecker();
 
     log.info("VOMS-Admin started succesfully.");
+  }
+
+  private static void setupStrutsDevMode() {
+
+    if (System.getProperty(VOMSServiceConstants.DEV_MODE_PROPERTY) != null) {
+      Dispatcher.addDispatcherListener(new DevModeEnabler());
+    }
+
   }
 
   public static void stop() {
