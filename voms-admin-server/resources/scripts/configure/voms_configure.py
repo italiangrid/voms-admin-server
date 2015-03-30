@@ -233,6 +233,12 @@ def setup_cl_options():
                                       help="The time (in days) given to users to sign the AUP, after being notified, before being suspended.",
                                       metavar="DAYS",
                                       default="15")
+    
+    registration_opt_group.add_option("--aup-reminders",
+                                      dest="aup_reminders",
+                                      help="Comma-separated list of instants (in days) before the end of AUP grace period when reminders must be sent to users that need to sign the AUP.",
+                                      metavar="DAYS",
+                                      default="7,3,1")
 
     registration_opt_group.add_option("--enable-attribute-requests", dest="enable_attribute_requests", action="store_true",
                                       help="Enable attribute request at registration time.", default=False)
