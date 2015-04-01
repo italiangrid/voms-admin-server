@@ -28,7 +28,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.users.DeleteUserAttributeOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;

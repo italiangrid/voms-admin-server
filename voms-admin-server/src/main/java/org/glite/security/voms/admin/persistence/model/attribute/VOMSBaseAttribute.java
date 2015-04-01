@@ -17,13 +17,12 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -33,8 +32,13 @@ import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 @MappedSuperclass
-public abstract class VOMSBaseAttribute implements VomsAttributeValue,
+public abstract class VOMSBaseAttribute implements GenericAttributeValue,
   Serializable {
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   @Id
   @ManyToOne

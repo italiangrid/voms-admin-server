@@ -61,6 +61,7 @@ import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
 import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
@@ -68,6 +69,7 @@ import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,17 +167,13 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   String suspensionReason;
 
   /** Generic attributes mapping **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", orphanRemoval=true)
   Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
 
   /** Membership mappings **/
   @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user",
-    fetch = FetchType.EAGER)
-  @Sort(type = SortType.NATURAL)
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+    fetch = FetchType.EAGER, orphanRemoval=true)
+  @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
   /** User certificates **/

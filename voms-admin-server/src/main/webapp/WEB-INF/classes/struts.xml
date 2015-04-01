@@ -1,283 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
-    Authors:
-    	Andrea Ceccanti (INFN)
-
--->
+<!-- Copyright (c) Members of the EGEE Collaboration. 2006-2009. See http://www.eu-egee.org/partners/
+  for details on the copyright holders. Licensed under the Apache License, Version
+  2.0 (the "License"); you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed under
+  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License. Authors: Andrea Ceccanti
+  (INFN) -->
 <!DOCTYPE struts PUBLIC
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 
+  <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
 
-	<constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper"/>
-	<constant name="struts.mapper.prefixMapping" value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts"/>
+  <constant name="struts.devMode" value="true"/>
 
-	<constant name="struts.configuration.xml.reload" value="false" />
-	<constant name="struts.ui.theme" value="css_xhtml" />
-	<constant name="struts.convention.classes.reload" value="true" />
+  <constant name="struts.mapper.class"
+    value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper" />
 
-    <constant name="struts.convention.default.parent.package" value="base"/>
-    <constant name="struts.convention.package.locators.basePackage" value="org.glite.security.voms.admin.view.actions"/>
+  <constant name="struts.mapper.prefixMapping"
+    value="/apiv2:struts,/shared:struts,/rest:rest,/acl:struts,/admin:struts,/ajax:struts,/attribute:struts,/aup:struts,/configuration:struts,/group:struts,/home:struts,/register:struts,/role:struts,/search:struts,/sibling:struts,/user:struts,:struts" />
 
-	<constant name="struts.convention.result.path" value="/WEB-INF/p"/>
+  <constant name="struts.configuration.xml.reload" value="false" />
+  <constant name="struts.ui.theme" value="css_xhtml" />
+  <constant name="struts.convention.classes.reload" value="true" />
 
-	<package name="base" extends="json-default">
+  <constant name="struts.convention.default.parent.package" value="base" />
+  <constant name="struts.convention.package.locators.basePackage"
+    value="org.glite.security.voms.admin.view.actions" />
 
-		<result-types>
-			<result-type name="tiles"
-				class="org.apache.struts2.views.tiles.TilesResult" default="true" />
-		</result-types>
+  <constant name="struts.convention.result.path" value="/WEB-INF/p" />
 
-		<interceptors>
+  <package name="base" extends="json-default">
 
-            <interceptor name="globalPropsInterceptor"
-                class="org.glite.security.voms.admin.view.interceptors.InitalizeGlobalRequestObjectsInterceptor" />
+    <result-types>
+      <result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult"
+        default="true" />
+    </result-types>
 
-			<interceptor name="hibernateInterceptor"
-				class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
+    <interceptors>
 
-            <interceptor name="authzExceptionMappingInterceptor"
-                class="org.glite.security.voms.admin.view.interceptors.AuthzExceptionInterceptor"/>
+      <interceptor name="globalPropsInterceptor"
+        class="org.glite.security.voms.admin.view.interceptors.InitalizeGlobalRequestObjectsInterceptor" />
 
-            <interceptor name="searchAwareInterceptor"
-                class="org.glite.security.voms.admin.view.interceptors.SearchAwareInterceptor"/>
+      <interceptor name="hibernateInterceptor"
+        class="org.glite.security.voms.admin.view.interceptors.HibernateInterceptor" />
 
-            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor">
-            		<param name="debug">true</param>
-            </interceptor>
+      <interceptor name="authzExceptionMappingInterceptor"
+        class="org.glite.security.voms.admin.view.interceptors.AuthzExceptionInterceptor" />
 
-        <interceptor-stack name="authenticatedStack">
-                <interceptor-ref name="createSession"/>
-                <interceptor-ref name="servletConfig"/>
+      <interceptor name="searchAwareInterceptor"
+        class="org.glite.security.voms.admin.view.interceptors.SearchAwareInterceptor" />
 
+      <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor">
+        <param name="debug">true</param>
+      </interceptor>
 
-                <interceptor-ref name="exception">
-                  <param name="logEnabled">true</param>
-                  <param name="logLevel">debug</param>
-                </interceptor-ref>
+      <interceptor-stack name="authenticatedStack">
+        <interceptor-ref name="createSession" />
+        <interceptor-ref name="servletConfig" />
 
-                <interceptor-ref name="globalPropsInterceptor" />
 
-                <interceptor-ref name="authzExceptionMappingInterceptor"/>
-                <interceptor-ref name="searchAwareInterceptor"/>
-                <interceptor-ref name="logger"/>
+        <interceptor-ref name="exception">
+          <param name="logEnabled">true</param>
+          <param name="logLevel">debug</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="alias"/>
-                <interceptor-ref name="i18n"/>
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
+        <interceptor-ref name="globalPropsInterceptor" />
 
-                <interceptor-ref name="checkbox"/>
+        <interceptor-ref name="authzExceptionMappingInterceptor" />
+        <interceptor-ref name="searchAwareInterceptor" />
+        <interceptor-ref name="logger" />
 
-                <interceptor-ref name="prepare"/>
-                <interceptor-ref name="modelDriven"/>
-                <interceptor-ref name="chain"/>
-                <interceptor-ref name="debugging"/>
+        <interceptor-ref name="alias" />
+        <interceptor-ref name="i18n" />
+        <interceptor-ref name="params">
+          <param name="excludeParams">dojo\..*,^struts\..*,token</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="fileUpload"/>
+        <interceptor-ref name="checkbox" />
 
-                <interceptor-ref name="staticParams"/>
-                <interceptor-ref name="actionMappingParams"/>
+        <interceptor-ref name="prepare" />
+        <interceptor-ref name="modelDriven" />
+        <interceptor-ref name="chain" />
+        <interceptor-ref name="debugging" />
 
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
+        <interceptor-ref name="fileUpload" />
 
+        <interceptor-ref name="staticParams" />
+        <interceptor-ref name="actionMappingParams" />
 
-                <interceptor-ref name="conversionError"/>
+        <interceptor-ref name="params">
+          <param name="excludeParams">dojo\..*,^struts\..*,token</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="json" />
 
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
+        <interceptor-ref name="conversionError" />
 
-                <interceptor-ref name="jsonValidation"/>
+        <interceptor-ref name="json" />
 
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
+        <interceptor-ref name="validation">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="tokenSession">
-                  <param name="excludeMethods">*</param>
-                </interceptor-ref>
+        <interceptor-ref name="jsonValidation" />
 
-                <interceptor-ref name="hibernateInterceptor" />
-              </interceptor-stack>
-      </interceptors>
+        <interceptor-ref name="workflow">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
 
+        <interceptor-ref name="tokenSession">
+          <param name="excludeMethods">*</param>
+        </interceptor-ref>
 
-		<default-interceptor-ref name="authenticatedStack" />
+        <interceptor-ref name="hibernateInterceptor" />
+      </interceptor-stack>
+    </interceptors>
 
-        <global-results>
-          <result name="invalid.token">tokenError</result>
-          <result name="exception">exception</result>
-          <result name="authzException">authzException</result>
-          <result name="notFoundException">notFoundException</result>
-        </global-results>
 
+    <default-interceptor-ref name="authenticatedStack" />
 
-        <global-exception-mappings>
-          <exception-mapping result="exception" exception="java.lang.Throwable"/>
-          <exception-mapping result="authzException" exception="org.glite.security.voms.admin.error.VOMSAuthorizationException"/>
-          <exception-mapping result="notFoundException" exception="org.hibernate.ObjectNotFoundException"/>
-        </global-exception-mappings>
+    <global-results>
+      <result name="invalid.token">tokenError</result>
+      <result name="exception">exception</result>
+      <result name="authzException">authzException</result>
+      <result name="notFoundException">notFoundException</result>
+    </global-results>
 
-    </package>
 
-    <package name="json-light" extends="base">
-    	<result-types>
-            <result-type name="json" class="org.apache.struts2.json.JSONResult" default="true"/>
-        </result-types>
+    <global-exception-mappings>
+      <exception-mapping result="exception" exception="java.lang.Throwable" />
+      <exception-mapping result="authzException"
+        exception="org.glite.security.voms.admin.error.VOMSAuthorizationException" />
+      <exception-mapping result="notFoundException"
+        exception="org.hibernate.ObjectNotFoundException" />
+    </global-exception-mappings>
 
-        <interceptors>
-        	<interceptor name="jsonExceptionReporting"
-        		class="org.glite.security.voms.admin.view.interceptors.JSONExceptionReportInterceptor"/>
+  </package>
 
-        	<interceptor name="jsonValidationReporting"
-        		class="org.glite.security.voms.admin.view.interceptors.JSONValidationReportInterceptor"/>
+  <package name="json-light" extends="base">
+    <result-types>
+      <result-type name="json" class="org.apache.struts2.json.JSONResult"
+        default="true" />
+    </result-types>
 
+    <interceptors>
+      <interceptor name="jsonExceptionReporting"
+        class="org.glite.security.voms.admin.view.interceptors.JSONExceptionReportInterceptor" />
 
-        	<interceptor-stack name="jsonStack">
-                <interceptor-ref name="createSession"/>
-                <interceptor-ref name="servletConfig"/>
+      <interceptor name="jsonValidationReporting"
+        class="org.glite.security.voms.admin.view.interceptors.JSONValidationReportInterceptor" />
 
-                <interceptor-ref name="jsonExceptionReporting"/>
 
-                <interceptor-ref name="globalPropsInterceptor"/>
-                <interceptor-ref name="searchAwareInterceptor"/>
-                <interceptor-ref name="logger"/>
+      <interceptor-stack name="jsonStack">
+        <interceptor-ref name="createSession" />
+        <interceptor-ref name="servletConfig" />
 
-                <interceptor-ref name="alias"/>
-                <interceptor-ref name="i18n"/>
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
+        <interceptor-ref name="jsonExceptionReporting" />
 
-                <interceptor-ref name="checkbox"/>
+        <interceptor-ref name="globalPropsInterceptor" />
+        <interceptor-ref name="searchAwareInterceptor" />
+        <interceptor-ref name="logger" />
 
-                <interceptor-ref name="prepare"/>
-                <interceptor-ref name="modelDriven"/>
-                <interceptor-ref name="chain"/>
-                <interceptor-ref name="debugging"/>
+        <interceptor-ref name="alias" />
+        <interceptor-ref name="i18n" />
+        <interceptor-ref name="params">
+          <param name="excludeParams">dojo\..*,^struts\..*</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="fileUpload"/>
+        <interceptor-ref name="checkbox" />
 
-                <interceptor-ref name="staticParams"/>
-                <interceptor-ref name="actionMappingParams"/>
+        <interceptor-ref name="prepare" />
+        <interceptor-ref name="modelDriven" />
+        <interceptor-ref name="chain" />
+        <interceptor-ref name="debugging" />
 
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
+        <interceptor-ref name="fileUpload" />
 
-                <interceptor-ref name="conversionError"/>
+        <interceptor-ref name="staticParams" />
+        <interceptor-ref name="actionMappingParams" />
 
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
+        <interceptor-ref name="params">
+          <param name="excludeParams">dojo\..*,^struts\..*</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="workflow">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
+        <interceptor-ref name="conversionError" />
 
-                <interceptor-ref name="token">
-                  <param name="excludeMethods">*</param>
-                </interceptor-ref>
+        <interceptor-ref name="validation">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="hibernateInterceptor" />
-              </interceptor-stack>
-        </interceptors>
+        <interceptor-ref name="workflow">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
 
-        <default-interceptor-ref name="jsonStack" />
+        <interceptor-ref name="token">
+          <param name="excludeMethods">*</param>
+        </interceptor-ref>
 
-        <global-results>
-          <result name="exception">ajaxException</result>
-          <result name="authzException">ajaxException</result>
-        </global-results>
+        <interceptor-ref name="hibernateInterceptor" />
+      </interceptor-stack>
+    </interceptors>
 
-    </package>
+    <default-interceptor-ref name="jsonStack" />
 
+    <global-results>
+      <result name="exception">ajaxException</result>
+      <result name="authzException">ajaxException</result>
+    </global-results>
 
-    <package name="json" extends="base">
+  </package>
 
-        <result-types>
-            <result-type name="json" class="org.apache.struts2.json.JSONResult" default="true"/>
-        </result-types>
 
-        <interceptors>
-        	<interceptor name="jsonExceptionReporting"
-        		class="org.glite.security.voms.admin.view.interceptors.JSONExceptionReportInterceptor"/>
+  <package name="json" extends="base">
 
-        	<interceptor name="jsonValidationReporting"
-        		class="org.glite.security.voms.admin.view.interceptors.JSONValidationReportInterceptor"/>
+    <result-types>
+      <result-type name="json" class="org.apache.struts2.json.JSONResult"
+        default="true" />
+    </result-types>
 
-        	<interceptor name="csrfHeaderCheck"
-        		class="org.glite.security.voms.admin.view.interceptors.CSRFGuardInterceptor"/>
+    <interceptors>
+      <interceptor name="jsonExceptionReporting"
+        class="org.glite.security.voms.admin.view.interceptors.JSONExceptionReportInterceptor" />
 
-        	<interceptor-stack name="jsonStack">
-                <interceptor-ref name="createSession"/>
-                <interceptor-ref name="servletConfig"/>
+      <interceptor name="jsonValidationReporting"
+        class="org.glite.security.voms.admin.view.interceptors.JSONValidationReportInterceptor" />
 
-                <interceptor-ref name="jsonExceptionReporting"/>
+      <interceptor name="csrfHeaderCheck"
+        class="org.glite.security.voms.admin.view.interceptors.CSRFGuardInterceptor" />
 
-                <interceptor-ref name="csrfHeaderCheck"/>
+      <interceptor-stack name="jsonStack">
+        <interceptor-ref name="createSession" />
+        <interceptor-ref name="servletConfig" />
 
-                <interceptor-ref name="globalPropsInterceptor"/>
-                <interceptor-ref name="searchAwareInterceptor"/>
-                <interceptor-ref name="logger"/>
+        <interceptor-ref name="jsonExceptionReporting" />
 
-                <interceptor-ref name="alias"/>
-                <interceptor-ref name="i18n"/>
+        <interceptor-ref name="csrfHeaderCheck" />
 
-                <interceptor-ref name="params">
-                    <param name="excludeParams">dojo\..*,^struts\..*</param>
-                </interceptor-ref>
+        <interceptor-ref name="globalPropsInterceptor" />
+        <interceptor-ref name="searchAwareInterceptor" />
+        <interceptor-ref name="logger" />
 
-                <interceptor-ref name="checkbox"/>
+        <interceptor-ref name="alias" />
+        <interceptor-ref name="i18n" />
 
+        <interceptor-ref name="params">
+          <param name="excludeParams">dojo\..*,^struts\..*</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="json" />
+        <interceptor-ref name="checkbox" />
 
-                <interceptor-ref name="prepare"/>
 
-                <interceptor-ref name="validation">
-                    <param name="excludeMethods">input,back,cancel</param>
-                </interceptor-ref>
+        <interceptor-ref name="json" />
 
-                <interceptor-ref name="modelDriven"/>
+        <interceptor-ref name="prepare" />
 
-                <interceptor-ref name="chain"/>
-                <interceptor-ref name="debugging"/>
+        <interceptor-ref name="validation">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
 
-                <interceptor-ref name="jsonValidationReporting"/>
+        <interceptor-ref name="modelDriven" />
 
-                <interceptor-ref name="hibernateInterceptor" />
-              </interceptor-stack>
-        </interceptors>
+        <interceptor-ref name="chain" />
+        <interceptor-ref name="debugging" />
 
-        <default-interceptor-ref name="jsonStack" />
+        <interceptor-ref name="jsonValidationReporting" />
 
-        <global-results>
-          <result name="exception">ajaxException</result>
-          <result name="authzException">ajaxException</result>
-        </global-results>
-    </package>
+        <interceptor-ref name="hibernateInterceptor" />
+      </interceptor-stack>
+    </interceptors>
+
+    <default-interceptor-ref name="jsonStack" />
+
+    <global-results>
+      <result name="exception">ajaxException</result>
+      <result name="authzException">ajaxException</result>
+    </global-results>
+  </package>
 </struts>

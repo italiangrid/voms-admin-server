@@ -17,7 +17,7 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
 import java.io.Serializable;
 

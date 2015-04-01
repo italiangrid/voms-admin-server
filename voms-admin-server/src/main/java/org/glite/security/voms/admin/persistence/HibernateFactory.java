@@ -35,6 +35,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.exception.SQLGrammarException;
 
 public class HibernateFactory {
 
@@ -188,28 +189,25 @@ public class HibernateFactory {
       threadTransaction.set(null);
     } catch (HibernateException ex) {
       rollbackTransaction();
-      log.error("Error committing hibernate transaction:" + ex.getMessage());
-
-      if (log.isDebugEnabled())
-        log.error("Error committing hibernate transaction!", ex);
-
+      log.error("Error committing hibernate transaction:" + ex.getMessage(),ex);
+      
       throw new VOMSDatabaseException(ex.getMessage(), ex);
     }
   }
 
   public static void rollbackTransaction() {
 
+    
     Transaction tx = (Transaction) threadTransaction.get();
+    
+    log.warn("Rolling back transaction {}", tx);
     try {
 
       threadTransaction.set(null);
       if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
         tx.rollback();
     } catch (HibernateException ex) {
-      log.error("Error rolling back hibernate transaction:" + ex.getMessage());
-
-      if (log.isDebugEnabled())
-        log.error("Error committing hibernate transaction!", ex);
+      log.error("Error rolling back hibernate transaction:" + ex.getMessage(),ex);
 
       throw new VOMSDatabaseException(ex.getMessage(), ex);
 

@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -79,10 +81,10 @@ public class RequesterInfo implements Serializable {
   @Column(nullable = false)
   String emailAddress;
 
-  @org.hibernate.annotations.CollectionOfElements
+  @ElementCollection
   @JoinTable(name = "requester_personal_info", joinColumns = @JoinColumn(
     name = "requester_id"))
-  @org.hibernate.annotations.MapKey(columns = @Column(name = "pi_key"))
+  @MapKeyColumn(name="pi_key")
   @Column(name = "pi_value")
   Map<String, String> personalInformation = new HashMap<String, String>();
 

@@ -28,10 +28,10 @@ import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.ACL;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
 import org.hibernate.Query;
 
 public class VOMSRoleDAO {

@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.hibernate.Query;
 
 public class VOMSAttributeDAO {
@@ -48,7 +48,7 @@ public class VOMSAttributeDAO {
 
   public List getAllAttributeDescriptions() {
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription order by name";
+    String query = "from VOMSAttributeDescription order by name";
     return HibernateFactory.getSession().createQuery(query).list();
   }
 
@@ -100,7 +100,7 @@ public class VOMSAttributeDAO {
 
   public VOMSAttributeDescription getAttributeDescriptionByName(String name) {
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription where name = :name";
+    String query = "from VOMSAttributeDescription where name = :name";
 
     VOMSAttributeDescription retVal = (VOMSAttributeDescription) HibernateFactory
       .getSession().createQuery(query).setString("name", name).uniqueResult();

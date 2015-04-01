@@ -17,16 +17,18 @@
  * Authors:
  * 	Andrea Ceccanti (INFN)
  */
-package org.glite.security.voms.admin.persistence.model;
+package org.glite.security.voms.admin.persistence.model.attribute;
 
 import org.glite.security.voms.service.attributes.AttributeValue;
 
-public interface VomsAttributeValue {
+public interface GenericAttributeValue {
 
   public VOMSAttributeDescription getAttributeDescription();
 
   public void setAttributeDescription(VOMSAttributeDescription desc);
 
+  public String getName();
+  
   public String getValue();
 
   public void setValue(String value);

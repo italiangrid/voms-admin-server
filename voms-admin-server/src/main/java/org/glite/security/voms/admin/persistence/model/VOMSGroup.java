@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,13 +38,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute;
+import org.hibernate.annotations.SortNatural;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Entity
+@Table(name="groups")
 public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
 
   public static final Logger log = LoggerFactory.getLogger(VOMSGroup.class);
@@ -70,24 +74,21 @@ public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
   @Column(nullable = false)
   Boolean must;
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", orphanRemoval=true)
   Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
 
   @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group",
     fetch = FetchType.EAGER)
-  @Sort(type = SortType.NATURAL)
+  @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", orphanRemoval=true)
   Set<ACL> acls = new HashSet<ACL>();
 
+  @ManyToMany(mappedBy="managedGroups", cascade={CascadeType.REMOVE})
   Set<GroupManager> managers = new HashSet<GroupManager>();
 
-  Boolean restricted;
+  Boolean restricted = false;
 
   String description;
 
