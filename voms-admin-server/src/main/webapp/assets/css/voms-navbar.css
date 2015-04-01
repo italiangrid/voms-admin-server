@@ -1,0 +1,71 @@
+.navbar-voms {
+	border-radius: 0 !important;
+  background-color: #205081;
+  border-color: #205081;
+  margin-bottom: 0;
+}
+.navbar-voms .navbar-brand {
+  color: #ffffff;
+}
+.navbar-voms .navbar-brand:hover, .navbar-voms .navbar-brand:focus {
+  color: #ffffff;
+  background-color: #205081;
+  border-color: #205081;
+}
+.navbar-voms .navbar-text {
+  color: #ffffff;
+}
+.navbar-voms .navbar-nav > li > a {
+  color: #ffffff;
+}
+.navbar-voms .navbar-nav > li > a:hover, .navbar-voms .navbar-nav > li > a:focus {
+  color: #ffffff;
+  background-color: #205081;
+  border-color: #205081;
+}
+.navbar-voms .navbar-nav > .active > a, .navbar-voms .navbar-nav > .active > a:hover, .navbar-voms .navbar-nav > .active > a:focus {
+  color: #ffffff;
+  background-color: #205081;
+  border-color: #205081;
+}
+.navbar-voms .navbar-nav > .open > a, .navbar-voms .navbar-nav > .open > a:hover, .navbar-voms .navbar-nav > .open > a:focus {
+  color: #ffffff;
+  background-color: #205081;
+  border-color: #205081;
+}
+.navbar-voms .navbar-toggle {
+  border-color: #205081;
+}
+.navbar-voms .navbar-toggle:hover, .navbar-voms .navbar-toggle:focus {
+  background-color: #205081;
+  border-color: #205081;
+}
+.navbar-voms .navbar-toggle .icon-bar {
+  background-color: #ffffff;
+}
+.navbar-voms .navbar-collapse,
+.navbar-voms .navbar-form {
+  border-color: #ffffff;
+}
+.navbar-voms .navbar-link {
+  color: #ffffff;
+}
+.navbar-voms .navbar-link:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .navbar-voms .navbar-nav .open .dropdown-menu > li > a {
+    color: #ffffff;
+  }
+  .navbar-voms .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-voms .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+    background-color: #205081;
+    border-color: #205081;
+  }
+  .navbar-voms .navbar-nav .open .dropdown-menu > .active > a, .navbar-voms .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-voms .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #205081;
+    border-color: #205081;
+  }
+}
