@@ -30,7 +30,7 @@
     permission="SUSPEND"/>
 
 <s:if test="#attr.canRead">
-<h1>Users:</h1>
+<h2>Users</h2>
 
 <div id="searchPane">
   <s:form validate="true" theme="simple" action="search">

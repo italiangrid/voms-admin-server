@@ -21,14 +21,17 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<h2>VO ${voName} admin dashboard</h2>
+
 <s:if test="model == null">
 	You are not a VO admin. You will see nothing around here.
 </s:if>
 <s:else>
-	<h1>
-	  Welcome to the <span class="voName">${voName}</span> VO, <voms:formatDN dn="${realSubject}" fields="CN"/>
-	</h1>
-	
+  <p>
+    Welcome to the ${voName} virtual organization management page,
+    ${currentAdmin.name}.
+  </p>
+  
 	<s:if test="#attr.currentAdmin.voUser">
 		<div style="float: right; margin-bottom: .5em">
 			<s:url action="home" namespace="/user" var="userHomeURL"/>
@@ -40,7 +43,6 @@
 	
 	<s:if test="#attr.canManage">
 		<div class="info-tab">
-	  		<h2><span>Pending administrative requests</span></h2>
 	  		<voms:div cssClass="content" id="pending-req-content">
 	  			<tiles2:insertTemplate template="pendingRequests.jsp"/>  
 	  		</voms:div>

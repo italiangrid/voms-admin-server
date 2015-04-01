@@ -182,7 +182,7 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
    */
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter your address.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters.")
   public String getAddress() {
 
@@ -203,7 +203,7 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
    */
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter your phoneNumber.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters.")
   public String getPhoneNumber() {
 
@@ -245,7 +245,7 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
    */
   @RequiredFieldValidator(type = ValidatorType.FIELD,
     message = "You must sign the AUP.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^true$",
     message = "You must accept the terms of the AUP to proceed")
   public String getAupAccepted() {
 

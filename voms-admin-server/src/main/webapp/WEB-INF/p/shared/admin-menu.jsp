@@ -21,57 +21,40 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<voms:hasPermissions var="isVOAdmin" context="vo" permission="ALL" />
 
-<tiles2:insertTemplate template="menu.jsp"/>
 
-<voms:hasPermissions 
-    var="isVOAdmin"
-    context="vo"
-    permission="ALL"/>
-    
-<div id="admin-menu">
- 
-<ul>
+<ul id="voms-menu" class="nav nav-pills nav-stacked">
+	<li id="voms-menu-admin-home"><a
+		href="<s:url action="login" namespace="/home"/>"><i
+			class="glyphicon glyphicon-home"></i> Home</a>
+	</li>
 
-  <li>
-    Browse:
-  </li>
-  <li class="first-menu-item">
-    <a href="<s:url action="search" namespace="/user"/>" class="vomsLink">Users</a> 
-  </li>
-  
-  <li>
-    <a href="<s:url action="search" namespace="/group"/>" class="vomsLink">Groups</a>
-  </li>
-  
-  <li>
-    <a href="<s:url action="search" namespace="/role"/>" class="vomsLink">Roles</a>
-  </li>
-  
-  <li>
-    <a href="<s:url action="search" namespace="/attribute"/>" class="vomsLink">Attributes</a>
-  </li>
-  <li>
-    <a href="<s:url action="manage" namespace="/acl"/>" class="vomsLink">ACLs</a>
-  </li>
-  
-  <s:if test="#request.registrationEnabled">
-  
-    <li>
-      <a href="<s:url action="load" namespace="/aup"/>"class="vomsLink">AUPs</a>
-    </li>
-    
-    <s:if test="#attr.isVOAdmin">
-      <li>
-        <a href="<s:url action="index" namespace="/manager"/>"class="vomsLink">Group managers</a>
-      </li>
-      
-      <li>
-        <a href="<s:url action="index" namespace="/request_history"/>"class="vomsLink">Request log</a>
-      </li>
-    </s:if>
-    
-  </s:if>
+	<li id="voms-menu-admin-requests"> <a
+		href="<s:url action="index" namespace="/admin"/>"><i
+			class="glyphicon glyphicon-inbox"></i> Requests</a>
+	</li>
+
+	<li id="voms-menu-user-search"><a
+		href="<s:url action="search" namespace="/user"/>"><i
+			class="fa fa-user"></i> Users</a></li>
+			
+	<li id="voms-menu-group-search"><a
+		href="<s:url action="search" namespace="/group"/>"><i
+			class="fa fa-users"></i> Groups</a></li>
+			
+	<li id="voms-menu-role-search"> <a
+		href="<s:url action="search" namespace="/role"/>"><i
+			class="fa fa-square"></i> Roles</a>
+	</li>
+	
+	<li id="voms-menu-attribute-search"><a
+		href="<s:url action="search" namespace="/attribute"/>"><i
+			class="fa fa-flag"></i> Attributes</a></li>
+
+	<li id="voms-menu-settings"> <a
+		href="<s:url action="manage" namespace="/acl"/>"><i
+			class="fa fa-cog"></i> Settings</a>
+	</li>
 
 </ul>
-</div>

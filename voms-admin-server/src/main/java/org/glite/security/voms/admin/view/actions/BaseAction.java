@@ -25,12 +25,8 @@ package org.glite.security.voms.admin.view.actions;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts2.ServletActionContext;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.operations.attributes.FindAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
@@ -135,5 +131,27 @@ public class BaseAction extends ActionSupport implements ValidationAware {
   protected Date getDefaultFutureDate() {
 
     return getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 7);
+  }
+
+  public String getNamespaceName() {
+
+    String namespaceName = ServletActionContext.getActionMapping()
+      .getNamespace();
+
+    int subNameIndex = namespaceName.lastIndexOf("/");
+
+    if (subNameIndex == -1) {
+      return "";
+    }
+
+    String result = namespaceName.substring(subNameIndex + 1);
+
+    return result;
+
+  }
+  
+  
+  public String getActionName() {
+    return ServletActionContext.getActionMapping().getName();
   }
 }

@@ -296,6 +296,16 @@ public class CurrentAdmin {
       return null;
   }
 
+  public String getName(){
+    
+    if (getVoUser() != null){
+      if (getVoUser().getName() != null){
+        return getVoUser().getName();
+      }
+    }
+    
+    return getRealCN();
+  }
   public String getRealEmailAddress() {
 
     VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
@@ -327,7 +337,7 @@ public class CurrentAdmin {
 
     return theContext.getVOMSAttributes();
   }
-
+  
   public String toString() {
 
     return admin.toString();

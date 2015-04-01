@@ -36,7 +36,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 public class VOMSUserJSON {
 
   /**
-	 * 
+	 *
 	 */
   private static final long serialVersionUID = 1L;
 
@@ -80,7 +80,7 @@ public class VOMSUserJSON {
     message = "Please provide a name for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getName() {
 
     return name;
@@ -95,7 +95,7 @@ public class VOMSUserJSON {
     message = "Please provide a family name for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The family name contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getSurname() {
 
     return surname;
@@ -110,7 +110,7 @@ public class VOMSUserJSON {
     message = "Please provide an institution for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getInstitution() {
 
     return institution;
@@ -125,7 +125,7 @@ public class VOMSUserJSON {
     message = "Please provide an address for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The address contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getAddress() {
 
     return address;
@@ -140,7 +140,7 @@ public class VOMSUserJSON {
     message = "Please provide a phone number for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The phone number contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getPhoneNumber() {
 
     return phoneNumber;
@@ -157,7 +157,7 @@ public class VOMSUserJSON {
     message = "Please enter a valid email address.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The email address contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getEmailAddress() {
 
     return emailAddress;

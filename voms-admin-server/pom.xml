@@ -6,7 +6,7 @@
   http://maven.apache.org/xsd/maven-4.0.0.xsd"
   >
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
@@ -22,7 +22,7 @@
     <api.version>${project.version}</api.version>
     <interface-version>2.0.2</interface-version>
 
-    <struts.version>2.2.1</struts.version>
+    <struts.version>2.3.20</struts.version>
     <hibernate.version>3.2.6.ga</hibernate.version>
     <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
     <c3p0.version>0.9.1</c3p0.version>
@@ -172,6 +172,14 @@
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm-attrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -418,7 +426,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>dev</id>
       <properties>

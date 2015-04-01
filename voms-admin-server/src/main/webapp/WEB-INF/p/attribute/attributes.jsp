@@ -24,10 +24,9 @@
     context="vo"
     permission="ATTRIBUTES_READ"/>
     
+<h2>Generic attributes</h2>
 
 <s:if test="#attr.canRead">
-
-<h1>Generic attributes:</h1>
 
 <div id="searchPane">
 <s:form validate="true" theme="simple">

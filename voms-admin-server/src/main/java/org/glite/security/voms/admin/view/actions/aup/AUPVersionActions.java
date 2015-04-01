@@ -63,7 +63,7 @@ public abstract class AUPVersionActions extends BaseAction implements
     message = "The version string is required")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The version field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getVersion() {
 
     return version;

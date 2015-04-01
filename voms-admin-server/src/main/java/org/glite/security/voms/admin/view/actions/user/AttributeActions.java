@@ -76,7 +76,7 @@ public class AttributeActions extends UserActionSupport {
   @StringLengthFieldValidator(type = ValidatorType.FIELD,
     message = "The value for this attribute is too long", maxLength = "255")
   // @RegexFieldValidator(type = ValidatorType.FIELD, message =
-  // "This field contains illegal characters!", expression = "^[^<>&=;]*$")
+  // "This field contains illegal characters!", regex = "^[^<>&=;]*$")
   public String getAttributeValue() {
 
     return attributeValue;

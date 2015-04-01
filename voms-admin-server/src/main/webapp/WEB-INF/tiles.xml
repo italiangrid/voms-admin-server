@@ -25,20 +25,9 @@
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
        
 <tiles-definitions>
-  
-  
-    <definition name="layout" template="/WEB-INF/p/shared/layout.jsp">
-      <put-attribute name="header" value="/WEB-INF/p/shared/header.jsp"/>
-      <put-attribute name="menu" value="/WEB-INF/p/shared/menu.jsp"/>
-      <put-attribute name="messages" value="/WEB-INF/p/shared/messages.jsp"/>
-      <put-attribute name="leftBar" value=""/>
-      <put-attribute name="content" value=""/>
-      <put-attribute name="footer" value="/WEB-INF/p/shared/footer.jsp"/>
-    </definition>
     
-    <definition name="empty-layout" extends="layout">
-      <put-attribute name="menu" value=""/>
-      <put-attribute name="leftBar" value=""/>
+    <definition name="layout" template="/WEB-INF/p/shared/l3.jsp">
+      <put-attribute name="content" value=""/>
     </definition>
     
     <definition name="user-layout" extends="layout">
@@ -47,10 +36,14 @@
     
     <definition name="admin-layout" extends="layout">
       <put-attribute name="menu" value="/WEB-INF/p/shared/admin-menu.jsp"/>
-      
-      <!--  
-      <put-attribute name="leftBar" value="/WEB-INF/p/shared/admin-left-bar.jsp"/>
-        -->
+    </definition>
+    
+    <definition name="adminHome" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/admin/home.jsp"/>
+    </definition>
+    
+    <definition name="empty-layout" extends="layout">
+      <put-attribute name="menu" value=""/>
     </definition>
     
     <definition name="guest-layout" extends="layout">
@@ -65,10 +58,6 @@
     
     <definition name="userHome" extends="user-layout" preparer="org.glite.security.voms.admin.view.preparers.user.UserDetailPreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/home.jsp"/>
-    </definition>
-    
-    <definition name="adminHome" extends="admin-layout">
-      <put-attribute name="content" value="/WEB-INF/p/admin/home.jsp"/>
     </definition>
     
     <definition name="requestDetails" extends="admin-layout">

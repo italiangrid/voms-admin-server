@@ -50,4 +50,5 @@ public class HomeAction extends AdminActionSupport {
 
     return pendingRequests;
   }
+  
 }

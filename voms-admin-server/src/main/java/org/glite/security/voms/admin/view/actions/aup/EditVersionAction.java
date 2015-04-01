@@ -90,7 +90,7 @@ public class EditVersionAction extends AUPVersionActions {
     message = "The url field is required!")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The version field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getUrl() {
 
     return url;

@@ -42,7 +42,7 @@ public class SearchData {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "the search text field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getText() {
 
     return text;

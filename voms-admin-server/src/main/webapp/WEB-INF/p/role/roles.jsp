@@ -23,9 +23,11 @@
 <voms:hasPermissions var="canRead"
     context="vo"
     permission="CONTAINER_READ"/>
+
+<h2>Roles</h2>
     
 <s:if test="#attr.canRead">
-<h1>Roles:</h1>
+
 <div id="searchPane">
 <s:form validate="true" theme="simple">
   <s:hidden name="searchData.type" value="%{'role'}"/>
