@@ -24,87 +24,28 @@
 <voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
 <voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND"/>
 
-<div class="usernameHeader">
-    
-  	<s:if test="name != null and surname != null">
-        <span style="vertical-align: middle">
-		  <s:property value="name+ ' ' +surname"/>
-        </span>
-			<span class="institution">
-    			(<s:property value="institution"/>)  
-  			</span>
-	</s:if>
-	<s:else>	
-		<s:set value="dn" var="userDN"/>
-		User
-		<span class="highlight">
-			<voms:formatDN dn="${userDN}" fields="CN"/>
-		</span>
-	</s:else>
-    
-<div class="userAdminActions">
-  <s:if test="#attr.canSuspend">
-    
-    <s:if test="suspended">
-    	<s:form action="restore" theme="simple" cssStyle="display:inline">
-    		<s:token/>
-    		<s:hidden name="userId" value="%{id}"/>
-    		<s:submit value="%{'Restore this user'}"/>
-    	</s:form>
-    </s:if>
-    <s:else>
-    	<s:form action="suspend" theme="simple" cssStyle="display:inline">
-    		<s:token/>
-    		<s:hidden name="userId" value="%{id}"/>
-    		<s:submit value="%{'Suspend this user'}" onclick="return openSuspendDialog(this, 'suspendUserDialog','%{shortName}');"/>
-    	</s:form>
-    </s:else>
-    
-    </s:if>
-    
-	<s:if test="#attr.canDelete">
-		<s:form action="delete" theme="simple" cssStyle="display:inline">
-    		<s:token/>
-    		<s:hidden name="userId" value="%{id}"/>
-    		<s:submit value="%{'Delete this user'}" onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
-    	</s:form>
-	
-	</s:if>
-</div>
-</div>
+<h2>
+  <tiles2:insertTemplate template="userName.jsp"/>
+	  <s:if test="suspended">
+	    <span 
+	     class="label label-danger pull-right"
+	     data-toggle="tooltip" 
+       data-placement="bottom" 
+       title="User CANNOT get VOMS credentials for this VO">
+       suspended</span>
+	  </s:if>
+	  <s:else>
+	    <span class="label label-success pull-right" 
+	     data-toggle="tooltip" 
+	     data-placement="bottom" 
+	     title="User can get VOMS credentials for this VO">active</span>
+	  </s:else>
+</h2>
 
-<div class="badge-container">
-  <tiles2:insertTemplate template="suspensionDetail.jsp"/>
-</div>
+<p>
+<tiles2:insertTemplate template="userInfo.jsp"/>
+</p>
 
-<div class="badge-container">
-  <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
-</div>
+<tiles2:insertTemplate template="userToolbar.jsp"/>
 
-<s:if test="not #attr.disableMembershipEndTime">
-	<tiles2:insertTemplate template="membershipExpiration2.jsp"/>
-</s:if>
-
-<tiles2:insertTemplate template="personalInfoPane.jsp">
-  <tiles2:putAttribute name="panelName" value="Personal information"/>
-</tiles2:insertTemplate>
-
-<tiles2:insertTemplate template="certificatePane.jsp">
-  <tiles2:putAttribute name="panelName" value="Certificates"/>
-</tiles2:insertTemplate>
-  
-<tiles2:insertTemplate template="mappingsPane.jsp"/>
-
-<tiles2:insertTemplate template="attributesPane.jsp">
-	<tiles2:putAttribute name="panelName" value="Generic Attributes"/>
-</tiles2:insertTemplate>
-
-<tiles2:insertTemplate template="aupStatusPane.jsp">
-  <tiles2:putAttribute name="panelName" value="AUP acceptance status"/>
-</tiles2:insertTemplate>
-
-<tiles2:insertTemplate template="requestHistoryPane.jsp">
-	  <tiles2:putAttribute name="panelName" value="Request history"/>
-</tiles2:insertTemplate>
-
-
+<tiles2:insertTemplate template="userPanels.jsp"/>

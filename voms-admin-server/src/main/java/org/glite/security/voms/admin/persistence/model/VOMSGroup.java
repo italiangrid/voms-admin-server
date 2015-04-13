@@ -78,7 +78,7 @@ public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
   Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
 
   @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group",
-    fetch = FetchType.EAGER)
+    fetch = FetchType.EAGER, orphanRemoval=true)
   @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 

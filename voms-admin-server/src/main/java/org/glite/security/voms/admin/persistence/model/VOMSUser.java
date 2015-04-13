@@ -289,6 +289,20 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     val.setValue(value);
 
   }
+  
+  
+  public void cleanMappings(){
+    Iterator<VOMSMapping> mappingsIter = getMappings().iterator();
+    
+    while (mappingsIter.hasNext()){
+      VOMSMapping m = mappingsIter.next();
+      mappingsIter.remove();
+      m.getGroup().removeMapping(m);
+      if (m.getRole()!= null){
+        m.getRole().removeMapping(m);
+      }
+    }
+  }
 
   public void addAttribute(VOMSUserAttribute val) {
 
@@ -451,6 +465,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       if (m.getGroup().equals(g) && m.isRoleMapping()) {
         i.remove();
         m.getRole().removeMapping(m);
+        m.getGroup().removeMapping(m);
       }
     }
 
@@ -1287,4 +1302,5 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return -1;
 
   }
+  
 }

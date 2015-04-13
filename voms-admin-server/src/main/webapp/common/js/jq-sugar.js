@@ -183,7 +183,6 @@ function eyeCandy(){
 		$(this).parent().find('.panelContent').toggle();
 	});
 	
-	// $('input[type="submit"]').addClass('submitButton');
 	
 	$('*[readonly="readonly"]').addClass('readOnly');
 	

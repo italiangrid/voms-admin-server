@@ -28,7 +28,6 @@
 				<li id="nav-roles"><a href="${roles_url}">Roles</a></li>
 				<li id="nav-attributes"><a href="${attributes_url}">Generic attributes</a></li>
 				
-				
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			  <li id="nav-requests"><a href="${requests_url}" data-toggle="tooltip" title="Requests" data-placement="left"><i class="glyphicon glyphicon-inbox"></i></a></li>
@@ -36,10 +35,10 @@
 				<li class="dropdown">
           <a id="voms-nav-dropdown" href="#" class="dropdown-toggle" 
             data-toggle="dropdown" role="button" aria-expanded="false" title="User info" data-placement="right">
-            <i class="glyphicon glyphicon-user"></i>
+            <i class="glyphicon glyphicon-home"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="#">Andrea Ceccanti</a></li>
+            <li><a href="#">${voName}</a></li>
           </ul>
         </li>
 		  </ul>

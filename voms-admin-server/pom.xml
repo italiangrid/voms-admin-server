@@ -23,10 +23,9 @@
     <interface-version>2.0.2</interface-version>
 
     <struts.version>2.3.20</struts.version>
+    <struts.boostrap.plugin.version>2.0.1</struts.boostrap.plugin.version>
+    <struts.jquery.plugin.version>3.7.1</struts.jquery.plugin.version>
     <hibernate.version>4.3.8.Final</hibernate.version>
-    <!--
-    <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
-    -->
     <c3p0.version>0.9.5</c3p0.version>
     <opensaml.version>2.5.3</opensaml.version>
     <tiles.version>2.0.6</tiles.version>
@@ -283,13 +282,26 @@
       <artifactId>struts2-core</artifactId>
       <version>${struts.version}</version>
     </dependency>
+    
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-convention-plugin
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
-
+    
+    <dependency>
+        <groupId>com.jgeppert.struts2.bootstrap</groupId>
+        <artifactId>struts2-bootstrap-plugin</artifactId>
+        <version>${struts.boostrap.plugin.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.jgeppert.struts2.jquery</groupId>
+      <artifactId>struts2-jquery-plugin</artifactId>
+      <version>${struts.jquery.plugin.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-tiles-plugin</artifactId>

@@ -49,9 +49,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityContextFilter implements Filter, ValidationResultListener {
 
-  public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
-  public static final int SESSION_LIFETIME_IN_SECONDS = 120;
-
   protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
   private VOMSACValidator validator;
@@ -64,18 +61,8 @@ public class SecurityContextFilter implements Filter, ValidationResultListener {
 
   protected void initContext(HttpServletRequest request) {
 
-    HttpSession s = request.getSession(true);
-    s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
-
-    VOMSSecurityContext sc = (VOMSSecurityContext) s
-      .getAttribute(SECURITY_CONTEXT_SESSION_KEY);
-
-    if (sc == null) {
       InitSecurityContext.setContextFromRequest(request, validator);
-      s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, CurrentSecurityContext.get());
       InitSecurityContext.logConnection();
-    } else
-      CurrentSecurityContext.set(sc);
 
   }
 
@@ -108,10 +95,12 @@ public class SecurityContextFilter implements Filter, ValidationResultListener {
   @Override
   public void notifyValidationResult(VOMSValidationResult result) {
 
-    if (!result.isValid())
+    if (!result.isValid()){
       log.warn("VOMS attributes validation result: {}", result);
-    else
+    }
+    else{
       log.debug("VOMS attributes validation result: {}", result);
+    }
   }
 
 }

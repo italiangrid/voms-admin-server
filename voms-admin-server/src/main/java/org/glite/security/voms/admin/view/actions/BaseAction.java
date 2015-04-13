@@ -24,8 +24,10 @@ package org.glite.security.voms.admin.view.actions;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
@@ -45,7 +47,7 @@ import com.opensymphony.xwork2.ValidationAware;
  * 
  */
 
-public class BaseAction extends ActionSupport implements ValidationAware {
+public class BaseAction extends ActionSupport implements ValidationAware, RequestAware {
 
   /**
 	 * 
@@ -64,6 +66,8 @@ public class BaseAction extends ActionSupport implements ValidationAware {
 
   public static final String AUTHZ_ERROR = "authorizationError";
 
+  private Map<String, Object> request;
+  
   protected VOMSUser userById(Long id) {
 
     if (id == null)
@@ -150,8 +154,18 @@ public class BaseAction extends ActionSupport implements ValidationAware {
 
   }
   
-  
   public String getActionName() {
     return ServletActionContext.getActionMapping().getName();
   }
+
+  @Override
+  public void setRequest(Map<String, Object> request) {
+    
+    this.request = request;
+  }
+  
+  public Map<String, Object> getRequest(){
+    return request;
+  }
+  
 }

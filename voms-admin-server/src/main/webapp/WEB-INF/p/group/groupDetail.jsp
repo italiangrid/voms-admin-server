@@ -25,12 +25,10 @@
   <s:param name="aclGroupId" value="id"/>
 </s:url>
 
-<s:set value="name" var="thisGroup"/>
-
 <h1>
   Group <span class="groupname"><s:property value="name"/></span>
 
-  <voms:authorized permission="ACL_READ" context="${thisGroup}">
+  <voms:authorized permission="ACL_READ" context="${model.name}">
   <s:a href="%{editACLURL}" cssClass="actionLink" cssStyle="margin-left:1em">View ACL</s:a>
   </voms:authorized>
 </h1>

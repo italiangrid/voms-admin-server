@@ -27,6 +27,7 @@
 <tiles-definitions>
     
     <definition name="layout" template="/WEB-INF/p/shared/l3.jsp">
+      <put-attribute name="header" value="/WEB-INF/p/shared/pageheader.jsp"/>
       <put-attribute name="content" value=""/>
     </definition>
     
@@ -42,8 +43,8 @@
       <put-attribute name="content" value="/WEB-INF/p/admin/home.jsp"/>
     </definition>
     
-    <definition name="empty-layout" extends="layout">
-      <put-attribute name="menu" value=""/>
+    <definition name="no-layout" template="/WEB-INF/p/shared/no-layout.jsp">
+      <put-attribute name="content" value=""/>
     </definition>
     
     <definition name="guest-layout" extends="layout">
@@ -236,15 +237,15 @@
       <put-attribute name="content" value="/WEB-INF/p/acl/editEntry.jsp"/>
     </definition>
     
-    <definition name="exception" extends="empty-layout">
+    <definition name="exception" extends="no-layout">
       <put-attribute name="content" value="/WEB-INF/p/exception/exception.jsp"/>
     </definition>
     
-    <definition name="authzException" extends="empty-layout">
+    <definition name="authzException" extends="no-layout">
       <put-attribute name="content" value="/WEB-INF/p/exception/authzException.jsp"/>
     </definition>
     
-    <definition name="notFoundException" extends="empty-layout">
+    <definition name="notFoundException" extends="no-layout">
       <put-attribute name="content" value="/WEB-INF/p/exception/notFoundException.jsp"/>
     </definition>
     
@@ -254,7 +255,7 @@
     
     <definition name="ajaxException" template="/WEB-INF/p/exception/exception.jsp"/>
     
-    <definition name="tokenError" extends="empty-layout">
+    <definition name="tokenError" extends="no-layout">
         <put-attribute name="content" value="/WEB-INF/p/exception/tokenError.jsp"/>
     </definition>
     

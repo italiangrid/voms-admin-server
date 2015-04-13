@@ -658,7 +658,7 @@ public class VOMSUserDAO {
     DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
     
     u.getCertificates().clear();
-    u.getMappings().clear();
+    u.cleanMappings();
     u.getAttributes().clear();
     u.getAupAcceptanceRecords().clear();
     u.getPersonalInformations().clear();

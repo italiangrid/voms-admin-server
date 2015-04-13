@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-<p>
+<div id="pi-pane">
 <s:form 
   id="savePersonalInformationForm"
   action="save-personal-information"
@@ -8,7 +8,7 @@
   cssClass="form-horizontal">
   
   <s:token/>
-  <s:hidden name="userId" value="%{id}" />
+  
   <s:textfield name="theName" label="Given name" size="40"
       value="%{name}" placeholder="Insert the user name..." />
       
@@ -26,15 +26,12 @@
       
     <s:textfield name="theEmailAddress" disabled="false" label="Email"
       size="40" value="%{emailAddress}" />
-    
-    <div class="form-group">
-      <div class="col-sm-offset-3 col-sm-9">
-	    <sj:submit cssClass="btn btn-primary" 
-	      value="%{'Save personal information'}" 
-	      validate="true" validateFunction="bootstrapValidation"
-	      />
-	      </div>
-    </div>
-</s:form>
-</p>
 
+  <sj:submit cssClass="btn btn-primary" 
+      formIds="savePersonalInformationForm"
+      value="%{'Save personal information'}" 
+      validate="true" validateFunction="bootstrapValidation"
+      targets="pi-pane"
+      />
+</s:form>
+</div>

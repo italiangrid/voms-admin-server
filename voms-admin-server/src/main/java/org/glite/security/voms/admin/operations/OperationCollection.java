@@ -43,9 +43,7 @@ public abstract class OperationCollection {
       instantiateOperations();
 
     } catch (Throwable e) {
-      log.error("Error instantiating operation: " + e.getMessage());
-      if (log.isDebugEnabled())
-        log.error("Error instantiating operation: " + e.getMessage(), e);
+      log.error("Error instantiating operation: " + e.getMessage(),e);
 
       throw new VOMSException("Error instantiating operation: "
         + e.getMessage(), e);

@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
     type = "redirectAction") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
-public class CreateAction extends UserActionSupport {
+public class CreateUserAction extends UserActionSupport {
 
   /**
 	 * 

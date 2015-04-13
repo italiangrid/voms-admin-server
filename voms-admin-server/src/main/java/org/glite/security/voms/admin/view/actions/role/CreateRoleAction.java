@@ -19,8 +19,9 @@
  */
 package org.glite.security.voms.admin.view.actions.role;
 
+import java.util.Arrays;
+
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -34,13 +35,15 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-  @Result(name = BaseAction.SUCCESS, location = "search",
-    type = "redirectAction"),
+  @Result(name = BaseAction.SUCCESS, location = "search", type="redirectAction"),
   @Result(name = BaseAction.INPUT, location = "roleCreate"),
-  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "roleCreate") })
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "search",
+  type = "redirectAction")
+})
+
 @InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "execute" })
-public class CreateAction extends RoleActionSupport {
+  "token.includeMethods", "execute" , "store.operationMode", "STORE"})
+public class CreateRoleAction extends RoleActionSupport {
 
   /**
 	 * 
@@ -64,7 +67,7 @@ public class CreateAction extends RoleActionSupport {
     VOMSRole r = (VOMSRole) CreateRoleOperation.instance(getRoleName())
       .execute();
     if (r != null)
-      addActionMessage(getText("confirm.role.creation", r.getName()));
+      addActionMessage(getText("confirm.role.creation", Arrays.asList(r.getName())));
 
     return SUCCESS;
   }

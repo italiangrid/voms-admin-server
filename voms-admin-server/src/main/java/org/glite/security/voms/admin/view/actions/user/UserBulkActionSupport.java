@@ -35,10 +35,11 @@ public class UserBulkActionSupport extends BaseAction {
   @Override
   public void validate() {
 
-    if (userIds == null)
+    if (userIds == null){
       addActionError("No users selected!");
-    else if (userIds.contains("ognl.NoConversionPossible"))
+    } else if (userIds.contains("ognl.NoConversionPossible")){
       addActionError("No users selected!");
+    }
   }
 
   public List<Long> getUserIds() {

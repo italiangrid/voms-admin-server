@@ -44,7 +44,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
-public class CreateAction extends GroupActionSupport {
+public class CreateGroupAction extends GroupActionSupport {
 
   /**
 	 * 

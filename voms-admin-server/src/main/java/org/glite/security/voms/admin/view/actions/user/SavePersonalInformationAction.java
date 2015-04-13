@@ -23,7 +23,6 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
@@ -36,10 +35,9 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-  @Result(name = UserActionSupport.SUCCESS, location = "personalInfo.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "personalInfo.jsp"),
+  @Result(name = UserActionSupport.SUCCESS, location = "load", type="chain"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "personalInfo.jsp") })
+    location = "load", type="redirectAction") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class SavePersonalInformationAction extends UserActionSupport {

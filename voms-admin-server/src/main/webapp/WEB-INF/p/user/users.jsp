@@ -21,53 +21,46 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-  <voms:hasPermissions var="canRead"
+<voms:hasPermissions var="canRead"
     context="vo"
     permission="r"/>
     
-  <voms:hasPermissions var="canSuspend"
+<voms:hasPermissions var="canSuspend"
     context="vo"
     permission="SUSPEND"/>
 
-<s:if test="#attr.canRead">
+<s:if test="!(#attr.canRead)">
+ You do not have enough permissions to browse this VO users.
+</s:if>
+<s:else>
 <h2>Users</h2>
 
-<div id="searchPane">
-  <s:form validate="true" theme="simple" action="search">
-    <s:hidden name="searchData.type" value="%{'user'}"/>
-    <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
-    <s:submit value="%{'Search users'}" cssClass="submitButton"/>
-    <span>Limit to:</span>
-    <s:label for="limitToSuspendedUsers"><span class="blabel blabel-important baseline">Suspended</span></s:label>
-    <s:checkbox id="limitToSuspendedCheck" 
-      name="limitToSuspendedUsers" 
-      onclick="$('#limitToAupCheck').attr('checked', false); this.form.submit()"/>
-      
-    <s:label for="limitToSuspendedUsers"><span class="blabel blabel-warning baseline">Pending sign AUP request</span></s:label>
-    <s:checkbox 
-      id="limitToAupCheck" 
-      name="limitToUsersWithPendingSignAUPRequest" 
-      onclick="$('#limitToSuspendedCheck').attr('checked', false); this.form.submit()"/>
-      
-    <s:label for="searchData.maxResults">Show:</s:label>
-    <s:select name="searchData.maxResults" list="{'10','50','100'}"  
-      value="%{#session.searchData.maxResults}" 
-      onchange="this.form.submit()"/>
-  </s:form>
-  <s:fielderror fieldName="searchData.text"/>
-</div>
+<s:url action="bulk-suspend" 
+  namespace="/user" 
+  var="bulkSuspendAction"/>
 
-<div id="createPane">
-	<voms:hasPermissions var="canCreate"
-		context="vo"
-		permission="rw"/>
-	<s:if test="#attr.canCreate">
-		<a href="<s:url action="create" method="input"/>">Add a new user</a>
-	</s:if>
-</div>
+<s:url 
+  action="bulk-restore" 
+  namespace="/user" 
+  var="bulkRestoreAction"/>
+  
+<s:url 
+  action="bulk-delete" 
+  namespace="/user" 
+  var="bulkDeleteAction"/>
+
+<s:url 
+  action="bulk-extend-membership-expiration" 
+  namespace="/user" 
+  var="bulkExtendMembershipExpirationAction"/>
+  
+<s:url 
+  action="bulk-create-acceptance-record" 
+  namespace="/user" 
+  var="bulkCreateAcceptanceRecordAction"/>
 
 <div class="searchResultsPane">
-  <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+  
   <s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
     No users found.
   </s:if>
@@ -76,64 +69,53 @@
   </s:elseif>
   <s:elseif test="#session.searchResults != null">
   
-  <s:form id="multiUserOpsForm">
-  <table
-    class="table"
-  >
+  <s:url value="/user/search.action" var="searchURL"/>
+  
+  <s:form id="multiUserOpsForm" namespace="/user" cssClass="form-horizontal">
+  
     <s:token/>
-    <tr class="userBulkOperations">
-      <td style="border: none">
-        <s:checkbox 
-          name="notSet" 
-          id="userSelectorTrigger"
-          disabled="%{(not #attr.canCreate and not #attr.CanSuspend)}"
-          theme="simple"
-          />
+      
+    
+    
+  <table class="table">
+    
+    <tr class="user-toolbar">
+      <td>
+        <input id="bulk-user-selector" 
+          type="checkbox" 
+          class="form-control" 
+          name="notSet"/>
       </td>
-      <td colspan="3" style="border: none;">
+      <td colspan="3">
+      <div class="btn-group" role="group">
+      
+      <button type="submit" class="btn btn-default btn-bulk-user" 
+        formaction="${bulkRestoreAction}">Restore</button>
         
-        <s:submit value="%{'Suspend'}" align="right" action="bulk-suspend" theme="simple" 
-        cssClass="userActionButton"
-        onclick=" return openSuspendDialog(this, 'suspendMultiUserDialog','');"
-        disabled="%{#attr.canSuspend == false}"
-        />
+      <s:if test="not #attr.disableMembershipEndTime">
+        <button type="submit" 
+          class="btn btn-default btn-bulk-user"
+          name="bulkAction" 
+          formaction="${bulkExtendMembershipExpirationAction}">Extend membership</button>
+      </s:if>
+      <button type="submit" 
+        class="btn btn-default btn-bulk-user"
+        formaction="${bulkCreateAcceptanceRecordAction}"
+        >Sign AUP on behalf of user</button>
+    </div>
+    
+    <div class="btn-group pull-right" role="group">
+      <button type="submit" 
+        class="btn btn-warning btn-bulk-user"
+        formaction="${bulkSuspendAction}">Suspend</button>
         
-        <s:submit value="%{'Restore'}" align="right" action="bulk-restore" theme="simple" 
-          cssClass="userActionButton"
-          disabled="%{#attr.canSuspend == false}"
-        />
-        
-        
-        <s:if test="not #attr.disableMembershipEndTime">
-        	<s:submit value="%{'Extend membership'}" align="right" action="bulk-extend-membership-expiration" theme="simple" 
-          		cssClass="userActionButton"
-          		disabled="%{#attr.canSuspend == false}"
-        	/>
-        </s:if>
-        
-        <s:submit value="%{'Delete'}" align="right" action="bulk-delete" theme="simple" 
-          cssClass="userActionButton"
-          disabled="%{#attr.canCreate == false}"
-          onclick="openConfirmDialog(this, 'deleteMultiUserDialog', ''); return false"
-        
-          />
-        
-          <s:url value="/user/search.action" var="searchURL"/>
-          <div class="resultsNav">
-            <tiles2:insertTemplate template="../shared/searchNavBar.jsp"/>
-          </div>
+      <button type="submit" 
+        class="btn btn-danger btn-bulk-user" 
+        formaction="${bulkDeleteAction}">Delete</button>  
+    </div>    
+  
+          
       </td>
-    </tr>
-    <tr style="border-bottom: 1px solid #c8c8c8;">
-      <th/>
-        
-      <th>
-        User information
-      </th>
-        
-      <th>Certificates<tiles2:insertTemplate template="../shared/formattedDNControls.jsp"/>
-      </th>
-      <th/>
     </tr>
     <s:iterator
       value="#session.searchResults.results"
@@ -141,11 +123,11 @@
       status="rowStatus"
     >
       <tr class="tableRow">
-        <td style="width: 1%; vertical-align: top; padding-top: .8em;">
+        <td style="width: 1%; ">
           <s:checkbox 
             name="userIds" 
             fieldValue="%{id}" 
-            cssClass="userCheckbox" 
+            cssClass="user-checkbox" 
             theme="simple" 
             value="%{'false'}"
             disabled="%{#attr.canCreate == false and #attr.canSuspend == false}"/>
@@ -230,13 +212,9 @@
   </s:form>
   
   <s:url value="/user/search.action" var="searchURL"/>
-  
     <div class="resultsFooter">
       <tiles2:insertTemplate template="../shared/searchNavBar.jsp"/>
     </div>
   </s:elseif>
 </div>
-</s:if>
-<s:else>
-  You do not have enough permissions to browse this VO users.
 </s:else>

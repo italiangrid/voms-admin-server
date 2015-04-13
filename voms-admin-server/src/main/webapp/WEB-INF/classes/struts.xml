@@ -13,10 +13,12 @@
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 
+  <!-- 
   <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
-
   <constant name="struts.devMode" value="true"/>
-
+   -->
+   
+  <constant name="struts.action.excludePattern" value="/services,/services/.*,/,/index.jsp"/>
   <constant name="struts.mapper.class"
     value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper" />
 
@@ -84,6 +86,7 @@
 
         <interceptor-ref name="prepare" />
         <interceptor-ref name="modelDriven" />
+        
         <interceptor-ref name="chain" />
         <interceptor-ref name="debugging" />
 
@@ -96,25 +99,28 @@
           <param name="excludeParams">dojo\..*,^struts\..*,token</param>
         </interceptor-ref>
 
-
         <interceptor-ref name="conversionError" />
 
         <interceptor-ref name="json" />
-
-        <interceptor-ref name="validation">
-          <param name="excludeMethods">input,back,cancel</param>
-        </interceptor-ref>
-
-        <interceptor-ref name="jsonValidation" />
-
-        <interceptor-ref name="workflow">
-          <param name="excludeMethods">input,back,cancel</param>
-        </interceptor-ref>
 
         <interceptor-ref name="tokenSession">
           <param name="excludeMethods">*</param>
         </interceptor-ref>
 
+        <interceptor-ref name="validation">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
+        
+        <interceptor-ref name="jsonValidation" />
+        
+        <interceptor-ref name="store" >
+          <param name="operationMode">NONE</param>
+        </interceptor-ref>
+        
+        <interceptor-ref name="workflow">
+          <param name="excludeMethods">input,back,cancel</param>
+        </interceptor-ref>
+        
         <interceptor-ref name="hibernateInterceptor" />
       </interceptor-stack>
     </interceptors>
@@ -166,6 +172,7 @@
 
         <interceptor-ref name="alias" />
         <interceptor-ref name="i18n" />
+        
         <interceptor-ref name="params">
           <param name="excludeParams">dojo\..*,^struts\..*</param>
         </interceptor-ref>
@@ -174,6 +181,7 @@
 
         <interceptor-ref name="prepare" />
         <interceptor-ref name="modelDriven" />
+        
         <interceptor-ref name="chain" />
         <interceptor-ref name="debugging" />
 
@@ -245,7 +253,7 @@
 
         <interceptor-ref name="alias" />
         <interceptor-ref name="i18n" />
-
+  
         <interceptor-ref name="params">
           <param name="excludeParams">dojo\..*,^struts\..*</param>
         </interceptor-ref>
@@ -256,13 +264,14 @@
         <interceptor-ref name="json" />
 
         <interceptor-ref name="prepare" />
-
+        <interceptor-ref name="modelDriven" />
+      
         <interceptor-ref name="validation">
           <param name="excludeMethods">input,back,cancel</param>
         </interceptor-ref>
-
-        <interceptor-ref name="modelDriven" />
-
+        
+  
+        
         <interceptor-ref name="chain" />
         <interceptor-ref name="debugging" />
 
