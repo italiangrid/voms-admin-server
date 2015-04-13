@@ -23,10 +23,9 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.hibernate.HibernateException;
@@ -35,28 +34,56 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateFactory {
 
   private static final Logger log = LoggerFactory
     .getLogger(HibernateFactory.class);
 
-  private static final SessionFactory sessionFactory;
+  private static SessionFactory sessionFactory;
 
-  private static final ThreadLocal threadSession = new ThreadLocal();
+  private static final ThreadLocal<Session> threadSession = new ThreadLocal<Session>();
 
-  private static final ThreadLocal threadTransaction = new ThreadLocal();
+  private static final ThreadLocal<Transaction> threadTransaction = new ThreadLocal<Transaction>();
 
-  private static final ThreadLocal threadInterceptor = new ThreadLocal();
+  
+  public static synchronized void initialize(Configuration configuration) {
 
-  static {
+    Validate.notNull(configuration);
 
-    VOMSConfiguration conf = VOMSConfiguration.instance();
+    if (sessionFactory != null) {
+      throw new VOMSDatabaseException(
+        "Hibernate session factory already initialized!");
+    }
+
+    try {
+
+      sessionFactory = configuration.buildSessionFactory();
+
+    } catch (HibernateException e) {
+
+      log.error("Hibernate session factory creation failed!", e);
+      throw new ExceptionInInitializerError(e);
+
+    }
+
+  }
+  
+  public static synchronized void initialize(Properties databaseProperties) {
+
+    Validate.notNull(databaseProperties);
+
+    if (sessionFactory != null) {
+      throw new VOMSDatabaseException(
+        "Hibernate session factory already initialized!");
+    }
 
     try {
 
       Configuration hibernateConf = new AnnotationConfiguration();
-      hibernateConf.addProperties(conf.getDatabaseProperties());
+      hibernateConf.addProperties(databaseProperties);
 
       sessionFactory = hibernateConf.configure().buildSessionFactory();
 
@@ -108,10 +135,6 @@ public class HibernateFactory {
       threadTransaction.remove();
     }
 
-    if (threadInterceptor != null) {
-
-      threadInterceptor.remove();
-    }
   }
 
   public static SessionFactory getFactory() {

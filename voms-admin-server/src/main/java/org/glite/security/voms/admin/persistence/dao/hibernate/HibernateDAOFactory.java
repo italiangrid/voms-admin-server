@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
@@ -36,6 +37,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.UserDAO;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.LogRecord;
 import org.glite.security.voms.admin.persistence.model.task.Task;
@@ -62,6 +64,12 @@ public class HibernateDAOFactory extends DAOFactory {
   // methods.
   // If we use public static nested classes, we can centralize all of them in
   // one source file.
+
+  public static class AuditDAOHibernate extends
+    GenericHibernateDAO<AuditEvent, Long> implements AuditDAO {
+
+  }
+
   public static class AUPVersionDAOHibernate extends
     GenericHibernateDAO<AUPVersion, Long> implements AUPVersionDAO {
   }
@@ -180,4 +188,9 @@ public class HibernateDAOFactory extends DAOFactory {
 
   }
 
+  @Override
+  public AuditDAO getAuditDAO() {
+
+    return (AuditDAO) instantiateDAO(AuditDAOHibernate.class);
+  }
 }

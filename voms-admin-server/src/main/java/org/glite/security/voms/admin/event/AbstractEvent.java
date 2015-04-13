@@ -19,30 +19,16 @@
  */
 package org.glite.security.voms.admin.event;
 
-import java.util.HashMap;
-
 public class AbstractEvent implements Event {
 
-  EventType type;
+  EventCategory category;
+  final long creationTime;
 
-  long creationTime;
-  long completionTime;
-  boolean completed = false;
+  public AbstractEvent(EventCategory category) {
 
-  String name;
-
-  HashMap<String, Object> payload;
-
-  public AbstractEvent(EventType type) {
-
-    this.type = type;
+    this.category = category;
     creationTime = System.currentTimeMillis();
-    payload = new HashMap<String, Object>();
-  }
 
-  public long getCompletionTime() {
-
-    return completionTime;
   }
 
   public long getCreationTime() {
@@ -50,44 +36,23 @@ public class AbstractEvent implements Event {
     return creationTime;
   }
 
-  public boolean isCompleted() {
-
-    return completed;
-  }
-
-  public void setCompleted() {
-
-    completed = true;
-    completionTime = System.currentTimeMillis();
-
-  }
-
   public String getName() {
 
-    if (name == null)
-      return this.getClass().getSimpleName();
+    return this.getClass().getSimpleName();
 
-    return name;
   }
 
-  protected void setOperation(String op) {
+  @Override
+  public EventCategory getCategory() {
 
-    name = op;
+    return category;
   }
 
-  public EventType getType() {
+  @Override
+  public String toString() {
 
-    return type;
-  }
-
-  public void setType(EventType type) {
-
-    this.type = type;
-  }
-
-  public void setName(String name) {
-
-    this.name = name;
+    return String.format("%s [category = %s, creationTime = %s]", getName(),
+      getCategory(), getCreationTime());
   }
 
 }

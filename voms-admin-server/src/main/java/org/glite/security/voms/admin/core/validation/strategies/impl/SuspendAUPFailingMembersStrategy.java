@@ -26,7 +26,7 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.strategies.AUPFailingMembersLookupStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.HandleAUPFailingMembersStrategy;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
+import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -73,7 +73,8 @@ public class SuspendAUPFailingMembersStrategy implements
       u.assignTask(t);
       log.info("Sign aup task assigned to user '{}'. Will expire on {}", u,
         t.getExpiryDate());
-      EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
+      
+      EventManager.instance().dispatch(new SignAUPTaskAssignedEvent(u, aup,t));
 
     } else {
 

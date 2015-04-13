@@ -21,8 +21,8 @@
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalApprovedEvent;
-import org.glite.security.voms.admin.event.registration.MembershipRemovalRejectedEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalApprovedEvent;
+import org.glite.security.voms.admin.event.request.MembershipRemovalRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.DeleteUserOperation;
@@ -48,7 +48,7 @@ public class HandleMembershipRemovalRequest extends
 
     approveRequest();
 
-    EventManager.dispatch(new MembershipRemovalApprovedEvent(request));
+    EventManager.instance().dispatch(new MembershipRemovalApprovedEvent(request));
 
   }
 
@@ -59,7 +59,7 @@ public class HandleMembershipRemovalRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new MembershipRemovalRejectedEvent(request));
+    EventManager.instance().dispatch(new MembershipRemovalRejectedEvent(request));
   }
 
   @Override

@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.aup;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.aup.AUPChangedPeriodEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -40,6 +42,9 @@ public class ChangeReacceptancePeriodOperation extends BaseVomsOperation {
   protected Object doExecute() {
 
     aup.setReacceptancePeriod(period);
+    
+    EventManager.instance().dispatch(new AUPChangedPeriodEvent(aup));
+    
     return aup;
   }
 

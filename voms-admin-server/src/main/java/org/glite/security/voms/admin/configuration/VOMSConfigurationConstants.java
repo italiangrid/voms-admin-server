@@ -84,7 +84,13 @@ public interface VOMSConfigurationConstants {
    */
   public static final String GRID_AUP_URL = "voms.aup.grid_aup.initial_url";
   public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
+  
   public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
+  public static final int SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE = 15;
+  
+  public static final String SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE = "7,3,1";
+  public static final String SIGN_AUP_TASK_REMINDERS = "voms.aup.sign_aup_task_reminders";
+  
   public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS = "voms.aup.require_signature_for_created_users";
   public static final String SIGN_AUP_EXTENDS_MEMBERSHIP = "voms.aup.signature_extends_membership";
 

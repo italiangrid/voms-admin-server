@@ -36,6 +36,8 @@ public interface TaskDAO extends GenericDAO<Task, Long> {
 
   ApproveUserRequestTask createApproveUserRequestTask(Request req);
 
+  List<SignAUPTask> findActiveSignAUPTasks();
+  
   List<Task> findSignAUPTasks();
 
   List<Task> findApproveUserRequestTasks();

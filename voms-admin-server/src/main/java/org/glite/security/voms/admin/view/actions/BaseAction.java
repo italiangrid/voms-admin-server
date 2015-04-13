@@ -25,12 +25,7 @@ package org.glite.security.voms.admin.view.actions;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.ServletActionContext;
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
-import org.glite.security.voms.admin.operations.attributes.FindAttributeDescriptionOperation;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
@@ -43,11 +38,6 @@ import org.glite.security.voms.admin.util.URLBuilder;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ValidationAware;
-
-/**
- * @author andrea
- * 
- */
 
 public class BaseAction extends ActionSupport implements ValidationAware {
 

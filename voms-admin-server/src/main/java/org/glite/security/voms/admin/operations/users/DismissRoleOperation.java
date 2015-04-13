@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.membership.RoleDismissedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -70,8 +72,9 @@ public class DismissRoleOperation extends BaseVomsOperation {
   public Object doExecute() {
 
     VOMSUserDAO.instance().dismissRole(user, group, role);
+    EventManager.instance().dispatch(new RoleDismissedEvent(user, group, role));
 
-    return null;
+    return user;
   }
 
   public static DismissRoleOperation instance(String groupName,

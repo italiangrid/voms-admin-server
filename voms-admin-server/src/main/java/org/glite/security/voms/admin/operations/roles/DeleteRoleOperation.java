@@ -19,6 +19,9 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
+import org.apache.commons.lang.xwork.Validate;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.role.RoleDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -50,16 +53,20 @@ public class DeleteRoleOperation extends BaseVomsOperation {
 
   protected Object doExecute() {
 
+    VOMSRoleDAO dao = VOMSRoleDAO.instance();
+
     if (role == null) {
 
-      if (roleName != null)
-        return VOMSRoleDAO.instance().delete(roleName);
-      else
-        return VOMSRoleDAO.instance().delete(roleId);
+      if (roleName != null) {
+        role = dao.findByName(roleName);
+      } else {
+        role = dao.findById(roleId);
+      }
     }
 
-    else
-      return VOMSRoleDAO.instance().delete(role);
+    dao.delete(role);
+    EventManager.instance().dispatch(new RoleDeletedEvent(role));
+    return role;
 
   }
 

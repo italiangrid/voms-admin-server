@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.acls;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -46,6 +48,8 @@ public class DeleteACLOperation extends BaseVomsOperation {
     acl.removePermissions(admin);
 
     HibernateFactory.getSession().save(acl);
+    EventManager.instance().dispatch(new ACLDeletedEvent(acl));
+    
     return acl;
   }
 

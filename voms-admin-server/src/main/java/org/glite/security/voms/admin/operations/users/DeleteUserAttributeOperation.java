@@ -20,11 +20,14 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.User;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.attribute.UserAttributeDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 
 public class DeleteUserAttributeOperation extends BaseAttributeRWOperation {
 
@@ -42,7 +45,12 @@ public class DeleteUserAttributeOperation extends BaseAttributeRWOperation {
 
   public Object doExecute() {
 
-    VOMSUserDAO.instance().deleteAttribute(user, attributeName);
+    VOMSUserAttribute attribute = VOMSUserDAO.instance().deleteAttribute(user,
+      attributeName);
+    
+    if (attribute != null) {
+      EventManager.instance().dispatch(new UserAttributeDeletedEvent(user, attribute));
+    }
     return null;
   }
 
