@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.glite.security.voms.admin.view.util.RequestsUtil;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -47,9 +47,7 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
   protected void refreshPendingRequests() {
 
-    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
-
-    pendingRequests = rDAO.findPendingRequests();
+    pendingRequests = RequestsUtil.findManageableRequests();
 
   }
 
