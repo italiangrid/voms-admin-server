@@ -10,6 +10,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.GroupScopeRequest;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request;
@@ -30,8 +31,7 @@ public class RequestsUtil {
 
   private static boolean isGroupScopeRequest(Request r) {
 
-    return (r instanceof GroupMembershipRequest)
-      || (r instanceof RoleMembershipRequest);
+    return (r instanceof GroupScopeRequest);
   }
 
   public static List<Request> findManageableRequests() {
@@ -52,7 +52,7 @@ public class RequestsUtil {
       }
 
       if (isGroupScopeRequest(r)) {
-        String groupName = ((GroupMembershipRequest) r).getGroupName();
+        String groupName = ((GroupScopeRequest) r).getGroupName();
         VOMSContext context = VOMSContext.instance(groupName);
         if (!theAdmin.hasPermissions(context,
           VOMSPermission.getRequestsRWPermissions())) {

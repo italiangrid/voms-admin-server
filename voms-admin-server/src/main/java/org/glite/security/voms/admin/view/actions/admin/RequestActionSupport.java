@@ -22,7 +22,9 @@ package org.glite.security.voms.admin.view.actions.admin;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.util.RequestsUtil;
@@ -39,6 +41,8 @@ public class RequestActionSupport extends BaseAction implements Preparable,
   Request request;
 
   List<Request> pendingRequests;
+  
+  VOMSAdmin admin;
 
   /**
 	 * 
@@ -53,6 +57,8 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
   public void prepare() throws Exception {
 
+    admin = CurrentAdmin.instance().getAdmin();
+    
     if (request == null) {
 
       if (requestId != -1L)
@@ -82,5 +88,9 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
     return pendingRequests;
   }
+  
+  public VOMSAdmin getAdmin() {
 
+    return admin;
+  }
 }

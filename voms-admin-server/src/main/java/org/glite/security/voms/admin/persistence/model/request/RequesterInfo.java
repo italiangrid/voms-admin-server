@@ -52,6 +52,7 @@ public class RequesterInfo implements Serializable {
   public static final String MULTIVALUE_COUNT_PREFIX = "num_";
   public static final String MANAGER_EMAIL_ADDRESS = "managerEmail";
   public static final String MANAGER_ID = "managerId";
+  public static final String VO_USER_ID = "voUserId";
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO,
@@ -344,6 +345,7 @@ public class RequesterInfo implements Serializable {
     ri.setCertificateIssuer(user.getDefaultCertificate().getCa()
       .getSubjectString());
     ri.setVoMember(true);
+    ri.addInfo(VO_USER_ID, user.getId().toString());
 
     return ri;
 

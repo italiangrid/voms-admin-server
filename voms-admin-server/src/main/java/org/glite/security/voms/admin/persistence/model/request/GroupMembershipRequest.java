@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "group_membership_req")
-public class GroupMembershipRequest extends Request {
+public class GroupMembershipRequest extends Request implements GroupScopeRequest {
 
   /**
      * 

@@ -36,20 +36,22 @@
     <link rel="stylesheet" type="text/css"
       href="<s:url value="/style/style.css"/>" />
       
+    <sj:head jqueryui="false" />
+    
+    
     <link type="text/css" 
       href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
       rel="stylesheet" />
-      
-    <!-- Bootstrap -->
     
-    
+    <%--
     <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
     	
     </script>
+    --%>
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery-ui.js"/>">
-      
     </script>
+    
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>">
       
@@ -59,11 +61,6 @@
       ajaxBaseURL = '<s:url value="/ajax/"/>';
       memberSearchURL =  '<s:url  value="/search/member.action"/>';
     </script>
-    
-    <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
-    </script>
-    
-    <s:head/>
   </head>
 
   <body>
@@ -91,5 +88,8 @@
   <div id="footer">
     <tiles2:insertAttribute name="footer"/>
   </div> <!-- footer -->
+  
+  <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
+  </script>
   </body>
 </html>

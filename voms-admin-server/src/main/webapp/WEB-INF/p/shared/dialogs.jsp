@@ -114,3 +114,18 @@
 	</p>
 </div>
 
+<div id="confirmRejectedRequestDialog" title="Reject request(s)?" style="display: none" class="dialog">
+ 
+  <div id="rejected-reqs-details">
+  </div> 
+  
+  <p>
+    <input id="confirmRejectedRequestDialog_input" 
+      type="textarea" 
+      placeholder="Please provide a reason for rejecting the requests..."
+      style="width: 100%; heigth: auto;"
+      ></input>
+      
+  </p>
+</div>
+

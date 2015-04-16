@@ -28,13 +28,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
-import org.italiangrid.utils.voms.CurrentSecurityContext;
-import org.italiangrid.utils.voms.VOMSSecurityContext;
 import org.italiangrid.voms.VOMSValidators;
 import org.italiangrid.voms.ac.VOMSACValidator;
 import org.italiangrid.voms.ac.VOMSValidationResult;
@@ -48,40 +45,27 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class SecurityContextFilter implements Filter, ValidationResultListener {
-
-  public static final String SECURITY_CONTEXT_SESSION_KEY = "voms-admin-security-context";
-  public static final int SESSION_LIFETIME_IN_SECONDS = 120;
-
+  
   protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
   private VOMSACValidator validator;
+  private String voName;
 
   public void init(FilterConfig arg0) throws ServletException {
 
     log.debug("Initializing SecurityContextFilter {}", this);
     validator = VOMSValidators.newValidator(this);
+    voName = VOMSConfiguration.instance().getVOName();
   }
 
   protected void initContext(HttpServletRequest request) {
 
-    HttpSession s = request.getSession(true);
-    s.setMaxInactiveInterval(SESSION_LIFETIME_IN_SECONDS);
-
-    VOMSSecurityContext sc = (VOMSSecurityContext) s
-      .getAttribute(SECURITY_CONTEXT_SESSION_KEY);
-
-    if (sc == null) {
-      InitSecurityContext.setContextFromRequest(request, validator);
-      s.setAttribute(SECURITY_CONTEXT_SESSION_KEY, CurrentSecurityContext.get());
-      InitSecurityContext.logConnection();
-    } else
-      CurrentSecurityContext.set(sc);
+    InitSecurityContext.setContextFromRequest(request, validator);    
+    InitSecurityContext.logConnection();
 
   }
 
   protected void initWebappProperties(HttpServletRequest request) {
-
-    String voName = VOMSConfiguration.instance().getVOName();
     request.setAttribute("voName", voName);
     request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY,
       CurrentAdmin.instance());
