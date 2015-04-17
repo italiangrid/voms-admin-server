@@ -46,6 +46,7 @@ public class RequestGroupMembershipAction extends UserActionSupport {
 	 */
   private static final long serialVersionUID = 1L;
   Long groupId;
+  String reason;
 
   @Override
   public void validate() {
@@ -81,7 +82,7 @@ public class RequestGroupMembershipAction extends UserActionSupport {
     VOMSGroup g = groupById(groupId);
 
     GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(
-      getModel(), g, getDefaultFutureDate());
+      getModel(), reason, g, getDefaultFutureDate());
     EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
 
     refreshPendingRequests();

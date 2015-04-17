@@ -39,13 +39,13 @@ public interface RequestDAO extends GenericDAO<Request, Long> {
     String certificateSubject, String certificateIssuer, Date expirationDate);
 
   public GroupMembershipRequest createGroupMembershipRequest(VOMSUser usr,
-    VOMSGroup group, Date expirationDate);
+    String reason, VOMSGroup group, Date expirationDate);
 
   public MembershipRemovalRequest createMembershipRemovalRequest(VOMSUser usr,
     String reason, Date expirationDate);
 
   public RoleMembershipRequest createRoleMembershipRequest(VOMSUser usr,
-    VOMSGroup group, VOMSRole r, Date expirationDate);
+    String reason, VOMSGroup group, VOMSRole r, Date expirationDate);
 
   public NewVOMembershipRequest createVOMembershipRequest(
     RequesterInfo requester, Date expirationDate);

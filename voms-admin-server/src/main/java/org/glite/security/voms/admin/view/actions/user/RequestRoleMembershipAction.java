@@ -50,6 +50,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
 
   Long groupId;
   Long roleId;
+  String reason;
 
   @Override
   public void validate() {
@@ -112,7 +113,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
     VOMSRole r = roleById(roleId);
 
     RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model,
-      g, r, getDefaultFutureDate());
+      reason, g, r, getDefaultFutureDate());
     EventManager.dispatch(new RoleMembershipSubmittedEvent(request,
       getHomeURL()));
 
