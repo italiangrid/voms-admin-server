@@ -236,6 +236,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
     List<Request> result = new ArrayList<Request>();
 
+    result.addAll(findPendingVOMembershipRequests());
     result.addAll(findConfirmedVOMembershipRequests());
     result.addAll(findPendingGroupMembershipRequests());
     result.addAll(findPendingRoleMembershipRequests());
