@@ -1,5 +1,7 @@
 package org.glite.security.voms.admin.view.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,9 +18,9 @@ import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRe
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-public class RequestsUtil {
+public class RequestUtil {
 
-  private RequestsUtil() {
+  private RequestUtil() {
 
   }
 
@@ -45,7 +47,7 @@ public class RequestsUtil {
     Iterator<Request> requestIter = pendingRequests.iterator();
 
     while (requestIter.hasNext()) {
-      
+
       Request r = requestIter.next();
       if (!theAdmin.isVOAdmin() && isVOScopeRequest(r)) {
         requestIter.remove();
@@ -62,6 +64,21 @@ public class RequestsUtil {
     }
 
     return pendingRequests;
+  }
+
+  public static List<Request> findUnconfirmedRequests() {
+
+    if (!CurrentAdmin.instance().isVOAdmin()) {
+      return Collections.emptyList();
+    }
+
+    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+    List<Request> result = new ArrayList<Request>();
+
+    result.addAll(rDAO.findPendingVOMembershipRequests());
+
+    return result;
+
   }
 
 }
