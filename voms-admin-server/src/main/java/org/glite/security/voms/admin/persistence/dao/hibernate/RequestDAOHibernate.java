@@ -87,6 +87,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
     req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
     req.setCreationDate(new Date());
     req.setExpirationDate(expirationDate);
+    req.setUserMessage(reason);
 
     req.setGroupName(group.getName());
 
@@ -122,6 +123,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
     req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
     req.setCreationDate(new Date());
     req.setExpirationDate(expirationDate);
+    req.setUserMessage(reason);
 
     req.setGroupName(group.getName());
     req.setRoleName(r.getName());
