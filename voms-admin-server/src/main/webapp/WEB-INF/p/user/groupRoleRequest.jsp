@@ -21,13 +21,15 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request membership removal</h1>
+<h1>Request role or group </h1>
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
 <s:form validate="true">
   <s:token/>
   <s:hidden name="userId" value="%{id}"/>
+  <s:hidden name="groupId" value="%{id}"/>
+  <s:hidden name="roleId" value="%{id}"/>
   <s:textfield name="reason" label="Please provide a reason for your group or role request"/>
   <s:submit value="%{'Submit'}" align="left"/>
 </s:form>

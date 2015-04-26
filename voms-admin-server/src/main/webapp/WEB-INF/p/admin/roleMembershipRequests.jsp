@@ -27,6 +27,7 @@
 		<tr class="req-header-row">
 			<th>Requester</th>
 			<th>Requested role</th>
+			<th>Reason</th>
 			<th />
 		</tr>
 		<s:iterator
@@ -38,6 +39,9 @@
 				<td>
 				<div class="userRoleName"><s:property value="groupName" />/Role=<s:property
 					value="roleName" /></div>
+
+				</td>
+				<td><s:property value="userMessage" /></td>
 
 				</td>
             

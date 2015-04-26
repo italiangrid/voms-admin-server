@@ -272,7 +272,11 @@
     <definition name="requestMembershipRemoval" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>
     </definition>
-    
+
+    <definition name="requestGroupRole" extends="user-layout">
+        <put-attribute name="content" value="/WEB-INF/p/user/groupRoleRequest.jsp"/>
+    </definition>
+
     <definition name="managerIndex" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/manager/index.jsp"/>
     </definition>

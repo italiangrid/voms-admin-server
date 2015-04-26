@@ -37,7 +37,8 @@
 <s:if test="not #unrequestedGroups.empty">
 
     <s:if test="#request.registrationEnabled">
-	<div class="subscribeGroups"><s:form
+	<div class="subscribeGroups">
+	<s:form
 		action="request-group-membership" namespace="/user" theme="simple"
 		onsubmit="ajaxSubmit(this,'req-content'); return false;">
 		<s:token/>
@@ -45,9 +46,15 @@
 		<s:select list="#unrequestedGroups" listKey="id"
 			listValue="name" name="groupId" />
 		<s:submit value="%{'Request membership'}" />
-	</s:form></div>
+	</s:form>
+	</div>
     </s:if>
 </s:if>
+
+
+<s:url action="request-role-membership" method="input" var="requestRoleURL">
+ <s:param name="userId" value="id"/>
+</s:url>
 
 
 <div class="membershipTab">
@@ -80,18 +87,25 @@
           </td>
 			
 			<td class="roleAssign">
-      
-              
               
               <s:set var="daRoles" value="#attr.unassignedRoleMap[#mapping.key.id].{?#this.name not in #requestedRoleNames}"/>
-              
-              
+
               <s:if
 				test="%{not #daRoles.empty and #request.registrationEnabled}">
-				
-				<s:form action="request-role-membership" namespace="/user"
+
+				<div style="clear: both; float: right; margin-bottom: .5em">
+                	<a href="${requestRoleURL}" class="actionLink">Request new role</a>
+                </div>
+
+				<s:hidden name="userId" value="%{model.id}" />
+                <s:hidden name="groupId" value="%{#mapping.key.id}" />
+                <s:select list="#daRoles" listKey="id" listValue="name" name="roleId" />
+
+				<!-- <s:form action="request-role-membership" namespace="/user"
 					theme="simple"
 					onsubmit="ajaxSubmit(this,'req-content'); return false;">
+
+
 					<s:token />
 					<s:hidden name="userId" value="%{model.id}" />
 					<s:hidden name="groupId" value="%{#mapping.key.id}" />
@@ -99,7 +113,8 @@
 						listKey="id" listValue="name" name="roleId" />
 					<s:submit value="%{'Request role'}"
 						cssClass="assignRoleButton" />
-				</s:form>
+				</s:form> -->
+
 			</s:if></td>
        </tr>
 	</s:iterator>
