@@ -94,8 +94,9 @@ public class HandleVOMembershipRequest extends
       for (String groupName : approvedGroups) {
 
         VOMSGroup g = groupDAO.findByName(groupName);
-        if (g != null)
+        if (g != null){
           user.addToGroup(g);
+        }
       }
 
     }

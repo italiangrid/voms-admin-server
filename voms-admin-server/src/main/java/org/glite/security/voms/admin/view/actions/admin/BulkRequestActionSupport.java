@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
-import org.glite.security.voms.admin.view.util.RequestsUtil;
+import org.glite.security.voms.admin.view.util.RequestUtil;
 
 import com.opensymphony.xwork2.Preparable;
 
@@ -22,7 +22,7 @@ public class BulkRequestActionSupport extends BaseAction implements Preparable {
 
   List<Long> requestIds;
 
-  Map<Long, Request> pendingRequestMap = new HashMap<Long, Request>();
+  Map<Long, Request> requestMap = new HashMap<Long, Request>();
 
   List<Request> selectedRequests = new ArrayList<Request>();
 
@@ -46,25 +46,27 @@ public class BulkRequestActionSupport extends BaseAction implements Preparable {
     this.requestIds = requestIds;
   }
 
-  protected void refreshManageableRequests(){
-    pendingRequestMap.clear();
-    List<Request> manageableRequests = RequestsUtil.findManageableRequests();
+  protected void refreshRequests() {
+
+    requestMap.clear();
+    List<Request> manageableRequests = RequestUtil.findManageableRequests();
 
     for (Request r : manageableRequests) {
-      pendingRequestMap.put(r.getId(), r);
+      requestMap.put(r.getId(), r);
     }
+
   }
-  
+
   @Override
   public void prepare() throws Exception {
 
-    refreshManageableRequests();
+    refreshRequests();
     selectedRequests.clear();
-    
+
     if (requestIds != null) {
 
       for (Long id : requestIds) {
-        Request r = pendingRequestMap.get(id);
+        Request r = requestMap.get(id);
         if (r != null) {
           selectedRequests.add(r);
         }
@@ -84,11 +86,12 @@ public class BulkRequestActionSupport extends BaseAction implements Preparable {
   }
 
   public Collection<Request> getPendingRequests() {
-    if (pendingRequestMap.isEmpty()){
+
+    if (requestMap.isEmpty()) {
       return Collections.emptyList();
     }
 
-    return pendingRequestMap.values();
+    return requestMap.values();
   }
-  
+
 }

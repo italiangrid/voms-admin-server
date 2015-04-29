@@ -57,6 +57,7 @@
 	  <dt>Phone number</dt>  
 	  <dd>${request.requesterInfo.phoneNumber}</dd>
   </dl>
+ 
 </s:else>
 
 <h4>Certificate information</h4>
@@ -67,4 +68,12 @@
    <dd>${request.requesterInfo.certificateIssuer}</dd>
 </dl>
 
-
+<s:if test="#request instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest">
+   <s:if test="#request.status == @org.glite.security.voms.admin.persistence.model.request.Request$STATUS@SUBMITTED">
+      <p style="clear:both;"><span class="warning-text"><i class="fa fa-exclamation-triangle fa-lg"></i>  The user has not yet confirmed his identity.</span>
+        You can approve the request anyway if you wish, or reject it if you want
+        the user to submit a new membership request.
+      </p>
+  </s:if>
+  <tiles2:insertTemplate template="attributeRequestManagement.jsp"/>
+</s:if>

@@ -1,8 +1,13 @@
 package org.glite.security.voms.admin.view.actions.admin;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.ParameterAware;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.operations.requests.BaseHandleRequestOperation;
@@ -24,41 +29,45 @@ import org.slf4j.LoggerFactory;
 
 @Results({
 
-  @Result(name = BaseAction.SUCCESS, location = "adminHome"),
+@Result(name = BaseAction.SUCCESS, location = "adminHome"),
   @Result(name = BaseAction.INPUT, location = "adminHome"),
-  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-  location = "adminHome")
-  
-})
+  @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "adminHome")
 
+})
 @InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "execute"})
-public class BulkDecisionAction extends BulkRequestActionSupport {
+  "token.includeMethods", "execute" })
+public class BulkDecisionAction extends BulkRequestActionSupport implements
+  ParameterAware {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
-  private static final Logger LOGGER = LoggerFactory.getLogger(BulkDecisionAction.class);
+  private static final Logger LOGGER = LoggerFactory
+    .getLogger(BulkDecisionAction.class);
+
+  Map<String, String[]> parametersMap;
 
   String decision;
-  
+
   @Override
   public void validate() {
- 
+
     super.validate();
-    if (decision == null){
+    if (decision == null) {
       addActionError("Please provide a decision!");
     }
-    
+
   }
 
   public BaseHandleRequestOperation<?> resolveRequestHandler(Request request,
     DECISION decision) {
-    
-    if (request instanceof NewVOMembershipRequest){
-      return new HandleVOMembershipRequest((NewVOMembershipRequest)request, 
-        decision, null);
+
+    if (request instanceof NewVOMembershipRequest) {
+      List<String> approvedGroups = resolveApprovedGroups(request);
+      
+      return new HandleVOMembershipRequest((NewVOMembershipRequest) request,
+        decision, approvedGroups);
     }
 
     if (request instanceof GroupMembershipRequest) {
@@ -83,65 +92,81 @@ public class BulkDecisionAction extends BulkRequestActionSupport {
 
     return null;
   }
-  
+
+  private List<String> resolveApprovedGroups(Request request) {
+
+    NewVOMembershipRequest r = (NewVOMembershipRequest) request;
+    String approvedGroupsParameterName = String.format("approvedGroups_%d", 
+      r.getId());
+    
+    String[] approvedGroupNames = parametersMap.get(approvedGroupsParameterName);
+    
+    if (approvedGroupNames ==  null || approvedGroupNames.length == 0){
+      return null;
+    }
+    
+    return Arrays.asList(approvedGroupNames);
+  }
+
   @Override
   public String execute() throws Exception {
 
     DECISION theDecision = DECISION.valueOf(decision.toUpperCase());
 
     int numFailures = 0;
-    
+
     for (Request r : selectedRequests) {
       VOMSOperation op = resolveRequestHandler(r, theDecision);
       if (op != null) {
-        try{
+        try {
           op.execute();
-        }catch(Throwable t){
+        } catch (Throwable t) {
           numFailures++;
-          String errorMessage = String.format("Error handling '%s (%d)': %s", 
-            r.getTypeName(),
-            r.getId(),
-            t.getMessage());
-          
+          String errorMessage = String.format("Error handling '%s (%d)': %s",
+            r.getTypeName(), r.getId(), t.getMessage());
+
           addActionError(errorMessage);
-          LOGGER.error(t.getMessage(),t);
-          
+          LOGGER.error(t.getMessage(), t);
+
         }
       }
     }
-    
-    if (numFailures == 0){
-      if (selectedRequests.size() > 1){
-        addActionMessage(String.format("%d requests %s.", 
+
+    if (numFailures == 0) {
+      if (selectedRequests.size() > 1) {
+        addActionMessage(String.format("%d requests %s.",
           selectedRequests.size(), decisionToVerb(theDecision)));
-      }else {
-        addActionMessage(String.format("Request %s.", 
+      } else {
+        addActionMessage(String.format("Request %s.",
           decisionToVerb(theDecision)));
       }
     } else {
-      
-      if (selectedRequests.size() - numFailures > 0){
-        addActionMessage(String.format("%d (out of %d) requests %s succesfully.", 
-          selectedRequests.size() - numFailures, selectedRequests.size(), 
-          decisionToVerb(theDecision)));
+
+      if (selectedRequests.size() - numFailures > 0) {
+        addActionMessage(String
+          .format("%d (out of %d) requests %s succesfully.",
+            selectedRequests.size() - numFailures, selectedRequests.size(),
+            decisionToVerb(theDecision)));
       }
     }
-    
-    refreshManageableRequests();
-    
-    if (numFailures == 0){
+
+    refreshRequests();
+
+    if (numFailures == 0) {
       return SUCCESS;
     }
-    
+
     return INPUT;
   }
-  
-  private String decisionToVerb(DECISION d){
-    if (d.equals(DECISION.APPROVE)){
+
+  private String decisionToVerb(DECISION d) {
+
+    if (d.equals(DECISION.APPROVE)) {
       return "approved";
     }
     return "rejected";
   }
+
   public String getDecision() {
 
     return decision;
@@ -150,6 +175,13 @@ public class BulkDecisionAction extends BulkRequestActionSupport {
   public void setDecision(String decision) {
 
     this.decision = decision;
+  }
+
+  @Override
+  public void setParameters(Map<String, String[]> parameters) {
+
+    parametersMap = parameters;
+
   }
 
 }

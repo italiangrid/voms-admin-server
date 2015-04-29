@@ -939,6 +939,12 @@ tr.req-row td{
 	line-height: 24px;
 	width: 1%;
 }
+
+.req-status-col{
+  line-height: 24px;
+  width: 1%;
+}
+
 .req-content {
 	float: left;
 	line-height: 24px;
@@ -983,4 +989,24 @@ tr.req-row td{
 
 .req-detail p{
 	margin-bottom: 1em;
+}
+
+table.attribute-req tbody tr td {
+	vertical-align: middle;
+}
+table.attribute-req thead{
+	background-color: #F5F5F5;
+}
+
+.default-icon {
+	color: #999;
+}
+.warning-icon, .warning-text{
+	color: #BF0B0B;
+}
+
+div.req-status {
+	display: inline;
+	line-height: 24px;
+	margin-right: .5em;
 }

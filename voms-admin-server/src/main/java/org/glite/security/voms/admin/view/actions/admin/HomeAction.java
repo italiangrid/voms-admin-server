@@ -25,7 +25,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
-import org.glite.security.voms.admin.view.util.RequestsUtil;
+import org.glite.security.voms.admin.view.util.RequestUtil;
 
 import com.opensymphony.xwork2.Preparable;
 
@@ -44,7 +44,7 @@ public class HomeAction extends BaseAction implements Preparable {
   @Override
   public void prepare() throws Exception {
 
-    pendingRequests = RequestsUtil.findManageableRequests();
+    pendingRequests = RequestUtil.findManageableRequests();
 
   }
 
@@ -52,4 +52,5 @@ public class HomeAction extends BaseAction implements Preparable {
 
     return pendingRequests;
   }
+
 }

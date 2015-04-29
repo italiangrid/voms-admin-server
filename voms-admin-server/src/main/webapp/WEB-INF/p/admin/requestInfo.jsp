@@ -2,7 +2,21 @@
 
 <s:if
 	test="#request instanceof org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest">
-	wants to be a member of this VO.
+	<s:if test="#request.status == @org.glite.security.voms.admin.persistence.model.request.Request$STATUS@SUBMITTED">
+	  wants to be a member of this VO but has <strong>NOT</strong> yet confirmed 
+	  his identity.
+	</s:if>
+	<s:else>
+	<s:if
+  test="requesterInfo.getMultivaluedInfo('requestedGroup').size() > 0">
+    wants to be a member of this VO and has requested to be assigned to 
+    <s:property value="requesterInfo.getMultivaluedInfo('requestedGroup').size()"/>
+    VO groups.
+  </s:if>
+  <s:else>
+    wants to be a member of this VO.
+  </s:else>
+  </s:else> 
 </s:if>
 
 <s:elseif test="#request instanceof org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest">

@@ -27,7 +27,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
-import org.glite.security.voms.admin.view.util.RequestsUtil;
+import org.glite.security.voms.admin.view.util.RequestUtil;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -51,7 +51,7 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
   protected void refreshPendingRequests() {
 
-    pendingRequests = RequestsUtil.findManageableRequests();
+    pendingRequests = RequestUtil.findManageableRequests();
 
   }
 

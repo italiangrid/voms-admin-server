@@ -26,7 +26,7 @@
 </s:if>
 <s:else>
 	<h1>
-	  Admin home page
+	  Request management
 	</h1>
 	
 	<s:if test="#attr.currentAdmin.voUser">
