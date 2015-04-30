@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
 
-@Result(name = UserActionSupport.SUCCESS, location = "mappingsRequest.jsp"),
+@Result(name = UserActionSupport.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
   @Result(name = UserActionSupport.INPUT, location = "requestGroupRole") })
 @InterceptorRef(value = "authenticatedStack", params = {

@@ -39,8 +39,7 @@
     <s:if test="#request.registrationEnabled">
 	<div class="subscribeGroups">
 	<s:form
-		action="request-group-membership" namespace="/user" theme="simple"
-		onsubmit="ajaxSubmit(this,'req-content'); return false;">
+		action="load-role-group" namespace="/user" theme="simple" method="input">
 		<s:token/>
 		<s:hidden name="userId" value="%{model.id}" />
 		<s:select list="#unrequestedGroups" listKey="id"
@@ -51,10 +50,6 @@
     </s:if>
 </s:if>
 
-
-<s:url action="request-role-membership" method="input" var="requestRoleURL">
- <s:param name="userId" value="id"/>
-</s:url>
 
 
 <div class="membershipTab">
@@ -93,17 +88,9 @@
               <s:if
 				test="%{not #daRoles.empty and #request.registrationEnabled}">
 
-				<div style="clear: both; float: right; margin-bottom: .5em">
-                	<a href="${requestRoleURL}" class="actionLink">Request new role</a>
-                </div>
 
-				<s:hidden name="userId" value="%{model.id}" />
-                <s:hidden name="groupId" value="%{#mapping.key.id}" />
-                <s:select list="#daRoles" listKey="id" listValue="name" name="roleId" />
-
-				<!-- <s:form action="request-role-membership" namespace="/user"
-					theme="simple"
-					onsubmit="ajaxSubmit(this,'req-content'); return false;">
+				<s:form action="load-role-group" method="input" namespace="/user"
+					theme="simple">
 
 
 					<s:token />
@@ -113,7 +100,7 @@
 						listKey="id" listValue="name" name="roleId" />
 					<s:submit value="%{'Request role'}"
 						cssClass="assignRoleButton" />
-				</s:form> -->
+				</s:form>
 
 			</s:if></td>
        </tr>
