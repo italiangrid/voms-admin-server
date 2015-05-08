@@ -39,16 +39,13 @@ public class SaveGroupDescriptionAction extends GroupActionSupport {
     
     group = (VOMSGroup) SetGroupDescriptionOperation.instance(group, groupDescription).execute();
 
-    
-    
     addActionMessage(getText("confirm.group.description.edited", group.getName()));
-    
-    
+        
     return SUCCESS;
   }
 
   
-  public String getTheDescription() {
+  public String getGroupDescription() {
 
     return groupDescription;
   }
@@ -58,7 +55,7 @@ public class SaveGroupDescriptionAction extends GroupActionSupport {
     expression = "^[^<>&=;]*$")
   @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "255",
     message = "The description field size is limited to 255 characters.")
-  public void setTheDescription(String description) {
+  public void setGroupDescription(String description) {
 
     this.groupDescription = description;
   }

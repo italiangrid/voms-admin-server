@@ -47,7 +47,7 @@ You do not have enough privileges to edit the group description.
     
       <s:hidden name="groupId" value="%{id}" />
       <div class="groupName"><s:property value="name"/></div>
-      <s:textarea name="theDescription" label="Group description" value="%{description}" cols="78"/>
+      <s:textarea name="groupDescription" label="Group description" value="%{description}" cols="78"/>
       
       <s:submit value="%{'Update group description!'}" align="left"/>
     </s:form>
