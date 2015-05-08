@@ -35,12 +35,32 @@
   </voms:authorized>
 </h1>
 
-<s:if test="description != null">
-  <h2>Description:</h2>
-	<div class="alert alert-block">
-		<s:property value="description"/>
-	</div>
-</s:if>
+<voms:hasPermissions 
+			var="canCreate" 
+            context="vo" 
+            permission="CONTAINER_READ|CONTAINER_WRITE" />
+
+<s:form theme="simple" action="edit-group-description" namespace="/group">
+	<s:hidden name="groupId" value="%{id}" />
+	<s:if test="description != null">
+		<div style="margin-bottom: 1.5em; color: #505050">
+			<s:property value="description"/>
+			<s:if test="#attr.canCreate">
+				<div style="margin-top: 1em">
+					<s:submit value="%{'Edit group description'}" cssClass="submitButton"/>
+				</div>
+			</s:if>
+		</div>
+	</s:if>
+	<s:else>
+		<s:if test="#attr.canCreate">
+			<div style="margin-bottom: 1.5em">
+				<s:submit value="%{'Add group description'}" cssClass="submitButton"/>
+			</div>
+		</s:if>
+	</s:else>
+</s:form>
+
 
 <s:if test="managers.size() != 0">
   <h2>Group managers:</h2>

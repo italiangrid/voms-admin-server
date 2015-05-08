@@ -20,27 +20,37 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
+
 <h1>Edit group description</h1>
 
-<div class="editTab">
-  <voms:hasPermissions var="canCreate" 
-            context="/${voName}" 
-            permission="CONTAINER_READ|CONTAINER_WRITE"
-            />
-  
-  <s:if test="#attr.canCreate">
-    <s:actionerror/>
-      <s:form 
-      action="save"
-      namespace="/group"
-      validate="true"
-    >
-      <s:token/>
-      <div class="groupName"><s:property value="name"/></div>
-      <s:textarea name="description" label="Group description"/>
-      
-      <s:submit value="%{'Update!'}" align="left"/>
-    </s:form>
-  </s:if>
+<voms:hasPermissions 
+			var="canCreate" 
+            context="vo" 
+            permission="CONTAINER_READ|CONTAINER_WRITE" />
 
+<s:if test="not #attr.canCreate">
+You do not have enough privileges to edit the group description.
+</s:if>
+<s:else>
+
+<div>
+    <s:actionerror/>
+    
+	<s:form
+	  id="saveGroupDescription" 
+      action="save-group-description"
+      namespace="/group"
+      validate="true">
+      
+      <s:token/>
+    
+      <s:hidden name="groupId" value="%{id}" />
+      <div class="groupName"><s:property value="name"/></div>
+      <s:textarea name="theDescription" label="Group description" value="%{description}" cols="78"/>
+      
+      <s:submit value="%{'Update group description!'}" align="left"/>
+    </s:form>
 </div>
+
+ </s:else>

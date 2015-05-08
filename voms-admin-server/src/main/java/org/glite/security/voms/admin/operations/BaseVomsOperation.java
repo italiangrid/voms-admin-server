@@ -161,7 +161,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   protected abstract Object doExecute();
 
-  protected final void addPermissionsOnPath(VOMSGroup g, VOMSPermission p) {
+  protected final void addRequiredPermissionsOnPath(VOMSGroup g, VOMSPermission p) {
 
     VOMSGroup parentGroup = g.getParent();
 

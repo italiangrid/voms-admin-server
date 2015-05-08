@@ -125,6 +125,10 @@
       <put-attribute name="content" value="/WEB-INF/p/group/groupDetail.jsp"/>
     </definition>
     
+    <definition name="groupEditDescription" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/group/edit.jsp"/>
+    </definition>
+    
     <definition name="groupCreate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.group.ListGroupPreparer">
       <put-attribute name="content" value="/WEB-INF/p/group/create.jsp"/>
     </definition>
