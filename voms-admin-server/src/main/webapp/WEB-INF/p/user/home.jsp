@@ -84,8 +84,6 @@
   	</s:if>
 </s:if>
 
-
-
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute name="panelName" value="Your personal information"/>
 </tiles2:insertTemplate>
