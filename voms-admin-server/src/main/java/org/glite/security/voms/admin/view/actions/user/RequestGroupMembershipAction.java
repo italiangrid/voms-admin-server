@@ -40,7 +40,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Result(name = UserActionSupport.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "requestGroupRole") })
+  @Result(name = UserActionSupport.INPUT, location = "prepareGroupRequest") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class RequestGroupMembershipAction extends UserActionSupport {

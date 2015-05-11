@@ -25,19 +25,15 @@
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
-<s:form validate="true" action="request-role-membership">
+<s:form 
+	validate="true" 
+	action="request-role-membership" 
+	id="requestRoleMembership"
+	>
   <s:token/>
   <s:hidden name="userId" value="%{userId}"/>
   <s:hidden name="groupId" value="%{groupId}"/>
   <s:hidden name="roleId" value="%{roleId}"/>
-
-
-  <s:if test="%{#roleId==''}">
-	<s:textfield name="reason" label="Please provide a reason for your group request"/>
-  </s:if>
-  <s:else>
-    <s:textfield name="reason" label="Please provide a reason for your role request"/>
-  </s:else>
-
+  <s:textfield name="reason" label="Please provide a reason for your role request"/>
   <s:submit value="%{'Submit'}" align="left"/>
 </s:form>

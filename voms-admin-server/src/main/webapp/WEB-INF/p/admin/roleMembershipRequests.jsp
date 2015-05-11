@@ -28,21 +28,20 @@
 			<th>Requester</th>
 			<th>Requested role</th>
 			<th>Reason</th>
-			<th />
+			<th/>
 		</tr>
 		<s:iterator
 			value="pendingRequests.{? #this.typeName == 'Role membership request'}"
 			var="roleRequest">
 			<tr class="tableRow">
-				<td style="width: 40%"><tiles2:insertTemplate
-					template="userInfo.jsp" flush="true" /></td>
-				<td>
-				<div class="userRoleName"><s:property value="groupName" />/Role=<s:property
-					value="roleName" /></div>
-
+				<td style="width: 40%">
+				  <tiles2:insertTemplate template="userInfo.jsp" flush="true" />
 				</td>
-				<td><s:property value="userMessage" /></td>
-
+				<td class="userRoleName">
+				  <s:property value="groupName" />&#47;Role&#61;<s:property value="roleName" />
+				</td>
+				<td>
+				  <s:property value="userMessage" />
 				</td>
             
 				<td style="vertical-align: bottom; text-align: right">

@@ -21,31 +21,18 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if
-	test="not pendingRequests.{? #this.typeName == 'Group membership request'}.empty">
-	<h1>Group membership requests:</h1>
+<h1>Request group membership</h1>
 
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
-	<table>
-		<tr class="req-header-row">
-			<th>Requester</th>
-			<th>Requested group</th>
-			<th>Reason</th>
-			<th />
-		</tr>
-		<s:iterator
-			value="pendingRequests.{? #this.typeName == 'Group membership request'}"
-			var="groupRequest">
-			<tr class="tableRow">
-				<td style="width: 40%"><tiles2:insertTemplate
-					template="userInfo.jsp" flush="true" />
-				</td>
-				<td class="groupName"><s:property value="groupName" /></td>
-				<td><s:property value="userMessage" /></td>
-				<td style="vertical-align: bottom; text-align: right">
-                  <tiles2:insertTemplate template="decisionForm.jsp"/>
-                </td>
-			</tr>
-		</s:iterator>
-	</table>
-</s:if>
+<s:form 
+	validate="true" 
+	action="request-group-membership" 
+	id="requestGroupMembership"
+	>
+  <s:token/>
+  <s:hidden name="userId" value="%{userId}"/>
+  <s:hidden name="groupId" value="%{groupId}"/>
+  <s:textfield name="reason" label="Please provide a reason for your group request"/>
+  <s:submit value="%{'Submit'}" align="left"/>
+</s:form>

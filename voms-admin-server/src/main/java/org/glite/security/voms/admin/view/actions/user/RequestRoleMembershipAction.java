@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.view.actions.user;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -40,7 +41,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "requestGroupRole") })
+  @Result(name = UserActionSupport.INPUT, location = "prepareGroupRoleRequest") })
 
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
@@ -73,7 +74,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
     if (model.hasRole(g, r))
       addActionError(getText("role_request.user.already_member", new String[] {
         model.toString(), r.getName(), g.getName() }));
-
+      
     if (reqDAO.userHasPendingRoleMembershipRequest(model, g, r))
       addActionError(getText("role_request.user.has_pending_request",
         new String[] { model.toString(), r.getName(), g.getName() }));

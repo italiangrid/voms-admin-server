@@ -272,8 +272,12 @@
     <definition name="requestMembershipRemoval" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>
     </definition>
-
-    <definition name="requestGroupRole" extends="user-layout">
+    
+    <definition name="prepareGroupRequest" extends="user-layout">
+        <put-attribute name="content" value="/WEB-INF/p/user/groupRequest.jsp"/>
+    </definition>
+    
+    <definition name="prepareGroupRoleRequest" extends="user-layout">
         <put-attribute name="content" value="/WEB-INF/p/user/groupRoleRequest.jsp"/>
     </definition>
 
