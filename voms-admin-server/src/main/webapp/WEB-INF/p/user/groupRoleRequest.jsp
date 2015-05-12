@@ -21,7 +21,7 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request role or group </h1>
+<h1>Request role</h1>
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
