@@ -95,6 +95,10 @@
       <put-attribute name="content" value="/WEB-INF/p/user/suspend.jsp"/>
     </definition>
     
+    <definition name="userChangeOrgDbId" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/user/changeOrgDbId.jsp"/>
+    </definition>
+    
     <definition name="userCreate" extends="admin-layout" preparer="org.glite.security.voms.admin.view.preparers.user.AddCertificatePreparer">
       <put-attribute name="content" value="/WEB-INF/p/user/create.jsp"/>
     </definition>

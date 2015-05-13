@@ -484,6 +484,10 @@ function openConfirmDialog(node,dialogId,text){
 		
 		var dest = $(node).attr('href');
 		
+		if (typeof dest === "undefined"){
+			dest = $(node).attr('action');
+		}
+		
 		confirmFunc  = function(){
 			window.location = dest;
 		};
@@ -639,6 +643,17 @@ function rejectSingleRequestDialog(submitNode, dialogId){
 	$('#confirmRejectedRequestDialog_input').focus();
 	return false;
 };
+
+function confirmOrgDbIdChangeDialog(formId,userInfo){
+	
+	if (validateForm_save_orgdb_id()) {
+		var orgdbId = $('#orgDbIdVal').val();
+		$('#confirmOrgDbIdChangeDialog .new-hr-id').text(orgdbId);
+		openConfirmDialog(formId, 'confirmOrgDbIdChangeDialog', userInfo);
+	}
+	
+	return false;
+}
 
 $(document).ready(function(){
 	pageSetup();

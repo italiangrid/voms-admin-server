@@ -20,9 +20,11 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.request.VOMembershipRequestApprovedEvent;
@@ -46,9 +48,9 @@ public class HandleVOMembershipRequest extends
 
   private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
 
-  private static final EnumSet<Request.STATUS> VALID_STATUSES = EnumSet.of(STATUS.SUBMITTED, 
-    STATUS.CONFIRMED);
-  
+  private static final EnumSet<Request.STATUS> VALID_STATUSES = EnumSet.of(
+    STATUS.SUBMITTED, STATUS.CONFIRMED);
+
   List<String> approvedGroups;
 
   public HandleVOMembershipRequest(NewVOMembershipRequest request,
@@ -58,12 +60,10 @@ public class HandleVOMembershipRequest extends
     this.approvedGroups = approvedGroups;
   }
 
-  
-  
   @Override
   protected void approve() {
 
-    if (!VALID_STATUSES.contains(request.getStatus())){
+    if (!VALID_STATUSES.contains(request.getStatus())) {
       throw new IllegalRequestStateException("Illegal state for request: "
         + request.getStatus());
     }
@@ -94,15 +94,26 @@ public class HandleVOMembershipRequest extends
       for (String groupName : approvedGroups) {
 
         VOMSGroup g = groupDAO.findByName(groupName);
-        if (g != null){
+        if (g != null) {
           user.addToGroup(g);
         }
       }
 
     }
 
-    EventManager.instance().dispatch(new VOMembershipRequestApprovedEvent(request));
+    linkOrgDBMembership(user);
 
+    EventManager.instance().dispatch(
+      new VOMembershipRequestApprovedEvent(request));
+
+  }
+
+  protected void linkOrgDBMembership(VOMSUser u) {
+
+    if (request.getRequesterInfo().getInfo(VOMSServiceConstants.ORGDB_ID_KEY) != null) {
+      u.setOrgDbId(Long.parseLong(request.getRequesterInfo().getInfo(
+        VOMSServiceConstants.ORGDB_ID_KEY)));
+    }
   }
 
   @Override
@@ -110,8 +121,8 @@ public class HandleVOMembershipRequest extends
 
     rejectRequest();
 
-    EventManager.instance().dispatch(new VOMembershipRequestRejectedEvent(request,
-      REJECT_MOTIVATION));
+    EventManager.instance().dispatch(
+      new VOMembershipRequestRejectedEvent(request, REJECT_MOTIVATION));
 
     DAOFactory.instance().getRequestDAO().makeTransient(request);
 

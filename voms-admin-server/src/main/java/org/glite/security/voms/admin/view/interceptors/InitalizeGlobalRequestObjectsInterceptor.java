@@ -25,6 +25,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
 
@@ -41,38 +42,36 @@ public class InitalizeGlobalRequestObjectsInterceptor extends
 
   protected void setupGlobalObjects(HttpServletRequest req) {
 
-    if (!VOMSConfiguration.instance().getVOName().equals("siblings")) {
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 
-      AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+    req.setAttribute(
+      "registrationEnabled",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
 
-      req.setAttribute(
-        "registrationEnabled",
-        VOMSConfiguration.instance().getBoolean(
-          VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
-
-      req.setAttribute(
-        "readOnlyPI",
-        VOMSConfiguration.instance().getBoolean(
+    req.setAttribute("orgdbEnabled",
+      VOMSConfiguration.instance().getRegistrationType().equals(
+        OrgDBConfigurator.ORGDB_REGISTRATION_TYPE));
+    
+    req.setAttribute(
+      "readOnlyPI",
+      VOMSConfiguration.instance()
+        .getBoolean(
           VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
           false));
 
-      req
-        .setAttribute(
-          "readOnlyMembershipExpiration",
-          VOMSConfiguration
-            .instance()
-            .getBoolean(
-              VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
-              false));
+    req.setAttribute(
+      "readOnlyMembershipExpiration",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
+        false));
 
-      req.setAttribute(
-        "disableMembershipEndTime",
-        VOMSConfiguration.instance().getBoolean(
-          VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
+    req.setAttribute(
+      "disableMembershipEndTime",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
 
-      req.setAttribute("defaultAUP", aup);
-
-    }
+    req.setAttribute("defaultAUP", aup);
 
   }
 

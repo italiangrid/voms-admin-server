@@ -54,7 +54,8 @@
 				size="40" cssClass="registrationField" value="%{phoneNumber}" />
 
 			<s:textfield name="theEmailAddress" disabled="false" label="Email"
-				size="40" cssClass="registrationField" value="%{emailAddress}" />
+				size="40" cssClass="registrationField" value="%{emailAddress}" 
+				readonly="%{#attr.readOnlyPI}" />
 
 			<s:submit value="%{'Change personal information'}" />
 			

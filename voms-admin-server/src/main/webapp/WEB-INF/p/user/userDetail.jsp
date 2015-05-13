@@ -81,6 +81,10 @@
   <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
 </div>
 
+<s:if test="#attr.orgdbEnabled">
+  <tiles2:insertTemplate template="orgdbId.jsp"/>
+</s:if>
+
 <s:if test="not #attr.disableMembershipEndTime">
 	<tiles2:insertTemplate template="membershipExpiration2.jsp"/>
 </s:if>

@@ -91,9 +91,9 @@ public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
     T entity;
     if (lock)
       entity = (T) getSession()
-        .load(getPersistentClass(), id, LockMode.UPGRADE);
+        .get(getPersistentClass(), id, LockMode.UPGRADE);
     else
-      entity = (T) getSession().load(getPersistentClass(), id);
+      entity = (T) getSession().get(getPersistentClass(), id);
 
     return entity;
   }

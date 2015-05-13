@@ -1010,3 +1010,10 @@ div.req-status {
 	line-height: 24px;
 	margin-right: .5em;
 }
+
+.new-hr-id {
+	text-align: center;
+	font-weight: bolder;
+	font-size: larger;
+	margin-top: 1em;
+}

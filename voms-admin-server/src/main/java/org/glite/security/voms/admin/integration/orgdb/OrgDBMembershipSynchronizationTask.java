@@ -33,7 +33,9 @@ import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDbExpiredPa
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,16 +64,47 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
   }
 
+  protected VOMSOrgDBPerson lookupOrgDBPerson(VOMSUser u, Session s) {
+
+    OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
+    dao.setSession(s);
+    
+    VOMSOrgDBPerson orgdbPerson = null;
+
+    if (u.getOrgDbId() != null) {
+      orgdbPerson = dao.findById(u.getOrgDbId(), false);
+
+      if (orgdbPerson == null) {
+        log.warn(
+          "No OrgDB person found for id '{}' linked to VOMS membership {}",
+          u.getOrgDbId(), u.toString());
+      }
+    }
+
+    if (orgdbPerson == null) {
+      log.warn("Looking up orgdb membership by user email address. User: {}",
+        u.toString());
+      orgdbPerson = dao.findPersonByEmail(u.getEmailAddress());
+    }
+
+    return orgdbPerson;
+
+  }
+
   public void run() {
 
     SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
 
     long startTime = System.currentTimeMillis();
-
+    
     try {
 
-      OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
-
+      if (sf.openSession() == null){
+        throw new OrgDBError("Error opening session to OrgDB");
+      }
+      
+      sf.getCurrentSession().beginTransaction();
+        
       ScrollableResults allUserCursor = VOMSUserDAO.instance()
         .findAllWithCursor();
 
@@ -81,8 +114,8 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
         VOMSUser u = (VOMSUser) allUserCursor.get(0);
 
-        VOMSOrgDBPerson orgDbPerson = dao
-          .findPersonByEmail(u.getEmailAddress());
+        VOMSOrgDBPerson orgDbPerson = lookupOrgDBPerson(u, 
+          sf.getCurrentSession());
 
         if (orgDbPerson != null) {
           updateCount++;
@@ -122,6 +155,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
       }
 
       try {
+        
         sf.getCurrentSession().getTransaction().rollback();
 
       } catch (Throwable t) {
