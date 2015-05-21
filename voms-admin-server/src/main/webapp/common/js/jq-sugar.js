@@ -512,6 +512,45 @@ function openConfirmDialog(node,dialogId,text){
 	
 }
 
+function openConfirmChangeReacceptancePeriodDialog(node, dialogId) {
+	
+	confirmFunc = function(){
+		var form = $(node).closest('form');
+		var reqText = $('#aupChangeReacceptancePeriodRequiredText').val();
+		if (reqText.toLowerCase() == "yes") {
+			form.submit();
+			return true;
+		}
+		$('#aupChangeReacceptancePeriodRequiredText_alert').show();
+		return false;
+	};
+	
+	$('#aupChangeReacceptancePeriodRequiredText').val("");
+	$('#aupChangeReacceptancePeriodRequiredText_alert').hide();
+	
+	$('#'+dialogId).dialog({resizable: false,
+		width: 800,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			Confirm: confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	$('#aupReacceptanceRequiredText').focus();
+	return false;
+	
+}
+
 function bulkRequestSetup(){
 	
 	$('#req-selector').click(function(e){

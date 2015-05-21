@@ -47,7 +47,7 @@
       		<s:token/>
 
       		<s:textfield name="period" value="%{model.reacceptancePeriod}" label="Reacceptance period (in days)" size="4" labelposition="left"/>
-      		<s:submit value="%{'Change'}" align="right" cssStyle="margin-top: 5px"/>
+      		<s:submit value="%{'Change'}" align="right" cssStyle="margin-top: 5px" onclick="openConfirmChangeReacceptancePeriodDialog(this, 'changeReacceptancePeriodDialog'); return false"/>
     	</s:form>
     </s:if>
    
