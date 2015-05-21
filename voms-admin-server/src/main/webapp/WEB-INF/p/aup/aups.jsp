@@ -129,7 +129,7 @@
           <s:if test="active">
           	<s:form action="trigger-acceptance" theme="simple">
           		<s:token/>
-    			<s:submit value="%{'Trigger reacceptance'}" onclick="openConfirmDialog(this, 'triggerReacceptanceDialog','%{version}'); return false"/>      	
+    			<s:submit value="%{'Trigger reacceptance'}" onclick="openAUPReacceptanceDialog(this, 'triggerReacceptanceDialog'); return false"/>      	
           	</s:form>
           </s:if>
           </s:if>

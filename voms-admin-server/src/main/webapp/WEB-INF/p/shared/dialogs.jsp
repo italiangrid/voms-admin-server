@@ -91,9 +91,15 @@
 
 <div id="triggerReacceptanceDialog" title="Trigger reacceptance of VO AUP?" style="display: none" class="dialog">
 	Do you really want to trigger the reacceptance of the currently active version of the VO Acceptable Usage Policy?
-	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules, version:
-	<div class="dialogMessage"></div>
+	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules.
+	<div style="margin-bottom: 1em; margin-top: 0.5em;">
+		<input id="aupReacceptanceRequiredText" type="text" value="" placeholder="Type yes to confirm..."/>
+	</div>
+	<div class="alert alert-error" id="aupReacceptanceRequiredText_alert">
+		<strong>Insert the requested text to trigger the AUP reacceptance!</strong>
+	</div>
 </div>
+
 
 <div id="changeActiveAUPVersionDialog" title="Change active AUP version?" style="display: none" class="dialog">
   Do you really want to change the currently active version of the VO Acceptable Usage Policy?<br/>
