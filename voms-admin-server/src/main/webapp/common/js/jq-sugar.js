@@ -468,6 +468,44 @@ function setFormActionFromSubmitButton(formNode, submitButtonNode){
 	}
 }
 
+function openAUPReacceptanceDialog(node, dialogId) {
+	
+	confirmFunc = function(){
+		var form = $(node).closest('form');
+		var reqText = $('#aupReacceptanceRequiredText').val();
+		if (reqText.toLowerCase() == "yes") {
+			form.submit();
+			return true;
+		}
+		$('#aupReacceptanceRequiredText_alert').show();
+		return false;
+	};
+	
+	$('#aupReacceptanceRequiredText').val("");
+	$('#aupReacceptanceRequiredText_alert').hide();
+	
+	$('#'+dialogId).dialog({resizable: false,
+		width: 800,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			Confirm: confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	$('#aupReacceptanceRequiredText').focus();
+	return false;
+	
+}
 
 function openConfirmDialog(node,dialogId,text){
 	
