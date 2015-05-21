@@ -89,18 +89,6 @@
 	<s:textfield name="suspensionReason" size="20" label="Please provide a reason for the suspension"/>
 </div>
 
-<!-- <div id="triggerReacceptanceDialog" title="Trigger reacceptance of VO AUP?" style="display: none" class="dialog"> -->
-<!-- 	Do you really want to trigger the reacceptance of the currently active version of the VO Acceptable Usage Policy? -->
-<!-- 	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules. -->
-<!-- 	<div class="alert alert-error" style="margin-bottom: 8px; margin-top: 5px;"> -->
-<!-- 		Please type <b><i>yes</i></b> to confirm the reacceptance of the VO AUP:  -->
-<!-- 		<input id="aupReacceptanceRequiredText" style="margin-left: 15px;" type="text" value=""/> -->
-<!-- 	</div> -->
-<!-- 	<div class="alert alert-error" id="aupReacceptanceRequiredText_alert"> -->
-<!-- 		<strong>Insert the requested text to trigger the AUP reacceptance!</strong> -->
-<!-- 	</div> -->
-<!-- </div> -->
-
 <div id="triggerReacceptanceDialog" title="Trigger reacceptance of VO AUP?" style="display: none" class="dialog">
 	Do you really want to trigger the reacceptance of the currently active version of the VO Acceptable Usage Policy?
 	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules.
