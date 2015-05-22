@@ -34,6 +34,7 @@ import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRe
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
@@ -109,6 +110,11 @@ public class RequestGroupMembershipAction extends UserActionSupport {
           message = "You entered invalid characters in the reason field!")
   @RequiredStringValidator(type = ValidatorType.FIELD,
           message = "Please enter a reason.")
+  @StringLengthFieldValidator(
+    minLength = "1",
+    maxLength = "255",
+    message = "Your reason must have from ${minLength} to ${maxLength} characters"
+    )
   public String getReason() {
 
     return reason;
