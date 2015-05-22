@@ -4,9 +4,9 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@Results({ @Result(name = BaseAction.SUCCESS, location = "prepareGroupRoleRequest") })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "prepareRoleRequest") })
 
-public class PrepareRequestGroupRoleMembershipAction extends BaseAction {
+public class PrepareRoleMembershipRequestAction extends BaseAction {
 
   /**
    * 

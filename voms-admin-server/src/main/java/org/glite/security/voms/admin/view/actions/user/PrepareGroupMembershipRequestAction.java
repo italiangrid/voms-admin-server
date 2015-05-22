@@ -6,7 +6,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "prepareGroupRequest") })
 
-public class PrepareRequestGroupMembershipAction extends BaseAction {
+public class PrepareGroupMembershipRequestAction extends BaseAction {
 
   /**
    * 

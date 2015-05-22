@@ -39,7 +39,7 @@
     <s:if test="#request.registrationEnabled">
 	<div class="subscribeGroups">
 	<s:form
-		action="prepare-request-group-membership" namespace="/user" theme="simple" method="input">
+		action="prepare-group-membership-request" namespace="/user" theme="simple" method="input">
 		<s:token/>
 		<s:hidden name="userId" value="%{model.id}" />
 		<s:select list="#unrequestedGroups" listKey="id"
@@ -89,7 +89,7 @@
 				test="%{not #daRoles.empty and #request.registrationEnabled}">
 
 
-				<s:form action="prepare-request-group-role-membership" method="input" namespace="/user"
+				<s:form action="prepare-role-membership-request" method="input" namespace="/user"
 					theme="simple">
 
 

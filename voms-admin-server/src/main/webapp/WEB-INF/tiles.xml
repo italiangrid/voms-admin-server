@@ -277,8 +277,8 @@
         <put-attribute name="content" value="/WEB-INF/p/user/groupRequest.jsp"/>
     </definition>
     
-    <definition name="prepareGroupRoleRequest" extends="user-layout">
-        <put-attribute name="content" value="/WEB-INF/p/user/groupRoleRequest.jsp"/>
+    <definition name="prepareRoleRequest" extends="user-layout">
+        <put-attribute name="content" value="/WEB-INF/p/user/roleRequest.jsp"/>
     </definition>
 
     <definition name="managerIndex" extends="admin-layout">
