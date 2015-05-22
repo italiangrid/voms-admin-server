@@ -47,7 +47,7 @@
       		<s:token/>
 
       		<s:textfield name="period" value="%{model.reacceptancePeriod}" label="Reacceptance period (in days)" size="4" labelposition="left"/>
-      		<s:submit value="%{'Change'}" align="right" cssStyle="margin-top: 5px" onclick="openConfirmChangeReacceptancePeriodDialog(this, 'changeReacceptancePeriodDialog'); return false"/>
+      		<s:submit value="%{'Change'}" align="right" cssStyle="margin-top: 5px" onclick="openYesConfirmDialog(this, 'changeReacceptancePeriodDialog'); return false"/>
     	</s:form>
     </s:if>
    
@@ -129,7 +129,7 @@
           <s:if test="active">
           	<s:form action="trigger-acceptance" theme="simple">
           		<s:token/>
-    			<s:submit value="%{'Trigger reacceptance'}" onclick="openConfirmDialog(this, 'triggerReacceptanceDialog','%{version}'); return false"/>      	
+    			<s:submit value="%{'Trigger reacceptance'}" onclick="openYesConfirmDialog(this, 'triggerReacceptanceDialog'); return false"/>      	
           	</s:form>
           </s:if>
           </s:if>

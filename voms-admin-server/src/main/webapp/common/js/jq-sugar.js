@@ -512,21 +512,21 @@ function openConfirmDialog(node,dialogId,text){
 	
 }
 
-function openConfirmChangeReacceptancePeriodDialog(node, dialogId) {
+function openYesConfirmDialog(node, dialogId) {
 	
 	confirmFunc = function(){
 		var form = $(node).closest('form');
-		var reqText = $('#aupChangeReacceptancePeriodRequiredText').val();
+		var reqText = $('#'+dialogId+' input').val();
 		if (reqText.toLowerCase() == "yes") {
 			form.submit();
 			return true;
 		}
-		$('#aupChangeReacceptancePeriodRequiredText_alert').show();
+		$('#'+dialogId+' .alert-error').show();
 		return false;
 	};
 	
-	$('#aupChangeReacceptancePeriodRequiredText').val("");
-	$('#aupChangeReacceptancePeriodRequiredText_alert').hide();
+	$('#'+dialogId+' input').val("");
+	$('#'+dialogId+' .alert-error').hide();
 	
 	$('#'+dialogId).dialog({resizable: false,
 		width: 800,
@@ -546,7 +546,7 @@ function openConfirmChangeReacceptancePeriodDialog(node, dialogId) {
 	});
 	
 	$('#'+dialogId).dialog('open');
-	$('#aupReacceptanceRequiredText').focus();
+	$('#'+dialogId+' input').focus();
 	return false;
 	
 }
