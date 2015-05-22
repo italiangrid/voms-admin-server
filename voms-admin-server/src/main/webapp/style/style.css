@@ -1014,4 +1014,6 @@ blockquote {
   padding: 1em 2em;
   margin: 1em 0 1em;
   border-left: 5px solid #eee;
+  word-wrap: break-word;
+  max-width: 770px;
 }
