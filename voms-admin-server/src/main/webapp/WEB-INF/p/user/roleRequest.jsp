@@ -1,4 +1,3 @@
-
 <%--
 
     Copyright (c) Members of the EGEE Collaboration. 2006-2009.
@@ -22,27 +21,19 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if test="#attr.currentAdmin.admin == null">
-	You are not a VO admin. You will see nothing around here.
-</s:if>
-<s:else>
-	<h1>
-	  Request management
-	</h1>
-	
-	<s:if test="#attr.currentAdmin.voUser">
-		<div style="float: right; margin-bottom: .5em">
-			<s:url action="home" namespace="/user" var="userHomeURL"/>
-			<s:a href="%{#userHomeURL}" cssClass="actionLink">Your vo user home</s:a>
-		</div>
-	</s:if>
-	
-	<voms:hasPermissions var="canManage" context="vo" permission="REQUESTS_READ|REQUESTS_WRITE"/>
-	
-	<s:if test="#attr.canManage">
-	  <tiles2:insertTemplate template="requests.jsp"/>
-	</s:if>
-	<s:else>
-		You do not have enough permissions to see administrative requests for this VO.
-	</s:else>
-</s:else>
+<h1>Request role</h1>
+
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+
+<s:form 
+	validate="true" 
+	action="request-role-membership" 
+	id="requestRoleMembership"
+	>
+  <s:token/>
+  <s:hidden name="userId" value="%{userId}"/>
+  <s:hidden name="groupId" value="%{groupId}"/>
+  <s:hidden name="roleId" value="%{roleId}"/>
+  <s:textfield name="reason" label="Please provide a reason for your role request"/>
+  <s:submit value="%{'Submit'}" align="left"/>
+</s:form>
