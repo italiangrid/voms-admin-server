@@ -2,10 +2,18 @@ package org.glite.security.voms.admin.persistence.model.audit;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Table;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.annotations.Index;
 
 @Embeddable
+@Table(name="audit_event_data")
+@org.hibernate.annotations.Table(appliesTo="audit_event_data",
+  indexes={
+    @Index(columnNames={"name"}, name="aed_name_idx"),
+    @Index(columnNames={"value"}, name="aed_value_idx")
+})
 public class AuditEventData {
 
   @Column(nullable = false)

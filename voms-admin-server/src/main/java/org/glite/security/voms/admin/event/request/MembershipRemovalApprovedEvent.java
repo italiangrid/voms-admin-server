@@ -19,15 +19,18 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
+@EventDescription(
+  message = "approved membership removal request for user '%s %s'", params = {
+    "requestorGivenName", "requestorSurname" })
 public class MembershipRemovalApprovedEvent extends
   MembershipRemovalRequestEvent {
 
   public MembershipRemovalApprovedEvent(MembershipRemovalRequest req) {
 
     super(req);
-    // TODO Auto-generated constructor stub
   }
 
 }

@@ -1017,3 +1017,7 @@ blockquote {
   word-wrap: break-word;
   max-width: 770px;
 }
+
+.audit-log-principal {
+  color: #006600;
+}

@@ -46,15 +46,8 @@
       href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
       rel="stylesheet" />
     
-    <%--
-    <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
-    	
-    </script>
-    --%>
-    
     <script type="text/javascript" src="<s:url value="/common/js/jquery-ui.js"/>">
     </script>
-    
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>">
       

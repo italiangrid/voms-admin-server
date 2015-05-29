@@ -1,10 +1,12 @@
 package org.glite.security.voms.admin.event.vo.role;
 
 import org.apache.commons.lang.xwork.Validate;
+import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.event.vo.VOEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
+@MainEventDataPoints("roleName")
 public class RoleEvent extends VOEvent<VOMSRole> {
 
   public static final String ROLE_NAME = "roleName";

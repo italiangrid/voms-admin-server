@@ -155,4 +155,14 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable>
     return (T) crit.uniqueResult();
   }
 
+  protected Criteria createCriteria(Criterion... criterion) {
+
+    Criteria crit = getSession().createCriteria(getPersistentClass());
+    for (Criterion c : criterion) {
+      crit.add(c);
+    }
+
+    return crit;
+  }
+
 }

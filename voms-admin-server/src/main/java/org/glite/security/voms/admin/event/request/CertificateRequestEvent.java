@@ -21,10 +21,12 @@
 package org.glite.security.voms.admin.event.request;
 
 import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 
-public class CertificateRequestEvent extends
+@MainEventDataPoints({"certificateSubject", "certificateIssuer"})
+public abstract class CertificateRequestEvent extends
   UserRequestEvent<CertificateRequest> {
 
   public CertificateRequestEvent(CertificateRequest req) {

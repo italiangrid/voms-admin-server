@@ -9,7 +9,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 
-public class UserEvent extends SinglePayloadAuditableEvent<VOMSUser> {
+public abstract class UserEvent extends SinglePayloadAuditableEvent<VOMSUser> {
 
   protected UserEvent(EventCategory type, VOMSUser payload) {
 

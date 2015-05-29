@@ -19,8 +19,12 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 
+@EventDescription(
+  message = "set VO membership request from user '%s %s' as expired",
+  params = { "requestorGivenName", "requestorSurname" })
 public class VOMembershipRequestExpiredEvent extends VOMembershipRequestEvent {
 
   public VOMembershipRequestExpiredEvent(NewVOMembershipRequest r) {

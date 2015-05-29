@@ -20,8 +20,12 @@
 
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
-
+@EventDescription(
+  message = "rejected user '%s %s' certificate request for certificate '%s, %s'",
+  params = { "requestorGivenName", "requestorSurname", "certificateSubject",
+    "certificateIssuer" })
 public class CertificateRequestRejectedEvent extends CertificateRequestEvent {
 
   public CertificateRequestRejectedEvent(CertificateRequest req) {

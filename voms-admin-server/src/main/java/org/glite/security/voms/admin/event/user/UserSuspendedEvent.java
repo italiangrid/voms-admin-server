@@ -19,9 +19,14 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
+
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
+@EventDescription(message = "suspended user '%s %s' for reason '%s'",
+  params = { "userName", "userSurname", "suspensionReason" })
 public class UserSuspendedEvent extends UserLifecycleEvent {
 
   final SuspensionReason reason;
@@ -36,6 +41,13 @@ public class UserSuspendedEvent extends UserLifecycleEvent {
   public SuspensionReason getReason() {
 
     return reason;
+  }
+
+  @Override
+  protected void decorateAuditEvent(AuditEvent e) {
+
+    super.decorateAuditEvent(e);
+    e.addDataPoint("suspensionReason", getReason().getMessage());
   }
 
 }

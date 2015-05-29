@@ -20,8 +20,13 @@
 
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 
+@EventDescription(
+  message = "approved user '%s %s' certificate request for certificate '%s, %s'",
+  params = { "requestorGivenName", "requestorSurname", "certificateSubject",
+    "certificateIssuer" })
 public class CertificateRequestApprovedEvent extends CertificateRequestEvent {
 
   public CertificateRequestApprovedEvent(CertificateRequest req) {

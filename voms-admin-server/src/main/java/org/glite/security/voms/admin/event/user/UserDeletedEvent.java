@@ -19,8 +19,11 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
+@EventDescription(message = "deleted user '%s %s'",
+params = { "userName", "userSurname"})
 public class UserDeletedEvent extends UserLifecycleEvent {
 
   public UserDeletedEvent(VOMSUser user) {

@@ -19,8 +19,10 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
+@EventDescription(message = "submitted a membership removal request")
 public class MembershipRemovalSubmittedEvent extends
   MembershipRemovalRequestEvent {
 

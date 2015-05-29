@@ -19,8 +19,12 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
+@EventDescription(
+  message = "submitted group membership request for group '%s'",
+  params = { "requestedGroupName" })
 public class GroupMembershipSubmittedEvent extends GroupMembershipRequestEvent {
 
   final String managementURL;

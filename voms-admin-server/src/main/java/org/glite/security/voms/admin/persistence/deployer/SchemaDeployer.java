@@ -939,6 +939,14 @@ public class SchemaDeployer {
 
     }
 
+    // This is needed as the version of hibernate we are using
+    // does not support defining indexes on join table columns
+    // See: https://hibernate.atlassian.net/browse/HHH-4263
+    CreateAuditEventDataIndexes createIndexTask = 
+      new CreateAuditEventDataIndexes(HibernateFactory.getSession());
+    
+    createIndexTask.run();
+    
     UpdateCATask caTask = new UpdateCATask();
     caTask.run();
 
