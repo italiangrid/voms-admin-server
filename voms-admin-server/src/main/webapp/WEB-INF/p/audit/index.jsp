@@ -76,7 +76,7 @@
           <tr>
             <th>When</th>
             <th>Event type</th>
-            <th>Description</th>
+            <th colspan="2">Description</th>
           </tr>
         </s:else>
         <s:iterator value="model.results" var="event">
@@ -90,16 +90,29 @@
             <td style="width:15%"><s:property
                 value="eventNameFormatter.formatEventName(#event.type)" /></td>
                     
-            <td style="width:70%">
-              <span class="audit-log-principal">
+            <td style="width:50%" class="al-desc">
+              <div class="audit-log-principal">
                 <s:property
                   value="adminNameFormatter.formatAdminName(#event.principal)" />
-              </span>
+              </div>
                 <s:property
                 value="eventDescriptor.buildEventDescription(#event)" />
             </td>
-            
-            
+            <td>
+                <a 
+                  href="#" 
+                  class="al-trigger"
+                  data-target="al_${event.id}">more info</a>
+          
+            </td>
+          </tr>
+          <tr class='al-dtl'>
+            <td 
+              id="al_${event.id}" 
+              colspan="4" 
+              class='al-dtl al-dtl-hidden'>
+              <tiles2:insertTemplate template="audit_log_detail.jsp"/>
+            </td>
           </tr>
         </s:iterator>
       </tbody>
