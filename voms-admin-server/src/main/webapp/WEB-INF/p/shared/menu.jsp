@@ -39,6 +39,9 @@
   			<a href="<s:url action="start" namespace="/register"/>">Request membership</a>
   		</li>
   </s:if>
+  <li>
+    <a href="<s:url action="index" namespace="/info"/>">Certificate Info</a>
+  </li>
   <li class="last-menu-item">
     <a href="/">Other VOs on this server</a>
   </li>

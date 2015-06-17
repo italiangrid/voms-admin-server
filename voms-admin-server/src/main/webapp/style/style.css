@@ -1017,3 +1017,45 @@ blockquote {
   word-wrap: break-word;
   max-width: 770px;
 }
+
+.audit-log-principal {
+  color: #006600;
+}
+
+.al-dtl {
+  line-height: 24px;
+}
+.al-dtl-hidden {
+  display: none;
+  border: 0;
+}
+
+.al-dtl-header {
+  border-bottom: 0;
+}
+
+.al-trigger {
+}
+
+.al-dtl-list {
+  margin-top: 1em;
+}
+
+.al-dtl h4 {
+  clear: both;
+}
+
+.al-desc {
+  line-height: 1.4em;
+}
+
+ul.certificate-info {
+  list-style: disc;
+  line-height: 1.4em;
+  padding-left: 2em;
+  margin-top: 1em;
+}
+
+a.register-url {
+  font-size: 18pt;
+}

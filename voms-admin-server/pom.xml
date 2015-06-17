@@ -6,7 +6,7 @@
   http://maven.apache.org/xsd/maven-4.0.0.xsd"
   >
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
@@ -66,14 +66,14 @@
         </executions>
       </plugin>
 
-      <!-- IMPORTANT: keep war plugin configuration in sync with the one
-        specified in the prod profile below! -->
+      <!-- IMPORTANT: keep war plugin configuration in sync with the one specified
+        in the prod profile below! -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <!-- Exclude JETTY server libraries that we need here just because
-            we create the tarball in this project -->
+          <!-- Exclude JETTY server libraries that we need here just because we create
+            the tarball in this project -->
           <packagingExcludes>
             WEB-INF/classes/logback*.xml,
             WEB-INF/lib/javax*.jar,
@@ -150,7 +150,7 @@
     <dependency>
       <groupId>org.italiangrid</groupId>
       <artifactId>voms-admin-api</artifactId>
-      <version>${api.version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -303,13 +303,13 @@
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.jgeppert.struts2.jquery</groupId>
       <artifactId>struts2-jquery-plugin</artifactId>
       <version>2.5.3</version>
     </dependency>
-    
+
     <dependency>
       <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
@@ -431,7 +431,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>dev</id>
       <properties>
@@ -457,8 +457,8 @@
             <configuration>
               <!-- Include generated web.xml -->
               <webXml>${basedir}/target/web.xml</webXml>
-              <!-- Exclude JETTY server libraries that we need here just
-                because we create the tarball in this project -->
+              <!-- Exclude JETTY server libraries that we need here just because
+                we create the tarball in this project -->
               <packagingExcludes>
                 WEB-INF/classes/logback*.xml,
                 WEB-INF/lib/javax*.jar,

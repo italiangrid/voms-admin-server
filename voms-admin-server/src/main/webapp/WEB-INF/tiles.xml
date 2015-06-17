@@ -294,4 +294,7 @@
     </definition>
     
     
+    <definition name="info" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/info/index.jsp"/>
+    </definition>
 </tiles-definitions>

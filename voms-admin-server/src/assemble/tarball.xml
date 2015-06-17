@@ -93,9 +93,11 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
             <fileMode>0644</fileMode>
+          
             <excludes>
               <exclude>org.italiangrid:voms-container</exclude>
             </excludes>
+             
             <outputFileNameMapping>
               ${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
             </outputFileNameMapping>
