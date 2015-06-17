@@ -3,7 +3,7 @@
 
 %global random_num %(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 8)
 
-%global base_version 3.3.3
+%global base_version 3.4.0
 %global base_release 1
 
 %global pom_version @@POM_VERSION@@
@@ -32,10 +32,10 @@ BuildArch:      noarch
 
 BuildRequires:  apache-maven
 BuildRequires:  jpackage-utils
-BuildRequires:  java-1.6.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  oracle-instantclient-basic
 
-Requires: java-1.6.0-openjdk-devel
+Requires: java-1.8.0-openjdk-devel
 Requires: python(abi) = 2.6
 
 %description
@@ -152,6 +152,9 @@ fi
 %attr(-,voms,voms) %dir %{_localstatedir}/log/voms-admin
 
 %changelog
+* Tue Feb 10 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.4.0-0
+- VOMS Admin now requires Java 8
+
 * Tue Feb 10 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 3.3.3-1
 - Bumped version to 3.3.3.
 
