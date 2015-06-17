@@ -37,7 +37,7 @@ import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
 import org.italiangrid.voms.container.legacy.VOMSSslConnectorConfigurator;
-import org.italiangrid.voms.container.listeners.ServerListener;
+import org.italiangrid.voms.container.lifecycle.ServerListener;
 import org.italiangrid.voms.util.CertificateValidatorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +105,8 @@ public class Container {
   private DeploymentManager deploymentManager;
   private HandlerCollection handlers = new HandlerCollection();
   private ContextHandlerCollection contexts = new ContextHandlerCollection();
-  
-  
+
+
   protected SSLOptions getSSLOptions() {
 
     SSLOptions options = new SSLOptions();
@@ -116,22 +116,26 @@ public class Container {
     options.setTrustStoreDirectory(trustDir);
     options.setTrustStoreRefreshIntervalInMsec(trustDirRefreshIntervalInMsec);
 
+    options.setWantClientAuth(true);
+
+    options.setNeedClientAuth(false);
+
     if (tlsExcludeCipherSuites != null){
       options.setExcludeCipherSuites(tlsExcludeCipherSuites.split(","));
     }
-    
+
     if (tlsIncludeCipherSuites != null){
       options.setIncludeCipherSuites(tlsIncludeCipherSuites.split(","));
     }
-    
+
     if (tlsExcludeProtocols != null){
       options.setExcludeProtocols(tlsExcludeProtocols.split(","));
     }
-    
+
     if (tlsIncludeProtocols != null){
       options.setIncludeProtocols(tlsIncludeProtocols.split(","));
     }
-    
+
     return options;
 
   }
@@ -286,7 +290,8 @@ public class Container {
       .trustAnchorsDir(options.getTrustStoreDirectory())
       .crlChecks(CrlCheckingMode.IF_VALID).lazyAnchorsLoading(false)
       .ocspChecks(OCSPCheckingMode.IGNORE).storeUpdateListener(l)
-      .validationErrorListener(l).build();
+      .validationErrorListener(l)
+      .build();
 
     int maxConnections = Integer
       .parseInt(getConfigurationProperty(ConfigurationProperty.MAX_CONNECTIONS));
@@ -445,13 +450,13 @@ public class Container {
 
     tlsIncludeCipherSuites = getConfigurationProperty(
       ConfigurationProperty.TLS_INCLUDE_CIPHER_SUITES);
-    
+
     tlsExcludeCipherSuites = getConfigurationProperty(
       ConfigurationProperty.TLS_EXCLUDE_CIPHER_SUITES);
-    
+
     tlsExcludeProtocols = getConfigurationProperty(
       ConfigurationProperty.TLS_EXCLUDE_PROTOCOLS);
-    
+
     tlsIncludeProtocols = getConfigurationProperty(
       ConfigurationProperty.TLS_INCLUDE_PROTOCOLS);
 
@@ -556,19 +561,19 @@ public class Container {
     if (tlsIncludeProtocols != null){
       log.info("TLS included protocols: {}", tlsIncludeProtocols);
     }
-    
+
     if (tlsExcludeProtocols != null){
       log.info("TLS excluded protocols: {}", tlsExcludeProtocols);
     }
-    
+
     if (tlsIncludeCipherSuites != null){
       log.info("TLS included cipher suites: {}", tlsIncludeCipherSuites);
     }
-    
+
     if (tlsExcludeCipherSuites != null){
       log.info("TLS excluded cipher suites: {}", tlsExcludeCipherSuites);
     }
-    
+
     log.info("HTTP status handler listening on: {}", statusPort);
     log.info("Service credentials: {}, {}", certFile, keyFile);
     log.info("Trust anchors directory: {}", trustDir);

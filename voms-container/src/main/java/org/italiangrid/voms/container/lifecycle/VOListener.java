@@ -1,4 +1,4 @@
-package org.italiangrid.voms.container.listeners;
+package org.italiangrid.voms.container.lifecycle;
 
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.webapp.WebAppContext;

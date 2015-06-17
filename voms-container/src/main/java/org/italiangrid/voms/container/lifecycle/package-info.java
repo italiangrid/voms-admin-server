@@ -5,4 +5,4 @@
  * @author andreaceccanti
  * 
  */
-package org.italiangrid.voms.container.listeners;
+package org.italiangrid.voms.container.lifecycle;
