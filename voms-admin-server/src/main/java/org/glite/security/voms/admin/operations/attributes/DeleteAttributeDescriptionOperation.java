@@ -19,10 +19,13 @@
  */
 package org.glite.security.voms.admin.operations.attributes;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.attribute.AttributeDescriptionDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 
 public class DeleteAttributeDescriptionOperation extends BaseVomsOperation {
 
@@ -35,7 +38,13 @@ public class DeleteAttributeDescriptionOperation extends BaseVomsOperation {
 
   protected Object doExecute() {
 
-    return VOMSAttributeDAO.instance().deleteAttributeDescription(name);
+    VOMSAttributeDAO dao  = VOMSAttributeDAO.instance();
+    
+    VOMSAttributeDescription desc = dao.getAttributeDescriptionByName(name);
+    dao.deleteAttributeDescription(name);
+    
+    EventManager.instance().dispatch(new AttributeDescriptionDeletedEvent(desc));
+    return desc;
   }
 
   protected void setupPermissions() {

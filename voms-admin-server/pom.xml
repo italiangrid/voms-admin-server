@@ -165,6 +165,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
       <version>${hibernate.version}</version>
@@ -297,6 +303,13 @@
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>com.jgeppert.struts2.jquery</groupId>
+      <artifactId>struts2-jquery-plugin</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+    
     <dependency>
       <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>

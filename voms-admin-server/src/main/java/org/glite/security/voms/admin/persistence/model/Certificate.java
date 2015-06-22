@@ -196,11 +196,8 @@ public class Certificate implements Serializable, Comparable<Certificate> {
   @Override
   public String toString() {
 
-    ToStringBuilder builder = new ToStringBuilder(this);
-    builder.append("subject_string", subjectString).append("ca", ca);
-
-    return builder.toString();
-
+    return String.format("(%s, %s)", getSubjectString(), getCa()
+      .getSubjectString());
   }
 
   private List dnAsList(String dn) {

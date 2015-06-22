@@ -39,7 +39,6 @@ public class NewVOMembershipRequest extends Request {
 
   public NewVOMembershipRequest() {
 
-    // TODO Auto-generated constructor stub
   }
 
   /**

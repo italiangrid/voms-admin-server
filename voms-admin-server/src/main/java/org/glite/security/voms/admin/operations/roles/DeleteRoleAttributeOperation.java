@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.role.RoleAttributeDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
@@ -27,6 +29,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 
 public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
 
@@ -34,9 +37,13 @@ public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
 
   protected Object doExecute() {
 
-    VOMSRoleDAO.instance().deleteAttributeByName(__context.getRole(),
-      __context.getGroup(), attributeName);
-    return null;
+    VOMSRoleAttribute ra = VOMSRoleDAO.instance().deleteAttributeByName(
+      __context.getRole(), __context.getGroup(), attributeName);
+
+    EventManager.instance()
+      .dispatch(new RoleAttributeDeletedEvent(__context.getRole(), ra));
+
+    return ra;
   }
 
   private DeleteRoleAttributeOperation(VOMSGroup g, VOMSRole r,

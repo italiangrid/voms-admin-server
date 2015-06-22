@@ -20,6 +20,8 @@
 
 package org.glite.security.voms.admin.operations.aup;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.aup.UserSignedAUPEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -58,7 +60,10 @@ public class CreateAcceptanceRecordOperation extends BaseVomsOperation {
       throw new IllegalArgumentException("User cannot be null!");
 
     VOMSUserDAO.instance().signAUP(user, aup);
-    return null;
+
+    EventManager.instance().dispatch(new UserSignedAUPEvent(user, aup));
+
+    return user;
 
   }
 

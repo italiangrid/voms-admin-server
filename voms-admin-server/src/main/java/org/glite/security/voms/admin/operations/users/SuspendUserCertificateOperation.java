@@ -21,6 +21,8 @@ package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateSuspended;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -76,7 +78,10 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
         + "' is not bound to user '" + user + "'.");
 
     certificate.suspend(reason);
-    return null;
+    
+    EventManager.instance().dispatch(new UserCertificateSuspended(user, certificate));
+    
+    return certificate;
   }
 
   @Override

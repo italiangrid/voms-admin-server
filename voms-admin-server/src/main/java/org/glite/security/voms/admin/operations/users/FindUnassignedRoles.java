@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
 public class FindUnassignedRoles extends BaseVoReadOperation {
 
@@ -38,7 +39,7 @@ public class FindUnassignedRoles extends BaseVoReadOperation {
 
   public Object doExecute() {
 
-    List result = VOMSUserDAO.instance().getUnAssignedRoles(userId, groupId);
+    List<VOMSRole> result = VOMSUserDAO.instance().getUnAssignedRoles(userId, groupId);
     return result;
   }
 

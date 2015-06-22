@@ -19,12 +19,16 @@
  */
 package org.glite.security.voms.admin.operations.groups;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLDeletedEvent;
+import org.glite.security.voms.admin.event.vo.group.GroupDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
+import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
@@ -74,7 +78,12 @@ public class DeleteGroupOperation extends BaseVomsOperation {
 
     }
 
+    ACL groupACL  = group.getACL();
+    
     VOMSGroupDAO.instance().delete(group);
+    EventManager.instance().dispatch(new GroupDeletedEvent(group));
+    EventManager.instance().dispatch(new ACLDeletedEvent(groupACL));
+    
     return group;
   }
 

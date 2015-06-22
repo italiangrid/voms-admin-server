@@ -28,7 +28,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "role_membership_req")
-public class RoleMembershipRequest extends Request {
+public class RoleMembershipRequest extends Request implements GroupScopeRequest {
 
   /**
      * 

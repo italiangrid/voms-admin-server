@@ -22,12 +22,17 @@ package org.glite.security.voms.admin.core.tasks;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
+import org.glite.security.voms.admin.event.auditing.AuditLogHelper;
+import org.glite.security.voms.admin.event.vo.acl.ACLCreatedEvent;
+import org.glite.security.voms.admin.event.vo.admin.AdminCreatedEvent;
+import org.glite.security.voms.admin.event.vo.aup.AUPCreatedEvent;
+import org.glite.security.voms.admin.event.vo.group.GroupCreatedEvent;
+import org.glite.security.voms.admin.event.vo.role.RoleCreatedEvent;
+import org.glite.security.voms.admin.operations.CurrentAdminPrincipal;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
@@ -38,8 +43,8 @@ import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskTypeDAO;
-import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
 import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
@@ -47,49 +52,59 @@ import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- * @author andrea
- * 
- */
-public class DatabaseSetupTask extends TimerTask {
+public class DatabaseSetupTask implements Runnable {
 
   private static final Logger log = LoggerFactory
     .getLogger(DatabaseSetupTask.class);
 
-  private Timer timer;
-
   private static DatabaseSetupTask instance = null;
 
-  public static DatabaseSetupTask instance() {
+  private AuditLogHelper auditLogHelper = new AuditLogHelper(
+    CurrentAdminPrincipal.LOCAL_DB_PRINCIPAL);
 
-    return instance(null);
-  }
-
-  public static DatabaseSetupTask instance(Timer t) {
+  public synchronized static DatabaseSetupTask instance() {
 
     if (instance == null)
-      instance = new DatabaseSetupTask(t);
+      instance = new DatabaseSetupTask();
     return instance;
 
   }
 
-  private DatabaseSetupTask(Timer timer) {
+  private void addAdminCreatedAuditEvent(VOMSAdmin admin) {
 
-    this.timer = timer;
+    auditLogHelper.saveAuditEvent(AdminCreatedEvent.class, admin);
+
+  }
+
+  private void addACLCreatedAuditEvent(ACL acl) {
+
+    auditLogHelper.saveAuditEvent(ACLCreatedEvent.class, acl);
+
+  }
+
+  private void addGroupCreatedAuditEvent(VOMSGroup g) {
+
+    auditLogHelper.saveAuditEvent(GroupCreatedEvent.class, g);
+
+  }
+
+  private void addRoleCreatedAuditEvent(VOMSRole r) {
+
+    auditLogHelper.saveAuditEvent(RoleCreatedEvent.class, r);
+
   }
 
   private void setupRootGroup() {
 
-    try {
+    VOMSGroup rootGroup = VOMSGroupDAO.instance().getVOGroup();
 
-      VOMSGroupDAO.instance().getVOGroup();
-
-    } catch (VOMSInconsistentDatabaseException ex) {
+    if (rootGroup == null) {
       log.info("Setting up VO root group...");
-      VOMSGroupDAO.instance().createVOGroup();
 
+      rootGroup = VOMSGroupDAO.instance().createVOGroup();
+      addGroupCreatedAuditEvent(rootGroup);
     }
+
   }
 
   private void setupInternalCAs() {
@@ -98,14 +113,15 @@ public class DatabaseSetupTask extends TimerTask {
 
     VOMSCADAO caDAO = VOMSCADAO.instance();
 
-    caDAO
-      .createIfMissing(
-        VOMSServiceConstants.VIRTUAL_CA,
-        "A dummy CA for local org.glite.security.voms.admin.persistence.error mainteneance");
+    caDAO.createIfMissing(VOMSServiceConstants.VIRTUAL_CA,
+      "A dummy CA for local mainteneance");
+
     caDAO.createIfMissing(VOMSServiceConstants.GROUP_CA,
       "A virtual CA for VOMS groups.");
+
     caDAO.createIfMissing(VOMSServiceConstants.ROLE_CA,
       "A virtual CA for VOMS roles.");
+
     caDAO.createIfMissing(VOMSServiceConstants.AUTHZMANAGER_ATTRIBUTE_CA,
       "A virtual CA for authz manager attributes");
 
@@ -128,17 +144,28 @@ public class DatabaseSetupTask extends TimerTask {
       VOMSAdmin internalAdmin = adminDAO.create(
         VOMSServiceConstants.INTERNAL_ADMIN, VOMSServiceConstants.VIRTUAL_CA);
 
+      addAdminCreatedAuditEvent(internalAdmin);
+
       VOMSAdmin localAdmin = adminDAO.create(VOMSServiceConstants.LOCAL_ADMIN,
         VOMSServiceConstants.VIRTUAL_CA);
 
-      adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
+      addAdminCreatedAuditEvent(localAdmin);
+
+      VOMSAdmin anyone = adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
         VOMSServiceConstants.VIRTUAL_CA);
 
-      adminDAO.create(VOMSServiceConstants.ANYUSER_ADMIN,
+      addAdminCreatedAuditEvent(anyone);
+
+      VOMSAdmin authenticatedUser = adminDAO.create(
+        VOMSServiceConstants.ANYUSER_ADMIN, VOMSServiceConstants.VIRTUAL_CA);
+
+      addAdminCreatedAuditEvent(authenticatedUser);
+
+      VOMSAdmin unauthenticatedClient = adminDAO.create(
+        VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
         VOMSServiceConstants.VIRTUAL_CA);
 
-      adminDAO.create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
-        VOMSServiceConstants.VIRTUAL_CA);
+      addAdminCreatedAuditEvent(unauthenticatedClient);
 
       VOMSPermission allPermissions = VOMSPermission.getAllPermissions();
 
@@ -152,12 +179,19 @@ public class DatabaseSetupTask extends TimerTask {
 
       VOMSRole voAdminRole = VOMSRoleDAO.instance().create("VO-Admin");
 
+      addRoleCreatedAuditEvent(voAdminRole);
+
       VOMSAdmin voAdmin = VOMSAdminDAO.instance().create(
         voGroup.getName() + "/Role=VO-Admin");
+
+      addAdminCreatedAuditEvent(voAdmin);
 
       voGroupACL.setPermissions(voAdmin, allPermissions);
 
       voAdminRole.importACL(voGroup);
+
+      addACLCreatedAuditEvent(voGroupACL);
+      addACLCreatedAuditEvent(voAdminRole.getACL(voGroup));
 
     }
   }
@@ -212,7 +246,9 @@ public class DatabaseSetupTask extends TimerTask {
 
         AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
 
-        aupDAO.createVOAUP("", "1.0", voAUPURL);
+        AUP voAUP = aupDAO.createVOAUP("", "1.0", voAUPURL);
+        auditLogHelper.saveAuditEvent(AUPCreatedEvent.class, voAUP);
+        
 
       } catch (MalformedURLException e) {
         log.error("Error parsing AUP url: " + e.getMessage());

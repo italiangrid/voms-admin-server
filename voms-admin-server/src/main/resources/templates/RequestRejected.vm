@@ -58,11 +58,11 @@ your membership removal request has been REJECTED by the VO administrators.
 
 #end 
 
-#if ( $rejectReasons )
+#if ( $request.explanation )
 
 The reason behind the rejection is the following:
 	
-	$rejectReasons
+	$request.explanation
 	
 #end
 

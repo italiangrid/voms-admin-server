@@ -20,21 +20,30 @@
 
 package org.glite.security.voms.admin.notification;
 
+import java.util.EnumSet;
+
+import org.glite.security.voms.admin.event.Event;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.EventListener;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.EventMask;
 
-public abstract class BaseNotificationDispatcher implements EventListener {
+public abstract class BaseNotificationDispatcher<T extends Event> implements
+  EventListener<T> {
 
-  private final EventMask mask;
+  private final EnumSet<EventCategory> mask;
 
-  public BaseNotificationDispatcher(EventMask mask) {
+  public BaseNotificationDispatcher(EnumSet<EventCategory> mask) {
 
     this.mask = mask;
-    EventManager.instance().register(this);
+
   }
 
-  public EventMask getMask() {
+  public BaseNotificationDispatcher() {
+
+    this.mask = EventCategory.ALL_CATEGORIES;
+
+  }
+
+  public EnumSet<EventCategory> getCategoryMask() {
 
     return mask;
   }

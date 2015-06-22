@@ -21,6 +21,8 @@
 
 @IMPORT url("layout.css");
 
+@IMPORT url("struts.css");
+
 @IMPORT url("tables.css");
 
 @IMPORT url("menu.css");
@@ -36,6 +38,7 @@
 @IMPORT url("badge.css");
 
 @IMPORT url("btn.css");
+
 
 .content {
 	vertical-align: middle;
@@ -372,8 +375,6 @@ ol.certificate-info li {
 }
 
 .institution {
-	vertical-align: middle;
-	font-size: smaller;
 	color: #505050
 }
 
@@ -414,15 +415,17 @@ dl {
 }
 
 dl dd {
-	float: left;
-	padding-left: 1em;
+	margin-left:180px
 }
 
 dl dt {
 	font-weight: bold;
 	color: #505050;
 	float: left;
-	clear: both;
+	width: 160px;
+	text-align: left;
+	overflow:hidden;
+	text-overflow: ellipsis;
 }
 
 #detailedExceptionMessage dl {
@@ -740,15 +743,11 @@ td.aupVersion {
 
 div.errorAndMessage {
 	position: relative;
-	min-height: 1em;
 	margin-bottom: 1em;
 	width: 100%;
 }
 
-ul.actionError li { /**
-	background-color: #FFBFCE;
-	border: 1px solid #BF0D00; **/
-	position: absolute;
+ul.actionError li { 
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -763,7 +762,6 @@ ul.actionError li { /**
 ul.message li {
 	text-align: center;
 	color: #006600;
-	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -892,4 +890,123 @@ div.userSuspensionInfo .suspensionReason {
 
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+.personalInfo {
+	margin-top: 1em;
+}
+.requestCheckbox{
+	margin-top: 0;
+}
+
+.certificateInformation{
+	margin-top: 1em;
+}
+
+.requestActions{
+	float: right;
+}
+
+tr.req-toolbar {
+	background-color: #F5F5F5;
+	border-top: 1px solid #CCCCCC;
+}
+
+tr.req-toolbar th{
+	vertical-align: middle;
+}
+
+tr.req-row td{
+	vertical-align: top;
+}
+
+.req-toolbar td {
+	border-top:0;
+	border-bottom: 1px;
+}
+.req-toolbar-btns {
+	text-align: right;
+}
+
+.req-toolbar-btns-hidden {
+  visibility: hidden;
+}
+
+.btn-bulk-req {
+	display: inline;
+}
+.req-selector-col{
+	line-height: 24px;
+	width: 1%;
+}
+
+.req-status-col{
+  line-height: 24px;
+  width: 1%;
+}
+
+.req-content {
+	float: left;
+	line-height: 24px;
+}
+
+.req-controls {
+	line-height: 24px;
+}
+.req-btns {
+	float: right;
+	visibility: hidden;
+	line-height: 24px;
+}
+
+.req-row {
+	
+}
+
+.req-row-noselect:hover .req-btns{
+	visibility: visible;
+}
+
+.req-detail{
+	clear: both;
+	float: left;
+	margin-top: 1em;
+	width: 100%;
+}
+
+.req-detail-hidden{
+	display: none;
+}
+
+.req-detail-list {
+	clear: both;
+  margin-top: 1em;
+}
+
+.req-detail h4{
+	clear: both;
+}
+
+.req-detail p{
+	margin-bottom: 1em;
+}
+
+table.attribute-req tbody tr td {
+	vertical-align: middle;
+}
+table.attribute-req thead{
+	background-color: #F5F5F5;
+}
+
+.default-icon {
+	color: #999;
+}
+.warning-icon, .warning-text{
+	color: #BF0B0B;
+}
+
+div.req-status {
+	display: inline;
+	line-height: 24px;
+	margin-right: .5em;
 }

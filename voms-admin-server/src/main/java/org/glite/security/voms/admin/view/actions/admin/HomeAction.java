@@ -21,14 +21,18 @@ package org.glite.security.voms.admin.view.actions.admin;
 
 import java.util.List;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
-import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.glite.security.voms.admin.view.util.RequestUtil;
+
+import com.opensymphony.xwork2.Preparable;
 
 @Result(name = BaseAction.SUCCESS, location = "adminHome")
-public class HomeAction extends AdminActionSupport {
+@InterceptorRef(value = "authenticatedStack", params = { "store.operationMode",
+  "RETRIEVE" })
+public class HomeAction extends BaseAction implements Preparable {
 
   /**
 	 * 
@@ -40,14 +44,13 @@ public class HomeAction extends AdminActionSupport {
   @Override
   public void prepare() throws Exception {
 
-    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+    pendingRequests = RequestUtil.findManageableRequests();
 
-    pendingRequests = rDAO.findPendingRequests();
-    super.prepare();
   }
 
   public List<Request> getPendingRequests() {
 
     return pendingRequests;
   }
+
 }

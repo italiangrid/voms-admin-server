@@ -19,7 +19,9 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.glite.security.voms.admin.error.NullArgumentException;
+import org.apache.commons.lang.Validate;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.role.RoleAttributeSetEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
@@ -28,6 +30,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
@@ -38,8 +41,12 @@ public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
 
   protected Object doExecute() {
 
-    return VOMSRoleDAO.instance().setAttribute(__context.getRole(),
-      __context.getGroup(), attributeName, attributeValue);
+    VOMSRoleAttribute ra = VOMSRoleDAO.instance().setAttribute(
+      __context.getRole(), __context.getGroup(), attributeName, attributeValue);
+
+    EventManager.instance().dispatch(new RoleAttributeSetEvent(__context.getRole(), ra));
+
+    return ra;
   }
 
   private SetRoleAttributeOperation(VOMSGroup g, VOMSRole r, String aName,
@@ -55,9 +62,7 @@ public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
   public static SetRoleAttributeOperation instance(String groupName,
     String roleName, AttributeValue val) {
 
-    if (val == null)
-      throw new NullArgumentException(
-        "Null attribute value passed as argument!");
+    Validate.notNull(val, "attribute value must be non-null!");
 
     VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
     VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();

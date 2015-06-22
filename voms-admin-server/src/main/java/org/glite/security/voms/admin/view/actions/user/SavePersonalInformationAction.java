@@ -23,7 +23,6 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
@@ -67,6 +66,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
     // Run default checks before orgdb checks
     super.validate();
+    
     if (hasFieldErrors())
       return;
 

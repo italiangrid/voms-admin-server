@@ -80,6 +80,9 @@ public abstract class Request implements Serializable, NamedType {
   @Column(name = "approver_ca")
   String approverCA;
 
+  @Column(name = "explanation", length=512)
+  String explanation;
+  
   /**
    * @return the id
    */
@@ -278,6 +281,17 @@ public abstract class Request implements Serializable, NamedType {
   public void setApproverCA(String approverCA) {
 
     this.approverCA = approverCA;
+  }
+  
+  public String getExplanation() {
+  
+    return explanation;
+  }
+
+  
+  public void setExplanation(String explanation) {
+  
+    this.explanation = explanation;
   }
 
   public abstract String getTypeName();

@@ -82,19 +82,21 @@ public class ACLDAO {
 
   }
 
-  public void deletePermissionsForAdmin(VOMSAdmin a) {
+  @SuppressWarnings("unchecked")
+  public List<ACL> deletePermissionsForAdmin(VOMSAdmin a) {
 
     String query = "select a from org.glite.security.voms.admin.persistence.model.ACL a join a.permissions where admin_id = :adminId";
-    Iterator i = HibernateFactory.getSession().createQuery(query)
-      .setLong("adminId", a.getId().longValue()).iterate();
-
-    while (i.hasNext()) {
-
-      ACL acl = (ACL) i.next();
+    
+    List<ACL> affectedACLs = HibernateFactory.getSession().createQuery(query)
+      .setLong("adminId", a.getId().longValue()).list();
+    
+    for (ACL acl: affectedACLs){
+      
       acl.removePermissions(a);
       HibernateFactory.getSession().save(acl);
     }
-
+    
+    return affectedACLs;
   }
 
   public List<VOMSAdmin> getAdminsWithoutActivePermissions() {

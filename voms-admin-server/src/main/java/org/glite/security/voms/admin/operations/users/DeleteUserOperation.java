@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVoRWOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
@@ -42,12 +44,15 @@ public class DeleteUserOperation extends BaseVoRWOperation {
 
   public Object doExecute() {
 
-    if (usr == null)
-      VOMSUserDAO.instance().delete(id);
-    else
+    if (usr == null){
+      usr = VOMSUserDAO.instance().delete(id);
+    }
+    else{
       VOMSUserDAO.instance().delete(usr);
-
-    return null;
+    }
+    
+    EventManager.instance().dispatch(new UserDeletedEvent(usr));
+    return usr;
   }
 
   public static DeleteUserOperation instance(VOMSUser u) {
