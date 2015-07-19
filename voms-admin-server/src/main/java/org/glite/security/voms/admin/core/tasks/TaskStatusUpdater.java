@@ -46,7 +46,6 @@ public class TaskStatusUpdater implements Runnable, RegistrationServiceTask {
       if (t.getExpiryDate().before(now)) {
         log.debug("Task " + t + " has expired, setting its status to EXPIRED.");
         t.setStatus(TaskStatus.EXPIRED);
-
       }
     }
   }

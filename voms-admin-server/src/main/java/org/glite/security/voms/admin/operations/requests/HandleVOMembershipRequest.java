@@ -20,11 +20,13 @@
 
 package org.glite.security.voms.admin.operations.requests;
 
+import java.util.EnumSet;
 import java.util.List;
 
+import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
@@ -35,6 +37,7 @@ import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.register.SubmitRequestAction;
 
@@ -43,6 +46,9 @@ public class HandleVOMembershipRequest extends
 
   private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
 
+  private static final EnumSet<Request.STATUS> VALID_STATUSES = EnumSet.of(STATUS.SUBMITTED, 
+    STATUS.CONFIRMED);
+  
   List<String> approvedGroups;
 
   public HandleVOMembershipRequest(NewVOMembershipRequest request,
@@ -52,10 +58,15 @@ public class HandleVOMembershipRequest extends
     this.approvedGroups = approvedGroups;
   }
 
+  
+  
   @Override
   protected void approve() {
 
-    checkRequestStatus(STATUS.CONFIRMED);
+    if (!VALID_STATUSES.contains(request.getStatus())){
+      throw new IllegalRequestStateException("Illegal state for request: "
+        + request.getStatus());
+    }
 
     VOMSUser user = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
     VOMSUserDAO.instance().create(user,
@@ -83,13 +94,14 @@ public class HandleVOMembershipRequest extends
       for (String groupName : approvedGroups) {
 
         VOMSGroup g = groupDAO.findByName(groupName);
-        if (g != null)
+        if (g != null){
           user.addToGroup(g);
+        }
       }
 
     }
 
-    EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+    EventManager.instance().dispatch(new VOMembershipRequestApprovedEvent(request));
 
   }
 
@@ -98,7 +110,7 @@ public class HandleVOMembershipRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestRejectedEvent(request,
       REJECT_MOTIVATION));
 
     DAOFactory.instance().getRequestDAO().makeTransient(request);

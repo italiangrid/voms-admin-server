@@ -19,14 +19,17 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserCreatedEvent extends UserMembershipEvent {
+@EventDescription(message = "created user '%s %s' with certificate '%s'",
+  params = { "userName", "userSurname", "userCertificate0" })
+public class UserCreatedEvent extends UserLifecycleEvent {
 
-  public UserCreatedEvent(VOMSUser user) {
+  public UserCreatedEvent(VOMSUser payload) {
 
-    super(user);
-    // TODO Auto-generated constructor stub
+    super(payload);
+
   }
 
 }

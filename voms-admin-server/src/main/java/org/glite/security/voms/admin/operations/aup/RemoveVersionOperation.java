@@ -19,12 +19,15 @@
  */
 package org.glite.security.voms.admin.operations.aup;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.aup.AUPVersionDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.AUPVersion;
 
 public class RemoveVersionOperation extends BaseVomsOperation {
 
@@ -42,7 +45,11 @@ public class RemoveVersionOperation extends BaseVomsOperation {
   protected Object doExecute() {
 
     AUPDAO dao = DAOFactory.instance().getAUPDAO();
+    AUPVersion v = aup.getVersion(version);
+
     dao.removeVersion(aup, version);
+
+    EventManager.instance().dispatch(new AUPVersionDeletedEvent(aup, v));
 
     return aup;
   }

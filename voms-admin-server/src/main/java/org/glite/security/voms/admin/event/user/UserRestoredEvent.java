@@ -19,9 +19,12 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserRestoredEvent extends UserMembershipEvent {
+@EventDescription(message = "restored user '%s %s' membership", params = {
+  "userName", "userSurname" })
+public class UserRestoredEvent extends UserLifecycleEvent {
 
   public UserRestoredEvent(VOMSUser user) {
 

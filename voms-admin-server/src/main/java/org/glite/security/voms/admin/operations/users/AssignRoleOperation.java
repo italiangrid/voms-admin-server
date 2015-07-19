@@ -19,6 +19,8 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.membership.RoleAssignedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -61,7 +63,10 @@ public class AssignRoleOperation extends BaseVomsOperation {
   public Object doExecute() {
 
     VOMSUserDAO.instance().assignRole(user, group, role);
-    return null;
+
+    EventManager.instance().dispatch(new RoleAssignedEvent(user, group, role));
+
+    return user;
   }
 
   public static AssignRoleOperation instance(Long userId, String roleFqan) {

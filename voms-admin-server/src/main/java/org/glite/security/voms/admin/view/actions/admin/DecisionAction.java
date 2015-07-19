@@ -35,10 +35,10 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
-  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.SUCCESS, location = "requests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "requests.jsp"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "pendingRequests.jsp") })
+    location = "requests.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class DecisionAction extends RequestActionSupport {
@@ -47,7 +47,7 @@ public class DecisionAction extends RequestActionSupport {
 	 * 
 	 */
   private static final long serialVersionUID = 1L;
-
+  
   String decision;
 
   @Override

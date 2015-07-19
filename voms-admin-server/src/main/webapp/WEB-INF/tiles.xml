@@ -273,6 +273,14 @@
       <put-attribute name="content" value="/WEB-INF/p/user/membershipRemovalRequest.jsp"/>
     </definition>
     
+    <definition name="prepareGroupRequest" extends="user-layout">
+        <put-attribute name="content" value="/WEB-INF/p/user/groupRequest.jsp"/>
+    </definition>
+    
+    <definition name="prepareRoleRequest" extends="user-layout">
+        <put-attribute name="content" value="/WEB-INF/p/user/roleRequest.jsp"/>
+    </definition>
+
     <definition name="managerIndex" extends="admin-layout">
       <put-attribute name="content" value="/WEB-INF/p/manager/index.jsp"/>
     </definition>
@@ -281,9 +289,8 @@
       <put-attribute name="content" value="/WEB-INF/p/manager/create.jsp"/>
     </definition>
     
-    <definition name="requestHistory" extends="admin-layout">
-      <put-attribute name="content" value="/WEB-INF/p/request_history/index.jsp"/>
-    </definition>
-    
+    <definition name="auditLog" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/audit/index.jsp"/>
+    </definition>  
     
 </tiles-definitions>

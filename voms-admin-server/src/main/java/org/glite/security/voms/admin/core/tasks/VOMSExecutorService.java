@@ -91,6 +91,11 @@ public class VOMSExecutorService {
     startBackgroundTask(task, periodPropertyName, null);
   }
 
+  public void startBackgroundTask(Runnable task, Long defaultPeriod) {
+
+    startBackgroundTask(task, null, defaultPeriod);
+  }
+
   public void startBackgroundTask(Runnable task, String periodPropertyName,
     Long defaultPeriod) {
 
@@ -129,8 +134,15 @@ public class VOMSExecutorService {
 
     log.info("Scheduling task {} with period: {} seconds", new String[] {
       task.getClass().getSimpleName(), period.toString() });
-    executorService.scheduleAtFixedRate(new DatabaseTransactionTaskWrapper(
-      task, true), BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
+
+    executorService.scheduleAtFixedRate(wrapTask(task),
+      BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
+  }
+
+  private Runnable wrapTask(Runnable task) {
+
+    return new DatabaseTransactionTaskWrapper(task, true);
+
   }
 
   /**

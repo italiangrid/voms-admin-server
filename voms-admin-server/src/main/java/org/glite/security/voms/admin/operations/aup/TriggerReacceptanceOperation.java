@@ -21,6 +21,9 @@ package org.glite.security.voms.admin.operations.aup;
 
 import java.util.Date;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.aup.UserAUPSignatureRequestedEvent;
+import org.glite.security.voms.admin.event.vo.aup.TriggeredForcedReacceptanceEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -48,15 +51,19 @@ public class TriggerReacceptanceOperation extends BaseVomsOperation {
   @Override
   protected Object doExecute() {
 
-    if (user == null)
+    if (user == null) {
       aup.getActiveVersion().setLastForcedReacceptanceTime(new Date());
-    else {
+
+      EventManager.instance().dispatch(new TriggeredForcedReacceptanceEvent(aup));
+
+    } else {
       AUPAcceptanceRecord record = user.getAUPAccceptanceRecord(aup
         .getActiveVersion());
 
       if (record != null && !record.hasExpired())
         record.setValid(false);
 
+      EventManager.instance().dispatch(new UserAUPSignatureRequestedEvent(user, aup));
     }
 
     return aup;

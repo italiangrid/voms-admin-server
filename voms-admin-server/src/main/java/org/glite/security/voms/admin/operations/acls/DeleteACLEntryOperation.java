@@ -25,6 +25,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLUpdatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
@@ -45,51 +47,52 @@ public class DeleteACLEntryOperation extends BaseVomsOperation {
 
   protected Object doExecute() {
 
-    if (isRecursive()) {
-
-      if (acl.getContext().isGroupContext()) {
-        try {
-
-          List childrenGroups = VOMSGroupDAO.instance().getChildren(
-            acl.getGroup());
-          Iterator childIter = childrenGroups.iterator();
-
-          while (childIter.hasNext()) {
-
-            VOMSGroup childGroup = (VOMSGroup) childIter.next();
-            DeleteACLEntryOperation op = instance(childGroup.getACL(), admin,
-              recursive);
-            op.execute();
-          }
-
-          log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
-            + acl.getContext() + "' [recursive].");
-          ACLDAO.instance().deleteACLEntry(acl, admin);
-          return acl;
-
-        } catch (VOMSAuthorizationException e) {
-
-          log.warn("Authorization Error saving recursively ACL entry !");
-
-        } catch (RuntimeException e) {
-
-          throw e;
-        }
-
-      } else {
-
-        log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
-          + acl.getContext() + "' [recursive].");
-        ACLDAO.instance().deleteACLEntry(acl, admin);
-        return acl;
-      }
-
-    } else {
+    if (!isRecursive()) {
 
       log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
         + acl.getContext() + "'.");
       ACLDAO.instance().deleteACLEntry(acl, admin);
+      EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
       return acl;
+
+    }
+
+    // Recursive behaviour
+    try {
+
+      if (!acl.getContext().isGroupContext()) {
+
+        log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
+          + acl.getContext() + "' [recursive].");
+        ACLDAO.instance().deleteACLEntry(acl, admin);
+        EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
+
+        return acl;
+
+      } else {
+
+        List<VOMSGroup> childrenGroups = VOMSGroupDAO.instance().getChildren(
+          acl.getGroup());
+        Iterator<VOMSGroup> childIter = childrenGroups.iterator();
+
+        while (childIter.hasNext()) {
+
+          VOMSGroup childGroup = (VOMSGroup) childIter.next();
+          DeleteACLEntryOperation op = instance(childGroup.getACL(), admin,
+            recursive);
+          op.execute();
+        }
+
+        log.debug("Removing ACL entry for admin '" + admin + "' in ACL '"
+          + acl.getContext() + "' [recursive].");
+        ACLDAO.instance().deleteACLEntry(acl, admin);
+        EventManager.instance().dispatch(new ACLUpdatedEvent(acl));
+
+        return acl;
+      }
+
+    } catch (VOMSAuthorizationException e) {
+      log.warn("Authorization Error deleting recursively ACL entry", e);
     }
 
     return null;

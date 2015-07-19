@@ -178,9 +178,9 @@ public class CurrentAdmin {
 
     }
 
-    VOMSUser adminUser = getVoUser();
+    VOMSUser adminVOUser = getVoUser();
 
-    log.debug("Admin user: " + adminUser);
+    log.debug("Admin VO user: " + adminVOUser);
 
     VOMSPermission personalPermissions = acl.getPermissions(admin);
 
@@ -192,29 +192,46 @@ public class CurrentAdmin {
     log.debug("Permissions for any authenticated user: "
       + anyAuthenticatedUserPermissions);
 
-    VOMSPermissionList adminPerms = VOMSPermissionList.instance();
+    int effectivePerms = 0;
 
     VOMSPermission unauthenticatedClientPermissions = acl
       .getUnauthenticatedClientPermissions();
     log.debug("Permissions for unauthenticated clients: "
       + unauthenticatedClientPermissions);
 
-    if (personalPermissions == null && adminUser == null
+    if (personalPermissions == null && adminVOUser == null
       && anyAuthenticatedUserPermissions == null
       && unauthenticatedClientPermissions == null)
       return false;
 
-    if (personalPermissions != null)
-      adminPerms.addPermission(personalPermissions);
+    if (personalPermissions != null) {
+      effectivePerms = effectivePerms | personalPermissions.getBits();
+    }
 
-    if (anyAuthenticatedUserPermissions != null)
-      adminPerms.addPermission(anyAuthenticatedUserPermissions);
+    if (anyAuthenticatedUserPermissions != null) {
+      effectivePerms = effectivePerms
+        | anyAuthenticatedUserPermissions.getBits();
+    }
 
-    if (unauthenticatedClientPermissions != null)
-      adminPerms.addPermission(unauthenticatedClientPermissions);
+    if (unauthenticatedClientPermissions != null) {
+      effectivePerms = effectivePerms
+        | unauthenticatedClientPermissions.getBits();
+    }
 
-    if (adminUser == null)
-      return adminPerms.satifies(p);
+    if (adminVOUser == null) {
+      VOMSPermission adminEffectivePerms = VOMSPermission
+        .fromBits(effectivePerms);
+      log.debug("Admin effective permissions {}", adminEffectivePerms);
+
+      boolean result = adminEffectivePerms.satisfies(p);
+      if (log.isDebugEnabled()) {
+        log.debug(
+          "Does {} have permissions that satisfy {} in context {} ? {}",
+          new String[] { getAdmin().toString(), p.toString(), c.toString(),
+            Boolean.toString(result) });
+      }
+      return result;
+    }
 
     // AdminUser != null
     Map<VOMSAdmin, VOMSPermission> groupPermissions = acl.getGroupPermissions();
@@ -230,9 +247,12 @@ public class CurrentAdmin {
 
         String groupName = entry.getKey().getDn();
 
-        if (adminUser.isMember(groupName)) {
-          adminPerms.addPermission((VOMSPermission) entry.getValue());
-          log.debug("Adding group permission " + entry.getValue()
+        if (adminVOUser.isMember(groupName)) {
+          VOMSPermission groupPerm = entry.getValue();
+
+          effectivePerms = effectivePerms | groupPerm.getBits();
+
+          log.debug("Adding group permission " + groupPerm
             + " to admin's permission set. admin is a member of the group '"
             + groupName + "'.");
         }
@@ -247,18 +267,31 @@ public class CurrentAdmin {
         String roleName = entry.getKey().getDn();
 
         log.debug("Checking if current admin has role: " + roleName);
-        if (adminUser.hasRole(roleName)) {
+        if (adminVOUser.hasRole(roleName)) {
 
-          adminPerms.addPermission(entry.getValue());
+          effectivePerms = effectivePerms | entry.getValue().getBits();
+
           log.debug("Adding role permission " + entry.getValue()
             + " to admin's permission set. admin has role '" + roleName + "'.");
         }
       }
     }
 
-    log.debug("Admin permissions: " + adminPerms);
+    VOMSPermission adminEffectivePerms = VOMSPermission
+      .fromBits(effectivePerms);
 
-    return adminPerms.satifies(p);
+    log.debug("Admin effective permissions: {}", adminEffectivePerms);
+    
+    boolean result = adminEffectivePerms.satisfies(p);
+    
+    if (log.isDebugEnabled()) {
+      log.debug(
+        "Does {} have permissions that satisfy {} in context {} ? {}",
+        new String[] { getAdmin().toString(), p.toString(), c.toString(),
+          Boolean.toString(result) });
+    }
+    return result;
+    
   }
 
   public String getRealSubject() {
@@ -337,5 +370,10 @@ public class CurrentAdmin {
 
     return admin.isUnauthenticated();
 
+  }
+
+  public String getName() {
+
+    return getRealSubject();
   }
 }

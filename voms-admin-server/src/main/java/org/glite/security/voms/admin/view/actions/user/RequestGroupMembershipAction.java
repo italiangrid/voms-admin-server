@@ -25,27 +25,33 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.GroupMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 @Results({
 
-@Result(name = UserActionSupport.SUCCESS, location = "mappingsRequest.jsp"),
+@Result(name = UserActionSupport.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "mappingsRequest.jsp") })
+  @Result(name = UserActionSupport.INPUT, location = "prepareGroupRequest") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class RequestGroupMembershipAction extends UserActionSupport {
 
   /**
-	 * 
+	 *
 	 */
   private static final long serialVersionUID = 1L;
   Long groupId;
+  String reason;
 
   @Override
   public void validate() {
@@ -81,8 +87,9 @@ public class RequestGroupMembershipAction extends UserActionSupport {
     VOMSGroup g = groupById(groupId);
 
     GroupMembershipRequest req = reqDAO.createGroupMembershipRequest(
-      getModel(), g, getDefaultFutureDate());
-    EventManager.dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
+      getModel(), reason, g, getDefaultFutureDate());
+
+    EventManager.instance().dispatch(new GroupMembershipSubmittedEvent(req, getHomeURL()));
 
     refreshPendingRequests();
 
@@ -97,5 +104,24 @@ public class RequestGroupMembershipAction extends UserActionSupport {
   public void setGroupId(Long groupId) {
 
     this.groupId = groupId;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+          message = "You entered invalid characters in the reason field!")
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+          message = "Please enter a reason.")
+  @StringLengthFieldValidator(
+    minLength = "1",
+    maxLength = "255",
+    message = "Your reason must have from ${minLength} to ${maxLength} characters"
+    )
+  public String getReason() {
+
+    return reason;
+  }
+
+  public void setReason(String reason) {
+
+    this.reason = reason;
   }
 }

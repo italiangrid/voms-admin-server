@@ -30,7 +30,7 @@ import org.glite.security.voms.admin.core.validation.RequestValidationResult;
 import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -117,7 +117,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
       return PLUGIN_VALIDATION_ERROR;
     }
 
-    EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestSubmittedEvent(request,
       URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
         .buildRequestCancelURL(getModel())));
 

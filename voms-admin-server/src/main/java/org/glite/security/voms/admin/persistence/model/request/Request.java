@@ -52,7 +52,7 @@ public abstract class Request implements Serializable, NamedType {
   }
 
   /**
-     * 
+     *
      */
   private static final long serialVersionUID = 1L;
 
@@ -79,6 +79,12 @@ public abstract class Request implements Serializable, NamedType {
 
   @Column(name = "approver_ca")
   String approverCA;
+
+  @Column(name = "explanation", length=512)
+  String explanation;
+
+  @Column(name = "user_message", nullable = true)
+  String userMessage;
 
   /**
    * @return the id
@@ -126,6 +132,14 @@ public abstract class Request implements Serializable, NamedType {
   public STATUS getStatus() {
 
     return status;
+  }
+
+  /**
+   *
+   * @return the user message
+   */
+  public String getUserMessage() {
+    return userMessage;
   }
 
   /**
@@ -180,6 +194,15 @@ public abstract class Request implements Serializable, NamedType {
   public void setStatus(STATUS status) {
 
     this.status = status;
+  }
+
+  /**
+   *
+   * @param userMessage
+   *          the user message to set
+   */
+  public void setUserMessage(String userMessage) {
+    this.userMessage = userMessage;
   }
 
   @Override
@@ -278,6 +301,17 @@ public abstract class Request implements Serializable, NamedType {
   public void setApproverCA(String approverCA) {
 
     this.approverCA = approverCA;
+  }
+
+  public String getExplanation() {
+
+    return explanation;
+  }
+
+
+  public void setExplanation(String explanation) {
+
+    this.explanation = explanation;
   }
 
   public abstract String getTypeName();

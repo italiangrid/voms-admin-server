@@ -57,14 +57,18 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
       ri.setSurname("User " + i);
       ri.setEmailAddress(EMAIL);
       ri.setInstitution("IGI");
+      ri.setAddress("Via Ranzani 13/2 C\n40127 Bologna");
+      ri.setPhoneNumber("+39 051 60927777");
+      
       ri.setCertificateSubject("/C=IT/O=INFN/CN=test user " + i);
       ri.setCertificateIssuer("/C=IT/O=INFN/CN=INFN CA");
 
-      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup", "3");
+      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup", "15");
 
-      ri.addInfo("requestedGroup0", "/test/g0");
-      ri.addInfo("requestedGroup1", "/test/g1");
-      ri.addInfo("requestedGroup2", "/test/g2");
+      for (int gi=0; gi < 15; gi++){
+        ri.addInfo("requestedGroup"+gi, "/test/g"+gi);
+      }
+      
 
       NewVOMembershipRequest request = reqDAO.createVOMembershipRequest(ri,
         expirationDate);

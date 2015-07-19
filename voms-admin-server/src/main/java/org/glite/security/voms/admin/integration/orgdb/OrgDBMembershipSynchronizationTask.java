@@ -20,7 +20,6 @@
 
 package org.glite.security.voms.admin.integration.orgdb;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
@@ -68,7 +67,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
     SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
 
     long startTime = System.currentTimeMillis();
-    
+
     try {
 
       OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
@@ -77,7 +76,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
         .findAllWithCursor();
 
       int updateCount = 0;
-      
+
       while (allUserCursor.next()) {
 
         VOMSUser u = (VOMSUser) allUserCursor.get(0);
@@ -95,7 +94,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
               orgDbPerson, experimentName);
 
           // Flush some updates out and release memory
-          
+
           if (updateCount % UPDATE_COUNT_BATCH == 0) {
 
             log.debug("Flushing session after {} updates.", updateCount);
@@ -113,9 +112,6 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
       }
 
       sf.getCurrentSession().getTransaction().commit();
-      sf.getCurrentSession().close();
-      
-      
 
     } catch (OrgDBError e) {
 
@@ -125,12 +121,22 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
         log.error("OrgDB exception caught: {}", e.getMessage(), e);
       }
 
-    }finally{
-     
+      try {
+        sf.getCurrentSession().getTransaction().rollback();
+
+      } catch (Throwable t) {
+        log
+          .error("Error rolling back OrgDB transaction: {}", t.getMessage(), t);
+      }
+
+    } finally {
+
+      sf.getCurrentSession().close();
+
       long elapsedTime = System.currentTimeMillis() - startTime;
-      log.info("OrgDB synchronization took {} seconds.", 
+      log.info("OrgDB synchronization took {} seconds.",
         TimeUnit.MILLISECONDS.toSeconds(elapsedTime));
-      
+
     }
 
   }

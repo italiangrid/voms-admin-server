@@ -22,6 +22,7 @@ package org.glite.security.voms.admin.core.tasks;
 
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.servlets.InitSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,17 +46,15 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
 
       HibernateFactory.getSession();
       HibernateFactory.beginTransaction();
+      InitSecurityContext.setInternalAdminContext();
 
-      if (doLogging)
+      if (doLogging) {
         log.debug("{} task starting...", task.getClass().getSimpleName());
+      }
 
       task.run();
 
       HibernateFactory.commitTransaction();
-      HibernateFactory.closeSession();
-
-      if (doLogging)
-        log.debug("{} task done.", task.getClass().getSimpleName());
 
     } catch (VOMSDatabaseException e) {
 
@@ -70,6 +69,13 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
         task.getClass().getSimpleName());
       log.error(t.getMessage(), t);
 
+    } finally {
+
+      HibernateFactory.closeSession();
+
+      if (doLogging) {
+        log.debug("{} task done.", task.getClass().getSimpleName());
+      }
     }
   }
 }

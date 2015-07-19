@@ -72,7 +72,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
   }
 
   public GroupMembershipRequest createGroupMembershipRequest(VOMSUser usr,
-    VOMSGroup group, Date expirationDate) {
+    String reason, VOMSGroup group, Date expirationDate) {
 
     if (usr.isMember(group))
       throw new VOMSException("User '" + usr + "' is already member of group '"
@@ -87,6 +87,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
     req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
     req.setCreationDate(new Date());
     req.setExpirationDate(expirationDate);
+    req.setUserMessage(reason);
 
     req.setGroupName(group.getName());
 
@@ -111,7 +112,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
   }
 
   public RoleMembershipRequest createRoleMembershipRequest(VOMSUser usr,
-    VOMSGroup group, VOMSRole r, Date expirationDate) {
+    String reason, VOMSGroup group, VOMSRole r, Date expirationDate) {
 
     if (usr.hasRole(group, r))
       throw new AlreadyMemberException("User '" + usr + "' already has role '"
@@ -122,6 +123,7 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
     req.setRequesterInfo(RequesterInfo.fromVOUser(usr));
     req.setCreationDate(new Date());
     req.setExpirationDate(expirationDate);
+    req.setUserMessage(reason);
 
     req.setGroupName(group.getName());
     req.setRoleName(r.getName());

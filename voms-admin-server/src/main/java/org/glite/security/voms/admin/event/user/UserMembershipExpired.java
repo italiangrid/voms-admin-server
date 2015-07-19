@@ -19,9 +19,12 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserMembershipExpired extends UserMembershipEvent {
+@EventDescription(message = "set user '%s %s' membership as expired",
+  params = { "userName", "userSurname" })
+public class UserMembershipExpired extends UserLifecycleEvent {
 
   public UserMembershipExpired(VOMSUser user) {
 

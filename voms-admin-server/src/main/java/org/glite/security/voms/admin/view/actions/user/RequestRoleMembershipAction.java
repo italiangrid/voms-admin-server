@@ -19,13 +19,18 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
+
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
@@ -33,23 +38,24 @@ import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
+import org.glite.security.voms.admin.view.actions.BaseAction;
 
-@Results({
-
-@Result(name = UserActionSupport.SUCCESS, location = "mappingsRequest.jsp"),
+@Results({ @Result(name = BaseAction.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "mappingsRequest.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "mappingsRequest.jsp") })
+  @Result(name = UserActionSupport.INPUT, location = "prepareGroupRoleRequest") })
+
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class RequestRoleMembershipAction extends UserActionSupport {
 
   /**
-	 * 
+	 *
 	 */
   private static final long serialVersionUID = 1L;
 
   Long groupId;
   Long roleId;
+  String reason;
 
   @Override
   public void validate() {
@@ -112,12 +118,32 @@ public class RequestRoleMembershipAction extends UserActionSupport {
     VOMSRole r = roleById(roleId);
 
     RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model,
-      g, r, getDefaultFutureDate());
-    EventManager.dispatch(new RoleMembershipSubmittedEvent(request,
+      reason, g, r, getDefaultFutureDate());
+
+    EventManager.instance().dispatch(new RoleMembershipSubmittedEvent(request,
       getHomeURL()));
 
     refreshPendingRequests();
 
     return SUCCESS;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+          message = "You entered invalid characters in the reason field!")
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+          message = "Please enter a reason.")
+  @StringLengthFieldValidator(
+    minLength = "1",
+    maxLength = "255",
+    message = "Your reason must have from ${minLength} to ${maxLength} characters"
+    )
+  public String getReason() {
+
+    return reason;
+  }
+
+  public void setReason(String reason) {
+
+    this.reason = reason;
   }
 }

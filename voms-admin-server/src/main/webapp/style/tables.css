@@ -97,6 +97,11 @@ td.roleDismiss{
 	
 }
 
+.userRoleName {
+	color: #6F0D0D;
+	font-weight: bold;
+}
+
 td.userRoleName{
 	color: #6F0D0D;
 	font-weight: bold;

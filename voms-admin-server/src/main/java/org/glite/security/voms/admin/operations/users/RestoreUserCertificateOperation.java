@@ -20,6 +20,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateRestored;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -64,7 +66,11 @@ public class RestoreUserCertificateOperation extends BaseVomsOperation {
       throw new NullArgumentException("certificate cannot be null");
 
     certificate.restore();
-    return null;
+    
+    EventManager.instance().dispatch(new UserCertificateRestored(certificate.getUser(), 
+      certificate));
+    
+    return certificate;
   }
 
   @Override

@@ -19,21 +19,19 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.attribute.UserAttributeSetEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetUserAttributeOperation extends BaseVomsOperation {
-
-  private static final Logger log = LoggerFactory
-    .getLogger(SetUserAttributeOperation.class);
 
   VOMSUser user;
 
@@ -54,9 +52,12 @@ public class SetUserAttributeOperation extends BaseVomsOperation {
 
   public Object doExecute() {
 
-    log.debug("SetUserAttributeOperation::doExecute");
-    return VOMSUserDAO.instance().setAttribute(user, attributeName,
-      attributeValue);
+    VOMSUserAttribute attribute = VOMSUserDAO.instance().setAttribute(user,
+      attributeName, attributeValue);
+
+    EventManager.instance().dispatch(new UserAttributeSetEvent(user, attribute));
+
+    return attribute;
 
   }
 

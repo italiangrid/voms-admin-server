@@ -195,13 +195,8 @@ function eyeCandy(){
 	
 	$('input.checkboxError').wrap("<span class='checkboxValidationError'></span>");
 	
-	$('ul.message li').each(function(){
-		var el = this;
-		setTimeout(function(){
-			$(el).fadeOut('normal');
-		}, 3000);
-		
-		return el;
+	$('ul.message li').click(function(){
+		$(this).fadeOut('normal');
 	});
 	
 	$('ul.actionError li').click(function(){
@@ -517,10 +512,158 @@ function openConfirmDialog(node,dialogId,text){
 	
 }
 
+function bulkRequestSetup(){
+	
+	$('#req-selector').click(function(e){
+		var checked = $(this).attr("checked");
+		var checkboxes = $('.req-checkbox');
+		checkboxes.attr("checked", checked);
+		
+		var checkboxesChecked = checkboxes.is(":checked");
+		if (checkboxesChecked) {
+			$('.req-row').removeClass('req-row-noselect');
+			$('.req-toolbar-btns').removeClass('req-toolbar-btns-hidden');
+		}else {
+			$('.req-row').addClass('req-row-noselect');
+			$('.req-toolbar-btns').addClass('req-toolbar-btns-hidden');
+		}
+	});
+	
+	var checkboxes = $('.req-checkbox');
+	
+	checkboxes.click(function() {
+		var checkboxesChecked = checkboxes.is(":checked");
+		
+		if (checkboxesChecked) {
+			$('.req-row').removeClass('req-row-noselect');
+			$('.req-toolbar-btns').removeClass('req-toolbar-btns-hidden');
+		}else {
+			$('.req-row').addClass('req-row-noselect');
+			$('.req-toolbar-btns').addClass('req-toolbar-btns-hidden');
+		}
+	});
+	
+	
+	$('.req-detail-trigger').click(function(e) {
+		e.preventDefault();
+		var detailNode = $(this).closest('td').find('.req-detail');
+		if ($(detailNode).hasClass("req-detail-hidden")){
+			$(this).text("hide info");
+			$(detailNode).removeClass("req-detail-hidden");
+		}else {
+			$(this).text("more info");
+			$(detailNode).addClass("req-detail-hidden");
+		}
+	});
+
+	if ($('.req-row').size() < 2) {
+		checkboxes.attr("disabled", true);
+		$('#req-selector').attr("disabled", "disabled");
+	}else {
+		checkboxes.attr("disabled", false);
+		$('#req-selector').removeAttr("disabled");
+	}
+}
+
+function rejectRequestDialog(node, dialogId){
+	
+	if ($(node).is(':submit')){
+		
+		confirmFunc = function(){
+			var form = $(node).closest('form');
+			var motivation = $('#confirmRejectedRequestDialog_input').val();
+			form.append("<input type='hidden' name='motivation' value='"+motivation+"'/>");
+			setFormActionFromSubmitButton(form, node);
+			form.submit();
+		};
+	}
+	
+	$('#confirmRejectedRequestDialog_input').val("");
+	$('#'+dialogId).dialog({resizable: false,
+		width: 800,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			'Reject requests?': confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	$('#confirmRejectedRequestDialog_input').focus();
+	
+	return false;
+};
+
+function rejectSingleRequestDialog(submitNode, dialogId){
+	
+	if ($(submitNode).is(':submit')){
+		
+		confirmFunc = function(){
+			var form = $(submitNode).closest('form');
+			
+			var action = $(submitNode).attr('formaction');
+			form.attr('action', action);
+			var motivation = $('#confirmRejectedRequestDialog_input').val();
+			form.append("<input type='hidden' name='motivation' value='"+motivation+"'/>");
+			form.submit();
+		};
+	}
+	
+	$('#confirmRejectedRequestDialog_input').val("");
+	$('#'+dialogId).dialog({resizable: false,
+		width: 800,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			'Reject request?': confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	$('#confirmRejectedRequestDialog_input').focus();
+	return false;
+};
+
+function auditLogSetup(){
+	
+	$('.al-trigger').click(function(e) {
+		e.preventDefault();
+		var detailNodeId = $(this).data('target');
+		var detailNode = $('#'+detailNodeId);
+		
+		if ($(detailNode).hasClass("al-dtl-hidden")){
+			
+			$(this).text("hide info");
+			$(this).closest('tr').find('td').addClass('al-dtl-header');
+			$(detailNode).removeClass("al-dtl-hidden");
+			$('html,body')
+			.animate({ scrollTop: $(this).offset().top },	500);
+		}else {
+			$(this).text("more info");
+			$(this).closest('tr').find('td').removeClass('al-dtl-header');
+			$(detailNode).addClass("al-dtl-hidden");
+		}
+	});
+};
 
 $(document).ready(function(){
-	
 	pageSetup();
-	
-	
+	bulkRequestSetup();
+	auditLogSetup();
 });
