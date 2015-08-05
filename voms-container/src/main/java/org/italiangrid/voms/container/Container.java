@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.deploy.DeploymentManager;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -32,6 +34,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
+import org.eclipse.jetty.util.log.Log;
 import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
@@ -297,9 +300,17 @@ public class Container {
     server = ServerFactory.newServer(bindAddress, Integer.parseInt(port),
       getSSLOptions(), validator, maxConnections, maxRequestQueueSize);
 
+    MBeanContainer mbContainer = new MBeanContainer(ManagementFactory
+      .getPlatformMBeanServer());
+
+    // Enable JMX
+    server.addBean(mbContainer);
+    server.getContainer().addEventListener(mbContainer);
+    mbContainer.addBean(Log.getLog());
+    
     addNameToHTTPSConnector();
     configureLocalHTTPConnector();
-
+    
     server.addLifeCycleListener(new ServerListener());
 
     configureDeploymentManager();
@@ -500,6 +511,9 @@ public class Container {
             Thread.currentThread().setContextClassLoader(newClassLoader);
           }
         }
+        
+        f.close();
+        
         if (!taglibsFound) {
           throw new RuntimeException("Error configuring taglibs classloading!");
         }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.persistence.dao.generic.GenericDAO;
+import org.hibernate.Session;
 
 public interface OrgDBVOMSPersonDAO extends GenericDAO<VOMSOrgDBPerson, Long> {
 
@@ -57,5 +58,7 @@ public interface OrgDBVOMSPersonDAO extends GenericDAO<VOMSOrgDBPerson, Long> {
 
   public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipation(
     String experimentName, List<String> validEmails);
+  
+  public void setSession(Session session);
 
 }

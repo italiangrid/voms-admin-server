@@ -23,6 +23,7 @@ package org.glite.security.voms.admin.view.actions.register.orgdb;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginConfigurator;
 import org.glite.security.voms.admin.integration.PluginManager;
@@ -104,6 +105,9 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
     requester.setInstitution(institute.getName());
     requester.setPhoneNumber(orgDbPerson.getTel1());
     requester.setAddress(orgDbPerson.getAddressForVOMS());
+    
+    requester.addInfo(VOMSServiceConstants.ORGDB_ID_KEY, 
+      orgDbPerson.getId().toString());
 
   }
 

@@ -121,6 +121,9 @@ public class SchemaDeployer {
     setupCLParser();
     checkArguments(args);
     execute();
+    
+    HibernateFactory.shutdown();
+    
 
   }
 

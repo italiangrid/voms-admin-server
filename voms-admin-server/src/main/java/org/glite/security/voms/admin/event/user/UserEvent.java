@@ -38,6 +38,9 @@ public abstract class UserEvent extends SinglePayloadAuditableEvent<VOMSUser> {
     e.addDataPoint("userMembershipExpirationDate", 
       nullSafeValue(user.getEndTime()));
     
+    e.addDataPoint("userOrgDbId", 
+      nullSafeValue(user.getOrgDbId()));
+    
     int certificateCounter = 0;
   
     for (Certificate c : user.getCertificates()) {

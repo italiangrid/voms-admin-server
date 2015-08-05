@@ -113,7 +113,7 @@
 }
 
 .roleAssign .submitButton, .roleDismiss .submitButton, .subscribeGroups .submitButton,
-  .removeFromGroup .submitButton {
+.removeFromGroup .submitButton {
   font-size: xx-small;
 }
 
@@ -354,11 +354,11 @@ h3, .header3 {
 }
 
 .suspended-cert {
-  
+
 }
 
 ol.certificate-info {
-  
+
 }
 
 ol.certificate-info li {
@@ -642,7 +642,7 @@ th.permissionName {
 }
 
 #permissionShortcuts .clickable, #formattedDNControls .clickable,
-  #showAUPContent.clickable {
+#showAUPContent.clickable {
   margin: 0 .2em;
   color: #456aac;
 }
@@ -786,7 +786,7 @@ input.membershipExpiration {
 }
 
 #userShortcuts .clickable, #formattedDNControls .clickable, #showAUPContent.clickable
-  {
+{
   margin: 0 .2em;
   color: #456aac;
 }
@@ -829,7 +829,7 @@ tr.userBulkOperations {
 }
 
 div.unspecified {
-  
+
 }
 
 div.userSuspensionInfo {
@@ -957,7 +957,7 @@ tr.req-row td {
 }
 
 .req-row {
-  
+
 }
 
 .req-row-noselect:hover .req-btns {
@@ -1047,4 +1047,11 @@ blockquote {
 
 .al-desc {
   line-height: 1.4em;
+}
+
+.new-hr-id {
+  text-align: center;
+  font-weight: bolder;
+  font-size: larger;
+  margin-top: 1em; 
 }

@@ -154,6 +154,7 @@ final public class VOMSServiceConstants {
 
   public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "";
 
+  public static final String ORGDB_ID_KEY = "orgDbId";
 }
 
 // Please do not change this line.

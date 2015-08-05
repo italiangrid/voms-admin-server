@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,12 +57,10 @@ import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
-import org.glite.security.voms.admin.event.AuditableEvent;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
 import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
-import org.glite.security.voms.admin.persistence.model.audit.AuditEventData;
 import org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
@@ -205,6 +202,9 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   // FIXME: currently ignored by configuration
   @Transient
   Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
+
+  @Column(name="orgdb_id", nullable=true)
+  Long orgDbId;
 
   /**
    * @return Returns the emailAddress.
@@ -1292,6 +1292,16 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     return -1;
 
+  }
+
+  public Long getOrgDbId() {
+
+    return orgDbId;
+  }
+
+  public void setOrgDbId(Long orgDbId) {
+
+    this.orgDbId = orgDbId;
   }
 
 }
