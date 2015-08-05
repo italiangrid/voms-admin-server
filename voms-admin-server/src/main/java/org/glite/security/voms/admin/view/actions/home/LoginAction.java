@@ -23,6 +23,8 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage(value = "base")
@@ -44,10 +46,15 @@ public class LoginAction extends BaseAction {
   public String execute() throws Exception {
 
     CurrentAdmin admin = CurrentAdmin.instance();
-
+    VOMSGroup rootGroup = getVORootGroup();
+    VOMSRole groupManagerRole = getGroupManagerRole();
+    
     if (admin.isVOAdmin())
       return "admin-home";
-    else if (admin.isVoUser())
+    else if (groupManagerRole != null && 
+      admin.hasRole(rootGroup, groupManagerRole)){
+      return "admin-home";
+    } else if (admin.isVoUser())
       return "user-home";
     else if (admin.isUnauthenticated())
       return "unauthenticated";

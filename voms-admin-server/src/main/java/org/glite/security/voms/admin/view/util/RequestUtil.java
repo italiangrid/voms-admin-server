@@ -5,18 +5,17 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
-import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.GroupScopeRequest;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request;
-import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class RequestUtil {
 
@@ -32,8 +31,9 @@ public class RequestUtil {
   }
 
   private static boolean isGroupScopeRequest(Request r) {
-
+    
     return (r instanceof GroupScopeRequest);
+    
   }
 
   public static List<Request> findManageableRequests() {
@@ -49,6 +49,7 @@ public class RequestUtil {
     while (requestIter.hasNext()) {
 
       Request r = requestIter.next();
+      
       if (!theAdmin.isVOAdmin() && isVOScopeRequest(r)) {
         requestIter.remove();
       }
@@ -56,9 +57,28 @@ public class RequestUtil {
       if (isGroupScopeRequest(r)) {
         String groupName = ((GroupScopeRequest) r).getGroupName();
         VOMSContext context = VOMSContext.instance(groupName);
-        if (!theAdmin.hasPermissions(context,
-          VOMSPermission.getRequestsRWPermissions())) {
-          requestIter.remove();
+        
+        boolean adminHasRequestHandlingPermissions = theAdmin
+          .hasPermissions(context,
+          VOMSPermission.getRequestsRWPermissions());
+        
+        boolean adminHasGroupManagerRole = 
+          theAdmin.hasRole(context.getGroup(), VOMSConfiguration
+            .instance().getGroupManagerRoleName());
+        
+        /**
+         * Group-manager role grants privileges only on non-root
+         * groups. 
+         */
+        if (context.getGroup().isRootGroup()){
+          if (!adminHasRequestHandlingPermissions){
+              requestIter.remove();
+            }
+        } else {
+          if (!adminHasRequestHandlingPermissions && !adminHasGroupManagerRole){
+            requestIter.remove();
+          }
+          
         }
       }
     }

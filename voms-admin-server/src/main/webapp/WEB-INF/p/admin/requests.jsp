@@ -1,7 +1,6 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
-
 <s:if test="pendingRequests.empty">
   No pending requests.
 </s:if>
@@ -14,7 +13,7 @@
     action="bulk-decision"
     namespace="/admin">
     <s:token />
-    <table class="table">
+    <table class="table" style="clear: both">
       <thead>
         <tr class="req-toolbar">
           <th><input

@@ -39,8 +39,6 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -1074,6 +1072,10 @@ public final class VOMSConfiguration {
       "localhost");
   }
 
+  public String getGroupManagerRoleName() {
+    return config.getString(VOMSConfigurationConstants.GROUP_MANAGER_ROLE_NAME,
+      "Group-Manager");
+  }
   public int getExpiringUsersWarningInterval() {
 
     String warningPeriodInDays = VOMSConfiguration

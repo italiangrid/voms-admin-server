@@ -27,10 +27,13 @@ import java.util.regex.Pattern;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
@@ -329,6 +332,30 @@ public class CurrentAdmin {
       return null;
   }
 
+  public boolean hasRole(VOMSGroup group, String roleName){
+    VOMSRole role = VOMSRoleDAO.instance().findByName(roleName);
+    
+    if (role == null) {
+      return false;
+    }
+    
+    return hasRole(group, role);
+  }
+  
+  public boolean hasRole(VOMSGroup group, VOMSRole role){
+    if (getVoUser() == null){
+      return false;
+    }
+    
+    if (getVoUser().isMember(group)){
+      return getVoUser().hasRole(group, role);
+    } 
+    
+    return false;
+      
+  }
+  
+  
   public String getRealEmailAddress() {
 
     VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext

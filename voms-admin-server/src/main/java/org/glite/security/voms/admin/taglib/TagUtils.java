@@ -75,6 +75,7 @@ public class TagUtils {
 
   }
 
+
   public static VOMSContext buildContext(String context) throws JspException {
 
     if (context.equals("vo"))

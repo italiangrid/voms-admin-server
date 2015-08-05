@@ -23,9 +23,11 @@ package org.glite.security.voms.admin.operations.requests;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.request.RoleMembershipApprovedEvent;
 import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.user.membership.RoleAssignedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
@@ -33,7 +35,7 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleRoleMembershipRequestOperation extends
-  BaseHandleRequestOperation<RoleMembershipRequest> {
+  GroupManagerRoleHolderOperation<RoleMembershipRequest> {
 
   public HandleRoleMembershipRequestOperation(RoleMembershipRequest request,
     DECISION decision) {
@@ -50,10 +52,11 @@ public class HandleRoleMembershipRequestOperation extends
     VOMSGroup g = findGroupByName(request.getGroupName());
     VOMSRole r = findRoleByName(request.getRoleName());
 
-    AssignRoleOperation.instance(u, g, r).execute();
+    VOMSUserDAO.instance().assignRole(u, g, r);
 
     approveRequest();
 
+    EventManager.instance().dispatch(new RoleAssignedEvent(u,g,r));
     EventManager.instance().dispatch(new RoleMembershipApprovedEvent(request));
 
   }

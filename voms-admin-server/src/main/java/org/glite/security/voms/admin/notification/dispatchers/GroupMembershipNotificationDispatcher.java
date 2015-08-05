@@ -23,7 +23,9 @@ package org.glite.security.voms.admin.notification.dispatchers;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.request.GroupMembershipApprovedEvent;
@@ -38,7 +40,9 @@ import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
 public class GroupMembershipNotificationDispatcher extends
@@ -72,16 +76,33 @@ public class GroupMembershipNotificationDispatcher extends
       VOMSContext context = VOMSContext
         .instance(ee.getPayload().getGroupName());
 
-      List<String> admins;
+      List<String> admins = new ArrayList<String>();
 
-      if (context.getGroup().getManagers().size() != 0) {
-        admins = new ArrayList<String>();
-        for (GroupManager gm : context.getGroup().getManagers())
-          admins.add(gm.getEmailAddress());
-      } else
-        admins = NotificationUtil.getAdministratorsEmailList(context,
-          VOMSPermission.getRequestsRWPermissions());
+      VOMSRole groupManagerRole = VOMSRoleDAO.instance().findByName(
+        VOMSConfiguration.instance().getGroupManagerRoleName());
 
+      if (groupManagerRole != null) {
+
+        Set<String> groupManagersRoleEmailAddresses = groupManagerRole
+          .getMembersEmailAddresses(context.getGroup());
+
+        if (!groupManagersRoleEmailAddresses.isEmpty()) {
+          admins.addAll(groupManagersRoleEmailAddresses);
+        }
+      }
+      
+      if (admins.isEmpty()) {
+
+        if (context.getGroup().getManagers().size() != 0) {
+          for (GroupManager gm : context.getGroup().getManagers()) {
+            admins.add(gm.getEmailAddress());
+          }
+        } else {
+          admins = NotificationUtil.getAdministratorsEmailList(context,
+            VOMSPermission.getRequestsRWPermissions());
+        }
+      }
+      
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
 
       NotificationService.instance().send(msg);

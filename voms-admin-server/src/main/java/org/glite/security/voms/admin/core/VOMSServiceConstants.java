@@ -138,23 +138,6 @@ final public class VOMSServiceConstants {
 
   public static final String STATUS_MAP_KEY = "uiStatusMap";
 
-  // TAG administrators constants below
-
-  public static final String TAG_VO_MANAGER = "VO-Manager";
-
-  public static final String TAG_GROUP_MANAGER = "Group-Manager";
-
-  public static final String TAG_ROLE_MANAGER = "Role-Manager";
-
-  public static final String TAG_ATTRIBUTES_MANAGER = "Attributes-Manager";
-
-  public static final String TAG_INSTITUTE_REPRESENTATIVE = "Institute-Representative";
-
-  public static final String TAG_VO_USER = "VO-User";
-
-  public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "";
-
 }
-
 // Please do not change this line.
 // arch-tag: 47047210-5c25-4af2-b4e8-77614f1b2e66
