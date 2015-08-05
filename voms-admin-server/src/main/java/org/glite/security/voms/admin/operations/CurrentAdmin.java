@@ -19,6 +19,7 @@
  */
 package org.glite.security.voms.admin.operations;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -375,5 +376,17 @@ public class CurrentAdmin {
   public String getName() {
 
     return getRealSubject();
+  }
+  
+  public X509Certificate getClientCert(){
+    if (isUnauthenticated()){
+      return null;
+    }
+    
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+    
+    return theContext.getClientCert();
+    
   }
 }

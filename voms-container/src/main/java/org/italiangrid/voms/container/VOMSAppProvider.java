@@ -21,8 +21,8 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.util.Scanner;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.italiangrid.voms.container.listeners.VOListener;
-import org.italiangrid.voms.container.listeners.VOMSESListener;
+import org.italiangrid.voms.container.lifecycle.VOListener;
+import org.italiangrid.voms.container.lifecycle.VOMSESListener;
 import org.italiangrid.voms.status.VOMSStatusFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,7 +189,7 @@ public class VOMSAppProvider extends AbstractLifeCycle implements AppProvider {
    * Initializes the Jetty temp directory as the default directory created by
    * Jetty confuses xwork which has a bug and doesn't find classes when the WAR
    * is expanded in the tmp directory.
-   * 
+   *
    * TODO: check if recent versions of xwork solve this.
    */
   protected File getJettyTmpDirForVO(String vo) {

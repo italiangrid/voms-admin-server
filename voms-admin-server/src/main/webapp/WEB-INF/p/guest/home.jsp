@@ -25,3 +25,7 @@
   Welcome to the <span class="voName">${voName}</span> VO.
 </h1>
 
+<p>
+  You did not present any trusted and recognized certificate, and for
+  this reason you have not been authenticated.
+</p>

@@ -1053,5 +1053,16 @@ blockquote {
   text-align: center;
   font-weight: bolder;
   font-size: larger;
-  margin-top: 1em; 
+  margin-top: 1em;
+}
+
+ul.certificate-info {
+  list-style: disc;
+  line-height: 1.4em;
+  padding-left: 2em;
+  margin-top: 1em;
+}
+
+a.register-url {
+  font-size: 18pt;
 }
