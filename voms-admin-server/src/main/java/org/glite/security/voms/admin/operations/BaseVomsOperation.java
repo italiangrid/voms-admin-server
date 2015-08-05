@@ -113,7 +113,7 @@ public abstract class BaseVomsOperation<V> implements VOMSOperation<V> {
     __requiredPermissions = new HashMap<VOMSContext, VOMSPermission>();
   }
 
-  AuthorizationResponse isAllowed() {
+  protected AuthorizationResponse isAllowed() {
 
     CurrentAdmin admin = CurrentAdmin.instance();
 

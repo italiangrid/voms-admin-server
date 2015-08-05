@@ -22,10 +22,10 @@ package org.glite.security.voms.admin.core;
 /**
  * Constants used in both the clients and the server. None of these constants
  * should ever be changed.
- * 
+ *
  * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
  * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
- * 
+ *
  */
 final public class VOMSServiceConstants {
 
@@ -88,7 +88,7 @@ final public class VOMSServiceConstants {
   /**
    * This special CA value in the ADMINS table corresponds to a collective
    * administrator that is a VOMS tag.
-   * 
+   *
    */
   static public final String TAG_CA = "/O=VOMS/O=System/CN=VOMS Admin Tag";
 
@@ -138,24 +138,7 @@ final public class VOMSServiceConstants {
 
   public static final String STATUS_MAP_KEY = "uiStatusMap";
 
-  // TAG administrators constants below
-
-  public static final String TAG_VO_MANAGER = "VO-Manager";
-
-  public static final String TAG_GROUP_MANAGER = "Group-Manager";
-
-  public static final String TAG_ROLE_MANAGER = "Role-Manager";
-
-  public static final String TAG_ATTRIBUTES_MANAGER = "Attributes-Manager";
-
-  public static final String TAG_INSTITUTE_REPRESENTATIVE = "Institute-Representative";
-
-  public static final String TAG_VO_USER = "VO-User";
-
-  public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "";
-
   public static final String ORGDB_ID_KEY = "orgDbId";
 }
-
 // Please do not change this line.
 // arch-tag: 47047210-5c25-4af2-b4e8-77614f1b2e66

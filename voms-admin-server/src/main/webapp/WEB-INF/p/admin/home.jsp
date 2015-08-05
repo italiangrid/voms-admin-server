@@ -37,9 +37,15 @@
 		</div>
 	</s:if>
 	
-	<voms:hasPermissions var="canManage" context="vo" permission="REQUESTS_READ|REQUESTS_WRITE"/>
+  <voms:hasGroupManagerRole 
+    var="hasGroupManagerRole" 
+    group="vo"/>
+  
+	<voms:hasPermissions var="canManage" 
+    context="vo" 
+    permission="REQUESTS_READ|REQUESTS_WRITE"/>
 	
-	<s:if test="#attr.canManage">
+	<s:if test="#attr.canManage or #attr.hasGroupManagerRole">
 	  <tiles2:insertTemplate template="requests.jsp"/>
 	</s:if>
 	<s:else>

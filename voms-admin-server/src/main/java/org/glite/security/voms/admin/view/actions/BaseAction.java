@@ -25,11 +25,14 @@ package org.glite.security.voms.admin.view.actions;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
 import org.glite.security.voms.admin.operations.roles.FindRoleOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
@@ -82,6 +85,18 @@ public class BaseAction extends ActionSupport implements ValidationAware {
 
     return VOMSAdminDAO.instance().getById(id);
 
+  }
+
+  protected VOMSGroup getVORootGroup() {
+
+    return VOMSGroupDAO.instance().getVOGroup();
+  }
+
+  protected VOMSRole getGroupManagerRole() {
+
+    return VOMSRoleDAO.instance().findByName(VOMSConfiguration
+      .instance().getGroupManagerRoleName());
+    
   }
 
   protected VOMSGroup groupById(Long id) {

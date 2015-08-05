@@ -80,18 +80,6 @@ public class VOMSContext {
     if (contextString == null)
       throw new IllegalArgumentException("null is not a valid VOMS context!");
 
-    if (PathNamingScheme.isGroup(contextString)) {
-      VOMSGroup g = VOMSGroupDAO.instance().findByName(contextString);
-
-      if (g == null)
-        throw new NoSuchGroupException("Group '"
-          + PathNamingScheme.getGroupName(contextString)
-          + "' is not defined for this vo.");
-
-      return new VOMSContext(g, null);
-
-    }
-
     if (PathNamingScheme.isQualifiedRole(contextString)) {
 
       VOMSGroup g = VOMSGroupDAO.instance().findByName(
@@ -110,6 +98,18 @@ public class VOMSContext {
           + "' is not defined for this vo.");
 
       return new VOMSContext(g, r);
+    }
+    
+    if (PathNamingScheme.isGroup(contextString)) {
+      VOMSGroup g = VOMSGroupDAO.instance().findByName(contextString);
+
+      if (g == null)
+        throw new NoSuchGroupException("Group '"
+          + PathNamingScheme.getGroupName(contextString)
+          + "' is not defined for this vo.");
+
+      return new VOMSContext(g, null);
+
     }
 
     throw new IllegalArgumentException(
