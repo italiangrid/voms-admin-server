@@ -19,8 +19,11 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
-
+@EventDescription(
+  message = "rejected group membership request from user '%s %s' for group '%s'",
+  params = { "requestorGivenName", "requestorSurname", "requestedGroupName" })
 public class GroupMembershipRejectedEvent extends GroupMembershipRequestEvent {
 
   public GroupMembershipRejectedEvent(GroupMembershipRequest req) {

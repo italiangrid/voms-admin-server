@@ -1,11 +1,13 @@
 package org.glite.security.voms.admin.event.vo.aup;
 
 import org.apache.commons.lang.xwork.Validate;
+import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.event.auditing.NullHelper;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
+@MainEventDataPoints({"aupName", "aupVersion", "aupVersionURL", "aupVersionIsActive"})
 public class AUPVersionEvent extends AUPEvent {
 
   final AUPVersion version;

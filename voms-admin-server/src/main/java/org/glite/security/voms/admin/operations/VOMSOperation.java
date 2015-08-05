@@ -21,12 +21,12 @@ package org.glite.security.voms.admin.operations;
 
 import java.util.Map;
 
-public interface VOMSOperation {
+public interface VOMSOperation<V> {
 
-  public Object execute();
+  public V execute();
 
   public String getName();
 
-  public Map getRequiredPermissions();
+  public Map<VOMSContext, VOMSPermission> getRequiredPermissions();
 
 }

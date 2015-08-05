@@ -19,9 +19,10 @@
  */
 package org.glite.security.voms.admin.event.user.aup;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-
+@EventDescription(message="signed AUP for user '%s %s'", params={"userName", "userSurname"})
 public class UserSignedAUPEvent extends UserAUPEvent {
 
   public UserSignedAUPEvent(VOMSUser user, AUP aup) {

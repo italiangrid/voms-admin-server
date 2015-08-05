@@ -67,7 +67,7 @@
       </li>
       
       <li>
-        <a href="<s:url action="index" namespace="/request_history"/>"class="vomsLink">Request log</a>
+        <a href="<s:url action="index" namespace="/audit"/>"class="vomsLink">Audit log</a>
       </li>
     </s:if>
     

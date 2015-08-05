@@ -3,12 +3,14 @@ package org.glite.security.voms.admin.event.request;
 import static org.glite.security.voms.admin.event.auditing.NullHelper.nullSafeValue;
 
 import org.glite.security.voms.admin.event.EventCategory;
+import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.event.SinglePayloadAuditableEvent;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 
-public class UserRequestEvent<T extends Request> extends
+@MainEventDataPoints({"requestorSubject", "requestorIssuer"})
+public abstract class UserRequestEvent<T extends Request> extends
   SinglePayloadAuditableEvent<T> {
 
   public UserRequestEvent(EventCategory type, T payload) {

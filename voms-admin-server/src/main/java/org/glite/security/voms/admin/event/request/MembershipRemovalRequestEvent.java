@@ -23,7 +23,7 @@ import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
-public class MembershipRemovalRequestEvent extends
+public abstract class MembershipRemovalRequestEvent extends
   UserRequestEvent<MembershipRemovalRequest> {
 
   public MembershipRemovalRequestEvent(MembershipRemovalRequest req) {

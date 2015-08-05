@@ -90,5 +90,7 @@ public abstract class DAOFactory {
   public abstract GroupManagerDAO getGroupManagerDAO();
   
   public abstract AuditDAO getAuditDAO();
+  
+  public abstract AuditSearchDAO getAuditSearchDAO();
 
 }

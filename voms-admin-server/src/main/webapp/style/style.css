@@ -414,14 +414,14 @@ dl {
 }
 
 dl dd {
-  margin-left: 180px
+  margin-left: 220px
 }
 
 dl dt {
   font-weight: bold;
   color: #505050;
   float: left;
-  width: 160px;
+  width: 200px;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1016,4 +1016,35 @@ blockquote {
   border-left: 5px solid #eee;
   word-wrap: break-word;
   max-width: 770px;
+}
+
+.audit-log-principal {
+  color: #006600;
+}
+
+.al-dtl {
+  line-height: 24px;
+}
+.al-dtl-hidden {
+  display: none;
+  border: 0;
+}
+
+.al-dtl-header {
+  border-bottom: 0;
+}
+
+.al-trigger {
+}
+
+.al-dtl-list {
+  margin-top: 1em;
+}
+
+.al-dtl h4 {
+  clear: both;
+}
+
+.al-desc {
+  line-height: 1.4em;
 }

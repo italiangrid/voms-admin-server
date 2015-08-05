@@ -3,7 +3,7 @@ package org.glite.security.voms.admin.event;
 import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
-public class SinglePayloadAuditableEvent<T> extends AuditableEvent {
+public abstract class SinglePayloadAuditableEvent<T> extends AuditableEvent {
 
   final T payload;
 

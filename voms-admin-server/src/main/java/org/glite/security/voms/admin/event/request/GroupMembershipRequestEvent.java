@@ -23,7 +23,7 @@ import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 
-public class GroupMembershipRequestEvent extends
+public abstract class GroupMembershipRequestEvent extends
   UserRequestEvent<GroupMembershipRequest> {
 
   public GroupMembershipRequestEvent(GroupMembershipRequest req) {

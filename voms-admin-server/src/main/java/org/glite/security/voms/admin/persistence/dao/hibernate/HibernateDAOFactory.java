@@ -24,6 +24,7 @@ import java.util.List;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AuditDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditSearchDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
@@ -192,5 +193,11 @@ public class HibernateDAOFactory extends DAOFactory {
   public AuditDAO getAuditDAO() {
 
     return (AuditDAO) instantiateDAO(AuditDAOHibernate.class);
+  }
+
+  @Override
+  public AuditSearchDAO getAuditSearchDAO() {
+
+    return new AuditSearchDAOHibernate();
   }
 }

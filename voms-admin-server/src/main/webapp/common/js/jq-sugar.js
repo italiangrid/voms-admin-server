@@ -640,7 +640,30 @@ function rejectSingleRequestDialog(submitNode, dialogId){
 	return false;
 };
 
+function auditLogSetup(){
+	
+	$('.al-trigger').click(function(e) {
+		e.preventDefault();
+		var detailNodeId = $(this).data('target');
+		var detailNode = $('#'+detailNodeId);
+		
+		if ($(detailNode).hasClass("al-dtl-hidden")){
+			
+			$(this).text("hide info");
+			$(this).closest('tr').find('td').addClass('al-dtl-header');
+			$(detailNode).removeClass("al-dtl-hidden");
+			$('html,body')
+			.animate({ scrollTop: $(this).offset().top },	500);
+		}else {
+			$(this).text("more info");
+			$(this).closest('tr').find('td').removeClass('al-dtl-header');
+			$(detailNode).addClass("al-dtl-hidden");
+		}
+	});
+};
+
 $(document).ready(function(){
 	pageSetup();
 	bulkRequestSetup();
+	auditLogSetup();
 });

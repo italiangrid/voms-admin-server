@@ -19,8 +19,12 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
-
+@EventDescription(
+  message = "rejected role assignment request from user '%s %s' for role '%s' in group '%s'",
+  params = { "requestorGivenName", "requestorSurname", "requestedRoleName",
+    "requestedRoleGroupName" })
 public class RoleMembershipRejectedEvent extends RoleMembershipRequestEvent {
 
   public RoleMembershipRejectedEvent(RoleMembershipRequest req) {

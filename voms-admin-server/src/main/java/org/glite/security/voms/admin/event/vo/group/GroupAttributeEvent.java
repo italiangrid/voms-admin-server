@@ -1,9 +1,11 @@
 package org.glite.security.voms.admin.event.vo.group;
 
+import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
+@MainEventDataPoints({"groupAttributeContext", "groupAttributeName", "groupAttributeValue"})
 public class GroupAttributeEvent extends GroupEvent {
 
   final VOMSGroupAttribute groupAttribute;

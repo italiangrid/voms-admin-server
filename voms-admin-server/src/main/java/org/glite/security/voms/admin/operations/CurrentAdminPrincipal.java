@@ -7,11 +7,8 @@ import org.glite.security.voms.admin.core.VOMSServiceConstants;
 public class CurrentAdminPrincipal implements Principal {
 
   public static final CurrentAdminPrincipal LOCAL_DB_PRINCIPAL = 
-    new CurrentAdminPrincipal(String.format("(%s,%s)", 
-      VOMSServiceConstants.LOCAL_ADMIN,
-      VOMSServiceConstants.VIRTUAL_CA));
-  
-  
+    new CurrentAdminPrincipal(VOMSServiceConstants.INTERNAL_ADMIN);
+
   final String name;
 
   public CurrentAdminPrincipal(CurrentAdmin admin) {

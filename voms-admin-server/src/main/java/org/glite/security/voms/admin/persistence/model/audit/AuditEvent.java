@@ -101,6 +101,17 @@ public class AuditEvent {
     
   }
   
+  public String getDataPoint(String name){
+    
+    for (AuditEventData dp: getData()){
+      if (dp.getName().equals(name)){
+        return dp.getValue();
+      }
+    }
+    
+    return null;
+  }
+  
   
   @Override
   public String toString() {
@@ -148,4 +159,7 @@ public class AuditEvent {
     return true;
   }
 
+  public String getShortType(){
+    return type.substring(type.lastIndexOf(".")+1);
+  }
 }

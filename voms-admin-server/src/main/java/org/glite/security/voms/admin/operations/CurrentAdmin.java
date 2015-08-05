@@ -374,6 +374,6 @@ public class CurrentAdmin {
 
   public String getName() {
 
-    return String.format("(%s,%s)", getRealSubject(), getRealIssuer());
+    return getRealSubject();
   }
 }

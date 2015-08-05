@@ -19,8 +19,12 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
+@EventDescription(
+  message = "submitted a role assignment request for role '%s' in group '%s'",
+  params = { "requestedRoleName", "requestedRoleGroupName" })
 public class RoleMembershipSubmittedEvent extends RoleMembershipRequestEvent {
 
   final String managementURL;

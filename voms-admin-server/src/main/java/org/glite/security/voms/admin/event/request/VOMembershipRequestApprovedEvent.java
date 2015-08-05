@@ -19,8 +19,11 @@
  */
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
-
+@EventDescription(
+  message = "approved VO membership request for user '%s %s'",
+  params = { "requestorGivenName", "requestorSurname"})
 public class VOMembershipRequestApprovedEvent extends VOMembershipRequestEvent {
 
   public VOMembershipRequestApprovedEvent(NewVOMembershipRequest r) {

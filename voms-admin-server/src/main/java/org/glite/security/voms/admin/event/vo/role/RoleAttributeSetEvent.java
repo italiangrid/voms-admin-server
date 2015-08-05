@@ -1,8 +1,10 @@
 package org.glite.security.voms.admin.event.vo.role;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 
+@EventDescription(message="set attribute '%s' for role '%s'", params={"roleAttributeName", "roleName"})
 public class RoleAttributeSetEvent extends RoleAttributeEvent {
 
   public RoleAttributeSetEvent(VOMSRole r, VOMSRoleAttribute roleAttribute) {

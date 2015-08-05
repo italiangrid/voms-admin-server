@@ -20,8 +20,12 @@
 
 package org.glite.security.voms.admin.event.request;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
-
+@EventDescription(
+  message = "submitted certificate request for certificate '%s, %s'",
+  params = { "certificateSubject",
+    "certificateIssuer" })
 public class CertificateRequestSubmittedEvent extends CertificateRequestEvent {
 
   private final String managementURL;
