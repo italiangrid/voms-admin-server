@@ -21,9 +21,17 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request role</h1>
+<h1>Role assignment request</h1>
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+
+<p class="req-gm">
+You have requested the assignment of role:
+</p>
+
+<div class="req-fqan">
+ ${group.name}/${role}
+</div>
 
 <s:form 
 	validate="true" 
@@ -34,6 +42,9 @@
   <s:hidden name="userId" value="%{userId}"/>
   <s:hidden name="groupId" value="%{groupId}"/>
   <s:hidden name="roleId" value="%{roleId}"/>
-  <s:textfield name="reason" label="Please provide a reason for your role request"/>
+  <s:textarea name="reason" 
+    cols="78"
+    rows="3"
+    label="Please provide a reason for your request"/>
   <s:submit value="%{'Submit'}" align="left"/>
 </s:form>

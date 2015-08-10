@@ -21,9 +21,18 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<h1>Request group membership</h1>
+<h1>Group membership request</h1>
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+
+<p class="req-gm">
+You have requested to be a member of group:
+</p>
+
+<div class="req-fqan">${group.name}</div>
+  <div class="req-group-description">
+    ${group.description}
+  </div>      
 
 <s:form 
 	validate="true" 
@@ -32,7 +41,13 @@
 	>
   <s:token/>
   <s:hidden name="userId" value="%{userId}"/>
-  <s:hidden name="groupId" value="%{groupId}"/>
-  <s:textfield name="reason" label="Please provide a reason for your group request"/>
+  <s:hidden name="groupId" value="%{group.id}"/>
+  
+  <s:textarea name="reason" 
+    label="Please provide a reason for your request"
+    cols="78"
+    rows="3"
+    />
+  
   <s:submit value="%{'Submit'}" align="left"/>
 </s:form>

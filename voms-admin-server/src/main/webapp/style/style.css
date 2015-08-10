@@ -1066,3 +1066,16 @@ ul.certificate-info {
 a.register-url {
   font-size: 18pt;
 }
+
+.req-fqan {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  color: #006600;
+  font-weight: bolder;
+  font-size: 14pt;
+  
+}
+.req-group-description{
+  color: #7e7e7e;
+  margin-bottom: 1em;
+}
