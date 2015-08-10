@@ -3,7 +3,6 @@ package org.glite.security.voms.admin.view.actions.audit;
 import java.util.Calendar;
 import java.util.concurrent.Callable;
 
-import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.VOAdminOperation;
@@ -12,7 +11,6 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 import org.glite.security.voms.admin.view.actions.audit.util.AdminNameFormatter;
 import org.glite.security.voms.admin.view.actions.audit.util.AuditEventUtils;
-import org.glite.security.voms.admin.view.actions.audit.util.EventDataPointClassifier;
 import org.glite.security.voms.admin.view.actions.audit.util.EventDescriptor;
 import org.glite.security.voms.admin.view.actions.audit.util.EventNameFormatter;
 
