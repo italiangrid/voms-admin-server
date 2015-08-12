@@ -97,7 +97,7 @@
 		<input type="text" value="" placeholder="Type yes to confirm..."/>
 	</div>
 	<div class="alert alert-error">
-		<strong>Insert the requested text to change the AUP reacceptance period!</strong>
+		<strong>Type 'yes' to change the AUP reacceptance period!</strong>
 	</div>
 </div>
 
@@ -108,7 +108,7 @@
 		<input type="text" value="" placeholder="Type yes to confirm..."/>
 	</div>
 	<div class="alert alert-error">
-		<strong>Insert the requested text to trigger the AUP reacceptance!</strong>
+		<strong>Type 'yes' to trigger the AUP reacceptance!</strong>
 	</div>
 </div>
 
