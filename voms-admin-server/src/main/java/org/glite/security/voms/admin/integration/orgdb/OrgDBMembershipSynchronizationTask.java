@@ -20,7 +20,6 @@
 
 package org.glite.security.voms.admin.integration.orgdb;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;

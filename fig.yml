@@ -52,4 +52,5 @@ adminserver:
     VOMS_DEBUG: y
     VOMS_SKIP_CONFIGURE: y
     ENABLE_JREBEL: y
+    VOMS_DEBUG: y
     # VOMS_JAVA_OPTS: -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=1044,suspend=n
