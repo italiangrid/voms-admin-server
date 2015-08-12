@@ -37,7 +37,7 @@ adminserver:
       - ~/.jrebel:/home/voms/.jrebel:rw
       - ~/jrebel:/jrebel:ro
       - /var/log/voms-admin
-      - ~/orgdb:/orgdb:ro
+        #    - ~/orgdb:/orgdb:ro
 
   volumes_from:
       - conf
@@ -55,7 +55,9 @@ adminserver:
     MAILHOST: mail
     MYSQL_ROOT_PASSWORD: pwd
     VOMS_DEBUG: y
-    VOMS_SKIP_CONFIGURE: y
+    # VOMS_PRE_CONFIGURE: y
+    # VOMS_SKIP_CONFIGURE: y
+    # VOMS_UPGRADE_DB: y
     ENABLE_JREBEL: y
     ENABLE_JMX: y
     VOMS_DEBUG: y
