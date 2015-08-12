@@ -73,6 +73,8 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
 
   String aupAccepted;
 
+  String userMessage;
+
   RequestValidationResult validationResult;
 
   protected void populateRequestModel() {
@@ -92,6 +94,8 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
 
     request = DAOFactory.instance().getRequestDAO()
       .createVOMembershipRequest(requester, expirationDate);
+    
+    request.setUserMessage(userMessage);
 
   }
 
@@ -117,8 +121,9 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
       return PLUGIN_VALIDATION_ERROR;
     }
 
-    EventManager.instance().dispatch(new VOMembershipRequestSubmittedEvent(request,
-      URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
+    EventManager.instance().dispatch(
+      new VOMembershipRequestSubmittedEvent(request, URLBuilder
+        .buildRequestConfirmURL(getModel()), URLBuilder
         .buildRequestCancelURL(getModel())));
 
     return SUCCESS;
@@ -259,6 +264,18 @@ public class SubmitRequestAction extends OrgDbRegisterActionSupport {
   public void setAupAccepted(String aupAccepted) {
 
     this.aupAccepted = aupAccepted;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters.")
+  public String getUserMessage() {
+
+    return userMessage;
+  }
+
+  public void setUserMessage(String userMessage) {
+
+    this.userMessage = userMessage;
   }
 
   /**

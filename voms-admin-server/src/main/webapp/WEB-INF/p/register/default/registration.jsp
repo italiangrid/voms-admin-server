@@ -92,6 +92,8 @@ button at the bottom of the page.
       />
     </li>
     <li>
+      <s:textarea name="userMessage" rows="3" cols="80" cssClass="registrationField" label="%{'Message for VO administrator'}"/>
+    <li>
      <s:submit align="left"/>
     </li>
   </ul>     

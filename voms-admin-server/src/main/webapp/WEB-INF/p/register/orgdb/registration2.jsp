@@ -91,6 +91,9 @@ used to contact you in relation to this activity.
       />
     </li>
     <li>
+      <s:textarea name="userMessage" rows="3" cols="80" cssClass="registrationField" label="%{'Message for VO administrator'}"/>
+    <li>
+    <li>
      <s:submit align="left"/>
     </li>
   </ul>     

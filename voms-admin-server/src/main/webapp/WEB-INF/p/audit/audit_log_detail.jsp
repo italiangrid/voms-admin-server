@@ -16,7 +16,7 @@
 <h4>Audit event data</h4>
 
 <dl class="al-dtl-list">
-<s:iterator value="#event.data">
+<s:iterator value="#event.sortedData">
   <dt><s:property value="name"/></dt>
   <dd>
     <s:property value="value"/>

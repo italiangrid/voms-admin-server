@@ -83,7 +83,7 @@ public abstract class Request implements Serializable, NamedType {
   @Column(name = "explanation", length=512)
   String explanation;
 
-  @Column(name = "user_message", nullable = true)
+  @Column(name = "user_message", length=512, nullable = true)
   String userMessage;
 
   /**

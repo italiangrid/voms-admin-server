@@ -72,6 +72,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
   String aupAccepted;
 
+  String userMessage;
+
   RequestValidationResult validationResult;
 
   protected void populateRequestModel() {
@@ -92,6 +94,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
     request = DAOFactory.instance().getRequestDAO()
       .createVOMembershipRequest(requester, expirationDate);
+    
+    request.setUserMessage(userMessage);
 
   }
 
@@ -117,8 +121,9 @@ public class SubmitRequestAction extends RegisterActionSupport {
       return PLUGIN_VALIDATION_ERROR;
     }
 
-    EventManager.instance().dispatch(new VOMembershipRequestSubmittedEvent(request,
-      URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
+    EventManager.instance().dispatch(
+      new VOMembershipRequestSubmittedEvent(request, URLBuilder
+        .buildRequestConfirmURL(getModel()), URLBuilder
         .buildRequestCancelURL(getModel())));
 
     return SUCCESS;
@@ -220,6 +225,18 @@ public class SubmitRequestAction extends RegisterActionSupport {
   public void setEmailAddress(String emailAddress) {
 
     this.emailAddress = emailAddress;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters.")
+  public String getUserMessage() {
+
+    return userMessage;
+  }
+
+  public void setUserMessage(String userMessage) {
+
+    this.userMessage = userMessage;
   }
 
   /**

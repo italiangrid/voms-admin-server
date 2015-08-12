@@ -1,8 +1,13 @@
 package org.glite.security.voms.admin.persistence.model.audit;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -112,6 +117,14 @@ public class AuditEvent {
     return null;
   }
   
+  public SortedSet<AuditEventData> getSortedData(){
+    SortedSet<AuditEventData> sortedData = 
+      new TreeSet<AuditEventData>(AuditEventDataNameComparator.INSTANCE);
+    
+    sortedData.addAll(getData());
+    
+    return Collections.unmodifiableSortedSet(sortedData);
+  }
   
   @Override
   public String toString() {

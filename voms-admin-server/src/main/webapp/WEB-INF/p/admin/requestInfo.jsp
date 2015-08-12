@@ -16,6 +16,12 @@
   </s:if>
     <s:else>
     wants to be a member of this VO.
+    <s:if test="#request.userMessage != null && #request.userMessage != ''">
+      To motivate this request the user has provided the following reason:
+      <blockquote class="request-reason">
+        <s:property value="#request.userMessage" />
+      </blockquote>
+    </s:if>
   </s:else>
   </s:else>
 </s:if>
