@@ -77,7 +77,7 @@ public class SuspendAUPFailingMembersStrategy implements
 
     } else {
 
-      if (u.getSuspended()) {
+      if (u.isSuspended()) {
 
         log
           .debug("User already suspended. Reason: {}", u.getSuspensionReason());
