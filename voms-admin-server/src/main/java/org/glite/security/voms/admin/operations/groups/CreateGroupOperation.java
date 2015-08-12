@@ -124,7 +124,7 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
     // Add CONTAINER_READ permissions on the path from the root group to
     // the grandfather of the group that is being created
-    addPermissionsOnPath(parentGroup,
+    addRequiredPermissionsOnPath(parentGroup,
       VOMSPermission.getContainerReadPermission());
 
     // Add CONTAINER_WRITE permissions on the parent group of the group that
