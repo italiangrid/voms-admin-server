@@ -516,6 +516,45 @@ function openConfirmDialog(node,dialogId,text){
 
 }
 
+function openYesConfirmDialog(node, dialogId) {
+	
+	confirmFunc = function(){
+		var form = $(node).closest('form');
+		var reqText = $('#'+dialogId+' input').val();
+		if (reqText.toLowerCase() == "yes") {
+			form.submit();
+			return true;
+		}
+		$('#'+dialogId+' .alert-error').show();
+		return false;
+	};
+	
+	$('#'+dialogId+' input').val("");
+	$('#'+dialogId+' .alert-error').hide();
+	
+	$('#'+dialogId).dialog({resizable: false,
+		width: 800,
+		modal: true,
+		closeOnEscape: true,
+		autoOpen: false,
+		overlay: {
+		backgroundColor: '#000',
+		opacity: 0.5},
+		buttons: {
+			Confirm: confirmFunc,
+			Cancel: function() {
+				$(this).dialog('close');
+				return false;
+			}
+		}
+	});
+	
+	$('#'+dialogId).dialog('open');
+	$('#'+dialogId+' input').focus();
+	return false;
+	
+}
+
 function bulkRequestSetup(){
 
 	$('#req-selector').click(function(e){
