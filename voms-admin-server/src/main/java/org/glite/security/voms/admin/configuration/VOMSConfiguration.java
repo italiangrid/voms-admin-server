@@ -39,6 +39,8 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -46,6 +48,7 @@ import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
@@ -859,6 +862,67 @@ public final class VOMSConfiguration {
       log.error("Error loading LSC configuration file:" + e.getMessage(), e);
       throw new VOMSException(e.getMessage(), e);
     }
+
+  }
+
+  private List<Integer> integerListToString(String s) {
+
+    Validate.notNull(s);
+
+    List<Integer> timeList = new ArrayList<Integer>();
+
+    String[] ints = s.split(",");
+    for (String i : ints) {
+      try {
+        int ii = Integer.parseInt(i.trim());
+        timeList.add(ii);
+      } catch (NumberFormatException nfe) {
+        throw new VOMSException("Error while parsing integer list '" + s
+          + "': " + nfe.getMessage(), nfe);
+      }
+    }
+
+    return timeList;
+
+  }
+
+  public List<Integer> getAUPReminderIntervals() {
+
+    int signAUPTaskLifetime = config.getInteger(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME,
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE);
+
+    String timeString = config.getString(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS,
+      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+
+    List<Integer> intervals = integerListToString(timeString);
+
+    Iterator<Integer> iter = intervals.iterator();
+
+    while (iter.hasNext()) {
+      int i = iter.next();
+
+      if (i >= signAUPTaskLifetime || i <= 0) {
+
+        log.warn("Ignoring invalid reminder value: {}", i);
+
+        iter.remove();
+        continue;
+      }
+    }
+
+    if (intervals.isEmpty()) {
+
+      log
+        .warn(
+          "No valid reminder values found in configuration. Falling back to default value: {}",
+          VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+
+      intervals = integerListToString(VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+    }
+
+    return intervals;
 
   }
 

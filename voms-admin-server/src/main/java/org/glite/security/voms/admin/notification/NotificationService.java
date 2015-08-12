@@ -74,9 +74,9 @@ public class NotificationService implements NotificationServiceIF {
 
   public void send(VOMSNotification n) {
 
-    log.debug("Adding notification '" + n + "' to outgoing message queue.");
     if (!VOMSConfiguration.instance().getBoolean(
       VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
+      log.debug("Adding notification '{}' to outgoing message queue.", n);
       outgoingMessages.add(n);
     } else {
       log

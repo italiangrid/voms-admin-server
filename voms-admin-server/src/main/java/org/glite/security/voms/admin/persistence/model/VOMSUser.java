@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -57,10 +58,12 @@ import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
+import org.glite.security.voms.admin.event.AuditableEvent;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
 import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseException;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEventData;
 import org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
@@ -90,10 +93,11 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   public enum SuspensionReason {
 
-    FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."), MEMBERSHIP_EXPIRATION(
-      "User membership has expired."), SECURITY_INCIDENT(
-      "User membership has been suspended after a security incident."), OTHER(
-      "User membership has been suspended for another unknown reason.");
+    FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."),
+    MEMBERSHIP_EXPIRATION("User membership has expired."),
+    SECURITY_INCIDENT(
+      "User membership has been suspended after a security incident."),
+    OTHER("User membership has been suspended for another unknown reason.");
 
     String message;
 
@@ -1289,4 +1293,5 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return -1;
 
   }
+
 }

@@ -25,6 +25,9 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLCreatedEvent;
+import org.glite.security.voms.admin.event.vo.group.GroupCreatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -60,7 +63,7 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
   private void setupACLs(VOMSGroup g) {
 
-    log.debug("Setting up acls for group '" + g + "'.");
+    log.debug("Setting up acls for group '{}'",g);
 
     // Setup the ACL for the newly created group starting from the
     // parent's default ACL, if exists, or from the parent's ACL.
@@ -77,7 +80,9 @@ public class CreateGroupOperation extends BaseVomsOperation {
     while (rolesIter.hasNext()) {
 
       VOMSRole r = (VOMSRole) rolesIter.next();
-      log.debug("Importing group '" + g + "' acl in role '" + r + "'.");
+      log.debug("Importing group '{}' acl in role '{}'.",
+        g,r);
+      
       r.importACL(g);
       HibernateFactory.getSession().save(r);
 
@@ -93,7 +98,10 @@ public class CreateGroupOperation extends BaseVomsOperation {
     setupACLs(g);
 
     HibernateFactory.getSession().save(g);
-
+    
+    EventManager.instance().dispatch(new GroupCreatedEvent(g));
+    EventManager.instance().dispatch(new ACLCreatedEvent(g.getACL()));
+    
     return g;
   }
 

@@ -25,7 +25,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.RoleMembershipSubmittedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
@@ -113,7 +113,7 @@ public class RequestRoleMembershipAction extends UserActionSupport {
 
     RoleMembershipRequest request = reqDAO.createRoleMembershipRequest(model,
       g, r, getDefaultFutureDate());
-    EventManager.dispatch(new RoleMembershipSubmittedEvent(request,
+    EventManager.instance().dispatch(new RoleMembershipSubmittedEvent(request,
       getHomeURL()));
 
     refreshPendingRequests();

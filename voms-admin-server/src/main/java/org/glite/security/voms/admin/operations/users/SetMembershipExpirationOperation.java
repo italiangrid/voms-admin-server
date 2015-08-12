@@ -21,12 +21,13 @@ package org.glite.security.voms.admin.operations.users;
 
 import java.util.Date;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.UserMembershipExpirationDateUpdated;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
 public class SetMembershipExpirationOperation extends BaseVomsOperation {
 
@@ -43,6 +44,8 @@ public class SetMembershipExpirationOperation extends BaseVomsOperation {
   protected Object doExecute() {
 
     user.setEndTime(expirationDate);
+    EventManager.instance().dispatch(new UserMembershipExpirationDateUpdated(user));
+    
     return user;
   }
 

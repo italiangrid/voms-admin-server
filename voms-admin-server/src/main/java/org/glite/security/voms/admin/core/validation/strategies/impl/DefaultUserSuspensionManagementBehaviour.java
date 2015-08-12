@@ -41,7 +41,7 @@ public class DefaultUserSuspensionManagementBehaviour implements
 
     if (!user.isSuspended()) {
       user.suspend(suspensionReason);
-      EventManager.instance().fireEvent(
+      EventManager.instance().dispatch(
         new UserSuspendedEvent(user, suspensionReason));
     }
 
@@ -51,7 +51,7 @@ public class DefaultUserSuspensionManagementBehaviour implements
 
     if (user.isSuspended()) {
       user.restore();
-      EventManager.instance().fireEvent(new UserRestoredEvent(user));
+      EventManager.instance().dispatch(new UserRestoredEvent(user));
     }
 
   }

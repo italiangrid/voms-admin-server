@@ -92,9 +92,12 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSGroup"/>
          -->
         <mapping class="org.glite.security.voms.admin.persistence.model.GroupManager"/>
+        
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSDBVersion"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
         
+        <!-- AUDITING -->
+        <mapping class="org.glite.security.voms.admin.persistence.model.audit.AuditEvent" />
         
     </session-factory>
 </hibernate-configuration>

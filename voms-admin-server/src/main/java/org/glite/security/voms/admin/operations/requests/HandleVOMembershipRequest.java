@@ -23,8 +23,8 @@ package org.glite.security.voms.admin.operations.requests;
 import java.util.List;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
@@ -89,7 +89,7 @@ public class HandleVOMembershipRequest extends
 
     }
 
-    EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+    EventManager.instance().dispatch(new VOMembershipRequestApprovedEvent(request));
 
   }
 
@@ -98,7 +98,7 @@ public class HandleVOMembershipRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestRejectedEvent(request,
       REJECT_MOTIVATION));
 
     DAOFactory.instance().getRequestDAO().makeTransient(request);

@@ -26,16 +26,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.UserCreatedEvent;
-import org.glite.security.voms.admin.event.user.UserDeletedEvent;
-import org.glite.security.voms.admin.event.user.UserSignedAUPEvent;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
@@ -180,7 +177,6 @@ public class VOMSUserDAO {
     }
 
     HibernateFactory.getSession().saveOrUpdate(user);
-    EventManager.dispatch(new UserSignedAUPEvent(user, aupVersion.getAup()));
 
   }
 
@@ -295,11 +291,11 @@ public class VOMSUserDAO {
 
   }
 
-  public void addCertificate(VOMSUser u, String dn, String caDn) {
+  public Certificate addCertificate(VOMSUser u, String dn, String caDn) {
 
-    assert u != null : "User must be non-null!";
-    assert dn != null : "DN must be non-null!";
-    assert caDn != null : "CA must be non-null!";
+    Validate.notNull(u, "User must be non-null!");
+    Validate.notEmpty(dn, "DN must be non-null & not empty!");
+    Validate.notEmpty(caDn, "CA must be non-null & not empty!");
 
     VOMSCA ca = VOMSCADAO.instance().getByName(caDn);
     if (ca == null)
@@ -326,14 +322,16 @@ public class VOMSUserDAO {
 
     HibernateFactory.getSession().saveOrUpdate(cert);
     HibernateFactory.getSession().saveOrUpdate(u);
+    
+    return cert;
 
   }
 
-  public void addCertificate(VOMSUser u, X509Certificate x509Cert) {
+  public Certificate addCertificate(VOMSUser u, X509Certificate x509Cert) {
 
-    assert u != null : "User must be non-null!";
-    assert x509Cert != null : "Certificate must be non-null!";
-
+    Validate.notNull(u, "User must be non-null!");
+    Validate.notNull(x509Cert, "Certificate must be non-null!");
+    
     // Assume the certificate have been already validated
     // at this stage.
 
@@ -368,6 +366,8 @@ public class VOMSUserDAO {
 
     HibernateFactory.getSession().saveOrUpdate(cert);
     HibernateFactory.getSession().saveOrUpdate(u);
+    
+    return cert;
 
   }
 
@@ -598,8 +598,7 @@ public class VOMSUserDAO {
     // Add user to VO root group
     VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
     usr.addToGroup(voGroup);
-
-    EventManager.dispatch(new UserCreatedEvent(usr));
+    
     return usr;
 
   }
@@ -632,17 +631,19 @@ public class VOMSUserDAO {
 
   }
 
-  public void delete(Long userId) {
+  public VOMSUser delete(Long userId) {
 
     VOMSUser u = findById(userId);
 
     if (u == null)
       throw new NoSuchUserException("User identified by \"" + userId
         + "\" not found in database!");
+    
     try {
 
       delete(u);
-
+      return u;
+      
     } catch (ObjectNotFoundException e) {
       // Still don't understand why sometimes findById fails in returnin
       // null...
@@ -651,7 +652,7 @@ public class VOMSUserDAO {
     }
   }
 
-  public void delete(VOMSUser u) {
+  public VOMSUser delete(VOMSUser u) {
 
     log.debug("Deleting user \"{}\"", u);
 
@@ -666,7 +667,7 @@ public class VOMSUserDAO {
 
     HibernateFactory.getSession().delete(u);
 
-    EventManager.dispatch(new UserDeletedEvent(u));
+    return u;
 
   }
 
@@ -679,23 +680,26 @@ public class VOMSUserDAO {
 
   }
 
-  public void deleteAttribute(VOMSUser u, String attrName) {
+  public VOMSUserAttribute deleteAttribute(VOMSUser u, String attrName) {
 
-    if (u.getAttributeByName(attrName) == null)
+    VOMSUserAttribute attribute = u.getAttributeByName(attrName);
+    
+    if (attribute == null){
       throw new NoSuchAttributeException("Attribute \"" + attrName
         + "\" not defined for user \"" + u + "\".");
-
+    }
+    
     log
-      .debug("Deleting attribute \"" + attrName + "\" for user \"" + u + "\".");
-
-    u.deleteAttributeByName(attrName);
+      .debug("Deleting attribute \"{}\" for user \"{}\".", attrName, u);
+    
+    u.deleteAttribute(attribute);
     HibernateFactory.getSession().update(u);
-
+    return attribute;
+    
   }
 
   public void deleteCertificate(Certificate cert) {
-
-    assert cert != null : "Certificate must be non-null!";
+    Validate.notNull(cert, "Cannot delete a null certificate");
 
     VOMSUser u = cert.getUser();
     deleteCertificate(u, cert);
@@ -703,8 +707,8 @@ public class VOMSUserDAO {
 
   public void deleteCertificate(VOMSUser u, Certificate cert) {
 
-    assert u != null : "User must be non-null!";
-    assert cert != null : "Certificate must be non-null!";
+    Validate.notNull(u, "Please provide a non-null user.");
+    Validate.notNull(cert, "Cannot delete a null certificate.");
 
     if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
       throw new VOMSException(
@@ -906,15 +910,15 @@ public class VOMSUserDAO {
 
   }
 
-  public List getUnAssignedRoles(Long userId, Long groupId) {
+  public List<VOMSRole> getUnAssignedRoles(Long userId, Long groupId) {
 
     VOMSUser u = findById(userId);
 
     VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
 
-    List result = new ArrayList();
+    List<VOMSRole> result = new ArrayList<VOMSRole>();
 
-    Iterator roles = VOMSRoleDAO.instance().getAll().iterator();
+    Iterator<VOMSRole> roles = VOMSRoleDAO.instance().getAll().iterator();
 
     while (roles.hasNext()) {
 
