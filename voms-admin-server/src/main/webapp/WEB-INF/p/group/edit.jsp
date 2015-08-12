@@ -24,33 +24,47 @@
 
 <h1>Edit group description</h1>
 
-<voms:hasPermissions 
-			var="canCreate" 
-            context="vo" 
-            permission="CONTAINER_READ|CONTAINER_WRITE" />
+<voms:hasPermissions
+  var="canCreate"
+  context="vo"
+  permission="CONTAINER_READ|CONTAINER_WRITE" />
 
 <s:if test="not #attr.canCreate">
 You do not have enough privileges to edit the group description.
 </s:if>
 <s:else>
 
-<div>
-    <s:actionerror/>
-    
-	<s:form
-	  id="saveGroupDescription" 
+  <div>
+    <s:actionerror />
+
+    <p>Edit group description for group:</p>
+  
+    <div class="req-fqan">
+      <s:property value="name" />  
+    </div>
+
+    <s:form
+      id="saveGroupDescription"
       action="save-group-description"
       namespace="/group"
       validate="true">
-      
-      <s:token/>
-    
-      <s:hidden name="groupId" value="%{id}" />
-      <div class="groupName"><s:property value="name"/></div>
-      <s:textarea name="groupDescription" label="Group description" value="%{description}" cols="78"/>
-      
-      <s:submit value="%{'Update group description!'}" align="left"/>
-    </s:form>
-</div>
 
- </s:else>
+      <s:token />
+
+      <s:hidden
+        name="groupId"
+        value="%{id}" />
+
+      <s:textarea
+        name="groupDescription"
+        label="New description (can be empty)"
+        value="%{description}"
+        cols="78" />
+
+      <s:submit
+        value="%{'Update group description!'}"
+        align="left" />
+    </s:form>
+  </div>
+
+</s:else>

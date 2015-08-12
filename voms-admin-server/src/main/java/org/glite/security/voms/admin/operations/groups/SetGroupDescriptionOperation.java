@@ -1,7 +1,7 @@
 package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.vo.group.GroupEditedEvent;
+import org.glite.security.voms.admin.event.vo.group.GroupDescriptionUpdatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SetGroupDescriptionOperation extends BaseVomsOperation {
+public class SetGroupDescriptionOperation extends BaseVomsOperation<VOMSGroup> {
 
   private static final Logger log = LoggerFactory
     .getLogger(SetGroupDescriptionOperation.class);
@@ -57,13 +57,13 @@ public class SetGroupDescriptionOperation extends BaseVomsOperation {
   }
 
   @Override
-  protected Object doExecute() {
+  protected VOMSGroup doExecute() {
     
     g.setDescription(groupDescription);
     
     HibernateFactory.getSession().save(g);
     
-    EventManager.instance().dispatch(new GroupEditedEvent(g));
+    EventManager.instance().dispatch(new GroupDescriptionUpdatedEvent(g));
     
     return g;
   }
