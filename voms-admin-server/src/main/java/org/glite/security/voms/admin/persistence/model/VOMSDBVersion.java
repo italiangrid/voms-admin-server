@@ -40,7 +40,7 @@ public class VOMSDBVersion implements Serializable {
 
   @Column(name = "admin_version")
   String adminVersion;
-
+  
   public VOMSDBVersion() {
 
   }

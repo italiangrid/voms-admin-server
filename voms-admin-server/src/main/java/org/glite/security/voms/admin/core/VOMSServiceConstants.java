@@ -120,8 +120,6 @@ final public class VOMSServiceConstants {
 
   public static final String CONFIRM = "confirm";
 
-  public static final Integer VOMS_DB_VERSION = new Integer(3);
-
   public static final String VO_NAME_KEY = "voName";
 
   public static final String CURRENT_ADMIN_KEY = "currentAdmin";

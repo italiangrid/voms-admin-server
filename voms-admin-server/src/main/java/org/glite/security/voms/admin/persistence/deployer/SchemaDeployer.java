@@ -53,6 +53,7 @@ import org.glite.security.voms.admin.operations.CurrentAdminPrincipal;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.DBUtil;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
@@ -121,9 +122,8 @@ public class SchemaDeployer {
     setupCLParser();
     checkArguments(args);
     execute();
-    
+
     HibernateFactory.shutdown();
-    
 
   }
 
@@ -463,117 +463,71 @@ public class SchemaDeployer {
 
   }
 
-  private List<String> loadUpgradeScript31_32() throws IOException {
+  private List<String> loadUpgradeScriptToV4() throws IOException {
 
-    String upgradeScriptFileName = "/upgrade-scripts/mysql-upgrade_310_320.sql";
-
-    if (isOracleBackend())
-      upgradeScriptFileName = "/upgrade-scripts/oracle-upgrade_310_320.sql";
-
+    String upgradeScriptFileName = "/upgrade-scripts/V4_new-versioning.sql";
     return parseUpgradeScript(upgradeScriptFileName);
-
   }
 
-  private void fixHibernateSequences261(Configuration hibernateConfig) {
+  private boolean doUpgradeToV4() {
 
-    String[] newOracleSequences = { "VOMS_ACL_SEQ", "VOMS_ADMIN_SEQ",
-      "VOMS_ATTR_DESC_SEQ", "VOMS_AUP_ACC_REC_SEQ", "VOMS_AUP_SEQ",
-      "VOMS_AUP_VER_SEQ", "VOMS_CA_SEQ", "VOMS_CERT_SEQ", "VOMS_GROUP_SEQ",
-      "VOMS_M_SEQ", "VOMS_PI_SEQ", "VOMS_PI_TYPE_SEQ", "VOMS_REQ_INFO_SEQ",
-      "VOMS_REQ_SEQ", "VOMS_ROLE_SEQ", "VOMS_TAG_MAP_SEQ", "VOMS_TAG_SEQ",
-      "VOMS_TASK_LR_SEQ", "VOMS_TASK_SEQ", "VOMS_TASK_TYPE_SEQ" };
+    int existingDB = checkDatabaseExistence();
 
-    log
-      .info("Creating oracle sequences starting from VOMS Admin 2.6.x database.");
-    Session s = HibernateFactory.getSession();
-
-    Long maxSeqValue = (Long) s
-      .createSQLQuery(
-        "select max(last_number) as max from user_sequences where sequence_name = 'HIBERNATE_SEQUENCE'")
-      .addScalar("max", new LongType()).uniqueResult();
-
-    for (String seq : newOracleSequences) {
-
-      String createHibSeqStatement = "create sequence " + seq
-        + " MINVALUE 1 MAXVALUE 999999999999999999999999999 "
-        + "INCREMENT BY 1 START WITH " + maxSeqValue
-        + " CACHE 20 NOORDER NOCYCLE";
-
-      s.createSQLQuery(createHibSeqStatement).executeUpdate();
+    if (existingDB < 0) {
+      log.error("No voms-admin database found to upgrade!");
+      System.exit(-1);
     }
 
-    log.info("Sequences migration complete.");
+    if (existingDB < 3) {
+      log.error("Upgrade not supported from this database version.");
+      System.exit(-1);
+    }
 
-  }
+    if (existingDB == 3) {
 
-  private boolean doUpgrade2_5(Configuration hibernateConfig) {
+      String[] versionsToBeUpgraded = { "3.2.0", "3.3.0", "3.3.1", "3.3.2", "3.3.3" };
+      String adminVersion = VOMSVersionDAO.instance().getVersion()
+        .getAdminVersion().trim();
 
-    HibernateFactory.beginTransaction();
-    VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
-    HibernateFactory.commitTransaction();
-    log.info("Found VOMS Admin database version {}", version.getAdminVersion());
-
-    if (isOracleBackend()
-      && (version.getAdminVersion().equals("2.6.1") || version
-        .getAdminVersion().equals("2.5.5"))) {
-      try {
-
-        log.info("Fixing oracle sequences...");
-        fixHibernateSequences261(hibernateConfig);
-        HibernateFactory.commitTransaction();
-        return true;
-
-      } catch (Exception e) {
-
-        log.error("Error fixing VOMS Admin 2.6.1 oracle sequence: {}",
-          e.getMessage(), e);
-        HibernateFactory.rollbackTransaction();
+      if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+        log.warn("No upgrade needed, found schema version {}", adminVersion);
+        return false;
       }
-    }
 
-    return false;
+      boolean upgradeSupported = false;
 
-  }
-
-  private boolean doUpgradeTo3_2(Configuration hibernateConfig) {
-
-    HibernateFactory.beginTransaction();
-    VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
-
-    VOMSConfiguration conf = VOMSConfiguration.instance();
-    String targetVersion = conf
-      .getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION);
-
-    String adminVersion = version.getAdminVersion().trim();
-    String[] versionsToBeUpgraded = { "2.5.3", "2.5.4", "2.5.5", "2.6.1",
-      "2.7.0", "2.7.1", "3.0.0", "3.0.1", "3.1.0" };
-
-    boolean needsUpgrade = false;
-
-    for (String v : versionsToBeUpgraded) {
-      if (adminVersion.equals(v)) {
-        log.debug("Database version {} matches {}", adminVersion, v);
-        needsUpgrade = true;
-        break;
-
+      for (String v : versionsToBeUpgraded) {
+        if (adminVersion.equals(v)) {
+          log
+            .debug(
+              "Found VOMS Admin database version {} that requires a schema upgrade.",
+              adminVersion);
+          upgradeSupported = true;
+          break;
+        }
       }
-    }
 
-    if (needsUpgrade) {
+      if (!upgradeSupported) {
+
+        log.error("Upgrade not supported from schema version {}", adminVersion);
+        return false;
+      }
+
+      log.info("Upgrading database schema from version {} to version {}",
+        adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       try {
 
-        log.info("Upgrading database schema from version {} to version {}",
-          adminVersion, targetVersion);
+        List<String> upgradeScript = loadUpgradeScriptToV4();
 
-        List<String> upgradeScript = loadUpgradeScript31_32();
         ArrayList<Exception> exceptions = new ArrayList<Exception>();
+        
+        HibernateFactory.beginTransaction();
         Statement statement = HibernateFactory.getSession().connection()
           .createStatement();
 
         for (String command : upgradeScript) {
           try {
-
             log.info(command);
             statement.executeUpdate(command);
 
@@ -592,7 +546,6 @@ public class SchemaDeployer {
 
         // Update database version
         VOMSVersionDAO.instance().setupVersion();
-
         HibernateFactory.commitTransaction();
         return true;
 
@@ -628,10 +581,8 @@ public class SchemaDeployer {
     }
 
     if (existingDB == 3) {
-      boolean upgradePerformed = false;
 
-      upgradePerformed = doUpgrade2_5(hibernateConfiguration);
-      upgradePerformed = doUpgradeTo3_2(hibernateConfiguration);
+      boolean upgradePerformed = doUpgradeToV4();
 
       if (upgradePerformed)
         log.info("The upgrade procedure has changed the VOMS database.");
@@ -659,15 +610,15 @@ public class SchemaDeployer {
       }
 
       List<ACL> affectedACLs = ACLDAO.instance().deletePermissionsForAdmin(a);
-      
+
       VOMSAdminDAO.instance().delete(a);
-      
-      for (ACL acl : affectedACLs){
+
+      for (ACL acl : affectedACLs) {
         auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, acl);
       }
 
       auditLogHelper.saveAuditEvent(AdminDeletedEvent.class, a);
-      
+
       HibernateFactory.commitTransaction();
 
       log.info("Administrator '{},{}' removed", new String[] { a.getDn(),
@@ -891,14 +842,12 @@ public class SchemaDeployer {
               new String[] { g.toString(), r.toString() });
 
           HibernateFactory.getSession().save(r);
-          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, 
-            r.getACL(g));
+          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
 
         }
 
         HibernateFactory.getSession().save(g);
-        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, 
-          g.getACL());
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
       }
 
       HibernateFactory.commitTransaction();
@@ -945,11 +894,11 @@ public class SchemaDeployer {
     // This is needed as the version of hibernate we are using
     // does not support defining indexes on join table columns
     // See: https://hibernate.atlassian.net/browse/HHH-4263
-    CreateAuditEventDataIndexes createIndexTask = 
-      new CreateAuditEventDataIndexes(HibernateFactory.getSession());
-    
+    CreateAuditEventDataIndexes createIndexTask = new CreateAuditEventDataIndexes(
+      HibernateFactory.getSession());
+
     createIndexTask.run();
-    
+
     UpdateCATask caTask = new UpdateCATask();
     caTask.run();
 

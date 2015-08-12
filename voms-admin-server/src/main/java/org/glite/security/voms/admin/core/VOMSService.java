@@ -56,6 +56,7 @@ import org.glite.security.voms.admin.notification.dispatchers.UserSuspendedDispa
 import org.glite.security.voms.admin.notification.dispatchers.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.operations.DefaultPrincipalProvider;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
@@ -76,27 +77,18 @@ public final class VOMSService {
 
   protected static void checkDatabaseVersion() {
 
-    int version = VOMSVersionDAO.instance().getVersion().getVersion();
+    String adminVersion = VOMSVersionDAO.instance().getVersion()
+      .getAdminVersion();
 
-    if (version != VOMSServiceConstants.VOMS_DB_VERSION) {
+    if (!adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+      String msg = String
+        .format(
+          "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+            + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+            + " command.", adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
-      if (version < VOMSServiceConstants.VOMS_DB_VERSION) {
-        log
-          .error("VOMS DATABASE SCHEMA ERROR: old voms database schema found: version "
-            + version);
-        log
-          .error("PLEASE UPGRADE TO CURRENT VERSION, usign voms-admin-configure or voms-db-util commands!");
-        throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"
-          + version + "', while it should be '"
-          + VOMSServiceConstants.VOMS_DB_VERSION + "'");
-      } else {
-
-        log.error("UNKNOWN SCHEMA VERSION NUMBER FOUND IN DATABASE! version: "
-          + version);
-        throw new VOMSFatalException("INCOMPATIBLE DATABASE SCHEMA FOUND! Is '"
-          + version + "', while it should be '"
-          + VOMSServiceConstants.VOMS_DB_VERSION + "'");
-      }
+      log.error(msg);
+      throw new VOMSFatalException(msg);
     }
   }
 
@@ -132,7 +124,7 @@ public final class VOMSService {
     AuditLog.INSTANCE.setDaoFactory(DAOFactory.instance());
 
     manager.register(AuditLog.INSTANCE);
-    
+
     manager.register(DebugEventLogListener.instance());
     manager.register(UserSuspendedDispatcher.instance());
     manager.register(DefaultNotificationDispatcher.instance());
@@ -141,25 +133,20 @@ public final class VOMSService {
     manager.register(VOMembershipNotificationDispatcher.instance());
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
-    
+
   }
-  
+
   protected static void startBackgroundTasks() {
 
     VOMSExecutorService es = VOMSExecutorService.instance();
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
-    
-    es.startBackgroundTask(new SignAUPReminderCheckTask(
-      DAOFactory.instance(),
-      EventManager.instance(),
-      SystemTimeProvider.INSTANCE,
-      aupReminders, 
-      TimeUnit.DAYS), 
-      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 
-      300L);
-    
+
+    es.startBackgroundTask(new SignAUPReminderCheckTask(DAOFactory.instance(),
+      EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
+      TimeUnit.DAYS), VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+
     es.startBackgroundTask(new UpdateCATask(),
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
