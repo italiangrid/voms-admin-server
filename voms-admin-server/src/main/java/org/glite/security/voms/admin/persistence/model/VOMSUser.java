@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.model;
 
@@ -90,10 +86,11 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   public enum SuspensionReason {
 
-    FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."), MEMBERSHIP_EXPIRATION(
-      "User membership has expired."), SECURITY_INCIDENT(
-      "User membership has been suspended after a security incident."), OTHER(
-      "User membership has been suspended for another unknown reason.");
+    FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."),
+    MEMBERSHIP_EXPIRATION("User membership has expired."),
+    SECURITY_INCIDENT(
+      "User membership has been suspended after a security incident."),
+    OTHER("User membership has been suspended for another unknown reason.");
 
     String message;
 
@@ -201,6 +198,9 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   // FIXME: currently ignored by configuration
   @Transient
   Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
+
+  @Column(name="orgdb_id", nullable=true)
+  Long orgDbId;
 
   /**
    * @return Returns the emailAddress.
@@ -1289,4 +1289,15 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return -1;
 
   }
+
+  public Long getOrgDbId() {
+
+    return orgDbId;
+  }
+
+  public void setOrgDbId(Long orgDbId) {
+
+    this.orgDbId = orgDbId;
+  }
+
 }

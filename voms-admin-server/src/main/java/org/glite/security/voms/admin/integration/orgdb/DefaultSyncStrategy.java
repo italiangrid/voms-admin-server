@@ -1,27 +1,25 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009. See
- * http://www.eu-egee.org/partners/ for details on the copyright holders.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- * 
- * Authors: Andrea Ceccanti (INFN)
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.glite.security.voms.admin.integration.orgdb;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
@@ -151,7 +149,7 @@ public class DefaultSyncStrategy implements
         u.setInstitution(validParticipation.getInstitute().getName());
 
         log.debug("Institution for user {} and participation {} do not match. "
-          + "Updating VOMS institution field from OrgDB record.", u, 
+          + "Updating VOMS institution field from OrgDB record.", u,
           validParticipation);
       }
 
@@ -176,7 +174,8 @@ public class DefaultSyncStrategy implements
 
         log.debug(
           "PhoneNumber for VOMS user {} and orgDbPerson {} do not match. "
-            + "Updating VOMS PhoneNumber field from OrgDB record.", u, orgDbPerson);
+            + "Updating VOMS PhoneNumber field from OrgDB record.", u,
+          orgDbPerson);
       }
     } else {
 
@@ -188,6 +187,43 @@ public class DefaultSyncStrategy implements
 
   }
 
+  private void synchronizeIdAndEmailAddress(VOMSUser u,
+    VOMSOrgDBPerson orgDBPerson) {
+
+    Validate.notNull(u, "User cannot be null");
+    Validate.notNull(orgDBPerson, "OrgDBPerson cannot be null");
+    
+    Long oldOrgDbId = u.getOrgDbId();
+
+    if (oldOrgDbId == null || !oldOrgDbId.equals(orgDBPerson.getId())){
+      log.info("Linking VOMS user {} to OrgDB membership id: {}", u.toString(),
+      orgDBPerson.getId());
+
+      u.setOrgDbId(orgDBPerson.getId());
+    }
+
+    String orgdbEmailAdddress = (String) ObjectUtils.defaultIfNull(
+      orgDBPerson.getPhysicalEmail(), orgDBPerson.getEmail());
+
+    if (orgdbEmailAdddress == null) {
+      log
+        .warn(
+          "null email address for OrgDBPerson %s. Will not sync VOMS email address.",
+          orgDBPerson.toString());
+      return;
+    }
+
+    u.setEmailAddress(orgdbEmailAdddress.toLowerCase());
+  }
+  
+  private void synchronizePersonalInformation(VOMSUser u, 
+    VOMSOrgDBPerson orgDbPerson){
+    
+    u.setName(orgDbPerson.getFirstName());
+    u.setSurname(orgDbPerson.getName());
+    
+  }
+
   public void synchronizeMemberInformation(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName) {
 
@@ -196,6 +232,10 @@ public class DefaultSyncStrategy implements
         "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
         new Object[] { u, orgDbPerson, experimentName });
 
+    synchronizeIdAndEmailAddress(u, orgDbPerson);
+
+    synchronizePersonalInformation(u, orgDbPerson);
+    
     Participation validParticipation = orgDbPerson
       .getValidParticipationForExperiment(experimentName);
 
@@ -205,7 +245,7 @@ public class DefaultSyncStrategy implements
     if (validParticipation != null) {
       synchronizeMembershipInstitutionInfo(u, orgDbPerson, experimentName,
         validParticipation);
-      
+
       synchronizeMembershipPhoneNumber(u, orgDbPerson, experimentName);
     }
 

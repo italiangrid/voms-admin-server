@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao.hibernate;
 
@@ -23,6 +19,8 @@ import java.util.List;
 
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditSearchDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
@@ -36,6 +34,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.UserDAO;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.LogRecord;
 import org.glite.security.voms.admin.persistence.model.task.Task;
@@ -62,6 +61,12 @@ public class HibernateDAOFactory extends DAOFactory {
   // methods.
   // If we use public static nested classes, we can centralize all of them in
   // one source file.
+
+  public static class AuditDAOHibernate extends
+    GenericHibernateDAO<AuditEvent, Long> implements AuditDAO {
+
+  }
+
   public static class AUPVersionDAOHibernate extends
     GenericHibernateDAO<AUPVersion, Long> implements AUPVersionDAO {
   }
@@ -180,4 +185,15 @@ public class HibernateDAOFactory extends DAOFactory {
 
   }
 
+  @Override
+  public AuditDAO getAuditDAO() {
+
+    return (AuditDAO) instantiateDAO(AuditDAOHibernate.class);
+  }
+
+  @Override
+  public AuditSearchDAO getAuditSearchDAO() {
+
+    return new AuditSearchDAOHibernate();
+  }
 }

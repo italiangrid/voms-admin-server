@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.core.validation.strategies.impl;
 
 import java.util.List;
@@ -26,7 +21,7 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.strategies.AUPFailingMembersLookupStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.HandleAUPFailingMembersStrategy;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.user.SignAUPTaskAssignedEvent;
+import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
@@ -73,11 +68,12 @@ public class SuspendAUPFailingMembersStrategy implements
       u.assignTask(t);
       log.info("Sign aup task assigned to user '{}'. Will expire on {}", u,
         t.getExpiryDate());
-      EventManager.dispatch(new SignAUPTaskAssignedEvent(u, aup));
+      
+      EventManager.instance().dispatch(new SignAUPTaskAssignedEvent(u, aup,t));
 
     } else {
 
-      if (u.getSuspended()) {
+      if (u.isSuspended()) {
 
         log
           .debug("User already suspended. Reason: {}", u.getSuspensionReason());

@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.servlets;
 
@@ -27,6 +23,7 @@ import javax.servlet.ServletRequest;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
+import org.italiangrid.utils.voms.SecurityContext;
 import org.italiangrid.utils.voms.SecurityContextFactory;
 import org.italiangrid.utils.voms.VOMSSecurityContext;
 import org.italiangrid.voms.ac.VOMSACValidator;
@@ -37,6 +34,18 @@ public class InitSecurityContext {
 
   protected static Logger log = LoggerFactory
     .getLogger(InitSecurityContext.class);
+
+  public static void setInternalAdminContext() {
+
+    log.debug("Creating a new internal security context");
+    SecurityContext sc = SecurityContextFactory.newVOMSSecurityContext(null);
+
+    sc.setClientName(VOMSServiceConstants.INTERNAL_ADMIN);
+    sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
+
+    CurrentSecurityContext.set(sc);
+
+  }
 
   public static void setContextFromRequest(final ServletRequest req,
     final VOMSACValidator validator) {

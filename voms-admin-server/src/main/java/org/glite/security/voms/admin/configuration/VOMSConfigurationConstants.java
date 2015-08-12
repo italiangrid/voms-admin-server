@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.configuration;
 
 public interface VOMSConfigurationConstants {
@@ -63,8 +58,9 @@ public interface VOMSConfigurationConstants {
    * at VO registration time.
    */
   public static final String VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST = "voms.request.vo_membership.enable_attribute_requests";
-
   public static final String VO_MEMBERSHIP_REQUIRE_GROUP_MANAGER_SELECTION = "voms.request.vo_membership.require_group_manager_selection";
+  
+  public static final String GROUP_MANAGER_ROLE_NAME = "voms.request.group_manager_role";
   
   public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
   public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
@@ -84,7 +80,13 @@ public interface VOMSConfigurationConstants {
    */
   public static final String GRID_AUP_URL = "voms.aup.grid_aup.initial_url";
   public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
+  
   public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
+  public static final int SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE = 15;
+  
+  public static final String SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE = "7,3,1";
+  public static final String SIGN_AUP_TASK_REMINDERS = "voms.aup.sign_aup_task_reminders";
+  
   public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS = "voms.aup.require_signature_for_created_users";
   public static final String SIGN_AUP_EXTENDS_MEMBERSHIP = "voms.aup.signature_extends_membership";
 

@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao;
 
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
-import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 
 public class VOMSVersionDAO {
 
   private VOMSVersionDAO() {
 
-    super();
   }
 
   public static VOMSVersionDAO instance() {
@@ -40,9 +33,8 @@ public class VOMSVersionDAO {
   public VOMSDBVersion createCurrentVersion() {
 
     VOMSDBVersion v = new VOMSDBVersion();
-    v.setVersion(VOMSServiceConstants.VOMS_DB_VERSION);
-    v.setAdminVersion(VOMSConfiguration.instance().getString(
-      VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
+    v.setVersion(SchemaVersion.VOMS_DB_VERSION);
+    v.setAdminVersion(SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
     return v;
   }
@@ -58,17 +50,10 @@ public class VOMSVersionDAO {
 
     } else {
 
-      if (v.getVersion() != VOMSServiceConstants.VOMS_DB_VERSION) {
-        // Delete existing VOMS server version
+      if (v.getVersion() != SchemaVersion.VOMS_DB_VERSION) {
         HibernateFactory.getSession().delete(v);
-
         HibernateFactory.getSession().save(createCurrentVersion());
-      } else {
-
-        v.setAdminVersion(VOMSConfiguration.instance().getString(
-          VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION));
       }
-
     }
 
   }
@@ -79,5 +64,4 @@ public class VOMSVersionDAO {
       .createQuery("from VOMSDBVersion").uniqueResult();
 
   }
-
 }

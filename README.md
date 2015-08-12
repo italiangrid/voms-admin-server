@@ -46,6 +46,4 @@ Will setup a running voms-admin-server instance, running a single VO named test.
 
 ## RPM package build
 
-See README.md in ./package/rpm directory.
-
-
+See https://github.com/italiangrid/pkg.voms-admin-server

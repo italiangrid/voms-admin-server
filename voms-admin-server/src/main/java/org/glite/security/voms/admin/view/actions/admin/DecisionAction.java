@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.admin;
 
@@ -35,10 +31,10 @@ import org.glite.security.voms.admin.persistence.model.request.RoleMembershipReq
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
-  @Result(name = BaseAction.SUCCESS, location = "pendingRequests.jsp"),
-  @Result(name = BaseAction.INPUT, location = "pendingRequests.jsp"),
+  @Result(name = BaseAction.SUCCESS, location = "requests.jsp"),
+  @Result(name = BaseAction.INPUT, location = "requests.jsp"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "pendingRequests.jsp") })
+    location = "requests.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class DecisionAction extends RequestActionSupport {
@@ -47,7 +43,7 @@ public class DecisionAction extends RequestActionSupport {
 	 * 
 	 */
   private static final long serialVersionUID = 1L;
-
+  
   String decision;
 
   @Override

@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,9 +13,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-    Authors:
-    	Andrea Ceccanti (INFN)
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
@@ -89,10 +85,27 @@
 	<s:textfield name="suspensionReason" size="20" label="Please provide a reason for the suspension"/>
 </div>
 
+<div id="changeReacceptancePeriodDialog" title="Change reacceptance period of VO AUP?" style="display: none" class="dialog">
+	
+ 	Do you really want to change the reacceptance period of the currently active version of the VO Acceptable Usage Policy?
+	If you confirm, many of the VO users who have not signed AUP will be notified via email and asked to sign the VO AUP.
+	<div style="margin-bottom: 1em; margin-top: 0.5em;">
+		<input type="text" value="" placeholder="Type yes to confirm..."/>
+	</div>
+	<div class="alert alert-error">
+		<strong>Type 'yes' to change the AUP reacceptance period!</strong>
+	</div>
+</div>
+
 <div id="triggerReacceptanceDialog" title="Trigger reacceptance of VO AUP?" style="display: none" class="dialog">
 	Do you really want to trigger the reacceptance of the currently active version of the VO Acceptable Usage Policy?
-	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules, version:
-	<div class="dialogMessage"></div>
+	If you confirm, all the VO users will be notified via email and asked to sign again the VO AUP rules.
+	<div style="margin-bottom: 1em; margin-top: 0.5em;">
+		<input type="text" value="" placeholder="Type yes to confirm..."/>
+	</div>
+	<div class="alert alert-error">
+		<strong>Type 'yes' to trigger the AUP reacceptance!</strong>
+	</div>
 </div>
 
 <div id="changeActiveAUPVersionDialog" title="Change active AUP version?" style="display: none" class="dialog">
@@ -112,5 +125,36 @@
 	<p>
 		All the associated acceptance records will be dropped from the database...
 	</p>
+</div>
+
+<div id="confirmRejectedRequestDialog" title="Reject request(s)?" style="display: none" class="dialog">
+ 
+  <div id="rejected-reqs-details">
+  </div> 
+  
+  <p>
+    <input id="confirmRejectedRequestDialog_input" 
+      type="textarea" 
+      placeholder="Please provide a reason for rejecting the requests..."
+      style="width: 100%; heigth: auto;"
+      ></input>
+      
+  </p>
+</div>
+
+<div id="confirmOrgDbIdChangeDialog" title="Change HR id for user?" style="display: none" class="dialog">
+  <div class="dialogMessage">
+  </div>
+  
+  
+  <p>
+    All personal information about the user (name, surname, institution, email) 
+    will be linked to the CERN HR membership record with ID: 
+    <div class="new-hr-id"></div>
+    
+    The actual synchronization will happen at the next run of the CERN HR membership 
+    synchronization background task. Proceed? 
+  </p>
+  
 </div>
 

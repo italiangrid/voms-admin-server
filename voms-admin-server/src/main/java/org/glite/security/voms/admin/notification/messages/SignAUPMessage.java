@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.notification.messages;
 
-import java.util.Date;
-
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.persistence.model.AUP;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.URLBuilder;
 
 public class SignAUPMessage extends AbstractVelocityNotification {
 
-  VOMSUser user;
-  AUP aup;
+  final SignAUPTaskAssignedEvent event;
 
-  public SignAUPMessage(VOMSUser user, AUP aup) {
+  public SignAUPMessage(SignAUPTaskAssignedEvent e) {
 
-    setUser(user);
-    setAup(aup);
+    event = e;
+    getRecipientList().add(e.getPayload().getEmailAddress());
 
   }
 
@@ -45,45 +37,22 @@ public class SignAUPMessage extends AbstractVelocityNotification {
     VOMSConfiguration conf = VOMSConfiguration.instance();
     String voName = conf.getVOName();
 
-    setSubject("Sign '" + aup.getName() + "' notification for VO '"
-      + conf.getVOName() + "'.");
+    String theSubject = String.format(
+      "Request to sign VO %s acceptable usage policy (AUP).", conf.getVOName());
 
-    Date expirationDate = null;
+    setSubject(theSubject);
 
-    SignAUPTask t = user.getPendingSignAUPTask(aup);
-
-    if (t != null)
-      expirationDate = t.getExpiryDate();
+    SignAUPTask t = event.getTask();
 
     context.put("voName", voName);
-    context.put("aup", aup);
-    context.put("user", user);
+    context.put("aup", t.getAup());
+    context.put("user", t.getUser());
     context.put("recipient", getRecipientList().get(0));
     context.put("signAUPURL", URLBuilder.baseVOMSURLFromConfiguration()
-      + "/aup/sign!input.action?aupId=" + aup.getId());
-    context.put("expirationDate", expirationDate);
+      + "/aup/sign!input.action?aupId=" + t.getAup().getId());
+    context.put("expirationDate", t.getExpiryDate());
 
     super.buildMessage();
-  }
-
-  public VOMSUser getUser() {
-
-    return user;
-  }
-
-  public void setUser(VOMSUser user) {
-
-    this.user = user;
-  }
-
-  public AUP getAup() {
-
-    return aup;
-  }
-
-  public void setAup(AUP aup) {
-
-    this.aup = aup;
   }
 
 }

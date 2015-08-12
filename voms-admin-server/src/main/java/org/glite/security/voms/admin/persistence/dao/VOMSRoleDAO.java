@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao;
 
@@ -41,12 +37,13 @@ public class VOMSRoleDAO {
     HibernateFactory.beginTransaction();
   }
 
-  public List findAll() {
+  public List<VOMSRole> findAll() {
 
     return getAll();
   }
 
-  public List getAll() {
+  @SuppressWarnings("unchecked")
+  public List<VOMSRole> getAll() {
 
     String query = "from org.glite.security.voms.admin.persistence.model.VOMSRole";
 
@@ -381,7 +378,7 @@ public class VOMSRoleDAO {
 
   }
 
-  public void deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
+  public VOMSRoleAttribute deleteAttributeByName(VOMSRole r, VOMSGroup g, String attrName) {
 
     VOMSRoleAttribute attr = r.getAttributeByName(g, attrName);
 
@@ -390,6 +387,8 @@ public class VOMSRoleDAO {
         + "' not defined for role '" + r.getName() + "' in group '" + g + "'.");
 
     deleteAttribute(r, attr);
+    
+    return attr;
 
   }
 
