@@ -75,7 +75,6 @@
                 id="sp_filter" 
                 type="text"
                 name="searchParams.filterString"
-                placeholder="use % as a wildcard, e.g.: %VOMS%"
                 size="50"
                 value="<s:property value='searchParams.filterString'/>"> 
               

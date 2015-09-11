@@ -23,6 +23,7 @@ import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchParams;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchResults;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -71,7 +72,7 @@ public class AuditSearchDAOHibernate extends
 
     if (sp.getFilterString() != null && !sp.getFilterString().trim().equals("")) {
       crit.add(Restrictions.like(sp.getFilterType(), sp.getFilterString()
-        .trim()));
+        .trim(), MatchMode.ANYWHERE));
     }
 
     crit.addOrder(Order.desc("timestamp"));
