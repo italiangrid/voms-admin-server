@@ -15,7 +15,7 @@
  */
 package org.glite.security.voms.admin.operations;
 
-public abstract class BaseVoReadOperation extends BaseVomsOperation {
+public abstract class BaseVoReadOperation<T> extends BaseVomsOperation<T> {
 
   protected void setupPermissions() {
 

@@ -100,6 +100,7 @@ public interface VOMSConfigurationConstants {
   public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
   public static final String NOTIFICATION_WARNING_RESEND_PERIOD = "voms.membership.notification_resend_period";
   public static final String PRESERVE_EXPIRED_MEMBERS = "voms.preserve_expired_members";
+  public static final String PRESERVE_AUP_FAILING_MEMBERS = "voms.preserve_aup_failing_members";
   public static final String DISABLE_MEMBERSHIP_END_TIME = "voms.disable_membership_end_time";
 
   /**

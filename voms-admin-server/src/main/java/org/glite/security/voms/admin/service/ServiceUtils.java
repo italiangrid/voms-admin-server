@@ -40,6 +40,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
@@ -309,4 +310,5 @@ public class ServiceUtils {
 
     return l;
   }
+
 }

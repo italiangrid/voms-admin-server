@@ -7,3 +7,4 @@ alter table sign_aup_task add column last_notification_time datetime
 alter table usr add column orgdb_id bigint
 create index aed_value_idx on audit_event_data(value)
 create index aed_name_idx on audit_event_data(name)
+create index ua_value_idx on usr_attrs(a_id,a_value)

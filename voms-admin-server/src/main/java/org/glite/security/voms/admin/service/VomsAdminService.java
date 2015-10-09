@@ -421,7 +421,8 @@ public class VomsAdminService implements VOMSAdmin {
 
     try {
 
-      List members = (List) ListMembersOperation.instance(groupname).execute();
+      List<VOMSUser> members = (List<VOMSUser>) 
+        ListMembersOperation.instance(groupname).execute();
 
       HibernateFactory.commitTransaction();
 

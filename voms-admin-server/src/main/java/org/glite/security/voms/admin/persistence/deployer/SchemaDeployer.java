@@ -894,6 +894,11 @@ public class SchemaDeployer {
       HibernateFactory.getSession());
 
     createIndexTask.run();
+    
+    CreateAttributeValueIndex avIndexTask = new 
+      CreateAttributeValueIndex(HibernateFactory.getSession());
+    
+    avIndexTask.run();
 
     UpdateCATask caTask = new UpdateCATask();
     caTask.run();
