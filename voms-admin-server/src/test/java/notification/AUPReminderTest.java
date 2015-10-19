@@ -180,6 +180,9 @@ public class AUPReminderTest {
     // Build task that expires in 15 days from now
     SignAUPTask t = buildTask(now, 15);
     
+    // Assume first notification was sent
+    t.setLastNotificationTime(new Date(now));
+    
     List<Integer> reminders = Arrays.asList(15);
     
     MockTimeProvider tp = new MockTimeProvider(now);
@@ -187,9 +190,6 @@ public class AUPReminderTest {
     SignAUPReminderCheckTask task = new SignAUPReminderCheckTask(
       buildMockDAOFactory(t), ed, tp, reminders, TimeUnit.DAYS);
     
-    // Assume first notification was sent
-    t.setLastNotificationTime(new Date(now));
-
     for (int i=0; i < 16; i++){
       tp.add(TimeUnit.DAYS,1);
       task.run();
