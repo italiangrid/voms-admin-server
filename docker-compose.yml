@@ -58,7 +58,7 @@ adminserver:
     VOMS_PRE_CONFIGURE: y
     # VOMS_SKIP_CONFIGURE: y
     VOMS_UPGRADE_DB: y
-    VOMS_CONFIGURE_OPTIONS: --preserve-aup-failing-members
+    # VOMS_CONFIGURE_OPTIONS: --preserve-aup-failing-members
     ENABLE_JREBEL: y
     ENABLE_JMX: y
     VOMS_DEBUG: y

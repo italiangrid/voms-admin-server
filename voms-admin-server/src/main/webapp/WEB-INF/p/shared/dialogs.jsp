@@ -145,16 +145,20 @@
 <div id="confirmOrgDbIdChangeDialog" title="Change HR id for user?" style="display: none" class="dialog">
   <div class="dialogMessage">
   </div>
-  
-  
   <p>
     All personal information about the user (name, surname, institution, email) 
     will be linked to the CERN HR membership record with ID: 
     <div class="new-hr-id"></div>
-    
     The actual synchronization will happen at the next run of the CERN HR membership 
     synchronization background task. Proceed? 
   </p>
+
+  <div style="margin-bottom: 1em; margin-top: 0.5em;">
+    <input class="hr-id-confirm" type="text" value="" placeholder="Type yes to confirm..."/>
+  </div>
   
+  <div class="alert alert-error">
+    <strong>Type 'yes' to change the HR id!</strong>
+  </div>
 </div>
 

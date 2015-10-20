@@ -15,14 +15,18 @@
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-
+@EventDescription(
+  message = "changed HR id to '%s' for user with ID '%s', '%s %s'",
+  params = {"userOrgDbId", "userId", "userName", "userSurname"}
+  )
 public class UserOrgDbIdUpdatedEvent extends UserLifecycleEvent {
 
   public UserOrgDbIdUpdatedEvent(VOMSUser payload) {
 
     super(payload);
-    
+
   }
 }
