@@ -277,8 +277,7 @@ public class CurrentAdmin {
       }
     }
 
-    VOMSPermission adminEffectivePerms = VOMSPermission
-      .fromBits(effectivePerms);
+    VOMSPermission adminEffectivePerms = VOMSPermission.fromBits(effectivePerms);  
 
     log.debug("Admin effective permissions: {}", adminEffectivePerms);
     

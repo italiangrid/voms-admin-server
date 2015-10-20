@@ -94,10 +94,15 @@ public class VOMSPermission implements Serializable, Cloneable {
 
   public static VOMSPermission fromBits(int bits) {
 
-    if (bits <= 0)
+    if (bits < 0){
       throw new IllegalArgumentException(
-        "Permission must be a positive integer.");
-
+        "Permission must be non-negative integer.");
+    }
+    
+    if (bits == 0){
+      return VOMSPermission.getEmptyPermissions();
+    }
+    
     VOMSPermission perm = new VOMSPermission();
 
     for (int i = 0; i < NUM_PERMISSIONS; i++) {
