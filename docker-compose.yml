@@ -2,13 +2,13 @@ conf:
   image: busybox
   volumes:
     - /etc/voms-admin
-  command: true
+  command: /bin/true
 
 data:
   image: busybox
   volumes:
     - /var/lib/mysql
-  command: true
+  command: /bin/true
 
 db:
   image: mariadb:latest
@@ -37,7 +37,7 @@ adminserver:
       - ~/.jrebel:/home/voms/.jrebel:rw
       - ~/jrebel:/jrebel:ro
       - /var/log/voms-admin
-        #    - ~/orgdb:/orgdb:ro
+        # - ~/orgdb:/orgdb:ro
 
   volumes_from:
       - conf
@@ -55,9 +55,10 @@ adminserver:
     MAILHOST: mail
     MYSQL_ROOT_PASSWORD: pwd
     VOMS_DEBUG: y
-    # VOMS_PRE_CONFIGURE: y
+    VOMS_PRE_CONFIGURE: y
     # VOMS_SKIP_CONFIGURE: y
-    # VOMS_UPGRADE_DB: y
+    VOMS_UPGRADE_DB: y
+    # VOMS_CONFIGURE_OPTIONS: --preserve-aup-failing-members
     ENABLE_JREBEL: y
     ENABLE_JMX: y
     VOMS_DEBUG: y

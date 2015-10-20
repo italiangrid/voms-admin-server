@@ -15,6 +15,10 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -52,20 +56,48 @@ public class SavePersonalInformationAction extends UserActionSupport {
   String thePhoneNumber;
   String theEmailAddress;
 
+  private static final String[] ORGDB_VALIDATED_FIELDS = {
+    "theAddress",
+    "thePhoneNumber"
+  };
+  
   private boolean isOrgDBPluginEnabled() {
 
     return VOMSConfiguration.instance().getRegistrationType()
       .equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE);
   }
+  
 
   @Override
   public void validate() {
 
     // Run default checks before orgdb checks
     super.validate();
-    
-    if (hasFieldErrors())
-      return;
+     
+    if (hasFieldErrors()){
+      
+      if (!isOrgDBPluginEnabled()){
+        return;
+      }
+      
+      Map<String, List<String>> fieldErrors = getFieldErrors();
+      
+      clearFieldErrors();
+      
+      // Retain only errors in the given fields
+      fieldErrors.keySet().retainAll(Arrays.asList(ORGDB_VALIDATED_FIELDS));
+      
+      // Add those errors back to the set of field errors
+      for (Map.Entry<String, List<String>> e: fieldErrors.entrySet()){
+        for (String msg: e.getValue()){
+          addFieldError(e.getKey(), msg);
+        }
+      }
+      
+      if (hasFieldErrors()){
+        return;
+      }
+    }
 
     if (isOrgDBPluginEnabled()) {
 

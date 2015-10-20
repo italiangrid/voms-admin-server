@@ -199,7 +199,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   @Transient
   Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
 
-  @Column(name="orgdb_id", nullable=true)
+  @Column(name = "orgdb_id", nullable = true)
   Long orgDbId;
 
   /**
@@ -616,20 +616,24 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return u;
   }
 
-  public static User[] collectionAsUsers(Collection c) {
+  public static User[] collectionAsUsers(Collection<VOMSUser> c) {
 
     if (c == null || c.isEmpty())
       return null;
 
-    User[] users = new User[c.size()];
+    List<User> userList = new ArrayList<User>();
 
-    int index = 0;
-    Iterator i = c.iterator();
+    for (VOMSUser u : c) {
+      for (Certificate cert : u.getCertificates()) {
+        User uu = new User();
+        uu.setDN(cert.getSubjectString());
+        uu.setCA(cert.getCa().getSubjectString());
+        uu.setMail(u.getEmailAddress());
+        userList.add(uu);
+      }
+    }
 
-    while (i.hasNext())
-      users[index++] = ((VOMSUser) i.next()).asUser();
-
-    return users;
+    return userList.toArray(new User[userList.size()]);
 
   }
 
@@ -1084,6 +1088,38 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return false;
   }
 
+  public SignAUPTask getPendingSignAUPTask(){
+    
+    for (Task t : getTasks()){
+      if (t instanceof SignAUPTask) {
+        SignAUPTask aupTask = (SignAUPTask) t;
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED)){
+          return aupTask;
+        }
+      }
+    }
+    
+    return null;  
+  }
+  
+  public boolean hasPendingSignAUPTask() {
+    
+    if (getTasks().isEmpty()){
+      return false;
+    }
+    
+    for (Task t : getTasks()){
+      if (t instanceof SignAUPTask) {
+        SignAUPTask aupTask = (SignAUPTask) t;
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED)){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
   public boolean hasPendingSignAUPTask(AUP aup) {
 
     if (getTasks().isEmpty())

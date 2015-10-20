@@ -56,20 +56,20 @@ public class SignAUPReminderCheckTask implements Runnable,
   private long getNextNotificationMessageTime(SignAUPTask task) {
 
     Validate.notNull(task.getLastNotificationTime(),
-      "task.lastNoficationTime must not be null");
-
+      "task.lastNotificationTime must not be null");
+    
     for (int t : reminders) {
 
       long expirationTime = task.getExpiryDate().getTime();
       long nextWarningTime = expirationTime - timeUnit.toMillis(t);
-
+      
       if (nextWarningTime <= 0) {
         continue;
       }
 
       long lastNotificationTime = task.getLastNotificationTime().getTime();
 
-      if (lastNotificationTime >= nextWarningTime) {
+      if (lastNotificationTime + timeUnit.toMillis(1) >= nextWarningTime) {
         continue;
       }
 
@@ -101,12 +101,14 @@ public class SignAUPReminderCheckTask implements Runnable,
       return false;
     }
 
+    long lastNotificationTime = t.getLastNotificationTime().getTime();
+
+    LOGGER.debug("Last notification time: {}", t.getLastNotificationTime());
+    
     long nextWarningTime = getNextNotificationMessageTime(t);
 
     LOGGER.debug("Next expectedWarningTime: {}", new Date(nextWarningTime));
-
-    long lastNotificationTime = t.getLastNotificationTime().getTime();
-
+    
     if (now >= nextWarningTime && lastNotificationTime < nextWarningTime) {
       return true;
     }

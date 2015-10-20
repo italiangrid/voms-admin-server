@@ -13,13 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.glite.security.voms.admin.operations;
+package org.glite.security.voms.admin.operations.users;
 
-public abstract class BaseVoReadOperation<T> extends BaseVomsOperation<T> {
+import java.util.List;
 
-  protected void setupPermissions() {
+import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerReadPermission().setMembershipReadPermission());
+public class FindUsersWithAttributeValue extends FindUsersWithAttribute {
+
+  final String attributeValue;
+
+  public FindUsersWithAttributeValue(String attr, String val) {
+
+    super(attr);
+    attributeValue = val;
+
   }
+
+  @Override
+  protected List<VOMSUser> doExecute() {
+
+    VOMSAttributeDAO dao = VOMSAttributeDAO.instance();
+
+    return dao.findUsersWithAttributeValue(attributeName, attributeValue);
+  }
+
 }

@@ -31,11 +31,12 @@
         <s:date
           name="searchParams.fromTime"
           var="ft"
-          format="MM/d/YYYY" />
+          format="MM/dd/yyyy" />
+        
         <s:date
           name="searchParams.toTime"
           var="tt"
-          format="MM/d/YYYY" />
+          format="MM/dd/yyyy" />
 
 
         <tr>
@@ -75,7 +76,6 @@
                 id="sp_filter" 
                 type="text"
                 name="searchParams.filterString"
-                placeholder="use % as a wildcard, e.g.: %VOMS%"
                 size="50"
                 value="<s:property value='searchParams.filterString'/>"> 
               

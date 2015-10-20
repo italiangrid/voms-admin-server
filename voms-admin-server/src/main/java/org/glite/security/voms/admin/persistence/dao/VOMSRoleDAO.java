@@ -426,7 +426,7 @@ public class VOMSRoleDAO {
     if (r == null)
       throw new IllegalArgumentException("role parameter must be non-null!");
 
-    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role = :role";
+    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where u.suspended is false and c.suspended is false and m.group =  :group and m.role = :role";
 
     return HibernateFactory.getSession().createQuery(query)
       .setEntity("group", g).setEntity("role", r).list();

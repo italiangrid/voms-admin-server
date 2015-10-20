@@ -390,8 +390,6 @@ function pageSetup(){
 	eyeCandy();
 
 	aclEntryStuff();
-
-
 }
 
 
@@ -710,7 +708,13 @@ function confirmOrgDbIdChangeDialog(formId,userInfo){
 	if (validateForm_save_orgdb_id()) {
 		var orgdbId = $('#orgDbIdVal').val();
 		$('#confirmOrgDbIdChangeDialog .new-hr-id').text(orgdbId);
-		openConfirmDialog(formId, 'confirmOrgDbIdChangeDialog', userInfo);
+		
+		$('#confirmOrgDbIdChangeDialog .alert').hide();
+		
+		$('#confirmOrgDbIdChangeDialog .dialogMessage').text(userInfo);
+		$('#confirmOrgDbIdChangeDialog .hr-id-confirm').val();
+		
+		openYesConfirmDialog(formId, 'confirmOrgDbIdChangeDialog');
 	}
 
 	return false;

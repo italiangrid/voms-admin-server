@@ -18,16 +18,65 @@ package org.glite.security.voms.admin.apiv2;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class JSONSerializer {
+
+  private static final VOMSPermission VO_ATTRIBUTE_READ_PERMISSIONS = VOMSPermission
+    .getEmptyPermissions().setAttributesReadPermission();
+
+  private static final VOMSPermission VO_MEMBERSHIP_READ_PERMISSIONS = VOMSPermission
+    .getEmptyPermissions().setMembershipReadPermission()
+    .setContainerReadPermission();
+
+  private static final VOMSPermission PI_READ_PERMISSIONS = VOMSPermission
+    .getEmptyPermissions().setPersonalInfoReadPermission();
+
+  public static VOMSUserJSON serialize(VOMSUser user) {
+
+    final VOMSContext voContext = VOMSContext.getVoContext();
+
+    final CurrentAdmin admin = CurrentAdmin.instance();
+
+    VOMSUserJSON json = VOMSUserJSON.fromVOMSUser(user);
+
+    if (admin.is(user)) {
+
+      json.fqansFrom(user);
+      json.attributesFrom(user);
+      json.personalInformationFrom(user);
+
+    } else {
+
+      if (admin.hasPermissions(voContext, VO_ATTRIBUTE_READ_PERMISSIONS)) {
+        json.attributesFrom(user);
+      }
+
+      if (admin.hasPermissions(VOMSContext.getVoContext(),
+        VO_MEMBERSHIP_READ_PERMISSIONS)) {
+        json.fqansFrom(user);
+      }
+
+      if (admin.hasPermissions(VOMSContext.getVoContext(), PI_READ_PERMISSIONS)) {
+        json.personalInformationFrom(user);
+      }
+
+    }
+
+    return json;
+
+  }
 
   public static List<VOMSUserJSON> serialize(List<VOMSUser> users) {
 
     List<VOMSUserJSON> retval = new ArrayList<VOMSUserJSON>();
 
-    for (VOMSUser u : users)
-      retval.add(VOMSUserJSON.fromVOMSUser(u));
+    for (VOMSUser u : users) {
+      retval.add(serialize(u));
+    }
 
     return retval;
 

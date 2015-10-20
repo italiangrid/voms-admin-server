@@ -47,7 +47,8 @@
 				rows="4" cols="30" cssClass="registrationField" value="%{address}" />
 
 			<s:textfield name="thePhoneNumber" disabled="false" label="Phone"
-				size="40" cssClass="registrationField" value="%{phoneNumber}" />
+				size="40" cssClass="registrationField" value="%{phoneNumber}"
+        />
 
 			<s:textfield name="theEmailAddress" disabled="false" label="Email"
 				size="40" cssClass="registrationField" value="%{emailAddress}" 
