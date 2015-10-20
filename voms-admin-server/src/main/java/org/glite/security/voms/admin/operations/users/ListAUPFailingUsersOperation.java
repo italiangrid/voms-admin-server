@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.glite.security.voms.admin.event.user;
+package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.event.EventDescription;
+import java.util.List;
+
+import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-@EventDescription(
-  message = "changed HR id to '%s' for user with ID '%s', '%s %s'",
-  params = {"userOrgDbId", "userId", "userName", "userSurname"}
-  )
-public class UserOrgDbIdUpdatedEvent extends UserLifecycleEvent {
+public class ListAUPFailingUsersOperation extends
+  BaseVoReadOperation<List<VOMSUser>> {
 
-  public UserOrgDbIdUpdatedEvent(VOMSUser payload) {
+  @Override
+  protected List<VOMSUser> doExecute() {
 
-    super(payload);
+    AUPDAO aupDAO = DAOFactory.instance().getAUPDAO();
+    return VOMSUserDAO.instance().findAUPFailingUsers(aupDAO.getVOAUP());
 
   }
+
 }

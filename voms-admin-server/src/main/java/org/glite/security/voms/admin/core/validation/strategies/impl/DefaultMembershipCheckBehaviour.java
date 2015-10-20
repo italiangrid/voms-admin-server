@@ -52,7 +52,8 @@ public class DefaultMembershipCheckBehaviour extends
       VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
     boolean preserveExpiredMembers = conf.getBoolean(
       VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
-
+    
+    
     if (disableMembershipEndTime && preserveExpiredMembers) {
       log
         .error(
@@ -75,9 +76,20 @@ public class DefaultMembershipCheckBehaviour extends
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
 
-    // AUP handling strategy is not configurable
+    boolean preserveAUPFailingMembers = conf.getBoolean(
+      VOMSConfigurationConstants.PRESERVE_AUP_FAILING_MEMBERS, false);
+
     aupFMLookupStrategy = new DefaultAUPFailingMembersLookupStrategy();
-    aupFailingMembersStrategy = new SuspendAUPFailingMembersStrategy();
+    
+    if (preserveAUPFailingMembers){
+      log.warn("Members that fail to sign the VO AUP in time will NOT be "
+        + "automatically suspended, as requested by the configuration.");
+      
+      aupFailingMembersStrategy = new NoOpAUPFailingMembersStrategy();
+    }else {
+      aupFailingMembersStrategy = new SuspendAUPFailingMembersStrategy();
+    }
+    
 
     boolean disableMembershipEndTime = conf.getBoolean(
       VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);

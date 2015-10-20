@@ -64,7 +64,14 @@
     		<s:hidden name="userId" value="%{id}"/>
     		<s:submit value="%{'Delete this user'}" onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
     	</s:form>
-	
+	  
+    <s:form 
+      action="create-acceptance-record" 
+      theme="simple" cssStyle="display:inline">
+      <s:token/>
+      <s:hidden name="userId" value="%{id}"/>
+      <s:submit value="%{'Sign AUP on behalf of this user'}" />
+    </s:form>
 	</s:if>
 </div>
 </div>

@@ -44,7 +44,7 @@
         <dd>
           <s:date
             name="currentAdmin.clientCert.notAfter"
-            format="MMMM d, YYYY hh:mm:ss" />
+            format="MMM d, yyyy HH:mm:ss" />
           (
           <s:date
             name="currentAdmin.clientCert.notAfter"
