@@ -26,6 +26,7 @@ import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
@@ -44,6 +45,8 @@ public class BulkSuspendAction extends UserBulkActionSupport {
 
   String suspensionReason;
 
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a reason for the user suspension!")
   @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
     message = "You entered invalid characters in the suspension reason field!")
   public String getSuspensionReason() {
