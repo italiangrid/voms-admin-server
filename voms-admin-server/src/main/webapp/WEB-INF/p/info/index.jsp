@@ -21,7 +21,7 @@
 
 <s:if test="currentAdmin">
   <s:if test='currentAdmin.unauthenticated'>
-    <p>No certificate found in your request! This can be caused by your
+    <p>No certificate found! This can be caused by your
       browser being misconfigured or the certificate stored in your browser
       could be expired!</p>
   </s:if>
