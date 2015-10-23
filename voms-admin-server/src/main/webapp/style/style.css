@@ -712,7 +712,9 @@ p {
 }
 
 .userAdminActions {
-  float: right;
+  margin-top: 1em;
+  clear: both;
+  /*  float: right; */
 }
 
 .dialog {
