@@ -34,7 +34,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 public class TriggerReacceptanceAction extends UserActionSupport {
 
   /**
-	 * 
+	 *
 	 */
   private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class TriggerReacceptanceAction extends UserActionSupport {
 
     new TriggerReacceptanceOperation(aupDAO.getVOAUP(), getModel()).execute();
 
-    addActionMessage("AUP reacceptance requested.");
+    addActionMessage("AUP acceptance requested.");
 
     return SUCCESS;
   }

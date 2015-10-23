@@ -19,7 +19,7 @@ import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.AUP;
 
 @EventDescription(
-  message = "triggered the reacceptance for version '%s' of AUP '%s'",
+  message = "triggered the acceptance for version '%s' of AUP '%s'",
   params = { "aupVersion", "aupName" })
 public class TriggeredForcedReacceptanceEvent extends AUPEvent {
 
