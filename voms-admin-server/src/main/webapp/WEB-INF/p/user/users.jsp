@@ -100,7 +100,7 @@
         />
         
         
-        <s:if test="not #attr.disableMembershipEndTime">
+        <s:if test="not #attr.disableMembershipEndTime and #attr.canSuspend == true and #attr.readOnlyMembershipExpiration == false">
         	<s:submit value="%{'Extend membership'}" align="right" action="bulk-extend-membership-expiration" theme="simple" 
           		cssClass="userActionButton"
           		disabled="%{#attr.canSuspend == false}"
