@@ -32,7 +32,7 @@
           name="searchParams.fromTime"
           var="ft"
           format="MM/dd/yyyy" />
-        
+
         <s:date
           name="searchParams.toTime"
           var="tt"
@@ -48,19 +48,19 @@
               cssClass="input-label" /> <s:textfield
               id="sp_from"
               name="searchParams.fromTime"
-              size="8"
+              size="10"
               cssClass="input-date"
               value="%{#ft}" /> <s:label
               for="sp_to"
               value="To:"
               cssClass="input-label" /> 
-          
+
               <s:textfield
               id="sp_to"
               name="searchParams.toTime"
               label="To"
               value="%{#tt}"
-              size="8"
+              size="10"
               cssClass="input-date" /> <s:label
               for="sp_filter_type"
               value="Filter by:"
@@ -69,17 +69,16 @@
               name="searchParams.filterType"
               list="{'principal', 'type'}"
               value="searchParams.filterType" /> 
-              
+
               <s:set value="searchParams.filterString" var="fs"/>
-              
+
               <input
                 id="sp_filter" 
                 type="text"
                 name="searchParams.filterString"
                 size="50"
                 value="<s:property value='searchParams.filterString'/>"> 
-              
-              
+
               <s:submit value="%{'Filter'}" /></td>
         </tr>
       </thead>
@@ -102,11 +101,9 @@
                 name="timestamp"
                 nice="true"
                 format="struts.date.format.past" /></td>
-                
-            
+
             <td style="width:15%"><s:property
                 value="eventNameFormatter.formatEventName(#event.type)" /></td>
-                    
             <td style="width:50%" class="al-desc">
               <div class="audit-log-principal">
                 <s:property
@@ -116,17 +113,17 @@
                 value="eventDescriptor.buildEventDescription(#event)" />
             </td>
             <td>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   class="al-trigger"
                   data-target="al_${event.id}">more info</a>
-          
+
             </td>
           </tr>
           <tr class='al-dtl'>
-            <td 
-              id="al_${event.id}" 
-              colspan="4" 
+            <td
+              id="al_${event.id}"
+              colspan="4"
               class='al-dtl al-dtl-hidden'>
               <tiles2:insertTemplate template="audit_log_detail.jsp"/>
             </td>
@@ -139,5 +136,5 @@
 
 
 <script type="text/javascript">
-	$('.input-date').datepicker();
+  $('.input-date').datepicker();
 </script>
