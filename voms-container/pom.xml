@@ -71,13 +71,10 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <mainClass>org.italiangrid.voms.container.Container</mainClass>
             </manifest>
-            <manifestEntries>
-              <Class-Path>${package.prefix}var/lib/voms-admin/lib/ojdbc6.jar</Class-Path>
-            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
@@ -108,10 +105,10 @@
           </execution>
         </executions>
       </plugin>
-    
+
     </plugins>
-    
-    
+
+
   </build>
 
   <dependencies>

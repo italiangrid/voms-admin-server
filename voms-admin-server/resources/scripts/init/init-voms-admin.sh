@@ -52,8 +52,13 @@ if [ -z "$VOMS_JAVA_OPTS" ]; then
   VOMS_JAVA_OPTS="-Xms256m -Xmx512m -XX:MaxPermSize=512m"
 fi
 
+OJDBC_JAR=${OJDBC_JAR:-${ORACLE_LIBRARY_PATH}/ojdbc6.jar}
+
 ## The VOMS container jar
-VOMS_SERVER_JAR="${PREFIX%/}/usr/share/java/voms-container.jar"
+VOMS_JAR="${PREFIX%/}/usr/share/java/voms-container.jar"
+
+## VOMS Jetty container main class
+VOMS_MAIN_CLASS=org.italiangrid.voms.container.Container
 
 if [ -z "$VOMS_DEBUG_PORT" ]; then
   VOMS_DEBUG_PORT=8998
@@ -70,7 +75,7 @@ fi
 VOMS_ADMIN_LOG_DIR=${VOMS_ADMIN_LOG_DIR:-${PREFIX%/}/var/log/voms-admin}
 
 ## Base VOMS startup command
-VOMS_START_CMD="java $VOMS_JAVA_OPTS -jar $VOMS_SERVER_JAR >$VOMS_ADMIN_LOG_DIR/voms-admin.out 2>$VOMS_ADMIN_LOG_DIR/voms-admin.err"
+VOMS_START_CMD="java $VOMS_JAVA_OPTS cp $VOMS_JAR:$OJDBC_JAR $VOMS_MAIN_CLASS >$VOMS_ADMIN_LOG_DIR/voms-admin.out 2>$VOMS_ADMIN_LOG_DIR/voms-admin.err"
 
 ## Oracle environment
 ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
