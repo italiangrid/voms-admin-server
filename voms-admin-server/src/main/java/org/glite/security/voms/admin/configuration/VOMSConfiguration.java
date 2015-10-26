@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.configuration;
 
@@ -46,6 +42,7 @@ import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
@@ -862,6 +859,67 @@ public final class VOMSConfiguration {
 
   }
 
+  private List<Integer> integerListToString(String s) {
+
+    Validate.notNull(s);
+
+    List<Integer> timeList = new ArrayList<Integer>();
+
+    String[] ints = s.split(",");
+    for (String i : ints) {
+      try {
+        int ii = Integer.parseInt(i.trim());
+        timeList.add(ii);
+      } catch (NumberFormatException nfe) {
+        throw new VOMSException("Error while parsing integer list '" + s
+          + "': " + nfe.getMessage(), nfe);
+      }
+    }
+
+    return timeList;
+
+  }
+
+  public List<Integer> getAUPReminderIntervals() {
+
+    int signAUPTaskLifetime = config.getInteger(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME,
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE);
+
+    String timeString = config.getString(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS,
+      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+
+    List<Integer> intervals = integerListToString(timeString);
+
+    Iterator<Integer> iter = intervals.iterator();
+
+    while (iter.hasNext()) {
+      int i = iter.next();
+
+      if (i >= signAUPTaskLifetime || i <= 0) {
+
+        log.warn("Ignoring invalid reminder value: {}", i);
+
+        iter.remove();
+        continue;
+      }
+    }
+
+    if (intervals.isEmpty()) {
+
+      log
+        .warn(
+          "No valid reminder values found in configuration. Falling back to default value: {}",
+          VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+
+      intervals = integerListToString(VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE);
+    }
+
+    return intervals;
+
+  }
+
   private String loadVomsesConfigurationString() {
 
     String vomsesConfFileName = getConfigurationDirectoryPath() + "/vomses";
@@ -1010,6 +1068,10 @@ public final class VOMSConfiguration {
       "localhost");
   }
 
+  public String getGroupManagerRoleName() {
+    return config.getString(VOMSConfigurationConstants.GROUP_MANAGER_ROLE_NAME,
+      "Group-Manager");
+  }
   public int getExpiringUsersWarningInterval() {
 
     String warningPeriodInDays = VOMSConfiguration

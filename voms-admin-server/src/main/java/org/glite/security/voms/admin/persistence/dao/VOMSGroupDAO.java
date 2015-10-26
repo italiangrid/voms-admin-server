@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao;
 
@@ -306,15 +302,12 @@ public class VOMSGroupDAO {
 
     VOMSGroup g = findByName("/" + voName);
 
-    if (g == null)
-      throw new VOMSInconsistentDatabaseException(
-        "VO root group undefined in database!");
-
     return g;
 
   }
 
-  public List getChildren(VOMSGroup parentGroup) {
+  @SuppressWarnings("unchecked")
+  public List<VOMSGroup> getChildren(VOMSGroup parentGroup) {
 
     String query = "from org.glite.security.voms.admin.persistence.model.VOMSGroup g where g.parent = :parentGroup and g != :parentGroup order by g.name";
     Query q = HibernateFactory.getSession().createQuery(query);
@@ -546,7 +539,7 @@ public class VOMSGroupDAO {
 
   }
 
-  public void deleteAttribute(VOMSGroup g, String attrName) {
+  public VOMSGroupAttribute deleteAttribute(VOMSGroup g, String attrName) {
 
     VOMSGroupAttribute ga = g.getAttributeByName(attrName);
 
@@ -555,6 +548,8 @@ public class VOMSGroupDAO {
         + "' not defined for group '" + g.getName() + "'!");
 
     deleteAttribute(g, ga);
+    
+    return ga;
 
   }
 
@@ -596,7 +591,7 @@ public class VOMSGroupDAO {
     // String query =
     // "select distinct m.user.dn from org.glite.security.voms.admin.persistence.model.VOMSMapping m where m.group = :group and m.role is null";
 
-    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where m.group =  :group and m.role is null";
+    String query = "select distinct c.subjectString from VOMSUser u join u.certificates c join u.mappings m where u.suspended is false and c.suspended is false and m.group =  :group and m.role is null";
 
     return HibernateFactory.getSession().createQuery(query)
       .setEntity("group", g).list();

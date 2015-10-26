@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.home;
 
@@ -23,6 +19,8 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @ParentPackage(value = "base")
@@ -44,10 +42,15 @@ public class LoginAction extends BaseAction {
   public String execute() throws Exception {
 
     CurrentAdmin admin = CurrentAdmin.instance();
-
+    VOMSGroup rootGroup = getVORootGroup();
+    VOMSRole groupManagerRole = getGroupManagerRole();
+    
     if (admin.isVOAdmin())
       return "admin-home";
-    else if (admin.isVoUser())
+    else if (groupManagerRole != null && 
+      admin.hasRole(rootGroup, groupManagerRole)){
+      return "admin-home";
+    } else if (admin.isVoUser())
       return "user-home";
     else if (admin.isUnauthenticated())
       return "unauthenticated";

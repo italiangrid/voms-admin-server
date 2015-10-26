@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.glite.security.voms.admin.error.NullArgumentException;
+import org.apache.commons.lang.Validate;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.role.RoleAttributeSetEvent;
 import org.glite.security.voms.admin.operations.BaseAttributeRWOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
@@ -28,6 +26,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
@@ -38,8 +37,12 @@ public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
 
   protected Object doExecute() {
 
-    return VOMSRoleDAO.instance().setAttribute(__context.getRole(),
-      __context.getGroup(), attributeName, attributeValue);
+    VOMSRoleAttribute ra = VOMSRoleDAO.instance().setAttribute(
+      __context.getRole(), __context.getGroup(), attributeName, attributeValue);
+
+    EventManager.instance().dispatch(new RoleAttributeSetEvent(__context.getRole(), ra));
+
+    return ra;
   }
 
   private SetRoleAttributeOperation(VOMSGroup g, VOMSRole r, String aName,
@@ -55,9 +58,7 @@ public class SetRoleAttributeOperation extends BaseAttributeRWOperation {
   public static SetRoleAttributeOperation instance(String groupName,
     String roleName, AttributeValue val) {
 
-    if (val == null)
-      throw new NullArgumentException(
-        "Null attribute value passed as argument!");
+    Validate.notNull(val, "attribute value must be non-null!");
 
     VOMSGroup g = (VOMSGroup) FindGroupOperation.instance(groupName).execute();
     VOMSRole r = (VOMSRole) FindRoleOperation.instance(roleName).execute();

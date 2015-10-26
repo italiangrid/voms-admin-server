@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -27,10 +24,13 @@ import java.util.regex.Pattern;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
+import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
+import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
@@ -178,9 +178,9 @@ public class CurrentAdmin {
 
     }
 
-    VOMSUser adminUser = getVoUser();
+    VOMSUser adminVOUser = getVoUser();
 
-    log.debug("Admin user: " + adminUser);
+    log.debug("Admin VO user: " + adminVOUser);
 
     VOMSPermission personalPermissions = acl.getPermissions(admin);
 
@@ -192,29 +192,46 @@ public class CurrentAdmin {
     log.debug("Permissions for any authenticated user: "
       + anyAuthenticatedUserPermissions);
 
-    VOMSPermissionList adminPerms = VOMSPermissionList.instance();
+    int effectivePerms = 0;
 
     VOMSPermission unauthenticatedClientPermissions = acl
       .getUnauthenticatedClientPermissions();
     log.debug("Permissions for unauthenticated clients: "
       + unauthenticatedClientPermissions);
 
-    if (personalPermissions == null && adminUser == null
+    if (personalPermissions == null && adminVOUser == null
       && anyAuthenticatedUserPermissions == null
       && unauthenticatedClientPermissions == null)
       return false;
 
-    if (personalPermissions != null)
-      adminPerms.addPermission(personalPermissions);
+    if (personalPermissions != null) {
+      effectivePerms = effectivePerms | personalPermissions.getBits();
+    }
 
-    if (anyAuthenticatedUserPermissions != null)
-      adminPerms.addPermission(anyAuthenticatedUserPermissions);
+    if (anyAuthenticatedUserPermissions != null) {
+      effectivePerms = effectivePerms
+        | anyAuthenticatedUserPermissions.getBits();
+    }
 
-    if (unauthenticatedClientPermissions != null)
-      adminPerms.addPermission(unauthenticatedClientPermissions);
+    if (unauthenticatedClientPermissions != null) {
+      effectivePerms = effectivePerms
+        | unauthenticatedClientPermissions.getBits();
+    }
 
-    if (adminUser == null)
-      return adminPerms.satifies(p);
+    if (adminVOUser == null) {
+      VOMSPermission adminEffectivePerms = VOMSPermission
+        .fromBits(effectivePerms);
+      log.debug("Admin effective permissions {}", adminEffectivePerms);
+
+      boolean result = adminEffectivePerms.satisfies(p);
+      if (log.isDebugEnabled()) {
+        log.debug(
+          "Does {} have permissions that satisfy {} in context {} ? {}",
+          new String[] { getAdmin().toString(), p.toString(), c.toString(),
+            Boolean.toString(result) });
+      }
+      return result;
+    }
 
     // AdminUser != null
     Map<VOMSAdmin, VOMSPermission> groupPermissions = acl.getGroupPermissions();
@@ -230,9 +247,12 @@ public class CurrentAdmin {
 
         String groupName = entry.getKey().getDn();
 
-        if (adminUser.isMember(groupName)) {
-          adminPerms.addPermission((VOMSPermission) entry.getValue());
-          log.debug("Adding group permission " + entry.getValue()
+        if (adminVOUser.isMember(groupName)) {
+          VOMSPermission groupPerm = entry.getValue();
+
+          effectivePerms = effectivePerms | groupPerm.getBits();
+
+          log.debug("Adding group permission " + groupPerm
             + " to admin's permission set. admin is a member of the group '"
             + groupName + "'.");
         }
@@ -247,18 +267,30 @@ public class CurrentAdmin {
         String roleName = entry.getKey().getDn();
 
         log.debug("Checking if current admin has role: " + roleName);
-        if (adminUser.hasRole(roleName)) {
+        if (adminVOUser.hasRole(roleName)) {
 
-          adminPerms.addPermission(entry.getValue());
+          effectivePerms = effectivePerms | entry.getValue().getBits();
+
           log.debug("Adding role permission " + entry.getValue()
             + " to admin's permission set. admin has role '" + roleName + "'.");
         }
       }
     }
 
-    log.debug("Admin permissions: " + adminPerms);
+    VOMSPermission adminEffectivePerms = VOMSPermission.fromBits(effectivePerms);  
 
-    return adminPerms.satifies(p);
+    log.debug("Admin effective permissions: {}", adminEffectivePerms);
+    
+    boolean result = adminEffectivePerms.satisfies(p);
+    
+    if (log.isDebugEnabled()) {
+      log.debug(
+        "Does {} have permissions that satisfy {} in context {} ? {}",
+        new String[] { getAdmin().toString(), p.toString(), c.toString(),
+          Boolean.toString(result) });
+    }
+    return result;
+    
   }
 
   public String getRealSubject() {
@@ -296,6 +328,30 @@ public class CurrentAdmin {
       return null;
   }
 
+  public boolean hasRole(VOMSGroup group, String roleName){
+    VOMSRole role = VOMSRoleDAO.instance().findByName(roleName);
+    
+    if (role == null) {
+      return false;
+    }
+    
+    return hasRole(group, role);
+  }
+  
+  public boolean hasRole(VOMSGroup group, VOMSRole role){
+    if (getVoUser() == null){
+      return false;
+    }
+    
+    if (getVoUser().isMember(group)){
+      return getVoUser().hasRole(group, role);
+    } 
+    
+    return false;
+      
+  }
+  
+  
   public String getRealEmailAddress() {
 
     VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
@@ -337,5 +393,22 @@ public class CurrentAdmin {
 
     return admin.isUnauthenticated();
 
+  }
+
+  public String getName() {
+
+    return getRealSubject();
+  }
+  
+  public X509Certificate getClientCert(){
+    if (isUnauthenticated()){
+      return null;
+    }
+    
+    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
+      .get();
+    
+    return theContext.getClientCert();
+    
   }
 }

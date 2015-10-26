@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,9 +13,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-    Authors:
-    	Andrea Ceccanti (INFN)
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
@@ -68,7 +64,14 @@
     		<s:hidden name="userId" value="%{id}"/>
     		<s:submit value="%{'Delete this user'}" onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
     	</s:form>
-	
+	  
+    <s:form 
+      action="create-acceptance-record" 
+      theme="simple" cssStyle="display:inline">
+      <s:token/>
+      <s:hidden name="userId" value="%{id}"/>
+      <s:submit value="%{'Sign AUP on behalf of this user'}" />
+    </s:form>
 	</s:if>
 </div>
 </div>
@@ -80,6 +83,10 @@
 <div class="badge-container">
   <tiles2:insertTemplate template="aupStatusDetail.jsp"/>
 </div>
+
+<s:if test="#attr.orgdbEnabled">
+  <tiles2:insertTemplate template="orgdbId.jsp"/>
+</s:if>
 
 <s:if test="not #attr.disableMembershipEndTime">
 	<tiles2:insertTemplate template="membershipExpiration2.jsp"/>

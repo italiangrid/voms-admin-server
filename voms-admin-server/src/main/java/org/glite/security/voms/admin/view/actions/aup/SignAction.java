@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.aup;
 
@@ -23,6 +19,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.aup.UserSignedAUPEvent;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
@@ -66,9 +64,12 @@ public class SignAction extends BaseAction implements ModelDriven<AUP>,
       throw new VOMSException(
         "Current authenticated client is not a member of the VO and, as such, cannot be entitled to sign AUP for the VO.");
 
-    if (aupAccepted.equals("true"))
+    if (aupAccepted.equals("true")) {
+      
       VOMSUserDAO.instance().signAUP(u, aup);
-    else {
+      EventManager.instance().dispatch(new UserSignedAUPEvent(u, aup));
+      
+    } else {
 
       addFieldError("aupAccepted",
         "You have to accept the terms of the AUP to proceed!");

@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.user;
 
@@ -28,6 +24,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail"),
@@ -55,6 +52,8 @@ public class SuspendAction extends UserActionSupport {
     return SUCCESS;
   }
 
+  @RequiredStringValidator(type = ValidatorType.FIELD,
+    message = "Please enter a reason for the user suspension!")
   @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
     message = "You entered invalid characters in the suspension reason field!")
   public String getSuspensionReason() {

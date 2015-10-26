@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.operations.requests;
 
+import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
+import org.glite.security.voms.admin.error.IllegalRequestStateException;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestApprovedEvent;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestRejectedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestApprovedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
@@ -35,6 +34,7 @@ import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
+import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.view.actions.register.SubmitRequestAction;
 
@@ -42,6 +42,9 @@ public class HandleVOMembershipRequest extends
   BaseHandleRequestOperation<NewVOMembershipRequest> {
 
   private static final String REJECT_MOTIVATION = "The VO administrator didn't find appropriate to approve your membership request.";
+
+  private static final EnumSet<Request.STATUS> VALID_STATUSES = EnumSet.of(
+    STATUS.SUBMITTED, STATUS.CONFIRMED);
 
   List<String> approvedGroups;
 
@@ -55,7 +58,10 @@ public class HandleVOMembershipRequest extends
   @Override
   protected void approve() {
 
-    checkRequestStatus(STATUS.CONFIRMED);
+    if (!VALID_STATUSES.contains(request.getStatus())) {
+      throw new IllegalRequestStateException("Illegal state for request: "
+        + request.getStatus());
+    }
 
     VOMSUser user = VOMSUser.fromRequesterInfo(request.getRequesterInfo());
     VOMSUserDAO.instance().create(user,
@@ -83,14 +89,26 @@ public class HandleVOMembershipRequest extends
       for (String groupName : approvedGroups) {
 
         VOMSGroup g = groupDAO.findByName(groupName);
-        if (g != null)
+        if (g != null) {
           user.addToGroup(g);
+        }
       }
 
     }
 
-    EventManager.dispatch(new VOMembershipRequestApprovedEvent(request));
+    linkOrgDBMembership(user);
 
+    EventManager.instance().dispatch(
+      new VOMembershipRequestApprovedEvent(request));
+
+  }
+
+  protected void linkOrgDBMembership(VOMSUser u) {
+
+    if (request.getRequesterInfo().getInfo(VOMSServiceConstants.ORGDB_ID_KEY) != null) {
+      u.setOrgDbId(Long.parseLong(request.getRequesterInfo().getInfo(
+        VOMSServiceConstants.ORGDB_ID_KEY)));
+    }
   }
 
   @Override
@@ -98,8 +116,8 @@ public class HandleVOMembershipRequest extends
 
     rejectRequest();
 
-    EventManager.dispatch(new VOMembershipRequestRejectedEvent(request,
-      REJECT_MOTIVATION));
+    EventManager.instance().dispatch(
+      new VOMembershipRequestRejectedEvent(request, REJECT_MOTIVATION));
 
     DAOFactory.instance().getRequestDAO().makeTransient(request);
 

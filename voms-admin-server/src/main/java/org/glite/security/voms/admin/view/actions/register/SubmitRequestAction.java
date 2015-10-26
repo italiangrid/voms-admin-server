@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.register;
 
@@ -30,7 +26,7 @@ import org.glite.security.voms.admin.core.validation.RequestValidationResult;
 import org.glite.security.voms.admin.core.validation.RequestValidationResult.Outcome;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -72,6 +68,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
   String aupAccepted;
 
+  String userMessage;
+
   RequestValidationResult validationResult;
 
   protected void populateRequestModel() {
@@ -92,6 +90,8 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
     request = DAOFactory.instance().getRequestDAO()
       .createVOMembershipRequest(requester, expirationDate);
+    
+    request.setUserMessage(userMessage);
 
   }
 
@@ -117,8 +117,9 @@ public class SubmitRequestAction extends RegisterActionSupport {
       return PLUGIN_VALIDATION_ERROR;
     }
 
-    EventManager.dispatch(new VOMembershipRequestSubmittedEvent(request,
-      URLBuilder.buildRequestConfirmURL(getModel()), URLBuilder
+    EventManager.instance().dispatch(
+      new VOMembershipRequestSubmittedEvent(request, URLBuilder
+        .buildRequestConfirmURL(getModel()), URLBuilder
         .buildRequestCancelURL(getModel())));
 
     return SUCCESS;
@@ -220,6 +221,18 @@ public class SubmitRequestAction extends RegisterActionSupport {
   public void setEmailAddress(String emailAddress) {
 
     this.emailAddress = emailAddress;
+  }
+
+  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+    message = "You entered invalid characters.")
+  public String getUserMessage() {
+
+    return userMessage;
+  }
+
+  public void setUserMessage(String userMessage) {
+
+    this.userMessage = userMessage;
   }
 
   /**

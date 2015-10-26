@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +12,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.notification;
 
+import java.util.EnumSet;
+
+import org.glite.security.voms.admin.event.Event;
+import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.EventListener;
-import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.EventMask;
 
-public abstract class BaseNotificationDispatcher implements EventListener {
+public abstract class BaseNotificationDispatcher<T extends Event> implements
+  EventListener<T> {
 
-  private final EventMask mask;
+  private final EnumSet<EventCategory> mask;
 
-  public BaseNotificationDispatcher(EventMask mask) {
+  public BaseNotificationDispatcher(EnumSet<EventCategory> mask) {
 
     this.mask = mask;
-    EventManager.instance().register(this);
+
   }
 
-  public EventMask getMask() {
+  public BaseNotificationDispatcher() {
+
+    this.mask = EventCategory.ALL_CATEGORIES;
+
+  }
+
+  public EnumSet<EventCategory> getCategoryMask() {
 
     return mask;
   }

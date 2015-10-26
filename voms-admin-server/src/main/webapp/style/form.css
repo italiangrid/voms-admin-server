@@ -46,7 +46,7 @@ input[type=text].registrationField, textarea.registrationField{
 
 }
 
-input[type="submit"]{
+input[type="submit"], button[type="submit"]{
 	-moz-border-radius-bottomleft:11px;
 	-moz-border-radius-bottomright:11px;
 	-moz-border-radius-topleft:11px;
@@ -71,11 +71,13 @@ input[type="submit"]{
 }
 
 
-input[type="submit"]:hover{
+input[type="submit"]:hover, 
+button[type="submit"]:hover {
 	border-color:#666666;
 }
 
-input[type="submit"][disabled=disabled]:hover{
+input[type="submit"][disabled=disabled]:hover, 
+button[type="submit"][disabled=disabled]:hover{
 	border-color:#c3c3c3;
 }
 

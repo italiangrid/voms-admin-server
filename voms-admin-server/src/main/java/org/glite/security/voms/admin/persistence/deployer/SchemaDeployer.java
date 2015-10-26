@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.deployer;
 
@@ -45,15 +41,22 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.tasks.DatabaseSetupTask;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.auditing.AuditLogHelper;
+import org.glite.security.voms.admin.event.vo.acl.ACLUpdatedEvent;
+import org.glite.security.voms.admin.event.vo.admin.AdminCreatedEvent;
+import org.glite.security.voms.admin.event.vo.admin.AdminDeletedEvent;
+import org.glite.security.voms.admin.operations.CurrentAdminPrincipal;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.DBUtil;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.ACLDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSDBVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -103,13 +106,20 @@ public class SchemaDeployer {
 
   SessionFactory sf;
 
-  protected Dialect dialect;
+  Configuration hibernateConfiguration = null;
+
+  Dialect dialect;
+
+  AuditLogHelper auditLogHelper = new AuditLogHelper(
+    CurrentAdminPrincipal.LOCAL_DB_PRINCIPAL);
 
   public SchemaDeployer(String[] args) {
 
     setupCLParser();
     checkArguments(args);
     execute();
+
+    HibernateFactory.shutdown();
 
   }
 
@@ -202,6 +212,9 @@ public class SchemaDeployer {
 
     System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
     VOMSConfiguration.load(null);
+
+    hibernateConfiguration = loadHibernateConfiguration();
+    HibernateFactory.initialize(hibernateConfiguration);
 
     if (command.equals("deploy"))
       doDeploy();
@@ -446,117 +459,71 @@ public class SchemaDeployer {
 
   }
 
-  private List<String> loadUpgradeScript31_32() throws IOException {
+  private List<String> loadUpgradeScriptToV4() throws IOException {
 
-    String upgradeScriptFileName = "/upgrade-scripts/mysql-upgrade_310_320.sql";
-
-    if (isOracleBackend())
-      upgradeScriptFileName = "/upgrade-scripts/oracle-upgrade_310_320.sql";
-
+    String upgradeScriptFileName = "/upgrade-scripts/V4_new-versioning.sql";
     return parseUpgradeScript(upgradeScriptFileName);
-
   }
 
-  private void fixHibernateSequences261(Configuration hibernateConfig) {
+  private boolean doUpgradeToV4() {
 
-    String[] newOracleSequences = { "VOMS_ACL_SEQ", "VOMS_ADMIN_SEQ",
-      "VOMS_ATTR_DESC_SEQ", "VOMS_AUP_ACC_REC_SEQ", "VOMS_AUP_SEQ",
-      "VOMS_AUP_VER_SEQ", "VOMS_CA_SEQ", "VOMS_CERT_SEQ", "VOMS_GROUP_SEQ",
-      "VOMS_M_SEQ", "VOMS_PI_SEQ", "VOMS_PI_TYPE_SEQ", "VOMS_REQ_INFO_SEQ",
-      "VOMS_REQ_SEQ", "VOMS_ROLE_SEQ", "VOMS_TAG_MAP_SEQ", "VOMS_TAG_SEQ",
-      "VOMS_TASK_LR_SEQ", "VOMS_TASK_SEQ", "VOMS_TASK_TYPE_SEQ" };
+    int existingDB = checkDatabaseExistence();
 
-    log
-      .info("Creating oracle sequences starting from VOMS Admin 2.6.x database.");
-    Session s = HibernateFactory.getSession();
-
-    Long maxSeqValue = (Long) s
-      .createSQLQuery(
-        "select max(last_number) as max from user_sequences where sequence_name = 'HIBERNATE_SEQUENCE'")
-      .addScalar("max", new LongType()).uniqueResult();
-
-    for (String seq : newOracleSequences) {
-
-      String createHibSeqStatement = "create sequence " + seq
-        + " MINVALUE 1 MAXVALUE 999999999999999999999999999 "
-        + "INCREMENT BY 1 START WITH " + maxSeqValue
-        + " CACHE 20 NOORDER NOCYCLE";
-
-      s.createSQLQuery(createHibSeqStatement).executeUpdate();
+    if (existingDB < 0) {
+      log.error("No voms-admin database found to upgrade!");
+      System.exit(-1);
     }
 
-    log.info("Sequences migration complete.");
+    if (existingDB < 3) {
+      log.error("Upgrade not supported from this database version.");
+      System.exit(-1);
+    }
 
-  }
+    if (existingDB == 3) {
 
-  private boolean doUpgrade2_5(Configuration hibernateConfig) {
+      String[] versionsToBeUpgraded = { "3.2.0", "3.3.0", "3.3.1", "3.3.2", "3.3.3" };
+      String adminVersion = VOMSVersionDAO.instance().getVersion()
+        .getAdminVersion().trim();
 
-    HibernateFactory.beginTransaction();
-    VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
-    HibernateFactory.commitTransaction();
-    log.info("Found VOMS Admin database version {}", version.getAdminVersion());
-
-    if (isOracleBackend()
-      && (version.getAdminVersion().equals("2.6.1") || version
-        .getAdminVersion().equals("2.5.5"))) {
-      try {
-
-        log.info("Fixing oracle sequences...");
-        fixHibernateSequences261(hibernateConfig);
-        HibernateFactory.commitTransaction();
-        return true;
-
-      } catch (Exception e) {
-
-        log.error("Error fixing VOMS Admin 2.6.1 oracle sequence: {}",
-          e.getMessage(), e);
-        HibernateFactory.rollbackTransaction();
+      if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+        log.warn("No upgrade needed, found schema version {}", adminVersion);
+        return false;
       }
-    }
 
-    return false;
+      boolean upgradeSupported = false;
 
-  }
-
-  private boolean doUpgradeTo3_2(Configuration hibernateConfig) {
-
-    HibernateFactory.beginTransaction();
-    VOMSDBVersion version = VOMSVersionDAO.instance().getVersion();
-
-    VOMSConfiguration conf = VOMSConfiguration.instance();
-    String targetVersion = conf
-      .getString(VOMSConfigurationConstants.VOMS_ADMIN_SERVER_VERSION);
-
-    String adminVersion = version.getAdminVersion().trim();
-    String[] versionsToBeUpgraded = { "2.5.3", "2.5.4", "2.5.5", "2.6.1",
-      "2.7.0", "2.7.1", "3.0.0", "3.0.1", "3.1.0" };
-
-    boolean needsUpgrade = false;
-
-    for (String v : versionsToBeUpgraded) {
-      if (adminVersion.equals(v)) {
-        log.debug("Database version {} matches {}", adminVersion, v);
-        needsUpgrade = true;
-        break;
-
+      for (String v : versionsToBeUpgraded) {
+        if (adminVersion.equals(v)) {
+          log
+            .debug(
+              "Found VOMS Admin database version {} that requires a schema upgrade.",
+              adminVersion);
+          upgradeSupported = true;
+          break;
+        }
       }
-    }
 
-    if (needsUpgrade) {
+      if (!upgradeSupported) {
+
+        log.error("Upgrade not supported from schema version {}", adminVersion);
+        return false;
+      }
+
+      log.info("Upgrading database schema from version {} to version {}",
+        adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       try {
 
-        log.info("Upgrading database schema from version {} to version {}",
-          adminVersion, targetVersion);
+        List<String> upgradeScript = loadUpgradeScriptToV4();
 
-        List<String> upgradeScript = loadUpgradeScript31_32();
         ArrayList<Exception> exceptions = new ArrayList<Exception>();
+        
+        HibernateFactory.beginTransaction();
         Statement statement = HibernateFactory.getSession().connection()
           .createStatement();
 
         for (String command : upgradeScript) {
           try {
-
             log.info(command);
             statement.executeUpdate(command);
 
@@ -575,7 +542,6 @@ public class SchemaDeployer {
 
         // Update database version
         VOMSVersionDAO.instance().setupVersion();
-
         HibernateFactory.commitTransaction();
         return true;
 
@@ -592,8 +558,6 @@ public class SchemaDeployer {
   private void doUpgrade() {
 
     checkVoExistence();
-
-    Configuration hibernateConfig = loadHibernateConfiguration();
 
     int existingDB = checkDatabaseExistence();
 
@@ -613,10 +577,8 @@ public class SchemaDeployer {
     }
 
     if (existingDB == 3) {
-      boolean upgradePerformed = false;
 
-      upgradePerformed = doUpgrade2_5(hibernateConfig);
-      upgradePerformed = doUpgradeTo3_2(hibernateConfig);
+      boolean upgradePerformed = doUpgradeToV4();
 
       if (upgradePerformed)
         log.info("The upgrade procedure has changed the VOMS database.");
@@ -643,8 +605,15 @@ public class SchemaDeployer {
         return;
       }
 
-      ACLDAO.instance().deletePermissionsForAdmin(a);
+      List<ACL> affectedACLs = ACLDAO.instance().deletePermissionsForAdmin(a);
+
       VOMSAdminDAO.instance().delete(a);
+
+      for (ACL acl : affectedACLs) {
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, acl);
+      }
+
+      auditLogHelper.saveAuditEvent(AdminDeletedEvent.class, a);
 
       HibernateFactory.commitTransaction();
 
@@ -684,30 +653,38 @@ public class SchemaDeployer {
           + "' not found. It will be created...");
         // Admin does not exist, create it!
         a = VOMSAdminDAO.instance().create(adminDN, adminCA, adminEmailAddress);
+        auditLogHelper.saveAuditEvent(AdminCreatedEvent.class, a);
+
       }
 
-      Iterator i = VOMSGroupDAO.instance().findAll().iterator();
+      Iterator<VOMSGroup> i = VOMSGroupDAO.instance().findAll().iterator();
 
       while (i.hasNext()) {
 
-        VOMSGroup g = (VOMSGroup) i.next();
+        VOMSGroup g = i.next();
         g.getACL().setPermissions(a, VOMSPermission.getAllPermissions());
         log
           .info("Adding ALL permissions on '{}' for admin '{},{}'",
             new String[] { g.toString(), a.getDn(),
               a.getCa().getSubjectString() });
 
-        Iterator rolesIter = VOMSRoleDAO.instance().findAll().iterator();
+        Iterator<VOMSRole> rolesIter = VOMSRoleDAO.instance().findAll()
+          .iterator();
+
         while (rolesIter.hasNext()) {
 
-          VOMSRole r = (VOMSRole) rolesIter.next();
+          VOMSRole r = rolesIter.next();
           r.getACL(g).setPermissions(a, VOMSPermission.getAllPermissions());
           log.info("Adding ALL permissions on role '{}/{}' for admin '{},{}'",
             new String[] { g.toString(), r.toString(), a.getDn(),
               a.getCa().getSubjectString() });
+
           HibernateFactory.getSession().save(r);
+          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
         }
+
         HibernateFactory.getSession().save(g);
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
 
       }
 
@@ -764,6 +741,8 @@ public class SchemaDeployer {
 
     dialect = Dialect.getDialect(cfg.getProperties());
 
+    cfg.configure();
+
     return cfg;
   }
 
@@ -772,7 +751,6 @@ public class SchemaDeployer {
     checkVoExistence();
 
     log.info("Undeploying voms database...");
-    Configuration hibernateConfig = loadHibernateConfiguration();
 
     int existingDB = checkDatabaseExistence();
 
@@ -798,7 +776,7 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport export = new SchemaExport(hibernateConfig);
+    SchemaExport export = new SchemaExport(hibernateConfiguration);
 
     export.drop(false, true);
 
@@ -860,10 +838,12 @@ public class SchemaDeployer {
               new String[] { g.toString(), r.toString() });
 
           HibernateFactory.getSession().save(r);
+          auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
 
         }
 
         HibernateFactory.getSession().save(g);
+        auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
       }
 
       HibernateFactory.commitTransaction();
@@ -882,8 +862,6 @@ public class SchemaDeployer {
 
     checkVoExistence();
 
-    Configuration hibernateConfig = loadHibernateConfiguration();
-
     int existingDb = checkDatabaseExistence();
 
     if (existingDb > 0) {
@@ -894,7 +872,7 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport exporter = new SchemaExport(hibernateConfig);
+    SchemaExport exporter = new SchemaExport(hibernateConfiguration);
 
     exporter.execute(true, true, false, true);
 
@@ -908,6 +886,19 @@ public class SchemaDeployer {
       System.exit(2);
 
     }
+
+    // This is needed as the version of hibernate we are using
+    // does not support defining indexes on join table columns
+    // See: https://hibernate.atlassian.net/browse/HHH-4263
+    CreateAuditEventDataIndexes createIndexTask = new CreateAuditEventDataIndexes(
+      HibernateFactory.getSession());
+
+    createIndexTask.run();
+    
+    CreateAttributeValueIndex avIndexTask = new 
+      CreateAttributeValueIndex(HibernateFactory.getSession());
+    
+    avIndexTask.run();
 
     UpdateCATask caTask = new UpdateCATask();
     caTask.run();
@@ -1005,11 +996,11 @@ public class SchemaDeployer {
 
       vo = line.getOptionValue("vo");
 
-      if (line.hasOption("hb-config"))
-        hibernateConfigFile = line.getOptionValue("hb-config");
+      if (line.hasOption("config"))
+        hibernateConfigFile = line.getOptionValue("config");
 
-      if (line.hasOption("hb-properties"))
-        hibernatePropertiesFile = line.getOptionValue("hb-properties");
+      if (line.hasOption("properties"))
+        hibernatePropertiesFile = line.getOptionValue("properties");
 
       if (line.hasOption("dn"))
         adminDN = line.getOptionValue("dn");

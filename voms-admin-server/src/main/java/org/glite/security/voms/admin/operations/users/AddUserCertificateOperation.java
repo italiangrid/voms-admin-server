@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations.users;
 
@@ -23,10 +19,13 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateAddedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class AddUserCertificateOperation extends BaseVomsOperation {
@@ -85,12 +84,17 @@ public class AddUserCertificateOperation extends BaseVomsOperation {
 
   protected Object doExecute() {
 
-    if (theCert != null)
-      VOMSUserDAO.instance().addCertificate(theUser, theCert);
-    else
-      VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
+    Certificate cert = null;
 
-    return null;
+    if (theCert != null) {
+      cert = VOMSUserDAO.instance().addCertificate(theUser, theCert);
+    } else {
+      cert = VOMSUserDAO.instance().addCertificate(theUser, subject, issuer);
+    }
+
+    EventManager.instance().dispatch(new UserCertificateAddedEvent(theUser, cert));
+
+    return cert;
   }
 
   protected void setupPermissions() {
