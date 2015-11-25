@@ -117,14 +117,25 @@ public class CurrentAdmin {
   }
 
   public VOMSUser getVoUser() {
+    
+    String lookupSubject, lookupIssuer;
 
     if (!isAuthorizedAdmin()) {
-
-      return VOMSUserDAO.instance().getByDNandCA(getRealSubject(),
-        getRealIssuer());
+      lookupSubject = getRealSubject();
+      lookupIssuer = getRealIssuer();
+    } else {
+      lookupSubject = admin.getDn();
+      lookupIssuer = admin.getCa().getSubjectString();
     }
 
-    return VOMSUserDAO.instance().getByDNandCA(admin.getDn(), admin.getCa());
+    final boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
+      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+    
+    if (skipCACheck) {
+      return VOMSUserDAO.instance().findBySubject(lookupSubject);
+    }
+
+    return VOMSUserDAO.instance().findByDNandCA(lookupSubject, lookupIssuer);
   }
 
   public void createVoUser() {
@@ -277,20 +288,20 @@ public class CurrentAdmin {
       }
     }
 
-    VOMSPermission adminEffectivePerms = VOMSPermission.fromBits(effectivePerms);  
+    VOMSPermission adminEffectivePerms = VOMSPermission
+      .fromBits(effectivePerms);
 
     log.debug("Admin effective permissions: {}", adminEffectivePerms);
-    
+
     boolean result = adminEffectivePerms.satisfies(p);
-    
+
     if (log.isDebugEnabled()) {
-      log.debug(
-        "Does {} have permissions that satisfy {} in context {} ? {}",
+      log.debug("Does {} have permissions that satisfy {} in context {} ? {}",
         new String[] { getAdmin().toString(), p.toString(), c.toString(),
           Boolean.toString(result) });
     }
     return result;
-    
+
   }
 
   public String getRealSubject() {
@@ -328,30 +339,31 @@ public class CurrentAdmin {
       return null;
   }
 
-  public boolean hasRole(VOMSGroup group, String roleName){
+  public boolean hasRole(VOMSGroup group, String roleName) {
+
     VOMSRole role = VOMSRoleDAO.instance().findByName(roleName);
-    
+
     if (role == null) {
       return false;
     }
-    
+
     return hasRole(group, role);
   }
-  
-  public boolean hasRole(VOMSGroup group, VOMSRole role){
-    if (getVoUser() == null){
+
+  public boolean hasRole(VOMSGroup group, VOMSRole role) {
+
+    if (getVoUser() == null) {
       return false;
     }
-    
-    if (getVoUser().isMember(group)){
+
+    if (getVoUser().isMember(group)) {
       return getVoUser().hasRole(group, role);
-    } 
-    
+    }
+
     return false;
-      
+
   }
-  
-  
+
   public String getRealEmailAddress() {
 
     VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
@@ -399,16 +411,17 @@ public class CurrentAdmin {
 
     return getRealSubject();
   }
-  
-  public X509Certificate getClientCert(){
-    if (isUnauthenticated()){
+
+  public X509Certificate getClientCert() {
+
+    if (isUnauthenticated()) {
       return null;
     }
-    
+
     VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
       .get();
-    
+
     return theContext.getClientCert();
-    
+
   }
 }
