@@ -18,7 +18,7 @@
 
 
 # determine the hostname
-SERVICE_HOST=`hostname`
+SERVICE_HOST=`hostname -f`
  
 # configuration template
 INFO_PROVIDER_CONF_TEMPLATE_DIR="/usr/share/voms-admin/info-providers"
