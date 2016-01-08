@@ -117,4 +117,7 @@ voms.pagination.group.max.results.per.page = 50
 voms.pagination.role.max.results.per.page = 50
 voms.pagination.attributes.max.results.per.page = 50
 
+## Skip CA checks when authenticating clients
+voms.skip_ca_check = @ADMIN_SKIP_CA_CHECK@
+
 #### Add other options after this line

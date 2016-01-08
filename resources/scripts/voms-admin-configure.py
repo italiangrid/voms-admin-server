@@ -326,6 +326,11 @@ def usage():
                            policy. Usually the URL points to a local or remote, http accessible
                            text file. If this option is not set a template vo-aup file will
                            be created in vo runtime configuration directory.
+
+     --admin-skip-ca-check
+
+                           Skips the check on the certificate issuer when authenticating
+                           VOMS Admin clients.
 VOMS SAML options:
 
      --aa-cert

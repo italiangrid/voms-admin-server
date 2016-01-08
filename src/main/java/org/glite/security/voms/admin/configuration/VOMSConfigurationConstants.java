@@ -156,4 +156,9 @@ public interface VOMSConfigurationConstants {
 	 */
 	public static final String MONITORING_USER_STATS_UPDATE_PERIOD = "voms.monitoring.user_stats_period";
 
+	/**
+	 * Whether to skip the checks on certificate issuers when authenticating clients
+	 */
+	public static final String SKIP_CA_CHECK = "voms.skip_ca_check";
+
 }
