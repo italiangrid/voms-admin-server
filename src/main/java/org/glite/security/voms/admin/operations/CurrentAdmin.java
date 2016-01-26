@@ -116,14 +116,25 @@ public class CurrentAdmin {
 	}
 	public VOMSUser getVoUser() {
 
-		if (!isAuthorizedAdmin()) {
+		String lookupSubject, lookupIssuer;
 
-			return VOMSUserDAO.instance().getByDNandCA(getRealSubject(),
-					getRealIssuer());
+		if (!isAuthorizedAdmin()) {
+			lookupSubject = getRealSubject();
+			lookupIssuer = getRealIssuer();
+		} else {
+			lookupSubject = admin.getDn();
+			lookupIssuer = admin.getCa().getSubjectString();
+		}
+
+		final boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
+			VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+
+		if (skipCACheck) {
+			return VOMSUserDAO.instance().findBySubject(lookupSubject);
 		}
 
 		return VOMSUserDAO.instance()
-				.getByDNandCA(admin.getDn(), admin.getCa());
+				.findByDNandCA(lookupSubject, lookupIssuer);
 	}
 
 	public void createVoUser() {
