@@ -51,36 +51,15 @@ public class DefaultSyncStrategy implements
 
       } else {
 
-        // There is a valid, open-ended participation in the OrgDb. We
-        // need to check that user.endTime()
-        // membership is updated accordingly, since we cannot have a
-        // null value there due to database constraints.
-        // (which we could drop, btw, but is a pita for database upgrade
-        // management).
+        // There is a valid, open-ended participation in the OrgDb. 
+        // Set user.endTime() accordingly 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_WEEK, 5);
-        Date fiveDaysFromNow = cal.getTime();
-
-        // If the VOMS membership is going to expire within 5 days, we
-        // just extend it to another year
-        if (u.getEndTime().compareTo(fiveDaysFromNow) < 0) {
-
-          log.debug("User VOMS memership end time: {}", u.getEndTime());
-          log
-            .debug(
-              "User {} membership is going to expire within 5 days, but user has a valid OrgDB experiment participation.",
-              u);
-
-          cal.setTime(u.getEndTime());
-          cal.add(Calendar.YEAR, 1);
-
-          u.setEndTime(cal.getTime());
-          log
-            .debug(
-              "New VOMS membership expiration date: {}. Note that this is purely indicative and will be anyway kept consistent with what comes from the OrgDb.",
-              u.getEndTime());
-
-        }
+        cal.setTime(u.getEndTime());
+        cal.add(Calendar.YEAR, 1);
+  
+        u.setEndTime(cal.getTime());
+        log.debug("Found open-ended participation in OrgDB. Extending"
+          + "membership end time to {}", u.getEndTime());
       }
 
       restoreMembershipIfNeeded(u);
@@ -103,7 +82,8 @@ public class DefaultSyncStrategy implements
 
           log
             .debug(
-              "Expiring VOMS membership for user {} since no valid or expired OrgDB participation was found for experiment {}",
+              "Expiring VOMS membership for user {} since no valid or expired "
+              + "OrgDB participation was found for experiment {}",
               u, experimentName);
           u.setEndTime(now);
         }
