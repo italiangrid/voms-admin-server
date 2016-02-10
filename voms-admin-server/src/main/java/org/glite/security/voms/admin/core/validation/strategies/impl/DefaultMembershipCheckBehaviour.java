@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultMembershipCheckBehaviour extends
-  AbstractMembershipCheckBehaviour {
+public class DefaultMembershipCheckBehaviour
+  extends AbstractMembershipCheckBehaviour {
 
   public static final Logger log = LoggerFactory
     .getLogger(DefaultMembershipCheckBehaviour.class);
@@ -50,17 +50,14 @@ public class DefaultMembershipCheckBehaviour extends
 
     boolean disableMembershipEndTime = conf.getBoolean(
       VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
-    boolean preserveExpiredMembers = conf.getBoolean(
-      VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
-    
-    
+    boolean preserveExpiredMembers = conf
+      .getBoolean(VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
+
     if (disableMembershipEndTime && preserveExpiredMembers) {
-      log
-        .error(
-          "The {} and {} configuration properties cannot be true at the same time",
-          new String[] {
-            VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
-            VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS });
+      log.error(
+        "The {} and {} configuration properties cannot be true at the same time",
+        new String[] { VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
+          VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS });
 
       log.warn("Setting {} to false",
         VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME);
@@ -80,31 +77,41 @@ public class DefaultMembershipCheckBehaviour extends
       VOMSConfigurationConstants.PRESERVE_AUP_FAILING_MEMBERS, false);
 
     aupFMLookupStrategy = new DefaultAUPFailingMembersLookupStrategy();
-    
-    if (preserveAUPFailingMembers){
+
+    if (preserveAUPFailingMembers) {
       log.warn("Members that fail to sign the VO AUP in time will NOT be "
         + "automatically suspended, as requested by the configuration.");
-      
+
       aupFailingMembersStrategy = new NoOpAUPFailingMembersStrategy();
-    }else {
+    } else {
       aupFailingMembersStrategy = new SuspendAUPFailingMembersStrategy();
     }
-    
 
     boolean disableMembershipEndTime = conf.getBoolean(
       VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
-    boolean preserveExpiredMembers = conf.getBoolean(
-      VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
+    boolean preserveExpiredMembers = conf
+      .getBoolean(VOMSConfigurationConstants.PRESERVE_EXPIRED_MEMBERS, false);
 
-    int notificationInterval = VOMSConfiguration.instance().getInt(
-      VOMSConfigurationConstants.NOTIFICATION_WARNING_RESEND_PERIOD, 1);
+    int notificationInterval = VOMSConfiguration.instance()
+      .getInt(VOMSConfigurationConstants.NOTIFICATION_WARNING_RESEND_PERIOD, 1);
+
+    final boolean disableExpiringMembersNotification = conf.getBoolean(
+      VOMSConfigurationConstants.DISABLE_MEMBERSHIP_EXPIRATION_WARNING, false);
+
+    HandleExpiringMembersStrategy ems = new SendWarningAboutExpiringMembersStrategy();
+
+    if (disableExpiringMembersNotification) {
+      ems = new NoOpHandleExpiringMembersStrategy();
+      log.warn(
+        "Disabling expiring members warnings as requested by configuration.");
+    }
 
     if (disableMembershipEndTime) {
 
       IgnoreMembershipEndTimeStrategy s = new IgnoreMembershipEndTimeStrategy();
 
-      log
-        .warn("The membership end time will be IGNORED by the VOMS membership check behaviour as requested by configuration.");
+      log.warn(
+        "The membership end time will be IGNORED by the VOMS membership check behaviour as requested by configuration.");
 
       expiredMembersLookupStrategy = s;
       expiredMembersStrategy = s;
@@ -113,15 +120,15 @@ public class DefaultMembershipCheckBehaviour extends
 
     } else if (preserveExpiredMembers) {
 
-      log
-        .warn("Expired members will NOT be suspended as requested. Administrators will be notified of expired members via email.");
+      log.warn(
+        "Expired members will NOT be suspended as requested. Administrators will be notified of expired members via email.");
       expiredMembersStrategy = new PreserveExpiredMembersStrategy(
         notificationInterval);
 
       expiredMembersLookupStrategy = new DefaultExpiredMembersLookupStrategy();
       expiringMembersLookupStrategy = new DefaultExpiringMembersLookupStrategy();
 
-      expiringMembersStrategy = new SendWarningAboutExpiringMembersStrategy();
+      expiringMembersStrategy = ems;
 
     } else {
 
@@ -140,7 +147,7 @@ public class DefaultMembershipCheckBehaviour extends
       expiredMembersStrategy = new GracePeriodExpiredMembersStrategy(
         gracePeriodInDays, notificationInterval);
 
-      expiringMembersStrategy = new SendWarningAboutExpiringMembersStrategy();
+      expiringMembersStrategy = ems;
     }
 
   }
