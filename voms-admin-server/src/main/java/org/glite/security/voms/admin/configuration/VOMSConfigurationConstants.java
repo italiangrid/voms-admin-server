@@ -95,6 +95,7 @@ public interface VOMSConfigurationConstants {
    */
   public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
   public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
+  public static final String DISABLE_MEMBERSHIP_EXPIRATION_WARNING="voms.membership.disable_expiration_warning";
   public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
   public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE = "15";
   public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
