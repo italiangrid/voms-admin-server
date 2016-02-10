@@ -52,9 +52,8 @@ public class DefaultSyncStrategy implements
       } else {
 
         // There is a valid, open-ended participation in the OrgDb. 
-        // Set user.endTime() accordingly 
+        // Set user.endTime() to 1 year from now.
         Calendar cal = Calendar.getInstance();
-        cal.setTime(u.getEndTime());
         cal.add(Calendar.YEAR, 1);
   
         u.setEndTime(cal.getTime());
