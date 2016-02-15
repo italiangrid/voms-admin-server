@@ -80,8 +80,9 @@ public class RequestCertificateAction extends UserActionSupport {
         return;
       }
 
-      if (dao.find(cert) != null)
+      if (dao.find(cert) != null){
         addFieldError("certificateFile", "Certificate already bound!");
+      }
 
       subject = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
       caSubject = DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal());
@@ -94,6 +95,14 @@ public class RequestCertificateAction extends UserActionSupport {
 
     } else if (subject != null && !"".equals(subject) && !caSubject.equals("-1")) {
 
+      // Remove whitespace and newlines from subject
+      subject=subject.trim().replace("\n", "").replace("\r", "");
+      
+      if (subject.equals("")){
+        addFieldError("subject", "Please provide a suitable subject");
+        return;
+      }
+      
       if (dao.findByDNCA(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
         addFieldError("caSubject", "Certificate already bound!");

@@ -55,10 +55,10 @@ adminserver:
     MAILHOST: mail
     MYSQL_ROOT_PASSWORD: pwd
     VOMS_DEBUG: y
+    # VOMS_DEBUG_SUSPEND: y
     VOMS_PRE_CONFIGURE: y
     # VOMS_SKIP_CONFIGURE: y
     VOMS_UPGRADE_DB: y
-    # VOMS_CONFIGURE_OPTIONS: --preserve-aup-failing-members
+    #VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check --disable-membership-expiration-warnings
     ENABLE_JREBEL: y
     ENABLE_JMX: y
-    VOMS_DEBUG: y

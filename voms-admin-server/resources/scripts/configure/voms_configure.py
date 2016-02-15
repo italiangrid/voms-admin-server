@@ -272,6 +272,8 @@ def setup_cl_options():
     membership_opt_group.add_option("--preserve-expired-members", action="store_true", dest="preserve_expired_members", help="Do not suspend users whose membership has expired.", default=False)
     membership_opt_group.add_option("--preserve-aup-failing-members", action="store_true", dest="preserve_aup_failing_members", help="Do not suspend users that fail to sign the AUP in time.", default=False)
     membership_opt_group.add_option("--disable-membership-end-time", action="store_true", dest="disable_membership_end_time", help="Disable membership end time checks completely.", default=False)
+    
+    membership_opt_group.add_option("--disable-membership-expiration-warnings", action="store_true", dest="disable_membership_expiration_warning", help="Disable membership expiration warnings.", default=False)
 
     membership_opt_group.add_option("--membership-default-lifetime", type="int", dest="membership_default_lifetime", help="Default VO membership lifetime duration (in months).", metavar="MONTHS", default=12)
 
