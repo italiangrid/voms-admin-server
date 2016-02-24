@@ -21,13 +21,12 @@ import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
 import org.glite.security.voms.admin.event.user.membership.RoleAssignedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class HandleRoleMembershipRequestOperation extends
   GroupManagerRoleHolderOperation<RoleMembershipRequest> {
