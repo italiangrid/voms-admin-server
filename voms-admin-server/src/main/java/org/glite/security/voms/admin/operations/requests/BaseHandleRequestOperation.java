@@ -30,8 +30,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
-public abstract class BaseHandleRequestOperation<T extends Request> extends
-  BaseVomsOperation {
+public abstract class BaseHandleRequestOperation<T extends Request>
+  extends BaseVomsOperation {
 
   protected DECISION decision = DECISION.REJECT;
   T request;
@@ -60,8 +60,8 @@ public abstract class BaseHandleRequestOperation<T extends Request> extends
   protected void checkRequestStatus(STATUS status) {
 
     if (!request.getStatus().equals(status))
-      throw new IllegalRequestStateException("Illegal state for request: "
-        + request.getStatus());
+      throw new IllegalRequestStateException(
+        "Illegal state for request: " + request.getStatus());
   }
 
   @Override
@@ -81,10 +81,18 @@ public abstract class BaseHandleRequestOperation<T extends Request> extends
     VOMSGroup g = VOMSGroupDAO.instance().findByName(groupName);
 
     if (g == null)
-      throw new NoSuchGroupException("Requested group '" + groupName
-        + "' does not exist in this VO.");
+      throw new NoSuchGroupException(
+        "Requested group '" + groupName + "' does not exist in this VO.");
 
     return g;
+  }
+
+  protected final VOMSRole findRoleByNameAllowNull(String roleName) {
+
+    VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
+
+    return r;
+
   }
 
   protected final VOMSRole findRoleByName(String roleName) {
@@ -92,8 +100,8 @@ public abstract class BaseHandleRequestOperation<T extends Request> extends
     VOMSRole r = VOMSRoleDAO.instance().findByName(roleName);
 
     if (r == null)
-      throw new NoSuchRoleException("Requested role '" + roleName
-        + "' does not exist in this VO.");
+      throw new NoSuchRoleException(
+        "Requested role '" + roleName + "' does not exist in this VO.");
 
     return r;
 
@@ -111,14 +119,15 @@ public abstract class BaseHandleRequestOperation<T extends Request> extends
 
   protected final VOMSUser getRequesterAsVomsUser() {
 
-    VOMSUser u = (VOMSUser) FindUserOperation.instance(
-      request.getRequesterInfo().getCertificateSubject(),
-      request.getRequesterInfo().getCertificateIssuer()).execute();
+    VOMSUser u = (VOMSUser) FindUserOperation
+      .instance(request.getRequesterInfo().getCertificateSubject(),
+        request.getRequesterInfo().getCertificateIssuer())
+      .execute();
 
     if (u == null)
       throw new NoSuchUserException(String.format("User '%s, %s' not found!",
-        request.getRequesterInfo().getCertificateSubject(), request
-          .getRequesterInfo().getCertificateIssuer()));
+        request.getRequesterInfo().getCertificateSubject(),
+        request.getRequesterInfo().getCertificateIssuer()));
 
     return u;
   }
