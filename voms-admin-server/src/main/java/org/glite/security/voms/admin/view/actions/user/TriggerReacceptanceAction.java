@@ -25,10 +25,10 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
-  @Result(name = BaseAction.SUCCESS, location = "aupStatus.jsp"),
-  @Result(name = BaseAction.INPUT, location = "aupStatus.jsp"),
+  @Result(name = BaseAction.SUCCESS, location = "userDetail"),
+  @Result(name = BaseAction.INPUT, location = "userDetail"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "aupStatus.jsp") })
+    location = "userDetail") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class TriggerReacceptanceAction extends UserActionSupport {
