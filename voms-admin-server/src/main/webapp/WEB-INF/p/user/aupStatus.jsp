@@ -55,7 +55,7 @@
     <s:if test="not #currentAccRec.empty">
       <s:iterator value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
         <s:url
-          action="load"
+          action="sign"
           namespace="/aup"
           var="saURL" />
                 
@@ -73,7 +73,7 @@
         </s:if>
         <s:else>
           <s:if test="not valid">
-              <div class="alert alert-info">
+              <div>
                 <strong><a href="${saURL}">AUP</a> signature has been invalidated.</strong>
                 A request to sign the AUP will be sent to the user as soon as the membership check task
                 runs again.
