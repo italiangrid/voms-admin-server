@@ -196,7 +196,7 @@ public class ServiceUtils {
 
     for (ACLEntry e : entries) {
 
-      VOMSAdmin admin = VOMSAdminDAO.instance().getByName(e.getAdminSubject(),
+      VOMSAdmin admin = VOMSAdminDAO.instance().findBySubjectAndIssuer(e.getAdminSubject(),
         e.getAdminIssuer());
 
       VOMSPermission perm = VOMSPermission.fromBits(e.getVomsPermissionBits());

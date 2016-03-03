@@ -60,17 +60,8 @@ public class CurrentAdmin {
     VOMSSecurityContext ctxt = (VOMSSecurityContext) CurrentSecurityContext
       .get();
 
-    boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
-
-    VOMSAdmin admin = null;
-
-    if (skipCACheck) {
-      admin = VOMSAdminDAO.instance().getBySubject(ctxt.getClientName());
-    } else {
-      admin = VOMSAdminDAO.instance().getByName(ctxt.getClientName(),
-        ctxt.getIssuerName());
-    }
+    VOMSAdmin admin = VOMSAdminDAO.instance().lookup(ctxt.getClientName(), 
+      ctxt.getIssuerName());
 
     return admin;
   }
@@ -97,8 +88,8 @@ public class CurrentAdmin {
 
   public boolean isAuthorizedAdmin() {
 
-    return !getAdmin().equals(
-      VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
+    return !getAdmin()
+      .equals(VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
   }
 
   public boolean isVoUser() {
@@ -117,7 +108,7 @@ public class CurrentAdmin {
   }
 
   public VOMSUser getVoUser() {
-    
+
     String lookupSubject, lookupIssuer;
 
     if (!isAuthorizedAdmin()) {
@@ -128,14 +119,7 @@ public class CurrentAdmin {
       lookupIssuer = admin.getCa().getSubjectString();
     }
 
-    final boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
-    
-    if (skipCACheck) {
-      return VOMSUserDAO.instance().findBySubject(lookupSubject);
-    }
-
-    return VOMSUserDAO.instance().findByDNandCA(lookupSubject, lookupIssuer);
+    return VOMSUserDAO.instance().lookup(lookupSubject, lookupIssuer);
   }
 
   public void createVoUser() {
@@ -236,8 +220,7 @@ public class CurrentAdmin {
 
       boolean result = adminEffectivePerms.satisfies(p);
       if (log.isDebugEnabled()) {
-        log.debug(
-          "Does {} have permissions that satisfy {} in context {} ? {}",
+        log.debug("Does {} have permissions that satisfy {} in context {} ? {}",
           new String[] { getAdmin().toString(), p.toString(), c.toString(),
             Boolean.toString(result) });
       }
@@ -329,8 +312,8 @@ public class CurrentAdmin {
     if (theContext.getClientCert() == null)
       return null;
 
-    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
-      .getSubjectX500Principal());
+    String name = DNUtil
+      .getOpenSSLSubject(theContext.getClientCert().getSubjectX500Principal());
 
     Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
     if (m.find())
@@ -372,15 +355,15 @@ public class CurrentAdmin {
     if (theContext.getClientCert() == null)
       return null;
 
-    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
-      .getSubjectX500Principal());
+    String name = DNUtil
+      .getOpenSSLSubject(theContext.getClientCert().getSubjectX500Principal());
 
-    String candidateEmail = DNUtil.getEmailAddressFromDN(DNUtil
-      .normalizeEmailAddressInDN(name));
+    String candidateEmail = DNUtil
+      .getEmailAddressFromDN(DNUtil.normalizeEmailAddressInDN(name));
 
     if (candidateEmail == null)
-      candidateEmail = DNUtil.getEmailAddressFromExtensions(theContext
-        .getClientCert());
+      candidateEmail = DNUtil
+        .getEmailAddressFromExtensions(theContext.getClientCert());
 
     return candidateEmail;
 

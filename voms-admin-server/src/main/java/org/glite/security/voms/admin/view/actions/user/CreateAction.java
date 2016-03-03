@@ -198,7 +198,7 @@ public class CreateAction extends UserActionSupport {
   @Override
   public void validate() {
 
-    VOMSUser candidate = VOMSUserDAO.instance().findByDNandCA(subject,
+    VOMSUser candidate = VOMSUserDAO.instance().lookup(subject,
       caSubject);
 
     if (candidate != null) {

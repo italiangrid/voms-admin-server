@@ -36,7 +36,7 @@ public class RestoreUserCertificateOperation extends BaseVomsOperation {
 
   private RestoreUserCertificateOperation(String subject, String issuerSubject) {
 
-    certificate = CertificateDAO.instance().findByDNCA(subject, issuerSubject);
+    certificate = CertificateDAO.instance().lookup(subject, issuerSubject);
     if (certificate == null)
       throw new NoSuchCertificateException("Certificate identified by '"
         + subject + "', '" + issuerSubject + "' not found!");

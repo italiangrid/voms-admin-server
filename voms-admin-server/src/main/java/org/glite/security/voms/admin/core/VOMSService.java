@@ -55,6 +55,10 @@ import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupBySubject;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupBySubjectAndIssuer;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupStrategy;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -77,11 +81,11 @@ public final class VOMSService {
       .getAdminVersion();
 
     if (!adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
-      String msg = String
-        .format(
-          "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
-            + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
-            + " command.", adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+      String msg = String.format(
+        "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+          + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+          + " command.",
+        adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       log.error(msg);
       throw new VOMSFatalException(msg);
@@ -139,17 +143,20 @@ public final class VOMSService {
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
 
-    es.startBackgroundTask(new SignAUPReminderCheckTask(DAOFactory.instance(),
-      EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
-      TimeUnit.DAYS), VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+    es.startBackgroundTask(
+      new SignAUPReminderCheckTask(DAOFactory.instance(),
+        EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
+        TimeUnit.DAYS),
+      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
 
     es.startBackgroundTask(new UpdateCATask(),
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
     es.startBackgroundTask(new TaskStatusUpdater(), 30L);
 
-    es.startBackgroundTask(new ExpiredRequestsPurgerTask(DAOFactory.instance(),
-      EventManager.instance()),
+    es.startBackgroundTask(
+      new ExpiredRequestsPurgerTask(DAOFactory.instance(),
+        EventManager.instance()),
       VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
 
     es.startBackgroundTask(new UserStatsTask(),
@@ -207,12 +214,12 @@ public final class VOMSService {
     File f = new File(loggingConf);
 
     if (!f.exists())
-      throw new VOMSFatalException(String.format("Logging configuration "
-        + "not found at path '%s'", loggingConf));
+      throw new VOMSFatalException(String.format(
+        "Logging configuration " + "not found at path '%s'", loggingConf));
 
     if (!f.canRead())
-      throw new VOMSFatalException(String.format("Logging configuration "
-        + "is not readable: %s", loggingConf));
+      throw new VOMSFatalException(String
+        .format("Logging configuration " + "is not readable: %s", loggingConf));
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -266,6 +273,8 @@ public final class VOMSService {
 
     checkDatabaseVersion();
 
+    configureCertificateLookupPolicy(conf);
+
     configureVelocity();
 
     configureEventManager();
@@ -279,6 +288,25 @@ public final class VOMSService {
     ValidationManager.instance().startMembershipChecker();
 
     log.info("VOMS-Admin started succesfully.");
+  }
+
+  private static void configureCertificateLookupPolicy(VOMSConfiguration conf) {
+
+    boolean skipCaCheck = conf
+      .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+
+    if (skipCaCheck) {
+      log.info(
+        "CertificateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject ({} == true)",
+        VOMSConfigurationConstants.SKIP_CA_CHECK);
+    } else {
+      log.info(
+        "CertfiicateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
+        VOMSConfigurationConstants.SKIP_CA_CHECK);
+    }
+
+    LookupPolicyProvider.initialize(skipCaCheck);
+
   }
 
   public static void stop() {

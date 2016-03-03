@@ -59,10 +59,8 @@ public class AAImpl implements AttributeAuthority {
       validity = requestedValidity;
 
     if (requestedValidity > maxAttrValidityInSecs) {
-      context
-        .getResponse()
-        .getWarnings()
-        .add(VOMSWarningMessage.shortenedAttributeValidity(context.getVOName()));
+      context.getResponse().getWarnings().add(
+        VOMSWarningMessage.shortenedAttributeValidity(context.getVOName()));
     }
 
     Calendar cal = Calendar.getInstance();
@@ -137,10 +135,8 @@ public class AAImpl implements AttributeAuthority {
     VOMSRequest r = context.getRequest();
 
     if (u.isSuspended()) {
-      failResponse(
-        context,
-        VOMSErrorMessage.suspendedUser(r.getHolderSubject(),
-          r.getHolderIssuer(), u.getSuspensionReason()));
+      failResponse(context, VOMSErrorMessage.suspendedUser(r.getHolderSubject(),
+        r.getHolderIssuer(), u.getSuspensionReason()));
       context.setHandled(true);
       return;
     }
@@ -149,9 +145,9 @@ public class AAImpl implements AttributeAuthority {
       r.getHolderIssuer());
 
     if (cert.isSuspended()) {
-      failResponse(context, VOMSErrorMessage.suspendedCertificate(
-        cert.getSubjectString(), cert.getCa().getSubjectString(),
-        cert.getSuspensionReason()));
+      failResponse(context,
+        VOMSErrorMessage.suspendedCertificate(cert.getSubjectString(),
+          cert.getCa().getSubjectString(), cert.getSuspensionReason()));
     }
 
   }
@@ -167,16 +163,13 @@ public class AAImpl implements AttributeAuthority {
     VOMSRequest request = context.getRequest();
     VOMSUser user = null;
 
-    if (request.getHolderIssuer() == null)
-      user = VOMSUserDAO.instance().findBySubject(request.getHolderSubject());
-    else
-      user = VOMSUserDAO.instance().findByDNandCA(request.getHolderSubject(),
-        request.getHolderIssuer());
+    user = VOMSUserDAO.instance().lookup(request.getHolderSubject(),
+      request.getHolderIssuer());
 
     if (user == null) {
 
-      VOMSErrorMessage m = VOMSErrorMessage.noSuchUser(
-        request.getHolderSubject(), request.getHolderIssuer());
+      VOMSErrorMessage m = VOMSErrorMessage
+        .noSuchUser(request.getHolderSubject(), request.getHolderIssuer());
 
       context.getResponse().setOutcome(Outcome.FAILURE);
       context.getResponse().getErrorMessages().add(m);

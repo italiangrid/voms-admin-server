@@ -21,6 +21,8 @@ import java.util.List;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.dao.lookup.FindByCertificateDAO;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
 import org.glite.security.voms.admin.persistence.error.NoSuchCAException;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
@@ -36,7 +38,7 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VOMSAdminDAO {
+public class VOMSAdminDAO implements FindByCertificateDAO<VOMSAdmin>{
 
   public static final Logger log = LoggerFactory.getLogger(VOMSAdminDAO.class);
 
@@ -51,9 +53,16 @@ public class VOMSAdminDAO {
     return new VOMSAdminDAO();
   }
 
+  public VOMSAdmin lookup(String certificateSubject,
+    String certificateIssuer) {
+
+    return LookupPolicyProvider.instance().lookupStrategy().lookup(this,
+      certificateSubject, certificateIssuer);
+  }
+
   public List getAll() {
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin";
+    String query = "from VOMSAdmin";
     List result = HibernateFactory.getSession().createQuery(query).list();
     return result;
   }
@@ -61,7 +70,7 @@ public class VOMSAdminDAO {
   public List<VOMSAdmin> getNonInternalAdmins() {
 
     String caDN = "/O=VOMS/O=System%";
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where ca.subjectString not like :caDN";
+    String query = "from VOMSAdmin where ca.subjectString not like :caDN";
 
     Query q = HibernateFactory.getSession().createQuery(query);
     q.setString("caDN", caDN);
@@ -72,7 +81,7 @@ public class VOMSAdminDAO {
 
   public VOMSAdmin getAnyAuthenticatedUserAdmin() {
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+    String query = "from VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
     Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("dn", VOMSServiceConstants.ANYUSER_ADMIN);
@@ -90,13 +99,13 @@ public class VOMSAdminDAO {
 
   public VOMSAdmin createUnauthenticateClientAdmin() {
 
-    return create(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
+    return createFromSubjectAndIssuer(VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
       VOMSServiceConstants.VIRTUAL_CA);
   }
 
   public VOMSAdmin getUnauthenticatedClientAdmin() {
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+    String query = "from VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
     Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("dn", VOMSServiceConstants.UNAUTHENTICATED_CLIENT);
@@ -117,21 +126,21 @@ public class VOMSAdminDAO {
 
   }
 
-  public VOMSAdmin getBySubject(String subject) {
+  public VOMSAdmin findBySubject(String subject) {
 
     if (subject == null)
       throw new NullArgumentException("subject must be non-null!");
 
     subject = DNUtil.normalizeDN(subject);
 
-    Criteria crit = HibernateFactory.getSession().createCriteria(
-      VOMSAdmin.class);
+    Criteria crit = HibernateFactory.getSession()
+      .createCriteria(VOMSAdmin.class);
 
     return (VOMSAdmin) crit.add(Restrictions.eq("dn", subject)).uniqueResult();
 
   }
 
-  public VOMSAdmin getByName(String dn, String caDN) {
+  public VOMSAdmin findBySubjectAndIssuer(String dn, String caDN) {
 
     if (dn == null)
       throw new NullArgumentException("dn must be non-null!");
@@ -143,7 +152,7 @@ public class VOMSAdminDAO {
     dn = DNUtil.normalizeDN(dn);
     caDN = DNUtil.normalizeDN(caDN);
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
+    String query = "from VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
     Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("dn", dn);
@@ -162,7 +171,8 @@ public class VOMSAdminDAO {
     for (Certificate c : u.getCertificates()) {
 
       // Return the first certificate found...
-      result = getByName(c.getSubjectString(), c.getCa().getSubjectString());
+      result = lookup(c.getSubjectString(),
+        c.getCa().getSubjectString());
 
       if (result != null)
         break;
@@ -195,7 +205,7 @@ public class VOMSAdminDAO {
   public List getRoleAdmins(VOMSRole r) {
 
     String searchString = "%Role=" + r.getName();
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn like :searchString";
+    String query = "from VOMSAdmin where dn like :searchString";
 
     return HibernateFactory.getSession().createQuery(query)
       .setString("searchString", searchString).list();
@@ -205,7 +215,7 @@ public class VOMSAdminDAO {
   public void deleteRoleAdmins(VOMSRole r) {
 
     String searchString = "%Role=" + r.getName();
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn like :searchString";
+    String query = "from VOMSAdmin where dn like :searchString";
     Iterator i = HibernateFactory.getSession().createQuery(query)
       .setString("searchString", searchString).iterate();
 
@@ -222,18 +232,18 @@ public class VOMSAdminDAO {
     if (fqan == null)
       throw new NullArgumentException("fqan must be non-null!");
 
-    if (PathNamingScheme.isGroup(fqan))
+    if (PathNamingScheme.isGroup(fqan)){
 
-      return getByName(fqan, VOMSServiceConstants.GROUP_CA);
+      return findBySubjectAndIssuer(fqan, VOMSServiceConstants.GROUP_CA);
 
-    else if (PathNamingScheme.isQualifiedRole(fqan))
+    }else if (PathNamingScheme.isQualifiedRole(fqan)){
 
-      return getByName(fqan, VOMSServiceConstants.ROLE_CA);
-
+      return findBySubjectAndIssuer(fqan, VOMSServiceConstants.ROLE_CA);
+    }
     return null;
   }
 
-  public VOMSAdmin create(String fqan) {
+  public VOMSAdmin createFromFqan(String fqan) {
 
     if (fqan == null)
       throw new NullArgumentException("fqan must be non-null!");
@@ -257,7 +267,7 @@ public class VOMSAdminDAO {
 
   }
 
-  public VOMSAdmin create(String dn, String caDN) {
+  public VOMSAdmin createFromSubjectAndIssuer(String dn, String caDN) {
 
     return create(dn, caDN, null);
   }
@@ -277,8 +287,8 @@ public class VOMSAdminDAO {
     VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
     if (ca == null)
-      throw new IllegalArgumentException("Unkown CA " + caDN
-        + " passed as argument!");
+      throw new IllegalArgumentException(
+        "Unkown CA " + caDN + " passed as argument!");
 
     dn = DNUtil.normalizeDN(dn);
     admin.setDn(dn);
@@ -309,33 +319,6 @@ public class VOMSAdminDAO {
 
   }
 
-  public List<VOMSAdmin> getFromCA(VOMSCA ca) {
-
-    assert ca != null : "ca must be non-null!";
-
-    String query = "from VOMSAdmin where ca = :ca";
-    return HibernateFactory.getSession().createQuery(query).setEntity("ca", ca)
-      .list();
-
-  }
-
-  public void deleteFromCA(VOMSCA ca) {
-
-    assert ca != null : "ca must be non-null!";
-
-    log.debug("Deleting all admins from CA '" + ca + "'");
-    ACLDAO aclDAO = ACLDAO.instance();
-
-    for (VOMSAdmin a : getFromCA(ca)) {
-
-      if (aclDAO.hasActivePermissions(a))
-        aclDAO.deletePermissionsForAdmin(a);
-
-      HibernateFactory.getSession().delete(a);
-    }
-
-  }
-
   public void delete(String dn, String caDN) {
 
     if (dn == null)
@@ -350,10 +333,8 @@ public class VOMSAdminDAO {
       throw new NoSuchCAException("Unknown CA '" + caDN + "'.");
 
     // FIXME: do it without using an HQL update!
-    Query q = HibernateFactory
-      .getSession()
-      .createQuery(
-        "delete from org.glite.security.voms.admin.persistence.model.VOMSAdmin where dn = :dn and ca =:ca")
+    Query q = HibernateFactory.getSession()
+      .createQuery("delete from VOMSAdmin where dn = :dn and ca =:ca")
       .setString("dn", dn).setParameter("ca", ca);
 
     q.executeUpdate();

@@ -122,7 +122,7 @@ public class CertificateActions extends UserActionSupport {
 
     } else if (subject != null && !"".equals(subject)) {
 
-      if (dao.findByDNCA(subject, caSubject) != null) {
+      if (dao.lookup(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
         addFieldError("caSubject", "Certificate already bound!");
       }

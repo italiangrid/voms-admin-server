@@ -55,6 +55,7 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
@@ -213,6 +214,11 @@ public class SchemaDeployer {
     System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
     VOMSConfiguration.load(null);
 
+    boolean skipCaCheck = VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+    
+    LookupPolicyProvider.initialize(skipCaCheck);
+    
     hibernateConfiguration = loadHibernateConfiguration();
     HibernateFactory.initialize(hibernateConfiguration);
 
@@ -596,7 +602,7 @@ public class SchemaDeployer {
 
     try {
 
-      VOMSAdmin a = VOMSAdminDAO.instance().getByName(adminDN, adminCA);
+      VOMSAdmin a = VOMSAdminDAO.instance().lookup(adminDN, adminCA);
 
       if (a == null) {
 
@@ -639,7 +645,7 @@ public class SchemaDeployer {
 
     try {
 
-      VOMSAdmin a = VOMSAdminDAO.instance().getByName(adminDN, adminCA);
+      VOMSAdmin a = VOMSAdminDAO.instance().lookup(adminDN, adminCA);
 
       if (a != null) {
 

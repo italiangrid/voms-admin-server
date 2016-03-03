@@ -344,7 +344,7 @@ public class VOMSACLService implements VOMSACL {
     String subject = entry.getAdminSubject();
     String issuer = entry.getAdminIssuer();
 
-    VOMSAdmin admin = VOMSAdminDAO.instance().getByName(subject, issuer);
+    VOMSAdmin admin = VOMSAdminDAO.instance().findBySubjectAndIssuer(subject, issuer);
 
     if (admin == null) {
 
@@ -362,7 +362,7 @@ public class VOMSACLService implements VOMSACL {
           throw new NoSuchGroupException("Group '" + subject
             + "' is not defined in database!");
 
-        return VOMSAdminDAO.instance().create(subject);
+        return VOMSAdminDAO.instance().createFromFqan(subject);
 
       } else if (issuer.equals(VOMSServiceConstants.ROLE_CA)) {
 
@@ -380,11 +380,11 @@ public class VOMSACLService implements VOMSACL {
           throw new NoSuchRoleException("Role '" + roleName
             + "' is not defined in database!");
 
-        return VOMSAdminDAO.instance().create(subject);
+        return VOMSAdminDAO.instance().createFromFqan(subject);
       }
 
       // Another type of admin
-      return VOMSAdminDAO.instance().create(subject, issuer);
+      return VOMSAdminDAO.instance().createFromSubjectAndIssuer(subject, issuer);
 
     }
 

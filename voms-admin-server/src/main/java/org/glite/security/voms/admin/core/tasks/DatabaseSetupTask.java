@@ -137,27 +137,27 @@ public class DatabaseSetupTask implements Runnable {
 
       VOMSAdminDAO adminDAO = VOMSAdminDAO.instance();
 
-      VOMSAdmin internalAdmin = adminDAO.create(
+      VOMSAdmin internalAdmin = adminDAO.createFromSubjectAndIssuer(
         VOMSServiceConstants.INTERNAL_ADMIN, VOMSServiceConstants.VIRTUAL_CA);
 
       addAdminCreatedAuditEvent(internalAdmin);
 
-      VOMSAdmin localAdmin = adminDAO.create(VOMSServiceConstants.LOCAL_ADMIN,
+      VOMSAdmin localAdmin = adminDAO.createFromSubjectAndIssuer(VOMSServiceConstants.LOCAL_ADMIN,
         VOMSServiceConstants.VIRTUAL_CA);
 
       addAdminCreatedAuditEvent(localAdmin);
 
-      VOMSAdmin anyone = adminDAO.create(VOMSServiceConstants.PUBLIC_ADMIN,
+      VOMSAdmin anyone = adminDAO.createFromSubjectAndIssuer(VOMSServiceConstants.PUBLIC_ADMIN,
         VOMSServiceConstants.VIRTUAL_CA);
 
       addAdminCreatedAuditEvent(anyone);
 
-      VOMSAdmin authenticatedUser = adminDAO.create(
+      VOMSAdmin authenticatedUser = adminDAO.createFromSubjectAndIssuer(
         VOMSServiceConstants.ANYUSER_ADMIN, VOMSServiceConstants.VIRTUAL_CA);
 
       addAdminCreatedAuditEvent(authenticatedUser);
 
-      VOMSAdmin unauthenticatedClient = adminDAO.create(
+      VOMSAdmin unauthenticatedClient = adminDAO.createFromSubjectAndIssuer(
         VOMSServiceConstants.UNAUTHENTICATED_CLIENT,
         VOMSServiceConstants.VIRTUAL_CA);
 
@@ -177,7 +177,7 @@ public class DatabaseSetupTask implements Runnable {
 
       addRoleCreatedAuditEvent(voAdminRole);
 
-      VOMSAdmin voAdmin = VOMSAdminDAO.instance().create(
+      VOMSAdmin voAdmin = VOMSAdminDAO.instance().createFromFqan(
         voGroup.getName() + "/Role=VO-Admin");
 
       addAdminCreatedAuditEvent(voAdmin);

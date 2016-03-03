@@ -42,7 +42,7 @@ public class FindUserOperation extends BaseUserAdministrativeOperation {
     this.dn = dn;
     this.caDN = ca;
 
-    setAuthorizedUser(VOMSUserDAO.instance().findByDNandCA(dn, caDN));
+    setAuthorizedUser(VOMSUserDAO.instance().lookup(dn, caDN));
 
   }
 
@@ -59,7 +59,7 @@ public class FindUserOperation extends BaseUserAdministrativeOperation {
 
     else if (emailAddress == null)
 
-      return VOMSUserDAO.instance().findByDNandCA(dn, caDN);
+      return VOMSUserDAO.instance().lookup(dn, caDN);
 
     else
       return VOMSUserDAO.instance().findByEmail(emailAddress);

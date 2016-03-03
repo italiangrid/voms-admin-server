@@ -70,7 +70,7 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
     } else {
 
-      cert = CertificateDAO.instance().findByDNCA(subject, issuer);
+      cert = CertificateDAO.instance().lookup(subject, issuer);
       
     }
     
