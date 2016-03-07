@@ -18,6 +18,8 @@ package org.glite.security.voms.admin.view.actions.search;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
 import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.taglib.SearchNavBarTag;
@@ -64,8 +66,18 @@ public abstract class BaseSearchAction extends BaseAction implements
   @Override
   public String execute() throws Exception {
 
-    searchResults = (SearchResults) BaseSearchOperation.instance(
-      getSearchData()).execute();
+    try{
+      
+      searchResults = (SearchResults) BaseSearchOperation.instance(
+        getSearchData()).execute();
+    
+    }catch(VOMSAuthorizationException e){
+      session.put("searchData", getSearchData());
+      session.put("searchResults", null);
+      cleanupCustomFlags();
+      
+      throw e;
+    }
 
     session.put("searchData", getSearchData());
     session.put("searchResults", searchResults);

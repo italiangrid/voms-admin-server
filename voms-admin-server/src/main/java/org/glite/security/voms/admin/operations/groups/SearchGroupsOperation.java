@@ -16,6 +16,8 @@
 package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 
 public class SearchGroupsOperation extends BaseVoReadOperation {
@@ -44,5 +46,5 @@ public class SearchGroupsOperation extends BaseVoReadOperation {
     return VOMSGroupDAO.instance().search(text, firstResult, maxResults);
 
   }
-
+  
 }

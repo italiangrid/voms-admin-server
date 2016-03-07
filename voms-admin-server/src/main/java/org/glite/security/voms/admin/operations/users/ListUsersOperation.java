@@ -16,6 +16,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class ListUsersOperation extends BaseVoReadOperation {
@@ -33,5 +35,11 @@ public class ListUsersOperation extends BaseVoReadOperation {
   public static ListUsersOperation instance() {
 
     return new ListUsersOperation();
+  }
+
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
   }
 }

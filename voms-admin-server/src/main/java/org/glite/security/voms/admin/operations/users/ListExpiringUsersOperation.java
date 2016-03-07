@@ -15,14 +15,19 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
+import java.util.List;
+
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class ListExpiringUsersOperation extends BaseVoReadOperation {
+public class ListExpiringUsersOperation extends BaseVoReadOperation<List<VOMSUser>> {
 
   @Override
-  protected Object doExecute() {
+  protected List<VOMSUser> doExecute() {
 
     return VOMSUserDAO.instance().findExpiringUsers(
       VOMSConfiguration.instance().getExpiringUsersWarningInterval());
@@ -35,5 +40,15 @@ public class ListExpiringUsersOperation extends BaseVoReadOperation {
   public static ListExpiringUsersOperation instance() {
 
     return new ListExpiringUsersOperation();
+  }
+  
+  @Override
+  protected void setupPermissions() {
+    
+    addRequiredPermission(VOMSContext.getVoContext(), 
+      VOMSPermission.getEmptyPermissions()
+      .setContainerReadPermission()
+      .setMembershipReadPermission()
+      .setPersonalInfoReadPermission());
   }
 }

@@ -17,7 +17,17 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<voms:hasPermissions
+  var="canReadPI"
+  context="vo"
+  permission="PERSONAL_INFO_READ" />
+  
 <s:if test="suspended">
+  <div class="badge-container">
       <span class="blabel blabel-important">Suspended</span>  
-      <span class="blabel blabel-invert-important"><s:property value="suspensionReason"/></span>
+      
+      <s:if test="#attr.canReadPI or (#attr.currentAdmin.is(#user))">
+        <span class="blabel blabel-invert-important"><s:property value="suspensionReason"/></span>
+      </s:if>
+  </div>
 </s:if>

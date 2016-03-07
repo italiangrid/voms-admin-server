@@ -116,8 +116,6 @@
           value="%{'Search members'}"
           cssClass="submitButton" />
       </s:form>
-
-
     </div>
 
     <div id="mmResults">

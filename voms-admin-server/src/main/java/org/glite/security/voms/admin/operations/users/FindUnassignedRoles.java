@@ -18,10 +18,12 @@ package org.glite.security.voms.admin.operations.users;
 import java.util.List;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
-public class FindUnassignedRoles extends BaseVoReadOperation {
+public class FindUnassignedRoles extends BaseVoReadOperation<List<VOMSRole>> {
 
   Long userId;
 
@@ -33,7 +35,7 @@ public class FindUnassignedRoles extends BaseVoReadOperation {
     groupId = gId;
   }
 
-  public Object doExecute() {
+  public List<VOMSRole> doExecute() {
 
     List<VOMSRole> result = VOMSUserDAO.instance().getUnAssignedRoles(userId, groupId);
     return result;
@@ -43,5 +45,10 @@ public class FindUnassignedRoles extends BaseVoReadOperation {
 
     return new FindUnassignedRoles(userId, groupId);
   }
+  
+  protected void setupPermissions() {
 
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
+  }
 }

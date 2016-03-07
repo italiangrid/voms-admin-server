@@ -16,6 +16,7 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
 <voms:hasPermissions var="canRead"
     context="vo"
     permission="CONTAINER_READ"/>
@@ -58,10 +59,7 @@ No groups found in this VO.
   </div>
   
   <table
-    class="table"
-    cellpadding="0"
-    cellspacing="0"
-  >
+    class="table">
     <s:iterator
       value="#session.searchResults.results"
       var="group"

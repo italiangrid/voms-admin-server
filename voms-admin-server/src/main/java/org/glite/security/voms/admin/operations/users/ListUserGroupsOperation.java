@@ -16,6 +16,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
@@ -46,4 +48,9 @@ public class ListUserGroupsOperation extends BaseVoReadOperation {
     return new ListUserGroupsOperation(username, caDn);
   }
 
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
+  }
 }

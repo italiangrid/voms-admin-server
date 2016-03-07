@@ -35,7 +35,6 @@ public class SearchAction extends BaseSearchAction implements Preparable {
 
   public void prepare() throws Exception {
 
-    // TODO Auto-generated method stub
     initSearchData(GROUP_SEARCH_NAME);
   }
 
