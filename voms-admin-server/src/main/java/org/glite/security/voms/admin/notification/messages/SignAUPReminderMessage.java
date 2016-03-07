@@ -51,7 +51,7 @@ public class SignAUPReminderMessage extends AbstractVelocityNotification{
     context.put("recipient", getRecipientList().get(0));
     
     context.put("signAUPURL", URLBuilder.baseVOMSURLFromConfiguration()
-      + "/aup/sign!input.action?aupId=" + event.getAup().getId());
+      + "/sign-aup");
     
     context.put("expirationDate", expirationDate);
     

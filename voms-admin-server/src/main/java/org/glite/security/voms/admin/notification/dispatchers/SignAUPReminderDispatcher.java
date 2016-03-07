@@ -27,9 +27,15 @@ import org.glite.security.voms.admin.notification.messages.SignAUPReminderMessag
 public class SignAUPReminderDispatcher extends
   AbstractEventLister<SignAUPTaskReminderEvent> {
 
-  public SignAUPReminderDispatcher() {
+  
+  public static SignAUPReminderDispatcher instance(){
+    return new SignAUPReminderDispatcher();
+  }
+  
+  
+  private SignAUPReminderDispatcher() {
 
-    super(EnumSet.of(EventCategory.UserLifecycleEvent),
+    super(EnumSet.of(EventCategory.UserAUPEvent),
       SignAUPTaskReminderEvent.class);
 
   }
@@ -41,8 +47,6 @@ public class SignAUPReminderDispatcher extends
     NotificationService.instance().send(msg);
     
     e.getTask().setLastNotificationTime(new Date());
-    
-    // HibernateFactory.getSession().saveOrUpdate(e.getTask());
     
   }
 

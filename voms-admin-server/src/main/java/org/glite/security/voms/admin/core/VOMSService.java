@@ -48,6 +48,7 @@ import org.glite.security.voms.admin.notification.dispatchers.DefaultNotificatio
 import org.glite.security.voms.admin.notification.dispatchers.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.MembershipRemovalNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.RoleMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.SignAUPReminderDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.UserSuspendedDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.operations.DefaultPrincipalProvider;
@@ -133,6 +134,7 @@ public final class VOMSService {
     manager.register(VOMembershipNotificationDispatcher.instance());
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
+    manager.register(SignAUPReminderDispatcher.instance());
 
   }
 
@@ -301,7 +303,7 @@ public final class VOMSService {
         VOMSConfigurationConstants.SKIP_CA_CHECK);
     } else {
       log.info(
-        "CertfiicateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
+        "CertficateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
         VOMSConfigurationConstants.SKIP_CA_CHECK);
     }
 

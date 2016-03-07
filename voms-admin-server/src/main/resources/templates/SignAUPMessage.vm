@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *#
+ 
+#if ( ${user.getName()} && ${user.getSurname()} )
+Dear ${user.getName()} ${user.getSurname()},
+#else
 Dear $recipient,
+#end
 
 you are requested to sign the VO $voName AUP 
 in order to continue to be part of the  $voName VO.
@@ -23,16 +28,21 @@ URL:
 
 $signAUPURL
 
-Be sure that a trusted and valid certificate linked
-to your VO membership in installed in the browser
-that you use to access the sign aup web page,
-or VOMS Admin will not be able to authenticate you 
-properly.
+Please ensure that you connect to the above URL with 
+a valid certificate linked to your VO membership installed 
+in the browser, or VOMS Admin will not be able to authenticate 
+you properly.
+
+Currently, the following certificates are linked to your
+$voName membership:
+
+#foreach ( $cert in $user.getCertificates() )
+- $cert.getSubjectString() , $cert.getCa().getSubjectString()
+#end
 
 Please sign the AUP before the following date:
 
 $expirationDate
-
 
 After this date your membership will be suspended
 and you will not be able to obtain VOMS credentials
