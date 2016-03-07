@@ -17,20 +17,58 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+
 <s:if test="hasPendingSignAUPTasks()">
-  
-  <span class="blabel blabel-warning baseline">Pending sign AUP request</span>
-  
-  <s:set var="daysBeforeExpiration" value="getPendingSignAUPTask(#attr.defaultAUP).daysBeforeExpiration"/>
-  
-  <s:if test="#daysBeforeExpiration < 0">
-   <span class="badge badge-error" style="font-size: smaller;">expired</span>
-  </s:if>
-  <s:elseif test="#daysBeforeExpiration < 3">
-    <span class="badge badge-error" style="font-size: smaller;"><s:property value="#daysBeforeExpiration"/> days left</span>
-  </s:elseif> 
-  <s:else>
-    <span class="badge badge-info" style="font-size: smaller;"><s:property value="#daysBeforeExpiration"/> days left</span>
-  </s:else>
-  
+  <div class="badge-container">
+    <span class="blabel blabel-warning baseline">Pending sign AUP request</span>
+
+    <s:set
+      var="aupTaskExpired"
+      value="getPendingSignAUPTask(#attr.defaultAUP).expiryDateInThePast()" />
+
+    <s:set
+      var="aupTaskExpirationDate"
+      value="getPendingSignAUPTask(#attr.defaultAUP).expiryDate" />
+
+    <s:set
+      var="daysBeforeExpiration"
+      value="getPendingSignAUPTask(#attr.defaultAUP).daysBeforeExpiration" />
+
+    <s:if test="#aupTaskExpired">
+      <span class="blabel blabel-invert-important"> expired <s:date
+          nice="true"
+          format="struts.date.format.past"
+          name="#aupTaskExpirationDate" />
+      </span>
+    </s:if>
+    <s:else>
+      <span class="blabel blabel-invert">expires <s:date
+          nice="true"
+          format="struts.date.format.future"
+          name="#aupTaskExpirationDate" />
+      </span>
+    </s:else>
+  </div>
 </s:if>
+<s:else>
+  <div class="badge-container">
+    <s:iterator
+      value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
+      <s:if test="hasExpired()">
+        <span class="blabel blabel-invert-important"> AUP signature
+          expired <s:date
+            name="expirationDate"
+            nice="true"
+            format="struts.date.format.past" />
+        </span>
+      </s:if>
+      <s:else>
+        <span class="blabel blabel-invert"> AUP signature expires <s:date
+            name="expirationDate"
+            nice="true"
+            format="struts.date.format.future" />
+        </span>
+      </s:else>
+    </s:iterator>
+  </div>
+</s:else>

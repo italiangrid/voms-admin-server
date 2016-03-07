@@ -17,8 +17,8 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.persistence.dao.SearchResults;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.operations.users.SearchUsersPersonalInformationOperation;
+import org.glite.security.voms.admin.taglib.SearchNavBarTag;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
@@ -35,11 +35,14 @@ public class ExpiredAction extends SearchAction {
   @Override
   public String execute() throws Exception {
 
-    searchResults = SearchResults.fromList(VOMSUserDAO.instance()
-      .findExpiredUsers());
+    searchResults = 
+      SearchUsersPersonalInformationOperation.instance(searchExpiredUsers())
+      .execute();
 
     session.put("searchData", getSearchData());
     session.put("searchResults", searchResults);
+    
+    session.put(SearchNavBarTag.SEARCH_PARAMS_KEY, getSearchCustomFlags());
 
     return SUCCESS;
   }

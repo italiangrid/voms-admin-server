@@ -27,13 +27,20 @@
   permission="SUSPEND" />
 
 <div class="usernameHeader">
-
   <s:if test="name != null and surname != null">
-    <span style="vertical-align: middle"> <s:property
-        value="name+ ' ' +surname" />
-    </span>
-    <span class="institution"> (<s:property value="institution" />)
-    </span>
+    <div>
+      <s:property   value="name+ ' ' +surname" />
+      <span style="font-weight: normal; font-size: smaller">( ${id} )</span>
+      <s:if test="#attr.orgdbEnabled">
+        <span style="font-weight: normal; font-size: smaller">
+          <tiles2:insertTemplate template="orgdbId.jsp" />
+        </span>
+      </s:if>
+    </div>
+    <div style="margin-top: .5em">
+      <span class="institution"><s:property value="institution" /></span>
+    </div>
+    
   </s:if>
   <s:else>
     <s:set
@@ -45,42 +52,55 @@
         fields="CN" />
     </span>
   </s:else>
+  
+  
+</div>
 
-  <div class="userAdminActions">
-    <s:if test="#attr.canSuspend">
+<div class="userAdminActions">
+   <s:if test="#attr.canDelete == true and #attr.readOnlyMembershipExpiration == false">
+        <s:form
+          action="extend-membership-expiration"
+          theme="simple" cssClass="middleline" cssStyle="display:inline">
 
-      <s:if test="suspended">
-        <s:form
-          action="restore"
-          theme="simple"
-          cssStyle="display:inline">
-          <s:token />
-          <s:hidden
-            name="userId"
-            value="%{id}" />
-          <s:submit value="%{'Restore this user'}" />
-        </s:form>
-      </s:if>
-      <s:else>
-        <s:form
-          action="suspend"
-          theme="simple"
-          cssStyle="display:inline">
           <s:token />
           <s:hidden
             name="userId"
             value="%{id}" />
           <s:submit
-            value="%{'Suspend this user'}"
-            onclick="return openSuspendDialog(this, 'suspendUserDialog','%{shortName}');" />
+            value="%{'Extend membership'}"
+            disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"
+            tooltip="Extends membership for the user starting from the current date for the default period configured for the VO (typically 12 months)." />
         </s:form>
-      </s:else>
+  </s:if>
+  
+  <s:if test="#attr.canDelete and #attr.orgdbEnabled">
+    <s:form 
+      action="change-orgdb-id" 
+      namespace="/user" 
+      theme="simple" 
+      cssStyle="display: inline">
+      <s:hidden name="userId" value="%{id}"/>
+      <s:submit value="%{'Change HR id'}"/>
+    </s:form>  
+  </s:if>
+  
+  <s:if test="#attr.canSuspend">
 
-    </s:if>
-
-    <s:if test="#attr.canDelete">
+    <s:if test="suspended">
       <s:form
-        action="delete"
+        action="restore"
+        theme="simple"
+        cssStyle="display:inline">
+        <s:token />
+        <s:hidden
+          name="userId"
+          value="%{id}" />
+        <s:submit value="%{'Restore this user'}" />
+      </s:form>
+    </s:if>
+    <s:else>
+      <s:form
+        action="suspend"
         theme="simple"
         cssStyle="display:inline">
         <s:token />
@@ -88,62 +108,57 @@
           name="userId"
           value="%{id}" />
         <s:submit
-          value="%{'Delete this user'}"
-          onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
+          value="%{'Suspend this user'}"
+          onclick="return openSuspendDialog(this, 'suspendUserDialog','%{shortName}');" />
       </s:form>
+    </s:else>
 
-      <s:form
-        action="create-acceptance-record"
-        theme="simple"
-        cssStyle="display:inline">
-        <s:token />
-        <s:hidden
-          name="userId"
-          value="%{id}" />
-        <s:submit value="%{'Sign AUP on behalf of this user'}" />
-      </s:form>
-    </s:if>
-    <s:if
-      test="#attr.canSuspend 
-          and (not model.hasInvalidAUPAcceptanceRecordForAUP(#attr.defaultAUP)) 
-          and (not model.hasPendingSignAUPTasks())">
+  </s:if>
 
-      <s:form
-        action="trigger-reacceptance"
-        theme="simple"
-        cssStyle="display: inline;">
-        <s:token />
-        <s:hidden
-          name="userId"
-          value="%{model.id}" />
-        <s:submit value="%{'Request AUP signature'}" />
-      </s:form>
-    </s:if>
-  </div>
+  <s:if test="#attr.canDelete">
+    <s:form
+      action="delete"
+      theme="simple"
+      cssStyle="display:inline">
+      <s:token />
+      <s:hidden
+        name="userId"
+        value="%{id}" />
+      <s:submit
+        value="%{'Delete this user'}"
+        onclick="openConfirmDialog(this, 'deleteUserDialog', '%{shortName}'); return false" />
+    </s:form>
+
+    <s:form
+      action="create-acceptance-record"
+      theme="simple"
+      cssStyle="display:inline">
+      <s:token />
+      <s:hidden
+        name="userId"
+        value="%{id}" />
+      <s:submit value="%{'Sign AUP on behalf of this user'}" />
+    </s:form>
+  </s:if>
+  <s:if
+    test="#attr.canSuspend 
+        and (not model.hasInvalidAUPAcceptanceRecordForAUP(#attr.defaultAUP)) 
+        and (not model.hasPendingSignAUPTasks())">
+
+    <s:form
+      action="trigger-reacceptance"
+      theme="simple"
+      cssStyle="display: inline;">
+      <s:token />
+      <s:hidden
+        name="userId"
+        value="%{model.id}" />
+      <s:submit value="%{'Request AUP signature'}" />
+    </s:form>
+  </s:if>
 </div>
 
-<div class="badge-container">
-  <tiles2:insertTemplate template="suspensionDetail.jsp" />
-</div>
-
-<div class="badge-container">
-  <tiles2:insertTemplate template="aupStatusDetail.jsp" />
-</div>
-
-<s:if test="not hasPendingSignAUPTasks()">
-  <s:iterator
-    value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
-    <s:property value="daysBeforeExpiration" /> days to AUP signature expiration
-   </s:iterator>
-</s:if>
-
-<s:if test="#attr.orgdbEnabled">
-  <tiles2:insertTemplate template="orgdbId.jsp" />
-</s:if>
-
-<s:if test="not #attr.disableMembershipEndTime">
-  <tiles2:insertTemplate template="membershipExpiration2.jsp" />
-</s:if>
+<tiles2:insertTemplate template="membershipStatusDetail.jsp"/>
 
 <tiles2:insertTemplate template="personalInfoPane.jsp">
   <tiles2:putAttribute

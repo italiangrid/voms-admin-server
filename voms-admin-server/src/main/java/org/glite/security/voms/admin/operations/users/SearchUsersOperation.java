@@ -16,9 +16,12 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
-public class SearchUsersOperation extends BaseVoReadOperation {
+public class SearchUsersOperation extends BaseVoReadOperation<SearchResults> {
 
   private String searchString;
 
@@ -35,7 +38,7 @@ public class SearchUsersOperation extends BaseVoReadOperation {
 
   }
 
-  public Object doExecute() {
+  public SearchResults doExecute() {
 
     return VOMSUserDAO.instance().search(searchString, firstResult, maxResults);
   }
@@ -46,4 +49,10 @@ public class SearchUsersOperation extends BaseVoReadOperation {
     return new SearchUsersOperation(searchString, firstResult, maxResults);
   }
 
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
+  }
+  
 }

@@ -31,27 +31,27 @@
 
 			<s:hidden name="userId" value="%{id}" />
 
-			<s:textfield name="theName" label="Given name" size="40"
+			<s:textfield name="theName" label="Given name" size="80"
 				cssClass="registrationField" value="%{name}" disabled="false"
 				readonly="%{#attr.readOnlyPI}" />
 
 			<s:textfield name="theSurname" disabled="false" label="Family name"
-				size="40" cssClass="registrationField" value="%{surname}"
+				size="80" cssClass="registrationField" value="%{surname}"
 				readonly="%{#attr.readOnlyPI}" />
 
 			<s:textfield name="theInstitution" disabled="false"
-				label="Institution" size="40" cssClass="registrationField"
+				label="Institution" size="80" cssClass="registrationField"
 				value="%{institution}" readonly="%{#attr.readOnlyPI}" />
 
 			<s:textarea name="theAddress" disabled="false" label="Address"
-				rows="4" cols="30" cssClass="registrationField" value="%{address}" />
+				rows="4" cols="80" cssClass="registrationField" value="%{address}" />
 
 			<s:textfield name="thePhoneNumber" disabled="false" label="Phone"
-				size="40" cssClass="registrationField" value="%{phoneNumber}"
+				size="80" cssClass="registrationField" value="%{phoneNumber}"
         />
 
 			<s:textfield name="theEmailAddress" disabled="false" label="Email"
-				size="40" cssClass="registrationField" value="%{emailAddress}" 
+				size="80" cssClass="registrationField" value="%{emailAddress}" 
 				readonly="%{#attr.readOnlyPI}" />
 
 			<s:submit value="%{'Change personal information'}" />

@@ -46,11 +46,11 @@
 			<tr class="tableRow">
 				<td>
 				<div class="userDN"><s:set value="subjectString"
-					var="thisCertDN" /> <voms:formatDN dn="${thisCertDN}" fields="CN" />
+					var="thisCertDN" />${thisCertDN}
 				</div>
 
 				<div class="userCA"><s:set value="ca.subjectString"
-					var="thisCertCA" /> <voms:formatDN dn="${thisCertCA}" fields="CN" />
+					var="thisCertCA" />${thisCertCA}
 				</div>
 
 				<div class="cert-date-info">Added on: <span>

@@ -16,6 +16,8 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
 public class FindUnsubscribedGroupsOperation extends BaseVoReadOperation {
@@ -35,5 +37,11 @@ public class FindUnsubscribedGroupsOperation extends BaseVoReadOperation {
   public static FindUnsubscribedGroupsOperation instance(Long userId) {
 
     return new FindUnsubscribedGroupsOperation(userId);
+  }
+  
+  protected void setupPermissions() {
+
+    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
+      .getContainerReadPermission().setMembershipReadPermission());
   }
 }
