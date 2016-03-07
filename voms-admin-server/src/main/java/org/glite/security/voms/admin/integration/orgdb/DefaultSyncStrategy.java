@@ -25,6 +25,7 @@ import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBMembershipSynchronizationStrategy;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,9 +108,14 @@ public class DefaultSyncStrategy implements
   }
 
   private void restoreMembershipIfNeeded(VOMSUser u) {
-
-    if (u.isSuspended() && u.getSuspensionReason().startsWith("OrgDB: ")) {
-      ValidationManager.instance().restoreUser(u);
+    
+    if (u.isSuspended()){
+      
+      if (u.getSuspensionReasonCode() == SuspensionReason.MEMBERSHIP_EXPIRATION ||
+        u.getSuspensionReason().startsWith("OrgDB: ")) {
+        
+        ValidationManager.instance().restoreUser(u);
+      }
     }
 
   }
