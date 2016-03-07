@@ -23,6 +23,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
+import org.glite.security.voms.admin.core.tasks.DatabaseTransactionTaskWrapper;
+import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.notification.NotificationDeliveredEvent;
+import org.glite.security.voms.admin.event.vo.notification.NotificationDeliveryErrorEvent;
 import org.glite.security.voms.admin.notification.messages.VOMSNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +43,8 @@ public class NotificationService implements NotificationServiceIF {
 
   private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-  int maxDeliveryAttemptCount = VOMSConfiguration.instance().getInt(
-    "voms.noification.max_delivery_attempt_count", 5);
+  int maxDeliveryAttemptCount = VOMSConfiguration.instance()
+    .getInt("voms.noification.max_delivery_attempt_count", 5);
 
   long sleepTimeBeforeRetry = 30;
 
@@ -52,8 +57,8 @@ public class NotificationService implements NotificationServiceIF {
   public synchronized static void shutdown() {
 
     if (singleton == null) {
-      log
-        .debug("Notification service has not been started and, as such, cannot be shut down.");
+      log.debug(
+        "Notification service has not been started and, as such, cannot be shut down.");
       return;
     }
 
@@ -71,15 +76,14 @@ public class NotificationService implements NotificationServiceIF {
 
   public void send(VOMSNotification n) {
 
-    if (!VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
+    if (!VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
       log.debug("Adding notification '{}' to outgoing message queue.", n);
       outgoingMessages.add(n);
     } else {
-      log
-        .warn(
-          "Outgoing notification {} will be discarded as the notification service is DISABLED.",
-          n.toString());
+      log.warn(
+        "Outgoing notification {} will be discarded as the notification service is DISABLED.",
+        n.toString());
     }
 
   }
@@ -92,6 +96,25 @@ public class NotificationService implements NotificationServiceIF {
       LinkedBlockingQueue<VOMSNotification> outgoingQueue) {
 
       this.outgoingQueue = outgoingQueue;
+    }
+
+    private void logSuccessfulDelivery(VOMSNotification n) {
+
+      LogNotificationOutcomeTask task = LogNotificationOutcomeTask
+        .notificationSuccess(n);
+
+      VOMSExecutorService.instance().schedule(
+        new DatabaseTransactionTaskWrapper(task, false), 10,
+        TimeUnit.MILLISECONDS);
+    }
+
+    private void logDeliveryError(VOMSNotification n) {
+      LogNotificationOutcomeTask task = LogNotificationOutcomeTask
+        .notificationError(n);
+      
+      VOMSExecutorService.instance().schedule(
+        new DatabaseTransactionTaskWrapper(task, false), 10,
+        TimeUnit.MILLISECONDS);
     }
 
     public void run() {
@@ -108,19 +131,25 @@ public class NotificationService implements NotificationServiceIF {
           try {
             n.send();
             deliveryHadErrors = false;
-            log.debug("Notification '" + n + "' delivered succesfully.");
+            log.info("Notification '{}' delivered succesfully.", n);
+            logSuccessfulDelivery(n);
 
           } catch (VOMSNotificationException e) {
 
             deliveryHadErrors = true;
-            log.error("Error dispatching email notification '" + n + "': " + e,
-              e);
+            log.error("Error dispatching email notification '{}'", n, e);
 
             if (n.getDeliveryAttemptCount() < maxDeliveryAttemptCount) {
               outgoingQueue.put(n);
-            } else
-              log.warn("Discarding notification '" + n + "' after "
-                + n.getDeliveryAttemptCount() + " failed delivery attempts.");
+            } else {
+
+              log.warn(
+                "Discarding notification '{}' after {} failed delivery attempts.",
+                n, n.getDeliveryAttemptCount());
+
+              logDeliveryError(n);
+
+            }
 
           } catch (Throwable t) {
 
@@ -146,9 +175,44 @@ public class NotificationService implements NotificationServiceIF {
     }
   }
 
+  static class LogNotificationOutcomeTask implements Runnable {
+
+    private final VOMSNotification notification;
+    private final boolean deliveryError;
+
+    public static LogNotificationOutcomeTask notificationSuccess(
+      VOMSNotification n) {
+
+      return new LogNotificationOutcomeTask(n, false);
+    }
+
+    public static LogNotificationOutcomeTask notificationError(
+      VOMSNotification n) {
+
+      return new LogNotificationOutcomeTask(n, true);
+    }
+
+    private LogNotificationOutcomeTask(VOMSNotification n, boolean error) {
+      this.notification = n;
+      deliveryError = error;
+    }
+
+    @Override
+    public void run() {
+
+      if (deliveryError) {
+        EventManager.instance()
+          .dispatch(new NotificationDeliveryErrorEvent(notification));
+      } else {
+        EventManager.instance()
+          .dispatch(new NotificationDeliveredEvent(notification));
+      }
+    }
+
+  }
+
   /**
-   * @return
-   * @see java.util.concurrent.ExecutorService#shutdownNow()
+   * @return @see java.util.concurrent.ExecutorService#shutdownNow()
    */
   public List<Runnable> shutdownNow() {
 

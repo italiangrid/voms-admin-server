@@ -26,7 +26,7 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
   public static final Logger log = LoggerFactory
     .getLogger(DatabaseTransactionTaskWrapper.class);
 
-  boolean doLogging = false;
+  final boolean doLogging;
 
   public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd) {
 
