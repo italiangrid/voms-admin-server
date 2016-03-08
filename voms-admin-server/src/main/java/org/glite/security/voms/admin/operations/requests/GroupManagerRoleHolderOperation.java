@@ -54,7 +54,8 @@ public abstract class GroupManagerRoleHolderOperation<T extends Request> extends
     String groupManagerRoleName = VOMSConfiguration
       .instance().getGroupManagerRoleName();
 
-    VOMSRole gmRole = findRoleByName(groupManagerRoleName);
+    
+    VOMSRole gmRole = findRoleByNameAllowNull(groupManagerRoleName);
 
     if (gmRole == null) {
       LOGGER.debug("{} role is not defined, falling back to ACL authz.",
