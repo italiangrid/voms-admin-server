@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao;
 
@@ -23,22 +19,32 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.dao.lookup.FindByCertificateDAO;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
 import org.glite.security.voms.admin.persistence.error.NoSuchCAException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 
-public class CertificateDAO {
+public class CertificateDAO implements FindByCertificateDAO<Certificate>{
 
   private CertificateDAO() {
 
     HibernateFactory.beginTransaction();
   }
 
-  public Certificate findByDN(String dn) {
+  public Certificate lookup(String certificateSubject,
+    String certificateIssuer) {
+
+    return LookupPolicyProvider.instance().lookupStrategy()
+      .lookup(this, certificateSubject, certificateIssuer);
+  }
+
+  public Certificate findBySubject(String dn) {
 
     assert dn != null : "Null DN passed as argument!";
 
@@ -59,10 +65,10 @@ public class CertificateDAO {
 
   }
 
-  public Certificate findByDNCA(String dn, String ca) {
+  public Certificate findBySubjectAndIssuer(String dn, String ca) {
 
-    assert dn != null : "Null DN passed as argument!";
-    assert ca != null : "Null ca passed as argument!";
+    Validate.notNull(dn, "Please provide a non-null dn");
+    Validate.notNull(ca, "Please provide a non-null ca");
 
     String query = "From Certificate where subjectString = :subjectString and ca.subjectString = :ca";
 
@@ -83,13 +89,13 @@ public class CertificateDAO {
 
     assert cert != null : "Null certificate passed as argument!";
 
-    String subjectString = DNUtil.normalizeDN(DNUtil.getOpenSSLSubject(cert
-      .getSubjectX500Principal()));
+    String subjectString = DNUtil
+      .normalizeDN(DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal()));
 
-    String issuerString = DNUtil.normalizeDN(DNUtil.getOpenSSLSubject(cert
-      .getIssuerX500Principal()));
+    String issuerString = DNUtil
+      .normalizeDN(DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal()));
 
-    return findByDNCA(subjectString, issuerString);
+    return lookup(subjectString, issuerString);
 
   }
 

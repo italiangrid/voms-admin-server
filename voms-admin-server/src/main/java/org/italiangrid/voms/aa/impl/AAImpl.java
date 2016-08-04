@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.italiangrid.voms.aa.impl;
 
 import java.util.Calendar;
@@ -64,10 +59,8 @@ public class AAImpl implements AttributeAuthority {
       validity = requestedValidity;
 
     if (requestedValidity > maxAttrValidityInSecs) {
-      context
-        .getResponse()
-        .getWarnings()
-        .add(VOMSWarningMessage.shortenedAttributeValidity(context.getVOName()));
+      context.getResponse().getWarnings().add(
+        VOMSWarningMessage.shortenedAttributeValidity(context.getVOName()));
     }
 
     Calendar cal = Calendar.getInstance();
@@ -142,10 +135,8 @@ public class AAImpl implements AttributeAuthority {
     VOMSRequest r = context.getRequest();
 
     if (u.isSuspended()) {
-      failResponse(
-        context,
-        VOMSErrorMessage.suspendedUser(r.getHolderSubject(),
-          r.getHolderIssuer(), u.getSuspensionReason()));
+      failResponse(context, VOMSErrorMessage.suspendedUser(r.getHolderSubject(),
+        r.getHolderIssuer(), u.getSuspensionReason()));
       context.setHandled(true);
       return;
     }
@@ -154,9 +145,9 @@ public class AAImpl implements AttributeAuthority {
       r.getHolderIssuer());
 
     if (cert.isSuspended()) {
-      failResponse(context, VOMSErrorMessage.suspendedCertificate(
-        cert.getSubjectString(), cert.getCa().getSubjectString(),
-        cert.getSuspensionReason()));
+      failResponse(context,
+        VOMSErrorMessage.suspendedCertificate(cert.getSubjectString(),
+          cert.getCa().getSubjectString(), cert.getSuspensionReason()));
     }
 
   }
@@ -172,16 +163,13 @@ public class AAImpl implements AttributeAuthority {
     VOMSRequest request = context.getRequest();
     VOMSUser user = null;
 
-    if (request.getHolderIssuer() == null)
-      user = VOMSUserDAO.instance().findBySubject(request.getHolderSubject());
-    else
-      user = VOMSUserDAO.instance().findByDNandCA(request.getHolderSubject(),
-        request.getHolderIssuer());
+    user = VOMSUserDAO.instance().lookup(request.getHolderSubject(),
+      request.getHolderIssuer());
 
     if (user == null) {
 
-      VOMSErrorMessage m = VOMSErrorMessage.noSuchUser(
-        request.getHolderSubject(), request.getHolderIssuer());
+      VOMSErrorMessage m = VOMSErrorMessage
+        .noSuchUser(request.getHolderSubject(), request.getHolderIssuer());
 
       context.getResponse().setOutcome(Outcome.FAILURE);
       context.getResponse().getErrorMessages().add(m);

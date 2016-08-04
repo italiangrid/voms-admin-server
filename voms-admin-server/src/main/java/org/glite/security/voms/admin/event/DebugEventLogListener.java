@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.event;
+
+import java.util.EnumSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +37,17 @@ public class DebugEventLogListener implements EventListener {
   }
 
   private DebugEventLogListener() {
-
-    EventManager.instance().register(this);
   }
 
   public void fire(Event e) {
 
-    log.debug("Event received: " + e);
+    log.info("Event received: {}", e);
   }
 
-  public EventMask getMask() {
+  @Override
+  public EnumSet<EventCategory> getCategoryMask() {
 
-    return null;
+    return EventCategory.ALL_CATEGORIES;
   }
 
 }

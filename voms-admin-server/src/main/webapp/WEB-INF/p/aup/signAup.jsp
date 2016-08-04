@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,21 +14,40 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
 <h1>VO Acceptable usage policy version ${activeVersion.version}</h1>
 
-<s:form validate="true">
-
-	<s:token/>
+<s:url 
+  action="index"
+  namespace="/info" var="infoUrl"/>
   
-  	<s:hidden name="aupId" value="%{model.id}"/>
-  	<s:textarea rows="24" cols="100%" value="%{model.activeVersion.URLContent}" readonly="true"/>
-  	<s:checkbox name="aupAccepted" label="I declare I have read and agree with the AUP terms displayed above" labelposition="right"/>
-  	<s:submit value="%{'Submit'}" align="left"/>
   
-</s:form>
+<s:if test="! #attr.currentAdmin.voUser">
+  You are not a member of this VO, you will see nothing around here.
+  Click <s:a href="%{infoUrl}">here</s:a> to get more information on how you have
+  been authenticated.
+</s:if>
+<s:else>
+  <s:form validate="true">
+    <s:token />
 
+    <s:hidden
+      name="aupId"
+      value="%{model.id}" />
+    <s:textarea
+      rows="24"
+      cols="100%"
+      value="%{model.activeVersion.URLContent}"
+      readonly="true" />
+    <s:checkbox
+      name="aupAccepted"
+      label="I declare I have read and agree with the AUP terms displayed above"
+      labelposition="right" />
+    <s:submit
+      value="%{'Submit'}"
+      align="left" />
+
+  </s:form>
+</s:else>

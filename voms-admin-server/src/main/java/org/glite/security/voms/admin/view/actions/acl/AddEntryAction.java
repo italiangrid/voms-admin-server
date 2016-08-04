@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
@@ -106,7 +102,7 @@ public class AddEntryAction extends ACLActionSupport {
           "A CA for the given subject is not registered in the VOMS database!");
       }
 
-      if (VOMSAdminDAO.instance().getByName(dn, adminCA.getSubjectString()) != null) {
+      if (VOMSAdminDAO.instance().lookup(dn, adminCA.getSubjectString()) != null) {
 
         addFieldError(
           "dn",
@@ -131,10 +127,10 @@ public class AddEntryAction extends ACLActionSupport {
     } else if (entryType.equals("non-vo-user")) {
 
       VOMSCA ca = VOMSCADAO.instance().getByID(caId);
-      admin = VOMSAdminDAO.instance().getByName(dn, ca.getSubjectString());
+      admin = VOMSAdminDAO.instance().lookup(dn, ca.getSubjectString());
 
       if (admin == null) {
-        admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
+        admin = VOMSAdminDAO.instance().createFromSubjectAndIssuer(dn, ca.getSubjectString());
         admin.setEmailAddress(getEmailAddress());
       }
 
@@ -148,7 +144,7 @@ public class AddEntryAction extends ACLActionSupport {
 
       admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
       if (admin == null)
-        admin = VOMSAdminDAO.instance().create(ctxt.toString());
+        admin = VOMSAdminDAO.instance().createFromFqan(ctxt.toString());
 
     } else if (entryType.equals("group-admin")) {
 
@@ -158,7 +154,7 @@ public class AddEntryAction extends ACLActionSupport {
       admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
 
       if (admin == null)
-        admin = VOMSAdminDAO.instance().create(ctxt.toString());
+        admin = VOMSAdminDAO.instance().createFromFqan(ctxt.toString());
 
     } else if (entryType.equals("anyone")) {
 

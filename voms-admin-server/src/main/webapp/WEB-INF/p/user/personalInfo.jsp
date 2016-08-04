@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,9 +13,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-    Authors:
-    	Andrea Ceccanti (INFN)
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
@@ -35,26 +31,28 @@
 
 			<s:hidden name="userId" value="%{id}" />
 
-			<s:textfield name="theName" label="Given name" size="40"
+			<s:textfield name="theName" label="Given name" size="80"
 				cssClass="registrationField" value="%{name}" disabled="false"
 				readonly="%{#attr.readOnlyPI}" />
 
 			<s:textfield name="theSurname" disabled="false" label="Family name"
-				size="40" cssClass="registrationField" value="%{surname}"
+				size="80" cssClass="registrationField" value="%{surname}"
 				readonly="%{#attr.readOnlyPI}" />
 
 			<s:textfield name="theInstitution" disabled="false"
-				label="Institution" size="40" cssClass="registrationField"
+				label="Institution" size="80" cssClass="registrationField"
 				value="%{institution}" readonly="%{#attr.readOnlyPI}" />
 
 			<s:textarea name="theAddress" disabled="false" label="Address"
-				rows="4" cols="30" cssClass="registrationField" value="%{address}" />
+				rows="4" cols="80" cssClass="registrationField" value="%{address}" />
 
 			<s:textfield name="thePhoneNumber" disabled="false" label="Phone"
-				size="40" cssClass="registrationField" value="%{phoneNumber}" />
+				size="80" cssClass="registrationField" value="%{phoneNumber}"
+        />
 
 			<s:textfield name="theEmailAddress" disabled="false" label="Email"
-				size="40" cssClass="registrationField" value="%{emailAddress}" />
+				size="80" cssClass="registrationField" value="%{emailAddress}" 
+				readonly="%{#attr.readOnlyPI}" />
 
 			<s:submit value="%{'Change personal information'}" />
 			

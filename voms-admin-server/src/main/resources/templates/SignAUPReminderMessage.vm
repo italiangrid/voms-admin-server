@@ -1,0 +1,60 @@
+#*
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *#
+
+#if ( ${user.getName()} && ${user.getSurname()} )
+Dear ${user.getName()} ${user.getSurname()},
+#else
+Dear $recipient,
+#end
+
+this is a reminder from the VOMS-Admin registration
+service for VO $voName.
+
+You are requested to sign the VO $voName Acceptable Usage Policy
+(AUP) in order to continue to be part of the  $voName VO.
+
+The AUP must be signed before the following date:
+
+$expirationDate
+
+After this date your membership will be _suspended_
+and you will NOT be able to obtain VOMS credentials
+for the $voName VO.
+
+Note however that you can restore your membership at 
+*any* time by simply pointing your browser to the 
+URL given below an accepting the VO AUP.
+
+To sign the AUP, point your browser to the following 
+URL:
+
+$signAUPURL
+
+Please ensure that you connect to the above URL with 
+a valid certificate linked to your VO membership installed 
+in the browser, or VOMS Admin will not be able to authenticate 
+you properly.
+
+Currently, the following certificates are linked to your
+$voName membership:
+
+
+#foreach ( $cert in $user.getCertificates() )
+- $cert.getSubjectString() ( $cert.getCa().getSubjectString() )
+#end
+
+Kind regards,
+the VOMS-Admin registration service for VO $voName

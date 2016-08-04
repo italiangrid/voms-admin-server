@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.admin;
 
 import java.util.List;
 
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
-import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.glite.security.voms.admin.view.util.RequestUtil;
+
+import com.opensymphony.xwork2.Preparable;
 
 @Result(name = BaseAction.SUCCESS, location = "adminHome")
-public class HomeAction extends AdminActionSupport {
+@InterceptorRef(value = "authenticatedStack", params = { "store.operationMode",
+  "RETRIEVE" })
+public class HomeAction extends BaseAction implements Preparable {
 
   /**
 	 * 
@@ -40,14 +40,13 @@ public class HomeAction extends AdminActionSupport {
   @Override
   public void prepare() throws Exception {
 
-    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
+    pendingRequests = RequestUtil.findManageableRequests();
 
-    pendingRequests = rDAO.findPendingRequests();
-    super.prepare();
   }
 
   public List<Request> getPendingRequests() {
 
     return pendingRequests;
   }
+
 }

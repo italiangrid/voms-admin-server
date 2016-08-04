@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.service;
 
@@ -348,7 +344,7 @@ public class VOMSACLService implements VOMSACL {
     String subject = entry.getAdminSubject();
     String issuer = entry.getAdminIssuer();
 
-    VOMSAdmin admin = VOMSAdminDAO.instance().getByName(subject, issuer);
+    VOMSAdmin admin = VOMSAdminDAO.instance().findBySubjectAndIssuer(subject, issuer);
 
     if (admin == null) {
 
@@ -366,7 +362,7 @@ public class VOMSACLService implements VOMSACL {
           throw new NoSuchGroupException("Group '" + subject
             + "' is not defined in database!");
 
-        return VOMSAdminDAO.instance().create(subject);
+        return VOMSAdminDAO.instance().createFromFqan(subject);
 
       } else if (issuer.equals(VOMSServiceConstants.ROLE_CA)) {
 
@@ -384,11 +380,11 @@ public class VOMSACLService implements VOMSACL {
           throw new NoSuchRoleException("Role '" + roleName
             + "' is not defined in database!");
 
-        return VOMSAdminDAO.instance().create(subject);
+        return VOMSAdminDAO.instance().createFromFqan(subject);
       }
 
       // Another type of admin
-      return VOMSAdminDAO.instance().create(subject, issuer);
+      return VOMSAdminDAO.instance().createFromSubjectAndIssuer(subject, issuer);
 
     }
 

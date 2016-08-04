@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,9 +14,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-      Andrea Ceccanti (INFN)
-
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
@@ -29,58 +25,39 @@
 
 	<s:set var="groupVisibility" value="%{'visible'}" />
 
-	<s:if
-		test="requesterInfo.getMultivaluedInfo('requestedGroup').size() >= 10">
-		<tr>
-			<td colspan="3" class="no-border-bottom">User has requested more
-				than 10 groups. <span id="groupToggler_<s:property value='id'/>"
-				class="clickable" style="color: #456aac;">Show selection</span>
-			</td>
+	<h4>Requested groups</h4>
 
-		</tr>
-	</s:if>
+	<p>The applicant requested to be member of the groups listed below.
+		Check the groups that you want to be assigned to the user as result of
+		the approval of this membership request.</p>
 
-	<tr id="req_groups_header_<s:property value='id'/>">
-		<th colspan="3" style="border-bottom: 0"><s:checkbox
-				id="apprGroupSel_%{id}" name="notSet" />Requested groups</th>
-	</tr>
 
-	<tr id="req_groups_row_<s:property value='id'/>">
-		<td colspan="2" class="no-border-bottom">
-			<ul id="reqGroupList_<s:property value='id'/>">
-				<s:iterator value="#requestedGroups" var="name">
-					<li><s:checkbox name="approvedGroups" fieldValue="%{name}"
-							theme="simple" cssClass="groupCheck_%{id}" value="false" />
-						<s:property value="name" /></li>
-				</s:iterator>
-			</ul>
-		</td>
-		<td class="no-border-bottom" />
-	</tr>
+	<table class="table attribute-req">
+		<thead>
+			<tr>
+				<th><s:checkbox id="apprGroupSel_%{id}" name="notSet"
+						theme="simple" /></th>
+				<th>Requested group name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="#requestedGroups" var="name">
+				<tr>
+					<td style="width: 1%"><s:checkbox name="approvedGroups_%{id}"
+							fieldValue="%{name}" theme="simple" cssClass="groupCheck_%{id}"
+							value="false" /></td>
+					<td><s:property value="name" /></td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
+
 	<script>
-                    $('#apprGroupSel_<s:property value="id"/>').change(function(){
-                      var checked = $(this).attr("checked");
-                      $('.groupCheck_<s:property value="id"/>').attr("checked", checked);
-                      $('.groupCheck_<s:property value="id"/>').change(); });                    
-                  
-                    <s:if test="requesterInfo.getMultivaluedInfo('requestedGroup').size() >= 10">
-                      $('#req_groups_header_<s:property value='id'/>').hide();
-                      $('#req_groups_row_<s:property value='id'/>').hide();
-                      $("#groupToggler_<s:property value='id'/>").click(function(){
-                        $('#groupToggler_<s:property value='id'/>').text('Hide selection');
-                        $('#req_groups_header_<s:property value='id'/>').toggle();
-                          $('#req_groups_row_<s:property value='id'/>').toggle();
-                          if ($('#req_groups_header_<s:property value='id'/>').is(':visible')) {
-                            
-                            $('#groupToggler_<s:property value='id'/>').text('Hide selection');
-                            $('html, body').animate({
-                                scrollTop: $("#req_info_<s:property value='id'/>").offset().top
-                            }, 1000);
-                          } else {
-                            
-                            $('#groupToggler_<s:property value='id'/>').text('Show selection');
-                          }
-                      });
-                      </s:if>
-                  </script>
+		$('#apprGroupSel_<s:property value="id"/>').change(function() {
+			var checked = $(this).attr("checked");
+			$('.groupCheck_<s:property value="id"/>').attr("checked", checked);
+			$('.groupCheck_<s:property value="id"/>').change();
+		});
+	</script>
+
 </s:if>

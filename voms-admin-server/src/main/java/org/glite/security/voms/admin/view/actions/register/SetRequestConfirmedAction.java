@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.view.actions.register;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.VOMembershipRequestConfirmedEvent;
+import org.glite.security.voms.admin.event.request.VOMembershipRequestConfirmedEvent;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
@@ -55,7 +50,7 @@ public class SetRequestConfirmedAction extends RegisterActionSupport {
 
     getModel().setStatus(STATUS.CONFIRMED);
 
-    EventManager.dispatch(new VOMembershipRequestConfirmedEvent(request,
+    EventManager.instance().dispatch(new VOMembershipRequestConfirmedEvent(request,
       URLBuilder.buildLoginURL()));
 
     return SUCCESS;

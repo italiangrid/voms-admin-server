@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.view.actions.user;
 
 import java.io.File;
@@ -30,7 +25,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.CertificateRequestSubmittedEvent;
+import org.glite.security.voms.admin.event.request.CertificateRequestSubmittedEvent;
 import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
@@ -85,8 +80,9 @@ public class RequestCertificateAction extends UserActionSupport {
         return;
       }
 
-      if (dao.find(cert) != null)
+      if (dao.find(cert) != null){
         addFieldError("certificateFile", "Certificate already bound!");
+      }
 
       subject = DNUtil.getOpenSSLSubject(cert.getSubjectX500Principal());
       caSubject = DNUtil.getOpenSSLSubject(cert.getIssuerX500Principal());
@@ -97,9 +93,17 @@ public class RequestCertificateAction extends UserActionSupport {
 
       }
 
-    } else if (subject != null && !"".equals(subject)) {
+    } else if (subject != null && !"".equals(subject) && !caSubject.equals("-1")) {
 
-      if (dao.findByDNCA(subject, caSubject) != null) {
+      // Remove whitespace and newlines from subject
+      subject=subject.trim().replace("\n", "").replace("\r", "");
+      
+      if (subject.equals("")){
+        addFieldError("subject", "Please provide a suitable subject");
+        return;
+      }
+      
+      if (dao.lookup(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
         addFieldError("caSubject", "Certificate already bound!");
         return;
@@ -165,7 +169,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
     CertificateRequest req = reqDAO.createCertificateRequest(getModel(),
       getSubject(), getCaSubject(), getDefaultFutureDate());
-    EventManager.dispatch(new CertificateRequestSubmittedEvent(req,
+    EventManager.instance().dispatch(new CertificateRequestSubmittedEvent(req,
       getHomeURL()));
 
     refreshPendingRequests();

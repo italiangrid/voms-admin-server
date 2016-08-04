@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.event.user;
 
+import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class UserCreatedEvent extends UserMembershipEvent {
+@EventDescription(message = "created user '%s %s' with certificate '%s'",
+  params = { "userName", "userSurname", "userCertificate0" })
+public class UserCreatedEvent extends UserLifecycleEvent {
 
-  public UserCreatedEvent(VOMSUser user) {
+  public UserCreatedEvent(VOMSUser payload) {
 
-    super(user);
-    // TODO Auto-generated constructor stub
+    super(payload);
+
   }
 
 }

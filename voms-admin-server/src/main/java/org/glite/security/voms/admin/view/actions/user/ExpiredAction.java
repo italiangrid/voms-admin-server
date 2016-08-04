@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.view.actions.user;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.persistence.dao.SearchResults;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.operations.users.SearchUsersPersonalInformationOperation;
+import org.glite.security.voms.admin.taglib.SearchNavBarTag;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({
@@ -40,11 +35,14 @@ public class ExpiredAction extends SearchAction {
   @Override
   public String execute() throws Exception {
 
-    searchResults = SearchResults.fromList(VOMSUserDAO.instance()
-      .findExpiredUsers());
+    searchResults = 
+      SearchUsersPersonalInformationOperation.instance(searchExpiredUsers())
+      .execute();
 
     session.put("searchData", getSearchData());
     session.put("searchResults", searchResults);
+    
+    session.put(SearchNavBarTag.SEARCH_PARAMS_KEY, getSearchCustomFlags());
 
     return SUCCESS;
   }

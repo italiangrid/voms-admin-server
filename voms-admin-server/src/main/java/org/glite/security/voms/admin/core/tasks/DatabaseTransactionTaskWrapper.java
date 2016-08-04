@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.core.tasks;
 
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.servlets.InitSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +26,7 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
   public static final Logger log = LoggerFactory
     .getLogger(DatabaseTransactionTaskWrapper.class);
 
-  boolean doLogging = false;
+  final boolean doLogging;
 
   public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd) {
 
@@ -45,17 +41,15 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
 
       HibernateFactory.getSession();
       HibernateFactory.beginTransaction();
+      InitSecurityContext.setInternalAdminContext();
 
-      if (doLogging)
+      if (doLogging) {
         log.debug("{} task starting...", task.getClass().getSimpleName());
+      }
 
       task.run();
 
       HibernateFactory.commitTransaction();
-      HibernateFactory.closeSession();
-
-      if (doLogging)
-        log.debug("{} task done.", task.getClass().getSimpleName());
 
     } catch (VOMSDatabaseException e) {
 
@@ -70,6 +64,13 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
         task.getClass().getSimpleName());
       log.error(t.getMessage(), t);
 
+    } finally {
+
+      HibernateFactory.closeSession();
+
+      if (doLogging) {
+        log.debug("{} task done.", task.getClass().getSimpleName());
+      }
     }
   }
 }

@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.event;
 
@@ -25,7 +21,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventManager {
+public class EventManager implements EventDispatcher {
 
   public static final Logger log = LoggerFactory.getLogger(EventManager.class);
 
@@ -59,27 +55,20 @@ public class EventManager {
     return listeners;
   }
 
-  public synchronized void fireEvent(Event e) {
+  public synchronized void dispatch(Event e) {
 
     try {
       for (EventListener l : getListeners()) {
 
-        if (l.getMask() == null || l.getMask().get(e.getType().bitNo))
+        if (l.getCategoryMask().contains(e.getCategory())) {
           l.fire(e);
+        }
+
       }
     } catch (Throwable t) {
-      log.error("Error dispatching event '" + e + "': " + t.getMessage());
-      if (log.isDebugEnabled())
-        log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
+
+      log.error("Error dispatching event '" + e + "': " + t.getMessage(), t);
     }
-  }
 
-  public synchronized static void dispatch(Event e) {
-
-    if (instance == null)
-      log
-        .debug("Event manager has not been initialized! The event will be lost...");
-    else
-      instance.fireEvent(e);
   }
 }

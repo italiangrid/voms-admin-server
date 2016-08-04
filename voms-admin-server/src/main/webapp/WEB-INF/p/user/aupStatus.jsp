@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,9 +13,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-    Authors:
-    	Andrea Ceccanti (INFN)
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
@@ -59,7 +55,7 @@
     <s:if test="not #currentAccRec.empty">
       <s:iterator value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
         <s:url
-          action="load"
+          action="sign"
           namespace="/aup"
           var="saURL" />
                 
@@ -77,7 +73,7 @@
         </s:if>
         <s:else>
           <s:if test="not valid">
-              <div class="alert alert-info">
+              <div>
                 <strong><a href="${saURL}">AUP</a> signature has been invalidated.</strong>
                 A request to sign the AUP will be sent to the user as soon as the membership check task
                 runs again.

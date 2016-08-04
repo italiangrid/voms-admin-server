@@ -2,13 +2,13 @@ conf:
   image: busybox
   volumes:
     - /etc/voms-admin
-  command: true
+  command: /bin/true
 
 data:
   image: busybox
   volumes:
     - /var/lib/mysql
-  command: true
+  command: /bin/true
 
 db:
   image: mariadb:latest
@@ -28,7 +28,7 @@ mail:
   ports:
     - "25"
 
-adminserver1:
+adminserver:
   image: italiangrid/voms-admin-server
   hostname: dev
   domainname: local.io
@@ -37,11 +37,16 @@ adminserver1:
       - ~/.jrebel:/home/voms/.jrebel:rw
       - ~/jrebel:/jrebel:ro
       - /var/log/voms-admin
+        # - ~/orgdb:/orgdb:ro
+
   volumes_from:
       - conf
   ports:
-      - "8443"
-      - "1044"
+      - "8443:8443"
+      - "1044:1044"
+      - "6002:6002"
+      - "1099:1099"
+
   links:
       - db
       - mail
@@ -49,55 +54,12 @@ adminserver1:
   environment:
     MAILHOST: mail
     MYSQL_ROOT_PASSWORD: pwd
-    # VOMS_DEBUG: y
-    # VOMS_DEBUG_PORT: 1044
+    VOMS_DEBUG: y
+    # VOMS_ADMIN_SERVER_VERSION: 3.3.3
     # VOMS_DEBUG_SUSPEND: y
-
-    # ENABLE_JREBEL: y
+    # VOMS_PRE_CONFIGURE: y
     # VOMS_SKIP_CONFIGURE: y
-
-#adminserver2:
-#  image: italiangrid/voms-admin-server
-#  hostname: dev
-#  domainname: local.io
-#  volumes:
-#      - .:/code:ro
-#      - ~/.jrebel:/home/voms/.jrebel:rw
-#      - ~/jrebel:/jrebel:ro
-#      - /var/log/voms-admin
-#  volumes_from:
-#      - conf
-#  ports:
-#      - "8443"
-#      - "1044"
-#  links:
-#      - db
-#      - mail
-#
-#  environment:
-#    MAILHOST: mail
-#    MYSQL_ROOT_PASSWORD: pwd
-#    # VOMS_DEBUG: y
-#    # VOMS_DEBUG_PORT: 1044
-#    # VOMS_DEBUG_SUSPEND: y
-#
-#    # ENABLE_JREBEL: y
-#    VOMS_SKIP_CONFIGURE: y
-#    #
-
-haproxy:
-  image: tutum/haproxy:latest
-  hostname: haproxy
-  domainname: local.io
-
-  ports:
-      - "8443:8443"
-
-  environment:
-      BACKEND_PORT: 8443
-      FRONTEND_PORT: 8443
-      MODE: tcp
-
-  links:
-      - adminserver1
-      - adminserver2
+    # VOMS_UPGRADE_DB: y
+    #VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check --disable-membership-expiration-warnings
+    ENABLE_JREBEL: y
+    ENABLE_JMX: y

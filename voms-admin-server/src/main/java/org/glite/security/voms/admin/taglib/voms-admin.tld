@@ -199,6 +199,46 @@
         </attribute>
     </tag>
     <tag>
+      <name>hasRole</name>
+      <tag-class>org.glite.security.voms.admin.taglib.HasRoleTag</tag-class>
+      <body-content>empty</body-content>
+      <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>java.lang.Boolean</variable-class>
+            <scope>AT_END</scope>
+        </variable>
+        <attribute>
+            <name>role</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+      <name>hasGroupManagerRole</name>
+      <tag-class>org.glite.security.voms.admin.taglib.HasGroupManagerRoleTag</tag-class>
+      <body-content>empty</body-content>
+      <variable>
+            <name-from-attribute>var</name-from-attribute>
+            <variable-class>java.lang.Boolean</variable-class>
+            <scope>AT_END</scope>
+        </variable>
+        <attribute>
+            <name>group</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <name>panel</name>
         <tag-class>org.glite.security.voms.admin.taglib.PanelTag</tag-class>
         <body-content>JSP</body-content>

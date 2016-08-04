@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations.users;
 
 import java.security.cert.X509Certificate;
 
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateRemoved;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -28,6 +26,7 @@ import org.glite.security.voms.admin.persistence.dao.CertificateDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchCertificateException;
 import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
@@ -63,23 +62,30 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
   @Override
   protected Object doExecute() {
 
+    Certificate cert = null;
+    
     if (theCert != null) {
 
-      Certificate cert = CertificateDAO.instance().find(theCert);
-      VOMSUserDAO.instance().deleteCertificate(cert);
+      cert = CertificateDAO.instance().find(theCert);
 
     } else {
 
-      Certificate cert = CertificateDAO.instance().findByDNCA(subject, issuer);
-      if (cert == null)
+      cert = CertificateDAO.instance().lookup(subject, issuer);
+      
+    }
+    
+    if (cert == null){
         throw new NoSuchCertificateException(
           "No certificate found matching subject '" + subject + ", " + issuer
             + "'.");
-
-      VOMSUserDAO.instance().deleteCertificate(cert);
     }
 
-    return null;
+    VOMSUser u = cert.getUser();
+    VOMSUserDAO.instance().deleteCertificate(cert);
+    
+    EventManager.instance().dispatch(new UserCertificateRemoved(u, cert));
+          
+    return cert;
   }
 
   @Override

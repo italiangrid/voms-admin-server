@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,18 +14,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
+
 <%@ page contentType="text/html; charset=UTF-8"%>
 
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 <%@include file="/WEB-INF/p/shared/global-page-variables.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     
     <%@include file="/WEB-INF/p/shared/meta.jsp"%>
@@ -36,19 +32,17 @@
     <link rel="stylesheet" type="text/css"
       href="<s:url value="/style/style.css"/>" />
       
+    <link rel="stylesheet" 
+      href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      
+    <sj:head jqueryui="false" />
+    
+    
     <link type="text/css" 
       href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
       rel="stylesheet" />
-      
-    <!-- Bootstrap -->
-    
-    
-    <script type="text/javascript" src="<s:url value="/common/js/jquery.js"/>">
-    	
-    </script>
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery-ui.js"/>">
-      
     </script>
     
     <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>">
@@ -59,11 +53,6 @@
       ajaxBaseURL = '<s:url value="/ajax/"/>';
       memberSearchURL =  '<s:url  value="/search/member.action"/>';
     </script>
-    
-    <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
-    </script>
-    
-    <s:head/>
   </head>
 
   <body>
@@ -91,5 +80,8 @@
   <div id="footer">
     <tiles2:insertAttribute name="footer"/>
   </div> <!-- footer -->
+  
+  <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
+  </script>
   </body>
 </html>

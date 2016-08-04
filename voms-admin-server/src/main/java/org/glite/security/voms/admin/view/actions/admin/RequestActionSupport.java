@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.admin;
 
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
-import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.glite.security.voms.admin.view.util.RequestUtil;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -39,6 +37,8 @@ public class RequestActionSupport extends BaseAction implements Preparable,
   Request request;
 
   List<Request> pendingRequests;
+  
+  VOMSAdmin admin;
 
   /**
 	 * 
@@ -47,14 +47,14 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
   protected void refreshPendingRequests() {
 
-    RequestDAO rDAO = DAOFactory.instance().getRequestDAO();
-
-    pendingRequests = rDAO.findPendingRequests();
+    pendingRequests = RequestUtil.findManageableRequests();
 
   }
 
   public void prepare() throws Exception {
 
+    admin = CurrentAdmin.instance().getAdmin();
+    
     if (request == null) {
 
       if (requestId != -1L)
@@ -84,5 +84,9 @@ public class RequestActionSupport extends BaseAction implements Preparable,
 
     return pendingRequests;
   }
+  
+  public VOMSAdmin getAdmin() {
 
+    return admin;
+  }
 }

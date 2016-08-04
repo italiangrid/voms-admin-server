@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.user.certificate.UserCertificateSuspended;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -53,7 +51,7 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
   public static SuspendUserCertificateOperation instance(String dn, String ca,
     String suspensionReason) {
 
-    Certificate c = CertificateDAO.instance().findByDNCA(dn, ca);
+    Certificate c = CertificateDAO.instance().lookup(dn, ca);
     SuspensionReason reason = SuspensionReason.OTHER;
     reason.setMessage(suspensionReason);
     return new SuspendUserCertificateOperation(c.getUser(), c, reason);
@@ -76,7 +74,10 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
         + "' is not bound to user '" + user + "'.");
 
     certificate.suspend(reason);
-    return null;
+    
+    EventManager.instance().dispatch(new UserCertificateSuspended(user, certificate));
+    
+    return certificate;
   }
 
   @Override

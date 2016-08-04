@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,18 +14,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if test="model == null">
+<s:if test="#attr.currentAdmin.admin == null">
 	You are not a VO admin. You will see nothing around here.
 </s:if>
 <s:else>
 	<h1>
-	  Welcome to the <span class="voName">${voName}</span> VO, <voms:formatDN dn="${realSubject}" fields="CN"/>
+	  Request management
 	</h1>
 	
 	<s:if test="#attr.currentAdmin.voUser">
@@ -36,15 +32,16 @@
 		</div>
 	</s:if>
 	
-	<voms:hasPermissions var="canManage" context="vo" permission="REQUESTS_READ|REQUESTS_WRITE"/>
+  <voms:hasGroupManagerRole 
+    var="hasGroupManagerRole" 
+    group="vo"/>
+  
+	<voms:hasPermissions var="canManage" 
+    context="vo" 
+    permission="REQUESTS_READ|REQUESTS_WRITE"/>
 	
-	<s:if test="#attr.canManage">
-		<div class="info-tab">
-	  		<h2><span>Pending administrative requests</span></h2>
-	  		<voms:div cssClass="content" id="pending-req-content">
-	  			<tiles2:insertTemplate template="pendingRequests.jsp"/>  
-	  		</voms:div>
-		</div>
+	<s:if test="#attr.canManage or #attr.hasGroupManagerRole">
+	  <tiles2:insertTemplate template="requests.jsp"/>
 	</s:if>
 	<s:else>
 		You do not have enough permissions to see administrative requests for this VO.
