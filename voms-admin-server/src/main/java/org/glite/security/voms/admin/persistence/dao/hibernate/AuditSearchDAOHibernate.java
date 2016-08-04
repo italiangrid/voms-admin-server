@@ -22,14 +22,17 @@ import org.glite.security.voms.admin.persistence.dao.generic.AuditSearchDAO;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchParams;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchResults;
+import org.glite.security.voms.admin.view.actions.audit.ScrollableAuditLogSearchResults;
 import org.hibernate.Criteria;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-public class AuditSearchDAOHibernate extends
-  GenericHibernateDAO<AuditEvent, Long> implements AuditSearchDAO {
+public class AuditSearchDAOHibernate
+  extends GenericHibernateDAO<AuditEvent, Long> implements AuditSearchDAO {
 
   AuditSearchDAOHibernate() {
 
@@ -56,9 +59,7 @@ public class AuditSearchDAOHibernate extends
     return (Integer) crit.uniqueResult();
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public AuditLogSearchResults findEventsMatchingParams(AuditLogSearchParams sp) {
+  protected Criteria buildCriteriaFromParams(AuditLogSearchParams sp) {
 
     Criteria crit = createCriteria();
 
@@ -70,15 +71,52 @@ public class AuditSearchDAOHibernate extends
       crit.add(Restrictions.le("timestamp", sp.getToTime()));
     }
 
-    if (sp.getFilterString() != null && !sp.getFilterString().trim().equals("")) {
-      crit.add(Restrictions.like(sp.getFilterType(), sp.getFilterString()
-        .trim(), MatchMode.ANYWHERE));
+    if (sp.getFilterString() != null
+      && !sp.getFilterString().trim().equals("")) {
+      crit.add(Restrictions.like(sp.getFilterType(),
+        sp.getFilterString().trim(), MatchMode.ANYWHERE));
+    }
+
+    if (sp.getFirstResult() != null) {
+      crit.setFirstResult(sp.getFirstResult());
+    }
+
+    if (sp.getMaxResults() != null) {
+      crit.setMaxResults(sp.getMaxResults());
     }
 
     crit.addOrder(Order.desc("timestamp"));
+    return crit;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public AuditLogSearchResults findEventsMatchingParams(
+    AuditLogSearchParams sp) {
+
+    Criteria crit = buildCriteriaFromParams(sp);
     List<AuditEvent> results = crit.list();
 
     return new AuditLogSearchResults(sp, results);
+  }
+
+  public ScrollableAuditLogSearchResults scrollEventsMatchingParams(
+    AuditLogSearchParams sp, ScrollMode mode) {
+
+    Criteria crit = buildCriteriaFromParams(sp);
+    ScrollableResults results = crit.scroll(mode);
+
+    return new ScrollableAuditLogSearchResults(sp, results);
+
+  }
+
+  @Override
+  public Integer countEventsMatchingParams(AuditLogSearchParams sp) {
+
+    Criteria crit = buildCriteriaFromParams(sp);
+    crit.setProjection(Projections.rowCount());
+
+    return (Integer) crit.uniqueResult();
   }
 
 }

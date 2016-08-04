@@ -54,6 +54,8 @@ import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
+import org.italiangrid.voms.ac.VOMSACValidator;
+import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
 import org.italiangrid.voms.container.legacy.VOMSSslConnectorConfigurator;
 import org.italiangrid.voms.container.lifecycle.ServerListener;
 import org.italiangrid.voms.util.CertificateValidatorBuilder;
@@ -306,11 +308,12 @@ public class Container {
 
     X509CertChainValidatorExt validator = builder
       .trustAnchorsDir(options.getTrustStoreDirectory())
+      .trustAnchorsUpdateInterval(trustDirRefreshIntervalInMsec)
       .crlChecks(CrlCheckingMode.IF_VALID).lazyAnchorsLoading(false)
       .ocspChecks(OCSPCheckingMode.IGNORE).storeUpdateListener(l)
       .validationErrorListener(l)
       .build();
-
+    
     int maxConnections = Integer
       .parseInt(getConfigurationProperty(ConfigurationProperty.MAX_CONNECTIONS));
 

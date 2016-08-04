@@ -25,8 +25,6 @@ import org.glite.security.voms.admin.error.VOMSException;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
 import org.italiangrid.utils.voms.SecurityContext;
 import org.italiangrid.utils.voms.SecurityContextFactory;
-import org.italiangrid.utils.voms.VOMSSecurityContext;
-import org.italiangrid.voms.ac.VOMSACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +45,11 @@ public class InitSecurityContext {
 
   }
 
-  public static void setContextFromRequest(final ServletRequest req,
-    final VOMSACValidator validator) {
+  public static void setContextFromRequest(final ServletRequest req) {
 
     log.debug("Creating a new security context");
-    VOMSSecurityContext sc = SecurityContextFactory
-      .newVOMSSecurityContext(validator);
+    SecurityContext sc = SecurityContextFactory
+      .newSecurityContext();
 
     String remote = req.getRemoteAddr();
     sc.setRemoteAddr(remote);
@@ -97,7 +94,7 @@ public class InitSecurityContext {
 
   public static void logConnection() {
 
-    VOMSSecurityContext sc = (VOMSSecurityContext) CurrentSecurityContext.get();
+    SecurityContext sc = (SecurityContext) CurrentSecurityContext.get();
 
     if (sc.getClientCert() == null) {
 

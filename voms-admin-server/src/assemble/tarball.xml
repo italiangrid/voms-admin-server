@@ -17,18 +17,18 @@
 
 -->
 <assembly
-    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-    <id>server</id>
-    <includeBaseDirectory>false</includeBaseDirectory>
+  xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>server</id>
+  <includeBaseDirectory>false</includeBaseDirectory>
 
-    <formats>
+  <formats>
         <format>tar.gz</format>
     </formats>
 
     <fileSets>
-    	     
+
         <fileSet>
             <directory>resources/templates</directory>
             <excludes>
@@ -40,7 +40,7 @@
             <outputDirectory>/usr/share/voms-admin/templates</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
-        
+
         <fileSet>
             <directory>resources/doc</directory>
             <outputDirectory>/usr/share/doc/voms-admin-server</outputDirectory>
@@ -50,7 +50,7 @@
             <directory>resources/wsdls</directory>
             <outputDirectory>/usr/share/voms-admin/wsdls</outputDirectory>
         </fileSet>
-        
+
         <!-- Empty fileset to create empty directory -->
         <fileSet>
           <directory>src</directory>
@@ -60,7 +60,7 @@
           </excludes>
           <directoryMode>0750</directoryMode>
         </fileSet>
-        
+
         <!-- Empty fileset to create empty directory -->
         <fileSet>
           <directory>src</directory>
@@ -70,7 +70,7 @@
           </excludes>
           <directoryMode>0755</directoryMode>
         </fileSet>
-        
+
         <!-- Empty fileset to create empty directory -->
         <fileSet>
           <directory>src</directory>
@@ -80,20 +80,20 @@
           </excludes>
           <directoryMode>0755</directoryMode>
         </fileSet>
-        
+
     </fileSets>
 
-    
+
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
             <fileMode>0644</fileMode>
-          
+
             <excludes>
               <exclude>org.italiangrid:voms-container</exclude>
             </excludes>
-             
+
             <outputFileNameMapping>
               ${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
             </outputFileNameMapping>
@@ -112,35 +112,42 @@
     </dependencySets>
 
     <files>
-    	<file>
-        	<source>src/config/sysconfig</source>
-        	<outputDirectory>/etc/sysconfig</outputDirectory>
-        	<destName>voms-admin</destName>
-        	<filtered>true</filtered>
-        	<fileMode>0644</fileMode>
+      <file>
+          <source>src/config/sysconfig</source>
+          <outputDirectory>/etc/sysconfig</outputDirectory>
+          <destName>voms-admin</destName>
+          <filtered>true</filtered>
+          <fileMode>0644</fileMode>
         </file>
-        
+
         <file>
             <source>resources/scripts/configure/voms_configure.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-configure</destName>
             <fileMode>0755</fileMode>
         </file>
-        
+
         <file>
             <source>resources/scripts/configure/voms_db_util.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-db-util</destName>
             <fileMode>0755</fileMode>
         </file>
-        
+
         <file>
             <source>resources/scripts/configure/voms_mysql_util.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
             <destName>voms-mysql-util</destName>
             <fileMode>0755</fileMode>
         </file>
-        
+
+        <file>
+            <source>resources/scripts/configure/voms-audit-log-util</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-audit-log-util</destName>
+            <fileMode>0755</fileMode>
+        </file>
+
         <file>
             <source>resources/scripts/configure/voms_shared.py</source>
             <outputDirectory>/usr/sbin</outputDirectory>
@@ -168,7 +175,7 @@
             <destName>glite-info-service-voms-admin-wrapper</destName>
             <fileMode>0755</fileMode>
         </file>
-           
+
         <file>
             <source>resources/scripts/init/init-voms-admin.sh</source>
             <outputDirectory>/etc/rc.d/init.d</outputDirectory>
@@ -181,7 +188,7 @@
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
             <fileMode>0644</fileMode>
         </file>
-        
+
         <file>
             <source>target/voms-admin.jar</source>
             <outputDirectory>/usr/share/java</outputDirectory>
@@ -193,14 +200,14 @@
             <outputDirectory>/usr/share/webapps</outputDirectory>
             <fileMode>0644</fileMode>
         </file>
-        
+
         <file>
             <source>src/config/logback.cli.xml</source>
             <destName>logback.xml</destName>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>
             <fileMode>0644</fileMode>
         </file>
-        
+
         <file>
             <source>src/config/logback.service.xml</source>
             <destName>logback.xml</destName>
@@ -208,14 +215,14 @@
             <fileMode>0644</fileMode>
             <filtered>true</filtered>
         </file>
-        
+
         <file>
             <source>src/config/voms-admin-server.properties</source>
             <destName>voms-admin-server.properties</destName>
             <outputDirectory>/etc/voms-admin</outputDirectory>
             <fileMode>0644</fileMode>
         </file>
-        
+
         <file>
             <source>src/config/logback.container.xml</source>
             <destName>voms-admin-server.logback</destName>

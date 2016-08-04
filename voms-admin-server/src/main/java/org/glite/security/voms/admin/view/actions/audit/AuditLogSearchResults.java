@@ -18,13 +18,14 @@ package org.glite.security.voms.admin.view.actions.audit;
 import java.util.List;
 
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
+import org.hibernate.ScrollableResults;
 
 public class AuditLogSearchResults {
 
   final AuditLogSearchParams searchParams;
 
   final List<AuditEvent> results;
-
+  
   public AuditLogSearchResults(AuditLogSearchParams sp, List<AuditEvent> results) {
 
     this.searchParams = sp;

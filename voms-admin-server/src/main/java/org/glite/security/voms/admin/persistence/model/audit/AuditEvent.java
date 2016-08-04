@@ -15,11 +15,9 @@
  */
 package org.glite.security.voms.admin.persistence.model.audit;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
