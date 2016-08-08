@@ -1,0 +1,8 @@
+epel.besthosting.ua 0.0549499988556
+epel.mirrors.ovh.net 0.0268630981445
+epel.check-update.co.uk 0.0331349372864
+epel.vpsnet.lt 0.0648598670959
+mirror.veriteknik.net.tr 0.120554924011
+mirror3.mirror.garr.it 0.00962519645691
+mirror.vit.com.tr 0.0686781406403
+linuxsoft.cern.ch 0.0272378921509
