@@ -194,7 +194,7 @@ public class Notification {
       + ", status=" + status + ", deliveryAttempts=" + deliveryAttempts + "]";
   }
 
-  public void succesfullDelivery(String handlerId) {
+  public void deliverySuccess(String handlerId) {
 
     setHandlerId(handlerId);
 
@@ -204,7 +204,7 @@ public class Notification {
     setStatus(NotificationStatus.DELIVERED);
   }
 
-  public void addDeliveryError(Throwable t, String handlerId) {
+  public void deliveryError(Throwable t, String handlerId) {
 
     setHandlerId(handlerId);
 

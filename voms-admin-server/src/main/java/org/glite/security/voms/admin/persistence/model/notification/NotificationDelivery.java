@@ -12,12 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
+
 @Entity
 @Table(name = "notification_delivery")
 public class NotificationDelivery {
 
   public static enum NotificationDeliveryStatus {
-    SUCCESS, ERROR
+    SUCCESS,
+    ERROR
   }
 
   @Id
@@ -32,23 +35,25 @@ public class NotificationDelivery {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, updatable = false)
+  @Index(name = "nd_status_idx")
   NotificationDeliveryStatus status;
 
   @Column(name = "error_message", columnDefinition = "text")
   String errorMessage;
 
   @Column(name = "handler_id", nullable = false, updatable = false)
+  @Index(name = "nd_handler_id_idx")
   String handlerId;
 
-  public NotificationDelivery(){
-    
+  public NotificationDelivery() {
+
   }
-  
+
   NotificationDelivery(Notification n) {
     this.notification = n;
     this.handlerId = n.handlerId;
     this.deliveryTimestamp = new Date();
-    
+
   }
 
   public Long getId() {
@@ -141,9 +146,10 @@ public class NotificationDelivery {
   @Override
   public String toString() {
 
-    return "NotificationDelivery [id=" + id + ", notificationId=" + notification.getId()
-      + ", deliveryTimestamp=" + deliveryTimestamp + ", status=" + status
-      + ", errorMessage=" + errorMessage + ", handlerId=" + handlerId + "]";
+    return "NotificationDelivery [id=" + id + ", notificationId="
+      + notification.getId() + ", deliveryTimestamp=" + deliveryTimestamp
+      + ", status=" + status + ", errorMessage=" + errorMessage + ", handlerId="
+      + handlerId + "]";
   }
 
 }

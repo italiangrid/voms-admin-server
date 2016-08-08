@@ -48,7 +48,8 @@ public enum PersistentNotificationService implements NotificationServiceIF {
 
     Notification persistentNotification = new Notification();
 
-    persistentNotification.setMessageType(n.getClass().getName());
+    persistentNotification.setMessageType(n.getClass()
+      .getName());
     persistentNotification.setRecipients(n.getRecipientList());
     persistentNotification.setSubject(n.getSubject());
     persistentNotification.setCreationTime(new Date());
@@ -59,7 +60,8 @@ public enum PersistentNotificationService implements NotificationServiceIF {
 
   private void persistNotification(Notification n) {
 
-    Session s = HibernateFactory.getFactory().openSession();
+    Session s = HibernateFactory.getFactory()
+      .openSession();
     dao.setSession(s);
     Transaction tx = s.beginTransaction();
 
@@ -97,7 +99,7 @@ public enum PersistentNotificationService implements NotificationServiceIF {
   public synchronized void send(VOMSNotification n) {
 
     Validate.isTrue(started, "Notification service was not initialized");
-    Validate.notNull(n, "n must not be null");
+    Validate.notNull(n, "Notification n must not be null");
 
     preconditionsCheck();
 
@@ -110,7 +112,8 @@ public enum PersistentNotificationService implements NotificationServiceIF {
     return notificationSettings;
   }
 
-  public void setNotificationSettings(NotificationSettings notificationSettings) {
+  public void setNotificationSettings(
+    NotificationSettings notificationSettings) {
 
     this.notificationSettings = notificationSettings;
   }
@@ -158,10 +161,8 @@ public enum PersistentNotificationService implements NotificationServiceIF {
     log.info("Starting notification dispatcher with period: {} seconds",
       dispatchingPeriodInSeconds);
 
-    executorService.scheduleAtFixedRate(worker, 
-      dispatchingPeriodInSeconds, 
-      dispatchingPeriodInSeconds,
-      TimeUnit.SECONDS);
+    executorService.scheduleAtFixedRate(worker, dispatchingPeriodInSeconds,
+      dispatchingPeriodInSeconds, TimeUnit.SECONDS);
   }
 
   @Override

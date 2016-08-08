@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.glite.security.voms.admin.notification.audit.LogNotificationDelivery;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.NotificationDAO;
 import org.glite.security.voms.admin.persistence.model.notification.Notification;
@@ -41,7 +42,8 @@ public class PersistentNotificationWorker implements Runnable {
 
     try {
 
-      session = HibernateFactory.getFactory().openSession();
+      session = HibernateFactory.getFactory()
+        .openSession();
       dao.setSession(session);
 
       tx = session.beginTransaction();
@@ -121,12 +123,15 @@ public class PersistentNotificationWorker implements Runnable {
 
       log.info("Successful delivery of notification {}. Msg id: {}", n, msgID);
 
-      n.succesfullDelivery(serviceID);
+      n.deliverySuccess(serviceID);
+      LogNotificationDelivery.logDeliverySuccess(n);
 
     } catch (Throwable t) {
 
-      n.addDeliveryError(t, serviceID);
+      n.deliveryError(t, serviceID);
       log.warn("Error deliverying notification {}: {}", n, t.getMessage());
+
+      LogNotificationDelivery.logDeliveryError(n);
 
       if (log.isDebugEnabled()) {
         log.warn("Error deliverying notification {}: {}",

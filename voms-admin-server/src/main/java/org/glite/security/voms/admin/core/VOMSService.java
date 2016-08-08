@@ -169,14 +169,21 @@ public final class VOMSService {
 
   protected static void startNotificationService() {
 
-    PersistentNotificationService ns = PersistentNotificationService.INSTANCE;
+    if (!VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
 
-    ns.setNotificationSettings(
-      VOMSNotificationSettings.fromVOMSConfiguration());
-    ns.setDao(DAOFactory.instance()
-      .getNotificationDAO());
+      PersistentNotificationService ns = PersistentNotificationService.INSTANCE;
 
-    ns.start();
+      ns.setNotificationSettings(
+        VOMSNotificationSettings.fromVOMSConfiguration());
+
+      ns.setDao(DAOFactory.instance()
+        .getNotificationDAO());
+
+      ns.start();
+    } else {
+      log.warn("Notification service is DISABLED.");
+    }
 
   }
 

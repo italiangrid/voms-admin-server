@@ -18,12 +18,20 @@
  */
 package org.glite.security.voms.admin.notification;
 
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 
 public class NotificationServiceFactory {
 
   public synchronized static NotificationServiceIF getNotificationService() {
 
-    return PersistentNotificationService.INSTANCE;
+    if (!VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
+      return PersistentNotificationService.INSTANCE;
+    }
+
+    return DisabledNotificationService.INSTANCE;
+
   }
 
 }
