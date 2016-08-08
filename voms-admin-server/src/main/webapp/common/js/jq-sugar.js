@@ -694,7 +694,7 @@ function auditLogSetup(){
 			$(this).closest('tr').find('td').addClass('al-dtl-header');
 			$(detailNode).removeClass("al-dtl-hidden");
 			$('html,body')
-			.animate({ scrollTop: $(this).offset().top },	500);
+			.animate({ scrollTop: $(this).closest('tr').offset().top },	500);
 		}else {
 			$(this).text("more info");
 			$(this).closest('tr').find('td').removeClass('al-dtl-header');

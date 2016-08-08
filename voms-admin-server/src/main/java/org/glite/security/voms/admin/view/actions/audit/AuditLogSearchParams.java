@@ -29,7 +29,7 @@ public class AuditLogSearchParams {
   Integer maxResults;
 
   public AuditLogSearchParams() {
-
+    firstResult = 0;
   }
 
   public Date getFromTime() {
@@ -96,9 +96,8 @@ public class AuditLogSearchParams {
   public String toString() {
 
     return "AuditLogSearchParams [fromTime=" + fromTime + ", toTime=" + toTime
-      + ", filterType=" + filterType + ", filterString=" + filterString + "]";
+      + ", filterType=" + filterType + ", filterString=" + filterString
+      + ", firstResult=" + firstResult + ", maxResults=" + maxResults + "]";
   }
-  
-  
 
 }

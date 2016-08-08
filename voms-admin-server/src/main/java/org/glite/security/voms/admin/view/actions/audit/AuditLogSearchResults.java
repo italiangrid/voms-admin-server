@@ -18,17 +18,20 @@ package org.glite.security.voms.admin.view.actions.audit;
 import java.util.List;
 
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
-import org.hibernate.ScrollableResults;
 
 public class AuditLogSearchResults {
+
+  final int totalResultsCount;
 
   final AuditLogSearchParams searchParams;
 
   final List<AuditEvent> results;
-  
-  public AuditLogSearchResults(AuditLogSearchParams sp, List<AuditEvent> results) {
+
+  public AuditLogSearchResults(AuditLogSearchParams sp, int totalResultsCount,
+    List<AuditEvent> results) {
 
     this.searchParams = sp;
+    this.totalResultsCount = totalResultsCount;
     this.results = results;
   }
 
@@ -42,4 +45,28 @@ public class AuditLogSearchResults {
     return results;
   }
 
+  public int getTotalResultsCount() {
+
+    return totalResultsCount;
+  }
+
+  public int getNextPageIndex() {
+
+    return results.size() + searchParams.firstResult;
+  }
+
+  public int getPreviousPageIndex() {
+
+    return searchParams.firstResult - searchParams.maxResults;
+  }
+
+  public boolean hasNextPage() {
+
+    return (getNextPageIndex() < totalResultsCount);
+  }
+
+  public boolean hasPreviousPage() {
+
+    return (getPreviousPageIndex() >= 0);
+  }
 }

@@ -63,6 +63,8 @@ public class AuditSearchDAOHibernate
 
     Criteria crit = createCriteria();
 
+    crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
     if (sp.getFromTime() != null) {
       crit.add(Restrictions.ge("timestamp", sp.getFromTime()));
     }
@@ -71,10 +73,11 @@ public class AuditSearchDAOHibernate
       crit.add(Restrictions.le("timestamp", sp.getToTime()));
     }
 
-    if (sp.getFilterString() != null
-      && !sp.getFilterString().trim().equals("")) {
-      crit.add(Restrictions.like(sp.getFilterType(),
-        sp.getFilterString().trim(), MatchMode.ANYWHERE));
+    if (sp.getFilterString() != null && !sp.getFilterString()
+      .trim()
+      .equals("")) {
+      crit.add(Restrictions.like(sp.getFilterType(), sp.getFilterString()
+        .trim(), MatchMode.ANYWHERE));
     }
 
     if (sp.getFirstResult() != null) {
@@ -97,7 +100,27 @@ public class AuditSearchDAOHibernate
     Criteria crit = buildCriteriaFromParams(sp);
     List<AuditEvent> results = crit.list();
 
-    return new AuditLogSearchResults(sp, results);
+    crit.setProjection(Projections.rowCount());
+
+    // This is a workaround for
+    // https://hibernate.atlassian.net/browse/HHH-4761
+    // TLDR:
+    // The count(*) project doesn't work well with
+    // the limit implementation of the MySQL Hibernate dialect.
+    // Since what we need here is a way to count all results
+    // matching the query in a way that is not relative to the page
+    // size, we can ignore the pagination limits and just set
+    // arbirtray values and the count(*) result will be accurate
+    crit.setFirstResult(0);
+    crit.setMaxResults(100);
+
+    Integer count = (Integer) crit.uniqueResult();
+
+    if (count == null) {
+      count = 0;
+    }
+
+    return new AuditLogSearchResults(sp, count, results);
   }
 
   public ScrollableAuditLogSearchResults scrollEventsMatchingParams(
@@ -115,6 +138,18 @@ public class AuditSearchDAOHibernate
 
     Criteria crit = buildCriteriaFromParams(sp);
     crit.setProjection(Projections.rowCount());
+
+    // This is a workaround for
+    // https://hibernate.atlassian.net/browse/HHH-4761
+    // TLDR:
+    // The count(*) project doesn't work well with
+    // the limit implementation of the MySQL Hibernate dialect.
+    // Since what we need here is a way to count all results
+    // matching the query in a way that is not relative to the page
+    // size, we can ignore the pagination limits and just set
+    // arbirtray values and the count(*) result will be accurate
+    crit.setFirstResult(0);
+    crit.setMaxResults(100);
 
     return (Integer) crit.uniqueResult();
   }
