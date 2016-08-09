@@ -26,10 +26,15 @@
     </span>
   </s:if>
   <s:else>
-    <span class="blabel blabel-invert">Membership expires <s:date
-        name="endTime"
-        nice="true"
-        format="struts.date.format.future" />
-    </span>
+    <s:if test="endTime != null">
+      <span class="blabel blabel-invert">Membership expires <s:date
+          name="endTime"
+          nice="true"
+          format="struts.date.format.future" />
+       </span>
+    </s:if>
+    <s:else>
+      <span class="blabel blabel-invert">Membership does not expire.</span>
+    </s:else>
   </s:else>
 </s:if>

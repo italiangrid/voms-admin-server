@@ -19,8 +19,8 @@ package org.glite.security.voms.admin.core;
  * Constants used in both the clients and the server. None of these constants
  * should ever be changed.
  *
- * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
- * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea
+ * Ceccanti</a> @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
  *
  */
 final public class VOMSServiceConstants {
@@ -119,6 +119,8 @@ final public class VOMSServiceConstants {
   public static final String VO_NAME_KEY = "voName";
 
   public static final String CURRENT_ADMIN_KEY = "currentAdmin";
+
+  public static final String CURRENT_ADMIN_VO_USER_KEY = "currentAdminVoUser";
 
   public static final String USER_KEY = "vomsUser";
 

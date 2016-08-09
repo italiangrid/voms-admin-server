@@ -15,7 +15,6 @@
  */
 package org.glite.security.voms.admin.integration.orgdb;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -29,8 +28,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultSyncStrategy implements
-  OrgDBMembershipSynchronizationStrategy {
+public class DefaultSyncStrategy
+  implements OrgDBMembershipSynchronizationStrategy {
 
   public static final Logger log = LoggerFactory
     .getLogger(DefaultSyncStrategy.class);
@@ -52,14 +51,12 @@ public class DefaultSyncStrategy implements
 
       } else {
 
-        // There is a valid, open-ended participation in the OrgDb. 
-        // Set user.endTime() to 1 year from now.
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.YEAR, 1);
-  
-        u.setEndTime(cal.getTime());
-        log.debug("Found open-ended participation in OrgDB. Extending"
-          + "membership end time to {}", u.getEndTime());
+        // There is a valid, open-ended participation in the OrgDb.
+        // Set user.endTime() to null as well
+
+        u.setEndTime(null);
+        log.debug(
+          "Found open-ended participation in OrgDB. Setting membership end-time to null");
       }
 
       restoreMembershipIfNeeded(u);
@@ -80,25 +77,23 @@ public class DefaultSyncStrategy implements
         // strange.
         if (!u.hasExpired()) {
 
-          log
-            .debug(
-              "Expiring VOMS membership for user {} since no valid or expired "
+          log.debug(
+            "Expiring VOMS membership for user {} since no valid or expired "
               + "OrgDB participation was found for experiment {}",
-              u, experimentName);
+            u, experimentName);
           u.setEndTime(now);
         }
 
       } else {
 
-        if (u.getEndTime().after(expiredParticipation.getEndDate())) {
+        if (u.getEndTime()
+          .after(expiredParticipation.getEndDate())) {
 
           // Set the end date to the date of the expired participation
           // The membership check task will do the rest.
-          log
-            .debug(
-              "Setting {} expiration date to {}. Previous value was: {}",
-              new Object[] { u, expiredParticipation.getEndDate(),
-                u.getEndTime() });
+          log.debug("Setting {} expiration date to {}. Previous value was: {}",
+            new Object[] { u, expiredParticipation.getEndDate(),
+              u.getEndTime() });
 
           u.setEndTime(expiredParticipation.getEndDate());
 
@@ -108,13 +103,15 @@ public class DefaultSyncStrategy implements
   }
 
   private void restoreMembershipIfNeeded(VOMSUser u) {
-    
-    if (u.isSuspended()){
-      
-      if (u.getSuspensionReasonCode() == SuspensionReason.MEMBERSHIP_EXPIRATION ||
-        u.getSuspensionReason().startsWith("OrgDB: ")) {
-        
-        ValidationManager.instance().restoreUser(u);
+
+    if (u.isSuspended()) {
+
+      if (u.getSuspensionReasonCode() == SuspensionReason.MEMBERSHIP_EXPIRATION
+        || u.getSuspensionReason()
+          .startsWith("OrgDB: ")) {
+
+        ValidationManager.instance()
+          .restoreUser(u);
       }
     }
 
@@ -127,15 +124,17 @@ public class DefaultSyncStrategy implements
     // The institute can be null sometimes
     if (validParticipation.getInstitute() != null) {
 
-      if (u.getInstitution() == null
-        || !u.getInstitution().equals(
-          validParticipation.getInstitute().getName())) {
+      if (u.getInstitution() == null || !u.getInstitution()
+        .equals(validParticipation.getInstitute()
+          .getName())) {
 
-        u.setInstitution(validParticipation.getInstitute().getName());
+        u.setInstitution(validParticipation.getInstitute()
+          .getName());
 
-        log.debug("Institution for user {} and participation {} do not match. "
-          + "Updating VOMS institution field from OrgDB record.", u,
-          validParticipation);
+        log.debug(
+          "Institution for user {} and participation {} do not match. "
+            + "Updating VOMS institution field from OrgDB record.",
+          u, validParticipation);
       }
 
     } else {
@@ -152,15 +151,15 @@ public class DefaultSyncStrategy implements
 
     // The PhoneNumber can be null sometimes
     if (orgDbPerson.getTel1() != null) {
-      if (u.getPhoneNumber() == null
-        || !u.getPhoneNumber().equals(orgDbPerson.getTel1())) {
+      if (u.getPhoneNumber() == null || !u.getPhoneNumber()
+        .equals(orgDbPerson.getTel1())) {
 
         u.setPhoneNumber(orgDbPerson.getTel1());
 
         log.debug(
           "PhoneNumber for VOMS user {} and orgDbPerson {} do not match. "
-            + "Updating VOMS PhoneNumber field from OrgDB record.", u,
-          orgDbPerson);
+            + "Updating VOMS PhoneNumber field from OrgDB record.",
+          u, orgDbPerson);
       }
     } else {
 
@@ -177,50 +176,48 @@ public class DefaultSyncStrategy implements
 
     Validate.notNull(u, "User cannot be null");
     Validate.notNull(orgDBPerson, "OrgDBPerson cannot be null");
-    
+
     Long oldOrgDbId = u.getOrgDbId();
 
-    if (oldOrgDbId == null || !oldOrgDbId.equals(orgDBPerson.getId())){
+    if (oldOrgDbId == null || !oldOrgDbId.equals(orgDBPerson.getId())) {
       log.info("Linking VOMS user {} to OrgDB membership id: {}", u.toString(),
-      orgDBPerson.getId());
+        orgDBPerson.getId());
 
       u.setOrgDbId(orgDBPerson.getId());
     }
 
-    String orgdbEmailAdddress = (String) ObjectUtils.defaultIfNull(
-      orgDBPerson.getPhysicalEmail(), orgDBPerson.getEmail());
+    String orgdbEmailAdddress = (String) ObjectUtils
+      .defaultIfNull(orgDBPerson.getPhysicalEmail(), orgDBPerson.getEmail());
 
     if (orgdbEmailAdddress == null) {
-      log
-        .warn(
-          "null email address for OrgDBPerson %s. Will not sync VOMS email address.",
-          orgDBPerson.toString());
+      log.warn(
+        "null email address for OrgDBPerson %s. Will not sync VOMS email address.",
+        orgDBPerson.toString());
       return;
     }
 
     u.setEmailAddress(orgdbEmailAdddress.toLowerCase());
   }
-  
-  private void synchronizePersonalInformation(VOMSUser u, 
-    VOMSOrgDBPerson orgDbPerson){
-    
+
+  private void synchronizePersonalInformation(VOMSUser u,
+    VOMSOrgDBPerson orgDbPerson) {
+
     u.setName(orgDbPerson.getFirstName());
     u.setSurname(orgDbPerson.getName());
-    
+
   }
 
   public void synchronizeMemberInformation(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName) {
 
-    log
-      .debug(
-        "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
-        new Object[] { u, orgDbPerson, experimentName });
+    log.debug(
+      "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
+      new Object[] { u, orgDbPerson, experimentName });
 
     synchronizeIdAndEmailAddress(u, orgDbPerson);
 
     synchronizePersonalInformation(u, orgDbPerson);
-    
+
     Participation validParticipation = orgDbPerson
       .getValidParticipationForExperiment(experimentName);
 

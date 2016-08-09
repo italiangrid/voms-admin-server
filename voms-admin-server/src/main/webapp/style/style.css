@@ -1091,3 +1091,18 @@ a.register-url {
   margin-top: 1em;
   margin-bottom: 2em;
 }
+
+.ced-input-date {
+  font-size: 18pt ;
+}
+
+.ced-submit-button {
+  float: left;
+}
+
+.clearfix {
+  visibility: hidden;
+  display: block;
+  clear: both;
+  height: 0;
+}

@@ -46,7 +46,8 @@ public class SecurityContextFilter implements Filter {
 
     log.debug("Initializing SecurityContextFilter {}", this);
 
-    voName = VOMSConfiguration.instance().getVOName();
+    voName = VOMSConfiguration.instance()
+      .getVOName();
   }
 
   protected void initContext(HttpServletRequest request) {
@@ -61,6 +62,11 @@ public class SecurityContextFilter implements Filter {
     request.setAttribute("voName", voName);
     request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY,
       CurrentAdmin.instance());
+
+    request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_VO_USER_KEY,
+      CurrentAdmin.instance()
+        .getVoUser());
+
   }
 
   public void doFilter(ServletRequest req, ServletResponse res,

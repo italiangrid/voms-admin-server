@@ -55,11 +55,10 @@ public class CurrentAdmin {
 
   private static VOMSAdmin lookupAdmin() {
 
-    SecurityContext ctxt = (SecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext ctxt = (SecurityContext) CurrentSecurityContext.get();
 
-    VOMSAdmin admin = VOMSAdminDAO.instance().lookup(ctxt.getClientName(), 
-      ctxt.getIssuerName());
+    VOMSAdmin admin = VOMSAdminDAO.instance()
+      .lookup(ctxt.getClientName(), ctxt.getIssuerName());
 
     return admin;
   }
@@ -69,7 +68,8 @@ public class CurrentAdmin {
     VOMSAdmin admin = lookupAdmin();
 
     if (admin == null)
-      admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+      admin = VOMSAdminDAO.instance()
+        .getAnyAuthenticatedUserAdmin();
 
     return new CurrentAdmin(admin);
   }
@@ -86,8 +86,8 @@ public class CurrentAdmin {
 
   public boolean isAuthorizedAdmin() {
 
-    return !getAdmin()
-      .equals(VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
+    return !getAdmin().equals(VOMSAdminDAO.instance()
+      .getAnyAuthenticatedUserAdmin());
   }
 
   public boolean isVoUser() {
@@ -105,6 +105,11 @@ public class CurrentAdmin {
 
   }
 
+  public boolean hasLinkedUser() {
+
+    return (getVoUser() != null);
+  }
+
   public VOMSUser getVoUser() {
 
     String lookupSubject, lookupIssuer;
@@ -114,10 +119,12 @@ public class CurrentAdmin {
       lookupIssuer = getRealIssuer();
     } else {
       lookupSubject = admin.getDn();
-      lookupIssuer = admin.getCa().getSubjectString();
+      lookupIssuer = admin.getCa()
+        .getSubjectString();
     }
 
-    return VOMSUserDAO.instance().lookup(lookupSubject, lookupIssuer);
+    return VOMSUserDAO.instance()
+      .lookup(lookupSubject, lookupIssuer);
   }
 
   public void createVoUser() {
@@ -126,8 +133,9 @@ public class CurrentAdmin {
 
     if (usr == null) {
 
-      VOMSUserDAO.instance().create(getRealSubject(), getRealIssuer(),
-        getRealCN(), null, getRealEmailAddress());
+      VOMSUserDAO.instance()
+        .create(getRealSubject(), getRealIssuer(), getRealCN(), null,
+          getRealEmailAddress());
     }
   }
 
@@ -146,8 +154,9 @@ public class CurrentAdmin {
 
   public boolean canBrowseVO() {
 
-    return hasPermissions(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerReadPermission().setMembershipReadPermission());
+    return hasPermissions(VOMSContext.getVoContext(),
+      VOMSPermission.getContainerReadPermission()
+        .setMembershipReadPermission());
   }
 
   public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
@@ -237,7 +246,8 @@ public class CurrentAdmin {
       for (Map.Entry<VOMSAdmin, VOMSPermission> entry : groupPermissions
         .entrySet()) {
 
-        String groupName = entry.getKey().getDn();
+        String groupName = entry.getKey()
+          .getDn();
 
         if (adminVOUser.isMember(groupName)) {
           VOMSPermission groupPerm = entry.getValue();
@@ -256,12 +266,14 @@ public class CurrentAdmin {
 
       for (Map.Entry<VOMSAdmin, VOMSPermission> entry : rolePermissions
         .entrySet()) {
-        String roleName = entry.getKey().getDn();
+        String roleName = entry.getKey()
+          .getDn();
 
         log.debug("Checking if current admin has role: " + roleName);
         if (adminVOUser.hasRole(roleName)) {
 
-          effectivePerms = effectivePerms | entry.getValue().getBits();
+          effectivePerms = effectivePerms | entry.getValue()
+            .getBits();
 
           log.debug("Adding role permission " + entry.getValue()
             + " to admin's permission set. admin has role '" + roleName + "'.");
@@ -287,8 +299,7 @@ public class CurrentAdmin {
 
   public String getRealSubject() {
 
-    SecurityContext theContext = (SecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getClientName();
 
@@ -296,8 +307,7 @@ public class CurrentAdmin {
 
   public String getRealIssuer() {
 
-    SecurityContext theContext = (SecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getIssuerName();
 
@@ -305,16 +315,16 @@ public class CurrentAdmin {
 
   public String getRealCN() {
 
-    SecurityContext theContext = (SecurityContext) CurrentSecurityContext
-      .get();
-    
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
+
     if (theContext.getClientCert() == null)
       return null;
 
-    String name = DNUtil
-      .getOpenSSLSubject(theContext.getClientCert().getSubjectX500Principal());
+    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
+      .getSubjectX500Principal());
 
-    Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
+    Matcher m = Pattern.compile("/CN=([^/]*)")
+      .matcher(name);
     if (m.find())
       return m.group(1); // get the CN field
     else
@@ -323,7 +333,8 @@ public class CurrentAdmin {
 
   public boolean hasRole(VOMSGroup group, String roleName) {
 
-    VOMSRole role = VOMSRoleDAO.instance().findByName(roleName);
+    VOMSRole role = VOMSRoleDAO.instance()
+      .findByName(roleName);
 
     if (role == null) {
       return false;
@@ -348,14 +359,13 @@ public class CurrentAdmin {
 
   public String getRealEmailAddress() {
 
-    SecurityContext theContext = (SecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     if (theContext.getClientCert() == null)
       return null;
 
-    String name = DNUtil
-      .getOpenSSLSubject(theContext.getClientCert().getSubjectX500Principal());
+    String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
+      .getSubjectX500Principal());
 
     String candidateEmail = DNUtil
       .getEmailAddressFromDN(DNUtil.normalizeEmailAddressInDN(name));
@@ -369,10 +379,9 @@ public class CurrentAdmin {
   }
 
   public List<VOMSAttribute> getVOMSAttributes() {
-      
+
     // FIXME: to be reimplemented
     return null;
-
 
   }
 
@@ -398,8 +407,7 @@ public class CurrentAdmin {
       return null;
     }
 
-    SecurityContext theContext = (SecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getClientCert();
 

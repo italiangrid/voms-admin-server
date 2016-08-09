@@ -59,6 +59,7 @@ import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
+import org.glite.security.voms.admin.util.validation.x509.VOMSAdminDnValidator;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -271,6 +272,12 @@ public final class VOMSService {
 
   }
 
+  private static void initializeDnValidator() {
+
+    VOMSAdminDnValidator.INSTANCE.initialize("/etc/grid-security/certificates",
+      true);
+  }
+
   public static void start(ServletContext ctxt) {
 
     Thread
@@ -312,6 +319,8 @@ public final class VOMSService {
 
     ValidationManager.instance()
       .startMembershipChecker();
+
+    initializeDnValidator();
 
     log.info("VOMS-Admin started succesfully.");
   }

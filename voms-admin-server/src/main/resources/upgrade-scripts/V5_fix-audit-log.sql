@@ -2,6 +2,8 @@
 alter table audit_event_data modify value varchar(512)
 create index ae_type_idx on audit_event (event_timestamp, event_type)
 create index ae_principal_idx on audit_event (principal, event_timestamp)
+/* Drop not null constraint from usr.end_time */
+alter table usr modify column end_time datetime;
 /* Create notification persistence tables */
 create table notification (id bigint not null auto_increment, creation_time datetime not null, handler_id varchar(255), message text not null, messageType varchar(512) not null, status varchar(255) not null, subject text not null, primary key (id)) ENGINE=InnoDB
 create table notification_delivery (id bigint not null auto_increment, delivery_timestamp datetime not null, error_message text, handler_id varchar(255) not null, status varchar(255) not null, notification_id bigint not null, primary key (id)) ENGINE=InnoDB

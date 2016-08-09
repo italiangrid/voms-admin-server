@@ -214,7 +214,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     Date now = new Date();
 
-    String queryString = "from VOMSUser u where u.endTime < :now";
+    String queryString = "from VOMSUser u where u.endTime is not null and u.endTime < :now";
     Query q = HibernateFactory.getSession()
       .createQuery(queryString);
 

@@ -34,8 +34,13 @@ public class UserMembershipExpirationDateUpdated extends UserLifecycleEvent {
   protected void decorateAuditEvent(AuditEvent e) {
 
     super.decorateAuditEvent(e);
-    e.addDataPoint("newMembershipExpirationDate", nullSafeValue(getPayload()
-      .getEndTime().toString()));
+    if (getPayload().getEndTime() == null) {
+      e.addDataPoint("newMembershipExpirationDate", "<null>");
+    } else {
+      e.addDataPoint("newMembershipExpirationDate",
+        nullSafeValue(getPayload().getEndTime()
+          .toString()));
+    }
   }
 
 }

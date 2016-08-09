@@ -59,7 +59,7 @@
 <div class="userAdminActions">
    <s:if test="#attr.canDelete == true and #attr.readOnlyMembershipExpiration == false">
         <s:form
-          action="extend-membership-expiration"
+          action="change-membership-expiration"
           theme="simple" cssClass="middleline" cssStyle="display:inline">
 
           <s:token />
@@ -67,9 +67,9 @@
             name="userId"
             value="%{id}" />
           <s:submit
-            value="%{'Extend membership'}"
+            value="%{'Change membership expiration date'}"
             disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"
-            tooltip="Extends membership for the user starting from the current date for the default period configured for the VO (typically 12 months)." />
+            tooltip="Change membership expiration date for the user" />
         </s:form>
   </s:if>
   

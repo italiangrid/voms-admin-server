@@ -32,22 +32,25 @@ import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.request.CertificateRequest;
 import org.glite.security.voms.admin.util.CertUtil;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.glite.security.voms.admin.util.validation.x509.DnValidationError;
+import org.glite.security.voms.admin.util.validation.x509.DnValidationResult;
+import org.glite.security.voms.admin.util.validation.x509.VOMSAdminDnValidator;
 
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
 
-@Result(name = UserActionSupport.SUCCESS, location = "userHome"),
+  @Result(name = UserActionSupport.SUCCESS, location = "userHome"),
   @Result(name = UserActionSupport.ERROR, location = "certificateRequest.jsp"),
   @Result(name = UserActionSupport.INPUT, location = "requestCertificate") })
-@InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "execute" })
+@InterceptorRef(value = "authenticatedStack",
+  params = { "token.includeMethods", "execute" })
 public class RequestCertificateAction extends UserActionSupport {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   File certificateFile;
@@ -58,7 +61,9 @@ public class RequestCertificateAction extends UserActionSupport {
   public void validate() {
 
     CertificateDAO dao = CertificateDAO.instance();
-    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+    RequestDAO reqDAO = DAOFactory.instance()
+      .getRequestDAO();
+
     if (certificateFile != null) {
 
       X509Certificate cert = null;
@@ -68,8 +73,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
       } catch (Throwable e) {
 
-        addFieldError(
-          "certificateFile",
+        addFieldError("certificateFile",
           "Error parsing certificate passed as argument. Please upload a valid X509, PEM encoded certificate.");
         return;
       }
@@ -80,7 +84,7 @@ public class RequestCertificateAction extends UserActionSupport {
         return;
       }
 
-      if (dao.find(cert) != null){
+      if (dao.find(cert) != null) {
         addFieldError("certificateFile", "Certificate already bound!");
       }
 
@@ -93,16 +97,34 @@ public class RequestCertificateAction extends UserActionSupport {
 
       }
 
-    } else if (subject != null && !"".equals(subject) && !caSubject.equals("-1")) {
+    } else if (subject != null && !"".equals(subject)
+      && !caSubject.equals("-1")) {
 
       // Remove whitespace and newlines from subject
-      subject=subject.trim().replace("\n", "").replace("\r", "");
-      
-      if (subject.equals("")){
+      subject = subject.trim()
+        .replace("\n", "")
+        .replace("\r", "");
+
+      if (subject.equals("")) {
         addFieldError("subject", "Please provide a suitable subject");
         return;
       }
-      
+
+      try {
+        DnValidationResult result = VOMSAdminDnValidator.INSTANCE.getValidator()
+          .validate(caSubject, subject);
+
+        if (!result.isValid()) {
+          addFieldError("subject", result.errorMessage());
+        }
+
+      } catch (IllegalArgumentException e) {
+        addFieldError("subject", e.getMessage());
+
+      } catch (DnValidationError e) {
+        addFieldError("subject", e.getMessage());
+      }
+
       if (dao.lookup(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
         addFieldError("caSubject", "Certificate already bound!");
@@ -117,7 +139,8 @@ public class RequestCertificateAction extends UserActionSupport {
       }
     } else {
 
-      addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+      addActionError(
+        "Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
     }
 
   }
@@ -161,16 +184,18 @@ public class RequestCertificateAction extends UserActionSupport {
   @Override
   public String execute() throws Exception {
 
-    if (!VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true))
+    if (!VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED,
+        true))
       return "registrationDisabled";
 
-    RequestDAO reqDAO = DAOFactory.instance().getRequestDAO();
+    RequestDAO reqDAO = DAOFactory.instance()
+      .getRequestDAO();
 
     CertificateRequest req = reqDAO.createCertificateRequest(getModel(),
       getSubject(), getCaSubject(), getDefaultFutureDate());
-    EventManager.instance().dispatch(new CertificateRequestSubmittedEvent(req,
-      getHomeURL()));
+    EventManager.instance()
+      .dispatch(new CertificateRequestSubmittedEvent(req, getHomeURL()));
 
     refreshPendingRequests();
 

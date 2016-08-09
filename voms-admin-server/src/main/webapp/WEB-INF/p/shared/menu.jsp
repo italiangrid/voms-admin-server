@@ -30,7 +30,8 @@
   <li>
     <a href="<s:url action="configuration" namespace="/configuration"/>">Configuration Info</a>
   </li>
-  <s:if test="#request.currentAdmin.voUser == null">
+  
+  <s:if test="#request.currentAdminVoUser == null">
   		<li>
   			<a href="<s:url action="start" namespace="/register"/>">Request membership</a>
   		</li>

@@ -91,6 +91,7 @@
         <s:else>
           <tr style="vertical-align: middle;">
             <th>When</th>
+            <th>Event Id</th>
             <th>Description
             
                <input 
@@ -114,18 +115,21 @@
         </s:else>
         <s:iterator value="model.results" var="event">
           <tr>
-            <td style="width:15%"><s:date
+            <td style="width:10%"><s:date
                 name="timestamp"
                 nice="true"
                 format="struts.date.format.past" />
+                <br>
                 <br>
                 <a
                   href="#"
                   class="al-trigger"
                   data-target="al_${event.id}">more info</a>
                 </td>
-
-            <td style="width:75%" class="al-desc">
+            <td style="width:5%">
+              ${event.id}
+            </td>
+            <td style="width:80%" class="al-desc">
               <div class="audit-log-principal">
                 <s:property
                   value="adminNameFormatter.formatAdminName(#event.principal)" />
