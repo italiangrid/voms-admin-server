@@ -21,6 +21,7 @@
 	You're not a VO user. You'll see nothing around here.
 </s:if>
 <s:else>
+  <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
   
   <div id="welcomeUserName">
     <s:if test="name != null and surname != null">

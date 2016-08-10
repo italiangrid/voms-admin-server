@@ -25,6 +25,7 @@ import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -103,6 +104,13 @@ public class CurrentAdmin {
 
     return getVoUser().equals(u);
 
+  }
+
+  public boolean is(Certificate c) {
+
+    return getRealSubject().equals(c.getSubjectString())
+      && getRealIssuer().equals(c.getCa()
+        .getSubjectString());
   }
 
   public boolean hasLinkedUser() {

@@ -34,17 +34,17 @@ import org.slf4j.LoggerFactory;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail"),
   @Result(name = BaseAction.INPUT, location = "addCertificate") })
-@InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "deleteCertificate,saveCertificate" })
+@InterceptorRef(value = "authenticatedStack",
+  params = { "token.includeMethods", "deleteCertificate,saveCertificate" })
 public class CertificateActions extends UserActionSupport {
 
   public static final Logger log = LoggerFactory
     .getLogger(CertificateActions.class);
 
   /**
-	 * 
-	 */
-  private static final long serialVersionUID = 1L;
+   * 
+   */
+    private static final long serialVersionUID = 1L;
 
   Long certificateId;
 
@@ -56,11 +56,14 @@ public class CertificateActions extends UserActionSupport {
   @Action("delete-certificate")
   public String deleteCertificate() throws Exception {
 
-    Certificate cert = CertificateDAO.instance().findById(getCertificateId());
+    Certificate cert = CertificateDAO.instance()
+      .findById(getCertificateId());
 
     // FIXME: create constructor that accepts a certificate
-    RemoveUserCertificateOperation.instance(cert.getSubjectString(),
-      cert.getCa().getSubjectString()).execute();
+    RemoveUserCertificateOperation
+      .instance(cert.getSubjectString(), cert.getCa()
+        .getSubjectString())
+      .execute();
 
     return SUCCESS;
 
@@ -77,16 +80,18 @@ public class CertificateActions extends UserActionSupport {
 
     if (certificateFile != null) {
 
-      X509Certificate cert = CertUtil.parseCertficate(new FileInputStream(
-        certificateFile));
+      X509Certificate cert = CertUtil
+        .parseCertficate(new FileInputStream(certificateFile));
 
-      AddUserCertificateOperation.instance(getModel(), cert).execute();
+      AddUserCertificateOperation.instance(getModel(), cert)
+        .execute();
 
     } else {
 
       // Fix for bug https://savannah.cern.ch/bugs/?88019
-      AddUserCertificateOperation.instance(getModel(), subject.trim(),
-        caSubject.trim(), null).execute();
+      AddUserCertificateOperation
+        .instance(getModel(), subject.trim(), caSubject.trim(), null)
+        .execute();
 
     }
 
@@ -128,7 +133,8 @@ public class CertificateActions extends UserActionSupport {
       }
     } else {
 
-      addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+      addActionError(
+        "Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
     }
   }
 

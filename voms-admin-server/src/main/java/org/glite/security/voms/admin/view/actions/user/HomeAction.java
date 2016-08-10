@@ -18,6 +18,7 @@ package org.glite.security.voms.admin.view.actions.user;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "userHome"),
@@ -25,24 +26,33 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 public class HomeAction extends UserActionSupport {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   @Override
   public void prepare() throws Exception {
 
-    if (CurrentAdmin.instance().getVoUser() == null) {
-      addActionError("Current authenticated client has no corresponding VO membership!");
+    if (CurrentAdmin.instance()
+      .getVoUser() == null) {
+      addActionError(
+        "Current authenticated client has no linked VO membership!");
     }
 
-    model = CurrentAdmin.instance().getVoUser();
+    model = CurrentAdmin.instance()
+      .getVoUser();
 
     if (model != null) {
       refreshPendingRequests();
 
     }
 
+  }
+
+  public boolean currentAdminIsCertificate(Certificate c) {
+
+    return CurrentAdmin.instance()
+      .is(c);
   }
 
 }

@@ -41,7 +41,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
 
-  @Result(name = UserActionSupport.SUCCESS, location = "userHome"),
+  @Result(name = UserActionSupport.SUCCESS, location = "home",
+    type = "redirectAction"),
   @Result(name = UserActionSupport.ERROR, location = "certificateRequest.jsp"),
   @Result(name = UserActionSupport.INPUT, location = "requestCertificate") })
 @InterceptorRef(value = "authenticatedStack",

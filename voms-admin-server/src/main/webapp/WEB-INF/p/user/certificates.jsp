@@ -101,7 +101,7 @@
 							<s:token />
 							<s:hidden name="userId" value="%{model.id}" />
 							<s:hidden name="certificateId" value="%{#cert.id}" />
-							<s:submit value="%{'Delete'}" />
+							<s:submit value="%{'Delete'}" onclick="confirmRemoveCertificateDialog(this, '%{#cert.subjectString}', '%{#cert.ca.subjectString}', '%{model.shortName}'); return false;"/>
 						</s:form>
 					</s:if>
 				</s:if>

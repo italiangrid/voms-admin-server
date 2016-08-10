@@ -47,13 +47,23 @@
             </div> <tiles2:insertTemplate template="suspensionDetail.jsp" />
 
 
-            <div class="cert-operations"></div>
-
+            <div class="cert-operations">
+              <s:if test="not currentAdminIsCertificate(#cert)">
+                <s:form action="remove-own-certificate">
+                  <%-- <s:token /> --%>
+                  <s:hidden
+                    name="certificateId"
+                    value="%{#cert.id}" />
+                  <s:submit
+                    value="%{'Remove this certificate'}"
+                    align="right"
+                    onclick="confirmRemoveOwnCertificateDialog(this, '%{#cert.subjectString}', '%{#cert.ca.subjectString}'); return false" />
+                </s:form>
+              </s:if>
+            </div>
           </td>
         </tr>
       </s:iterator>
-
-
 
       <s:iterator
         var="req"
@@ -63,13 +73,9 @@
             <div
               class="waitingForApproval"
               style="float: right">(Waiting for approval)</div>
-            <div class="requestedDN">
-              ${req.certificateSubject}
-            </div>
+            <div class="requestedDN">${req.certificateSubject}</div>
 
-            <div class="requestedCA">
-              ${req.certificateIssuer}
-            </div>
+            <div class="requestedCA">${req.certificateIssuer}</div>
 
             <div class="cert-date-info">
               Requested on: <span> <s:text name="format.datetime">
