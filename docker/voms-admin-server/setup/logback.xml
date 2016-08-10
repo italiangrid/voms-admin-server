@@ -8,6 +8,9 @@
   <logger name="org.hibernate.SQL" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
   <logger name="org.hibernate.type" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
 
+  <logger name="org.apache.struts2" level="${STRUTS_LOG_LEVEL:-WARN}" />
+  <logger name="com.opensymphony.xwork2" level="${STRUTS_LOG_LEVEL:-WARN}" />
+
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%thread] [%logger{0}] - %msg%n</pattern>

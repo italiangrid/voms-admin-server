@@ -34,7 +34,7 @@ services:
         - .:/code:ro
         - ~/.jrebel:/home/voms/.jrebel:rw
         - ~/jrebel:/jrebel:ro
-        # - ~/orgdb:/orgdb:ro
+        - ~/orgdb:/orgdb:ro
 
     ports:
         - "1044:1044"
@@ -62,6 +62,7 @@ services:
       ENABLE_JREBEL: y
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: TRACE
+      # STRUTS_LOG_LEVEL: DEBUG
 
   lb:
     image: dockercloud/haproxy:latest
