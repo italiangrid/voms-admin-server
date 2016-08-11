@@ -40,7 +40,7 @@ cp /etc/grid-security/hostkey.pem  /etc/grid-security/vomskey.pem
 chown voms:voms /etc/grid-security/voms*.pem
 
 # Do this or voms-admin webapp will fail silently and always return 503
-mkdir /etc/grid-security/vomsdir
+mkdir -p /etc/grid-security/vomsdir
 
 ## Preconfigure using existing package, if requested
 if [[ -n "${VOMS_PRE_CONFIGURE}" ]]; then

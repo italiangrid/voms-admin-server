@@ -67,7 +67,7 @@
               cssClass="input-label" /> <s:select
               id="sp_filter_type"
               name="searchParams.filterType"
-              list="{'principal', 'type'}"
+              list="{'full search','principal', 'type'}"
               value="searchParams.filterType" /> 
 
               <s:set value="searchParams.filterString" var="fs"/>

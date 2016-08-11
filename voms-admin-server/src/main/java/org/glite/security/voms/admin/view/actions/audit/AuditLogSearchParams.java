@@ -19,6 +19,8 @@ import java.util.Date;
 
 public class AuditLogSearchParams {
 
+  public static final String FULL_SEARCH_KEY = "full search";
+
   Date fromTime;
   Date toTime;
 

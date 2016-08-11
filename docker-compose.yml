@@ -61,7 +61,7 @@ services:
       VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-expiration-warnings
       ENABLE_JREBEL: y
       # ENABLE_JMX: y
-      # HIBERNATE_LOG_LEVEL: TRACE
+      HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
 
   lb:

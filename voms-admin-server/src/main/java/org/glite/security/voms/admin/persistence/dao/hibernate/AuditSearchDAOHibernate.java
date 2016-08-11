@@ -24,6 +24,7 @@ import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchParams;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchResults;
 import org.glite.security.voms.admin.view.actions.audit.ScrollableAuditLogSearchResults;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.MatchMode;
@@ -76,8 +77,31 @@ public class AuditSearchDAOHibernate
     if (sp.getFilterString() != null && !sp.getFilterString()
       .trim()
       .equals("")) {
-      crit.add(Restrictions.like(sp.getFilterType(), sp.getFilterString()
-        .trim(), MatchMode.ANYWHERE));
+
+      if (sp.getFilterType()
+        .equals(AuditLogSearchParams.FULL_SEARCH_KEY)) {
+
+        // Full search is basically search over principal
+        // and audit event data point values
+        String filterString = String.format("%%%s%%", sp.getFilterString());
+
+        // This is due to another ugly limitation of Hibernate 3.3
+        // which does not support criteria queries on embedded
+        // collections
+        // See https://hibernate.atlassian.net/browse/HHH-869
+
+        crit.add(Restrictions.disjunction()
+          .add(Restrictions.sqlRestriction(
+            "{alias}.event_id in (select ae.event_id from audit_event ae, audit_event_data aed where ae.event_id = aed.event_id and aed.value like ?)",
+            filterString, Hibernate.STRING))
+          .add(Restrictions.like("principal", sp.getFilterString()
+            .trim(), MatchMode.ANYWHERE)));
+
+      } else {
+        crit.add(Restrictions.like(sp.getFilterType(), sp.getFilterString()
+          .trim(), MatchMode.ANYWHERE));
+      }
+
     }
 
     if (sp.getFirstResult() != null) {
