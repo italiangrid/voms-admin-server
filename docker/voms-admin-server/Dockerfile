@@ -1,11 +1,15 @@
 FROM italiangrid/base-dev
 
-ADD setup /
-RUN touch /timedhosts.txt && cp /timedhosts.txt /var/cache/yum/x86_64/6
 RUN sed -i 's/socket_timeout=3/socket_timeout=1/' /etc/yum/pluginconf.d/fastestmirror.conf
+RUN echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror.conf
+
+ADD setup /
+
+RUN yum -y -d2 install sudo && sh setup-voms-user.sh
+
 RUN chmod 755 "/run.sh"
 RUN cp /emi-oracle-11.repo  /etc/yum.repos.d && \
-  yum -y install oracle-instantclient-basic \
+  yum -y -d2 install oracle-instantclient-basic \
   java-1.6.0-openjdk-devel \
   java-1.8.0-openjdk-devel \
   voms-admin-client \

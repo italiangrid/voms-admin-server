@@ -27,14 +27,16 @@ services:
       - "25"
 
   adminserver:
-    image: italiangrid/voms-admin-server
+    image: italiangrid/voms-admin-server:latest
     domainname: local.io
 
     volumes:
+        - /etc/voms
+        - /etc/grid-security
         - .:/code:ro
         - ~/.jrebel:/home/voms/.jrebel:rw
         - ~/jrebel:/jrebel:ro
-        - ~/orgdb:/orgdb:ro
+          #        - ~/orgdb:/orgdb:ro
 
     ports:
         - "1044:1044"
@@ -58,11 +60,24 @@ services:
       # VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       # VOMS_UPGRADE_DB: y
-      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-expiration-warnings
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-expiration-warnings
       ENABLE_JREBEL: y
       # ENABLE_JMX: y
-      HIBERNATE_LOG_LEVEL: DEBUG
+      # HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
+
+  voms:
+    image: italiangrid/voms-dev:latest
+    domainname: local.io
+
+    volumes_from:
+      - adminserver
+
+    ports:
+      - "15000:15000"
+    
+    links:
+      - db
 
   lb:
     image: dockercloud/haproxy:latest

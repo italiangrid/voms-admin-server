@@ -1,0 +1,4 @@
+set history filename ~/.gdb_history
+set history save
+set detach-on-fork on
+set follow-fork-mode child

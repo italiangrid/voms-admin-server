@@ -4,7 +4,6 @@ set -ex
 voms-configure install \
   --vo test \
   --dbtype mysql \
-  --skip-voms-core \
   --deploy-database \
   --dbname $VOMS_DB_NAME \
   --dbusername $VOMS_DB_USERNAME \
@@ -14,6 +13,7 @@ voms-configure install \
   --smtp-host mail \
   --membership-check-period 60 \
   --hostname ${VOMS_HOSTNAME} \
+  --core-port 15000 \
   ${CONFIGURE_VO_OPTIONS}
 
 if [[ -f "/etc/voms-admin/voms-admin-server.properties" ]]; then

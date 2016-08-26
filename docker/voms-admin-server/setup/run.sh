@@ -27,10 +27,6 @@ if [[ -n "${VOMS_ADMIN_CLIENT_VERSION}" ]]; then
   yum install -y voms-admin-client-${VOMS_ADMIN_CLIENT_VERSION}
 fi
 
-## Setup VOMS home for easier jrebel configuration
-chown voms:voms /home/voms
-usermod -d /home/voms voms
-
 cp /tnsnames.ora /home/voms
 chown voms:voms /home/voms/tnsnames.ora
 

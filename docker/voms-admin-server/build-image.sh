@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t italiangrid/voms-admin-server .
+docker build --no-cache=true -t italiangrid/voms-admin-server .
