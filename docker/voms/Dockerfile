@@ -9,8 +9,7 @@ RUN yum -y -d2 install sudo && sh setup-voms-user.sh
 
 RUN /bin/bash setup.sh
 
-VOLUME /code
-
 USER voms
+WORKDIR /home/voms
 CMD /bin/bash /run.sh 
 EXPOSE 15000 
