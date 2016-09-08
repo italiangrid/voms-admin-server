@@ -18,10 +18,8 @@ package org.glite.security.voms.admin.view.actions;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
-@Results({ @Result(name = BaseAction.SUCCESS,
-  location = "sign",
-  type = "redirectAction",
-  params = { "namespace", "/aup" }) })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "sign",
+  type = "redirectAction", params = { "namespace", "/aup" }) })
 public class SignAupAction extends BaseAction {
 
   /**

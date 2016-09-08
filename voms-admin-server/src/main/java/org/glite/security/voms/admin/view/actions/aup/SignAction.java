@@ -18,6 +18,8 @@ package org.glite.security.voms.admin.view.actions.aup;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
+import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.aup.UserSignedAUPEvent;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
@@ -57,7 +59,12 @@ public class SignAction extends BaseAction
   public void validate() {
 
     super.validate();
-    VOMSUser u = CurrentAdmin.instance().getVoUser();
+    VOMSUser u = CurrentAdmin.instance()
+      .getVoUser();
+
+    if (registrationDisabled()) {
+      addActionError("Registration is disabled for this VO");
+    }
 
     if (u == null) {
       addActionError(
@@ -71,13 +78,28 @@ public class SignAction extends BaseAction
 
   }
 
+  public boolean registrationDisabled() {
+
+    boolean registrationEnabled = VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED,
+        true);
+
+    boolean readOnly = VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.READONLY, false);
+
+    return (readOnly || !registrationEnabled);
+  }
+
   @Override
   public String execute() throws Exception {
 
-    VOMSUser u = CurrentAdmin.instance().getVoUser();
+    VOMSUser u = CurrentAdmin.instance()
+      .getVoUser();
 
-    VOMSUserDAO.instance().signAUP(u, aup);
-    EventManager.instance().dispatch(new UserSignedAUPEvent(u, aup));
+    VOMSUserDAO.instance()
+      .signAUP(u, aup);
+    EventManager.instance()
+      .dispatch(new UserSignedAUPEvent(u, aup));
 
     return SUCCESS;
   }
@@ -100,7 +122,8 @@ public class SignAction extends BaseAction
   public void prepare() throws Exception {
 
     if (aup == null) {
-      AUPDAO dao = DAOFactory.instance().getAUPDAO();
+      AUPDAO dao = DAOFactory.instance()
+        .getAUPDAO();
       aup = dao.getVOAUP();
     }
   }

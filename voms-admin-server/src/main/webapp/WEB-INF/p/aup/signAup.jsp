@@ -29,6 +29,9 @@
   Click <s:a href="%{infoUrl}">here</s:a> to get more information on how you have
   been authenticated.
 </s:if>
+<s:elseif test="registrationDisabled()">
+  Registration is disabled for this VO.
+</s:elseif>
 <s:else>
   <s:form validate="true">
     <s:token />
