@@ -30,7 +30,7 @@ public class ExpiredMembersWarning extends AbstractVelocityNotification {
   }
 
   @Override
-  protected void buildMessage() {
+  public void buildMessage() {
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
     String voName = conf.getVOName();

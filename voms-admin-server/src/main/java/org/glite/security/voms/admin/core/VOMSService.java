@@ -42,12 +42,15 @@ import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.auditing.AuditLog;
 import org.glite.security.voms.admin.integration.PluginManager;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
+import org.glite.security.voms.admin.notification.PersistentNotificationService;
+import org.glite.security.voms.admin.notification.VOMSNotificationSettings;
 import org.glite.security.voms.admin.notification.dispatchers.CertificateRequestsNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.DefaultNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.GroupMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.MembershipRemovalNotificationDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.RoleMembershipNotificationDispatcher;
+import org.glite.security.voms.admin.notification.dispatchers.SignAUPReminderDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.UserSuspendedDispatcher;
 import org.glite.security.voms.admin.notification.dispatchers.VOMembershipNotificationDispatcher;
 import org.glite.security.voms.admin.operations.DefaultPrincipalProvider;
@@ -55,6 +58,8 @@ import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
+import org.glite.security.voms.admin.util.validation.x509.VOMSAdminDnValidator;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -73,15 +78,16 @@ public final class VOMSService {
 
   protected static void checkDatabaseVersion() {
 
-    String adminVersion = VOMSVersionDAO.instance().getVersion()
+    String adminVersion = VOMSVersionDAO.instance()
+      .getVersion()
       .getAdminVersion();
 
     if (!adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
-      String msg = String
-        .format(
-          "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
-            + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
-            + " command.", adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+      String msg = String.format(
+        "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+          + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+          + " command.",
+        adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       log.error(msg);
       throw new VOMSFatalException(msg);
@@ -129,6 +135,7 @@ public final class VOMSService {
     manager.register(VOMembershipNotificationDispatcher.instance());
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
+    manager.register(SignAUPReminderDispatcher.instance());
 
   }
 
@@ -139,22 +146,45 @@ public final class VOMSService {
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
 
-    es.startBackgroundTask(new SignAUPReminderCheckTask(DAOFactory.instance(),
-      EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
-      TimeUnit.DAYS), VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+    es.startBackgroundTask(
+      new SignAUPReminderCheckTask(DAOFactory.instance(),
+        EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
+        TimeUnit.DAYS),
+      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
 
     es.startBackgroundTask(new UpdateCATask(),
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
     es.startBackgroundTask(new TaskStatusUpdater(), 30L);
 
-    es.startBackgroundTask(new ExpiredRequestsPurgerTask(DAOFactory.instance(),
-      EventManager.instance()),
+    es.startBackgroundTask(
+      new ExpiredRequestsPurgerTask(DAOFactory.instance(),
+        EventManager.instance()),
       VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
 
     es.startBackgroundTask(new UserStatsTask(),
       VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
       UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+
+  }
+
+  protected static void startNotificationService() {
+
+    if (!VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
+
+      PersistentNotificationService ns = PersistentNotificationService.INSTANCE;
+
+      ns.setNotificationSettings(
+        VOMSNotificationSettings.fromVOMSConfiguration());
+
+      ns.setDao(DAOFactory.instance()
+        .getNotificationDAO());
+
+      ns.start();
+    } else {
+      log.warn("Notification service is DISABLED.");
+    }
 
   }
 
@@ -207,12 +237,12 @@ public final class VOMSService {
     File f = new File(loggingConf);
 
     if (!f.exists())
-      throw new VOMSFatalException(String.format("Logging configuration "
-        + "not found at path '%s'", loggingConf));
+      throw new VOMSFatalException(String.format(
+        "Logging configuration " + "not found at path '%s'", loggingConf));
 
     if (!f.canRead())
-      throw new VOMSFatalException(String.format("Logging configuration "
-        + "is not readable: %s", loggingConf));
+      throw new VOMSFatalException(String
+        .format("Logging configuration " + "is not readable: %s", loggingConf));
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -242,6 +272,12 @@ public final class VOMSService {
 
   }
 
+  private static void initializeDnValidator() {
+
+    VOMSAdminDnValidator.INSTANCE.initialize("/etc/grid-security/certificates",
+      true);
+  }
+
   public static void start(ServletContext ctxt) {
 
     Thread
@@ -266,26 +302,54 @@ public final class VOMSService {
 
     checkDatabaseVersion();
 
+    configureCertificateLookupPolicy(conf);
+
     configureVelocity();
 
     configureEventManager();
 
     startBackgroundTasks();
 
+    startNotificationService();
+
     bootstrapAttributeAuthorityServices();
 
-    PluginManager.instance().configurePlugins();
+    PluginManager.instance()
+      .configurePlugins();
 
-    ValidationManager.instance().startMembershipChecker();
+    ValidationManager.instance()
+      .startMembershipChecker();
+
+    initializeDnValidator();
 
     log.info("VOMS-Admin started succesfully.");
+  }
+
+  private static void configureCertificateLookupPolicy(VOMSConfiguration conf) {
+
+    boolean skipCaCheck = conf
+      .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+
+    if (skipCaCheck) {
+      log.info(
+        "CertificateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject ({} == true)",
+        VOMSConfigurationConstants.SKIP_CA_CHECK);
+    } else {
+      log.info(
+        "CertficateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
+        VOMSConfigurationConstants.SKIP_CA_CHECK);
+    }
+
+    LookupPolicyProvider.initialize(skipCaCheck);
+
   }
 
   public static void stop() {
 
     VOMSExecutorService.shutdown();
 
-    NotificationService.shutdown();
+    NotificationServiceFactory.getNotificationService()
+      .shutdownNow();
 
     HibernateFactory.shutdown();
 

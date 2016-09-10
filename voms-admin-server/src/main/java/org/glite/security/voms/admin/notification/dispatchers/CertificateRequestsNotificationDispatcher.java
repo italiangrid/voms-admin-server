@@ -23,13 +23,13 @@ import org.glite.security.voms.admin.event.request.CertificateRequestEvent;
 import org.glite.security.voms.admin.event.request.CertificateRequestRejectedEvent;
 import org.glite.security.voms.admin.event.request.CertificateRequestSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 
-public class CertificateRequestsNotificationDispatcher extends
-  BaseNotificationDispatcher<CertificateRequestEvent> {
+public class CertificateRequestsNotificationDispatcher
+  extends BaseNotificationDispatcher<CertificateRequestEvent> {
 
   private static volatile CertificateRequestsNotificationDispatcher INSTANCE;
 
@@ -55,21 +55,25 @@ public class CertificateRequestsNotificationDispatcher extends
       HandleRequest msg = new HandleRequest(ee.getPayload(),
         ee.getManagementURL());
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
     }
 
     if (e instanceof CertificateRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((CertificateRequestApprovedEvent) e).getPayload());
-      
-      NotificationService.instance().send(msg);
+
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
     }
 
     if (e instanceof CertificateRequestRejectedEvent) {
       RequestRejected msg = new RequestRejected(
         ((CertificateRequestRejectedEvent) e).getPayload(), null);
-      NotificationService.instance().send(msg);
+
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
     }
 
   }

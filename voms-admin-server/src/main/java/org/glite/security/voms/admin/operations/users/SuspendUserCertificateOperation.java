@@ -51,7 +51,7 @@ public class SuspendUserCertificateOperation extends BaseVomsOperation {
   public static SuspendUserCertificateOperation instance(String dn, String ca,
     String suspensionReason) {
 
-    Certificate c = CertificateDAO.instance().findByDNCA(dn, ca);
+    Certificate c = CertificateDAO.instance().lookup(dn, ca);
     SuspensionReason reason = SuspensionReason.OTHER;
     reason.setMessage(suspensionReason);
     return new SuspendUserCertificateOperation(c.getUser(), c, reason);

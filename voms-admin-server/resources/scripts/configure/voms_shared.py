@@ -24,7 +24,7 @@ __voms_prefix__ = "${package.prefix}"
 import re, commands, exceptions, os.path, glob, platform
 
 def mysql_util_cmd(command, options):
-    db_cmd = "%s %s --dbauser %s --dbusername %s --dbpassword %s --dbname %s --dbhost %s --dbport %s --mysql-command %s" % (VOMSDefaults.voms_mysql_util,
+    db_cmd = "%s %s --dbauser %s --dbusername %s --dbpassword '%s' --dbname %s --dbhost %s --dbport %s --mysql-command %s" % (VOMSDefaults.voms_mysql_util,
                                                                                                                             command,
                                                                                                                             options.dbauser,
                                                                                                                             options.dbusername,

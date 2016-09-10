@@ -102,7 +102,7 @@ public class AddEntryAction extends ACLActionSupport {
           "A CA for the given subject is not registered in the VOMS database!");
       }
 
-      if (VOMSAdminDAO.instance().getByName(dn, adminCA.getSubjectString()) != null) {
+      if (VOMSAdminDAO.instance().lookup(dn, adminCA.getSubjectString()) != null) {
 
         addFieldError(
           "dn",
@@ -127,10 +127,10 @@ public class AddEntryAction extends ACLActionSupport {
     } else if (entryType.equals("non-vo-user")) {
 
       VOMSCA ca = VOMSCADAO.instance().getByID(caId);
-      admin = VOMSAdminDAO.instance().getByName(dn, ca.getSubjectString());
+      admin = VOMSAdminDAO.instance().lookup(dn, ca.getSubjectString());
 
       if (admin == null) {
-        admin = VOMSAdminDAO.instance().create(dn, ca.getSubjectString());
+        admin = VOMSAdminDAO.instance().createFromSubjectAndIssuer(dn, ca.getSubjectString());
         admin.setEmailAddress(getEmailAddress());
       }
 
@@ -144,7 +144,7 @@ public class AddEntryAction extends ACLActionSupport {
 
       admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
       if (admin == null)
-        admin = VOMSAdminDAO.instance().create(ctxt.toString());
+        admin = VOMSAdminDAO.instance().createFromFqan(ctxt.toString());
 
     } else if (entryType.equals("group-admin")) {
 
@@ -154,7 +154,7 @@ public class AddEntryAction extends ACLActionSupport {
       admin = VOMSAdminDAO.instance().getByFQAN(ctxt.toString());
 
       if (admin == null)
-        admin = VOMSAdminDAO.instance().create(ctxt.toString());
+        admin = VOMSAdminDAO.instance().createFromFqan(ctxt.toString());
 
     } else if (entryType.equals("anyone")) {
 

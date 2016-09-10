@@ -20,6 +20,6 @@ public abstract class BaseVoReadOperation<T> extends BaseVomsOperation<T> {
   protected void setupPermissions() {
 
     addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerReadPermission().setMembershipReadPermission());
+      .getContainerReadPermission());
   }
 }

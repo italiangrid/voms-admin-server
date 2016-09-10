@@ -46,11 +46,11 @@
 			<tr class="tableRow">
 				<td>
 				<div class="userDN"><s:set value="subjectString"
-					var="thisCertDN" /> <voms:formatDN dn="${thisCertDN}" fields="CN" />
+					var="thisCertDN" />${thisCertDN}
 				</div>
 
 				<div class="userCA"><s:set value="ca.subjectString"
-					var="thisCertCA" /> <voms:formatDN dn="${thisCertCA}" fields="CN" />
+					var="thisCertCA" />${thisCertCA}
 				</div>
 
 				<div class="cert-date-info">Added on: <span>
@@ -101,7 +101,7 @@
 							<s:token />
 							<s:hidden name="userId" value="%{model.id}" />
 							<s:hidden name="certificateId" value="%{#cert.id}" />
-							<s:submit value="%{'Delete'}" />
+							<s:submit value="%{'Delete'}" onclick="confirmRemoveCertificateDialog(this, '%{#cert.subjectString}', '%{#cert.ca.subjectString}', '%{model.shortName}'); return false;"/>
 						</s:form>
 					</s:if>
 				</s:if>

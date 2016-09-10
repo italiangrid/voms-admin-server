@@ -92,6 +92,10 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSDBVersion"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
         
+        <!-- NOTIFICATIONS -->
+        <mapping class="org.glite.security.voms.admin.persistence.model.notification.Notification"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.notification.NotificationDelivery"/>
+
         <!-- AUDITING -->
         <mapping class="org.glite.security.voms.admin.persistence.model.audit.AuditEvent" />
         

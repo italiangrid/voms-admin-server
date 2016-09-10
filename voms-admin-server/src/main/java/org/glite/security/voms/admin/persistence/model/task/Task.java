@@ -194,12 +194,16 @@ public abstract class Task {
     addLogRecord(getCompletionDate());
   }
 
-  public void SetExpired() {
+  public void setExpired() {
 
     setStatus(TaskStatus.EXPIRED);
     addLogRecord(new Date());
   }
 
+  public boolean isExpired(){
+    return status == TaskStatus.EXPIRED;
+  }
+  
   public boolean equals(Object other) {
 
     if (this == other)
@@ -311,4 +315,9 @@ public abstract class Task {
 
   }
 
+  public boolean expiryDateInThePast() {
+    long now = System.currentTimeMillis();
+    
+    return now > getExpiryDate().getTime();
+  }
 }

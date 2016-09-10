@@ -85,8 +85,9 @@ public abstract class DAOFactory {
 
   public abstract GroupManagerDAO getGroupManagerDAO();
   
-  public abstract AuditDAO getAuditDAO();
-  
-  public abstract AuditSearchDAO getAuditSearchDAO();
+  public abstract NotificationDAO getNotificationDAO();
 
+  public abstract AuditDAO getAuditDAO();
+
+  public abstract AuditSearchDAO getAuditSearchDAO();
 }

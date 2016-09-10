@@ -1,0 +1,9 @@
+VOMS=
+(DESCRIPTION =
+ (ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = voms-db-02.cr.cnaf.infn.it)(PORT = 1521))
+ )
+ (CONNECT_DATA =
+  (SERVICE_NAME = vomsdb2.cr.cnaf.infn.it)
+ )
+ )

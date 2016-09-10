@@ -20,23 +20,19 @@ import java.util.Date;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.glite.security.voms.admin.core.validation.ValidationUtil;
 import org.glite.security.voms.admin.operations.users.SetMembershipExpirationOperation;
 
-import com.opensymphony.xwork2.validator.annotations.DateRangeFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-
-@Results({
-  @Result(name = UserActionSupport.SUCCESS,
-    location = "membershipExpiration.jsp"),
-  @Result(name = UserActionSupport.INPUT, location = "membershipExpiration.jsp") })
-@InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "execute" })
+@Results({ @Result(name = UserActionSupport.SUCCESS, location = "userDetail"),
+  @Result(name = UserActionSupport.INPUT,
+    location = "changeMembershipExpiration") })
+@InterceptorRef(value = "authenticatedStack",
+  params = { "token.includeMethods", "execute" })
 public class SetMembershipExpirationAction extends UserActionSupport {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   Date expirationDate;
@@ -46,12 +42,10 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 
     Date now = new Date();
 
-    if (expirationDate == null)
-      addFieldError("expirationDate",
-        "Please enter a valid expiration date for the user.");
-    else if (now.after(expirationDate))
+    if (expirationDate != null && now.after(expirationDate)) {
       addFieldError("expirationDate",
         "Please enter a future expiration date for the user.");
+    }
 
     return;
 
@@ -62,20 +56,28 @@ public class SetMembershipExpirationAction extends UserActionSupport {
 
     SetMembershipExpirationOperation op = new SetMembershipExpirationOperation(
       getModel(), expirationDate);
+
     op.execute();
 
     addActionMessage("Membership expiration date changed.");
     return SUCCESS;
   }
 
-  @RequiredFieldValidator(type = ValidatorType.FIELD,
-    message = "Please set a membership expiration date for the user.")
-  @DateRangeFieldValidator(type = ValidatorType.FIELD,
-    message = "Please enter a valid expiration date for the user.",
-    min = "12/25/2010")
+  /*
+   * @RequiredFieldValidator(type = ValidatorType.FIELD, message =
+   * "Please set a membership expiration date for the user.")
+   * 
+   * @DateRangeFieldValidator(type = ValidatorType.FIELD, message =
+   * "Please enter a valid expiration date for the user.", min = "12/25/2010")
+   */
   public Date getExpirationDate() {
 
     return expirationDate;
+  }
+
+  public Date getProposedExpirationDate() {
+
+    return ValidationUtil.membershipExpirationDateStartingFromNow();
   }
 
   public void setExpirationDate(Date expirationDate) {

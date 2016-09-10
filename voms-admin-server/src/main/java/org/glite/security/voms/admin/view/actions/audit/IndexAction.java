@@ -41,6 +41,8 @@ public class IndexAction extends BaseAction implements
    */
   private static final long serialVersionUID = 1L;
 
+  private static final int SEARCH_MAX_RESULTS = 100;
+  
   AuditLogSearchParams searchParams;
 
   AuditLogSearchResults results;
@@ -55,8 +57,11 @@ public class IndexAction extends BaseAction implements
 
       searchParams = new AuditLogSearchParams();
       searchParams.setFromTime(cal.getTime());
+      searchParams.setMaxResults(SEARCH_MAX_RESULTS);
 
     } else {
+      searchParams.setMaxResults(SEARCH_MAX_RESULTS);
+      
       if (searchParams.getFromTime() == null) {
         searchParams.setFromTime(cal.getTime());
 

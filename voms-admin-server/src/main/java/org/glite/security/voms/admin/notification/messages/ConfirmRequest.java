@@ -29,7 +29,7 @@ public class ConfirmRequest extends AbstractVelocityNotification {
     this.cancelURL = cancelURL;
   }
 
-  protected void buildMessage() {
+  public void buildMessage() {
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
     String voName = conf.getVOName();

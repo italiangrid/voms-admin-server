@@ -93,15 +93,29 @@
 }
 
 .blabel-invert-important {
-	background-color: inherit;
-	color: #B94A48;
-	font-weight: normal;
-	text-shadow: none;
+  background-color: inherit;
+  color: #B94A48;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.blabel-invert {
+
+  background-color: inherit;
+  color: inherit;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.blabel-invert:hover {
+
+  color: inherit;
+  text-decoration: none;
 }
 
 .blabel-invert-important:hover {
-	color: #B94A48;
-    text-decoration: none;
+  color: #B94A48;
+  text-decoration: none;
 }
 
 .alert {

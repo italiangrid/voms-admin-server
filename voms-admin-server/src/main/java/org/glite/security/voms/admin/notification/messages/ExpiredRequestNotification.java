@@ -29,7 +29,7 @@ public class ExpiredRequestNotification extends VelocityEmailNotification {
 
   }
 
-  protected void buildMessage() {
+  public void buildMessage() {
 
     setSubject("You vo membership request has expired!");
 

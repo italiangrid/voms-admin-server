@@ -1,64 +1,129 @@
-conf:
-  image: busybox
-  volumes:
-    - /etc/voms-admin
-  command: /bin/true
+version: '2'
 
-data:
-  image: busybox
-  volumes:
-    - /var/lib/mysql
-  command: /bin/true
+services:
+  data:
+    image: busybox
+    volumes:
+      - /var/lib/mysql
+    command: /bin/true
 
-db:
-  image: mariadb:latest
-  ports:
-    - "3306"
-  volumes_from:
-    - data
+  db:
+    image: mariadb:latest
+    container_name: db
+    ports:
+      - "3306"
+    volumes_from:
+      - data
 
-  environment:
-    MYSQL_ROOT_PASSWORD: pwd
-    MYSQL_USER: voms
-    MYSQL_PASSWORD: pwd
-    MYSQL_DATABASE: voms_test
+    environment:
+      MYSQL_ROOT_PASSWORD: pwd
+      MYSQL_USER: voms
+      MYSQL_PASSWORD: pwd
+      MYSQL_DATABASE: voms_test
 
-mail:
-  image: jlynn/python-smtp
-  ports:
-    - "25"
+  mail:
+    image: jlynn/python-smtp
+    ports:
+      - "25"
 
-adminserver:
-  image: italiangrid/voms-admin-server
-  hostname: dev
-  domainname: local.io
-  volumes:
-      - .:/code:ro
-      - ~/.jrebel:/home/voms/.jrebel:rw
-      - ~/jrebel:/jrebel:ro
-      - /var/log/voms-admin
-        # - ~/orgdb:/orgdb:ro
+  adminserver:
+    image: italiangrid/voms-admin-server:latest
+    domainname: local.io
 
-  volumes_from:
-      - conf
-  ports:
-      - "8443:8443"
-      - "1044:1044"
-      - "6002:6002"
-      - "1099:1099"
+    volumes:
+        - /etc/voms
+        - /etc/grid-security
+        - .:/code:ro
+        - ~/.jrebel:/home/voms/.jrebel:rw
+        - ~/jrebel:/jrebel:ro
+          #        - ~/orgdb:/orgdb:ro
 
-  links:
+    ports:
+        - "1044:1044"
+        - "8443"
+
+    links:
+        - db
+        - mail
+
+    environment:
+      # This is need for haproxy to properly load balance stuff...
+      TCP_PORTS: 8443
+
+      # This is the VOMS Admin configuration
+      VOMS_HOSTNAME: dev.local.io
+      MAILHOST: mail
+      MYSQL_ROOT_PASSWORD: pwd
+      VOMS_DEBUG: y
+      # VOMS_ADMIN_SERVER_VERSION: 3.4.2
+      # VOMS_DEBUG_SUSPEND: y
+      # VOMS_PRE_CONFIGURE: y
+      # VOMS_SKIP_CONFIGURE: y
+      # VOMS_UPGRADE_DB: y
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-expiration-warnings
+      ENABLE_JREBEL: y
+      # ENABLE_JMX: y
+      # HIBERNATE_LOG_LEVEL: DEBUG
+      # STRUTS_LOG_LEVEL: DEBUG
+
+  voms:
+    image: italiangrid/voms-dev:latest
+    domainname: local.io
+
+    depends_on:
       - db
-      - mail
+      - adminserver
+      - lb
 
-  environment:
-    MAILHOST: mail
-    MYSQL_ROOT_PASSWORD: pwd
-    VOMS_DEBUG: y
-    # VOMS_DEBUG_SUSPEND: y
-    VOMS_PRE_CONFIGURE: y
-    # VOMS_SKIP_CONFIGURE: y
-    VOMS_UPGRADE_DB: y
-    #VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check --disable-membership-expiration-warnings
-    ENABLE_JREBEL: y
-    ENABLE_JMX: y
+    cap_add:
+      # The capability below is useful to 
+      # run gdb
+      - SYS_PTRACE
+
+    volumes:
+      - $HOME/git/voms:/voms:ro
+      - $HOME/git/voms-mysql-plugin:/voms-mysql-plugin:ro
+
+    volumes_from:
+      - adminserver
+
+    ports:
+      - "15000:15000"
+    
+    links:
+      - db
+
+    tty: true
+
+    environment:
+      # Uncomment to build VOMS from sources
+      # inside the container
+      VOMS_BUILD_FROM_SOURCES: y
+
+      VOMS_GIT_REPO: file:///voms
+      VOMS_GIT_BRANCH: fix/VOMS-744
+
+      # Uncomment to build voms-mysql-plugin from
+      # source inside the container
+      VOMS_BUILD_MYSQL_PLUGIN: y
+      VOMS_MYSQL_GIT_REPO: file:///voms-mysql-plugin
+
+      VOMS_MYSQL_GIT_BRANCH: fix/VOMS-748
+
+  lb:
+    image: dockercloud/haproxy:latest
+    ports:
+      - "8443:8443"
+      - "1936:1936"
+
+    environment:
+      - MODE=tcp
+      - DOCKER_TLS_VERIFY
+      - DOCKER_HOST
+      - DOCKER_CERT_PATH
+
+    volumes:
+      - $DOCKER_CERT_PATH:$DOCKER_CERT_PATH
+
+    links:
+      - adminserver

@@ -43,7 +43,7 @@ public abstract class AbstractVelocityNotification extends
   }
 
   @Override
-  protected void buildMessage() {
+  public void buildMessage() {
 
     setupContext();
 

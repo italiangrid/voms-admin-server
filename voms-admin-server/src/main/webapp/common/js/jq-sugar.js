@@ -396,12 +396,21 @@ function pageSetup(){
 
 function openSuspendDialog(node, dialogId, text){
 
+	$('#'+dialogId+' .alert-error').hide();
+	var formInputElem = '#'+dialogId + "_suspensionReasonInputField";
+	$(formInputElem).val('');
+	
 	if ($(node).is(':submit')){
 
 		confirmFunc = function(){
 
 			var formInputElem = '#'+dialogId + "_suspensionReasonInputField";
 			var suspensionReason = $(formInputElem).val();
+			
+			if (suspensionReason === ''){
+				$('#'+dialogId+' .alert-error').show();
+				return false;
+			}
 
 			var form = $(node).closest('form');
 
@@ -414,10 +423,10 @@ function openSuspendDialog(node, dialogId, text){
 				$(node).attr('form').onsubmit();
 				$('#'+dialogId).dialog('destroy');
 				return false;
-			}
-			else
+				
+			} else{
 				form.submit();
-
+			}
 		};
 
 	}else{
@@ -694,7 +703,7 @@ function auditLogSetup(){
 			$(this).closest('tr').find('td').addClass('al-dtl-header');
 			$(detailNode).removeClass("al-dtl-hidden");
 			$('html,body')
-			.animate({ scrollTop: $(this).offset().top },	500);
+			.animate({ scrollTop: $(this).closest('tr').offset().top },	500);
 		}else {
 			$(this).text("more info");
 			$(this).closest('tr').find('td').removeClass('al-dtl-header');
@@ -718,7 +727,27 @@ function confirmOrgDbIdChangeDialog(formId,userInfo){
 	}
 
 	return false;
-}
+};
+
+function confirmRemoveOwnCertificateDialog(formId,certSubject, certIssuer){
+	$('#confirmOwnCertificateRemovalDialog .userDN').text(certSubject);
+	$('#confirmOwnCertificateRemovalDialog .userCA').text(certIssuer);
+	$('#confirmOwnCertificateRemovalDialog .alert').hide();
+	$('#confirmOwnCertificateRemovalDialog .rm-cert-confirm').val();
+	
+	openYesConfirmDialog(formId, 'confirmOwnCertificateRemovalDialog');
+};
+
+function confirmRemoveCertificateDialog(formId,certSubject, certIssuer, userInfo){
+	$('#confirmCertificateRemovalDialog .userDN').text(certSubject);
+	$('#confirmCertificateRemovalDialog .userCA').text(certIssuer);
+	$('#confirmCertificateRemovalDialog .userInfo').text(userInfo);
+	
+	$('#confirmCertificateRemovalDialog .alert').hide();
+	$('#confirmCertificateRemovalDialog .rm-cert-confirm').val();
+	
+	openYesConfirmDialog(formId, 'confirmCertificateRemovalDialog');
+};
 
 $(document).ready(function(){
 	pageSetup();

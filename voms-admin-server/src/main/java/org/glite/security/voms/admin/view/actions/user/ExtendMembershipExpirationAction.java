@@ -20,18 +20,17 @@ import java.util.Date;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.core.validation.ValidationUtil;
+import org.glite.security.voms.admin.operations.users.RestoreUserOperation;
 import org.glite.security.voms.admin.operations.users.SetMembershipExpirationOperation;
+import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 
-@Results({
-  @Result(name = UserActionSupport.SUCCESS,
-    location = "membershipExpiration2.jsp"),
-  @Result(name = UserActionSupport.INPUT,
-    location = "membershipExpiration2.jsp") })
+@Results({ @Result(name = UserActionSupport.SUCCESS, location = "userDetail"),
+  @Result(name = UserActionSupport.INPUT, location = "userDetail") })
 public class ExtendMembershipExpirationAction extends UserActionSupport {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   @Override
@@ -45,6 +44,11 @@ public class ExtendMembershipExpirationAction extends UserActionSupport {
     op.execute();
 
     addActionMessage("Membership expiration date extended.");
+
+    if (getModel().getSuspended() && getModel()
+      .getSuspensionReasonCode() == SuspensionReason.MEMBERSHIP_EXPIRATION) {
+      RestoreUserOperation.instance(getModel()).execute();
+    }
 
     return SUCCESS;
   }

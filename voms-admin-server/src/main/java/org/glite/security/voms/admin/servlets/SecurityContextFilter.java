@@ -28,10 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
-import org.italiangrid.voms.VOMSValidators;
-import org.italiangrid.voms.ac.VOMSACValidator;
-import org.italiangrid.voms.ac.VOMSValidationResult;
-import org.italiangrid.voms.ac.ValidationResultListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,31 +36,37 @@ import org.slf4j.LoggerFactory;
  * @author andrea
  * 
  */
-public class SecurityContextFilter implements Filter, ValidationResultListener {
-  
+public class SecurityContextFilter implements Filter {
+
   protected Logger log = LoggerFactory.getLogger(SecurityContextFilter.class);
 
-  private VOMSACValidator validator;
   private String voName;
 
   public void init(FilterConfig arg0) throws ServletException {
 
     log.debug("Initializing SecurityContextFilter {}", this);
-    validator = VOMSValidators.newValidator(this);
-    voName = VOMSConfiguration.instance().getVOName();
+
+    voName = VOMSConfiguration.instance()
+      .getVOName();
   }
 
   protected void initContext(HttpServletRequest request) {
 
-    InitSecurityContext.setContextFromRequest(request, validator);    
+    InitSecurityContext.setContextFromRequest(request);
     InitSecurityContext.logConnection();
 
   }
 
   protected void initWebappProperties(HttpServletRequest request) {
+
     request.setAttribute("voName", voName);
     request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_KEY,
       CurrentAdmin.instance());
+
+    request.setAttribute(VOMSServiceConstants.CURRENT_ADMIN_VO_USER_KEY,
+      CurrentAdmin.instance()
+        .getVoUser());
+
   }
 
   public void doFilter(ServletRequest req, ServletResponse res,
@@ -83,15 +85,6 @@ public class SecurityContextFilter implements Filter, ValidationResultListener {
   public void destroy() {
 
     log.debug("Destroying SecurityContextFilter {}", this);
-  }
-
-  @Override
-  public void notifyValidationResult(VOMSValidationResult result) {
-
-    if (!result.isValid())
-      log.warn("VOMS attributes validation result: {}", result);
-    else
-      log.debug("VOMS attributes validation result: {}", result);
   }
 
 }

@@ -67,7 +67,7 @@
               cssClass="input-label" /> <s:select
               id="sp_filter_type"
               name="searchParams.filterType"
-              list="{'principal', 'type'}"
+              list="{'full search','principal', 'type'}"
               value="searchParams.filterType" /> 
 
               <s:set value="searchParams.filterString" var="fs"/>
@@ -89,22 +89,47 @@
           </tr>
         </s:if>
         <s:else>
-          <tr>
+          <tr style="vertical-align: middle;">
             <th>When</th>
-            <th>Event type</th>
-            <th colspan="2">Description</th>
+            <th>Event Id</th>
+            <th>Description
+            
+               <input 
+                  id="al_firstResult"
+                  type="hidden"
+                  name="searchParams.firstResult"
+                  value="0">
+              <div style="font-size: smaller; font-weight: normal; display: inline; float: right;">    
+                <s:if test="model.hasPreviousPage()">
+                    <s:submit value="%{'<'}" onclick="al_previous_page();"/>
+                </s:if>
+              
+                ${model.searchParams.firstResult+1}-${fn:length(model.results) + model.searchParams.firstResult} of ${model.totalResultsCount}
+                
+                <s:if test="model.hasNextPage()">
+                    <s:submit value="%{'>'}" onclick="al_next_page();"/>
+                </s:if>
+              </div>
+            
           </tr>
         </s:else>
         <s:iterator value="model.results" var="event">
           <tr>
-            <td style="width:15%"><s:date
+            <td style="width:10%"><s:date
                 name="timestamp"
                 nice="true"
-                format="struts.date.format.past" /></td>
-
-            <td style="width:15%"><s:property
-                value="eventNameFormatter.formatEventName(#event.type)" /></td>
-            <td style="width:50%" class="al-desc">
+                format="struts.date.format.past" />
+                <br>
+                <br>
+                <a
+                  href="#"
+                  class="al-trigger"
+                  data-target="al_${event.id}">more info</a>
+                </td>
+            <td style="width:5%">
+              ${event.id}
+            </td>
+            <td style="width:80%" class="al-desc">
               <div class="audit-log-principal">
                 <s:property
                   value="adminNameFormatter.formatAdminName(#event.principal)" />
@@ -112,13 +137,12 @@
                 <s:property
                 value="eventDescriptor.buildEventDescription(#event)" />
             </td>
+            <!-- 
             <td>
-                <a
-                  href="#"
-                  class="al-trigger"
-                  data-target="al_${event.id}">more info</a>
+                
 
             </td>
+             -->
           </tr>
           <tr class='al-dtl'>
             <td
@@ -136,5 +160,18 @@
 
 
 <script type="text/javascript">
-  $('.input-date').datepicker();
+
+
+function al_next_page(){
+	var next_page_index = ${model.nextPageIndex};  
+	$('#al_firstResult').val(next_page_index);
+};
+
+
+function al_previous_page(){
+  var previous_page_index = ${model.previousPageIndex};
+  $('#al_firstResult').val(previous_page_index);
+};
+
+$('.input-date').datepicker();  
 </script>

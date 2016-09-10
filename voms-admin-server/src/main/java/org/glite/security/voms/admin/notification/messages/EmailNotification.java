@@ -52,7 +52,6 @@ public abstract class EmailNotification implements VOMSNotification {
   }
 
   public String getMessage() {
-
     return message;
   }
 
@@ -138,7 +137,7 @@ public abstract class EmailNotification implements VOMSNotification {
     addRecipients(r.getMembersEmailAddresses(g));
   }
 
-  protected abstract void buildMessage();
+  public abstract void buildMessage();
 
   public void send() {
 

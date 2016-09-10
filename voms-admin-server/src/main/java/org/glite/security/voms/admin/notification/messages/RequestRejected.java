@@ -31,7 +31,8 @@ public class RequestRejected extends AbstractVelocityNotification {
     this.rejectReasons = rejectReasons;
   }
 
-  protected void buildMessage() {
+  @Override
+  public void buildMessage() {
 
     String voName = VOMSConfiguration.instance().getVOName();
 

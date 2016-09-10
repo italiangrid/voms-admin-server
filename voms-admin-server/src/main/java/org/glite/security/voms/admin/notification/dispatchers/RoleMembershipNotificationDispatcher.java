@@ -28,7 +28,7 @@ import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
 import org.glite.security.voms.admin.event.request.RoleMembershipRequestEvent;
 import org.glite.security.voms.admin.event.request.RoleMembershipSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
@@ -40,8 +40,8 @@ import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
-public class RoleMembershipNotificationDispatcher extends
-  BaseNotificationDispatcher {
+public class RoleMembershipNotificationDispatcher
+  extends BaseNotificationDispatcher {
 
   private static RoleMembershipNotificationDispatcher instance;
 
@@ -68,12 +68,14 @@ public class RoleMembershipNotificationDispatcher extends
 
       RoleMembershipSubmittedEvent ee = (RoleMembershipSubmittedEvent) e;
 
-      VOMSContext context = VOMSContext.instance(ee.getPayload().getFQAN());
+      VOMSContext context = VOMSContext.instance(ee.getPayload()
+        .getFQAN());
 
       List<String> admins = new ArrayList<String>();
 
-      VOMSRole groupManagerRole = VOMSRoleDAO.instance().findByName(
-        VOMSConfiguration.instance().getGroupManagerRoleName());
+      VOMSRole groupManagerRole = VOMSRoleDAO.instance()
+        .findByName(VOMSConfiguration.instance()
+          .getGroupManagerRoleName());
 
       if (groupManagerRole != null) {
 
@@ -84,10 +86,13 @@ public class RoleMembershipNotificationDispatcher extends
           admins.addAll(groupManagersRoleEmailAddresses);
         }
       }
-      
+
       if (admins.isEmpty()) {
-        if (context.getGroup().getManagers().size() != 0) {
-          for (GroupManager gm : context.getGroup().getManagers())
+        if (context.getGroup()
+          .getManagers()
+          .size() != 0) {
+          for (GroupManager gm : context.getGroup()
+            .getManagers())
             admins.add(gm.getEmailAddress());
         } else
           admins = NotificationUtil.getAdministratorsEmailList(context,
@@ -95,19 +100,22 @@ public class RoleMembershipNotificationDispatcher extends
       }
 
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL(), admins);
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     }
 
     if (e instanceof RoleMembershipApprovedEvent) {
 
-      NotificationService.instance().send(new RequestApproved(req));
+      NotificationServiceFactory.getNotificationService()
+        .send(new RequestApproved(req));
 
     }
 
     if (e instanceof RoleMembershipRejectedEvent) {
 
-      NotificationService.instance().send(new RequestRejected(req, null));
+      NotificationServiceFactory.getNotificationService()
+        .send(new RequestRejected(req, null));
 
     }
 

@@ -21,7 +21,7 @@ import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.user.UserMembershipExpired;
 import org.glite.security.voms.admin.event.user.aup.SignAUPTaskAssignedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.SignAUPMessage;
 import org.glite.security.voms.admin.notification.messages.UserMembershipExpiredMessage;
@@ -50,7 +50,7 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
 
   public void fire(Event e) {
 
-   if (e instanceof SignAUPTaskAssignedEvent) {
+    if (e instanceof SignAUPTaskAssignedEvent) {
 
       handle((SignAUPTaskAssignedEvent) e);
 
@@ -61,13 +61,16 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
     }
 
   }
-  
 
   protected void handle(SignAUPTaskAssignedEvent e) {
 
     SignAUPMessage msg = new SignAUPMessage(e);
-    NotificationService.instance().send(msg);
-    e.getTask().setLastNotificationTime(new Date());
+
+    NotificationServiceFactory.getNotificationService()
+      .send(msg);
+
+    e.getTask()
+      .setLastNotificationTime(new Date());
   }
 
   protected void handle(UserMembershipExpired e) {
@@ -75,7 +78,8 @@ public class DefaultNotificationDispatcher extends BaseNotificationDispatcher {
     UserMembershipExpiredMessage msg = new UserMembershipExpiredMessage(
       ((UserMembershipExpired) e).getPayload());
     msg.addRecipients(NotificationUtil.getAdministratorsEmailList());
-    NotificationService.instance().send(msg);
+    NotificationServiceFactory.getNotificationService()
+      .send(msg);
 
   }
 

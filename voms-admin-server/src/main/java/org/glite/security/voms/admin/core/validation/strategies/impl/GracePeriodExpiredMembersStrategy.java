@@ -23,7 +23,7 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.strategies.ExpiredMembersLookupStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMembersStrategy;
 import org.glite.security.voms.admin.notification.ConditionalSendNotificationStrategy;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.PeriodicNotificationsTimeStorage;
 import org.glite.security.voms.admin.notification.TimeIntervalNotificationStrategy;
@@ -55,7 +55,7 @@ public class GracePeriodExpiredMembersStrategy implements
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationService.instance(), (long) notificationInterval,
+      NotificationServiceFactory.getNotificationService(), (long) notificationInterval,
       TimeUnit.DAYS);
   }
 
@@ -63,7 +63,7 @@ public class GracePeriodExpiredMembersStrategy implements
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationService.instance(), (long) notificationInterval,
+      NotificationServiceFactory.getNotificationService(), (long) notificationInterval,
       TimeUnit.DAYS);
   }
 

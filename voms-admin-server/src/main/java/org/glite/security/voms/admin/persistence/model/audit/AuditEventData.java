@@ -1,17 +1,15 @@
 /**
  * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.glite.security.voms.admin.persistence.model.audit;
 
@@ -21,20 +19,23 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.annotations.Index;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Embeddable
-@Table(name="audit_event_data")
-@org.hibernate.annotations.Table(appliesTo="audit_event_data",
-  indexes={
-    @Index(columnNames={"name"}, name="aed_name_idx"),
-    @Index(columnNames={"value"}, name="aed_value_idx")
-})
+@Table(name = "audit_event_data")
+@org.hibernate.annotations.Table(appliesTo = "audit_event_data",
+  indexes = { @Index(columnNames = { "name" }, name = "aed_name_idx"),
+    @Index(columnNames = { "value" }, name = "aed_value_idx") })
 public class AuditEventData {
+
+  public static final Logger LOG = LoggerFactory
+    .getLogger(AuditEventData.class);
 
   @Column(nullable = false)
   String name;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 512)
   String value;
 
   public AuditEventData() {
@@ -48,6 +49,21 @@ public class AuditEventData {
 
     this.name = name;
     this.value = value;
+
+    checkValueLength();
+
+  }
+
+  private void checkValueLength() {
+
+    if (value.length() > 512) {
+      // This should never happen
+      LOG.error(
+        "Truncating AuditEventData value length, as it exceeds the limit. Value: {}",
+        value);
+      value = value.substring(0, 511);
+    }
+
   }
 
   public String getName() {
@@ -68,6 +84,7 @@ public class AuditEventData {
   public void setValue(String value) {
 
     this.value = value;
+    checkValueLength();
   }
 
   @Override
@@ -109,7 +126,8 @@ public class AuditEventData {
     return "AuditEventData [name=" + name + ", value=" + value + "]";
   }
 
-  public static AuditEventData newInstance(String name, String value){
+  public static AuditEventData newInstance(String name, String value) {
+
     return new AuditEventData(name, value);
   }
 }

@@ -26,7 +26,7 @@ import org.glite.security.voms.admin.event.request.VOMembershipRequestConfirmedE
 import org.glite.security.voms.admin.event.request.VOMembershipRequestRejectedEvent;
 import org.glite.security.voms.admin.event.request.VOMembershipRequestSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.messages.ConfirmRequest;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
@@ -35,8 +35,8 @@ import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 
-public class VOMembershipNotificationDispatcher extends
-  BaseNotificationDispatcher {
+public class VOMembershipNotificationDispatcher
+  extends BaseNotificationDispatcher {
 
   private static VOMembershipNotificationDispatcher instance;
 
@@ -54,14 +54,19 @@ public class VOMembershipNotificationDispatcher extends
 
   }
 
-  public List<String> resolveEmailAddresses(VOMembershipRequestConfirmedEvent e) {
+  public List<String> resolveEmailAddresses(
+    VOMembershipRequestConfirmedEvent e) {
 
-    if (e.getPayload().getRequesterInfo().getManagerEmail() == null) {
+    if (e.getPayload()
+      .getRequesterInfo()
+      .getManagerEmail() == null) {
       return NotificationUtil.getAdministratorsEmailList(
         VOMSContext.getVoContext(), VOMSPermission.getRequestsRWPermissions());
     }
 
-    return Arrays.asList(e.getPayload().getRequesterInfo().getManagerEmail());
+    return Arrays.asList(e.getPayload()
+      .getRequesterInfo()
+      .getManagerEmail());
 
   }
 
@@ -70,11 +75,14 @@ public class VOMembershipNotificationDispatcher extends
     if (e instanceof VOMembershipRequestSubmittedEvent) {
       VOMembershipRequestSubmittedEvent ee = (VOMembershipRequestSubmittedEvent) e;
 
-      String recipient = ee.getPayload().getRequesterInfo().getEmailAddress();
+      String recipient = ee.getPayload()
+        .getRequesterInfo()
+        .getEmailAddress();
 
       ConfirmRequest msg = new ConfirmRequest(recipient, ee.getConfirmURL(),
         ee.getCancelURL());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     } else if (e instanceof VOMembershipRequestConfirmedEvent) {
 
@@ -85,20 +93,24 @@ public class VOMembershipNotificationDispatcher extends
       HandleRequest msg = new HandleRequest(ee.getPayload(), ee.getUrl(),
         admins);
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     } else if (e instanceof VOMembershipRequestApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((VOMembershipRequestApprovedEvent) e).getPayload());
 
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     } else if (e instanceof VOMembershipRequestRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
         ((VOMembershipRequestRejectedEvent) e).getPayload(), null);
-      NotificationService.instance().send(msg);
+
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     }
 

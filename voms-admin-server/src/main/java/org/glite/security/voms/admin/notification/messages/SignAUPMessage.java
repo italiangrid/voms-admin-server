@@ -32,7 +32,7 @@ public class SignAUPMessage extends AbstractVelocityNotification {
   }
 
   @Override
-  protected void buildMessage() {
+  public void buildMessage() {
 
     VOMSConfiguration conf = VOMSConfiguration.instance();
     String voName = conf.getVOName();
@@ -49,7 +49,7 @@ public class SignAUPMessage extends AbstractVelocityNotification {
     context.put("user", t.getUser());
     context.put("recipient", getRecipientList().get(0));
     context.put("signAUPURL", URLBuilder.baseVOMSURLFromConfiguration()
-      + "/aup/sign!input.action?aupId=" + t.getAup().getId());
+      + "/sign-aup");
     context.put("expirationDate", t.getExpiryDate());
 
     super.buildMessage();

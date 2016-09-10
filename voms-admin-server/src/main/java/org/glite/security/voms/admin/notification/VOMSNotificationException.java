@@ -27,19 +27,16 @@ public class VOMSNotificationException extends VOMSException {
   public VOMSNotificationException(String message) {
 
     super(message);
-    // TODO Auto-generated constructor stub
   }
 
   public VOMSNotificationException(String message, Throwable t) {
 
     super(message, t);
-    // TODO Auto-generated constructor stub
   }
 
   public VOMSNotificationException(Throwable t) {
 
     super(t);
-    // TODO Auto-generated constructor stub
   }
 
 }

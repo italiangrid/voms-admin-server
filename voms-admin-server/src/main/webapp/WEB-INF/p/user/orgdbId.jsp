@@ -21,20 +21,6 @@
   <s:param name="id" value="%{orgDbId}"/>
 </s:url>
 
-<voms:hasPermissions var="canDelete" context="vo" permission="rw"/>
+CERN HR id: <a href="${phonebookURL}">${orgDbId}</a>
 
-<div>
-  CERN HR database id: <a href="${phonebookURL}">${orgDbId}</a>
-  
-  <s:if test="#attr.canDelete">
-	  <s:form 
-	    action="change-orgdb-id" 
-	    namespace="/user" 
-	    theme="simple" 
-	    cssStyle="display: inline">
-	    <s:hidden name="userId" value="%{id}"/>
-	    <s:submit value="%{'Change HR id'}"/>
-	  </s:form>  
-  </s:if>
-</div>
 

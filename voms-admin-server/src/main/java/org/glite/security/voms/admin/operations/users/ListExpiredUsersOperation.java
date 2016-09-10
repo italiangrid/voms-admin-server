@@ -15,13 +15,18 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.operations.BaseVoReadOperation;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import java.util.List;
 
-public class ListExpiredUsersOperation extends BaseVoReadOperation {
+import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+
+public class ListExpiredUsersOperation extends BaseVoReadOperation<List<VOMSUser>> {
 
   @Override
-  protected Object doExecute() {
+  protected List<VOMSUser> doExecute() {
 
     return VOMSUserDAO.instance().findExpiredUsers();
   }
@@ -33,6 +38,16 @@ public class ListExpiredUsersOperation extends BaseVoReadOperation {
   public static ListExpiredUsersOperation instance() {
 
     return new ListExpiredUsersOperation();
+  }
+  
+  @Override
+  protected void setupPermissions() {
+    
+    addRequiredPermission(VOMSContext.getVoContext(), 
+      VOMSPermission.getEmptyPermissions()
+      .setContainerReadPermission()
+      .setMembershipReadPermission()
+      .setPersonalInfoReadPermission());
   }
 
 }

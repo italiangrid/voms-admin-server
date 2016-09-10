@@ -37,6 +37,7 @@ input[type=text].registrationField, textarea.registrationField{
 	
 	font-size: 14px;	
 	padding: .5em;
+  width: 700px;
 }
 
 
@@ -116,8 +117,9 @@ span.label{
 }
 
 .readOnly{
-	background: #EFEFEF !important;
-	border: none;	
+  background: white;
+  padding-left: 0 !important;
+	border: none !important;
 }
 
 .checkboxValidationError{

@@ -21,18 +21,27 @@
 	You're not a VO user. You'll see nothing around here.
 </s:if>
 <s:else>
-
+  <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+  
   <div id="welcomeUserName">
     <s:if test="name != null and surname != null">
-      <s:property value="name+ ' ' +surname" />
-      <span class="institution"> (<s:property value="institution" />)
-      </span>
+      <div>
+        <s:property value="name+ ' ' +surname" />
+        <span style="font-weight: normal; font-size: smaller">( ${id} )</span>
+        <s:if test="#attr.orgdbEnabled">
+          <span style="font-weight: normal; font-size: smaller"> <tiles2:insertTemplate
+              template="orgdbId.jsp" />
+          </span>
+        </s:if>
+      </div>
+      <div style="margin-top: .5em">
+        <span class="institution"><s:property value="institution" /></span>
+      </div>
     </s:if>
     <s:else>
       <s:property value="dn" />
     </s:else>
   </div>
-
 
   <s:url
     action="request-membership-removal"
@@ -43,25 +52,9 @@
       value="id" />
   </s:url>
 
-
-  <div class="membershipInfo">
-    <s:if test="suspended">
-      <div>
-        <span class="blabel blabel-important">Suspended</span> <span
-          class="blabel blabel-invert-important"><s:property
-            value="suspensionReason" /></span>
-      </div>
-    </s:if>
-
-    <div class="expirationInfo cont">
-      <tiles2:insertTemplate template="membershipExpirationDetail.jsp" />
-    </div>
-
-    <div class="cont aupInfo">
-      <tiles2:insertTemplate template="aupStatusDetail.jsp" />
-    </div>
-
-    <s:if test="hasPendingSignAUPTasks()">
+  <tiles2:insertTemplate template="membershipStatusDetail.jsp" />
+  
+  <s:if test="hasPendingSignAUPTasks()">
       <div>
         <s:url
           action="sign"
@@ -70,18 +63,8 @@
           var="signAUPURL" />
         <input type="submit" value="Sign the AUP!" onclick="window.location.href= '${signAUPURL}'"/>
       </div>
-    </s:if>
-    <s:else>
-      <s:iterator value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
-        <div class="expirationInfo cont">
-          <span class="middle">
-            <s:property value="daysBeforeExpiration" /> days to AUP signature expiration
-          </span> 
-        </div>
-      </s:iterator>
-    </s:else>
-  </div>
-
+  </s:if>
+  
   <s:if test="#request.registrationEnabled">
     <s:if test="pendingMembershipRemovalRequests.empty">
       <div style="clear: both; float: right; margin-bottom: .5em">

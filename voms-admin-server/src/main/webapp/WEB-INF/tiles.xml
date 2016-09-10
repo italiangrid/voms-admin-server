@@ -300,4 +300,14 @@
     <definition name="info" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/info/index.jsp"/>
     </definition>
+    
+    <definition name="changeMembershipExpiration" extends="admin-layout">
+          <put-attribute name="content" value="/WEB-INF/p/user/changeMembershipExpiration.jsp"/>
+    </definition>
+    
+    <definition name="test" extends="admin-layout">
+          <put-attribute name="content" value="/WEB-INF/p/test/test.jsp"/>
+    </definition>
+    
+    
 </tiles-definitions>

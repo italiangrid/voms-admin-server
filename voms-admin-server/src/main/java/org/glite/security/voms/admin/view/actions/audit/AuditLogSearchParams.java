@@ -19,6 +19,8 @@ import java.util.Date;
 
 public class AuditLogSearchParams {
 
+  public static final String FULL_SEARCH_KEY = "full search";
+
   Date fromTime;
   Date toTime;
 
@@ -29,7 +31,7 @@ public class AuditLogSearchParams {
   Integer maxResults;
 
   public AuditLogSearchParams() {
-
+    firstResult = 0;
   }
 
   public Date getFromTime() {
@@ -96,9 +98,8 @@ public class AuditLogSearchParams {
   public String toString() {
 
     return "AuditLogSearchParams [fromTime=" + fromTime + ", toTime=" + toTime
-      + ", filterType=" + filterType + ", filterString=" + filterString + "]";
+      + ", filterType=" + filterType + ", filterString=" + filterString
+      + ", firstResult=" + firstResult + ", maxResults=" + maxResults + "]";
   }
-  
-  
 
 }

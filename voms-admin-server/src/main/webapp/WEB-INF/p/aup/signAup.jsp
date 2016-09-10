@@ -22,11 +22,16 @@
 <s:url 
   action="index"
   namespace="/info" var="infoUrl"/>
-<s:if test="#attr.currentAdmin.voUser == null">
+  
+  
+<s:if test="! #attr.currentAdmin.voUser">
   You are not a member of this VO, you will see nothing around here.
   Click <s:a href="%{infoUrl}">here</s:a> to get more information on how you have
   been authenticated.
 </s:if>
+<s:elseif test="registrationDisabled()">
+  Registration is disabled for this VO.
+</s:elseif>
 <s:else>
   <s:form validate="true">
     <s:token />

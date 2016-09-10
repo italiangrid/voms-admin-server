@@ -45,12 +45,11 @@
 
 .userDN {
   text-align: left;
-  font-size: x-small;
   font-weight: bold;
 }
 
 .userCA {
-  font-size: xx-small;
+  font-size: x-small;
   color: #505050;
   padding: .5em 0;
 }
@@ -248,7 +247,7 @@ h3, .header3 {
 
 .panelHeader {
   background-color: #ccdeaf;
-  color: #325B0A;;
+  color: #325B0A;
   -moz-border-radius-topleft: 6px;
   -moz-border-radius-topright: 6px;
   -webkit-border-top-right-radius: 6px;
@@ -349,8 +348,13 @@ h3, .header3 {
 
 .requestedDN, .requestedCA, .waitingForApproval {
   color: #BF5F5F;
-  font-size: smaller;
   font-weight: bold;
+}
+
+.requestedCA {
+  font-weight: normal;
+  font-size: smaller;
+  padding: .5em 0;
 }
 
 .suspended-cert {
@@ -358,6 +362,7 @@ h3, .header3 {
 }
 
 ol.certificate-info {
+  margin-top: 1em;
 
 }
 
@@ -503,7 +508,7 @@ a.info-tab-hide {
 
 .cert-date-info {
   margin-top: 1em;
-  font-size: xx-small;
+  margin-bottom: 1em;
   font-weight: bold;
 }
 
@@ -713,6 +718,7 @@ p {
 
 .userAdminActions {
   margin-top: 1em;
+  margin-bottom: 2em;
   clear: both;
   /*  float: right; */
 }
@@ -864,8 +870,8 @@ div.userSuspensionInfo .suspensionReason {
 }
 
 .badge-container {
-  margin-top: .5em;
-  margin-bottom: .5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .groupDescription {
@@ -1075,9 +1081,28 @@ a.register-url {
   color: #006600;
   font-weight: bolder;
   font-size: 14pt;
-  
 }
 .req-group-description{
   color: #7e7e7e;
   margin-bottom: 1em;
+}
+
+.status-detail {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.ced-input-date {
+  font-size: 18pt ;
+}
+
+.ced-submit-button {
+  float: left;
+}
+
+.clearfix {
+  visibility: hidden;
+  display: block;
+  clear: both;
+  height: 0;
 }

@@ -24,14 +24,14 @@ import org.glite.security.voms.admin.event.request.MembershipRemovalRejectedEven
 import org.glite.security.voms.admin.event.request.MembershipRemovalRequestEvent;
 import org.glite.security.voms.admin.event.request.MembershipRemovalSubmittedEvent;
 import org.glite.security.voms.admin.notification.BaseNotificationDispatcher;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.messages.HandleRequest;
 import org.glite.security.voms.admin.notification.messages.RequestApproved;
 import org.glite.security.voms.admin.notification.messages.RequestRejected;
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 
-public class MembershipRemovalNotificationDispatcher extends
-  BaseNotificationDispatcher {
+public class MembershipRemovalNotificationDispatcher
+  extends BaseNotificationDispatcher {
 
   private static transient MembershipRemovalNotificationDispatcher INSTANCE;
 
@@ -59,21 +59,25 @@ public class MembershipRemovalNotificationDispatcher extends
 
       MembershipRemovalSubmittedEvent ee = (MembershipRemovalSubmittedEvent) event;
       HandleRequest msg = new HandleRequest(req, ee.getManagementURL());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     } else if (event instanceof MembershipRemovalApprovedEvent) {
 
       RequestApproved msg = new RequestApproved(
         ((MembershipRemovalApprovedEvent) event).getPayload());
-      NotificationService.instance().send(msg);
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
 
     } else if (event instanceof MembershipRemovalRejectedEvent) {
 
       RequestRejected msg = new RequestRejected(
         ((MembershipRemovalRejectedEvent) event).getPayload(), null);
-      NotificationService.instance().send(msg);
+
+      NotificationServiceFactory.getNotificationService()
+        .send(msg);
+
     }
 
   }
-
 }

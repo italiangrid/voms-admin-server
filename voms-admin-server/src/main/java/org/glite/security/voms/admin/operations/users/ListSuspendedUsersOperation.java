@@ -15,13 +15,18 @@
  */
 package org.glite.security.voms.admin.operations.users;
 
-import org.glite.security.voms.admin.operations.BaseVoReadOperation;
-import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import java.util.List;
 
-public class ListSuspendedUsersOperation extends BaseVoReadOperation {
+import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
+
+public class ListSuspendedUsersOperation extends BaseVoReadOperation<List<VOMSUser>> {
 
   @Override
-  protected Object doExecute() {
+  protected List<VOMSUser> doExecute() {
 
     return VOMSUserDAO.instance().findSuspendedUsers();
   }
@@ -33,5 +38,15 @@ public class ListSuspendedUsersOperation extends BaseVoReadOperation {
   public static ListSuspendedUsersOperation instance() {
 
     return new ListSuspendedUsersOperation();
+  }
+  
+  @Override
+  protected void setupPermissions() {
+    
+    addRequiredPermission(VOMSContext.getVoContext(), 
+      VOMSPermission.getEmptyPermissions()
+      .setContainerReadPermission()
+      .setMembershipReadPermission()
+      .setPersonalInfoReadPermission());
   }
 }

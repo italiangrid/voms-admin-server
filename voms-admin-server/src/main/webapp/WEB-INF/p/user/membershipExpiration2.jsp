@@ -23,34 +23,6 @@
   permission="PERSONAL_INFO_READ" />
 
 <s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
-  <div id="membership-expiration-pane" class="cont">
-
-    <div class="reloadable">
-      <voms:hasPermissions
-        var="canDelete"
-        context="vo"
-        permission="rw" />
-
-      <tiles2:insertTemplate template="membershipExpirationDetail.jsp" />
-
-      <s:if test="#attr.canDelete == true and #attr.readOnlyMembershipExpiration == false">
-        <s:form
-          action="extend-membership-expiration"
-          onsubmit="ajaxSubmit(this,'membership-expiration-pane'); return false;" theme="simple" cssClass="middleline" cssStyle="display:inline">
-
-          <s:token />
-          <s:hidden
-            name="userId"
-            value="%{id}" />
-          <s:submit
-            value="%{'Extend membership'}"
-            disabled="%{#attr.canDelete == false or #attr.readOnlyMembershipExpiration == true}"
-            tooltip="Extends membership for the user starting from the current date for the default period configured for the VO (typically 12 months)." />
-        </s:form>
-      </s:if>
-
-    </div>
-    <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
-  </div>
+  <tiles2:insertTemplate template="membershipExpirationDetail.jsp" />
 </s:if>
 

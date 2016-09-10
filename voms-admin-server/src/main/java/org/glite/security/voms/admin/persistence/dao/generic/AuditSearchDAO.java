@@ -20,12 +20,20 @@ import java.util.List;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchParams;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchResults;
+import org.glite.security.voms.admin.view.actions.audit.ScrollableAuditLogSearchResults;
+import org.hibernate.ScrollMode;
 
 public interface AuditSearchDAO extends GenericDAO<AuditEvent, Long> {
 
   List<AuditEvent> findLatestEvents(int numEvents);
+
   Integer countEvents();
-  
+
   AuditLogSearchResults findEventsMatchingParams(AuditLogSearchParams sp);
-   
+
+  ScrollableAuditLogSearchResults scrollEventsMatchingParams(
+    AuditLogSearchParams sp, ScrollMode scrollMode);
+
+  Integer countEventsMatchingParams(AuditLogSearchParams sp);
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMembersStrategy;
 import org.glite.security.voms.admin.notification.ConditionalSendNotificationStrategy;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.PeriodicNotificationsTimeStorage;
 import org.glite.security.voms.admin.notification.TimeIntervalNotificationStrategy;
@@ -42,7 +42,7 @@ public class SendWarningAboutExpiringMembersStrategy implements
 
     notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(NOTIFICATION_KEY),
-      NotificationService.instance());
+      NotificationServiceFactory.getNotificationService());
   }
 
   public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {

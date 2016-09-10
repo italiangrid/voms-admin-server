@@ -58,7 +58,7 @@ public class RestUserAction extends BaseAction implements Preparable,
         return;
       }
 
-      user = VOMSUserDAO.instance().findByCertificate(certificateSubject,
+      user = VOMSUserDAO.instance().lookup(certificateSubject,
         caSubject);
     }
   }

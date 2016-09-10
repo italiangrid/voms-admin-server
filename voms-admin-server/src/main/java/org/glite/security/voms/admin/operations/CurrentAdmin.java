@@ -21,12 +21,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
+import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -34,7 +33,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
-import org.italiangrid.utils.voms.VOMSSecurityContext;
+import org.italiangrid.utils.voms.SecurityContext;
 import org.italiangrid.voms.VOMSAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,20 +56,10 @@ public class CurrentAdmin {
 
   private static VOMSAdmin lookupAdmin() {
 
-    VOMSSecurityContext ctxt = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext ctxt = (SecurityContext) CurrentSecurityContext.get();
 
-    boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
-
-    VOMSAdmin admin = null;
-
-    if (skipCACheck) {
-      admin = VOMSAdminDAO.instance().getBySubject(ctxt.getClientName());
-    } else {
-      admin = VOMSAdminDAO.instance().getByName(ctxt.getClientName(),
-        ctxt.getIssuerName());
-    }
+    VOMSAdmin admin = VOMSAdminDAO.instance()
+      .lookup(ctxt.getClientName(), ctxt.getIssuerName());
 
     return admin;
   }
@@ -80,7 +69,8 @@ public class CurrentAdmin {
     VOMSAdmin admin = lookupAdmin();
 
     if (admin == null)
-      admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+      admin = VOMSAdminDAO.instance()
+        .getAnyAuthenticatedUserAdmin();
 
     return new CurrentAdmin(admin);
   }
@@ -97,8 +87,8 @@ public class CurrentAdmin {
 
   public boolean isAuthorizedAdmin() {
 
-    return !getAdmin().equals(
-      VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin());
+    return !getAdmin().equals(VOMSAdminDAO.instance()
+      .getAnyAuthenticatedUserAdmin());
   }
 
   public boolean isVoUser() {
@@ -116,8 +106,20 @@ public class CurrentAdmin {
 
   }
 
+  public boolean is(Certificate c) {
+
+    return getRealSubject().equals(c.getSubjectString())
+      && getRealIssuer().equals(c.getCa()
+        .getSubjectString());
+  }
+
+  public boolean hasLinkedUser() {
+
+    return (getVoUser() != null);
+  }
+
   public VOMSUser getVoUser() {
-    
+
     String lookupSubject, lookupIssuer;
 
     if (!isAuthorizedAdmin()) {
@@ -125,17 +127,12 @@ public class CurrentAdmin {
       lookupIssuer = getRealIssuer();
     } else {
       lookupSubject = admin.getDn();
-      lookupIssuer = admin.getCa().getSubjectString();
+      lookupIssuer = admin.getCa()
+        .getSubjectString();
     }
 
-    final boolean skipCACheck = VOMSConfiguration.instance().getBoolean(
-      VOMSConfigurationConstants.SKIP_CA_CHECK, false);
-    
-    if (skipCACheck) {
-      return VOMSUserDAO.instance().findBySubject(lookupSubject);
-    }
-
-    return VOMSUserDAO.instance().findByDNandCA(lookupSubject, lookupIssuer);
+    return VOMSUserDAO.instance()
+      .lookup(lookupSubject, lookupIssuer);
   }
 
   public void createVoUser() {
@@ -144,8 +141,9 @@ public class CurrentAdmin {
 
     if (usr == null) {
 
-      VOMSUserDAO.instance().create(getRealSubject(), getRealIssuer(),
-        getRealCN(), null, getRealEmailAddress());
+      VOMSUserDAO.instance()
+        .create(getRealSubject(), getRealIssuer(), getRealCN(), null,
+          getRealEmailAddress());
     }
   }
 
@@ -164,8 +162,9 @@ public class CurrentAdmin {
 
   public boolean canBrowseVO() {
 
-    return hasPermissions(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerReadPermission().setMembershipReadPermission());
+    return hasPermissions(VOMSContext.getVoContext(),
+      VOMSPermission.getContainerReadPermission()
+        .setMembershipReadPermission());
   }
 
   public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
@@ -236,8 +235,7 @@ public class CurrentAdmin {
 
       boolean result = adminEffectivePerms.satisfies(p);
       if (log.isDebugEnabled()) {
-        log.debug(
-          "Does {} have permissions that satisfy {} in context {} ? {}",
+        log.debug("Does {} have permissions that satisfy {} in context {} ? {}",
           new String[] { getAdmin().toString(), p.toString(), c.toString(),
             Boolean.toString(result) });
       }
@@ -256,7 +254,8 @@ public class CurrentAdmin {
       for (Map.Entry<VOMSAdmin, VOMSPermission> entry : groupPermissions
         .entrySet()) {
 
-        String groupName = entry.getKey().getDn();
+        String groupName = entry.getKey()
+          .getDn();
 
         if (adminVOUser.isMember(groupName)) {
           VOMSPermission groupPerm = entry.getValue();
@@ -275,12 +274,14 @@ public class CurrentAdmin {
 
       for (Map.Entry<VOMSAdmin, VOMSPermission> entry : rolePermissions
         .entrySet()) {
-        String roleName = entry.getKey().getDn();
+        String roleName = entry.getKey()
+          .getDn();
 
         log.debug("Checking if current admin has role: " + roleName);
         if (adminVOUser.hasRole(roleName)) {
 
-          effectivePerms = effectivePerms | entry.getValue().getBits();
+          effectivePerms = effectivePerms | entry.getValue()
+            .getBits();
 
           log.debug("Adding role permission " + entry.getValue()
             + " to admin's permission set. admin has role '" + roleName + "'.");
@@ -306,8 +307,7 @@ public class CurrentAdmin {
 
   public String getRealSubject() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getClientName();
 
@@ -315,8 +315,7 @@ public class CurrentAdmin {
 
   public String getRealIssuer() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getIssuerName();
 
@@ -324,15 +323,16 @@ public class CurrentAdmin {
 
   public String getRealCN() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
+
     if (theContext.getClientCert() == null)
       return null;
 
     String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
       .getSubjectX500Principal());
 
-    Matcher m = Pattern.compile("/CN=([^/]*)").matcher(name);
+    Matcher m = Pattern.compile("/CN=([^/]*)")
+      .matcher(name);
     if (m.find())
       return m.group(1); // get the CN field
     else
@@ -341,7 +341,8 @@ public class CurrentAdmin {
 
   public boolean hasRole(VOMSGroup group, String roleName) {
 
-    VOMSRole role = VOMSRoleDAO.instance().findByName(roleName);
+    VOMSRole role = VOMSRoleDAO.instance()
+      .findByName(roleName);
 
     if (role == null) {
       return false;
@@ -366,8 +367,7 @@ public class CurrentAdmin {
 
   public String getRealEmailAddress() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     if (theContext.getClientCert() == null)
       return null;
@@ -375,12 +375,12 @@ public class CurrentAdmin {
     String name = DNUtil.getOpenSSLSubject(theContext.getClientCert()
       .getSubjectX500Principal());
 
-    String candidateEmail = DNUtil.getEmailAddressFromDN(DNUtil
-      .normalizeEmailAddressInDN(name));
+    String candidateEmail = DNUtil
+      .getEmailAddressFromDN(DNUtil.normalizeEmailAddressInDN(name));
 
     if (candidateEmail == null)
-      candidateEmail = DNUtil.getEmailAddressFromExtensions(theContext
-        .getClientCert());
+      candidateEmail = DNUtil
+        .getEmailAddressFromExtensions(theContext.getClientCert());
 
     return candidateEmail;
 
@@ -388,12 +388,9 @@ public class CurrentAdmin {
 
   public List<VOMSAttribute> getVOMSAttributes() {
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
-    if (theContext.getClientCert() == null)
-      return null;
+    // FIXME: to be reimplemented
+    return null;
 
-    return theContext.getVOMSAttributes();
   }
 
   public String toString() {
@@ -418,8 +415,7 @@ public class CurrentAdmin {
       return null;
     }
 
-    VOMSSecurityContext theContext = (VOMSSecurityContext) CurrentSecurityContext
-      .get();
+    SecurityContext theContext = (SecurityContext) CurrentSecurityContext.get();
 
     return theContext.getClientCert();
 

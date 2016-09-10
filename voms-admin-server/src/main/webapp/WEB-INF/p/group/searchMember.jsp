@@ -22,7 +22,7 @@
   id="membersSearchResults">
   
   <div class="reloadable">
-    
+      
     <s:if
       test='(searchResults.searchString eq null) and (searchResults.results.size == 0)'>
         No members in this group.
