@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>voms-admin-server</artifactId>
@@ -123,6 +123,7 @@
         <configuration>
           <header>${project.parent.basedir}/license/license.txt</header>
           <excludes>
+            <exclude>src/test/resources/**</exclude>
             <exclude>**/*.sql</exclude>
             <exclude>**/*.jpage</exclude>
             <exclude>**/*.template</exclude>
