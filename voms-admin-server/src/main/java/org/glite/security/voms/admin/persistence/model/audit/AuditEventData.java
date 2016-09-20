@@ -25,12 +25,11 @@ import org.slf4j.LoggerFactory;
 @Embeddable
 @Table(name = "audit_event_data")
 @org.hibernate.annotations.Table(appliesTo = "audit_event_data",
-  indexes = { @Index(columnNames = { "name" }, name = "aed_name_idx"),
-    @Index(columnNames = { "value" }, name = "aed_value_idx") })
+    indexes = {@Index(columnNames = {"name"}, name = "aed_name_idx"),
+        @Index(columnNames = {"value"}, name = "aed_value_idx")})
 public class AuditEventData {
 
-  public static final Logger LOG = LoggerFactory
-    .getLogger(AuditEventData.class);
+  public static final Logger LOG = LoggerFactory.getLogger(AuditEventData.class);
 
   @Column(nullable = false)
   String name;
@@ -58,9 +57,8 @@ public class AuditEventData {
 
     if (value.length() > 512) {
       // This should never happen
-      LOG.error(
-        "Truncating AuditEventData value length, as it exceeds the limit. Value: {}",
-        value);
+      LOG.error("Truncating AuditEventData value length, as it exceeds the limit. Value: {}",
+          value);
       value = value.substring(0, 511);
     }
 

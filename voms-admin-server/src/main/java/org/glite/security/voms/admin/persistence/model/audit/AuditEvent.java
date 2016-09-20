@@ -1,17 +1,15 @@
 /**
  * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.glite.security.voms.admin.persistence.model.audit;
 
@@ -30,17 +28,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
+import org.glite.security.voms.admin.event.auditing.NullHelper;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "audit_event")
-@org.hibernate.annotations.Table(appliesTo="audit_event",
-  indexes={
-    @Index(columnNames={"principal","event_timestamp"}, name="ae_principal_idx"),
-    @Index(columnNames={"event_timestamp","event_type"}, name="ae_type_idx")
-  }
-)
+@org.hibernate.annotations.Table(appliesTo = "audit_event",
+    indexes = {@Index(columnNames = {"principal", "event_timestamp"}, name = "ae_principal_idx"),
+        @Index(columnNames = {"event_timestamp", "event_type"}, name = "ae_type_idx")})
 public class AuditEvent {
 
   @Id
@@ -58,8 +54,7 @@ public class AuditEvent {
   String type;
 
   @CollectionOfElements
-  @JoinTable(name = "audit_event_data", joinColumns = @JoinColumn(
-    name = "event_id"))
+  @JoinTable(name = "audit_event_data", joinColumns = @JoinColumn(name = "event_id") )
   Set<AuditEventData> data = new HashSet<AuditEventData>();
 
   public Long getId() {
@@ -112,38 +107,36 @@ public class AuditEvent {
     this.data = data;
   }
 
-  public AuditEvent addDataPoint(String name, String value){
-    
-    getData().add(new AuditEventData(name, value));
+  public <T> AuditEvent addDataPoint(String name, T value) {
+    getData().add(new AuditEventData(name, NullHelper.nullSafeValue(value)));
     return this;
-    
   }
-  
-  public String getDataPoint(String name){
-    
-    for (AuditEventData dp: getData()){
-      if (dp.getName().equals(name)){
+
+  public String getDataPoint(String name) {
+
+    for (AuditEventData dp : getData()) {
+      if (dp.getName().equals(name)) {
         return dp.getValue();
       }
     }
-    
+
     return null;
   }
-  
-  public SortedSet<AuditEventData> getSortedData(){
-    SortedSet<AuditEventData> sortedData = 
-      new TreeSet<AuditEventData>(AuditEventDataNameComparator.INSTANCE);
-    
+
+  public SortedSet<AuditEventData> getSortedData() {
+    SortedSet<AuditEventData> sortedData =
+        new TreeSet<AuditEventData>(AuditEventDataNameComparator.INSTANCE);
+
     sortedData.addAll(getData());
-    
+
     return Collections.unmodifiableSortedSet(sortedData);
   }
-  
+
   @Override
   public String toString() {
 
-    return "AuditEvent [id=" + id + ", principal=" + principal + ", timestamp="
-      + timestamp + ", type=" + type + ", data=" + data + "]";
+    return "AuditEvent [id=" + id + ", principal=" + principal + ", timestamp=" + timestamp
+        + ", type=" + type + ", data=" + data + "]";
   }
 
   @Override
@@ -185,7 +178,7 @@ public class AuditEvent {
     return true;
   }
 
-  public String getShortType(){
-    return type.substring(type.lastIndexOf(".")+1);
+  public String getShortType() {
+    return type.substring(type.lastIndexOf(".") + 1);
   }
 }
