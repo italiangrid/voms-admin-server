@@ -101,7 +101,7 @@ services:
       VOMS_BUILD_FROM_SOURCES: y
 
       VOMS_GIT_REPO: file:///voms
-      VOMS_GIT_BRANCH: fix/VOMS-744
+      VOMS_GIT_BRANCH: develop
 
       # Uncomment to build voms-mysql-plugin from
       # source inside the container
