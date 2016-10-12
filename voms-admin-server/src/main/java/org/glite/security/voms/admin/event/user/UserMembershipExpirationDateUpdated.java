@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package org.glite.security.voms.admin.event.user;
 
-import static org.glite.security.voms.admin.event.auditing.NullHelper.nullSafeValue;
-
 import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 @EventDescription(message = "updated user '%s %s' membership expiration date",
-  params = { "userName", "userSurname" })
+    params = {"userName", "userSurname"})
 public class UserMembershipExpirationDateUpdated extends UserLifecycleEvent {
 
   public UserMembershipExpirationDateUpdated(VOMSUser payload) {
@@ -37,9 +35,7 @@ public class UserMembershipExpirationDateUpdated extends UserLifecycleEvent {
     if (getPayload().getEndTime() == null) {
       e.addDataPoint("newMembershipExpirationDate", "<null>");
     } else {
-      e.addDataPoint("newMembershipExpirationDate",
-        nullSafeValue(getPayload().getEndTime()
-          .toString()));
+      e.addDataPoint("newMembershipExpirationDate", getPayload().getEndTime().toString());
     }
   }
 

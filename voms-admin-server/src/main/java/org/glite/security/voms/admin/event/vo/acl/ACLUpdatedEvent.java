@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 package org.glite.security.voms.admin.event.vo.acl;
 
 import org.glite.security.voms.admin.event.EventDescription;
-import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.persistence.model.ACL;
 
-@EventDescription(message = "updated ACL for context '%s'",
-  params = { "aclContext" })
+@EventDescription(message = "updated ACL for context '%s'", params = {"aclContext"})
 public class ACLUpdatedEvent extends ACLEvent {
 
   public ACLUpdatedEvent(ACL acl) {

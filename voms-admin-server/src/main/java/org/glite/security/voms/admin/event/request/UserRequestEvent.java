@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.glite.security.voms.admin.event.request;
 
-import static org.glite.security.voms.admin.event.auditing.NullHelper.nullSafeValue;
-
 import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.event.SinglePayloadAuditableEvent;
@@ -25,8 +23,7 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 
 @MainEventDataPoints({"requestorSubject", "requestorIssuer"})
-public abstract class UserRequestEvent<T extends Request> extends
-  SinglePayloadAuditableEvent<T> {
+public abstract class UserRequestEvent<T extends Request> extends SinglePayloadAuditableEvent<T> {
 
   public UserRequestEvent(EventCategory type, T payload) {
 
@@ -39,24 +36,18 @@ public abstract class UserRequestEvent<T extends Request> extends
     Request r = getPayload();
 
     RequesterInfo requestor = r.getRequesterInfo();
-  
-    e.addDataPoint("requestorGivenName", 
-      nullSafeValue(requestor.getName()));
-    
-    e.addDataPoint("requestorSurname", 
-      nullSafeValue(requestor.getSurname()));
-    
-    e.addDataPoint("requestorSubject", requestor
-      .getCertificateSubject());
-    
-    e.addDataPoint("requestorIssuer", requestor
-      .getCertificateIssuer());
-    
-    e.addDataPoint("requestorIsVOMember", 
-      nullSafeValue(requestor.getVoMember()));
-    
-    e.addDataPoint("requestorEmailAddress",
-      requestor.getEmailAddress());
-    
+
+    e.addDataPoint("requestorGivenName", requestor.getName());
+
+    e.addDataPoint("requestorSurname", requestor.getSurname());
+
+    e.addDataPoint("requestorSubject", requestor.getCertificateSubject());
+
+    e.addDataPoint("requestorIssuer", requestor.getCertificateIssuer());
+
+    e.addDataPoint("requestorIsVOMember", requestor.getVoMember());
+
+    e.addDataPoint("requestorEmailAddress", requestor.getEmailAddress());
+
   }
 }

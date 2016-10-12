@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.glite.security.voms.admin.event.user.aup;
-
-import static org.glite.security.voms.admin.event.auditing.NullHelper.nullSafeValue;
 
 import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.persistence.model.AUP;
@@ -38,9 +36,8 @@ public class UserAUPTaskEvent extends UserAUPEvent {
   protected void decorateAuditEvent(AuditEvent e) {
 
     super.decorateAuditEvent(e);
-    e.addDataPoint("taskExpirationDate", nullSafeValue(task.getExpiryDate()));
-    e.addDataPoint("taskLastNotificationTime",
-      nullSafeValue(task.getLastNotificationTime()));
+    e.addDataPoint("taskExpirationDate", task.getExpiryDate());
+    e.addDataPoint("taskLastNotificationTime", task.getLastNotificationTime());
 
   }
 

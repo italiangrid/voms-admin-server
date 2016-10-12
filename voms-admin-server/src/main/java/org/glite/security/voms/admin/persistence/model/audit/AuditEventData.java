@@ -1,15 +1,17 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.glite.security.voms.admin.persistence.model.audit;
 
@@ -25,12 +27,11 @@ import org.slf4j.LoggerFactory;
 @Embeddable
 @Table(name = "audit_event_data")
 @org.hibernate.annotations.Table(appliesTo = "audit_event_data",
-  indexes = { @Index(columnNames = { "name" }, name = "aed_name_idx"),
-    @Index(columnNames = { "value" }, name = "aed_value_idx") })
+    indexes = {@Index(columnNames = {"name"}, name = "aed_name_idx"),
+        @Index(columnNames = {"value"}, name = "aed_value_idx")})
 public class AuditEventData {
 
-  public static final Logger LOG = LoggerFactory
-    .getLogger(AuditEventData.class);
+  public static final Logger LOG = LoggerFactory.getLogger(AuditEventData.class);
 
   @Column(nullable = false)
   String name;
@@ -58,9 +59,8 @@ public class AuditEventData {
 
     if (value.length() > 512) {
       // This should never happen
-      LOG.error(
-        "Truncating AuditEventData value length, as it exceeds the limit. Value: {}",
-        value);
+      LOG.error("Truncating AuditEventData value length, as it exceeds the limit. Value: {}",
+          value);
       value = value.substring(0, 511);
     }
 

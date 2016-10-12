@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2015
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,24 @@
  */
 package org.glite.security.voms.admin.event.auditing;
 
-
 public class NullHelper {
 
   private NullHelper() {
   }
-  
-  public static <T> String nullSafeValue(T val){
-    if (val == null){
+
+  public static <T> String nullSafeValue(T val) {
+
+    if (val == null) {
       return "<null>";
     }
-    
-    return val.toString();
+
+    String stringVal = val.toString();
+
+    if ("".equals(stringVal)) {
+      return "<null>";
+    }
+
+    return stringVal;
   }
 
 }
