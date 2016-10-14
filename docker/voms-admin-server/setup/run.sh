@@ -15,15 +15,20 @@ done
 
 echo 'Database server is up.'
 
+if [[ -n "${VOMS_ADMIN_SERVER_PACKAGE_URL}" ]]; then
+  yum -y remove voms-admin-server
+  yum -y install ${VOMS_ADMIN_SERVER_PACKAGE_URL}
+fi
+
 # Install requested voms-admin-server version
 if [[ -n "${VOMS_ADMIN_SERVER_VERSION}" ]]; then
-  yum remove voms-admin-server
+  yum -y remove voms-admin-server
   yum install -y voms-admin-server-${VOMS_ADMIN_SERVER_VERSION}
 fi
 
 # Install requested voms-admin client
 if [[ -n "${VOMS_ADMIN_CLIENT_VERSION}" ]]; then
-  yum remove voms-admin-client
+  yum -y remove voms-admin-client
   yum install -y voms-admin-client-${VOMS_ADMIN_CLIENT_VERSION}
 fi
 
@@ -38,38 +43,48 @@ chown voms:voms /etc/grid-security/voms*.pem
 # Do this or voms-admin webapp will fail silently and always return 503
 mkdir -p /etc/grid-security/vomsdir
 
-## Preconfigure using existing package, if requested
-if [[ -n "${VOMS_PRE_CONFIGURE}" ]]; then
+## Preconfigure using existing package, if requested, or if just skipping
+## the deployment of a tarball
+if [[ -z ${VOMS_DEPLOY_TARBALL} ]]; then
+  VOMS_PRE_CONFIGURE=y
+fi
+
+if [[ -n ${VOMS_PRE_CONFIGURE} ]]; then
   echo "Running preconfiguration..."
   CONFIGURE_VO_OPTIONS=${VOMS_PRE_CONFIGURE_OPTIONS} /bin/bash configure-vo.sh
 fi
 
-## Install new code
-ls -l /code
+if [[ -n "${VOMS_DEPLOY_TARBALL}" ]]; then
+  echo "Istalling VOMS development tarball from /code"
 
-old_jars=$(ls /var/lib/voms-admin/lib/)
-rm -f $old_jars
+  ## Install new code
+  ls -l /code
 
-tar -C / -xvzf /code/voms-admin-server/target/voms-admin-server.tar.gz
+  old_jars=$(ls /var/lib/voms-admin/lib/)
+  rm -f $old_jars
 
-chown -R voms:voms /var/lib/voms-admin/work /var/log/voms-admin
+  tar -C / -xvzf /code/voms-admin-server/target/voms-admin-server.tar.gz
 
-if [[ -n "$VOMS_UPGRADE_DB" ]]; then
-  echo "Running database upgrade..."
-  /bin/bash upgrade-db.sh
-fi
+  chown -R voms:voms /var/lib/voms-admin/work /var/log/voms-admin
 
-skip_configuration=false
+  if [[ -n "$VOMS_UPGRADE_DB" ]]; then
+    echo "Running database upgrade..."
+    /bin/bash upgrade-db.sh
+  fi
 
-## Skip configuration if requested
-[ -n "$VOMS_SKIP_CONFIGURE" ] && skip_configuration=true
+  skip_configuration=false
 
-## But only if configuration for the VO exists
-[ ! -e "/etc/voms-admin/test/service.properties" ] && skip_configuration=false
+  ## Skip configuration if requested
+  [ -n "$VOMS_SKIP_CONFIGURE" ] && skip_configuration=true
 
-if [[ "$skip_configuration" = "false" ]]; then
-    echo "Running configuration..."
-    CONFIGURE_VO_OPTIONS=${VOMS_CONFIGURE_OPTIONS} /bin/bash configure-vo.sh
+  ## But only if configuration for the VO exists
+  [ ! -e "/etc/voms-admin/test/service.properties" ] && skip_configuration=false
+
+  if [[ "$skip_configuration" = "false" ]]; then
+      echo "Running configuration..."
+      CONFIGURE_VO_OPTIONS=${VOMS_CONFIGURE_OPTIONS} /bin/bash configure-vo.sh
+  fi
+
 fi
 
 # Setup logging so that everything goes to stdout
