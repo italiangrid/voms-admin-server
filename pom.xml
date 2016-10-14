@@ -5,7 +5,7 @@
 
   <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-parent</artifactId>
-  <version>3.5.1</version>
+  <version>3.5.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>VOMS Admin Parent POM</name>
 
