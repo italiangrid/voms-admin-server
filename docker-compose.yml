@@ -55,13 +55,20 @@ services:
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
       VOMS_DEBUG: y
-      # VOMS_ADMIN_SERVER_VERSION: 3.4.2
+
+      # Comment the following line to skip tarball installation
+      # VOMS_DEPLOY_TARBALL: y
+
+      VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-10/sl6/x86_64/voms-admin-server-3.4.2-1.el6.centos.noarch.rpm 
+      # VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
       # VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       # VOMS_UPGRADE_DB: y
-      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-end-time
-      ENABLE_JREBEL: y
+      #
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --disable-notification 
+      # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-end-time
+      # ENABLE_JREBEL: y
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
