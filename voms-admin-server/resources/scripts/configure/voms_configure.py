@@ -612,14 +612,18 @@ def create_logging_configuration(options):
 def create_admin_configuration(options):
     if os.path.exists(admin_conf_dir(options.vo)):
         logger.info("VOMS Admin service configuration for VO %s exists.", options.vo)
+        if options.skip_database:
+            logger.info("Skipping database creation for VO %s.", options.vo)
+            options.deploy_database = False
         if not options.dry_run and options.enable_conf_backup:
             backup_dir_contents(admin_conf_dir(options.vo))
     else:
         ## Set the deploy database option if the VO is
         ## installed for the first time on this host and this
         ## is not meant as a replica
-        if not options.skip_database:
-            options.deploy_database = True
+        if options.skip_database:
+            logger.info("Skipping database creation for VO %s.", options.vo)
+            options.deploy_database = False
             # options.createdb = True
 
         ## FIXME: set permissions
@@ -716,7 +720,9 @@ def setup_defaults(options):
 
     if options.createdb or options.dropdb:
         if not options.dbapwd:
-            error_and_exit("Please set at least the --dbapwd option when attempting MySQL schema creation/removal.")
+            error_and_exit("ERROR: Please set at least the --dbapwd option when attempting MySQL schema creation/removal.")
+        if options.skip_database:
+            error_and_exit("ERROR: --createdb and --dropdb options are mutually exclusive with the --skip-database.")
 
 def setup_admin_defaults(options):
 
@@ -754,8 +760,9 @@ def do_admin_install(options):
     create_admin_configuration(options)
 
     if options.deploy_database:
+        if not options.createdb:
+            error_and_exit("ERROR: Unable to deploy the database. Please specify also --createdb and --dbapwd options.")
         deploy_database(options)
-
 
 def do_core_install(options):
     logger.info("Configuring VOMS core service for vo %s" , options.vo)
