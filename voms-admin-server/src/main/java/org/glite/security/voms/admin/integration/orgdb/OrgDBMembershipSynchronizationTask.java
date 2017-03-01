@@ -30,7 +30,6 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,25 +60,39 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
   protected VOMSOrgDBPerson lookupOrgDBPerson(VOMSUser u, Session s) {
 
-    OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
+    OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance()
+      .getVOMSPersonDAO();
     dao.setSession(s);
-    
+
     VOMSOrgDBPerson orgdbPerson = null;
 
-    if (u.getOrgDbId() != null) {
-      orgdbPerson = dao.findById(u.getOrgDbId(), false);
+    try {
+
+      if (u.getOrgDbId() != null) {
+        orgdbPerson = dao.findById(u.getOrgDbId(), false);
+
+        if (orgdbPerson == null) {
+          log.warn(
+            "No OrgDB person found for id '{}' linked to VOMS membership {}",
+            u.getOrgDbId(), u.toString());
+        }
+      }
 
       if (orgdbPerson == null) {
-        log.warn(
-          "No OrgDB person found for id '{}' linked to VOMS membership {}",
-          u.getOrgDbId(), u.toString());
+        log.warn("Looking up orgdb membership by user email address. User: {}",
+          u.toString());
+        orgdbPerson = dao.findPersonByEmail(u.getEmailAddress());
       }
-    }
 
-    if (orgdbPerson == null) {
-      log.warn("Looking up orgdb membership by user email address. User: {}",
-        u.toString());
-      orgdbPerson = dao.findPersonByEmail(u.getEmailAddress());
+    } catch (Throwable ex) {
+
+      log.error("Exception caught while looking up OrgDB user for VOMS user {}",
+        u);
+
+      log.error("Exception caught while looking up OrgDB user: {}",
+        ex.getMessage(), ex);
+
+      orgdbPerson = null;
     }
 
     return orgdbPerson;
@@ -91,15 +104,16 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
     SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
 
     long startTime = System.currentTimeMillis();
-    
+
     try {
 
-      if (sf.openSession() == null){
+      if (sf.openSession() == null) {
         throw new OrgDBError("Error opening session to OrgDB");
       }
-      
-      sf.getCurrentSession().beginTransaction();
-        
+
+      sf.getCurrentSession()
+        .beginTransaction();
+
       ScrollableResults allUserCursor = VOMSUserDAO.instance()
         .findAllWithCursor();
 
@@ -109,7 +123,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
         VOMSUser u = (VOMSUser) allUserCursor.get(0);
 
-        VOMSOrgDBPerson orgDbPerson = lookupOrgDBPerson(u, 
+        VOMSOrgDBPerson orgDbPerson = lookupOrgDBPerson(u,
           sf.getCurrentSession());
 
         if (orgDbPerson != null) {
@@ -127,8 +141,10 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
             log.debug("Flushing session after {} updates.", updateCount);
 
-            sf.getCurrentSession().flush();
-            sf.getCurrentSession().clear();
+            sf.getCurrentSession()
+              .flush();
+            sf.getCurrentSession()
+              .clear();
           }
 
         } else {
@@ -139,7 +155,9 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
       }
 
-      sf.getCurrentSession().getTransaction().commit();
+      sf.getCurrentSession()
+        .getTransaction()
+        .commit();
 
     } catch (OrgDBError e) {
 
@@ -150,17 +168,20 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
       }
 
       try {
-        
-        sf.getCurrentSession().getTransaction().rollback();
+
+        sf.getCurrentSession()
+          .getTransaction()
+          .rollback();
 
       } catch (Throwable t) {
-        log
-          .error("Error rolling back OrgDB transaction: {}", t.getMessage(), t);
+        log.error("Error rolling back OrgDB transaction: {}", t.getMessage(),
+          t);
       }
 
     } finally {
 
-      sf.getCurrentSession().close();
+      sf.getCurrentSession()
+        .close();
 
       long elapsedTime = System.currentTimeMillis() - startTime;
       log.info("OrgDB synchronization took {} seconds.",

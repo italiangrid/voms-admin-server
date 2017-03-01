@@ -22,8 +22,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MembershipCheckerTask extends AbstractMembershipChecker implements
-  Runnable, RegistrationServiceTask {
+public class MembershipCheckerTask extends AbstractMembershipChecker
+  implements Runnable, RegistrationServiceTask {
 
   public static final Logger log = LoggerFactory
     .getLogger(MembershipCheckerTask.class);
@@ -40,8 +40,8 @@ public class MembershipCheckerTask extends AbstractMembershipChecker implements
 
     log.debug("Expiring members: {}", expiringMembers);
 
-    getHandleExpiringMembersStrategy().handleMembersAboutToExpire(
-      expiringMembers);
+    getHandleExpiringMembersStrategy()
+      .handleMembersAboutToExpire(expiringMembers);
 
     List<VOMSUser> expiredMembers = getExpiredMembersLookupStrategy()
       .findExpiredMembers();
@@ -55,8 +55,8 @@ public class MembershipCheckerTask extends AbstractMembershipChecker implements
 
     log.debug("AUP failing members: {}", aupFailingMembers);
 
-    getHandleAUPFailingMembersStrategy().handleAUPFailingMembers(
-      aupFailingMembers);
+    getHandleAUPFailingMembersStrategy()
+      .handleAUPFailingMembers(aupFailingMembers);
 
   }
 
