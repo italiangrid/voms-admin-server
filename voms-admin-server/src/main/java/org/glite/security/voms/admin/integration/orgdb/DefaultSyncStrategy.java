@@ -86,18 +86,18 @@ public class DefaultSyncStrategy
 
       } else {
 
-        if (u.getEndTime()
-          .after(expiredParticipation.getEndDate())) {
+        log.debug("Found expired participation on {} for user {}.",
+          expiredParticipation.getEndDate(), u);
 
-          // Set the end date to the date of the expired participation
-          // The membership check task will do the rest.
-          log.debug("Setting {} expiration date to {}. Previous value was: {}",
-            new Object[] { u, expiredParticipation.getEndDate(),
-              u.getEndTime() });
+        // Set the end date to the date of the expired participation
+        // The membership check task will do the rest.
+        log.debug(
+          "Setting {} membership expiration date to {}. Previous value was: {}",
+          new Object[] { u, expiredParticipation.getEndDate(),
+            u.getEndTime() });
 
-          u.setEndTime(expiredParticipation.getEndDate());
+        u.setEndTime(expiredParticipation.getEndDate());
 
-        }
       }
     }
   }

@@ -34,8 +34,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GracePeriodExpiredMembersStrategy implements
-  HandleExpiredMembersStrategy, ExpiredMembersLookupStrategy {
+public class GracePeriodExpiredMembersStrategy
+  implements HandleExpiredMembersStrategy, ExpiredMembersLookupStrategy {
 
   public static final Logger log = LoggerFactory
     .getLogger(GracePeriodExpiredMembersStrategy.class);
@@ -55,21 +55,22 @@ public class GracePeriodExpiredMembersStrategy implements
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationServiceFactory.getNotificationService(), (long) notificationInterval,
-      TimeUnit.DAYS);
+      NotificationServiceFactory.getNotificationService(),
+      (long) notificationInterval, TimeUnit.DAYS);
   }
 
   public GracePeriodExpiredMembersStrategy(int notificationInterval) {
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationServiceFactory.getNotificationService(), (long) notificationInterval,
-      TimeUnit.DAYS);
+      NotificationServiceFactory.getNotificationService(),
+      (long) notificationInterval, TimeUnit.DAYS);
   }
 
   public List<VOMSUser> findExpiredMembers() {
 
-    return VOMSUserDAO.instance().findExpiredUsers();
+    return VOMSUserDAO.instance()
+      .findExpiredUsers();
   }
 
   protected void sendNotificationToAdmins(List<VOMSUser> expiredMembers) {
@@ -97,15 +98,21 @@ public class GracePeriodExpiredMembersStrategy implements
 
       if (!u.isSuspended()) {
 
-        long timeDiff = now.getTime() - u.getEndTime().getTime();
+        if (u.getEndTime() == null) {
+          log.warn("User end time is not set, continuing...");
+          continue;
+        }
+
+        long timeDiff = now.getTime() - u.getEndTime()
+          .getTime();
 
         if (TimeUnit.MILLISECONDS.toDays(timeDiff) > gracePeriod) {
 
           log.info("Suspending user '" + u
             + "' since its membership has expired and grace period is over.");
 
-          ValidationManager.instance().suspendUser(u,
-            SuspensionReason.MEMBERSHIP_EXPIRATION);
+          ValidationManager.instance()
+            .suspendUser(u, SuspensionReason.MEMBERSHIP_EXPIRATION);
 
         } else {
 
