@@ -57,24 +57,24 @@ services:
       VOMS_DEBUG: y
 
       # Comment the following line to skip tarball installation
-      # VOMS_DEPLOY_TARBALL: y
+      VOMS_DEPLOY_TARBALL: y
 
-      VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-10/sl6/x86_64/voms-admin-server-3.4.2-1.el6.centos.noarch.rpm 
+      # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-10/sl6/x86_64/voms-admin-server-3.4.2-1.el6.centos.noarch.rpm 
       # VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
       # VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       # VOMS_UPGRADE_DB: y
       #
-      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --disable-notification 
-      # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification --disable-membership-end-time
+      # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification 
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --disable-notification --disable-membership-end-time
       # ENABLE_JREBEL: y
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
 
   voms:
-    image: italiangrid/voms-dev:latest
+    image: italiangrid/voms-dev:centos6
     domainname: local.io
 
     depends_on:
@@ -88,7 +88,7 @@ services:
       - SYS_PTRACE
 
     volumes:
-      - $HOME/git/voms:/voms:ro
+      - $HOME/git/voms-giaco:/voms:ro
       - $HOME/git/voms-mysql-plugin:/voms-mysql-plugin:ro
 
     volumes_from:
@@ -108,7 +108,7 @@ services:
       VOMS_BUILD_FROM_SOURCES: y
 
       VOMS_GIT_REPO: file:///voms
-      VOMS_GIT_BRANCH: develop
+      VOMS_GIT_BRANCH: ssl11-andrea
 
       # Uncomment to build voms-mysql-plugin from
       # source inside the container

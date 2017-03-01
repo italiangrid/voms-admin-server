@@ -7,7 +7,7 @@ ADD setup /
 
 RUN yum -y -d2 install sudo && sh setup-voms-user.sh
 
-RUN /bin/bash setup.sh
+RUN /bin/bash setup.sh 
 
 USER voms
 WORKDIR /home/voms
