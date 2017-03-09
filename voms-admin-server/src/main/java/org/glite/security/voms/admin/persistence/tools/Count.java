@@ -37,7 +37,7 @@ public class Count extends AbstractAuditLogSearchCommand {
   @Override
   public String getDescription() {
 
-    return "Count records in the audit log matching the search parameters. "
+    return "Count records in the audit LOG matching the search parameters. "
       + "If no parameters are provided, counts all records.";
 
   }

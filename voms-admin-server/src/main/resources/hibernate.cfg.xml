@@ -68,6 +68,7 @@
         <mapping class="org.glite.security.voms.admin.persistence.model.task.Task"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask"/>
         <mapping class="org.glite.security.voms.admin.persistence.model.task.SignAUPTask"/>
+        <mapping class="org.glite.security.voms.admin.persistence.model.task.TaskLock"/>
         
         <!-- REQUESTS -->
         <mapping class="org.glite.security.voms.admin.persistence.model.request.Request"/>

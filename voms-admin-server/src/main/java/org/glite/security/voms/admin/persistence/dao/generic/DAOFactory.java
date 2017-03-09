@@ -15,9 +15,9 @@
  */
 package org.glite.security.voms.admin.persistence.dao.generic;
 
+import org.glite.security.voms.admin.persistence.dao.hibernate.HibernateDAOFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.dao.hibernate.HibernateDAOFactory;
 
 /**
  * Defines all DAOs and the concrete factories to get the conrecte DAOs.
@@ -90,4 +90,6 @@ public abstract class DAOFactory {
   public abstract AuditDAO getAuditDAO();
 
   public abstract AuditSearchDAO getAuditSearchDAO();
+  
+  public abstract TaskLockDAO getTaskLockDAO();
 }

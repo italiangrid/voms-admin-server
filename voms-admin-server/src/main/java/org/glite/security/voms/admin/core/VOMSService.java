@@ -27,6 +27,7 @@ import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
+import org.glite.security.voms.admin.core.tasks.CancelSignAUPTasksForExpiredUsersTask;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
 import org.glite.security.voms.admin.core.tasks.PrintX509AAStatsTask;
 import org.glite.security.voms.admin.core.tasks.SignAUPReminderCheckTask;
@@ -74,23 +75,39 @@ public final class VOMSService {
 
   public static final String ENDPOINTS_KEY = "__voms_endpoints";
 
-  static final Logger log = LoggerFactory.getLogger(VOMSService.class);
+  static final Logger LOG = LoggerFactory.getLogger(VOMSService.class);
 
   protected static void checkDatabaseVersion() {
 
-    String adminVersion = VOMSVersionDAO.instance()
+    final String detectedDbVersion = VOMSVersionDAO.instance()
       .getVersion()
       .getAdminVersion();
 
-    if (!adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+    int detectedDbVersionInt = -1;
+
+    try {
+      detectedDbVersionInt = Integer.parseUnsignedInt(detectedDbVersion);
+    } catch (NumberFormatException ex) {
       String msg = String.format(
         "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
           + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
           + " command.",
-        adminVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+        detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
-      log.error(msg);
+      LOG.error(msg);
       throw new VOMSFatalException(msg);
+    }
+
+    if (detectedDbVersionInt < SchemaVersion.VOMS_ADMIN_DB_VERSION_INT) {
+      String msg = String.format(
+        "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+          + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+          + " command.",
+        detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+
+      LOG.error(msg);
+      throw new VOMSFatalException(msg);
+
     }
   }
 
@@ -108,11 +125,11 @@ public final class VOMSService {
         "org.glite.security.voms.admin.util.velocity.VelocityLogger");
 
       Velocity.init(p);
-      log.debug("Velocity setup ok!");
+      LOG.debug("Velocity setup ok!");
 
     } catch (Exception e) {
 
-      log.error("Error initializing velocity template engine!");
+      LOG.error("Error initializing velocity template engine!");
       throw new VOMSFatalException(e);
     }
 
@@ -151,6 +168,12 @@ public final class VOMSService {
         EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
         TimeUnit.DAYS),
       VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+    
+    es.startBackgroundTask(
+      new CancelSignAUPTasksForExpiredUsersTask(DAOFactory.instance(), 
+        EventManager.instance()),
+      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+    
 
     es.startBackgroundTask(new UpdateCATask(),
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
@@ -165,7 +188,7 @@ public final class VOMSService {
     es.startBackgroundTask(new UserStatsTask(),
       VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
       UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
-
+    
   }
 
   protected static void startNotificationService() {
@@ -183,7 +206,7 @@ public final class VOMSService {
 
       ns.start();
     } else {
-      log.warn("Notification service is DISABLED.");
+      LOG.warn("Notification service is DISABLED.");
     }
 
   }
@@ -197,12 +220,12 @@ public final class VOMSService {
 
     } catch (ConfigurationException e) {
 
-      log.error("Error initializing OpenSAML:" + e.getMessage());
+      LOG.error("Error initializing OpenSAML:" + e.getMessage());
 
-      if (log.isDebugEnabled())
-        log.error("Error initializing OpenSAML:" + e.getMessage(), e);
+      if (LOG.isDebugEnabled())
+        LOG.error("Error initializing OpenSAML:" + e.getMessage(), e);
 
-      log.info("SAML endpoint will not be activated.");
+      LOG.info("SAML endpoint will not be activated.");
       conf.setProperty(
         VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false);
     }
@@ -212,7 +235,7 @@ public final class VOMSService {
 
     if (x509AcEndpointEnabled) {
 
-      log.info("Bootstrapping VOMS X.509 attribute authority.");
+      LOG.info("Bootstrapping VOMS X.509 attribute authority.");
       ACGeneratorFactory.newACGenerator()
         .configure(conf.getServiceCredential());
 
@@ -222,7 +245,7 @@ public final class VOMSService {
         PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, TimeUnit.SECONDS);
 
     } else {
-      log.info("X.509 attribute authority is disabled.");
+      LOG.info("X.509 attribute authority is disabled.");
     }
 
   }
@@ -292,11 +315,11 @@ public final class VOMSService {
       conf = VOMSConfiguration.load(ctxt);
 
     } catch (VOMSConfigurationException e) {
-      log.error("VOMS-Admin configuration failed!", e);
+      LOG.error("VOMS-Admin configuration failed!", e);
       throw new VOMSFatalException(e);
     }
 
-    log.info("VOMS-Admin starting for VO: " + conf.getVOName());
+    LOG.info("VOMS-Admin starting for VO: " + conf.getVOName());
 
     bootstrapPersistence(conf);
 
@@ -322,7 +345,7 @@ public final class VOMSService {
 
     initializeDnValidator();
 
-    log.info("VOMS-Admin started succesfully.");
+    LOG.info("VOMS-Admin started succesfully.");
   }
 
   private static void configureCertificateLookupPolicy(VOMSConfiguration conf) {
@@ -331,11 +354,11 @@ public final class VOMSService {
       .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
 
     if (skipCaCheck) {
-      log.info(
+      LOG.info(
         "CertificateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject ({} == true)",
         VOMSConfigurationConstants.SKIP_CA_CHECK);
     } else {
-      log.info(
+      LOG.info(
         "CertficateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
         VOMSConfigurationConstants.SKIP_CA_CHECK);
     }
@@ -353,7 +376,7 @@ public final class VOMSService {
 
     HibernateFactory.shutdown();
 
-    log.info("VOMS admin stopped .");
+    LOG.info("VOMS admin stopped .");
   }
 
 }

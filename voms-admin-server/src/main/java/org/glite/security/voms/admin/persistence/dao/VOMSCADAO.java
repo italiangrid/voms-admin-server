@@ -99,13 +99,13 @@ public class VOMSCADAO implements Searchable {
 
     // if ( now.after( ca.getNotAfter() ) ) {
     //
-    // log.warn( "CA '" + ca.getSubjectString()
+    // LOG.warn( "CA '" + ca.getSubjectString()
     // + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
     //
     // // The CA has expired, let's see if the new certificate extends its
     // // validity
     // if ( !now.after( caCert.getNotAfter() ) ) {
-    // log.info( "Updating validity period for CA '"
+    // LOG.info( "Updating validity period for CA '"
     // + ca.getSubjectString() + "' from '" + ca.getNotAfter()
     // + "' to '" + caCert.getNotAfter() + "'." );
     // ca.update( caCert );
@@ -125,13 +125,13 @@ public class VOMSCADAO implements Searchable {
     // .getForCA( ca );
     // if ( certs.isEmpty() ) {
     //
-    // log.warn( "Removing expired CA '"
+    // LOG.warn( "Removing expired CA '"
     // + ca.getSubjectString() + "' from database..." );
     // // First remove the admins
     // VOMSAdminDAO.instance().deleteFromCA( ca );
     // HibernateFactory.getSession().delete( ca );
     // }else
-    // log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
+    // LOG.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
     //
     // }
     // }

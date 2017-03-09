@@ -140,7 +140,6 @@ public class HibernateFactory {
 
   public static Session getSession() {
 
-    log.debug("Getting session for thread: " + Thread.currentThread());
     Session s = (Session) threadSession.get();
     try {
 
@@ -149,8 +148,8 @@ public class HibernateFactory {
         s = sessionFactory.openSession();
         threadSession.set(s);
 
-        log.debug("Opening new session for thread " + Thread.currentThread());
-
+        log.debug("Opened new session for thread {}. Session: {}", 
+          Thread.currentThread(), s);
       }
 
     } catch (HibernateException ex) {
@@ -168,9 +167,17 @@ public class HibernateFactory {
       Session s = (Session) threadSession.get();
       threadSession.set(null);
 
-      if (s != null && s.isOpen()) {
-        log.debug("Closing session for thread " + Thread.currentThread());
-        s.close();
+      if (s != null) {
+        if (s.isOpen()){
+          log.debug("Closing session for thread {}", Thread.currentThread());
+          s.close();
+        } else {
+          log.debug("Session is already closed for thread {}", 
+            Thread.currentThread());
+        }
+      } else  {
+        log.debug("Attempted to close a null session for thread {}", 
+          Thread.currentThread());
       }
 
     } catch (HibernateException ex) {
@@ -188,6 +195,11 @@ public class HibernateFactory {
       if (tx == null) {
         tx = getSession().beginTransaction();
         threadTransaction.set(tx);
+        
+        if (log.isDebugEnabled()){
+          log.debug("Started transation {} for thread {}. ", tx, 
+            Thread.currentThread());
+        }
       }
     } catch (HibernateException ex) {
 
@@ -202,16 +214,24 @@ public class HibernateFactory {
     Transaction tx = (Transaction) threadTransaction.get();
     try {
 
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
+      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+        if (log.isDebugEnabled()){
+          log.debug("Committing transaction {} for thread {}", tx,
+            Thread.currentThread());
+        }
         tx.commit();
+        
+      }
+      
       threadTransaction.set(null);
     } catch (HibernateException ex) {
-      rollbackTransaction();
       log.error("Error committing hibernate transaction:" + ex.getMessage());
-
-      if (log.isDebugEnabled())
+      
+      rollbackTransaction();
+     
+      if (log.isDebugEnabled()){
         log.error("Error committing hibernate transaction!", ex);
-
+      }
       throw new VOMSDatabaseException(ex.getMessage(), ex);
     }
   }
@@ -222,13 +242,19 @@ public class HibernateFactory {
     try {
 
       threadTransaction.set(null);
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack())
+      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+        if (log.isDebugEnabled()){
+          log.debug("Rolling back transaction {} for thread {}", tx, 
+            Thread.currentThread());
+        }
         tx.rollback();
+      }
     } catch (HibernateException ex) {
       log.error("Error rolling back hibernate transaction:" + ex.getMessage());
 
-      if (log.isDebugEnabled())
-        log.error("Error committing hibernate transaction!", ex);
+      if (log.isDebugEnabled()){
+        log.error("Error rolling back hibernate transaction!", ex);
+      }
 
       throw new VOMSDatabaseException(ex.getMessage(), ex);
 

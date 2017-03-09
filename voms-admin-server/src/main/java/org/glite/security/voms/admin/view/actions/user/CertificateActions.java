@@ -59,10 +59,8 @@ public class CertificateActions extends UserActionSupport {
     Certificate cert = CertificateDAO.instance()
       .findById(getCertificateId());
 
-    // FIXME: create constructor that accepts a certificate
     RemoveUserCertificateOperation
-      .instance(cert.getSubjectString(), cert.getCa()
-        .getSubjectString())
+      .instance(cert)
       .execute();
 
     return SUCCESS;

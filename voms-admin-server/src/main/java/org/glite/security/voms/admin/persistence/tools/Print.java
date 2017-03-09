@@ -68,7 +68,7 @@ public class Print extends AbstractAuditLogSearchCommand {
   @Override
   public String getDescription() {
 
-    return "Prints records in the audit log matching the search parameters. "
+    return "Prints records in the audit LOG matching the search parameters. "
       + "If no parameters are provided, prints all records.";
     
   }

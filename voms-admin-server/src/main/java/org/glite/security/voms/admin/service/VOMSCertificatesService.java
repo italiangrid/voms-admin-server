@@ -17,8 +17,6 @@ package org.glite.security.voms.admin.service;
 
 import java.rmi.RemoteException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.users.AddUserCertificateOperation;
 import org.glite.security.voms.admin.operations.users.FindUserOperation;
@@ -29,6 +27,8 @@ import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.service.certificates.VOMSCertificates;
 import org.glite.security.voms.service.certificates.X509Certificate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VOMSCertificatesService implements VOMSCertificates {
 
@@ -154,6 +154,7 @@ public class VOMSCertificatesService implements VOMSCertificates {
 
         java.security.cert.X509Certificate x509Cert = ServiceUtils
           .certificateFromBytes(cert.getBytes());
+        
         RemoveUserCertificateOperation.instance(x509Cert).execute();
 
       } else

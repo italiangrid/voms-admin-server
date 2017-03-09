@@ -24,9 +24,12 @@ public class SchemaVersion {
   public static final Integer VOMS_DB_VERSION = new Integer(3);
 
   /**
-   * Current VOMS Admin database version.
+   * Required VOMS Admin database version.
    */
-  public static final String VOMS_ADMIN_DB_VERSION = "5";
+  public static final String VOMS_ADMIN_DB_VERSION = "6";
+  
+  public static final int VOMS_ADMIN_DB_VERSION_INT = 
+    Integer.parseInt(VOMS_ADMIN_DB_VERSION);
 
   private SchemaVersion() {}
 

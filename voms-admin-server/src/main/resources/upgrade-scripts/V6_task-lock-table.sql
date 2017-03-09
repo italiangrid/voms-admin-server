@@ -1,0 +1,2 @@
+/* Create task lock table */
+create table task_lock (task_name varchar(64) not null, created_at datetime not null, finished_at datetime, service_id varchar(255) not null, primary key (task_name)) ENGINE=InnoDB

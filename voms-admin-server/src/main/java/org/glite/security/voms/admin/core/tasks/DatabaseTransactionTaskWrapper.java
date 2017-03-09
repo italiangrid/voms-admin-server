@@ -16,7 +16,10 @@
 package org.glite.security.voms.admin.core.tasks;
 
 import org.glite.security.voms.admin.persistence.HibernateFactory;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
+import org.glite.security.voms.admin.persistence.dao.generic.TaskLockDAO;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
+import org.glite.security.voms.admin.persistence.model.task.TaskLock;
 import org.glite.security.voms.admin.servlets.InitSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,25 +30,107 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
     .getLogger(DatabaseTransactionTaskWrapper.class);
 
   final boolean doLogging;
+  final boolean doAcquireLock;
+  final long periodInSecs;
 
-  public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd) {
+  
+  public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd,
+    boolean acquireLock) {
+
+    this(task, logStartAndEnd, acquireLock, -1);
+  }
+  
+  public DatabaseTransactionTaskWrapper(Runnable task, boolean logStartAndEnd,
+    boolean acquireLock, long periodInSecs) {
 
     super(task);
     doLogging = logStartAndEnd;
+    this.doAcquireLock = acquireLock;
+    this.periodInSecs = periodInSecs;
 
+  }
+
+  private TaskLock acquireLock() {
+
+    TaskLock lock = null;
+
+    try {
+
+      HibernateFactory.beginTransaction();
+      InitSecurityContext.setInternalAdminContext();
+
+      final TaskLockDAO dao = DAOFactory.instance()
+        .getTaskLockDAO();
+
+      lock = dao.acquireLock(task.getClass()
+        .getSimpleName(), periodInSecs);
+
+      if (lock == null) {
+        log.warn("Could not acquire lock for task {}", task.getClass()
+          .getSimpleName());
+        return null;
+      }
+
+      log.debug("Lock acquired for task {}", lock.getTaskName());
+
+      return lock;
+
+    } catch (Throwable ex) {
+      log.error("Error trying to acquire lock for task {}", task.getClass()
+        .getSimpleName(), ex);
+    } finally {
+      HibernateFactory.commitTransaction();
+    }
+
+    log.warn("Could not acquire lock for task {}", task.getClass()
+      .getSimpleName());
+
+    return null;
+  }
+
+  private void releaseLock(TaskLock lock) {
+    
+    if (lock == null){
+      return;
+    }
+    
+    try {
+      
+      HibernateFactory.beginTransaction();
+
+      final TaskLockDAO dao = DAOFactory.instance()
+        .getTaskLockDAO();
+
+      dao.releaseLock(lock);
+      HibernateFactory.commitTransaction();
+      log.debug("Lock for task {} released succesfully", lock.getTaskName());
+
+    } catch (Throwable ex) {
+      log.error("Error releasing lock {}", lock, ex);
+    }
   }
 
   public void run() {
 
+    TaskLock lock = null;
+    final long startTime = System.currentTimeMillis();
+
     try {
 
-      HibernateFactory.getSession();
-      HibernateFactory.beginTransaction();
       InitSecurityContext.setInternalAdminContext();
-
       if (doLogging) {
-        log.debug("{} task starting...", task.getClass().getSimpleName());
+        log.info("{} task starting...", task.getClass()
+          .getSimpleName());
       }
+
+      if (doAcquireLock) {
+        lock = acquireLock();
+        if (lock == null) {
+          return;
+        }
+      }
+
+      HibernateFactory.beginTransaction();
 
       task.run();
 
@@ -54,23 +139,33 @@ public class DatabaseTransactionTaskWrapper extends BaseTaskWrapper {
     } catch (VOMSDatabaseException e) {
 
       log.error("Database exception caught while executing {} task: {}",
-        new String[] { task.getClass().getSimpleName(), e.getMessage() });
+        new String[] { task.getClass()
+          .getSimpleName(), e.getMessage() });
       log.error(e.getMessage(), e);
       log.error("Swallowing the exception hoping it's a temporary failure.");
 
     } catch (Throwable t) {
 
       log.error("An unexpected exception was caught while executing task {}",
-        task.getClass().getSimpleName());
+        task.getClass()
+          .getSimpleName());
       log.error(t.getMessage(), t);
 
     } finally {
 
+      if (doAcquireLock) {  
+        releaseLock(lock);
+      }
+
       HibernateFactory.closeSession();
+      final long endTime = System.currentTimeMillis();
+      final long taskRunningTime = endTime - startTime;
 
       if (doLogging) {
-        log.debug("{} task done.", task.getClass().getSimpleName());
+        log.info("{} task done in {} msec", task.getClass()
+          .getSimpleName(), taskRunningTime);
       }
     }
   }
+ 
 }

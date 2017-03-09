@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
@@ -285,15 +286,25 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup.getActiveVersion());
 
       if (r.hasExpired()) {
-        log.debug(String.format(
-          "Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
-          u.toString()));
+        log.debug("Adding user{} to results due to expired aup acceptance report (aup validity expiration)",
+          u);
         result.add(u);
 
       }
 
     }
 
+    // Filter out expired users
+    ListIterator<VOMSUser> iter = result.listIterator();
+    while (iter.hasNext()){
+      VOMSUser u = iter.next();
+      if (u.hasExpired() && u.isSuspended()){
+        log.debug("Removing supended user {} from results since "
+          + "membership expired", u);
+        iter.remove();
+      }
+    }
+    
     return result;
 
   }
@@ -891,11 +902,12 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       .getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
         false);
 
-    if (endTimeDisabled)
+    if (endTimeDisabled){
       return "order by u.surname asc";
-    else
+    }
+    else {
       return "order by u.endTime asc, u.surname asc";
-
+    }
   }
 
   public SearchResults findAll(int firstResults, int maxResults) {

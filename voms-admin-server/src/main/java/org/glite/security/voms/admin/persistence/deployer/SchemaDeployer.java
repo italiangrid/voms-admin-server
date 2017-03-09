@@ -459,6 +459,12 @@ public class SchemaDeployer {
     String upgradeScriptFileName = "/upgrade-scripts/V5_fix-audit-log.sql";
     return parseUpgradeScript(upgradeScriptFileName);
   }
+  
+  private List<String> loadUpgradeScriptToV6() throws IOException {
+
+    String upgradeScriptFileName = "/upgrade-scripts/V6_task-lock-table.sql";
+    return parseUpgradeScript(upgradeScriptFileName);
+  }
 
   private void fixMissingIndexesOnAuditTable() {
 
@@ -468,6 +474,76 @@ public class SchemaDeployer {
     fixIndexes.run();
   }
 
+  private boolean doUpgrateToV6() {
+
+    final int existingDB = checkDatabaseExistence();
+
+    if (existingDB < 0) {
+      log.error("No voms-admin database found to upgrade!");
+      System.exit(-1);
+    }
+
+    if (existingDB < 3) {
+      log.error("Upgrade not supported from this database version: {}", existingDB);
+      System.exit(-1);
+    }
+
+    if (existingDB == 3) {
+      String versionToBeUpgraded = "5";
+      String adminVersion = VOMSVersionDAO.instance().getVersion().getAdminVersion().trim();
+
+      if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+        log.warn("No upgrade needed, found schema version {}", adminVersion);
+        return false;
+      }
+
+      if (!adminVersion.equals(versionToBeUpgraded)) {
+        log.error("Upgrade not supported from schema version {}", adminVersion);
+        return false;
+      }
+
+      try {
+
+        List<String> upgradeScript = loadUpgradeScriptToV6();
+
+        ArrayList<Exception> exceptions = new ArrayList<Exception>();
+
+        HibernateFactory.beginTransaction();
+        Statement statement = HibernateFactory
+          .getSession().connection().createStatement();
+
+        for (String command : upgradeScript) {
+          try {
+            log.info(command);
+            statement.executeUpdate(command);
+
+          } catch (SQLException e) {
+            log.error("Error while executing: " + command);
+            exceptions.add(e);
+          }
+        }
+
+        if (!exceptions.isEmpty()) {
+          log.error("Error upgrading voms database!");
+          printExceptions(exceptions);
+          HibernateFactory.rollbackTransaction();
+          System.exit(2);
+        }
+
+        // Update database version
+        VOMSVersionDAO.instance().setupVersion("6");
+        HibernateFactory.commitTransaction();
+        return true;
+
+      } catch (Exception e) {
+        log.error("Error upgrading VOMS database to schema version 6: {}", 
+          e.getMessage(), e);
+        HibernateFactory.rollbackTransaction();
+      }
+    }
+
+    return false;
+  }
 
   private boolean doUpgrateToV5() {
 
@@ -493,7 +569,7 @@ public class SchemaDeployer {
       }
 
       if (!adminVersion.equals(versionToBeUpgraded)) {
-        log.error("Upgrade not supported from schema version {}", adminVersion);
+        log.error("Upgrade to v5 not supported from schema version {}", adminVersion);
         return false;
       }
 
@@ -563,7 +639,7 @@ public class SchemaDeployer {
 
     if (!upgradeSupported) {
 
-      log.error("Upgrade not supported from schema version {}", adminVersion);
+      log.error("Upgrade to v4 not supported from schema version {}", adminVersion);
       return false;
     }
 
@@ -636,6 +712,7 @@ public class SchemaDeployer {
 
       boolean upgradePerformed = doUpgradeToV4();
       upgradePerformed = doUpgrateToV5();
+      upgradePerformed = doUpgrateToV6();
 
       if (upgradePerformed) {
         log.info("The upgrade procedure has changed the VOMS database.");
