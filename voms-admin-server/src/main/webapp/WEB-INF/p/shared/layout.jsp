@@ -33,7 +33,7 @@
       href="<s:url value="/style/style.css"/>" />
       
     <link rel="stylesheet" 
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      href="<s:url value="/style/font-awesome.min.css"/>">
       
     <sj:head jqueryui="false" />
     
