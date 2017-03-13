@@ -3,10 +3,14 @@
 <configuration scan="true">
 
   <logger name="org.glite.security.voms" level="${VOMS_LOG_LEVEL:-INFO}"/>
+  <!--
+  <logger name="org.glite.security.voms.admin.persistence.HibernateFactory" level="DEBUG"/>
+  -->
   <logger name="org.italiangrid" level="${VOMS_LOG_LEVEL:-INFO}"/>
   <logger name="it.infn" level="${VOMS_LOG_LEVEL:-INFO}"/>
   <logger name="org.hibernate.SQL" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
   <logger name="org.hibernate.type" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
+  <logger name="org.hibernate.stat" level="${HIBERNATE_STAT_LOG_LEVEL:-DEBUG}"/>
 
   <logger name="org.apache.struts2" level="${STRUTS_LOG_LEVEL:-WARN}" />
   <logger name="com.opensymphony.xwork2" level="${STRUTS_LOG_LEVEL:-WARN}" />

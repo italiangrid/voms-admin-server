@@ -36,11 +36,14 @@ services:
         - .:/code:ro
         - ~/.jrebel:/home/voms/.jrebel:rw
         - ~/jrebel:/jrebel:ro
-          #        - ~/orgdb:/orgdb:ro
+          # - ~/orgdb:/orgdb:ro
 
     ports:
-        - "1044:1044"
-        - "8443"
+       # 6002 is the default JMX port used when enabling JMX
+       # - "6002:6002"
+       # 1044 is the debug port
+       # - "1044:1044"
+       - "8443"
 
     links:
         - db
@@ -54,20 +57,24 @@ services:
       VOMS_HOSTNAME: dev.local.io
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
+
+      # VOMS_LOG_LEVEL: debug
       VOMS_DEBUG: y
 
       # Comment the following line to skip tarball installation
       VOMS_DEPLOY_TARBALL: y
 
-      # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-10/sl6/x86_64/voms-admin-server-3.4.2-1.el6.centos.noarch.rpm 
+      # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
       # VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
       # VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       # VOMS_UPGRADE_DB: y
+
       #
       # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification 
-      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --disable-notification --disable-membership-end-time
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --preserve-aup-failing-members
+      # VOMS_JAVA_OPTS: -Dhibernate.generate_statistics=true 
       # ENABLE_JREBEL: y
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG

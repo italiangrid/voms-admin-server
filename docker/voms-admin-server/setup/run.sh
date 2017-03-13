@@ -128,7 +128,8 @@ if [ ! -z "$VOMS_DEBUG" ]; then
 fi
 
 if [ -n "$ENABLE_JMX" ]; then
-  VOMS_JAVA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=6002 -Dcom.sun.management.jmxremote.rmi.port=6002 -Djava.rmi.server.hostname=dev.local.io -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $VOMS_JAVA_OPTS"
+  JMX_PORT=${VOMS_JMX_PORT:-6002}
+  VOMS_JAVA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT} -Djava.rmi.server.hostname=dev.local.io -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $VOMS_JAVA_OPTS"
 fi
 
 VOMS_JAR=${VOMS_JAR:-/usr/share/java/voms-container.jar}
