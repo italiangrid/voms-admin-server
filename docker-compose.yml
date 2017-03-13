@@ -73,7 +73,7 @@ services:
 
       #
       # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification 
-      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --preserve-aup-failing-members
+      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check 
       # VOMS_JAVA_OPTS: -Dhibernate.generate_statistics=true 
       # ENABLE_JREBEL: y
       # ENABLE_JMX: y
