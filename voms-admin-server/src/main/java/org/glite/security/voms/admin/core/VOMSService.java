@@ -86,7 +86,7 @@ public final class VOMSService {
     int detectedDbVersionInt = -1;
 
     try {
-      detectedDbVersionInt = Integer.parseUnsignedInt(detectedDbVersion);
+      detectedDbVersionInt = Math.abs(Integer.parseInt(detectedDbVersion));
     } catch (NumberFormatException ex) {
       String msg = String.format(
         "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
