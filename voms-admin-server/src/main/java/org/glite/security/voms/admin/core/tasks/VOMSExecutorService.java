@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.core.tasks;
 
 import java.util.List;
@@ -91,6 +86,11 @@ public class VOMSExecutorService {
     startBackgroundTask(task, periodPropertyName, null);
   }
 
+  public void startBackgroundTask(Runnable task, Long defaultPeriod) {
+
+    startBackgroundTask(task, null, defaultPeriod);
+  }
+
   public void startBackgroundTask(Runnable task, String periodPropertyName,
     Long defaultPeriod) {
 
@@ -129,8 +129,15 @@ public class VOMSExecutorService {
 
     log.info("Scheduling task {} with period: {} seconds", new String[] {
       task.getClass().getSimpleName(), period.toString() });
-    executorService.scheduleAtFixedRate(new DatabaseTransactionTaskWrapper(
-      task, true), BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
+
+    executorService.scheduleAtFixedRate(wrapTask(task, period),
+      BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
+  }
+
+  private Runnable wrapTask(Runnable task, long periodInSecs) {
+
+    return new DatabaseTransactionTaskWrapper(task, true, true, periodInSecs);
+
   }
 
   /**

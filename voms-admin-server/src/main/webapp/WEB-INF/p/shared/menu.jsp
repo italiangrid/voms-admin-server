@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +14,34 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
+<div id="menu">
+ 
+<ul>
+	
+  <li class="home-menu-item">
+    <a href="<s:url action="login" namespace="/home"/>">Home</a>  
+  </li>
+  <li>
+    <a href="<s:url action="search" namespace="/user"/>">Browse VO</a>
+  </li>
+  <li>
+    <a href="<s:url action="configuration" namespace="/configuration"/>">Configuration Info</a>
+  </li>
+  
+  <s:if test="#request.currentAdminVoUser == null">
+  		<li>
+  			<a href="<s:url action="start" namespace="/register"/>">Request membership</a>
+  		</li>
+  </s:if>
+  <li>
+    <a href="<s:url action="index" namespace="/info"/>">Certificate Info</a>
+  </li>
+  <li class="last-menu-item">
+    <a href="/">Other VOs on this server</a>
+  </li>
+
+</ul>
+</div>

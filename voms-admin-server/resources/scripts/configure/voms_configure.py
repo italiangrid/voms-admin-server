@@ -233,6 +233,12 @@ def setup_cl_options():
                                       help="The time (in days) given to users to sign the AUP, after being notified, before being suspended.",
                                       metavar="DAYS",
                                       default="15")
+    
+    registration_opt_group.add_option("--aup-reminders",
+                                      dest="aup_reminders",
+                                      help="Comma-separated list of instants (in days) before the end of AUP grace period when reminders must be sent to users that need to sign the AUP.",
+                                      metavar="DAYS",
+                                      default="7,3,1")
 
     registration_opt_group.add_option("--enable-attribute-requests", dest="enable_attribute_requests", action="store_true",
                                       help="Enable attribute request at registration time.", default=False)
@@ -243,6 +249,10 @@ def setup_cl_options():
                                       help="Disable manadatory group manager selection.", 
                                       default=True)
 
+    registration_opt_group.add_option("--group-manager-role", type="string", dest="group_manager_role",
+                                      help="Group manager role name. (default value: Group-Manager)",
+                                      default="Group-Manager")
+    
     registration_opt_group.add_option("--membership-request-lifetime", type="int", dest="membership_request_lifetime",
                                       help="Time (in seconds) that unconfirmed membership request are maintained in the VOMS database.",
                                       metavar="SECS", default=604800)
@@ -260,7 +270,10 @@ def setup_cl_options():
     membership_opt_group = OptionGroup(parser, "Membership checks options", "These options configure the VOMS Admin membership checks")
 
     membership_opt_group.add_option("--preserve-expired-members", action="store_true", dest="preserve_expired_members", help="Do not suspend users whose membership has expired.", default=False)
+    membership_opt_group.add_option("--preserve-aup-failing-members", action="store_true", dest="preserve_aup_failing_members", help="Do not suspend users that fail to sign the AUP in time.", default=False)
     membership_opt_group.add_option("--disable-membership-end-time", action="store_true", dest="disable_membership_end_time", help="Disable membership end time checks completely.", default=False)
+    
+    membership_opt_group.add_option("--disable-membership-expiration-warnings", action="store_true", dest="disable_membership_expiration_warning", help="Disable membership expiration warnings.", default=False)
 
     membership_opt_group.add_option("--membership-default-lifetime", type="int", dest="membership_default_lifetime", help="Default VO membership lifetime duration (in months).", metavar="MONTHS", default=12)
 

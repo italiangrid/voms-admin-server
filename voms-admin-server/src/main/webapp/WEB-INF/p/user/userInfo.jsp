@@ -1,74 +1,71 @@
+<%--
+
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+--%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if test="suspended">
-  <h3 class="text-danger"><s:property value="suspensionReason"/></h3>
-</s:if>
+<div class="personal-info">
+  <s:if test="name != null and name != ''">
+    <div class="username">
+      <s:property value="%{#user.name + ' ' + #user.surname}" />
+    </div>
+  </s:if>
+  <s:else>
+    <div class="unspecified">No name specified for this user.</div>
+  </s:else>
+  <s:if test="institution != null and institution != ''">
+    <div
+      class="institution"
+      style="padding-top: .5em">
+      <s:property value="institution" />
+    </div>
+  </s:if>
+  <s:else>
+    <div class="unspecified">No institution specified for this user.</div>
+  </s:else>
 
-<!-- Memberhip end time information -->
+  <div class="email">
+    <a href="mailto:<s:property value="emailAddress"/>"> <s:property
+        value="emailAddress" />
+    </a>
+  </div>
 
-<s:if test="not #attr.disableMembershipEndTime">
-    <s:if test="hasExpired()">
-      <span class="text-danger">Membership expired <s:property value="daysSinceExpiration" /> days ago.</span>
-    </s:if>
-    <s:else>
-      <s:if test="daysBeforeEndTime <= 15">
-        <span class="text-warning"><s:property value="daysBeforeEndTime" /> days to membership expiration.</span>
-      </s:if>
-      <s:else>
-        <span class="text-success"><i class="glyphicon glyphicon-time"></i> <s:property value="daysBeforeEndTime" /> days to membership expiration.</span>
-      </s:else>
-    </s:else>
-</s:if>
-<span>&nbsp;</span>
+  <tiles2:insertTemplate template="membershipStatusDetail.jsp" />
 
-<!-- AUP signature information -->
+</div>
 
-	<s:if test="hasPendingSignAUPTasks()">
-	  <s:set var="daysBeforeExpiration" value="getPendingSignAUPTask(#attr.defaultAUP).daysBeforeExpiration"/>
-	   <s:if test="#daysBeforeExpiration < 0">
-	    <s:set var="bgClass" value="bg-error"/>
-	   </s:if>
-	   <s:else>
-	    <s:set var="bgClass" value="bg-warning"/>
-	   </s:else>
-	   
-	   <s:if test="#daysBeforeExpiration < 0">
-	    <div class="bg-error">
-	      <i class="glyphicon  glyphicon-envelope"></i>User has a pending Sign AUP request which as expired. 
-	    </div>
-	   </s:if>
-	   <s:elseif test="#daysBeforeExpiration > 1">
-	      <div class="bg-warning">
-	      <i class="glyphicon  glyphicon-envelope"></i>User has a pending Sign AUP request which expires in <s:property value="#daysBeforeExpiration"/> days. 
-	      </div>
-	   </s:elseif>
-	   <s:else>
-	      <div class="bg-warning">
-	      <i class="glyphicon  glyphicon-envelope"></i>User has a pending Sign AUP request which expires today. 
-	      </div>
-	   </s:else>
-	</s:if>
-	<s:else>
-	   <s:if test="aupAcceptanceRecords.empty">
-	    <div class="bg-warning">
-	      User never signed the AUP.
-	    </div> 
-	   </s:if>
-	   <s:else>
-	    <s:set var="currentAccRec" value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}"/>
-	     <s:if test="#currentAccRec.empty">
-	      User never signed the current active AUP version.
-	     </s:if>
-	     <s:else>
-	      <s:iterator value="aupAcceptanceRecords.{? #this.aupVersion == #attr.defaultAUP.activeVersion}">
-	        <s:if test="not valid">
-	          User signature has been invalidated. A request to sign the AUP will be sent to the user as soon as the membership check task
-	          runs again.
-	        </s:if>
-	        <s:else>
-	          <span class="text-success"><i class="glyphicon glyphicon-check"></i> <s:property value="daysBeforeExpiration" /> days to AUP signature expiration.</span> 
-	        </s:else>
-	      </s:iterator>
-	     </s:else> 
-	   </s:else>
-	</s:else>
+<div style="font-weight: bold; color: #505050;">Certificates:</div>
+<ol class="certificate-info">
+
+  <s:iterator
+    value="certificates"
+    var="cert">
+    <li>
+      <div class="userDN <s:if test="suspended">suspended-cert</s:if>">
+        <s:set
+          value="subjectString"
+          var="thisCertDN" />
+        ${thisCertDN}
+      </div>
+      <div class="userCA <s:if test="suspended">suspended-cert</s:if>">
+        <s:set
+          value="ca.subjectString"
+          var="thisCertCA" />
+        ${thisCertCA}
+      </div>
+    </li>
+  </s:iterator>
+</ol>

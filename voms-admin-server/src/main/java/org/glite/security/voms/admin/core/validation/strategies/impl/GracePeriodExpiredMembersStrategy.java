@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.core.validation.strategies.impl;
 
 import java.util.Date;
@@ -28,7 +23,7 @@ import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.core.validation.strategies.ExpiredMembersLookupStrategy;
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiredMembersStrategy;
 import org.glite.security.voms.admin.notification.ConditionalSendNotificationStrategy;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.PeriodicNotificationsTimeStorage;
 import org.glite.security.voms.admin.notification.TimeIntervalNotificationStrategy;
@@ -39,8 +34,8 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GracePeriodExpiredMembersStrategy implements
-  HandleExpiredMembersStrategy, ExpiredMembersLookupStrategy {
+public class GracePeriodExpiredMembersStrategy
+  implements HandleExpiredMembersStrategy, ExpiredMembersLookupStrategy {
 
   public static final Logger log = LoggerFactory
     .getLogger(GracePeriodExpiredMembersStrategy.class);
@@ -60,21 +55,22 @@ public class GracePeriodExpiredMembersStrategy implements
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationService.instance(), (long) notificationInterval,
-      TimeUnit.DAYS);
+      NotificationServiceFactory.getNotificationService(),
+      (long) notificationInterval, TimeUnit.DAYS);
   }
 
   public GracePeriodExpiredMembersStrategy(int notificationInterval) {
 
     this.notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(EXPIRED_MEMBERS_KEY),
-      NotificationService.instance(), (long) notificationInterval,
-      TimeUnit.DAYS);
+      NotificationServiceFactory.getNotificationService(),
+      (long) notificationInterval, TimeUnit.DAYS);
   }
 
   public List<VOMSUser> findExpiredMembers() {
 
-    return VOMSUserDAO.instance().findExpiredUsers();
+    return VOMSUserDAO.instance()
+      .findExpiredUsers();
   }
 
   protected void sendNotificationToAdmins(List<VOMSUser> expiredMembers) {
@@ -102,15 +98,21 @@ public class GracePeriodExpiredMembersStrategy implements
 
       if (!u.isSuspended()) {
 
-        long timeDiff = now.getTime() - u.getEndTime().getTime();
+        if (u.getEndTime() == null) {
+          log.warn("User end time is not set, continuing...");
+          continue;
+        }
+
+        long timeDiff = now.getTime() - u.getEndTime()
+          .getTime();
 
         if (TimeUnit.MILLISECONDS.toDays(timeDiff) > gracePeriod) {
 
           log.info("Suspending user '" + u
             + "' since its membership has expired and grace period is over.");
 
-          ValidationManager.instance().suspendUser(u,
-            SuspensionReason.MEMBERSHIP_EXPIRATION);
+          ValidationManager.instance()
+            .suspendUser(u, SuspensionReason.MEMBERSHIP_EXPIRATION);
 
         } else {
 

@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,11 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
-
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <div class="reloadable">
@@ -37,17 +32,19 @@
 <s:if test="not #unrequestedGroups.empty">
 
     <s:if test="#request.registrationEnabled">
-	<div class="subscribeGroups"><s:form
-		action="request-group-membership" namespace="/user" theme="simple"
-		onsubmit="ajaxSubmit(this,'req-content'); return false;">
+	<div class="subscribeGroups">
+	<s:form
+		action="prepare-group-membership-request" namespace="/user" theme="simple" method="input">
 		<s:token/>
 		<s:hidden name="userId" value="%{model.id}" />
 		<s:select list="#unrequestedGroups" listKey="id"
 			listValue="name" name="groupId" />
 		<s:submit value="%{'Request membership'}" />
-	</s:form></div>
+	</s:form>
+	</div>
     </s:if>
 </s:if>
+
 
 
 <div class="membershipTab">
@@ -80,18 +77,17 @@
           </td>
 			
 			<td class="roleAssign">
-      
-              
               
               <s:set var="daRoles" value="#attr.unassignedRoleMap[#mapping.key.id].{?#this.name not in #requestedRoleNames}"/>
-              
-              
+
               <s:if
 				test="%{not #daRoles.empty and #request.registrationEnabled}">
-				
-				<s:form action="request-role-membership" namespace="/user"
-					theme="simple"
-					onsubmit="ajaxSubmit(this,'req-content'); return false;">
+
+
+				<s:form action="prepare-role-membership-request" method="input" namespace="/user"
+					theme="simple">
+
+
 					<s:token />
 					<s:hidden name="userId" value="%{model.id}" />
 					<s:hidden name="groupId" value="%{#mapping.key.id}" />
@@ -100,6 +96,7 @@
 					<s:submit value="%{'Request role'}"
 						cssClass="assignRoleButton" />
 				</s:form>
+
 			</s:if></td>
        </tr>
 	</s:iterator>

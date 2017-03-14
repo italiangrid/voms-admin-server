@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.model.request;
 
@@ -54,6 +50,7 @@ public class RequesterInfo implements Serializable {
   public static final String MULTIVALUE_COUNT_PREFIX = "num_";
   public static final String MANAGER_EMAIL_ADDRESS = "managerEmail";
   public static final String MANAGER_ID = "managerId";
+  public static final String VO_USER_ID = "voUserId";
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO,
@@ -346,6 +343,7 @@ public class RequesterInfo implements Serializable {
     ri.setCertificateIssuer(user.getDefaultCertificate().getCa()
       .getSubjectString());
     ri.setVoMember(true);
+    ri.addInfo(VO_USER_ID, user.getId().toString());
 
     return ri;
 

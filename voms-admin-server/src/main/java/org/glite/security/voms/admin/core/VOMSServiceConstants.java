@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.core;
 
 /**
  * Constants used in both the clients and the server. None of these constants
  * should ever be changed.
- * 
- * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea Ceccanti</a>
- * @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
- * 
+ *
+ * @author <a href="mailto:andrea.ceccanti@cnaf.infn.it">Andrea
+ * Ceccanti</a> @author <a href="mailto:lorentey@elte.hu">Karoly Lorentey</a>
+ *
  */
 final public class VOMSServiceConstants {
 
@@ -88,7 +84,7 @@ final public class VOMSServiceConstants {
   /**
    * This special CA value in the ADMINS table corresponds to a collective
    * administrator that is a VOMS tag.
-   * 
+   *
    */
   static public final String TAG_CA = "/O=VOMS/O=System/CN=VOMS Admin Tag";
 
@@ -120,11 +116,11 @@ final public class VOMSServiceConstants {
 
   public static final String CONFIRM = "confirm";
 
-  public static final Integer VOMS_DB_VERSION = new Integer(3);
-
   public static final String VO_NAME_KEY = "voName";
 
   public static final String CURRENT_ADMIN_KEY = "currentAdmin";
+
+  public static final String CURRENT_ADMIN_VO_USER_KEY = "currentAdminVoUser";
 
   public static final String USER_KEY = "vomsUser";
 
@@ -138,25 +134,9 @@ final public class VOMSServiceConstants {
 
   public static final String STATUS_MAP_KEY = "uiStatusMap";
 
-  // TAG administrators constants below
-
-  public static final String TAG_VO_MANAGER = "VO-Manager";
-
-  public static final String TAG_GROUP_MANAGER = "Group-Manager";
-
-  public static final String TAG_ROLE_MANAGER = "Role-Manager";
-
-  public static final String TAG_ATTRIBUTES_MANAGER = "Attributes-Manager";
-
-  public static final String TAG_INSTITUTE_REPRESENTATIVE = "Institute-Representative";
-
-  public static final String TAG_VO_USER = "VO-User";
-
-  public static final String USER_INFO_COMPATIBILITY_NULL_VALUE = "";
+  public static final String ORGDB_ID_KEY = "orgDbId";
   
   public static final String DEV_MODE_PROPERTY = "voms.dev";
-
 }
-
 // Please do not change this line.
 // arch-tag: 47047210-5c25-4af2-b4e8-77614f1b2e66

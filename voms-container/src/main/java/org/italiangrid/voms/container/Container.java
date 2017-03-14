@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.italiangrid.voms.container;
 
 import java.io.File;
@@ -5,6 +20,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -23,6 +39,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.deploy.DeploymentManager;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -32,12 +49,15 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
+import org.eclipse.jetty.util.log.Log;
 import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
+import org.italiangrid.voms.ac.VOMSACValidator;
+import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
 import org.italiangrid.voms.container.legacy.VOMSSslConnectorConfigurator;
-import org.italiangrid.voms.container.listeners.ServerListener;
+import org.italiangrid.voms.container.lifecycle.ServerListener;
 import org.italiangrid.voms.util.CertificateValidatorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +125,8 @@ public class Container {
   private DeploymentManager deploymentManager;
   private HandlerCollection handlers = new HandlerCollection();
   private ContextHandlerCollection contexts = new ContextHandlerCollection();
-  
-  
+
+
   protected SSLOptions getSSLOptions() {
 
     SSLOptions options = new SSLOptions();
@@ -116,22 +136,26 @@ public class Container {
     options.setTrustStoreDirectory(trustDir);
     options.setTrustStoreRefreshIntervalInMsec(trustDirRefreshIntervalInMsec);
 
+    options.setWantClientAuth(true);
+
+    options.setNeedClientAuth(false);
+
     if (tlsExcludeCipherSuites != null){
       options.setExcludeCipherSuites(tlsExcludeCipherSuites.split(","));
     }
-    
+
     if (tlsIncludeCipherSuites != null){
       options.setIncludeCipherSuites(tlsIncludeCipherSuites.split(","));
     }
-    
+
     if (tlsExcludeProtocols != null){
       options.setExcludeProtocols(tlsExcludeProtocols.split(","));
     }
-    
+
     if (tlsIncludeProtocols != null){
       options.setIncludeProtocols(tlsIncludeProtocols.split(","));
     }
-    
+
     return options;
 
   }
@@ -284,10 +308,12 @@ public class Container {
 
     X509CertChainValidatorExt validator = builder
       .trustAnchorsDir(options.getTrustStoreDirectory())
+      .trustAnchorsUpdateInterval(trustDirRefreshIntervalInMsec)
       .crlChecks(CrlCheckingMode.IF_VALID).lazyAnchorsLoading(false)
       .ocspChecks(OCSPCheckingMode.IGNORE).storeUpdateListener(l)
-      .validationErrorListener(l).build();
-
+      .validationErrorListener(l)
+      .build();
+    
     int maxConnections = Integer
       .parseInt(getConfigurationProperty(ConfigurationProperty.MAX_CONNECTIONS));
 
@@ -297,9 +323,17 @@ public class Container {
     server = ServerFactory.newServer(bindAddress, Integer.parseInt(port),
       getSSLOptions(), validator, maxConnections, maxRequestQueueSize);
 
+    MBeanContainer mbContainer = new MBeanContainer(ManagementFactory
+      .getPlatformMBeanServer());
+
+    // Enable JMX
+    server.addBean(mbContainer);
+    server.getContainer().addEventListener(mbContainer);
+    mbContainer.addBean(Log.getLog());
+    
     addNameToHTTPSConnector();
     configureLocalHTTPConnector();
-
+    
     server.addLifeCycleListener(new ServerListener());
 
     configureDeploymentManager();
@@ -445,13 +479,13 @@ public class Container {
 
     tlsIncludeCipherSuites = getConfigurationProperty(
       ConfigurationProperty.TLS_INCLUDE_CIPHER_SUITES);
-    
+
     tlsExcludeCipherSuites = getConfigurationProperty(
       ConfigurationProperty.TLS_EXCLUDE_CIPHER_SUITES);
-    
+
     tlsExcludeProtocols = getConfigurationProperty(
       ConfigurationProperty.TLS_EXCLUDE_PROTOCOLS);
-    
+
     tlsIncludeProtocols = getConfigurationProperty(
       ConfigurationProperty.TLS_INCLUDE_PROTOCOLS);
 
@@ -500,6 +534,9 @@ public class Container {
             Thread.currentThread().setContextClassLoader(newClassLoader);
           }
         }
+        
+        f.close();
+        
         if (!taglibsFound) {
           throw new RuntimeException("Error configuring taglibs classloading!");
         }
@@ -556,19 +593,19 @@ public class Container {
     if (tlsIncludeProtocols != null){
       log.info("TLS included protocols: {}", tlsIncludeProtocols);
     }
-    
+
     if (tlsExcludeProtocols != null){
       log.info("TLS excluded protocols: {}", tlsExcludeProtocols);
     }
-    
+
     if (tlsIncludeCipherSuites != null){
       log.info("TLS included cipher suites: {}", tlsIncludeCipherSuites);
     }
-    
+
     if (tlsExcludeCipherSuites != null){
       log.info("TLS excluded cipher suites: {}", tlsExcludeCipherSuites);
     }
-    
+
     log.info("HTTP status handler listening on: {}", statusPort);
     log.info("Service credentials: {}, {}", certFile, keyFile);
     log.info("Trust anchors directory: {}", trustDir);

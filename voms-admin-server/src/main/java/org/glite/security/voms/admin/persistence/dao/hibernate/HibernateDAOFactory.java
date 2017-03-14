@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao.hibernate;
 
@@ -23,19 +19,24 @@ import java.util.List;
 
 import org.glite.security.voms.admin.persistence.dao.generic.AUPDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.AUPVersionDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.AuditSearchDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.NotificationDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.PeriodicNotificationsDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.RequesterInfoDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.TaskLockDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskLogRecordDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.UserDAO;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
+import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.task.LogRecord;
 import org.glite.security.voms.admin.persistence.model.task.Task;
@@ -62,16 +63,22 @@ public class HibernateDAOFactory extends DAOFactory {
   // methods.
   // If we use public static nested classes, we can centralize all of them in
   // one source file.
-  public static class AUPVersionDAOHibernate extends
-    GenericHibernateDAO<AUPVersion, Long> implements AUPVersionDAO {
+
+  public static class AuditDAOHibernate
+    extends GenericHibernateDAO<AuditEvent, Long> implements AuditDAO {
+
   }
 
-  public static class GroupDAOHibernate extends
-    NamedEntityHibernateDAO<VOMSGroup, Long> implements GroupDAO {
+  public static class AUPVersionDAOHibernate
+    extends GenericHibernateDAO<AUPVersion, Long> implements AUPVersionDAO {
   }
 
-  public static class UserDAOHibernate extends
-    NamedEntityHibernateDAO<VOMSUser, Long> implements UserDAO {
+  public static class GroupDAOHibernate
+    extends NamedEntityHibernateDAO<VOMSGroup, Long> implements GroupDAO {
+  }
+
+  public static class UserDAOHibernate
+    extends NamedEntityHibernateDAO<VOMSUser, Long> implements UserDAO {
   }
 
   public static class RequesterInfoDAOHibernate extends
@@ -79,8 +86,10 @@ public class HibernateDAOFactory extends DAOFactory {
 
   }
 
-  public static class TaskLogRecordDAOHibernate extends
-    GenericHibernateDAO<LogRecord, Long> implements TaskLogRecordDAO {
+  
+
+  public static class TaskLogRecordDAOHibernate
+    extends GenericHibernateDAO<LogRecord, Long> implements TaskLogRecordDAO {
 
     public void deleteForTask(Task t) {
 
@@ -96,88 +105,96 @@ public class HibernateDAOFactory extends DAOFactory {
 
   }
 
-  public static class TaskTypeDAOHibernate extends
-    NamedEntityHibernateDAO<TaskType, Long> implements TaskTypeDAO {
+  public static class TaskTypeDAOHibernate
+    extends NamedEntityHibernateDAO<TaskType, Long> implements TaskTypeDAO {
 
   }
-
-  private static Logger log = LoggerFactory
+  
+  private static Logger LOG = LoggerFactory
     .getLogger(HibernateDAOFactory.class);
 
   @Override
   public AUPDAO getAUPDAO() {
 
-    return (AUPDAO) instantiateDAO(AUPDAOHibernate.class);
+    return new AUPDAOHibernate();
   }
 
   @Override
   public AUPVersionDAO getAUPVersionDAO() {
 
-    return (AUPVersionDAO) instantiateDAO(AUPVersionDAOHibernate.class);
+    return new AUPVersionDAOHibernate();
   }
 
   @Override
   public GroupDAO getGroupDAO() {
 
-    return (GroupDAO) instantiateDAO(GroupDAOHibernate.class);
+    return new GroupDAOHibernate();
   }
 
   @Override
   public RequestDAO getRequestDAO() {
 
-    return (RequestDAO) instantiateDAO(RequestDAOHibernate.class);
+    return new RequestDAOHibernate();
   }
 
   @Override
   public RequesterInfoDAO getRequesterInfoDAO() {
 
-    return (RequesterInfoDAO) instantiateDAO(RequesterInfoDAOHibernate.class);
-
+    return new RequesterInfoDAOHibernate();
   }
 
   @Override
   public TaskDAO getTaskDAO() {
 
-    return (TaskDAO) instantiateDAO(TaskDAOHibernate.class);
-
+    return new TaskDAOHibernate();
   }
 
   public TaskLogRecordDAO getTaskLogRecordDAO() {
 
-    return (TaskLogRecordDAO) instantiateDAO(TaskLogRecordDAOHibernate.class);
+    return new TaskLogRecordDAOHibernate();
   }
 
   @Override
   public TaskTypeDAO getTaskTypeDAO() {
-
-    return (TaskTypeDAO) instantiateDAO(TaskTypeDAOHibernate.class);
+    return new TaskTypeDAOHibernate();
   }
 
   public UserDAO getUserDAO() {
-
-    return (UserDAO) instantiateDAO(UserDAOHibernate.class);
+    return new UserDAOHibernate();
   }
 
   public PeriodicNotificationsDAO getPeriodicNotificationsDAO() {
-
-    return (PeriodicNotificationsDAO) instantiateDAO(PeriodicNotificationDAOHibernate.class);
+    return new PeriodicNotificationDAOHibernate();
   }
 
-  private GenericHibernateDAO instantiateDAO(Class daoClass) {
-
-    try {
-      log.debug("Instantiating DAO: " + daoClass);
-      return (GenericHibernateDAO) daoClass.newInstance();
-    } catch (Exception ex) {
-      throw new RuntimeException("Can not instantiate DAO: " + daoClass, ex);
-    }
-  }
 
   @Override
   public GroupManagerDAO getGroupManagerDAO() {
 
-    return (GroupManagerDAO) instantiateDAO(GroupManagerDAOHibernate.class);
+    return new GroupManagerDAOHibernate();
 
   }
 
+  @Override
+  public NotificationDAO getNotificationDAO() {
+
+    return new NotificationDAOHibernate();
+  }
+
+  public AuditDAO getAuditDAO() {
+
+    return new AuditDAOHibernate();
+  }
+
+  @Override
+  public AuditSearchDAO getAuditSearchDAO() {
+
+    return new AuditSearchDAOHibernate();
+  }
+
+  @Override
+  public TaskLockDAO getTaskLockDAO() {
+
+    return new TaskLockDAOHibernate();
+  }
 }

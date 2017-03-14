@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao.hibernate;
 
@@ -125,20 +121,24 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
 
   }
 
-  public void addVersion(AUP aup, String version, URL url) {
+  public AUPVersion addVersion(AUP aup, String version, URL url) {
 
     AUPVersion v = newAUPVersion(aup, version);
 
     v.setUrl(url.toString());
     aup.getVersions().add(v);
+    
+    return v;
 
   }
 
-  public void addVersion(AUP aup, String version, String text) {
+  public AUPVersion addVersion(AUP aup, String version, String text) {
 
     AUPVersion v = newAUPVersion(aup, version);
     v.setText(text);
     aup.getVersions().add(v);
+    
+    return v;
   }
 
   public AUPVersion removeVersion(AUP aup, String version) {
@@ -192,7 +192,7 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
     return createAUP(AUP.VO_AUP_NAME, description, version, text);
   }
 
-  public void setActiveVersion(AUP aup, String version) {
+  public AUPVersion setActiveVersion(AUP aup, String version) {
 
     if (aup == null)
       throw new NullArgumentException("aup cannot be null!");
@@ -207,6 +207,8 @@ public class AUPDAOHibernate extends NamedEntityHibernateDAO<AUP, Long>
         + "' not defined for AUP '" + aup.getName() + "'.");
 
     aup.setActiveVersion(v);
+    
+    return v;
   }
 
   private void dropAcceptanceRecordsForAUPVersion(AUPVersion aupVersion) {

@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.dao;
 
@@ -23,8 +19,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
@@ -32,6 +26,8 @@ import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.util.DNUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VOMSCADAO implements Searchable {
 
@@ -97,50 +93,6 @@ public class VOMSCADAO implements Searchable {
     saveOrUpdateTrustedCA(caCert, null);
   }
 
-  public void checkValidityAndUpdate(VOMSCA ca, X509Certificate caCert) {
-
-    Date now = new Date();
-
-    // if ( now.after( ca.getNotAfter() ) ) {
-    //
-    // log.warn( "CA '" + ca.getSubjectString()
-    // + "' has expired! [notAfter=" + ca.getNotAfter() + "]" );
-    //
-    // // The CA has expired, let's see if the new certificate extends its
-    // // validity
-    // if ( !now.after( caCert.getNotAfter() ) ) {
-    // log.info( "Updating validity period for CA '"
-    // + ca.getSubjectString() + "' from '" + ca.getNotAfter()
-    // + "' to '" + caCert.getNotAfter() + "'." );
-    // ca.update( caCert );
-    // HibernateFactory.getSession().update( ca );
-    //
-    // } else {
-    //
-    // if ( VOMSConfiguration.instance().getBoolean(
-    // VOMSConfiguration.DROP_EXPIRED_CAS, false ) ) {
-    //
-    // // In this case the CA has expired and there is no
-    // // substitute certificate
-    // // We check if there are certificates bound to this ca, and,
-    // // if not, drop
-    // // the ca from the database.
-    // List <Certificate> certs = CertificateDAO.instance()
-    // .getForCA( ca );
-    // if ( certs.isEmpty() ) {
-    //
-    // log.warn( "Removing expired CA '"
-    // + ca.getSubjectString() + "' from database..." );
-    // // First remove the admins
-    // VOMSAdminDAO.instance().deleteFromCA( ca );
-    // HibernateFactory.getSession().delete( ca );
-    // }else
-    // log.warn("Expired ca '"+ca+"' not removed: user certificates issued by this ca are found in database. Remove such certificates first.");
-    //
-    // }
-    // }
-
-  }
 
   public void saveOrUpdateTrustedCA(X509Certificate caCert, String description) {
 

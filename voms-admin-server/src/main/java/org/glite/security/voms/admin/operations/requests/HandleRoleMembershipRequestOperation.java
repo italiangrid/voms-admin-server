@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.RoleMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.RoleMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.user.membership.RoleAssignedEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.glite.security.voms.admin.operations.users.AssignRoleOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
+import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
 
 public class HandleRoleMembershipRequestOperation extends
-  BaseHandleRequestOperation<RoleMembershipRequest> {
+  GroupManagerRoleHolderOperation<RoleMembershipRequest> {
 
   public HandleRoleMembershipRequestOperation(RoleMembershipRequest request,
     DECISION decision) {
@@ -50,11 +46,14 @@ public class HandleRoleMembershipRequestOperation extends
     VOMSGroup g = findGroupByName(request.getGroupName());
     VOMSRole r = findRoleByName(request.getRoleName());
 
-    AssignRoleOperation.instance(u, g, r).execute();
+    if (!u.hasRole(g, r)){
+      VOMSUserDAO.instance().assignRole(u, g, r);
+    }
 
     approveRequest();
 
-    EventManager.dispatch(new RoleMembershipApprovedEvent(request));
+    EventManager.instance().dispatch(new RoleAssignedEvent(u,g,r));
+    EventManager.instance().dispatch(new RoleMembershipApprovedEvent(request));
 
   }
 
@@ -64,7 +63,7 @@ public class HandleRoleMembershipRequestOperation extends
     checkRequestStatus(STATUS.SUBMITTED);
 
     rejectRequest();
-    EventManager.dispatch(new RoleMembershipRejectedEvent(request));
+    EventManager.instance().dispatch(new RoleMembershipRejectedEvent(request));
 
   }
 

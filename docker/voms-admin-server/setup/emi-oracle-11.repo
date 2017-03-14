@@ -1,0 +1,7 @@
+[Oracle-11]
+name=Oracle Repository (not for distribution)
+baseurl=http://emisoft.web.cern.ch/emisoft/dist/elcaro/oracle-instantclient/11/repo/sl6/$basearch
+protect=1
+enabled=1
+priority=2
+gpgcheck=0

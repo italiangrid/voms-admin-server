@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.model;
 
@@ -36,8 +32,6 @@ public class AUP implements Serializable {
      */
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(AUP.class);
-
   public static final String VO_AUP_NAME = "VO-AUP";
   public static final String GRID_AUP_NAME = "GRID-AUP";
 
@@ -51,8 +45,6 @@ public class AUP implements Serializable {
   SortedSet<AUPVersion> versions = new TreeSet<AUPVersion>();
 
   public AUP() {
-
-    // TODO Auto-generated constructor stub
   }
 
   @Override

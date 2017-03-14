@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations.groups;
 
@@ -25,6 +21,9 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.glite.security.voms.admin.event.EventManager;
+import org.glite.security.voms.admin.event.vo.acl.ACLCreatedEvent;
+import org.glite.security.voms.admin.event.vo.group.GroupCreatedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
@@ -60,7 +59,7 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
   private void setupACLs(VOMSGroup g) {
 
-    log.debug("Setting up acls for group '" + g + "'.");
+    log.debug("Setting up acls for group '{}'",g);
 
     // Setup the ACL for the newly created group starting from the
     // parent's default ACL, if exists, or from the parent's ACL.
@@ -77,7 +76,9 @@ public class CreateGroupOperation extends BaseVomsOperation {
     while (rolesIter.hasNext()) {
 
       VOMSRole r = (VOMSRole) rolesIter.next();
-      log.debug("Importing group '" + g + "' acl in role '" + r + "'.");
+      log.debug("Importing group '{}' acl in role '{}'.",
+        g,r);
+      
       r.importACL(g);
       HibernateFactory.getSession().save(r);
 
@@ -93,7 +94,10 @@ public class CreateGroupOperation extends BaseVomsOperation {
     setupACLs(g);
 
     HibernateFactory.getSession().save(g);
-
+    
+    EventManager.instance().dispatch(new GroupCreatedEvent(g));
+    EventManager.instance().dispatch(new ACLCreatedEvent(g.getACL()));
+    
     return g;
   }
 
@@ -116,7 +120,7 @@ public class CreateGroupOperation extends BaseVomsOperation {
 
     // Add CONTAINER_READ permissions on the path from the root group to
     // the grandfather of the group that is being created
-    addPermissionsOnPath(parentGroup,
+    addRequiredPermissionsOnPath(parentGroup,
       VOMSPermission.getContainerReadPermission());
 
     // Add CONTAINER_WRITE permissions on the parent group of the group that

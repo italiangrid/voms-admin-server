@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +12,40 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.operations.requests;
 
 import org.glite.security.voms.admin.event.EventManager;
-import org.glite.security.voms.admin.event.registration.GroupMembershipApprovedEvent;
-import org.glite.security.voms.admin.event.registration.GroupMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipApprovedEvent;
+import org.glite.security.voms.admin.event.request.GroupMembershipRejectedEvent;
+import org.glite.security.voms.admin.event.user.membership.UserAddedToGroupEvent;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
-import org.glite.security.voms.admin.operations.groups.AddMemberOperation;
+import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 
 public class HandleGroupRequestOperation extends
-  BaseHandleRequestOperation<GroupMembershipRequest> {
+  GroupManagerRoleHolderOperation<GroupMembershipRequest>{
 
   public HandleGroupRequestOperation(GroupMembershipRequest request,
     DECISION decision) {
 
     super(request, decision);
+  }
+  
+  private void addUserToGroupRecursive(VOMSUser u, VOMSGroup g){
+    
+    if (!g.isRootGroup()){
+      if (!u.isMember(g.getParent())){
+        addUserToGroupRecursive(u, g.getParent());
+      }
+    }
+    
+    VOMSUserDAO.instance().addToGroup(u, g);
+    EventManager.instance().dispatch(new UserAddedToGroupEvent(u,g));
   }
 
   @Override
@@ -48,12 +56,13 @@ public class HandleGroupRequestOperation extends
     VOMSUser u = getRequesterAsVomsUser();
     VOMSGroup g = findGroupByName(request.getGroupName());
 
-    if (!u.isMember(g))
-      AddMemberOperation.instance(u, g).execute();
+    if (!u.isMember(g)){
+      addUserToGroupRecursive(u, g);
+    }
 
     approveRequest();
 
-    EventManager.dispatch(new GroupMembershipApprovedEvent(request));
+    EventManager.instance().dispatch(new GroupMembershipApprovedEvent(request));
 
   }
 
@@ -62,7 +71,7 @@ public class HandleGroupRequestOperation extends
 
     checkRequestStatus(STATUS.SUBMITTED);
     rejectRequest();
-    EventManager.dispatch(new GroupMembershipRejectedEvent(request));
+    EventManager.instance().dispatch(new GroupMembershipRejectedEvent(request));
   }
 
   @Override

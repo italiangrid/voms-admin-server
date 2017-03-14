@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.operations;
 
@@ -35,7 +31,7 @@ import org.glite.security.voms.admin.persistence.error.VOMSInconsistentDatabaseE
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 
-public abstract class BaseVomsOperation implements VOMSOperation {
+public abstract class BaseVomsOperation<V> implements VOMSOperation<V> {
 
   static {
 
@@ -48,7 +44,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   }
 
-  protected Map __requiredPermissions = null;
+  protected Map<VOMSContext, VOMSPermission> __requiredPermissions = null;
 
   private static final Logger __log = LoggerFactory
     .getLogger(BaseVomsOperation.class);
@@ -76,11 +72,13 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   protected final void addRequiredPermissionOnAllGroups(VOMSPermission p) {
 
-    Iterator allGroups = VOMSGroupDAO.instance().findAll().iterator();
+    Iterator<VOMSGroup> allGroups = VOMSGroupDAO.instance().findAll()
+      .iterator();
 
-    while (allGroups.hasNext())
+    while (allGroups.hasNext()) {
       addRequiredPermission(VOMSContext.instance((VOMSGroup) allGroups.next()),
         p);
+    }
   }
 
   protected final void addRequiredPermissionOnPath(VOMSGroup leafGroup,
@@ -108,10 +106,10 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   protected BaseVomsOperation() {
 
-    __requiredPermissions = new HashMap();
+    __requiredPermissions = new HashMap<VOMSContext, VOMSPermission>();
   }
 
-  AuthorizationResponse isAllowed() {
+  protected AuthorizationResponse isAllowed() {
 
     CurrentAdmin admin = CurrentAdmin.instance();
 
@@ -122,13 +120,12 @@ public abstract class BaseVomsOperation implements VOMSOperation {
       throw new VOMSFatalException("Required permissions not defined for "
         + getName() + " operation!");
 
-    Iterator contexts = __requiredPermissions.keySet().iterator();
+    Iterator<VOMSContext> contexts = __requiredPermissions.keySet().iterator();
 
     while (contexts.hasNext()) {
 
-      VOMSContext ctxt = (VOMSContext) contexts.next();
-      VOMSPermission requiredPerms = (VOMSPermission) __requiredPermissions
-        .get(ctxt);
+      VOMSContext ctxt = contexts.next();
+      VOMSPermission requiredPerms = __requiredPermissions.get(ctxt);
 
       ACL acl = ctxt.getACL();
 
@@ -143,7 +140,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
     return AuthorizationResponse.permit();
   }
 
-  public final Object execute() {
+  public final V execute() {
 
     logOperation();
 
@@ -159,9 +156,9 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   protected abstract void setupPermissions();
 
-  protected abstract Object doExecute();
+  protected abstract V doExecute();
 
-  protected final void addPermissionsOnPath(VOMSGroup g, VOMSPermission p) {
+  protected final void addRequiredPermissionsOnPath(VOMSGroup g, VOMSPermission p) {
 
     VOMSGroup parentGroup = g.getParent();
 
@@ -199,7 +196,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
     String message = ToStringBuilder.reflectionToString(this);
 
-    // FIXME: really a quick n' dirty trick to build these log messages...:(
+    // FIXME: really a quick n' dirty trick to build these LOG messages...:(
     message = message.replaceAll(",?__\\p{Alpha}*=[^,\\]]*,?", "");
     return message;
   }
@@ -209,8 +206,9 @@ public abstract class BaseVomsOperation implements VOMSOperation {
     String adminSubj = CurrentAdmin.instance().getRealSubject();
     String adminIssuer = CurrentAdmin.instance().getRealIssuer();
 
-    String message = "Operation: " + logOperationMessage() + " - (" + adminSubj
-      + "," + adminIssuer + ")";
+    String message = String.format("Operation: %s - (%s,%s)",
+      logOperationMessage(), adminSubj, adminIssuer);
+
     __log.info(message);
 
   }
@@ -222,7 +220,7 @@ public abstract class BaseVomsOperation implements VOMSOperation {
 
   }
 
-  public final Map getRequiredPermissions() {
+  public final Map<VOMSContext, VOMSPermission> getRequiredPermissions() {
 
     if (!permissionsInitialized())
       setupPermissions();

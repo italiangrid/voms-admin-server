@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package it.infn.cnaf.voms.aa.impl;
 
 import it.infn.cnaf.voms.aa.VOMSAttributeAuthority;
@@ -44,34 +39,34 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
 
   protected void checkCertificateValidity(String dn, String ca) {
 
-    if (dn == null)
+    if (dn == null){
       throw new NullArgumentException("dn cannot be null!");
+    }
 
     CertificateDAO dao = CertificateDAO.instance();
     Certificate cert = null;
 
-    if (ca == null)
-      cert = dao.findByDN(dn);
-    else
-      cert = dao.findByDNCA(dn, ca);
-
+    cert = dao.lookup(dn, ca);
+    
     if (cert == null)
       throw new NoSuchCertificateException("User identified by '" + dn + "' "
         + ((ca != null) ? ",'" + ca + "' " : "") + "not found!");
 
     VOMSUser user = cert.getUser();
 
-    if (user.isSuspended())
+    if (user.isSuspended()){
       throw new SuspendedUserException("User identified by '" + dn + "' "
         + ((ca != null) ? ",'" + ca + "' " : "")
         + "is currently suspended for the following reason: "
         + user.getSuspensionReason());
-
-    if (cert.isSuspended())
+    }
+    
+    if (cert.isSuspended()){
       throw new SuspendedCertificateException("Certificate '"
         + cert.getSubjectString() + ", " + cert.getCa().getSubjectString()
         + "' is currently suspended for the following reason: "
         + cert.getSuspensionReason());
+    }
 
   }
 
@@ -121,15 +116,13 @@ public class VOMSAAImpl implements VOMSAttributeAuthority {
     checkCertificateValidity(dn, ca);
 
     VOMSUser u = null;
+    
+    u = VOMSUserDAO.instance().lookup(dn, ca);
 
-    if (ca != null)
-      u = VOMSUserDAO.instance().findByDNandCA(dn, ca);
-    else
-      u = VOMSUserDAO.instance().findBySubject(dn);
-
-    if (u == null)
+    if (u == null){
       throw new NoSuchUserException("User '" + dn + ",'" + ca
         + "' not found in database!");
+    }
 
     return u;
   }

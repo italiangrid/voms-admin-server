@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.search;
 
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
+import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.search.BaseSearchOperation;
 import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.taglib.SearchNavBarTag;
@@ -68,8 +66,18 @@ public abstract class BaseSearchAction extends BaseAction implements
   @Override
   public String execute() throws Exception {
 
-    searchResults = (SearchResults) BaseSearchOperation.instance(
-      getSearchData()).execute();
+    try{
+      
+      searchResults = (SearchResults) BaseSearchOperation.instance(
+        getSearchData()).execute();
+    
+    }catch(VOMSAuthorizationException e){
+      session.put("searchData", getSearchData());
+      session.put("searchResults", null);
+      cleanupCustomFlags();
+      
+      throw e;
+    }
 
     session.put("searchData", getSearchData());
     session.put("searchResults", searchResults);

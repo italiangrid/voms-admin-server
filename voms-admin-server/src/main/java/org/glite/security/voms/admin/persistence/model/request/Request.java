@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.persistence.model.request;
 
@@ -52,7 +48,7 @@ public abstract class Request implements Serializable, NamedType {
   }
 
   /**
-     * 
+     *
      */
   private static final long serialVersionUID = 1L;
 
@@ -79,6 +75,12 @@ public abstract class Request implements Serializable, NamedType {
 
   @Column(name = "approver_ca")
   String approverCA;
+
+  @Column(name = "explanation", length=512)
+  String explanation;
+
+  @Column(name = "user_message", length=512, nullable = true)
+  String userMessage;
 
   /**
    * @return the id
@@ -126,6 +128,14 @@ public abstract class Request implements Serializable, NamedType {
   public STATUS getStatus() {
 
     return status;
+  }
+
+  /**
+   *
+   * @return the user message
+   */
+  public String getUserMessage() {
+    return userMessage;
   }
 
   /**
@@ -180,6 +190,15 @@ public abstract class Request implements Serializable, NamedType {
   public void setStatus(STATUS status) {
 
     this.status = status;
+  }
+
+  /**
+   *
+   * @param userMessage
+   *          the user message to set
+   */
+  public void setUserMessage(String userMessage) {
+    this.userMessage = userMessage;
   }
 
   @Override
@@ -278,6 +297,17 @@ public abstract class Request implements Serializable, NamedType {
   public void setApproverCA(String approverCA) {
 
     this.approverCA = approverCA;
+  }
+
+  public String getExplanation() {
+
+    return explanation;
+  }
+
+
+  public void setExplanation(String explanation) {
+
+    this.explanation = explanation;
   }
 
   public abstract String getTypeName();

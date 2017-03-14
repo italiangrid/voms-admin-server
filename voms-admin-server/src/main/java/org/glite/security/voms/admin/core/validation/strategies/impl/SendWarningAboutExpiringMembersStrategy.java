@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.core.validation.strategies.impl;
 
 import java.util.List;
 
 import org.glite.security.voms.admin.core.validation.strategies.HandleExpiringMembersStrategy;
 import org.glite.security.voms.admin.notification.ConditionalSendNotificationStrategy;
-import org.glite.security.voms.admin.notification.NotificationService;
+import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.NotificationUtil;
 import org.glite.security.voms.admin.notification.PeriodicNotificationsTimeStorage;
 import org.glite.security.voms.admin.notification.TimeIntervalNotificationStrategy;
@@ -47,7 +42,7 @@ public class SendWarningAboutExpiringMembersStrategy implements
 
     notificationStrategy = new TimeIntervalNotificationStrategy(
       new PeriodicNotificationsTimeStorage(NOTIFICATION_KEY),
-      NotificationService.instance());
+      NotificationServiceFactory.getNotificationService());
   }
 
   public void handleMembersAboutToExpire(List<VOMSUser> expiringMembers) {

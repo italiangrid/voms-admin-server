@@ -37,6 +37,7 @@ input[type=text].registrationField, textarea.registrationField{
 	
 	font-size: 14px;	
 	padding: .5em;
+  width: 700px;
 }
 
 
@@ -46,7 +47,7 @@ input[type=text].registrationField, textarea.registrationField{
 
 }
 
-input[type="submit"]{
+input[type="submit"], button[type="submit"]{
 	-moz-border-radius-bottomleft:11px;
 	-moz-border-radius-bottomright:11px;
 	-moz-border-radius-topleft:11px;
@@ -71,11 +72,13 @@ input[type="submit"]{
 }
 
 
-input[type="submit"]:hover{
+input[type="submit"]:hover, 
+button[type="submit"]:hover {
 	border-color:#666666;
 }
 
-input[type="submit"][disabled=disabled]:hover{
+input[type="submit"][disabled=disabled]:hover, 
+button[type="submit"][disabled=disabled]:hover{
 	border-color:#c3c3c3;
 }
 
@@ -114,8 +117,9 @@ span.label{
 }
 
 .readOnly{
-	background: #EFEFEF !important;
-	border: none;	
+  background: white;
+  padding-left: 0 !important;
+	border: none !important;
 }
 
 .checkboxValidationError{

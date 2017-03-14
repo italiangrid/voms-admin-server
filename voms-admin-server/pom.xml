@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-  http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  >
+  http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.5.2.rc0</version>
   </parent>
 
   <artifactId>voms-admin-server</artifactId>
@@ -67,14 +83,14 @@
         </executions>
       </plugin>
 
-      <!-- IMPORTANT: keep war plugin configuration in sync with the one
-        specified in the prod profile below! -->
+      <!-- IMPORTANT: keep war plugin configuration in sync with the one specified
+        in the prod profile below! -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <!-- Exclude JETTY server libraries that we need here just because
-            we create the tarball in this project -->
+          <!-- Exclude JETTY server libraries that we need here just because we create
+            the tarball in this project -->
           <packagingExcludes>
             WEB-INF/classes/logback*.xml,
             WEB-INF/lib/javax*.jar,
@@ -103,11 +119,12 @@
       </plugin>
 
       <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
         <configuration>
-          <header>resources/doc/license.txt</header>
+          <header>${project.parent.basedir}/license/license.txt</header>
           <excludes>
+            <exclude>src/test/resources/**</exclude>
             <exclude>**/*.sql</exclude>
             <exclude>**/*.jpage</exclude>
             <exclude>**/*.template</exclude>
@@ -119,6 +136,7 @@
             <exclude>**/*.js</exclude>
             <exclude>**/rebel.xml</exclude>
             <exclude>bin/**</exclude>
+            <exclude>src/config/sysconfig</exclude>
             <exclude>src/main/webapp/common/struts/**</exclude>
             <exclude>src/main/webapp/struts/**</exclude>
             <exclude>src/main/webapp/style/**</exclude>
@@ -151,7 +169,7 @@
     <dependency>
       <groupId>org.italiangrid</groupId>
       <artifactId>voms-admin-api</artifactId>
-      <version>${api.version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -163,6 +181,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -327,6 +351,7 @@
       </artifactId>
       <version>${struts.version}</version>
     </dependency>
+
     <dependency>
       <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
@@ -474,8 +499,8 @@
             <configuration>
               <!-- Include generated web.xml -->
               <webXml>${basedir}/target/web.xml</webXml>
-              <!-- Exclude JETTY server libraries that we need here just
-                because we create the tarball in this project -->
+              <!-- Exclude JETTY server libraries that we need here just because
+                we create the tarball in this project -->
               <packagingExcludes>
                 WEB-INF/classes/logback*.xml,
                 WEB-INF/lib/javax*.jar,

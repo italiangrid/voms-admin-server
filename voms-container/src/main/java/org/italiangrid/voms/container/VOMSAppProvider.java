@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.italiangrid.voms.container;
 
 import java.io.File;
@@ -21,8 +36,8 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.util.Scanner;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.italiangrid.voms.container.listeners.VOListener;
-import org.italiangrid.voms.container.listeners.VOMSESListener;
+import org.italiangrid.voms.container.lifecycle.VOListener;
+import org.italiangrid.voms.container.lifecycle.VOMSESListener;
 import org.italiangrid.voms.status.VOMSStatusFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,7 +204,7 @@ public class VOMSAppProvider extends AbstractLifeCycle implements AppProvider {
    * Initializes the Jetty temp directory as the default directory created by
    * Jetty confuses xwork which has a bug and doesn't find classes when the WAR
    * is expanded in the tmp directory.
-   * 
+   *
    * TODO: check if recent versions of xwork solve this.
    */
   protected File getJettyTmpDirForVO(String vo) {

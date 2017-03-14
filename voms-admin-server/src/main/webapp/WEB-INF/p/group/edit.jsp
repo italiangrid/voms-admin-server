@@ -1,7 +1,6 @@
 <%--
 
-    Copyright (c) Members of the EGEE Collaboration. 2006-2009.
-    See http://www.eu-egee.org/partners/ for details on the copyright holders.
+    Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,32 +14,53 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    Authors:
-    	Andrea Ceccanti (INFN)
-
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+
+
 <h1>Edit group description</h1>
 
-<div class="editTab">
-  <voms:hasPermissions var="canCreate" 
-            context="/${voName}" 
-            permission="CONTAINER_READ|CONTAINER_WRITE"
-            />
-  
-  <s:if test="#attr.canCreate">
-    <s:actionerror/>
-      <s:form 
-      action="save"
-      namespace="/group"
-      validate="true"
-    >
-      <s:token/>
-      <div class="groupName"><s:property value="name"/></div>
-      <s:textarea name="description" label="Group description"/>
-      
-      <s:submit value="%{'Update!'}" align="left"/>
-    </s:form>
-  </s:if>
+<voms:hasPermissions
+  var="canCreate"
+  context="vo"
+  permission="CONTAINER_READ|CONTAINER_WRITE" />
 
-</div>
+<s:if test="not #attr.canCreate">
+You do not have enough privileges to edit the group description.
+</s:if>
+<s:else>
+
+  <div>
+    <s:actionerror />
+
+    <p>Edit group description for group:</p>
+  
+    <div class="req-fqan">
+      <s:property value="name" />  
+    </div>
+
+    <s:form
+      id="saveGroupDescription"
+      action="save-group-description"
+      namespace="/group"
+      validate="true">
+
+      <s:token />
+
+      <s:hidden
+        name="groupId"
+        value="%{id}" />
+
+      <s:textarea
+        name="groupDescription"
+        label="New description (can be empty)"
+        value="%{description}"
+        cols="78" />
+
+      <s:submit
+        value="%{'Update group description!'}"
+        align="left" />
+    </s:form>
+  </div>
+
+</s:else>

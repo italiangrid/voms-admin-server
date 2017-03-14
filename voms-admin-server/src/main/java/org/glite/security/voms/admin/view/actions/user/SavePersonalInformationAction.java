@@ -1,22 +1,23 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009. See
- * http://www.eu-egee.org/partners/ for details on the copyright holders.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- * 
- * Authors: Andrea Ceccanti (INFN)
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.glite.security.voms.admin.view.actions.user;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
@@ -54,19 +55,48 @@ public class SavePersonalInformationAction extends UserActionSupport {
   String thePhoneNumber;
   String theEmailAddress;
 
+  private static final String[] ORGDB_VALIDATED_FIELDS = {
+    "theAddress",
+    "thePhoneNumber"
+  };
+  
   private boolean isOrgDBPluginEnabled() {
 
     return VOMSConfiguration.instance().getRegistrationType()
       .equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE);
   }
+  
 
   @Override
   public void validate() {
 
     // Run default checks before orgdb checks
     super.validate();
-    if (hasFieldErrors())
-      return;
+     
+    if (hasFieldErrors()){
+      
+      if (!isOrgDBPluginEnabled()){
+        return;
+      }
+      
+      Map<String, List<String>> fieldErrors = getFieldErrors();
+      
+      clearFieldErrors();
+      
+      // Retain only errors in the given fields
+      fieldErrors.keySet().retainAll(Arrays.asList(ORGDB_VALIDATED_FIELDS));
+      
+      // Add those errors back to the set of field errors
+      for (Map.Entry<String, List<String>> e: fieldErrors.entrySet()){
+        for (String msg: e.getValue()){
+          addFieldError(e.getKey(), msg);
+        }
+      }
+      
+      if (hasFieldErrors()){
+        return;
+      }
+    }
 
     if (isOrgDBPluginEnabled()) {
 

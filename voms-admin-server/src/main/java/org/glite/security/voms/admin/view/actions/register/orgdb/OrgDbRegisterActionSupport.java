@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.view.actions.register.orgdb;
 
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginConfigurator;
 import org.glite.security.voms.admin.integration.PluginManager;
@@ -33,12 +29,12 @@ import org.glite.security.voms.admin.integration.orgdb.model.Institute;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.view.actions.register.RegisterActionSupport;
 
-public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
-  SessionAware {
+public class OrgDbRegisterActionSupport extends RegisterActionSupport
+  implements SessionAware {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   public static final String ORGDB_RECORD_SESSION_KEY = "___voms.user-orgdb-record";
@@ -47,35 +43,43 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
 
   Map<String, Object> session;
 
+  private VOMSOrgDBPerson loadPersonById(){
+    VOMSOrgDBPerson orgDbPerson = null;
+    
+    if (vomsPersonId != null) {
+      orgDbPerson = OrgDBDAOFactory.instance()
+        .getVOMSPersonDAO()
+        .findById(vomsPersonId, false);
+      
+      if (orgDbPerson == null) {
+        throw new IllegalArgumentException(
+          "No orgb record found for id '" + vomsPersonId + "'.");
+      }
+      
+      session.put(ORGDB_RECORD_SESSION_KEY, orgDbPerson);
+      
+    }
+    
+    return orgDbPerson;
+  }
   protected void populateRequesterFromOrgdb() {
 
-    if (requester == null)
+    if (requester == null){
       requester = requesterInfoFromCurrentAdmin();
+    }
 
-    if (session == null)
+    if (session == null){
       throw new IllegalStateException("Session is null for this user!");
+    }
 
-    VOMSOrgDBPerson orgDbPerson = (VOMSOrgDBPerson) session
-      .get(ORGDB_RECORD_SESSION_KEY);
-
+    VOMSOrgDBPerson orgDbPerson = loadPersonById();
+    
+    if (orgDbPerson == null){
+      orgDbPerson = (VOMSOrgDBPerson) session.get(ORGDB_RECORD_SESSION_KEY);
+    }
+    
     if (orgDbPerson == null) {
-
-      if (vomsPersonId == null) {
-        throw new IllegalArgumentException(
-          "No id provided for the VOMS person orgdb record and no record found in session!");
-
-      } else {
-
-        orgDbPerson = OrgDBDAOFactory.instance().getVOMSPersonDAO()
-          .findById(vomsPersonId, false);
-        if (orgDbPerson == null) {
-          throw new IllegalArgumentException("No orgb record found for id '"
-            + vomsPersonId + "'.");
-        }
-
-        session.put(ORGDB_RECORD_SESSION_KEY, orgDbPerson);
-      }
-
+      throw new IllegalArgumentException("No org db person found in session");
     }
 
     PluginConfigurator configuredPlugin = PluginManager.instance()
@@ -87,9 +91,10 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
     requester.setName(orgDbPerson.getFirstName());
     requester.setSurname(orgDbPerson.getName());
     requester.setEmailAddress(orgDbPerson.getPhysicalEmail());
-    
-    Institute institute = orgDbPerson.getValidParticipationForExperiment(
-      experimentName).getInstitute();
+
+    Institute institute = orgDbPerson
+      .getValidParticipationForExperiment(experimentName)
+      .getInstitute();
 
     if (institute == null) {
       String errorMessage = String.format(
@@ -100,10 +105,13 @@ public class OrgDbRegisterActionSupport extends RegisterActionSupport implements
       throw new OrgDBError(errorMessage);
 
     }
-    
+
     requester.setInstitution(institute.getName());
     requester.setPhoneNumber(orgDbPerson.getTel1());
     requester.setAddress(orgDbPerson.getAddressForVOMS());
+
+    requester.addInfo(VOMSServiceConstants.ORGDB_ID_KEY, orgDbPerson.getId()
+      .toString());
 
   }
 

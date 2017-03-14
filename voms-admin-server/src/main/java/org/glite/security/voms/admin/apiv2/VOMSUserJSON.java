@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.apiv2;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.persistence.model.Certificate;
+import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
@@ -65,6 +63,14 @@ public class VOMSUserJSON {
   String suspensionReason;
 
   List<CertificateJSON> certificates;
+
+  List<String> fqans;
+
+  List<AttributeJSON> attributes;
+
+  List<AUPAcceptanceRecordJSON> aupAcceptanceRecords;
+
+  SignAUPTaskJSON pendingSignAUPTask;
 
   public Long getId() {
 
@@ -228,27 +234,108 @@ public class VOMSUserJSON {
     this.certificates = certificates;
   }
 
+  public List<AttributeJSON> getAttributes() {
+
+    return attributes;
+  }
+
+  public void setAttributes(List<AttributeJSON> attributes) {
+
+    this.attributes = attributes;
+  }
+
+  public void attributesFrom(VOMSUser user) {
+
+    this.attributes = new ArrayList<AttributeJSON>();
+
+    for (VOMSUserAttribute attr : user.getAttributes()) {
+      attributes.add(AttributeJSON.fromVOMSUserAttribute(attr));
+    }
+
+  }
+
+  public void personalInformationFrom(VOMSUser user) {
+
+    setName(user.getName());
+    setSurname(user.getSurname());
+    setEmailAddress(user.getEmailAddress());
+
+    setAddress(user.getAddress());
+    setPhoneNumber(user.getPhoneNumber());
+    setInstitution(user.getInstitution());
+
+    setSuspended(user.getSuspended());
+    setSuspensionReason(user.getSuspensionReason());
+    setSuspensionReasonCode(user.getSuspensionReasonCode());
+
+    setCreationTime(user.getCreationTime());
+    setEndTime(user.getEndTime());
+
+    List<AUPAcceptanceRecordJSON> aupRecords = new ArrayList<AUPAcceptanceRecordJSON>();
+
+    for (AUPAcceptanceRecord rec : user.getAupAcceptanceRecords()) {
+      aupRecords.add(AUPAcceptanceRecordJSON.from(rec));
+    }
+
+    setAupAcceptanceRecords(aupRecords);
+
+    setPendingSignAUPTask(SignAUPTaskJSON.from(user.getPendingSignAUPTask()));
+
+  }
+
+  public void fqansFrom(VOMSUser user) {
+
+    List<String> fqans = new ArrayList<String>();
+
+    for (VOMSMapping m : user.getMappings()) {
+      fqans.add(m.getFQAN());
+    }
+
+    setFqans(fqans);
+  }
+
+  public List<AUPAcceptanceRecordJSON> getAupAcceptanceRecords() {
+
+    return aupAcceptanceRecords;
+  }
+
+  public void setAupAcceptanceRecords(
+    List<AUPAcceptanceRecordJSON> aupAcceptanceRecords) {
+
+    this.aupAcceptanceRecords = aupAcceptanceRecords;
+  }
+
+  public SignAUPTaskJSON getPendingSignAUPTask() {
+
+    return pendingSignAUPTask;
+  }
+
+  public void setPendingSignAUPTask(SignAUPTaskJSON pendingSignAUPTask) {
+
+    this.pendingSignAUPTask = pendingSignAUPTask;
+  }
+
+  public List<String> getFqans() {
+
+    return fqans;
+  }
+
+  public void setFqans(List<String> fqans) {
+
+    this.fqans = fqans;
+  }
+
   public static VOMSUserJSON fromVOMSUser(VOMSUser user) {
 
     VOMSUserJSON u = new VOMSUserJSON();
     u.setId(user.getId());
-    u.setName(user.getName());
-    u.setSurname(user.getSurname());
-    u.setAddress(user.getAddress());
-    u.setPhoneNumber(user.getPhoneNumber());
-    u.setInstitution(user.getInstitution());
-    u.setSuspended(user.getSuspended());
-    u.setSuspensionReason(user.getSuspensionReason());
-    u.setSuspensionReasonCode(user.getSuspensionReasonCode());
-    u.setEmailAddress(user.getEmailAddress());
-    u.setCreationTime(user.getCreationTime());
-    u.setEndTime(user.getEndTime());
 
     List<CertificateJSON> certs = new ArrayList<CertificateJSON>();
     for (Certificate c : user.getCertificates())
       certs.add(CertificateJSON.fromCertificate(c));
 
     u.setCertificates(certs);
+
     return u;
   }
 

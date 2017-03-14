@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
-
 package org.glite.security.voms.admin.integration.orgdb.database;
 
 public class OrgDBError extends RuntimeException {
@@ -29,25 +24,21 @@ public class OrgDBError extends RuntimeException {
 
   public OrgDBError() {
 
-    // TODO Auto-generated constructor stub
   }
 
   public OrgDBError(String message) {
 
     super(message);
-    // TODO Auto-generated constructor stub
   }
 
   public OrgDBError(Throwable cause) {
 
     super(cause);
-    // TODO Auto-generated constructor stub
   }
 
   public OrgDBError(String message, Throwable cause) {
 
     super(message, cause);
-    // TODO Auto-generated constructor stub
   }
 
 }

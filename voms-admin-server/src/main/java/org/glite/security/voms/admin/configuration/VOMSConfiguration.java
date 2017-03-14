@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.configuration;
 
@@ -33,6 +29,7 @@ import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -46,6 +43,7 @@ import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.util.DNUtil;
@@ -62,7 +60,8 @@ public final class VOMSConfiguration {
   public synchronized static VOMSConfiguration load(ServletContext context) {
 
     if (instance != null)
-      throw new VOMSConfigurationException("VOMS configuration already loaded!");
+      throw new VOMSConfigurationException(
+        "VOMS configuration already loaded!");
 
     instance = new VOMSConfiguration(context);
 
@@ -109,7 +108,8 @@ public final class VOMSConfiguration {
       config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
     }
 
-    if (context != null && context.getInitParameter(SYSCONFIG_CONF_DIR) != null) {
+    if (context != null
+      && context.getInitParameter(SYSCONFIG_CONF_DIR) != null) {
 
       log.info("Setting {} from context: {}", SYSCONFIG_CONF_DIR,
         context.getInitParameter(SYSCONFIG_CONF_DIR));
@@ -354,8 +354,8 @@ public final class VOMSConfiguration {
     } catch (IOException e) {
 
       log.error("Error loading database properties: " + e.getMessage(), e);
-      throw new VOMSException("Error loading database properties: "
-        + e.getMessage(), e);
+      throw new VOMSException(
+        "Error loading database properties: " + e.getMessage(), e);
     }
 
     return props;
@@ -411,11 +411,11 @@ public final class VOMSConfiguration {
     File f = new File(path);
 
     if (!f.exists())
-      log.warn("External logging configuration not found at path '" + path
-        + "'... ");
+      log.warn(
+        "External logging configuration not found at path '" + path + "'... ");
     if (!f.canRead())
-      log.warn("External logging configuration is not readable: '" + path
-        + "'... ");
+      log.warn(
+        "External logging configuration is not readable: '" + path + "'... ");
 
     return new FileInputStream(f);
 
@@ -540,8 +540,8 @@ public final class VOMSConfiguration {
     String configDirPath = getString(SYSCONFIG_CONF_DIR);
 
     if (configDirPath == null)
-      throw new VOMSConfigurationException("No value found for "
-        + SYSCONFIG_CONF_DIR + "!");
+      throw new VOMSConfigurationException(
+        "No value found for " + SYSCONFIG_CONF_DIR + "!");
 
     List voList = new ArrayList();
 
@@ -763,18 +763,17 @@ public final class VOMSConfiguration {
       + certificateFileName + "," + privateKeyFileName);
 
     try {
-      serviceCredential = new PEMCredential(new FileInputStream(
-        privateKeyFileName), new FileInputStream(certificateFileName),
-        (char[]) null);
+      serviceCredential = new PEMCredential(
+        new FileInputStream(privateKeyFileName),
+        new FileInputStream(certificateFileName), (char[]) null);
 
     } catch (Throwable t) {
       log.error("Error loading service credentials: {}", t.getMessage(), t);
       throw new VOMSException(t.getMessage(), t);
     }
 
-    log.info("VOMS AA service credential's DN: "
-      + DNUtil.getOpenSSLSubject(serviceCredential.getCertificate()
-        .getSubjectX500Principal()));
+    log.info("VOMS AA service credential's DN: " + DNUtil.getOpenSSLSubject(
+      serviceCredential.getCertificate().getSubjectX500Principal()));
 
   }
 
@@ -823,7 +822,8 @@ public final class VOMSConfiguration {
 
       throw new VOMSConfigurationException(
         "Error parsing VOMS Admin system configuration file "
-          + SYSCONFIG_DEFAULT_FILE_PATH, e);
+          + SYSCONFIG_DEFAULT_FILE_PATH,
+        e);
     }
 
   }
@@ -862,14 +862,66 @@ public final class VOMSConfiguration {
 
   }
 
+  private List<Integer> stringListToIntegerList(List<String> list) {
+
+    Validate.notNull(list);
+
+    List<Integer> timeList = new ArrayList<Integer>();
+
+    for (String i : list) {
+      try {
+        int ii = Integer.parseInt(i.trim());
+        timeList.add(ii);
+      } catch (NumberFormatException nfe) {
+        throw new VOMSException(
+          "Error while parsing list '" + list + "': " + nfe.getMessage(),
+          nfe);
+      }
+    }
+
+    return timeList;
+
+  }
+
+  public List<Integer> getAUPReminderIntervals() {
+
+    int signAUPTaskLifetime = config.getInteger(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME,
+      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE);
+
+    @SuppressWarnings("unchecked")
+    List<String> reminderTimes = config.getList(
+      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS, Arrays.asList(
+        VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE));
+
+    List<Integer> intervals = stringListToIntegerList(reminderTimes);
+
+    Iterator<Integer> iter = intervals.iterator();
+
+    while (iter.hasNext()) {
+      int i = iter.next();
+
+      if (i >= signAUPTaskLifetime || i <= 0) {
+
+        log.warn("Ignoring invalid reminder value: {}", i);
+
+        iter.remove();
+        continue;
+      }
+    }
+
+    return intervals;
+
+  }
+
   private String loadVomsesConfigurationString() {
 
     String vomsesConfFileName = getConfigurationDirectoryPath() + "/vomses";
 
     try {
 
-      String vomsesConf = FileUtils.readFileToString(new File(
-        vomsesConfFileName));
+      String vomsesConf = FileUtils
+        .readFileToString(new File(vomsesConfFileName));
       return vomsesConf;
 
     } catch (IOException e) {
@@ -991,8 +1043,8 @@ public final class VOMSConfiguration {
 
     } catch (IllegalArgumentException e) {
       // Parse error on user set permission mask
-      log
-        .error("Error parsing user set permission mask for unauthenticated client: '"
+      log.error(
+        "Error parsing user set permission mask for unauthenticated client: '"
           + unauthenticatedClientPermMask + "'");
       log.error(e.getMessage());
       permMask = VOMSPermission.getContainerReadPermission()
@@ -1010,13 +1062,17 @@ public final class VOMSConfiguration {
       "localhost");
   }
 
+  public String getGroupManagerRoleName() {
+
+    return config.getString(VOMSConfigurationConstants.GROUP_MANAGER_ROLE_NAME,
+      "Group-Manager");
+  }
+
   public int getExpiringUsersWarningInterval() {
 
-    String warningPeriodInDays = VOMSConfiguration
-      .instance()
-      .getString(
-        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD,
-        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+    String warningPeriodInDays = VOMSConfiguration.instance().getString(
+      VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD,
+      VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
 
     Integer i;
 
@@ -1026,25 +1082,23 @@ public final class VOMSConfiguration {
 
     } catch (NumberFormatException e) {
 
-      log
-        .error(
-          "Error converting {} to an integer. The {} property should contain a positive integer! Using the default value instead.",
-          warningPeriodInDays);
+      log.error(
+        "Error converting {} to an integer. The {} property should contain a positive integer! Using the default value instead.",
+        warningPeriodInDays);
 
-      return Integer
-        .parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+      return Integer.parseInt(
+        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
 
     }
 
     if (i <= 0) {
 
-      log
-        .warn(
-          "Negative warning period set for the property {}. Using the default value instead.",
-          VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD);
+      log.warn(
+        "Negative warning period set for the property {}. Using the default value instead.",
+        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD);
 
-      return Integer
-        .parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+      return Integer.parseInt(
+        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
     }
 
     return i;

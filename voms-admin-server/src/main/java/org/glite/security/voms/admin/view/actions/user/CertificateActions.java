@@ -1,6 +1,5 @@
 /**
- * Copyright (c) Members of the EGEE Collaboration. 2006-2009.
- * See http://www.eu-egee.org/partners/ for details on the copyright holders.
+ * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Authors:
- * 	Andrea Ceccanti (INFN)
  */
 package org.glite.security.voms.admin.view.actions.user;
 
@@ -38,17 +34,17 @@ import org.slf4j.LoggerFactory;
 
 @Results({ @Result(name = BaseAction.SUCCESS, location = "userDetail"),
   @Result(name = BaseAction.INPUT, location = "addCertificate") })
-@InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "deleteCertificate,saveCertificate" })
+@InterceptorRef(value = "authenticatedStack",
+  params = { "token.includeMethods", "deleteCertificate,saveCertificate" })
 public class CertificateActions extends UserActionSupport {
 
   public static final Logger log = LoggerFactory
     .getLogger(CertificateActions.class);
 
   /**
-	 * 
-	 */
-  private static final long serialVersionUID = 1L;
+   * 
+   */
+    private static final long serialVersionUID = 1L;
 
   Long certificateId;
 
@@ -60,11 +56,12 @@ public class CertificateActions extends UserActionSupport {
   @Action("delete-certificate")
   public String deleteCertificate() throws Exception {
 
-    Certificate cert = CertificateDAO.instance().findById(getCertificateId());
+    Certificate cert = CertificateDAO.instance()
+      .findById(getCertificateId());
 
-    // FIXME: create constructor that accepts a certificate
-    RemoveUserCertificateOperation.instance(cert.getSubjectString(),
-      cert.getCa().getSubjectString()).execute();
+    RemoveUserCertificateOperation
+      .instance(cert)
+      .execute();
 
     return SUCCESS;
 
@@ -81,16 +78,18 @@ public class CertificateActions extends UserActionSupport {
 
     if (certificateFile != null) {
 
-      X509Certificate cert = CertUtil.parseCertficate(new FileInputStream(
-        certificateFile));
+      X509Certificate cert = CertUtil
+        .parseCertficate(new FileInputStream(certificateFile));
 
-      AddUserCertificateOperation.instance(getModel(), cert).execute();
+      AddUserCertificateOperation.instance(getModel(), cert)
+        .execute();
 
     } else {
 
       // Fix for bug https://savannah.cern.ch/bugs/?88019
-      AddUserCertificateOperation.instance(getModel(), subject.trim(),
-        caSubject.trim(), null).execute();
+      AddUserCertificateOperation
+        .instance(getModel(), subject.trim(), caSubject.trim(), null)
+        .execute();
 
     }
 
@@ -126,13 +125,14 @@ public class CertificateActions extends UserActionSupport {
 
     } else if (subject != null && !"".equals(subject)) {
 
-      if (dao.findByDNCA(subject, caSubject) != null) {
+      if (dao.lookup(subject, caSubject) != null) {
         addFieldError("subject", "Certificate already bound!");
         addFieldError("caSubject", "Certificate already bound!");
       }
     } else {
 
-      addActionError("Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
+      addActionError(
+        "Please specify a Subject, CA couple or choose a certificate file that will be uploaded to the server!");
     }
   }
 
