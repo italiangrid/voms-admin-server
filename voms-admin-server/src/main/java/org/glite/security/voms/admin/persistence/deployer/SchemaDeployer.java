@@ -23,6 +23,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -65,11 +66,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
+import org.hibernate.tool.schema.TargetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,9 +127,12 @@ public class SchemaDeployer {
 
   private void printUpgradeScript() {
 
-    SchemaUpdate updater = new SchemaUpdate(loadHibernateConfiguration());
-    updater.execute(true, false);
+    SchemaUpdate updater = new SchemaUpdate();
+    updater.setFormat(true);
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
 
+    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
+    // updater.execute(targetTypes, md);
   }
 
   private void checkDatabaseConnectivity() {
@@ -855,6 +862,12 @@ public class SchemaDeployer {
 
   }
 
+  private String getHibernateConfigurationFile(String vo) {
+    
+    return String.format("%s/%s/%s", getVOConfigurationDir(), vo,
+      "database.properties");
+    
+  }
   private String getVOConfigurationDir() {
 
     Properties sysconfProps = SysconfigUtil.loadSysconfig();
@@ -879,6 +892,18 @@ public class SchemaDeployer {
 
     return false;
 
+  }
+  
+  private MetadataSources getHibernateMetadataSources() {
+    MetadataSources sources = new MetadataSources();
+    
+    if (hibernatePropertiesFile == null){
+      sources.addFile(getHibernateConfigurationFile(vo));
+    } else {
+      sources.addFile(hibernatePropertiesFile);
+    }
+    
+    return sources;
   }
 
   private Configuration loadHibernateConfiguration() {
@@ -931,10 +956,15 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport export = new SchemaExport(hibernateConfiguration);
+    SchemaExport export = new SchemaExport();
+    
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
 
-    export.drop(false, true);
+    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
+    export.drop(targetTypes, md);
+    
 
+    @SuppressWarnings("rawtypes")
     List l = export.getExceptions();
 
     if (!l.isEmpty()) {
@@ -1033,12 +1063,16 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport exporter = new SchemaExport(hibernateConfiguration);
+    SchemaExport exporter = new SchemaExport();
+    
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
 
-    exporter.execute(true, true, false, true);
+    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
+    exporter.create(targetTypes, md);
 
     log.info("Deploying voms database...");
 
+    @SuppressWarnings("rawtypes")
     List l = exporter.getExceptions();
 
     if (!l.isEmpty()) {

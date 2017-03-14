@@ -21,12 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PermissionType implements UserType {
 
@@ -66,33 +66,6 @@ public class PermissionType implements UserType {
 
     return x.hashCode();
 
-  }
-
-  @Override
-  public Object nullSafeGet(ResultSet rs, String[] names,
-    SessionImplementor session, Object owner) throws HibernateException,
-    SQLException {
-    
-    int bits = rs.getInt(names[0]);
-    
-    if (rs.wasNull()){
-      return null;
-    }
-    
-    return new VOMSPermission(bits);
-  }
-
-  @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index,
-    SessionImplementor session) throws HibernateException, SQLException {
-
-    if (value  == null){
-      st.setNull(index, Types.INTEGER);
-    }else{
-      
-      VOMSPermission p = (VOMSPermission)value;
-      st.setInt(index, p.getBits());
-    } 
   }
   
   public Object deepCopy(Object value) throws HibernateException {
@@ -134,6 +107,35 @@ public class PermissionType implements UserType {
     throws HibernateException {
 
     return deepCopy(original);
+  }
+
+  @Override
+  public Object nullSafeGet(ResultSet rs, String[] names,
+    SharedSessionContractImplementor session, Object owner)
+    throws HibernateException, SQLException {
+
+    int bits = rs.getInt(names[0]);
+    
+    if (rs.wasNull()){
+      return null;
+    }
+    
+    return new VOMSPermission(bits);
+  }
+
+  @Override
+  public void nullSafeSet(PreparedStatement st, Object value, int index,
+    SharedSessionContractImplementor session)
+    throws HibernateException, SQLException {
+
+    if (value  == null){
+      st.setNull(index, Types.INTEGER);
+    }else{
+      
+      VOMSPermission p = (VOMSPermission)value;
+      st.setInt(index, p.getBits());
+    } 
+    
   }
 
   

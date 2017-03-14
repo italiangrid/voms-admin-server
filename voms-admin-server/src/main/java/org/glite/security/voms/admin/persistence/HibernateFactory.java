@@ -28,9 +28,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.exception.SQLGrammarException;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +78,7 @@ public class HibernateFactory {
 
     try {
 
-      Configuration hibernateConf = new AnnotationConfiguration();
+      Configuration hibernateConf = new Configuration();
       hibernateConf.addProperties(databaseProperties);
 
       sessionFactory = hibernateConf.configure().buildSessionFactory();
@@ -209,13 +208,18 @@ public class HibernateFactory {
 
     }
   }
+  
 
   public static void commitTransaction() {
 
     Transaction tx = (Transaction) threadTransaction.get();
+    TransactionStatus status = tx.getStatus();
+    
     try {
 
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+      if (tx != null && !status.equals(TransactionStatus.COMMITTED)
+        && !status.equals(TransactionStatus.ROLLING_BACK) 
+        && !status.equals(TransactionStatus.ROLLED_BACK)) {
         if (log.isDebugEnabled()){
           log.debug("Committing transaction {} for thread {}", tx,
             Thread.currentThread());
@@ -241,12 +245,16 @@ public class HibernateFactory {
 
     
     Transaction tx = (Transaction) threadTransaction.get();
-    
+    TransactionStatus status = tx.getStatus();
     log.warn("Rolling back transaction {}", tx);
     try {
 
       threadTransaction.set(null);
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+      if (tx != null && 
+        status.equals(TransactionStatus.COMMITTED)
+        && !status.equals(TransactionStatus.ROLLING_BACK) 
+        && !status.equals(TransactionStatus.ROLLED_BACK)){
+        
         if (log.isDebugEnabled()){
           log.debug("Rolling back transaction {} for thread {}", tx, 
             Thread.currentThread());

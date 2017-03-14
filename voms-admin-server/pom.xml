@@ -38,10 +38,10 @@
     <api.version>${project.version}</api.version>
     <interface-version>2.0.2</interface-version>
 
-    <struts.version>2.3.20</struts.version>
+    <struts.version>2.3.32</struts.version>
     <struts.boostrap.plugin.version>2.0.1</struts.boostrap.plugin.version>
     <struts.jquery.plugin.version>3.7.1</struts.jquery.plugin.version>
-    <hibernate.version>4.3.8.Final</hibernate.version>
+    <hibernate.version>5.2.8.Final</hibernate.version>
     <c3p0.version>0.9.5</c3p0.version>
     <opensaml.version>2.5.3</opensaml.version>
     <tiles.version>2.0.6</tiles.version>
