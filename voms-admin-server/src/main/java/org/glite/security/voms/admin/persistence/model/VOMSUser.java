@@ -64,9 +64,7 @@ import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.glite.security.voms.admin.util.PathNamingScheme;
-import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortNatural;
-import org.hibernate.annotations.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +117,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   @Id
   @Column(name = "userid")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   // Base membership information (JSPG requirements)
@@ -168,13 +166,13 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
 
   /** Membership mappings **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user",
-    fetch = FetchType.EAGER, orphanRemoval=true)
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", orphanRemoval=true)
   @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
   /** User certificates **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", 
+    fetch=FetchType.EAGER)
   @org.hibernate.annotations.Cascade(
     value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
   Set<Certificate> certificates = new HashSet<Certificate>();

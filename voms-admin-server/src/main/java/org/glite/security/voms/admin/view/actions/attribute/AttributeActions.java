@@ -72,6 +72,11 @@ public class AttributeActions extends BaseAction {
     return LIST;
   }
 
+  @Override
+  @Action("create-input")
+  public String input() throws Exception {
+    return INPUT;
+  }
   @SkipValidation
   @Action(value = "delete", interceptorRefs = { @InterceptorRef(
     value = "authenticatedStack", params = { "token.includeMethods",

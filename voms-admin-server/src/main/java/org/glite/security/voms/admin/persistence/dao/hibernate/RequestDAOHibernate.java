@@ -20,6 +20,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+
 import org.glite.security.voms.admin.error.VOMSException;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
@@ -33,9 +38,9 @@ import org.glite.security.voms.admin.persistence.model.request.GroupMembershipRe
 import org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest;
 import org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest;
 import org.glite.security.voms.admin.persistence.model.request.Request;
+import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest;
-import org.glite.security.voms.admin.persistence.model.request.Request.STATUS;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
@@ -229,19 +234,36 @@ public class RequestDAOHibernate extends GenericHibernateDAO<Request, Long>
 
     return crit.list();
   }
+  
+  public List<Request> findPendingRequestPoly(){
+    CriteriaBuilder builder = getSession().getCriteriaBuilder();
+    CriteriaQuery<Request> criteria = builder.createQuery(Request.class);
+    
+    Root<Request> requestRoot = criteria.from(Request.class);
+    criteria.select(requestRoot);
+    Path<Request.STATUS> statusPath = requestRoot.get("status");
+    // criteria.where(builder.equal(requestRoot.get("status"), Request.STATUS.CONFIRMED));
+    
+    criteria.where(builder.in(statusPath).value(STATUS.CONFIRMED).value(STATUS.SUBMITTED));
+    
+    List<Request> results = getSession().createQuery(criteria).getResultList(); 
+    
+    return results;
+  }
 
   public List<Request> findPendingRequests() {
 
-    List<Request> result = new ArrayList<Request>();
-
-    result.addAll(findPendingVOMembershipRequests());
-    result.addAll(findConfirmedVOMembershipRequests());
-    result.addAll(findPendingGroupMembershipRequests());
-    result.addAll(findPendingRoleMembershipRequests());
-    result.addAll(findPendingCertificateRequests());
-    result.addAll(findPendingMembershipRemovalRequests());
-
-    return result;
+    return findPendingRequestPoly();
+//    List<Request> result = new ArrayList<Request>();
+//
+//    result.addAll(findPendingVOMembershipRequests());
+//    result.addAll(findConfirmedVOMembershipRequests());
+//    result.addAll(findPendingGroupMembershipRequests());
+//    result.addAll(findPendingRoleMembershipRequests());
+//    result.addAll(findPendingCertificateRequests());
+//    result.addAll(findPendingMembershipRemovalRequests());
+//
+//    return result;
   }
 
   public List<RoleMembershipRequest> findPendingRoleMembershipRequests() {

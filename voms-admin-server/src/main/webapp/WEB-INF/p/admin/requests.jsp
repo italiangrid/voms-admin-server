@@ -45,6 +45,7 @@
                 value="approve"
                 cssClass="btn-bulk-req"
                 theme="simple" />
+              
               <s:submit
                 name="decision"
                 value="reject"
@@ -52,6 +53,7 @@
                 theme="simple"
                 action="bulk-reject"
                 onclick="rejectRequestDialog(this,'confirmRejectedRequestDialog'); return false;" />
+              
             </div>
           </th>
         </tr>

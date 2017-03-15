@@ -48,11 +48,12 @@ public class Notification {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @ElementCollection(fetch=FetchType.EAGER)
   @CollectionTable(name = "notification_recipients")
+  @Column(name="element")
   List<String> recipients = new ArrayList<String>();
 
   @Column(nullable = false, columnDefinition = "varchar(512)")

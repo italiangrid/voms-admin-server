@@ -21,7 +21,7 @@
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
 
-<s:form validate="true">
+<s:form action="request-membership-removal">
   <s:token/>
   <s:hidden name="userId" value="%{id}"/>
   <s:textfield name="reason" label="Please provide a reason for your removal request"/>

@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -96,4 +97,9 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
     this.reason = reason;
   }
 
+  @Override
+  @Action("request-membership-removal-input")
+  public String input() throws Exception {
+    return super.input();
+  }
 }

@@ -45,17 +45,21 @@ public class LoginAction extends BaseAction {
     VOMSGroup rootGroup = getVORootGroup();
     VOMSRole groupManagerRole = getGroupManagerRole();
     
-    if (admin.isVOAdmin())
+    if (admin.isVOAdmin()){
       return "admin-home";
+    }
     else if (groupManagerRole != null && 
       admin.hasRole(rootGroup, groupManagerRole)){
       return "admin-home";
-    } else if (admin.isVoUser())
+    } else if (admin.isVoUser()){
       return "user-home";
-    else if (admin.isUnauthenticated())
+    }
+    else if (admin.isUnauthenticated()){
       return "unauthenticated";
-    else
-      return "register";
+    }
+      
+    return "register";
+    
   }
 
 }

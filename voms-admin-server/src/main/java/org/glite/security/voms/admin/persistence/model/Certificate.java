@@ -29,14 +29,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.hibernate.annotations.NaturalId;
 
@@ -50,8 +48,7 @@ public class Certificate implements Serializable, Comparable<Certificate> {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_CERT_SEQ")
-  @SequenceGenerator(name = "VOMS_CERT_SEQ", sequenceName = "VOMS_CERT_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   protected Long id;
 
   @Column(name = "subject_string", nullable = false)

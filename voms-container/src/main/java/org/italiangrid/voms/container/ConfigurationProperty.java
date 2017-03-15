@@ -40,7 +40,9 @@ public enum ConfigurationProperty {
   TLS_INCLUDE_PROTOCOLS("tls_include_protocols", null),
   
   TLS_EXCLUDE_CIPHER_SUITES("tls_exclude_cipher_suites", null),
-  TLS_INCLUDE_CIPHER_SUITES("tls_include_cipher_suites", null);
+  TLS_INCLUDE_CIPHER_SUITES("tls_include_cipher_suites", null),
+  
+  TLS_REQUIRE_CLIENT_CERTIFICATE("tls_require_client_cert", "true");
 
   private ConfigurationProperty(String propertyName, String defaultValue) {
 

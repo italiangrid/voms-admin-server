@@ -24,8 +24,11 @@ import org.glite.security.voms.admin.persistence.dao.generic.GenericDAO;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements the generic CRUD data access operations using Hibernate APIs.
@@ -46,6 +49,9 @@ import org.hibernate.criterion.Example;
 public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
   implements GenericDAO<T, ID> {
 
+  private static final Logger LOG = LoggerFactory
+    .getLogger(OrgDBGenericHibernateDAO.class);
+  
   private Class<T> persistentClass;
   private Session session;
 
@@ -55,8 +61,28 @@ public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
     this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
       .getGenericSuperclass()).getActualTypeArguments()[0];
 
-    getSession().beginTransaction();
+    startTransactionIfNedded();
+  }
 
+  private void startTransactionIfNedded() {
+
+    Transaction tx = getSession().getTransaction();
+    
+    if (tx == null){
+      LOG.debug("No transaction found in session. Starting one");
+      session.beginTransaction();
+      return;
+    }
+    
+    if (tx.isActive()){
+      LOG.debug("Found active transaction in session, will do nothing");
+      return;
+    } else {
+      LOG.debug("Found inactive transaction in session, starting it");
+      tx.begin();
+    }
+    
+    
   }
 
   public void setSession(Session s) {
@@ -69,10 +95,14 @@ public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
     if (session != null)
       return session;
 
-    if (OrgDBSessionFactory.getSessionFactory().getCurrentSession() != null)
-      return OrgDBSessionFactory.getSessionFactory().getCurrentSession();
-
-    return OrgDBSessionFactory.getSessionFactory().openSession();
+    if (OrgDBSessionFactory.getSessionFactory()
+      .getCurrentSession() != null){
+      return OrgDBSessionFactory.getSessionFactory()
+        .getCurrentSession();
+    }
+    
+    return OrgDBSessionFactory.getSessionFactory()
+      .openSession();
 
   }
 
@@ -86,8 +116,7 @@ public abstract class OrgDBGenericHibernateDAO<T, ID extends Serializable>
 
     T entity;
     if (lock)
-      entity = (T) getSession()
-        .get(getPersistentClass(), id, LockMode.UPGRADE);
+      entity = (T) getSession().get(getPersistentClass(), id, LockMode.UPGRADE);
     else
       entity = (T) getSession().get(getPersistentClass(), id);
 

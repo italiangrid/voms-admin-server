@@ -20,9 +20,10 @@
     context="vo"
     permission="ATTRIBUTES_READ"/>
     
-<h2>Generic attributes</h2>
 
 <s:if test="#attr.canRead">
+
+<h1>Generic attributes:</h1>
 
 <div id="searchPane">
 <s:form validate="true" theme="simple">
@@ -38,7 +39,7 @@
             permission="ATTRIBUTES_READ|ATTRIBUTES_WRITE"/>
   
   <s:if test="#attr.canCreate">
-    <s:url action="create" namespace="/attribute" var="manageAttributeURL"  method="input"/>
+    <s:url action="create-input" namespace="/attribute" var="manageAttributeURL"/>
     <s:a href="%{manageAttributeURL}">Manage attribute classes</s:a>
   </s:if>
 </div>

@@ -27,9 +27,10 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-  @Result(name = BaseAction.SUCCESS, location = "certs.jsp"),
+  @Result(name = BaseAction.SUCCESS, location = "certificates.jsp"),
+  @Result(name = BaseAction.INPUT, location = "certificates.jsp"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "certs.jsp")
+    location = "certificates.jsp")
 })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })

@@ -72,9 +72,9 @@ public class UserActionSupport extends BaseAction implements
 
     if (getModel() == null) {
 
-      if (getUserId() != -1)
+      if (getUserId() != -1){
         model = userById(getUserId());
-      else {
+      } else {
         Long loadThisUserKey = (Long) theSession.get(LOAD_THIS_USER_KEY);
 
         if (loadThisUserKey != null) {
@@ -85,8 +85,9 @@ public class UserActionSupport extends BaseAction implements
       }
     }
 
-    if (getModel() != null)
+    if (getModel() != null){
       refreshPendingRequests();
+    }
 
   }
 

@@ -33,7 +33,7 @@ public class Institution {
 
   @Id
   @Column(name = "institution_id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
   Date creationDate;

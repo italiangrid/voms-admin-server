@@ -79,7 +79,11 @@ public class SecurityContextFilter implements Filter {
     initContext(request);
     initWebappProperties(request);
 
-    chain.doFilter(req, res);
+    try{
+      chain.doFilter(req, res);
+    }finally {
+      InitSecurityContext.clearContext();
+    }
   }
 
   public void destroy() {

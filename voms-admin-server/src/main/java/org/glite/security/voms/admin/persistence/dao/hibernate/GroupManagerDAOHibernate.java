@@ -15,6 +15,13 @@
  */
 package org.glite.security.voms.admin.persistence.dao.hibernate;
 
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.GroupManagerDAO;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 import org.hibernate.criterion.Restrictions;
@@ -26,5 +33,15 @@ public class GroupManagerDAOHibernate extends
   public GroupManager findByName(String name) {
 
     return findByCriteriaUniqueResult(Restrictions.eq("name", name));
+  }
+  
+  public List<GroupManager> findAll() {
+    
+    CriteriaBuilder cb = getSession().getCriteriaBuilder();
+    CriteriaQuery<GroupManager> crit = cb.createQuery(GroupManager.class);
+    Root<GroupManager> root = crit.from(GroupManager.class);
+    
+    return HibernateFactory.getSession().createQuery(crit).getResultList();
+    
   }
 }

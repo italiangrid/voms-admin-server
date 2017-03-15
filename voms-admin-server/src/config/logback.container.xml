@@ -29,7 +29,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</pattern>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - [%contextName] %level [%logger{0}] - %msg%n</pattern>
     </encoder>
   </appender>
 
@@ -42,7 +42,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - %level [%logger{0}] - %msg%n</pattern>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - [%contextName] %level [%logger{0}] - %msg%n</pattern>
     </encoder>
   </appender>
 

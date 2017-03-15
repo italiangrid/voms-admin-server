@@ -99,10 +99,13 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator {
 
     OrgDBVOMSPersonDAO personDAO = OrgDBDAOFactory.instance()
       .getVOMSPersonDAO();
-
+    
     try {
       personDAO.findPersonByEmail("andrea.ceccanti@cnaf.infn.it");
       log.info("Connection to the OrgDB database is active.");
+      
+      // Don't leave a transaction hanging
+      OrgDBSessionFactory.commitTransaction();
 
     } catch (HibernateException e) {
       log.warn("Error contacting the OrgDB database: {}", e.getMessage(), e);
@@ -171,6 +174,8 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator {
       experimentName, new SuspendInvalidMembersStrategy(),
       new LogOnlyExpiredParticipationStrategy(), new DefaultSyncStrategy());
 
+    OrgDBSyncTaskContainer.INSTANCE.setTask(syncTask);
+    
     VOMSExecutorService.instance().startBackgroundTask(syncTask, null,
       checkPeriod);
 

@@ -22,6 +22,7 @@ import javax.servlet.ServletRequest;
 
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSException;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.italiangrid.utils.voms.CurrentSecurityContext;
 import org.italiangrid.utils.voms.SecurityContext;
 import org.italiangrid.utils.voms.SecurityContextFactory;
@@ -33,6 +34,11 @@ public class InitSecurityContext {
   protected static Logger log = LoggerFactory
     .getLogger(InitSecurityContext.class);
 
+  public static void clearContext() {
+    CurrentSecurityContext.clear();
+    CurrentAdmin.clear();
+  }
+  
   public static void setInternalAdminContext() {
 
     log.debug("Creating a new internal security context");
@@ -42,6 +48,7 @@ public class InitSecurityContext {
     sc.setIssuerName(VOMSServiceConstants.VIRTUAL_CA);
 
     CurrentSecurityContext.set(sc);
+    CurrentAdmin.instance();
 
   }
 
@@ -90,6 +97,7 @@ public class InitSecurityContext {
     }
 
     CurrentSecurityContext.set(sc);
+    CurrentAdmin.instance();
   }
 
   public static void logConnection() {

@@ -47,14 +47,14 @@
   <div id="addACLEntryBox">
   
     <s:if test="#isDefaultACL">
-      <s:url action="add-default-entry" namespace="/acl" var="addACLEntryURL" method="input">
+      <s:url action="add-default-entry-input" namespace="/acl" var="addACLEntryURL">
         <s:param name="aclGroupId" value="#theVomsContext.group.id"/>
       </s:url>
     
     </s:if>
     <s:else>
     
-      <s:url action="add-entry" namespace="/acl" var="addACLEntryURL" method="input">
+      <s:url action="add-entry-input" namespace="/acl" var="addACLEntryURL">
         <s:param name="aclId" value="id"/>
       </s:url>
       
@@ -115,7 +115,7 @@
             </td>
             <voms:printPermission var="permission" />
             <td class="actions">
-              <s:url action="edit-entry" namespace="/acl" var="editACLEntryURL" method="input">
+              <s:url action="edit-entry-input" namespace="/acl" var="editACLEntryURL">
                 <s:param name="aclId" value="%{model.id}"/>
                 <s:param name="adminId" value="key.id"/>
               </s:url>
@@ -124,7 +124,7 @@
               </s:if>
             </td>
             <td class="actions">
-              <s:url action="delete-entry" namespace="/acl" var="deleteACLEntryURL" method="input">
+              <s:url action="delete-entry-input" namespace="/acl" var="deleteACLEntryURL">
                 <s:param name="aclId" value="%{model.id}"/>
                 <s:param name="adminId" value="key.id"/>
               </s:url>

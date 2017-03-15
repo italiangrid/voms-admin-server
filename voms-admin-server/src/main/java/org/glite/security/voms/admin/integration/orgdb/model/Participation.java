@@ -29,6 +29,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Immutable
@@ -64,10 +66,12 @@ public class Participation implements Serializable {
   VOMSOrgDBPerson vomsPerson;
 
   @ManyToOne
+  @NotFound(action= NotFoundAction.IGNORE) // Should never be true for active participations
   @JoinColumn(name = "INSTITUTE", insertable = false, updatable = false)
   Institute institute;
 
   @ManyToOne
+  @NotFound(action= NotFoundAction.IGNORE) // Should never be true for active participations
   @JoinColumn(name = "EXPERIMENT", insertable = false, updatable = false)
   Experiment experiment;
 

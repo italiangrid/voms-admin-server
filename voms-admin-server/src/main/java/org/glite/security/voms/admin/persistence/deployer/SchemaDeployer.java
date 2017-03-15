@@ -68,6 +68,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.exception.GenericJDBCException;
@@ -108,8 +109,6 @@ public class SchemaDeployer {
 
   SessionFactory sf;
 
-  Configuration hibernateConfiguration = null;
-
   Dialect dialect;
 
   AuditLogHelper auditLogHelper = new AuditLogHelper(
@@ -129,10 +128,9 @@ public class SchemaDeployer {
 
     SchemaUpdate updater = new SchemaUpdate();
     updater.setFormat(true);
-    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.STDOUT);
 
-    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
-    // updater.execute(targetTypes, md);
+    updater.execute(targetTypes, HibernateFactory.getMetadata());
   }
 
   private void checkDatabaseConnectivity() {
@@ -224,9 +222,8 @@ public class SchemaDeployer {
       .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
 
     LookupPolicyProvider.initialize(skipCaCheck);
-
-    hibernateConfiguration = loadHibernateConfiguration();
-    HibernateFactory.initialize(hibernateConfiguration);
+    
+    HibernateFactory.initialize(getHibernateMetadataSources());
 
     if (command.equals("deploy"))
       doDeploy();
@@ -533,6 +530,9 @@ public class SchemaDeployer {
       }
 
       try {
+        
+        log.info("Upgrading database schema from version {} to version {}",
+            adminVersion, 6);
 
         List<String> upgradeScript = loadUpgradeScriptToV6();
 
@@ -598,11 +598,16 @@ public class SchemaDeployer {
           adminVersion);
         return false;
       }
+      
+      log.info("Upgrading database schema from version {} to version {}",
+          adminVersion, 5);
 
       try {
 
         List<String> upgradeScript = loadUpgradeScriptToV5();
 
+        HibernateFactory.beginTransaction();
+        
         UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
           upgradeScript);
         
@@ -677,6 +682,7 @@ public class SchemaDeployer {
       UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
         upgradeScript);
 
+      HibernateFactory.beginTransaction();
       try {
         HibernateFactory.getSession()
           .doWork(upgradeWork);
@@ -895,14 +901,17 @@ public class SchemaDeployer {
   }
   
   private MetadataSources getHibernateMetadataSources() {
-    MetadataSources sources = new MetadataSources();
+    
+    StandardServiceRegistryBuilder registryBuilder = 
+      new StandardServiceRegistryBuilder();
     
     if (hibernatePropertiesFile == null){
-      sources.addFile(getHibernateConfigurationFile(vo));
+      registryBuilder.loadProperties(new File(getHibernateConfigurationFile(vo)));
     } else {
-      sources.addFile(hibernatePropertiesFile);
+      registryBuilder.loadProperties(new File(hibernatePropertiesFile));
     }
-    
+    registryBuilder.configure();
+    MetadataSources sources = new MetadataSources(registryBuilder.build());
     return sources;
   }
 
@@ -1056,8 +1065,12 @@ public class SchemaDeployer {
     int existingDb = checkDatabaseExistence();
 
     if (existingDb > 0) {
+      final String adminDbVersion = VOMSVersionDAO
+        .instance().getVersion().getAdminVersion().trim();
+      
       log
-        .warn("Existing voms database found. Will not overwrite the database!");
+        .warn("Existing voms database found. Will not overwrite "
+          + "the database! (admin db version: {})", adminDbVersion);
       System.exit(0);
     }
 
@@ -1066,9 +1079,7 @@ public class SchemaDeployer {
     SchemaExport exporter = new SchemaExport();
     
     EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
-
-    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
-    exporter.create(targetTypes, md);
+    exporter.createOnly(targetTypes, HibernateFactory.getMetadata());
 
     log.info("Deploying voms database...");
 
@@ -1081,13 +1092,15 @@ public class SchemaDeployer {
       System.exit(2);
 
     }
-
+    
     // This is needed as the version of hibernate we are using
     // does not support defining indexes on join table columns
     // See: https://hibernate.atlassian.net/browse/HHH-4263
     CreateAuditEventDataIndexes createIndexTask = new CreateAuditEventDataIndexes(
-      HibernateFactory.getSession());
+    HibernateFactory.getSession());
 
+    HibernateFactory.beginTransaction();
+    
     createIndexTask.run();
 
     CreateAttributeValueIndex avIndexTask = new CreateAttributeValueIndex(

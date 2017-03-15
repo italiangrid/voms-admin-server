@@ -25,7 +25,7 @@
   
   <s:if test="#attr.canCreate">
     <s:form 
-      action="create"
+      action="create-role"
       namespace="/role"
       validate="true"
     >

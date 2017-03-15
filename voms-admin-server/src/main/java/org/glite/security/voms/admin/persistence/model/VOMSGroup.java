@@ -26,14 +26,13 @@ import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
@@ -57,24 +56,24 @@ public class VOMSGroup implements Serializable, Comparable<VOMSGroup> {
 
   @Id
   @Column(name = "gid")
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_GROUP_SEQ")
-  @SequenceGenerator(name = "VOMS_GROUP_SEQ", sequenceName = "VOMS_GROUP_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(name = "dn", nullable = false, unique = true)
   String name;
 
   @ManyToOne(optional = true)
+  @JoinColumn(name="parent")
   VOMSGroup parent;
 
   @Column(nullable = false)
   Boolean must;
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", orphanRemoval=true)
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", 
+    orphanRemoval=true)
   Set<VOMSGroupAttribute> attributes = new HashSet<VOMSGroupAttribute>();
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group",
-    fetch = FetchType.EAGER, orphanRemoval=true)
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "group", orphanRemoval=true)
   @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 

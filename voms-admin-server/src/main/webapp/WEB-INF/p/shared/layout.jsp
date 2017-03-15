@@ -20,6 +20,7 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
+<%@include file="/WEB-INF/p/shared/global-page-variables.jsp"%>
 
 <html>
   <head>
@@ -27,25 +28,21 @@
     <%@include file="/WEB-INF/p/shared/meta.jsp"%>
     
     <title>VOMS Admin &gt; ${voName}</title>
-    
+    <s:head/>
+   
+    <link type="text/css" 
+      href="<s:url value="/jquery-ui/jquery-ui.min.css"/>" 
+      rel="stylesheet" />
+     
     <link rel="stylesheet" type="text/css"
       href="<s:url value="/style/style.css"/>" />
       
     <link rel="stylesheet" 
-      href="<s:url value="/style/font-awesome.min.css"/>">
-      
+      href="<s:url value="/css/font-awesome.min.css"/>">
+     
     <sj:head jqueryui="false" />
     
-    
-    <link type="text/css" 
-      href="<s:url value="/style/custom-theme/jquery-ui.css"/>" 
-      rel="stylesheet" />
-    
-    <script type="text/javascript" src="<s:url value="/common/js/jquery-ui.js"/>">
-    </script>
-    
-    <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>">
-      
+    <script type="text/javascript" src="<s:url value="/jquery-ui/jquery-ui.min.js"/>">
     </script>
     
     <script type="text/javascript">
@@ -61,6 +58,7 @@
   <div id="header">
     <tiles2:insertAttribute name="header"/>
   </div> <!-- header -->
+ 
   
   <tiles2:insertAttribute name="menu"/>
   
@@ -80,7 +78,13 @@
     <tiles2:insertAttribute name="footer"/>
   </div> <!-- footer -->
   
+  
+  
   <script type="text/javascript" src="<s:url value="/common/js/jq-sugar.js"/>">
   </script>
+  
+  <script type="text/javascript" src="<s:url value="/common/js/jquery.cookie.js"/>"> 
+  </script>
+  
   </body>
 </html>

@@ -29,11 +29,13 @@ public class HibernateInterceptor extends AbstractInterceptor implements
      */
   private static final long serialVersionUID = 1L;
 
+  
+  
   @Override
   public String intercept(ActionInvocation ai) throws Exception {
 
     String result = ai.invoke();
-
+    
     try {
 
       HibernateFactory.commitTransaction();

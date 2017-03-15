@@ -21,13 +21,13 @@ import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 public class AuditLogSearchResults {
 
-  final int totalResultsCount;
+  final long totalResultsCount;
 
   final AuditLogSearchParams searchParams;
 
   final List<AuditEvent> results;
 
-  public AuditLogSearchResults(AuditLogSearchParams sp, int totalResultsCount,
+  public AuditLogSearchResults(AuditLogSearchParams sp, long totalResultsCount,
     List<AuditEvent> results) {
 
     this.searchParams = sp;
@@ -45,7 +45,7 @@ public class AuditLogSearchResults {
     return results;
   }
 
-  public int getTotalResultsCount() {
+  public long getTotalResultsCount() {
 
     return totalResultsCount;
   }

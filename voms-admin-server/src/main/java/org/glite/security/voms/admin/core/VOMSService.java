@@ -16,20 +16,24 @@
 package org.glite.security.voms.admin.core;
 
 import java.io.File;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 
-import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.commons.lang.Validate;
+import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.velocity.app.Velocity;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.CancelSignAUPTasksForExpiredUsersTask;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
+import org.glite.security.voms.admin.core.tasks.PermissionCacheStatsLogger;
 import org.glite.security.voms.admin.core.tasks.PrintX509AAStatsTask;
 import org.glite.security.voms.admin.core.tasks.SignAUPReminderCheckTask;
 import org.glite.security.voms.admin.core.tasks.SystemTimeProvider;
@@ -40,10 +44,13 @@ import org.glite.security.voms.admin.core.tasks.UserStatsTask;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
+import org.glite.security.voms.admin.event.CleanPermissionCacheListener;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.auditing.AuditLog;
 import org.glite.security.voms.admin.integration.PluginManager;
+import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
+import org.glite.security.voms.admin.integration.orgdb.servlet.OrgDbHibernateSessionFilter;
 import org.glite.security.voms.admin.notification.NotificationServiceFactory;
 import org.glite.security.voms.admin.notification.PersistentNotificationService;
 import org.glite.security.voms.admin.notification.VOMSNotificationSettings;
@@ -59,10 +66,11 @@ import org.glite.security.voms.admin.operations.DefaultPrincipalProvider;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.SchemaVersion;
 import org.glite.security.voms.admin.persistence.dao.VOMSVersionDAO;
-import org.glite.security.voms.admin.view.util.DevModeEnabler;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.lookup.LookupPolicyProvider;
+import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.util.validation.x509.VOMSAdminDnValidator;
+import org.glite.security.voms.admin.view.util.DevModeEnabler;
 import org.italiangrid.voms.aa.x509.ACGeneratorFactory;
 import org.opensaml.xml.ConfigurationException;
 import org.slf4j.Logger;
@@ -155,6 +163,7 @@ public final class VOMSService {
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
     manager.register(SignAUPReminderDispatcher.instance());
+    manager.register(CleanPermissionCacheListener.instance());
 
   }
 
@@ -181,7 +190,7 @@ public final class VOMSService {
       VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
     es.startBackgroundTask(new TaskStatusUpdater(), 30L);
-
+    
     es.startBackgroundTask(
       new ExpiredRequestsPurgerTask(DAOFactory.instance(),
         EventManager.instance()),
@@ -190,6 +199,8 @@ public final class VOMSService {
     es.startBackgroundTask(new UserStatsTask(),
       VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
       UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+    
+    es.scheduleAtFixedRate(new PermissionCacheStatsLogger(true), 1, 60, TimeUnit.SECONDS);
     
   }
 
@@ -270,12 +281,17 @@ public final class VOMSService {
         .format("Logging configuration " + "is not readable: %s", loggingConf));
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-
+    lc.setName(vo);
+    
     JoranConfigurator configurator = new JoranConfigurator();
 
     configurator.setContext(lc);
+    
     lc.reset();
-
+    
+    // We leave this here to avoid runtime errors for people that
+    // update the service, but not the logging configuration 
+    // FIXME: to be removed at some point
     lc.putProperty(VOMSConfigurationConstants.VO_NAME, vo);
 
     try {
@@ -303,6 +319,56 @@ public final class VOMSService {
       true);
   }
 
+  private static void configureOrgDbHibernateSessionFitler(ServletContext ctxt){
+    if (!VOMSConfiguration.instance().getRegistrationType().equals(
+        OrgDBConfigurator.ORGDB_REGISTRATION_TYPE)){
+      return;
+    }
+    
+    FilterRegistration.Dynamic fr = ctxt.addFilter("orgdb-hibernate-session-filter", 
+      OrgDbHibernateSessionFilter.class);
+    
+    fr.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+    
+  }
+  
+  
+  private static void setupGlobalApplicationObjects(ServletContext ctxt){
+    
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+
+    ctxt.setAttribute(
+      "registrationEnabled",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
+    
+    ctxt.setAttribute(
+      "readOnlyPI",
+      VOMSConfiguration.instance()
+        .getBoolean(
+          VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
+          false));
+
+    ctxt.setAttribute(
+      "readOnlyMembershipExpiration",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
+        false));
+
+    ctxt.setAttribute(
+      "disableMembershipEndTime",
+      VOMSConfiguration.instance().getBoolean(
+        VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
+
+    ctxt.setAttribute("defaultAUP", aup);
+    
+    ctxt.setAttribute("orgdbEnabled",
+      VOMSConfiguration.instance().getRegistrationType().equals(
+        OrgDBConfigurator.ORGDB_REGISTRATION_TYPE));
+    
+  }
+  
+  
   public static void start(ServletContext ctxt) {
 
     Thread
@@ -349,6 +415,10 @@ public final class VOMSService {
 
     initializeDnValidator();
 
+    configureOrgDbHibernateSessionFitler(ctxt);
+    
+    setupGlobalApplicationObjects(ctxt);
+    
     LOG.info("VOMS-Admin started succesfully.");
   }
 

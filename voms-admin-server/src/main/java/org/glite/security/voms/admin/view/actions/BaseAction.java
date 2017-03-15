@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
-
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
@@ -38,6 +37,7 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.URLBuilder;
+import org.hibernate.Hibernate;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ValidationAware;
@@ -66,8 +66,15 @@ public class BaseAction extends ActionSupport implements ValidationAware, Reques
 
     if (id == null)
       throw new NullArgumentException("'id' cannot be null!");
+    
+    VOMSUser user = (VOMSUser) FindUserOperation.instance(id).execute();
+    
+    if (user != null){
+      Hibernate.initialize(user.getMappings());
+      Hibernate.initialize(user.getAttributes());
+    }
 
-    return (VOMSUser) FindUserOperation.instance(id).execute();
+    return user;
   }
 
   protected VOMSGroup groupByName(String name) {

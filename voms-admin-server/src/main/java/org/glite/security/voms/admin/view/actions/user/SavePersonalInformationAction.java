@@ -36,9 +36,10 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 @Results({
-  @Result(name = UserActionSupport.SUCCESS, location = "load", type="chain"),
+  @Result(name = UserActionSupport.SUCCESS, location = "personalInfo.jsp"),
+  @Result(name = UserActionSupport.INPUT, location = "personalInfo.jsp"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
-    location = "load", type="redirectAction") })
+    location = "personalInfo.jsp") })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
 public class SavePersonalInformationAction extends UserActionSupport {

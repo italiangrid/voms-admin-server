@@ -15,7 +15,6 @@
     limitations under the License.
 
 --%>
-
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
 <div
@@ -292,4 +291,4 @@
   </div>
   
   
-</div>
+  </div>

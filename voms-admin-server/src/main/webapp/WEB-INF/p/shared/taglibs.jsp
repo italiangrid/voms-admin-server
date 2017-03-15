@@ -25,9 +25,4 @@
 <%--Struts 2 tags --%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles2" %>
 <%@ taglib uri="/struts-tags" prefix="s" %>
-
-<%-- Struts 2 boostrap tags --%>
-<%@ taglib prefix="sb" uri="/struts-bootstrap-tags" %>
-
-<%-- Struts 2 jquery tags --%>
-<%@ taglib prefix="sj" uri="/struts-jquery-tags" %>
+<%@ taglib prefix="sj" uri="/struts-jquery-tags"%>

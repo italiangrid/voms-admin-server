@@ -22,7 +22,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -34,10 +33,7 @@ public class PersonalInformationType {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO,
-    generator = "VOMS_PI_TYPE_SEQ")
-  @SequenceGenerator(name = "VOMS_PI_TYPE_SEQ",
-    sequenceName = "VOMS_PI_TYPE_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Enumerated(EnumType.STRING)

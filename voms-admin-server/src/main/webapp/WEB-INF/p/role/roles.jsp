@@ -16,50 +16,108 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
-<voms:hasPermissions var="canRead" context="vo"
-	permission="CONTAINER_READ" />
-
-<voms:hasPermissions var="canDelete" context="vo"
-	permission="CONTAINER_READ|CONTAINER_WRITE" />
-
-<h2>Roles</h2>
-
+<voms:hasPermissions var="canRead"
+    context="vo"
+    permission="CONTAINER_READ"/>
+    
 <s:if test="#attr.canRead">
-	<div class="searchResultsPane">
-		<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
-		<s:if
-			test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
+<h1>Roles:</h1>
+<div id="searchPane">
+<s:form validate="true" theme="simple">
+  <s:hidden name="searchData.type" value="%{'role'}"/>
+  <s:textfield name="searchData.text" size="20" value="%{#session.searchData.text}"/>
+  <s:submit value="%{'Search roles'}" cssClass="submitButton"/>
+  <s:fielderror name="searchData.text"/>
+</s:form>
+</div>
+
+<div id="createPane">
+
+<div class="createTab">
+  <voms:hasPermissions var="canCreate" 
+            context="/${voName}" 
+            permission="CONTAINER_READ|CONTAINER_WRITE"/>
+  
+  <s:if test="#attr.canCreate">
+    <s:url action="create-role-input" namespace="/role" var="createRoleURL"/>
+    <s:a href="%{createRoleURL}">New role</s:a>
+  </s:if>
+</div>
+
+</div>
+
+
+<div class="searchResultsPane">
+<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
+<s:if test='(#session.searchResults.searchString eq null) and (#session.searchResults.results.size == 0)'>
 No roles defined for this VO.
 </s:if>
-		<s:elseif test="#session.searchResults.results.size == 0">
-  No roles found matching search string '<s:property
-				value="#session.searchResults.searchString" />'.
-</s:elseif>
-		<s:else>
-
-			<table class="table">
-				<s:iterator value="#session.searchResults.results" var="role"
-					status="rowStatus">
-					<tr>
-						<td><s:url action="edit" namespace="/role" var="editURL">
-								<s:param name="roleId" value="id" />
-							</s:url> <s:a href="%{editURL}">
-								<s:property value="name" />
-							</s:a></td>
-						<td><s:if test="#attr['canDelete']">
-								<s:form action="delete" namespace="/role" theme="bootstrap" cssClass="form-inline pull-right">
-									<s:token />
-									<s:hidden name="roleId" value="%{id}" />
-									<s:submit value="%{'delete'}"
-										onclick="openConfirmDialog(this, 'deleteRoleDialog','%{name}'); return false" />
-								</s:form>
-							</s:if></td>
-					</tr>
-				</s:iterator>
-			</table>
-		</s:else>
-	</div>
+<s:elseif test="#session.searchResults.results.size == 0">
+  No roles found matching search string '<s:property value="#session.searchResults.searchString"/>'.
+</s:elseif> 
+<s:else>
+           
+    <table
+      class="table"
+      cellpadding="0"
+      cellspacing="0"
+    >
+      <s:iterator
+        value="#session.searchResults.results"
+        var="role"
+        status="rowStatus"
+      >
+        <tr class="tableRow">
+  
+          
+          <td width="95%">
+            
+            <div class="roleName">
+              <s:url action="edit" namespace="/role" var="editURL">
+                <s:param name="roleId" value="id"/>
+              </s:url>
+              <s:a href="%{editURL}">
+                <s:property value="name" />
+              </s:a>
+            </div>
+           </td>
+           <td>
+            
+            
+            <voms:hasPermissions var="canDelete" 
+              context="/${voName}" 
+              permission="CONTAINER_READ|CONTAINER_WRITE"/>
+            
+            <s:if test="#attr['canDelete']">
+              <s:form action="delete" namespace="/role">
+                <s:url value="/img/delete_16.png" var="deleteImg"/>
+                <s:token/>
+                <s:hidden name="roleId" value="%{id}"/>
+                <s:submit value="%{'delete'}" onclick="openConfirmDialog(this, 'deleteRoleDialog','%{name}'); return false"/>
+              </s:form>
+            </s:if>
+            
+           </td>
+        </tr>
+      </s:iterator>
+    </table>
+  
+  
+  <s:url action="search" namespace="/role" var="searchURL"/>
+  
+  <div class="resultsFooter">
+  
+  <voms:searchNavBar context="vo" 
+      permission="r" 
+      disabledLinkStyleClass="disabledLink"
+      id="searchResults"
+      linkStyleClass="navBarLink"
+      searchURL="${searchURL}"
+      styleClass="resultsCount"
+      />
+   </div>
+</s:else>
+</div>
 </s:if>
 <s:else>
   You do not have enough permissions to browse this VO roles.

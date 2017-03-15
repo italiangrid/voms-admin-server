@@ -24,9 +24,7 @@
 	<class name="org.glite.security.voms.admin.persistence.model.AUP" table="aup">	
 		
 		<id name="id" type="long">
-			<generator class="native">
-				<param name="sequence">VOMS_AUP_SEQ</param>
-			</generator>
+			<generator class="native"/>
 		</id>
 	
 		<property name="name" 

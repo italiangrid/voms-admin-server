@@ -167,7 +167,7 @@ public class VOMSAppProvider extends AbstractLifeCycle implements AppProvider {
 
   public void startVO(String voName) {
 
-    log.debug("Request to start vo {}", voName);
+    log.info("Starting vo {}", voName);
 
     if (!voNameIsValid(voName)) {
       log.error("VO {} is not configured on this host!", voName);
@@ -183,7 +183,7 @@ public class VOMSAppProvider extends AbstractLifeCycle implements AppProvider {
 
   public void stopVO(String voName) {
 
-    log.debug("Request to stop vo {}", voName);
+    log.info("Stopping vo {}", voName);
     if (!voNameIsValid(voName)) {
       log.error("VO {} is not configured on this host!");
       return;
@@ -264,8 +264,12 @@ public class VOMSAppProvider extends AbstractLifeCycle implements AppProvider {
     vomsWebappContext.addServerClass("ch.qos.logback.");
     vomsWebappContext.addServerClass("org.slf4j.");
 
+    // Oracle driver
     vomsWebappContext.addSystemClass("oracle.");
-
+    
+    // Guava
+    vomsWebappContext.addSystemClass("com.google.");
+    
     vomsWebappContext.setInitParameter("VO_NAME", vo);
     vomsWebappContext.setInitParameter("CONF_DIR", configurationDir);
     vomsWebappContext.setInitParameter("HOST", hostname);

@@ -31,7 +31,7 @@
 
 <s:if test="not #unrequestedGroups.empty">
 
-    <s:if test="#request.registrationEnabled">
+    <s:if test="#attr.registrationEnabled">
 	<div class="subscribeGroups">
 	<s:form
 		action="prepare-group-membership-request" namespace="/user" theme="simple" method="input">
@@ -81,7 +81,7 @@
               <s:set var="daRoles" value="#attr.unassignedRoleMap[#mapping.key.id].{?#this.name not in #requestedRoleNames}"/>
 
               <s:if
-				test="%{not #daRoles.empty and #request.registrationEnabled}">
+				test="%{not #daRoles.empty and #attr.registrationEnabled}">
 
 
 				<s:form action="prepare-role-membership-request" method="input" namespace="/user"

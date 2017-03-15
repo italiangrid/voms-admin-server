@@ -17,6 +17,7 @@ package org.glite.security.voms.admin.view.actions.manager;
 
 import java.util.List;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -54,6 +55,11 @@ public class CreateAction extends BaseAction implements Preparable {
 
   VOMSGroup group;
 
+  @Override
+  @Action("create-input")
+  public String input() throws Exception {
+    return super.input();
+  }
   @Override
   public void validate() {
 

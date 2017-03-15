@@ -19,7 +19,7 @@
 <h1>Create a new user:</h1>
 
 <p>All the fields below are required.</p>
-<s:form validate="true">
+<s:form validate="true" action="create-user">
 		<s:token/>
 		
 		<s:textfield name="theName" label="Given name" size="40"
@@ -44,5 +44,5 @@
 		<s:textfield name="subject" size="45" label="Subject" cssClass="registrationField"/>
   		<s:select name="caSubject" list="#request.trustedCas" listKey="subjectString" listValue="subjectString" label="CA" />
   		
-		<s:submit value="%{'Create user'}" disabled="false" />
+		<s:submit value="%{'Create user'}" disabled="false" align="left" cssStyle="margin-top: 2em;"/>
 </s:form>

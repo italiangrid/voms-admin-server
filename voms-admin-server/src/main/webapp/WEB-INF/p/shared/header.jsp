@@ -17,20 +17,16 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-  <div id="logo-img">
-    <a href="<s:url value="/home/login.action"/>" id="logo-img">
-      <img src="<s:url value="/img/va-logo.png"/>" alt="VOMS Admin" /> 
+  <div id="vo-name">
+    <a href="<s:url value="/home/login.action"/>">
+      voms admin <span class="for-vo">for</span> <span class="name">${voName}</span>
     </a>
   </div>
   
-  
-  <div id="vo-info">
-    for VO: <span>${voName}</span>
-  </div>
-  
-  <div id="admin-info">
-    Current user: 
+  <div id="authn-info">
+    User: 
+    
     <span title="${currentAdmin.realSubject}">
-        <voms:formatDN dn="${currentAdmin.realSubject}" fields="CN"/>
+     <voms:formatDN dn="${currentAdmin.realSubject}" fields="CN"/>  
     </span>
   </div>

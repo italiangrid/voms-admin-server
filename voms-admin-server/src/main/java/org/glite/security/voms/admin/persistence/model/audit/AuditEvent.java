@@ -27,6 +27,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -43,7 +44,7 @@ public class AuditEvent {
 
   @Id
   @Column(name = "event_id")
-  @GeneratedValue
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(name = "principal", nullable = false, length = 255)

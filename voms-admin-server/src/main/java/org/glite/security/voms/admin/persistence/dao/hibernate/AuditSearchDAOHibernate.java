@@ -138,10 +138,10 @@ public class AuditSearchDAOHibernate
     crit.setFirstResult(0);
     crit.setMaxResults(100);
 
-    Integer count = (Integer) crit.uniqueResult();
+    Long count = (Long) crit.uniqueResult();
 
     if (count == null) {
-      count = 0;
+      count = 0L;
     }
 
     return new AuditLogSearchResults(sp, count, results);

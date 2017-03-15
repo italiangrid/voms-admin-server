@@ -17,19 +17,24 @@ package org.glite.security.voms.admin.integration.orgdb.dao;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OrgDBVOMSPersonDAOHibernate extends
   OrgDBGenericHibernateDAO<VOMSOrgDBPerson, Long> implements OrgDBVOMSPersonDAO {
+  
+  public static final Logger LOG = LoggerFactory.getLogger(OrgDBVOMSPersonDAOHibernate.class);
 
   public VOMSOrgDBPerson findPersonWithValidExperimentParticipationById(
     Long personId, String experimentName) {
 
     String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
       + "p.id = :personId and "
-      + "(pp.experiment.name = :experimentName and "
+      + "(pp.experiment.name = :experimentName and p.institute = pp.institute and"
       + "pp.id.startDate <= current_date() and "
       + "(pp.endDate is null or "
       + "pp.endDate > current_date())" + ")";
@@ -46,7 +51,7 @@ public class OrgDBVOMSPersonDAOHibernate extends
     String query = "select p from VOMSOrgDBPerson p join p.participations pp where "
       + "(lower(p.physicalEmail) = :email or "
       + "lower(p.email) = :email) and "
-      + "(pp.experiment.name = :experimentName and "
+      + "(pp.experiment.name = :experimentName and p.institute = pp.institute and "
       + "pp.id.startDate <= current_date() and "
       + "(pp.endDate is null or "
       + "pp.endDate > current_date())" + ")";
@@ -158,6 +163,33 @@ public class OrgDBVOMSPersonDAOHibernate extends
       .setString("experimentName", experimentName);
 
     return q.list();
+  }
+
+  @Override
+  public Participation findValidParticipationInExperiment(VOMSOrgDBPerson person,
+      String experimentName) {
+    
+    String query =  "select pp from VOMSOrgDBPerson p join p.participations pp where "
+        + "p.id = :personId and "
+        + "(pp.experiment.name = :experimentName and p.institute = pp.institute and "
+        + "pp.id.startDate <= current_date() and "
+        + "(pp.endDate is null or "
+        + "pp.endDate > current_date()))";
+    
+    Query q = getSession().createQuery(query).setLong("personId", person.getId())
+        .setString("experimentName", experimentName);
+    
+    List<Participation> participations = q.list();
+    if (participations.isEmpty()){
+      return null;
+    }
+    
+    if (participations.size() > 1){
+     LOG.warn("Found more than one valid participation for {} in experiment {}", person, 
+         experimentName); 
+    }
+    
+    return participations.get(0);
   }
 
 }

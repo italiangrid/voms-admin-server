@@ -24,7 +24,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.glite.security.voms.admin.util.DNUtil;
@@ -40,8 +39,7 @@ public class VOMSCA implements Serializable {
 
   @Id
   @Column(name = "cid")
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_CA_SEQ")
-  @SequenceGenerator(name = "VOMS_CA_SEQ", sequenceName = "VOMS_CA_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Short id;
 
   @Column(name = "subject_string", unique = true, nullable = false)

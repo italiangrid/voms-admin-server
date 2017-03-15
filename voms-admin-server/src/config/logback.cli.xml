@@ -31,6 +31,11 @@
         Set the level to DEBUG for maximum detail.
      -->
     <logger name="org.glite.security.voms.admin.persistence.deployer" level="INFO" />
+    
+    <!-- 
+        This logger is used to enable printing the SQL statements used for schema upgrades. 
+    -->
+    <logger name="org.hibernate.tool.hbm2ddl" level="DEBUG"/>
 
     <!-- 
         This logger controls the MAIN voms admin log messages. Set the level to DEBUG 

@@ -21,6 +21,7 @@ import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBSessionFactory;
+import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBMembershipSynchronizationStrategy;
 import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBMissingMembershipRecordStrategy;
@@ -99,6 +100,7 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
   }
 
+  
   public void run() {
 
     SessionFactory sf = OrgDBSessionFactory.getSessionFactory();
@@ -121,6 +123,8 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
       while (allUserCursor.next()) {
 
+        OrgDBVOMSPersonDAO dao = OrgDBDAOFactory.instance().getVOMSPersonDAO();
+        
         VOMSUser u = (VOMSUser) allUserCursor.get(0);
 
         VOMSOrgDBPerson orgDbPerson = lookupOrgDBPerson(u,
@@ -128,13 +132,18 @@ public class OrgDBMembershipSynchronizationTask implements Runnable {
 
         if (orgDbPerson != null) {
           updateCount++;
-          synchronizationStrategy.synchronizeMemberInformation(u, orgDbPerson,
-            experimentName);
-
-          if (!orgDbPerson.hasValidParticipationForExperiment(experimentName))
-            expiredParticipationStrategy.handleOrgDbExpiredParticipation(u,
+          
+          Participation validParticipation = dao.findValidParticipationInExperiment(
               orgDbPerson, experimentName);
+          
+          synchronizationStrategy.synchronizeMemberInformation(u, orgDbPerson,
+            experimentName, validParticipation);
 
+          if (validParticipation == null){
+            expiredParticipationStrategy.handleOrgDbExpiredParticipation(u,
+                orgDbPerson, experimentName);
+          }
+          
           // Flush some updates out and release memory
 
           if (updateCount % UPDATE_COUNT_BATCH == 0) {

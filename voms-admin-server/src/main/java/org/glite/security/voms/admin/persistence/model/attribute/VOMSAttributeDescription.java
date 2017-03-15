@@ -22,7 +22,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.glite.security.voms.service.attributes.AttributeClass;
@@ -38,10 +37,7 @@ public class VOMSAttributeDescription implements Serializable {
 
   @Id
   @Column(name = "a_id")
-  @GeneratedValue(strategy = GenerationType.AUTO,
-    generator = "VOMS_ATTR_DESC_SEQ")
-  @SequenceGenerator(name = "VOMS_ATTR_DESC_SEQ",
-    sequenceName = "VOMS_ATTR_DESC_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(name = "a_name", nullable = false, unique = true)

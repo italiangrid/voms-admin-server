@@ -24,9 +24,7 @@
 	<class name="org.glite.security.voms.admin.persistence.model.ACL" table="acl2">	
 		
 		<id name="id" column="acl_id" type="long">
-			<generator class="native">
-				<param name="sequence">VOMS_ACL_SEQ</param>
-			</generator>
+			<generator class="native"/>
 		</id>
 	
 		<natural-id>

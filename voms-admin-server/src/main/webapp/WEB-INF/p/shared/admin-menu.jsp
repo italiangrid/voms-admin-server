@@ -17,6 +17,7 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+
 <tiles2:insertTemplate template="menu.jsp"/>
 
 <voms:hasPermissions 
@@ -50,7 +51,7 @@
     <a href="<s:url action="manage" namespace="/acl"/>" class="vomsLink">ACLs</a>
   </li>
   
-  <s:if test="#request.registrationEnabled">
+  <s:if test="#attr.registrationEnabled">
   
     <li>
       <a href="<s:url action="load" namespace="/aup"/>"class="vomsLink">AUPs</a>
