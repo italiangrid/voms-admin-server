@@ -138,7 +138,7 @@ public class Container {
 
     options.setWantClientAuth(true);
 
-    options.setNeedClientAuth(false);
+    options.setNeedClientAuth(true);
 
     if (tlsExcludeCipherSuites != null){
       options.setExcludeCipherSuites(tlsExcludeCipherSuites.split(","));
