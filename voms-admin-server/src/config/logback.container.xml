@@ -22,10 +22,10 @@
 
   <appender name="FILE"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${package.prefix}/${log.dir}/server.log</File>
+    <File>/var/log/voms-admin/server.log</File>
     <rollingPolicy
       class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${package.prefix}/${log.dir}/server-%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>/var/log/voms-admin/server-%d{yyyy-MM-dd}.log</FileNamePattern>
     </rollingPolicy>
 
     <encoder>
@@ -35,10 +35,10 @@
 
   <appender name="AUTHN"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${package.prefix}/${log.dir}/server-authn.log</File>
+    <File>/var/log/voms-admin/server-authn.log</File>
     <rollingPolicy
       class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${package.prefix}/${log.dir}/server-authn-%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>/var/log/voms-admin/server-authn-%d{yyyy-MM-dd}.log</FileNamePattern>
     </rollingPolicy>
 
     <encoder>
