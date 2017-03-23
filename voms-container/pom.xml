@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.6.0</version>
   </parent>
 
   <artifactId>voms-container</artifactId>
