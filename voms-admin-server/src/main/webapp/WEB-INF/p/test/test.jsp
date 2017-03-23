@@ -19,33 +19,10 @@
 
 <h1>Test page</h1>
 
-<div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">Personal Information</a></li>
-    <li><a href="#tabs-2">Certificates</a></li>
-    <li><a href="#tabs-3">Groups and roles</a></li>
-    <li><a href="#tabs-4">Generic attributes</a></li>
-    <li><a href="#tabs-5">Request history</a></li>
-  </ul>
-  <div id="tabs-1">
-    <p>Personal info</p>
-  </div>
-  <div id="tabs-2">
-    <p>Certificates</p>
-  </div>
-  <div id="tabs-3">
-    <p>Groups and roles</p>
-  </div>
-  <div id="tabs-4">
-    <p>Generic attributes</p>
-  </div>
-  <div id="tabs-5">
-    <p>Requests</p>
-  </div>
-</div>
+<sj:dialog id="mydialog1" title="Local Dialog" autoOpen="false" openTopics="openD" closeTopics="closeD">
+   Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+</sj:dialog>
 
-<script type="text/javascript">
-$( function() {
- $("#tabs").tabs(); 
-});
-</script>
+<sj:a openDialog="mydialog1">Open Dialog</sj:a>
+
+

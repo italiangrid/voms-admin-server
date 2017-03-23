@@ -23,7 +23,7 @@ import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchUserException;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 
 public class DeleteUserAttributeOperation extends BaseAttributeRWOperation {
 

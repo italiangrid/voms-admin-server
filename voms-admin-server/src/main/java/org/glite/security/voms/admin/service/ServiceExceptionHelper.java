@@ -30,7 +30,7 @@ public class ServiceExceptionHelper {
 
       log.error("Database error caught: " + cause.getMessage());
 
-      // Print stack trace in logs if log is debug enabled.
+      // Print stack trace in logs if LOG is debug enabled.
       if (log.isDebugEnabled())
         log.error("Database error caught: " + cause.getMessage(), t);
 

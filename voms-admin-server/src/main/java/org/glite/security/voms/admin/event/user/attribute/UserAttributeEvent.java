@@ -19,7 +19,7 @@ import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.EventCategory;
 import org.glite.security.voms.admin.event.user.UserEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 public class UserAttributeEvent extends UserEvent {

@@ -48,5 +48,4 @@ public class HomeAction extends BaseAction implements Preparable {
 
     return pendingRequests;
   }
-
 }

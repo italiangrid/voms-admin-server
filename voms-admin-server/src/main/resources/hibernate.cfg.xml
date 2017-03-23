@@ -18,86 +18,75 @@
 -->
 <!DOCTYPE hibernate-configuration PUBLIC
 "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-    
-    	<property name="hibernate.bytecode.provider">cglib</property>
-    	
-    	  <property name="hibernate.cache.provider_class">
-          net.sf.ehcache.hibernate.SingletonEhCacheProvider
-        </property>
-        
-        <property name="hibernate.cache.use_second_level_cache">false</property>
-        <property name="hibernate.cache.use_minimal_puts">false</property>
-        <property name="hibernate.cache.use_structured_entries">true</property>
-    	
-      
-        <mapping resource="model/VOMSGroup.hbm.xml" />
-        <mapping resource="model/VOMSRole.hbm.xml" />
-          
-        <mapping resource="model/VOMSUserAttribute.hbm.xml" /> 
-        <mapping resource="model/VOMSGroupAttribute.hbm.xml" />
-        <mapping resource="model/VOMSRoleAttribute.hbm.xml" />
-        
-         
-        <mapping resource="model/ACL.hbm.xml" />
-        <mapping resource="model/AUP.hbm.xml"/>
-        <mapping resource="model/AUPVersion.hbm.xml"/>
-        <mapping resource="model/AUPAcceptanceRecord.hbm.xml"/>
-         
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription"/>
-        
-        <!-- Uncomment when a way is found to translate the mapping above 
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUserAttribute"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute"/>
-         -->
-         
-        <!-- Annotated classes -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAdmin"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSCA"/>
-        
-        <!--  VOMS USER & CERTIFICATE -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUser"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.Certificate"/>
-        
-        <!--  TASKS  -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.task.TaskType"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.task.LogRecord"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.task.Task"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.task.SignAUPTask"/>
-        
-        <!-- REQUESTS -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.Request"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.RequesterInfo"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.CertificateRequest"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest"/>
-        
-        <!-- PERSONAL INFO -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationType"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
-        
-        <mapping class="org.glite.security.voms.admin.persistence.model.PeriodicNotifications"/>
-        <!-- 
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSRole"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSGroup"/>
-         -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.GroupManager"/>
-        
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSDBVersion"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.VOMSMapping"/>
-        
-        <!-- NOTIFICATIONS -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.notification.Notification"/>
-        <mapping class="org.glite.security.voms.admin.persistence.model.notification.NotificationDelivery"/>
+  <session-factory>
 
-        <!-- AUDITING -->
-        <mapping class="org.glite.security.voms.admin.persistence.model.audit.AuditEvent" />
-        
-    </session-factory>
+    <property name="hibernate.cache.provider_class">
+      net.sf.ehcache.hibernate.SingletonEhCacheProvider
+    </property>
+
+    <property name="hibernate.cache.use_second_level_cache">false</property>
+    <property name="hibernate.cache.use_minimal_puts">false</property>
+    <property name="hibernate.cache.use_structured_entries">true</property>
+
+    <!-- FIXME: These should be migrated to annotations as well -->
+    <mapping resource="model/ACL.hbm.xml" />
+    <mapping resource="model/AUP.hbm.xml" />
+    <mapping resource="model/AUPVersion.hbm.xml" />
+    <mapping resource="model/AUPAcceptanceRecord.hbm.xml" />
+
+    <mapping
+      class="org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription" />
+    <mapping
+      class="org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute" />
+    <mapping
+      class="org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute" />
+    <mapping
+      class="org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute" />
+
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSAdmin" />
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSCA" />
+
+    <!-- VOMS USER & CERTIFICATE -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSUser" />
+    <mapping class="org.glite.security.voms.admin.persistence.model.Certificate" />
+
+    <!--  TASKS  -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.TaskType"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.LogRecord"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.Task"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.SignAUPTask"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.task.TaskLock"/>
+
+    <!-- REQUESTS -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.Request"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.RequesterInfo"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.NewVOMembershipRequest"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.GroupMembershipRequest"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.RoleMembershipRequest"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.CertificateRequest"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.request.MembershipRemovalRequest"/>
+    
+    <!-- PERSONAL INFO -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationType"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.personal_info.PersonalInformationRecord"/>
+    
+    <mapping class="org.glite.security.voms.admin.persistence.model.PeriodicNotifications"/>
+
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSGroup" />
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSRole" />
+
+    <mapping class="org.glite.security.voms.admin.persistence.model.GroupManager" />
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSDBVersion" />
+    <mapping class="org.glite.security.voms.admin.persistence.model.VOMSMapping" />
+
+    <!-- NOTIFICATIONS -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.notification.Notification"/>
+    <mapping class="org.glite.security.voms.admin.persistence.model.notification.NotificationDelivery"/>
+
+    <!-- AUDITING -->
+    <mapping class="org.glite.security.voms.admin.persistence.model.audit.AuditEvent" />
+  </session-factory>
 </hibernate-configuration>

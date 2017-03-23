@@ -57,8 +57,8 @@ manager (where applicable) which could reject some of your choices.</span>
 
 <script type="text/javascript">
   $('#groupSelector').change(function(){
-    var checked = $(this).attr("checked");
-    $('.groupCheckbox').attr("checked", checked);
+    var checked = $(this).prop("checked");
+    $('.groupCheckbox').prop("checked", checked);
     $('.groupCheckbox').change();
   
 });

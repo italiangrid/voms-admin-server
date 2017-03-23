@@ -16,7 +16,7 @@
 package org.glite.security.voms.admin.event.vo.attribute;
 
 import org.glite.security.voms.admin.event.EventDescription;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 
 @EventDescription(message = "deleted attribute class '%s'",
   params = { "attributeClassName" })

@@ -54,8 +54,6 @@ import org.italiangrid.utils.https.JettyRunThread;
 import org.italiangrid.utils.https.SSLOptions;
 import org.italiangrid.utils.https.ServerFactory;
 import org.italiangrid.utils.https.impl.canl.CANLListener;
-import org.italiangrid.voms.ac.VOMSACValidator;
-import org.italiangrid.voms.ac.impl.DefaultVOMSValidator;
 import org.italiangrid.voms.container.legacy.VOMSSslConnectorConfigurator;
 import org.italiangrid.voms.container.lifecycle.ServerListener;
 import org.italiangrid.voms.util.CertificateValidatorBuilder;
@@ -71,6 +69,8 @@ import eu.emi.security.authn.x509.X509CertChainValidatorExt;
 
 public class Container {
 
+  public static final String LOGGER_CONTEXT_NAME = "voms-admin";
+  
   public static final Logger log = LoggerFactory.getLogger(Container.class);
 
   private static final String TAGLIBS_JAR_NAME = "org.apache.taglibs.standard.glassfish";
@@ -120,7 +120,8 @@ public class Container {
   private String tlsIncludeProtocols;
   private String tlsExcludeCipherSuites;
   private String tlsIncludeCipherSuites;
-
+  private boolean tlsRequireClientCert = true;
+  
   private Server server;
   private DeploymentManager deploymentManager;
   private HandlerCollection handlers = new HandlerCollection();
@@ -138,7 +139,7 @@ public class Container {
 
     options.setWantClientAuth(true);
 
-    options.setNeedClientAuth(true);
+    options.setNeedClientAuth(tlsRequireClientCert);
 
     if (tlsExcludeCipherSuites != null){
       options.setExcludeCipherSuites(tlsExcludeCipherSuites.split(","));
@@ -419,11 +420,14 @@ public class Container {
       war = cmdLine.getOptionValue(ARG_WAR, defaultPrefixedWarPath);
 
       confDir = cmdLine.getOptionValue(ARG_CONFDIR);
-
-      if (confDir == null)
+      
+      if (confDir == null){
         confDir = sysconfigProperties
           .getProperty(SysconfigUtil.SYSCONFIG_CONF_DIR);
-
+      }
+      
+      deployDir = cmdLine.getOptionValue(ARG_DEPLOYDIR);
+      
     } catch (ParseException e) {
 
       failAndExit("Error parsing command line arguments", e);
@@ -456,8 +460,6 @@ public class Container {
 
   private void loadConfiguration() {
 
-    confDir = SysconfigUtil.getConfDir();
-
     // FIXME: move this to standard server conf?
     // Then it would be harder to source from the init
     // script, which is the main (and only) client of
@@ -488,6 +490,9 @@ public class Container {
 
     tlsIncludeProtocols = getConfigurationProperty(
       ConfigurationProperty.TLS_INCLUDE_PROTOCOLS);
+    
+    tlsRequireClientCert = Boolean.parseBoolean(
+          getConfigurationProperty(ConfigurationProperty.TLS_REQUIRE_CLIENT_CERTIFICATE));
 
     long refreshIntervalInSeconds = Long
       .parseLong(getConfigurationProperty(ConfigurationProperty.TRUST_ANCHORS_REFRESH_PERIOD));
@@ -495,8 +500,10 @@ public class Container {
     trustDirRefreshIntervalInMsec = TimeUnit.SECONDS
       .toMillis(refreshIntervalInSeconds);
 
+    if (deployDir == null){
     deployDir = String.format("%s/%s", SysconfigUtil.getInstallationPrefix(),
       DEFAULT_DEPLOY_DIR).replaceAll("/+", "/");
+    }
 
     workDir = String.format("%s/%s", SysconfigUtil.getInstallationPrefix(),
       DEFAULT_WORK_DIR).replaceAll("/+", "/");
@@ -505,6 +512,11 @@ public class Container {
 
   // Without this trick JSP page rendering on VOMS admin does not work
   private void forceTaglibsLoading() {
+    
+    if (System.getProperty("voms.disableTaglibsLoading")!=null){
+      log.warn("Taglibs loading disabled, as requested by voms.disableTaglibsLoading");
+      return;
+    }
 
     try {
 
@@ -606,6 +618,12 @@ public class Container {
       log.info("TLS excluded cipher suites: {}", tlsExcludeCipherSuites);
     }
 
+    if (!tlsRequireClientCert){
+      log.warn("TLS require client certificate: {}.", tlsRequireClientCert);
+    }else {
+      log.info("TLS require client certificate: {}", tlsRequireClientCert);
+    }
+    
     log.info("HTTP status handler listening on: {}", statusPort);
     log.info("Service credentials: {}, {}", certFile, keyFile);
     log.info("Trust anchors directory: {}", trustDir);
@@ -637,6 +655,7 @@ public class Container {
     }
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    lc.setName(LOGGER_CONTEXT_NAME);
     JoranConfigurator configurator = new JoranConfigurator();
 
     configurator.setContext(lc);

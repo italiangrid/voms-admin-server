@@ -54,8 +54,8 @@
 
 	<script>
 		$('#apprGroupSel_<s:property value="id"/>').change(function() {
-			var checked = $(this).attr("checked");
-			$('.groupCheck_<s:property value="id"/>').attr("checked", checked);
+			var checked = $(this).prop("checked");
+			$('.groupCheck_<s:property value="id"/>').prop("checked", checked);
 			$('.groupCheck_<s:property value="id"/>').change();
 		});
 	</script>

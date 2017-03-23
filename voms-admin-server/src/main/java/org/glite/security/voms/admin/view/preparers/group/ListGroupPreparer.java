@@ -29,6 +29,7 @@ public class ListGroupPreparer extends ViewPreparerSupport {
   public void execute(TilesRequestContext requestContext,
     AttributeContext attributeContext) throws PreparerException {
 
+    @SuppressWarnings("unchecked")
     List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance()
       .execute();
 

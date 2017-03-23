@@ -22,8 +22,8 @@ import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -66,11 +66,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
+import org.hibernate.tool.schema.TargetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +84,8 @@ public class SchemaDeployer {
   public static final String ORACLE_PRODUCT_NAME = "Oracle";
   public static final String MYSQL_PRODUCT_NAME = "MySQL";
 
-  private static final Logger log = LoggerFactory.getLogger(SchemaDeployer.class);
+  private static final Logger log = LoggerFactory
+    .getLogger(SchemaDeployer.class);
 
   protected CommandLineParser parser = new PosixParser();
 
@@ -104,11 +109,10 @@ public class SchemaDeployer {
 
   SessionFactory sf;
 
-  Configuration hibernateConfiguration = null;
-
   Dialect dialect;
 
-  AuditLogHelper auditLogHelper = new AuditLogHelper(CurrentAdminPrincipal.LOCAL_DB_PRINCIPAL);
+  AuditLogHelper auditLogHelper = new AuditLogHelper(
+    CurrentAdminPrincipal.LOCAL_DB_PRINCIPAL);
 
   public SchemaDeployer(String[] args) {
 
@@ -122,9 +126,11 @@ public class SchemaDeployer {
 
   private void printUpgradeScript() {
 
-    SchemaUpdate updater = new SchemaUpdate(loadHibernateConfiguration());
-    updater.execute(true, false);
+    SchemaUpdate updater = new SchemaUpdate();
+    updater.setFormat(true);
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.STDOUT);
 
+    updater.execute(targetTypes, HibernateFactory.getMetadata());
   }
 
   private void checkDatabaseConnectivity() {
@@ -135,18 +141,19 @@ public class SchemaDeployer {
 
     try {
 
-      s = HibernateFactory.getFactory().openSession();
+      s = HibernateFactory.getFactory()
+        .openSession();
       s.beginTransaction();
 
     } catch (GenericJDBCException e) {
       log.error("");
 
       log.error(
-          "===========================================================================================================================");
+        "===========================================================================================================================");
       log.error(
-          "Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
+        "Error connecting to the voms database! Check your database settings and ensure that the database backend is up and running.");
       log.error(
-          "============================================================================================================================");
+        "============================================================================================================================");
 
       if (log.isDebugEnabled())
         log.error(e.getMessage(), e);
@@ -170,7 +177,8 @@ public class SchemaDeployer {
 
     try {
 
-      s = HibernateFactory.getFactory().openSession();
+      s = HibernateFactory.getFactory()
+        .openSession();
       Transaction t = s.beginTransaction();
 
       s.createSQLQuery("create table writetest(integer a)");
@@ -183,17 +191,17 @@ public class SchemaDeployer {
     } catch (Throwable t) {
 
       log.error(
-          "Error writing to the voms database. Check your database settings and that the database backend is up and running.");
+        "Error writing to the voms database. Check your database settings and that the database backend is up and running.");
 
       if (log.isDebugEnabled())
         log.error(
-            "Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"
-                + t.getMessage(),
-            t);
+          "Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running\nCause:"
+            + t.getMessage(),
+          t);
 
       throw new VOMSDatabaseException(
-          "Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running",
-          t);
+        "Error opening connection to the voms database. Check your database settings, or ensure that the local is up & running",
+        t);
 
     } finally {
 
@@ -210,13 +218,12 @@ public class SchemaDeployer {
     System.setProperty(VOMSConfigurationConstants.VO_NAME, vo);
     VOMSConfiguration.load(null);
 
-    boolean skipCaCheck =
-        VOMSConfiguration.instance().getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+    boolean skipCaCheck = VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
 
     LookupPolicyProvider.initialize(skipCaCheck);
-
-    hibernateConfiguration = loadHibernateConfiguration();
-    HibernateFactory.initialize(hibernateConfiguration);
+    
+    HibernateFactory.initialize(getHibernateMetadataSources());
 
     if (command.equals("deploy"))
       doDeploy();
@@ -242,6 +249,16 @@ public class SchemaDeployer {
 
   }
 
+  private DatabaseMetaData getDatabaseMetadata(Session s) {
+
+    GetDatabaseMetadataWork w = new GetDatabaseMetadataWork();
+
+    s.doWork(w);
+
+    return w.getMetadata();
+
+  }
+
   private boolean isOracleBackend() {
 
     Session s = HibernateFactory.getSession();
@@ -252,23 +269,28 @@ public class SchemaDeployer {
 
     try {
 
-      dbMetadata = s.connection().getMetaData();
+      dbMetadata = getDatabaseMetadata(s);
       dbProductName = dbMetadata.getDatabaseProductName();
 
     } catch (HibernateException e) {
 
-      log.error("Hibernate error accessing database metadata from Hibernate connection!", e);
+      log.error(
+        "Hibernate error accessing database metadata from Hibernate connection!",
+        e);
       System.exit(-1);
 
     } catch (SQLException e) {
 
-      log.error("SQL error while accessing database metadata from Hibernate connection!", e);
+      log.error(
+        "SQL error while accessing database metadata from Hibernate connection!",
+        e);
       System.exit(-1);
 
     }
 
     log.debug("Detected database: " + dbProductName);
-    return dbProductName.trim().equals(ORACLE_PRODUCT_NAME);
+    return dbProductName.trim()
+      .equals(ORACLE_PRODUCT_NAME);
 
   }
 
@@ -333,9 +355,10 @@ public class SchemaDeployer {
 
   }
 
-  private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md, String pattern) {
+  private ResultSet getTableNamesMatchingPattern(DatabaseMetaData md,
+    String pattern) {
 
-    String[] names = {"TABLE"};
+    String[] names = { "TABLE" };
 
     ResultSet tableNames = null;
 
@@ -362,16 +385,13 @@ public class SchemaDeployer {
 
     try {
 
-      dbMetadata = s.connection().getMetaData();
+      dbMetadata = getDatabaseMetadata(s);
 
-    } catch (HibernateException e) {
+    } catch (Throwable e) {
 
-      log.error("Hibernate error accessing database metadata from Hibernate connection!", e);
-      System.exit(-1);
-
-    } catch (SQLException e) {
-
-      log.error("SQL error while accessing database metadata from Hibernate connection!", e);
+      log.error(
+        "Hibernate error accessing database metadata from Hibernate connection!",
+        e);
       System.exit(-1);
 
     }
@@ -430,8 +450,9 @@ public class SchemaDeployer {
 
   private List<String> parseUpgradeScript(String filename) throws IOException {
 
-    BufferedReader reader =
-        new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(filename)));
+    BufferedReader reader = new BufferedReader(
+      new InputStreamReader(this.getClass()
+        .getResourceAsStream(filename)));
 
     ArrayList<String> commands = new ArrayList<String>();
 
@@ -460,16 +481,23 @@ public class SchemaDeployer {
     return parseUpgradeScript(upgradeScriptFileName);
   }
 
+  private List<String> loadUpgradeScriptToV6() throws IOException {
+
+    String upgradeScriptFileName = "/upgrade-scripts/V6_task-lock-table.sql";
+    return parseUpgradeScript(upgradeScriptFileName);
+  }
+
   private void fixMissingIndexesOnAuditTable() {
 
-    FixMissingIndexesOnAuditTable fixIndexes =
-        new FixMissingIndexesOnAuditTable(HibernateFactory.getSession());
+    FixMissingIndexesOnAuditTable fixIndexes = new FixMissingIndexesOnAuditTable(
+      HibernateFactory.getSession());
 
     fixIndexes.run();
   }
 
-
-  private boolean doUpgrateToV5() {
+  
+  
+  private boolean doUpgrateToV6() {
 
     final int existingDB = checkDatabaseExistence();
 
@@ -479,13 +507,17 @@ public class SchemaDeployer {
     }
 
     if (existingDB < 3) {
-      log.error("Upgrade not supported from this database version: {}", existingDB);
+      log.error("Upgrade not supported from this database version: {}",
+        existingDB);
       System.exit(-1);
     }
 
     if (existingDB == 3) {
-      String versionToBeUpgraded = "4";
-      String adminVersion = VOMSVersionDAO.instance().getVersion().getAdminVersion().trim();
+      String versionToBeUpgraded = "5";
+      String adminVersion = VOMSVersionDAO.instance()
+        .getVersion()
+        .getAdminVersion()
+        .trim();
 
       if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
         log.warn("No upgrade needed, found schema version {}", adminVersion);
@@ -498,41 +530,108 @@ public class SchemaDeployer {
       }
 
       try {
+        
+        log.info("Upgrading database schema from version {} to version {}",
+            adminVersion, 6);
 
-        List<String> upgradeScript = loadUpgradeScriptToV5();
-
-        ArrayList<Exception> exceptions = new ArrayList<Exception>();
+        List<String> upgradeScript = loadUpgradeScriptToV6();
 
         HibernateFactory.beginTransaction();
-        Statement statement = HibernateFactory.getSession().connection().createStatement();
 
-        for (String command : upgradeScript) {
-          try {
-            log.info(command);
-            statement.executeUpdate(command);
+        UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
+          upgradeScript);
 
-          } catch (SQLException e) {
-            log.error("Error while executing: " + command);
-            exceptions.add(e);
-          }
-        }
-
-        if (!exceptions.isEmpty()) {
-          log.error("Error upgrading voms database!");
-          printExceptions(exceptions);
+        try {
+          HibernateFactory.getSession()
+            .doWork(upgradeWork);
+        } catch (Throwable t) {
+          log.error("Error upgrading voms database!", t);
           HibernateFactory.rollbackTransaction();
           System.exit(2);
         }
 
-        fixMissingIndexesOnAuditTable();
-
         // Update database version
-        VOMSVersionDAO.instance().setupVersion("5");
+        VOMSVersionDAO.instance()
+          .setupVersion("6");
         HibernateFactory.commitTransaction();
         return true;
 
       } catch (Exception e) {
-        log.error("Error upgrading VOMS database to schema version 5: {}", e.getMessage(), e);
+        log.error("Error upgrading VOMS database to schema version 6: {}",
+          e.getMessage(), e);
+        HibernateFactory.rollbackTransaction();
+      }
+    }
+
+    return false;
+  }
+
+  private boolean doUpgrateToV5() {
+
+    final int existingDB = checkDatabaseExistence();
+
+    if (existingDB < 0) {
+      log.error("No voms-admin database found to upgrade!");
+      System.exit(-1);
+    }
+
+    if (existingDB < 3) {
+      log.error("Upgrade not supported from this database version: {}",
+        existingDB);
+      System.exit(-1);
+    }
+
+    if (existingDB == 3) {
+      String versionToBeUpgraded = "4";
+      String adminVersion = VOMSVersionDAO.instance()
+        .getVersion()
+        .getAdminVersion()
+        .trim();
+
+      if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
+        log.warn("No upgrade needed, found schema version {}", adminVersion);
+        return false;
+      }
+
+      if (!adminVersion.equals(versionToBeUpgraded)) {
+        log.error("Upgrade to v5 not supported from schema version {}",
+          adminVersion);
+        return false;
+      }
+      
+      log.info("Upgrading database schema from version {} to version {}",
+          adminVersion, 5);
+
+      try {
+
+        List<String> upgradeScript = loadUpgradeScriptToV5();
+
+        HibernateFactory.beginTransaction();
+        
+        UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
+          upgradeScript);
+        
+
+        try {
+          HibernateFactory.getSession()
+            .doWork(upgradeWork);
+        } catch (Throwable t) {
+          log.error("Error upgrading voms database!", t);
+          HibernateFactory.rollbackTransaction();
+          System.exit(2);
+        }
+        
+        fixMissingIndexesOnAuditTable();
+
+        // Update database version
+        VOMSVersionDAO.instance()
+          .setupVersion("5");
+        HibernateFactory.commitTransaction();
+        return true;
+
+      } catch (Exception e) {
+        log.error("Error upgrading VOMS database to schema version 5: {}",
+          e.getMessage(), e);
         HibernateFactory.rollbackTransaction();
       }
     }
@@ -542,8 +641,12 @@ public class SchemaDeployer {
 
   private boolean doUpgradeToV4() {
 
-    String[] versionsToBeUpgraded = {"3.2.0", "3.3.0", "3.3.1", "3.3.2", "3.3.3"};
-    String adminVersion = VOMSVersionDAO.instance().getVersion().getAdminVersion().trim();
+    String[] versionsToBeUpgraded = { "3.2.0", "3.3.0", "3.3.1", "3.3.2",
+      "3.3.3" };
+    String adminVersion = VOMSVersionDAO.instance()
+      .getVersion()
+      .getAdminVersion()
+      .trim();
 
     if (adminVersion.equals(SchemaVersion.VOMS_ADMIN_DB_VERSION)) {
       log.warn("No upgrade needed, found schema version {}", adminVersion);
@@ -554,8 +657,9 @@ public class SchemaDeployer {
 
     for (String v : versionsToBeUpgraded) {
       if (adminVersion.equals(v)) {
-        log.debug("Found VOMS Admin database version {} that requires a schema upgrade.",
-            adminVersion);
+        log.debug(
+          "Found VOMS Admin database version {} that requires a schema upgrade.",
+          adminVersion);
         upgradeSupported = true;
         break;
       }
@@ -563,49 +667,42 @@ public class SchemaDeployer {
 
     if (!upgradeSupported) {
 
-      log.error("Upgrade not supported from schema version {}", adminVersion);
+      log.error("Upgrade to v4 not supported from schema version {}",
+        adminVersion);
       return false;
     }
 
-    log.info("Upgrading database schema from version {} to version {}", adminVersion, "4");
+    log.info("Upgrading database schema from version {} to version {}",
+      adminVersion, "4");
 
     try {
 
       List<String> upgradeScript = loadUpgradeScriptToV4();
-
-      ArrayList<Exception> exceptions = new ArrayList<Exception>();
+      
+      UpgradeDatabaseWork upgradeWork = new UpgradeDatabaseWork(
+        upgradeScript);
 
       HibernateFactory.beginTransaction();
-      Statement statement = HibernateFactory.getSession().connection().createStatement();
-
-      for (String command : upgradeScript) {
-        try {
-          log.info(command);
-          statement.executeUpdate(command);
-
-        } catch (SQLException e) {
-          log.error("Error while executing: " + command);
-          exceptions.add(e);
-        }
-      }
-
-      if (!exceptions.isEmpty()) {
-        log.error("Error upgrading voms database!");
-        printExceptions(exceptions);
+      try {
+        HibernateFactory.getSession()
+          .doWork(upgradeWork);
+      } catch (Throwable t) {
+        log.error("Error upgrading voms database!", t);
         HibernateFactory.rollbackTransaction();
         System.exit(2);
       }
-
+      
       // Update database version
-      VOMSVersionDAO.instance().setupVersion("4");
+      VOMSVersionDAO.instance()
+        .setupVersion("4");
       HibernateFactory.commitTransaction();
       return true;
 
     } catch (Exception e) {
-      log.error("Error upgrading VOMS database to schema version 4: {}", e.getMessage(), e);
+      log.error("Error upgrading VOMS database to schema version 4: {}",
+        e.getMessage(), e);
       HibernateFactory.rollbackTransaction();
     }
-
 
     return false;
 
@@ -636,6 +733,7 @@ public class SchemaDeployer {
 
       boolean upgradePerformed = doUpgradeToV4();
       upgradePerformed = doUpgrateToV5();
+      upgradePerformed = doUpgrateToV6();
 
       if (upgradePerformed) {
         log.info("The upgrade procedure has changed the VOMS database.");
@@ -654,17 +752,21 @@ public class SchemaDeployer {
 
     try {
 
-      VOMSAdmin a = VOMSAdminDAO.instance().lookup(adminDN, adminCA);
+      VOMSAdmin a = VOMSAdminDAO.instance()
+        .lookup(adminDN, adminCA);
 
       if (a == null) {
 
-        log.info("Admin '" + adminDN + "," + adminCA + "' does not exists in database...");
+        log.info("Admin '" + adminDN + "," + adminCA
+          + "' does not exists in database...");
         return;
       }
 
-      List<ACL> affectedACLs = ACLDAO.instance().deletePermissionsForAdmin(a);
+      List<ACL> affectedACLs = ACLDAO.instance()
+        .deletePermissionsForAdmin(a);
 
-      VOMSAdminDAO.instance().delete(a);
+      VOMSAdminDAO.instance()
+        .delete(a);
 
       for (ACL acl : affectedACLs) {
         auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, acl);
@@ -675,7 +777,8 @@ public class SchemaDeployer {
       HibernateFactory.commitTransaction();
 
       log.info("Administrator '{},{}' removed",
-          new String[] {a.getDn(), a.getCa().getSubjectString()});
+        new String[] { a.getDn(), a.getCa()
+          .getSubjectString() });
 
     } catch (Throwable t) {
 
@@ -696,45 +799,59 @@ public class SchemaDeployer {
 
     try {
 
-      VOMSAdmin a = VOMSAdminDAO.instance().lookup(adminDN, adminCA);
+      VOMSAdmin a = VOMSAdminDAO.instance()
+        .lookup(adminDN, adminCA);
 
       if (a != null) {
 
-        log.info(
-            "Admin '" + a.getDn() + "," + a.getCa().getDn() + "' already exists in database...");
-        log.warn("This admin will be granted full privileges on the VOMS database.");
+        log.info("Admin '" + a.getDn() + "," + a.getCa()
+          .getDn() + "' already exists in database...");
+        log.warn(
+          "This admin will be granted full privileges on the VOMS database.");
       } else {
 
-        log.info("Admin '" + adminDN + "," + adminCA + "' not found. It will be created...");
+        log.info("Admin '" + adminDN + "," + adminCA
+          + "' not found. It will be created...");
         // Admin does not exist, create it!
-        a = VOMSAdminDAO.instance().create(adminDN, adminCA, adminEmailAddress);
+        a = VOMSAdminDAO.instance()
+          .create(adminDN, adminCA, adminEmailAddress);
         auditLogHelper.saveAuditEvent(AdminCreatedEvent.class, a);
 
       }
 
-      Iterator<VOMSGroup> i = VOMSGroupDAO.instance().findAll().iterator();
+      Iterator<VOMSGroup> i = VOMSGroupDAO.instance()
+        .findAll()
+        .iterator();
 
       while (i.hasNext()) {
 
         VOMSGroup g = i.next();
-        g.getACL().setPermissions(a, VOMSPermission.getAllPermissions());
+        g.getACL()
+          .setPermissions(a, VOMSPermission.getAllPermissions());
         log.info("Adding ALL permissions on '{}' for admin '{},{}'",
-            new String[] {g.toString(), a.getDn(), a.getCa().getSubjectString()});
+          new String[] { g.toString(), a.getDn(), a.getCa()
+            .getSubjectString() });
 
-        Iterator<VOMSRole> rolesIter = VOMSRoleDAO.instance().findAll().iterator();
+        Iterator<VOMSRole> rolesIter = VOMSRoleDAO.instance()
+          .findAll()
+          .iterator();
 
         while (rolesIter.hasNext()) {
 
           VOMSRole r = rolesIter.next();
-          r.getACL(g).setPermissions(a, VOMSPermission.getAllPermissions());
+          r.getACL(g)
+            .setPermissions(a, VOMSPermission.getAllPermissions());
           log.info("Adding ALL permissions on role '{}/{}' for admin '{},{}'",
-              new String[] {g.toString(), r.toString(), a.getDn(), a.getCa().getSubjectString()});
+            new String[] { g.toString(), r.toString(), a.getDn(), a.getCa()
+              .getSubjectString() });
 
-          HibernateFactory.getSession().save(r);
+          HibernateFactory.getSession()
+            .save(r);
           auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
         }
 
-        HibernateFactory.getSession().save(g);
+        HibernateFactory.getSession()
+          .save(g);
         auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
 
       }
@@ -751,6 +868,12 @@ public class SchemaDeployer {
 
   }
 
+  private String getHibernateConfigurationFile(String vo) {
+    
+    return String.format("%s/%s/%s", getVOConfigurationDir(), vo,
+      "database.properties");
+    
+  }
   private String getVOConfigurationDir() {
 
     Properties sysconfProps = SysconfigUtil.loadSysconfig();
@@ -775,6 +898,21 @@ public class SchemaDeployer {
 
     return false;
 
+  }
+  
+  private MetadataSources getHibernateMetadataSources() {
+    
+    StandardServiceRegistryBuilder registryBuilder = 
+      new StandardServiceRegistryBuilder();
+    
+    if (hibernatePropertiesFile == null){
+      registryBuilder.loadProperties(new File(getHibernateConfigurationFile(vo)));
+    } else {
+      registryBuilder.loadProperties(new File(hibernatePropertiesFile));
+    }
+    registryBuilder.configure();
+    MetadataSources sources = new MetadataSources(registryBuilder.build());
+    return sources;
   }
 
   private Configuration loadHibernateConfiguration() {
@@ -807,15 +945,15 @@ public class SchemaDeployer {
 
     if (existingDB == 1) {
       log.error(
-          "This tool cannot undeploy voms-admin 1.2.x database! Please upgrade to voms-admin 2 or use voms-admin-configure 1.2.x tools to undeploy this database.");
+        "This tool cannot undeploy voms-admin 1.2.x database! Please upgrade to voms-admin 2 or use voms-admin-configure 1.2.x tools to undeploy this database.");
       System.exit(-1);
     }
 
     if (existingDB == 2) {
 
       log.error(
-          "This tool cannot undeploy voms-admin 2.0.x databases! Please either upgrade the database to voms-admin 2.5 (using this tool) or use voms-admin-configure 2.0.x"
-              + " tools to undeploy this database");
+        "This tool cannot undeploy voms-admin 2.0.x databases! Please either upgrade the database to voms-admin 2.5 (using this tool) or use voms-admin-configure 2.0.x"
+          + " tools to undeploy this database");
 
       System.exit(-1);
     }
@@ -827,10 +965,15 @@ public class SchemaDeployer {
 
     checkDatabaseWritable();
 
-    SchemaExport export = new SchemaExport(hibernateConfiguration);
+    SchemaExport export = new SchemaExport();
+    
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
 
-    export.drop(false, true);
+    Metadata md = getHibernateMetadataSources().getMetadataBuilder().build();
+    export.drop(targetTypes, md);
+    
 
+    @SuppressWarnings("rawtypes")
     List l = export.getExceptions();
 
     if (!l.isEmpty()) {
@@ -862,34 +1005,44 @@ public class SchemaDeployer {
 
       HibernateFactory.beginTransaction();
 
-      VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
+      VOMSAdmin anyUserAdmin = VOMSAdminDAO.instance()
+        .getAnyAuthenticatedUserAdmin();
 
       VOMSPermission readOnlyPerms = VOMSPermission.getEmptyPermissions()
         .setContainerReadPermission()
         .setMembershipReadPermission();
 
-      List<VOMSGroup> groups = VOMSGroupDAO.instance().findAll();
+      List<VOMSGroup> groups = VOMSGroupDAO.instance()
+        .findAll();
 
       for (VOMSGroup g : groups) {
 
-        g.getACL().setPermissions(anyUserAdmin, readOnlyPerms);
+        g.getACL()
+          .setPermissions(anyUserAdmin, readOnlyPerms);
 
-        log.info("Granting read-only access to any authenticated user on group '{}'", g.getName());
+        log.info(
+          "Granting read-only access to any authenticated user on group '{}'",
+          g.getName());
 
-        List<VOMSRole> roles = VOMSRoleDAO.instance().findAll();
+        List<VOMSRole> roles = VOMSRoleDAO.instance()
+          .findAll();
 
         for (VOMSRole r : roles) {
 
-          r.getACL(g).setPermissions(anyUserAdmin, readOnlyPerms);
-          log.info("Granting read-only access to any authenticated user on role '{}/{}'",
-              new String[] {g.toString(), r.toString()});
+          r.getACL(g)
+            .setPermissions(anyUserAdmin, readOnlyPerms);
+          log.info(
+            "Granting read-only access to any authenticated user on role '{}/{}'",
+            new String[] { g.toString(), r.toString() });
 
-          HibernateFactory.getSession().save(r);
+          HibernateFactory.getSession()
+            .save(r);
           auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, r.getACL(g));
 
         }
 
-        HibernateFactory.getSession().save(g);
+        HibernateFactory.getSession()
+          .save(g);
         auditLogHelper.saveAuditEvent(ACLUpdatedEvent.class, g.getACL());
       }
 
@@ -912,18 +1065,25 @@ public class SchemaDeployer {
     int existingDb = checkDatabaseExistence();
 
     if (existingDb > 0) {
-      log.warn("Existing voms database found. Will not overwrite the database!");
+      final String adminDbVersion = VOMSVersionDAO
+        .instance().getVersion().getAdminVersion().trim();
+      
+      log
+        .warn("Existing voms database found. Will not overwrite "
+          + "the database! (admin db version: {})", adminDbVersion);
       System.exit(0);
     }
 
     checkDatabaseWritable();
 
-    SchemaExport exporter = new SchemaExport(hibernateConfiguration);
-
-    exporter.execute(true, true, false, true);
+    SchemaExport exporter = new SchemaExport();
+    
+    EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
+    exporter.createOnly(targetTypes, HibernateFactory.getMetadata());
 
     log.info("Deploying voms database...");
 
+    @SuppressWarnings("rawtypes")
     List l = exporter.getExceptions();
 
     if (!l.isEmpty()) {
@@ -932,17 +1092,19 @@ public class SchemaDeployer {
       System.exit(2);
 
     }
-
+    
     // This is needed as the version of hibernate we are using
     // does not support defining indexes on join table columns
     // See: https://hibernate.atlassian.net/browse/HHH-4263
-    CreateAuditEventDataIndexes createIndexTask =
-        new CreateAuditEventDataIndexes(HibernateFactory.getSession());
+    CreateAuditEventDataIndexes createIndexTask = new CreateAuditEventDataIndexes(
+    HibernateFactory.getSession());
 
+    HibernateFactory.beginTransaction();
+    
     createIndexTask.run();
 
-    CreateAttributeValueIndex avIndexTask =
-        new CreateAttributeValueIndex(HibernateFactory.getSession());
+    CreateAttributeValueIndex avIndexTask = new CreateAttributeValueIndex(
+      HibernateFactory.getSession());
 
     avIndexTask.run();
 
@@ -961,15 +1123,15 @@ public class SchemaDeployer {
 
     options = new Options();
 
-    options.addOption(
-        OptionBuilder.withLongOpt("help").withDescription("Displays helps and exits.").create("h"));
+    options.addOption(OptionBuilder.withLongOpt("help")
+      .withDescription("Displays helps and exits.")
+      .create("h"));
 
-    options.addOption(
-        OptionBuilder.withLongOpt("command")
-          .withDescription(
-              "Specifies the command to be executed: deploy,undeploy,upgrade,add-admin")
-          .hasArg()
-          .create("command"));
+    options.addOption(OptionBuilder.withLongOpt("command")
+      .withDescription(
+        "Specifies the command to be executed: deploy,undeploy,upgrade,add-admin")
+      .hasArg()
+      .create("command"));
 
     options.addOption(OptionBuilder.withLongOpt("vo")
       .withDescription("Specifies the vo name.")
@@ -988,19 +1150,19 @@ public class SchemaDeployer {
 
     options.addOption(OptionBuilder.withLongOpt("dn")
       .withDescription(
-          "Specifies the dn for the admin to add (valid only if add-admin command is given).")
+        "Specifies the dn for the admin to add (valid only if add-admin command is given).")
       .hasArg()
       .create("dn"));
 
     options.addOption(OptionBuilder.withLongOpt("ca")
       .withDescription(
-          "Specifies the ca for the admin to add (valid only if add-admin command is given).")
+        "Specifies the ca for the admin to add (valid only if add-admin command is given).")
       .hasArg()
       .create("ca"));
 
     options.addOption(OptionBuilder.withLongOpt("email")
       .withDescription(
-          "Specifies the email address for the admin to add (valid only if add-admin command is given).")
+        "Specifies the email address for the admin to add (valid only if add-admin command is given).")
       .hasArg()
       .create("email"));
 
@@ -1031,10 +1193,11 @@ public class SchemaDeployer {
       command = line.getOptionValue("command");
 
       // FIXME: use an Enumeration for the commands!!
-      if (!command.equals("deploy") && !command.equals("upgrade") && !command.equals("add-admin")
-          && !command.equals("remove-admin") && !command.equals("undeploy")
-          && !command.equals("upgrade-script") && !command.equals("check-connectivity")
-          && !command.equals("grant-read-only-access")) {
+      if (!command.equals("deploy") && !command.equals("upgrade")
+        && !command.equals("add-admin") && !command.equals("remove-admin")
+        && !command.equals("undeploy") && !command.equals("upgrade-script")
+        && !command.equals("check-connectivity")
+        && !command.equals("grant-read-only-access")) {
 
         System.err.println("Unknown command specified: " + command);
         printHelpMessageAndExit(2);
@@ -1059,7 +1222,8 @@ public class SchemaDeployer {
 
     } catch (ParseException e) {
 
-      throw new VOMSException("Error parsing command-line arguments: " + e.getMessage(), e);
+      throw new VOMSException(
+        "Error parsing command-line arguments: " + e.getMessage(), e);
 
     }
 

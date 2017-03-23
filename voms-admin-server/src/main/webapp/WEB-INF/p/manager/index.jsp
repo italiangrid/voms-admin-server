@@ -32,19 +32,15 @@
   
   <s:if test="groupManagers.size  == 0">
     No group managers defined for this VO.
-    <s:a action="create!input"> Create one</s:a>
+    <s:a action="create-input"> Create one</s:a>
   </s:if>
   <s:else>
     
-    <s:form>
+    
     <table class="table">
       <tr>
         <td colspan="5" style="text-align: right;">
-          <s:form>
-            <s:submit 
-              action="create!input" 
-              theme="simple" value="Add group manager"/>            
-          </s:form>
+          <s:a action="create-input">Add a group manager</s:a>
         </td>
       </tr>
       <tr>
@@ -79,10 +75,8 @@
           
         </td>
         <td>
-          <s:form>
+          <s:form action="delete">
             <s:submit 
-              action="delete" 
-              theme="simple"
               value="Delete">
               
               <s:hidden name="id" value="%{id}"/>
@@ -93,6 +87,6 @@
       </tr>
       </s:iterator>
     </table>
-    </s:form>
+    
   </s:else>
 </s:else>

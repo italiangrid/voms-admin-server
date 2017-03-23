@@ -126,9 +126,8 @@ public class VOMSOrgDBPerson implements Serializable {
   @Column(name = "PROCESSING_END_DATE")
   Date processingEndDate;
 
-  @OneToMany(mappedBy = "vomsPerson", fetch = FetchType.EAGER,
+  @OneToMany(mappedBy = "vomsPerson", fetch = FetchType.LAZY,
     cascade = CascadeType.ALL)
-  @JoinColumn(name = "PERSON_ID")
   Set<Participation> participations = new HashSet<Participation>();
 
   /**

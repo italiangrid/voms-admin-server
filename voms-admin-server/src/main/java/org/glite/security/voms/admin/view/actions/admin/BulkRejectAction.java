@@ -22,7 +22,6 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
-import org.apache.tiles.context.MapEntry;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
@@ -83,7 +82,7 @@ public class BulkRejectAction extends BulkDecisionAction {
   }
 
   @RequiredStringValidator
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters in the suspension reason field!")
   public void setMotivation(String motivation) {
 

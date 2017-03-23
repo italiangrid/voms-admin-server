@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.view.actions.aup;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -44,6 +45,12 @@ public class EditVersionAction extends AUPVersionActions {
 
   String url;
 
+  @Override
+  @Action("edit-version-input")
+  public String input() throws Exception {
+    return super.input();
+  }
+  
   @Override
   public void prepare() throws Exception {
 
@@ -85,7 +92,7 @@ public class EditVersionAction extends AUPVersionActions {
     message = "The url field is required!")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The version field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getUrl() {
 
     return url;

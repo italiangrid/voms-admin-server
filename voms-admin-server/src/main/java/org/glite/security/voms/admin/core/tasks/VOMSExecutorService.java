@@ -130,13 +130,13 @@ public class VOMSExecutorService {
     log.info("Scheduling task {} with period: {} seconds", new String[] {
       task.getClass().getSimpleName(), period.toString() });
 
-    executorService.scheduleAtFixedRate(wrapTask(task),
+    executorService.scheduleAtFixedRate(wrapTask(task, period),
       BACKGROUND_TASKS_INITIAL_DELAY, period, TimeUnit.SECONDS);
   }
 
-  private Runnable wrapTask(Runnable task) {
+  private Runnable wrapTask(Runnable task, long periodInSecs) {
 
-    return new DatabaseTransactionTaskWrapper(task, true);
+    return new DatabaseTransactionTaskWrapper(task, true, true, periodInSecs);
 
   }
 
@@ -217,6 +217,10 @@ public class VOMSExecutorService {
     return executorService.submit(task);
   }
 
+  public Future<?> wrapAndSubmit(Runnable task) {
+    return executorService.submit(wrapTask(task, 0));
+  }
+  
   /**
    * @param command
    * @param initialDelay

@@ -18,7 +18,7 @@
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
 	<class name="org.glite.security.voms.admin.persistence.model.VOMSRole" table="roles">
@@ -39,7 +39,7 @@
 
 		<set name="attributes" inverse="true" cascade="all-delete-orphan" lazy="false">
 			<key column="r_id" on-delete="cascade"/>
-			<one-to-many class="org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute"/>
+			<one-to-many class="org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute"/>
 		</set>
 				
 		<set name="acls" inverse="true" cascade="all-delete-orphan">

@@ -69,7 +69,10 @@ public class FixMissingIndexesOnAuditTable implements Runnable {
     ResultSet rs = null;
 
     try {
-      String dbName = session.connection().getCatalog();
+      GetCatalogWork gcw = new GetCatalogWork();
+      session.doWork(gcw);
+      
+      String dbName = gcw.getCatalogName();
 
       LOG.info("Database name: {}", dbName);
 

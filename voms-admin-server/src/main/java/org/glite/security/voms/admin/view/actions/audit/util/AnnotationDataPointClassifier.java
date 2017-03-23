@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.xwork.Validate;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.AuditableEvent;
 import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.slf4j.Logger;

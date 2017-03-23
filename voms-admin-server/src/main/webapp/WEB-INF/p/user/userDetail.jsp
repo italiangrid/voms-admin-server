@@ -140,6 +140,7 @@
       <s:submit value="%{'Sign AUP on behalf of this user'}" />
     </s:form>
   </s:if>
+  
   <s:if
     test="#attr.canSuspend 
         and (not model.hasInvalidAUPAcceptanceRecordForAUP(#attr.defaultAUP)) 

@@ -82,14 +82,14 @@
     </s:form>
     <s:fielderror fieldName="searchData.text" />
   </div>
-
+  
   <div id="createPane">
     <voms:hasPermissions
       var="canCreate"
       context="vo"
       permission="rw" />
     <s:if test="#attr.canCreate">
-      <a href="<s:url action="create" method="input"/>">Add a new user</a>
+      <a href="<s:url action="create-user-input" namespace="/user" />">Add a new user</a>
     </s:if>
   </div>
 
@@ -105,7 +105,7 @@
   </s:elseif>
     <s:elseif test="#session.searchResults != null">
 
-      <s:form id="multiUserOpsForm">
+      <s:form id="multiUserOpsForm" action="bulk-restore">
         <table class="table">
           <s:token />
           <tr class="userBulkOperations">
@@ -123,13 +123,14 @@
                 theme="simple"
                 cssClass="userActionButton"
                 onclick=" return openSuspendDialog(this, 'suspendMultiUserDialog','');"
-                disabled="%{#attr.canSuspend == false}" /> <s:submit
+                disabled="%{#attr.canSuspend == false}" /> 
+                <s:submit
                 value="%{'Restore'}"
                 align="right"
-                action="bulk-restore"
                 theme="simple"
                 cssClass="userActionButton"
-                disabled="%{#attr.canSuspend == false}" /> <s:if
+                disabled="%{#attr.canSuspend == false}" /> 
+                <s:if
                 test="not #attr.disableMembershipEndTime and #attr.canSuspend == true and #attr.readOnlyMembershipExpiration == false">
                 <s:submit
                   value="%{'Extend membership'}"

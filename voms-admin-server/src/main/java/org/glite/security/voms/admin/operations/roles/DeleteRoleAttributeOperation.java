@@ -25,7 +25,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
 
 public class DeleteRoleAttributeOperation extends BaseAttributeRWOperation {
 

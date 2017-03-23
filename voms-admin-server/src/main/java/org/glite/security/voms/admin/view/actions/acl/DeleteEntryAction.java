@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -56,4 +57,9 @@ public class DeleteEntryAction extends ACLActionSupport {
     return SUCCESS;
   }
 
+  @Override
+  @Action("delete-entry-input")
+  public String input() throws Exception {
+    return super.input();
+  }
 }

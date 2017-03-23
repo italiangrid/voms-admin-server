@@ -19,8 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.error.NullArgumentException;
@@ -33,11 +31,12 @@ import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task;
-import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
+import org.glite.security.voms.admin.persistence.model.task.TaskType;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
   TaskDAO {
@@ -136,5 +135,6 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
     
     return crit.list();
   }
+
 
 }

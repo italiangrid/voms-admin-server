@@ -63,41 +63,14 @@ public class DefaultSyncStrategy
 
     } else {
 
-      // No valid participation found for experiment. We sync anyway against
-      // the latest expired participation, if it exists, or set the membership
-      // expiration time to NOW, otherwise
-
-      Participation expiredParticipation = orgDbPerson
-        .getLastExpiredParticipationForExperiment(experimentName);
       Date now = new Date();
 
-      if (expiredParticipation == null) {
-
-        // No participation found at all for a user that used to have one ...
-        // strange.
-        if (!u.hasExpired()) {
-
-          log.debug(
-            "Expiring VOMS membership for user {} since no valid or expired "
+      if (!u.hasExpired()) { 
+        log.debug(
+            "Expiring VOMS membership for user {} since no valid "
               + "OrgDB participation was found for experiment {}",
             u, experimentName);
           u.setEndTime(now);
-        }
-
-      } else {
-
-        log.debug("Found expired participation on {} for user {}.",
-          expiredParticipation.getEndDate(), u);
-
-        // Set the end date to the date of the expired participation
-        // The membership check task will do the rest.
-        log.debug(
-          "Setting {} membership expiration date to {}. Previous value was: {}",
-          new Object[] { u, expiredParticipation.getEndDate(),
-            u.getEndTime() });
-
-        u.setEndTime(expiredParticipation.getEndDate());
-
       }
     }
   }
@@ -208,18 +181,23 @@ public class DefaultSyncStrategy
   }
 
   public void synchronizeMemberInformation(VOMSUser u,
-    VOMSOrgDBPerson orgDbPerson, String experimentName) {
+    VOMSOrgDBPerson orgDbPerson, String experimentName, Participation validParticipation) {
 
     log.debug(
       "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
       new Object[] { u, orgDbPerson, experimentName });
+    
+    if (validParticipation == null){
+      log.warn("No valid participation found for user {}, orgdb record {} in experiment {}", 
+          new Object[] { u, orgDbPerson, experimentName});
+    } else {
+      log.debug("Participation found for user {}, orgdb record {} in experiment {}: {}",
+          new Object[] { u, orgDbPerson, experimentName, validParticipation});
+    }
 
     synchronizeIdAndEmailAddress(u, orgDbPerson);
 
     synchronizePersonalInformation(u, orgDbPerson);
-
-    Participation validParticipation = orgDbPerson
-      .getValidParticipationForExperiment(experimentName);
 
     synchronizeMembershipExpirationDate(u, orgDbPerson, experimentName,
       validParticipation);

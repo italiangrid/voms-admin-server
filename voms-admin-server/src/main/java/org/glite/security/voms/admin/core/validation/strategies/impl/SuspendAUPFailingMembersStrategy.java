@@ -60,7 +60,9 @@ public class SuspendAUPFailingMembersStrategy implements
       EventManager.instance().dispatch(new SignAUPTaskAssignedEvent(u, aup,t));
 
     } else {
-
+      
+      log.debug("User {} has a Sign AUP task assigned: {}", u, pendingSignAUPTask);
+      
       if (u.isSuspended()) {
 
         log

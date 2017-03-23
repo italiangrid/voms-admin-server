@@ -19,7 +19,7 @@
 
 <div id="orgdb-results">
 
-	<s:form action="query-database" validate="true"
+	<s:form action="query-database"
 		namespace="/register/orgdb"
 		onsubmit="ajaxSubmit(this,'orgdb-results'); return false;">
 		<ul class="form">

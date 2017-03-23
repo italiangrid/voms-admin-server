@@ -87,7 +87,7 @@
       </s:iterator>
 
     </table>
-    <s:if test="#request.registrationEnabled">
+    <s:if test="#attr.registrationEnabled">
 
       <s:form
         action="request-certificate"

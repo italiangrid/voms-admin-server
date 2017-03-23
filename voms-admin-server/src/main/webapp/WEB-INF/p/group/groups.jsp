@@ -39,7 +39,7 @@
             permission="CONTAINER_READ|CONTAINER_WRITE"/>
   
   <s:if test="#attr.canCreate">
-    <s:url action="create" namespace="/group" method="input" var="createGroupURL"/>
+    <s:url action="create-group-input" namespace="/group" var="createGroupURL"/>
     <s:a href="%{createGroupURL}">New group</s:a>
   </s:if>
 </div>

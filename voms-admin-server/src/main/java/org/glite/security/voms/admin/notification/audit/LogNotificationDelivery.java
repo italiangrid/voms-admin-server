@@ -33,7 +33,7 @@ public class LogNotificationDelivery {
       n);
 
     return VOMSExecutorService.instance()
-      .schedule(new DatabaseTransactionTaskWrapper(task, false), 10,
+      .schedule(new DatabaseTransactionTaskWrapper(task, false, true), 10,
         TimeUnit.MILLISECONDS);
 
   }
@@ -44,7 +44,7 @@ public class LogNotificationDelivery {
       n);
 
     return VOMSExecutorService.instance()
-      .schedule(new DatabaseTransactionTaskWrapper(task, false), 10,
+      .schedule(new DatabaseTransactionTaskWrapper(task, false, true), 10,
         TimeUnit.MILLISECONDS);
 
   }

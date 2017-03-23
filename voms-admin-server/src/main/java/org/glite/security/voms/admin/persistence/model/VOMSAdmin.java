@@ -24,10 +24,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.admin.core.VOMSServiceConstants;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.util.PathNamingScheme;
@@ -41,8 +39,7 @@ public class VOMSAdmin implements Serializable, Cloneable {
 
   @Id
   @Column(name = "adminid")
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_ADMIN_SEQ")
-  @SequenceGenerator(name = "VOMS_ADMIN_SEQ", sequenceName = "VOMS_ADMIN_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(nullable = false)

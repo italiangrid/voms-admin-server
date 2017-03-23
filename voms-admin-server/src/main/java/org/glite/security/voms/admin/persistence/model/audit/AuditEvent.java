@@ -22,16 +22,17 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
 import org.glite.security.voms.admin.event.auditing.NullHelper;
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Index;
 
 @Entity
@@ -43,7 +44,7 @@ public class AuditEvent {
 
   @Id
   @Column(name = "event_id")
-  @GeneratedValue
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(name = "principal", nullable = false, length = 255)
@@ -55,8 +56,8 @@ public class AuditEvent {
   @Column(name = "event_type", nullable = false, length = 255)
   String type;
 
-  @CollectionOfElements
-  @JoinTable(name = "audit_event_data", joinColumns = @JoinColumn(name = "event_id") )
+  @ElementCollection
+  @CollectionTable(name = "audit_event_data", joinColumns = @JoinColumn(name = "event_id") )
   Set<AuditEventData> data = new HashSet<AuditEventData>();
 
   public Long getId() {

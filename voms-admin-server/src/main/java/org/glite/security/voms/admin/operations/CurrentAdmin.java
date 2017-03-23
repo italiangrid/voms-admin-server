@@ -18,9 +18,11 @@ package org.glite.security.voms.admin.operations;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.glite.security.voms.admin.operations.util.CurrentAdminPermissionCache;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -41,6 +43,8 @@ import org.slf4j.LoggerFactory;
 public class CurrentAdmin {
 
   private static final Logger log = LoggerFactory.getLogger(CurrentAdmin.class);
+
+  private static ThreadLocal<CurrentAdmin> currentAdmin = new ThreadLocal<>();
 
   private VOMSAdmin admin;
 
@@ -66,13 +70,25 @@ public class CurrentAdmin {
 
   public static CurrentAdmin instance() {
 
+    if (currentAdmin.get() != null) {
+      return currentAdmin.get();
+    }
+
     VOMSAdmin admin = lookupAdmin();
 
-    if (admin == null)
+    if (admin == null) {
       admin = VOMSAdminDAO.instance()
         .getAnyAuthenticatedUserAdmin();
+    }
 
-    return new CurrentAdmin(admin);
+    currentAdmin.set(new CurrentAdmin(admin));
+    return currentAdmin.get();
+
+  }
+
+  public static void clear() {
+
+    currentAdmin.set(null);
   }
 
   public VOMSCA getCa() {
@@ -131,8 +147,10 @@ public class CurrentAdmin {
         .getSubjectString();
     }
 
-    return VOMSUserDAO.instance()
+    VOMSUser user = VOMSUserDAO.instance()
       .lookup(lookupSubject, lookupIssuer);
+
+    return user;
   }
 
   public void createVoUser() {
@@ -167,15 +185,16 @@ public class CurrentAdmin {
         .setMembershipReadPermission());
   }
 
-  public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
+  public boolean checkPermission(VOMSContext c, VOMSPermission p) {
 
     ACL acl = c.getACL();
 
-    log.debug("Checking if admin " + getAdmin() + " has permission " + p
-      + " in context " + c);
-
-    log.debug("ACL for this context: ");
-    log.debug(acl.toString());
+    if (log.isDebugEnabled()) {
+      log.debug("Checking if admin {} has permission {} in context {}",
+        new Object[] { getAdmin(), p, c });
+      log.debug("ACL for this context: ");
+      log.debug(acl.toString());
+    }
 
     if (isUnauthenticated()) {
 
@@ -189,25 +208,33 @@ public class CurrentAdmin {
     }
 
     VOMSUser adminVOUser = getVoUser();
-
-    log.debug("Admin VO user: " + adminVOUser);
+    if (log.isDebugEnabled()) {
+      log.debug("Admin VO user: {}", adminVOUser);
+    }
 
     VOMSPermission personalPermissions = acl.getPermissions(admin);
 
-    log.debug("Personal permissions for admin: " + personalPermissions);
+    if (log.isDebugEnabled()) {
+      log.debug("Personal permissions for admin: {}", personalPermissions);
+    }
 
     VOMSPermission anyAuthenticatedUserPermissions = acl
       .getAnyAuthenticatedUserPermissions();
 
-    log.debug("Permissions for any authenticated user: "
-      + anyAuthenticatedUserPermissions);
+    if (log.isDebugEnabled()) {
+      log.debug("Permissions for any authenticated user: {}",
+        anyAuthenticatedUserPermissions);
+    }
 
     int effectivePerms = 0;
 
     VOMSPermission unauthenticatedClientPermissions = acl
       .getUnauthenticatedClientPermissions();
-    log.debug("Permissions for unauthenticated clients: "
-      + unauthenticatedClientPermissions);
+
+    if (log.isDebugEnabled()) {
+      log.debug("Permissions for unauthenticated clients: {}",
+        unauthenticatedClientPermissions);
+    }
 
     if (personalPermissions == null && adminVOUser == null
       && anyAuthenticatedUserPermissions == null
@@ -246,8 +273,10 @@ public class CurrentAdmin {
     Map<VOMSAdmin, VOMSPermission> groupPermissions = acl.getGroupPermissions();
     Map<VOMSAdmin, VOMSPermission> rolePermissions = acl.getRolePermissions();
 
-    log.debug("Group permissions empty? " + groupPermissions.isEmpty());
-    log.debug("Role permissions empty? " + rolePermissions.isEmpty());
+    if (log.isDebugEnabled()) {
+      log.debug("Group permissions empty? {}", groupPermissions.isEmpty());
+      log.debug("Role permissions empty? {}", rolePermissions.isEmpty());
+    }
 
     if (!groupPermissions.isEmpty()) {
 
@@ -262,9 +291,10 @@ public class CurrentAdmin {
 
           effectivePerms = effectivePerms | groupPerm.getBits();
 
-          log.debug("Adding group permission " + groupPerm
-            + " to admin's permission set. admin is a member of the group '"
-            + groupName + "'.");
+          log.debug(
+            "Adding group permission {} to admin's permission set. "
+              + "{} is a member of group {}",
+            new Object[] { groupPerm, adminVOUser.getFullName(), groupName });
         }
 
       }
@@ -277,14 +307,18 @@ public class CurrentAdmin {
         String roleName = entry.getKey()
           .getDn();
 
-        log.debug("Checking if current admin has role: " + roleName);
+        log.debug("Checking if current admin has role: {}", roleName);
+
         if (adminVOUser.hasRole(roleName)) {
 
           effectivePerms = effectivePerms | entry.getValue()
             .getBits();
 
-          log.debug("Adding role permission " + entry.getValue()
-            + " to admin's permission set. admin has role '" + roleName + "'.");
+          log.debug(
+            "Adding role permission {} to admin's permission set. "
+              + "{} has role {}",
+            new Object[] { entry.getValue(), adminVOUser.getFullName(),
+              roleName });
         }
       }
     }
@@ -302,7 +336,22 @@ public class CurrentAdmin {
           Boolean.toString(result) });
     }
     return result;
+  }
 
+  public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
+
+    boolean result = false;
+
+    try {
+      result = CurrentAdminPermissionCache.INSTANCE.hasPermission(this, c, p);
+    } catch (ExecutionException e) {
+      log.error(
+        "Error loading permission check result from cache: " + e.getMessage(),
+        e);
+      result = checkPermission(c, p);
+    }
+
+    return result;
   }
 
   public String getRealSubject() {
@@ -420,4 +469,31 @@ public class CurrentAdmin {
     return theContext.getClientCert();
 
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((admin == null) ? 0 : admin.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    CurrentAdmin other = (CurrentAdmin) obj;
+    if (admin == null) {
+      if (other.admin != null)
+        return false;
+    } else if (!admin.equals(other.admin))
+      return false;
+    return true;
+  }
+  
+  
 }

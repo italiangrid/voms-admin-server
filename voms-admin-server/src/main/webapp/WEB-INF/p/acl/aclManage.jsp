@@ -38,7 +38,7 @@
 <div>
     
   <s:form id="aclSelectionForm" action="ajax-load" namespace="/acl" theme="simple">
-    <s:label for="groupId" cssClass="label" value="%{'Group:'}" theme="simple"/>
+    <s:label for="groupId" cssClass="select-acl-label" value="%{'Group:'}" theme="simple"/>
     <s:select 
       name="aclGroupId"
       list="#attr.request.voGroups"
@@ -46,7 +46,7 @@
       label="Group" 
       id="aclGroupSelector"  
       onchange="ajaxSubmit($('#aclSelectionForm').map(function(){return this;}),'aclShowPane');"/>
-    <s:label for="roleId" cssClass="label" value="%{'Role:'}" theme="simple"/>
+    <s:label for="roleId" cssClass="select-acl-label" value="%{'Role:'}" theme="simple"/>
     <s:select 
       list="#attr.request.voRoles" 
       name="aclRoleId"
@@ -58,7 +58,7 @@
       onchange="ajaxSubmit($('#aclSelectionForm').map(function(){return this;}),'aclShowPane');"/>
       
       
-      <s:label for="showDefaultACL" cssClass="label" value="%{'Show default ACL:'}" theme="simple"/>
+      <s:label for="showDefaultACL" cssClass="select-acl-label" value="%{'Show default ACL:'}" theme="simple"/>
         <s:checkbox 
           name="showDefaultACL"  
           onchange="ajaxSubmit($('#aclSelectionForm').map(function(){return this;}),'aclShowPane');"
@@ -82,4 +82,3 @@
 
 
 
-</div>

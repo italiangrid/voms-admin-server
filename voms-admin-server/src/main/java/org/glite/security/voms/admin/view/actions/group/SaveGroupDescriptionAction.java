@@ -67,7 +67,7 @@ public class SaveGroupDescriptionAction extends GroupActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The description field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "255",
     message = "The description field size is limited to 255 characters.")
   public void setGroupDescription(String description) {

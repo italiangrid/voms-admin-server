@@ -64,6 +64,11 @@
     </filter-mapping>
    	      
     <listener>
+      <display-name>LogbackContextDetachingSCL</display-name>
+      <listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL</listener-class>
+    </listener>
+    
+    <listener>
         <display-name>VOMSContextListener</display-name>
         <listener-class>org.glite.security.voms.admin.servlets.VOMSContextListener</listener-class>
     </listener>

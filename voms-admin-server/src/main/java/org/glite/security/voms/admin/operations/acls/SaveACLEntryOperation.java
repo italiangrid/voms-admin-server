@@ -18,8 +18,6 @@ package org.glite.security.voms.admin.operations.acls;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.vo.acl.ACLUpdatedEvent;
@@ -30,6 +28,8 @@ import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.model.ACL;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaveACLEntryOperation extends BaseVomsOperation {
 
@@ -74,6 +74,7 @@ public class SaveACLEntryOperation extends BaseVomsOperation {
         throw e;
       }
     }
+    
     return acl;
 
   }

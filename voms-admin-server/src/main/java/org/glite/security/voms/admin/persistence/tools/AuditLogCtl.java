@@ -53,7 +53,7 @@ public class AuditLogCtl {
     }
 
     helpFormatter.printHelp("AuditLogCtl [command]",
-      "\nPrints or deletes entries in the VOMS Admin audit log.\nOptions:\n\n",
+      "\nPrints or deletes entries in the VOMS Admin audit LOG.\nOptions:\n\n",
       options, null, true);
 
     System.out.println(footer.toString());

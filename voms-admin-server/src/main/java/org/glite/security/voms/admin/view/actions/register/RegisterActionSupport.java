@@ -108,7 +108,6 @@ public abstract class RegisterActionSupport extends BaseAction implements
         request = (NewVOMembershipRequest) dao.findById(requestId, true);
       }
     }
-
   }
 
   public NewVOMembershipRequest getModel() {

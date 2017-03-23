@@ -54,7 +54,7 @@ public class SuspendAction extends UserActionSupport {
 
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter a reason for the user suspension!")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters in the suspension reason field!")
   public String getSuspensionReason() {
 

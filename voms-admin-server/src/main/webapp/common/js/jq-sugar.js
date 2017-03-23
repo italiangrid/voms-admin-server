@@ -60,9 +60,9 @@ function disableIfNoPermission(node,gid,rid,perms){
 			alert('Error executing ajax call... panel status will not be persistent across calls to the server.');
 		else{
 			if (! data.hasPermission){
-				$(node).attr('disabled', 'disabled');
+				$(node).prop('disabled', 'disabled');
 			}else{
-				$(node).attr('disabled','');
+				$(node).prop('disabled','');
 			}
 		}
 	});
@@ -110,8 +110,9 @@ function enableSetRoleAttributeForm(){
 
 function ajaxSubmit(formNode, outputPanelId){
 
-	var url = $(formNode).attr('action');
+	var url = $(formNode).prop('action');
 	var params = $(formNode).serializeArray();
+	console.log(params);
 
 	if (url == undefined){
 		// Should log something to the javascript console
@@ -128,28 +129,33 @@ function updateCSRFToken(lastPaneId){
 
 	if (lastTokenValue != undefined){
 
-		$('input[name="struts.token"]').attr('value', lastTokenValue);
+		$('input[name="struts.token"]').prop('value', lastTokenValue);
 	}
 }
 
 function ajaxLoad(id, url, params){
 
-	$('#loadDiv').show();
-
-	$('#'+id+' div.reloadable').fadeTo("fast",0.50);
-
-	$('#'+id).load(url, params, function(responseText,textStatus,req){
+	function completeLoadFunction(responseText, textStatus, req) {
 		if (textStatus == 'error'){
 			alert("Error executing ajax request!");
 			$(this).html(responseText);
 		}
 
-		$('#loadDiv').hide();
-
-		$('#'+id+' div.reloadable').fadeTo("fast",1.00);
 		eyeCandy();
 		updateCSRFToken(id);
-	});
+		
+		$('#loadDiv').hide();
+		$('#'+id+' div.reloadable').fadeTo(50,1.00);
+		
+	}
+	
+	$('#loadDiv').show();
+
+	$('#'+id+' div.reloadable').fadeTo(50,0.30);
+	
+	
+
+	$('#'+id).load(url, params, completeLoadFunction);
 }
 
 
@@ -205,8 +211,8 @@ function eyeCandy(){
 
 	$('#userSelectorTrigger').change(function(){
 
-		var checked = $(this).attr("checked");
-		$('.userCheckbox').attr("checked", checked);
+		var checked = $(this).prop("checked");
+		$('.userCheckbox').prop("checked", checked);
 
 		$('.userCheckbox').change();
 
@@ -214,7 +220,7 @@ function eyeCandy(){
 
 	$('.userCheckbox').change(function(){
 
-		var checked = $(this).attr("checked");
+		var checked = $(this).prop("checked");
 		if (checked)
 			$(this).closest('tr').addClass('userSelected');
 		else
@@ -242,7 +248,7 @@ function initializePanelHeaders(){
 		node.toggle();
 
 		var visible = $(node).is(':visible');
-		var panelId = $(node).attr('id');
+		var panelId = $(node).prop('id');
 
 		jQuery.getJSON(ajaxBaseURL+'store.action', {panelId:panelId, visible:visible}, function(data, status){
 			if (status != "success")
@@ -269,20 +275,20 @@ function aclEntryStuff(){
 
 
 	$('#allPermissionHandle').click(function(){
-		$('.permissionCheckbox').attr("checked", true);
+		$('.permissionCheckbox').prop("checked", true);
 		return false;
 	});
 
 	$('#noPermissionHandle').click(function(){
-		$('.permissionCheckbox').attr("checked", false);
+		$('.permissionCheckbox').prop("checked", false);
 		return false;
 	});
 
 	$('#browsePermissionHandle').click(function(){
-		$('.permissionCheckbox').attr("checked", false);
+		$('.permissionCheckbox').prop("checked", false);
 
-		$('.permissionCheckbox[value="CONTAINER_READ"]').attr("checked", true);
-		$('.permissionCheckbox[value="MEMBERSHIP_READ"]').attr("checked", true);
+		$('.permissionCheckbox[value="CONTAINER_READ"]').prop("checked", true);
+		$('.permissionCheckbox[value="MEMBERSHIP_READ"]').prop("checked", true);
 		return false;
 	});
 
@@ -290,9 +296,9 @@ function aclEntryStuff(){
 	function checkPermissions(prefix){
 		$('.permissionCheckbox[value^="'+prefix+'"]').map(function(){
 			if ($(this).is(':checked'))
-				$(this).attr('checked', false);
+				$(this).prop('checked', false);
 			else
-				$(this).attr('checked', true);
+				$(this).prop('checked', true);
 
 			return this;
 		})
@@ -340,17 +346,17 @@ function aclEntryStuff(){
 	var roleSelectVal = $('#aclRoleSelector').val();
 
 	if (roleSelectVal != undefined && roleSelectVal != -1)
-		$('#defaultACLSelector').attr('disabled','disabled');
+		$('#defaultACLSelector').prop('disabled','disabled');
 
 	$('#aclRoleSelector').change(function(){
 			var val = $(this).val();
 
 			if (val != -1){
-				$('#defaultACLSelector').attr('disabled','disabled');
-				$('#defaultACLSelector').attr('checked','');
+				$('#defaultACLSelector').prop('disabled','disabled');
+				$('#defaultACLSelector').prop('checked','');
 			}
 			else
-				$('#defaultACLSelector').attr('disabled','');
+				$('#defaultACLSelector').prop('disabled','');
 	});
 
 	$('#showACLHelpHandle').click(function(){
@@ -418,9 +424,9 @@ function openSuspendDialog(node, dialogId, text){
 
 			form.append("<input type='hidden' name='suspensionReason' value='"+suspensionReason+"'/>");
 
-			if ($(node).attr('form').onsubmit != undefined){
+			if ($(node).prop('form').onsubmit != undefined){
 
-				$(node).attr('form').onsubmit();
+				$(node).prop('form').onsubmit();
 				$('#'+dialogId).dialog('destroy');
 				return false;
 				
@@ -431,7 +437,7 @@ function openSuspendDialog(node, dialogId, text){
 
 	}else{
 
-		var dest = $(node).attr('href');
+		var dest = $(node).prop('href');
 
 		confirmFunc  = function(){
 			window.location = dest;
@@ -465,13 +471,13 @@ function openSuspendDialog(node, dialogId, text){
 
 function setFormActionFromSubmitButton(formNode, submitButtonNode){
 
-	var action = $(submitButtonNode).attr('name');
+	var action = $(submitButtonNode).prop('name');
 
 	if (action != undefined && action != ""){
 		var actionName = action.substring(action.lastIndexOf(':')+1)+".action";
-		var formAction = formNode.attr('action');
+		var formAction = formNode.prop('action');
 		var newActionStr = formAction.slice(0,formAction.lastIndexOf('/')+1)+actionName;
-		formNode.attr('action', newActionStr);
+		formNode.prop('action', newActionStr);
 	}
 }
 
@@ -489,10 +495,10 @@ function openConfirmDialog(node,dialogId,text){
 
 	}else{
 
-		var dest = $(node).attr('href');
+		var dest = $(node).prop('href');
 
 		if (typeof dest === "undefined"){
-			dest = $(node).attr('action');
+			dest = $(node).prop('action');
 		}
 
 		confirmFunc  = function(){
@@ -565,9 +571,9 @@ function openYesConfirmDialog(node, dialogId) {
 function bulkRequestSetup(){
 
 	$('#req-selector').click(function(e){
-		var checked = $(this).attr("checked");
+		var checked = $(this).prop("checked");
 		var checkboxes = $('.req-checkbox');
-		checkboxes.attr("checked", checked);
+		checkboxes.prop("checked", checked);
 
 		var checkboxesChecked = checkboxes.is(":checked");
 		if (checkboxesChecked) {
@@ -607,10 +613,10 @@ function bulkRequestSetup(){
 	});
 
 	if ($('.req-row').size() < 2) {
-		checkboxes.attr("disabled", true);
-		$('#req-selector').attr("disabled", "disabled");
+		checkboxes.prop("disabled", true);
+		$('#req-selector').prop("disabled", "disabled");
 	}else {
-		checkboxes.attr("disabled", false);
+		checkboxes.prop("disabled", false);
 		$('#req-selector').removeAttr("disabled");
 	}
 }
@@ -660,7 +666,7 @@ function rejectSingleRequestDialog(submitNode, dialogId){
 			var form = $(submitNode).closest('form');
 
 			var action = $(submitNode).attr('formaction');
-			form.attr('action', action);
+			form.prop('action', action);
 			var motivation = $('#confirmRejectedRequestDialog_input').val();
 			form.append("<input type='hidden' name='motivation' value='"+motivation+"'/>");
 			form.submit();

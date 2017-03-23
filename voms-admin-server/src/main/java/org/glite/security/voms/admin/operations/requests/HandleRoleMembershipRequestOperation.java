@@ -46,7 +46,9 @@ public class HandleRoleMembershipRequestOperation extends
     VOMSGroup g = findGroupByName(request.getGroupName());
     VOMSRole r = findRoleByName(request.getRoleName());
 
-    VOMSUserDAO.instance().assignRole(u, g, r);
+    if (!u.hasRole(g, r)){
+      VOMSUserDAO.instance().assignRole(u, g, r);
+    }
 
     approveRequest();
 

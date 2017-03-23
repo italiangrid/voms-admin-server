@@ -46,7 +46,7 @@ public class DeleteRecordCommand extends AbstractAuditLogSearchCommand {
 
   @Override
   public String getDescription() {
-    return "Deletes the record from the audit log identified by the --id option";
+    return "Deletes the record from the audit LOG identified by the --id option";
   }
   
   @Override

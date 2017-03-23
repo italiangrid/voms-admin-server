@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginConfigurator;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
@@ -28,11 +27,12 @@ import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBDAOFactory;
 import org.glite.security.voms.admin.integration.orgdb.dao.OrgDBVOMSPersonDAO;
 import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
 import org.glite.security.voms.admin.integration.orgdb.model.Institute;
-import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.persistence.model.request.RequesterInfo;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -49,6 +49,8 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 public class QueryDatabaseAction extends BaseAction implements
   ModelDriven<List<VOMSOrgDBPerson>>, Preparable {
 
+  public static final Logger LOG = 
+    LoggerFactory.getLogger(QueryDatabaseAction.class);
   /**
 	 * 
 	 */
@@ -135,6 +137,7 @@ public class QueryDatabaseAction extends BaseAction implements
       }
 
     } catch (Exception e) {
+      LOG.error(e.getMessage(),e);
       addActionError(e.getMessage());
     }
 

@@ -18,7 +18,7 @@
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
  
  <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
-<s:form>
+<s:form action="add-entry">
 <h1>
 Add an entry to the 
 <s:if test="defaultACL">default</s:if> ACL of context: <span class="groupname">

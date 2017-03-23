@@ -21,7 +21,9 @@
 
 <s:actionerror/>
 
-<s:form validate="true">
+<s:form 
+  action="add-version"
+  validate="true">
   <s:token/>
   <s:hidden name="aupId" value="%{model.id}"/>
   <s:textfield name="version" label="Version"/>

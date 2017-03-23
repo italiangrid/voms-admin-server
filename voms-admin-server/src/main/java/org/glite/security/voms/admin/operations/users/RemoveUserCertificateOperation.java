@@ -32,8 +32,14 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
   X509Certificate theCert;
 
+  Certificate cert;
+
   String subject;
   String issuer;
+
+  private RemoveUserCertificateOperation(Certificate c) {
+    this.cert = c;
+  }
 
   private RemoveUserCertificateOperation(X509Certificate c) {
 
@@ -58,41 +64,60 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
 
     return new RemoveUserCertificateOperation(subject, issuer);
   }
+  
+  public static RemoveUserCertificateOperation instance(Certificate cert){
+    return new RemoveUserCertificateOperation(cert);
+  }
+
+  private Certificate lookupCert() {
+
+    Certificate cert = null;
+
+    if (theCert != null) {
+
+      cert = CertificateDAO.instance()
+        .find(theCert);
+
+    } else {
+
+      cert = CertificateDAO.instance()
+        .lookup(subject, issuer);
+
+    }
+
+    if (cert == null) {
+      throw new NoSuchCertificateException(
+        "No certificate found matching subject '" + subject + ", " + issuer
+          + "'.");
+    }
+    
+    return cert;
+
+  }
 
   @Override
   protected Object doExecute() {
 
-    Certificate cert = null;
-    
-    if (theCert != null) {
-
-      cert = CertificateDAO.instance().find(theCert);
-
-    } else {
-
-      cert = CertificateDAO.instance().lookup(subject, issuer);
-      
-    }
-    
     if (cert == null){
-        throw new NoSuchCertificateException(
-          "No certificate found matching subject '" + subject + ", " + issuer
-            + "'.");
+      cert = lookupCert();
     }
-
-    VOMSUser u = cert.getUser();
-    VOMSUserDAO.instance().deleteCertificate(cert);
     
-    EventManager.instance().dispatch(new UserCertificateRemoved(u, cert));
-          
+    VOMSUser u = cert.getUser();
+    VOMSUserDAO.instance()
+      .deleteCertificate(cert);
+
+    EventManager.instance()
+      .dispatch(new UserCertificateRemoved(u, cert));
+
     return cert;
   }
 
   @Override
   protected void setupPermissions() {
 
-    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerRWPermissions().setMembershipRWPermission());
+    addRequiredPermission(VOMSContext.getVoContext(),
+      VOMSPermission.getContainerRWPermissions()
+        .setMembershipRWPermission());
 
   }
 

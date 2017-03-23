@@ -101,7 +101,7 @@ public class DeleteRecordsCommand extends AbstractAuditLogSearchCommand {
   @Override
   public String getDescription() {
 
-    return "Deletes records from the audit log matching the search parameters. "
+    return "Deletes records from the audit LOG matching the search parameters. "
       + "If no parameters are provided, deletes ALL records.";
   }
 

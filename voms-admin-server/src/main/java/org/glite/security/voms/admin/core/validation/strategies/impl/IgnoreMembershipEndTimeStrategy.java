@@ -30,7 +30,7 @@ public class IgnoreMembershipEndTimeStrategy implements
 
   public List<VOMSUser> findExpiredMembers() {
 
-    return Collections.EMPTY_LIST;
+    return Collections.emptyList();
   }
 
   public void handleExpiredMembers(List<VOMSUser> expiredMembers) {
@@ -45,7 +45,7 @@ public class IgnoreMembershipEndTimeStrategy implements
 
   public List<VOMSUser> findExpiringMembers() {
 
-    return Collections.EMPTY_LIST;
+    return Collections.emptyList();
   }
 
 }

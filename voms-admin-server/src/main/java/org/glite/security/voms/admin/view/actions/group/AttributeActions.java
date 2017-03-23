@@ -60,7 +60,7 @@ public class AttributeActions extends GroupActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "This field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getAttributeValue() {
 
     return attributeValue;

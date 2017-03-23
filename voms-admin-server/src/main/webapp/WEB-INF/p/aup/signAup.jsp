@@ -33,7 +33,9 @@
   Registration is disabled for this VO.
 </s:elseif>
 <s:else>
-  <s:form validate="true">
+  <s:form 
+    action="sign"
+    validate="true">
     <s:token />
 
     <s:hidden

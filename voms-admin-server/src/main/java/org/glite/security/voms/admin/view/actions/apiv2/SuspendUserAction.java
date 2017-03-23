@@ -57,7 +57,7 @@ public class SuspendUserAction extends RestUserAction {
     message = "Please provide a reason for the suspension.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The reason contains illegal characters!",
-    expression = "^[^<>&;]*$")
+    regex = "^[^<>&;]*$")
   public String getSuspensionReason() {
 
     return suspensionReason;

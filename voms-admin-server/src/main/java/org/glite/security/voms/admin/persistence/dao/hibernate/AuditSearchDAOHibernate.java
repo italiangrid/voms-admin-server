@@ -24,13 +24,13 @@ import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchParams;
 import org.glite.security.voms.admin.view.actions.audit.AuditLogSearchResults;
 import org.glite.security.voms.admin.view.actions.audit.ScrollableAuditLogSearchResults;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 
 public class AuditSearchDAOHibernate
   extends GenericHibernateDAO<AuditEvent, Long> implements AuditSearchDAO {
@@ -93,7 +93,7 @@ public class AuditSearchDAOHibernate
         crit.add(Restrictions.disjunction()
           .add(Restrictions.sqlRestriction(
             "{alias}.event_id in (select ae.event_id from audit_event ae, audit_event_data aed where ae.event_id = aed.event_id and aed.value like ?)",
-            filterString, Hibernate.STRING))
+            filterString, StringType.INSTANCE))
           .add(Restrictions.like("principal", sp.getFilterString()
             .trim(), MatchMode.ANYWHERE)));
 
@@ -138,10 +138,10 @@ public class AuditSearchDAOHibernate
     crit.setFirstResult(0);
     crit.setMaxResults(100);
 
-    Integer count = (Integer) crit.uniqueResult();
+    Long count = (Long) crit.uniqueResult();
 
     if (count == null) {
-      count = 0;
+      count = 0L;
     }
 
     return new AuditLogSearchResults(sp, count, results);

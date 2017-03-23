@@ -17,7 +17,7 @@ package org.glite.security.voms.admin.event.vo.role;
 
 import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 @MainEventDataPoints({"roleName", "roleAttributeName", "roleAttributeValue"})

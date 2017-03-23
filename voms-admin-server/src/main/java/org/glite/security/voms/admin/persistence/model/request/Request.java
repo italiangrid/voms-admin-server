@@ -30,7 +30,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -53,8 +52,7 @@ public abstract class Request implements Serializable, NamedType {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_REQ_SEQ")
-  @SequenceGenerator(name = "VOMS_REQ_SEQ", sequenceName = "VOMS_REQ_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name = "request_id")
   Long id;
 

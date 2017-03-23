@@ -21,11 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PermissionType implements UserType {
 
@@ -37,7 +38,6 @@ public class PermissionType implements UserType {
   public PermissionType() {
 
     super();
-    // TODO Auto-generated constructor stub
   }
 
   public int[] sqlTypes() {
@@ -45,7 +45,7 @@ public class PermissionType implements UserType {
     return SQL_TYPES;
   }
 
-  public Class returnedClass() {
+  public Class<VOMSPermission> returnedClass() {
 
     return VOMSPermission.class;
   }
@@ -67,33 +67,7 @@ public class PermissionType implements UserType {
     return x.hashCode();
 
   }
-
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
-    throws HibernateException, SQLException {
-
-    int bits = rs.getInt(names[0]);
-
-    if (rs.wasNull())
-      return null;
-    else
-      return new VOMSPermission(bits);
-
-  }
-
-  public void nullSafeSet(PreparedStatement st, Object value, int index)
-    throws HibernateException, SQLException {
-
-    if (value == null)
-      st.setNull(index, Types.INTEGER);
-
-    else {
-
-      VOMSPermission p = (VOMSPermission) value;
-      st.setInt(index, p.getBits());
-    }
-
-  }
-
+  
   public Object deepCopy(Object value) throws HibernateException {
 
     VOMSPermission p = (VOMSPermission) value, clone = null;
@@ -134,5 +108,38 @@ public class PermissionType implements UserType {
 
     return deepCopy(original);
   }
+
+  @Override
+  public Object nullSafeGet(ResultSet rs, String[] names,
+    SharedSessionContractImplementor session, Object owner)
+    throws HibernateException, SQLException {
+
+    int bits = rs.getInt(names[0]);
+    
+    if (rs.wasNull()){
+      return null;
+    }
+    
+    return new VOMSPermission(bits);
+  }
+
+  @Override
+  public void nullSafeSet(PreparedStatement st, Object value, int index,
+    SharedSessionContractImplementor session)
+    throws HibernateException, SQLException {
+
+    if (value  == null){
+      st.setNull(index, Types.INTEGER);
+    }else{
+      
+      VOMSPermission p = (VOMSPermission)value;
+      st.setInt(index, p.getBits());
+    } 
+    
+  }
+
+  
+
+  
 
 }

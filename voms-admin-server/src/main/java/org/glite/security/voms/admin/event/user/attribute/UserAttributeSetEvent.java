@@ -17,7 +17,7 @@ package org.glite.security.voms.admin.event.user.attribute;
 
 import org.glite.security.voms.admin.event.EventDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 
 @EventDescription(
   message = "set attribute '%s' for user '%s %s' to value: '%s'", params = {

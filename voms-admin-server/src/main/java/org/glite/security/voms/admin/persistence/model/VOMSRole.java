@@ -25,17 +25,19 @@ import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
+import org.hibernate.annotations.SortNatural;
 
+@Entity
+@Table(name="roles")
 public class VOMSRole implements Serializable, Comparable<VOMSRole> {
 
   private static final long serialVersionUID = -5063337678658382573L;
@@ -51,26 +53,21 @@ public class VOMSRole implements Serializable, Comparable<VOMSRole> {
 
   @Id
   @Column(name = "rid")
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_ROLE_SEQ")
-  @SequenceGenerator(name = "VOMS_ROLE_SEQ", sequenceName = "VOMS_ROLE_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
-  @Column(name = "role", nullable = false, unique = true)
+  @Column(name = "role", nullable = false, unique = true, insertable=true)
   String name;
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role", 
+    orphanRemoval=true)
   Set<VOMSRoleAttribute> attributes = new HashSet<VOMSRoleAttribute>();
 
-  @OneToMany(cascade = { CascadeType.REMOVE }, mappedBy = "role",
-    fetch = FetchType.EAGER)
-  @Sort(type = SortType.NATURAL)
+  @OneToMany(cascade = { CascadeType.REMOVE }, mappedBy = "role")
+  @SortNatural
   Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
 
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "role", orphanRemoval=true)
   Set<ACL> acls = new HashSet<ACL>();
 
   /**

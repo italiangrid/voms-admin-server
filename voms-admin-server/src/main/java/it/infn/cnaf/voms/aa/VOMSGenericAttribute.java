@@ -16,7 +16,8 @@
 package it.infn.cnaf.voms.aa;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.GenericAttributeValue;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSBaseAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 
 public class VOMSGenericAttribute {
@@ -83,7 +84,7 @@ public class VOMSGenericAttribute {
     return PathNamingScheme.isQualifiedRole(context);
   }
 
-  public static VOMSGenericAttribute fromModel(VOMSBaseAttribute attributeValue) {
+  public static VOMSGenericAttribute fromModel(GenericAttributeValue attributeValue) {
 
     assert attributeValue != null;
 

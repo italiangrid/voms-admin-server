@@ -15,7 +15,8 @@
  */
 package org.glite.security.voms.admin.event.vo.aup;
 
-import org.apache.commons.lang.xwork.Validate;
+
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;

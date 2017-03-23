@@ -16,9 +16,7 @@
     limitations under the License.
 
 -->
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
   http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -26,7 +24,7 @@
   <parent>
     <groupId>org.italiangrid</groupId>
     <artifactId>voms-admin-parent</artifactId>
-    <version>3.5.2</version>
+    <version>3.6.0</version>
   </parent>
 
   <artifactId>voms-admin-server</artifactId>
@@ -38,12 +36,13 @@
     <api.version>${project.version}</api.version>
     <interface-version>2.0.2</interface-version>
 
-    <struts.version>2.2.1</struts.version>
-    <hibernate.version>3.2.6.ga</hibernate.version>
-    <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
-    <c3p0.version>0.9.1</c3p0.version>
+    <struts.version>2.3.32</struts.version>
+    <struts.boostrap.plugin.version>2.0.1</struts.boostrap.plugin.version>
+    <struts.jquery.plugin.version>3.7.1</struts.jquery.plugin.version>
+    <hibernate.version>5.2.8.Final</hibernate.version>
+    <c3p0.version>0.9.5.2</c3p0.version>
     <opensaml.version>2.5.3</opensaml.version>
-    <tiles.version>2.0.6</tiles.version>
+    <tiles.version>2.2.2</tiles.version>
     <commons-math.version>3.2</commons-math.version>
   </properties>
 
@@ -139,6 +138,11 @@
             <exclude>src/main/webapp/common/struts/**</exclude>
             <exclude>src/main/webapp/struts/**</exclude>
             <exclude>src/main/webapp/style/**</exclude>
+            <exclude>src/main/webapp/assets/**</exclude>
+            <exclude>src/main/webapp/css/**</exclude>
+            <exclude>src/main/webapp/fonts/**</exclude>
+            <exclude>src/main/webapp/jquery-ui/**</exclude>
+            <exclude>src/main/webapp/jsps/**</exclude>
             <exclude>src/main/resources/vomses-webapp/**</exclude>
             <exclude>**/*.gitignore</exclude>
             <exclude>resources/doc/**</exclude>
@@ -190,30 +194,38 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate</artifactId>
+      <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
         </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>${hibernate-annotations.version}</version>
-      <exclusions>
         <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
+          <groupId>asm</groupId>
+          <artifactId>asm-attrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>c3p0</groupId>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-c3p0</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
       <version>${c3p0.version}</version>
       <scope>runtime</scope>
@@ -288,12 +300,31 @@
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-core</artifactId>
       <version>${struts.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-convention-plugin
       </artifactId>
       <version>${struts.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgeppert.struts2.bootstrap</groupId>
+      <artifactId>struts2-bootstrap-plugin</artifactId>
+      <version>${struts.boostrap.plugin.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jgeppert.struts2.jquery</groupId>
+      <artifactId>struts2-jquery-plugin</artifactId>
+      <version>${struts.jquery.plugin.version}</version>
     </dependency>
 
     <dependency>
@@ -320,18 +351,6 @@
       <artifactId>struts2-json-plugin
       </artifactId>
       <version>${struts.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.jgeppert.struts2.jquery</groupId>
-      <artifactId>struts2-jquery-plugin</artifactId>
-      <version>2.5.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javassist</groupId>
-      <artifactId>javassist</artifactId>
-      <version>3.8.0.GA</version>
     </dependency>
 
     <!-- OpenSAML dependencies -->

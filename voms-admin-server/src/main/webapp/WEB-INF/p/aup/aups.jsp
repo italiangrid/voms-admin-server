@@ -17,7 +17,7 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if test="not #request.registrationEnabled">
+<s:if test="not #attr.registrationEnabled">
   The registration service and AUP management is currently disabled for this VO.
 </s:if>
 <s:else>
@@ -38,7 +38,7 @@
   	<s:textarea id="aclShowTextArea" rows="24" cols="100%" readonly="true" value="%{activeVersion.URLContent}" cssStyle="width: 100%"/>
   	
 	<s:if test="#attr.canModify">  	
-  		<s:form action="change-reacceptance-period" namespace="/aup" validate="true" cssStyle="clear:both; float: right">
+  		<s:form action="change-reacceptance-period" namespace="/aup" cssStyle="clear:both; float: right">
       		<s:hidden name="aupId" value="%{id}"/>
       		<s:token/>
 
@@ -58,7 +58,7 @@
   
   <div id="addAUPVersionPane">
 	<s:if test="#attr.canModify">  	
-  		<s:url action="add-version" method="input" namespace="/aup" var="voAddVersionURL">
+  		<s:url action="add-version-input" namespace="/aup" var="voAddVersionURL">
     		<s:param name="aupId" value="id"/>
   		</s:url>
   		<s:a href="%{#voAddVersionURL}">
@@ -80,7 +80,7 @@
         </td>
         <td>
         	<s:property value="url"/>
-        	<s:url action="edit-version!input" var="editAUPVersionURL">
+        	<s:url action="edit-version-input" var="editAUPVersionURL">
         		<s:param name="aupId" value="model.id"/>
         		<s:param name="version" value="version"/>
         	</s:url>

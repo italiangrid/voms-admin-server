@@ -135,6 +135,8 @@ final public class VOMSServiceConstants {
   public static final String STATUS_MAP_KEY = "uiStatusMap";
 
   public static final String ORGDB_ID_KEY = "orgDbId";
+  
+  public static final String DEV_MODE_PROPERTY = "voms.dev";
 }
 // Please do not change this line.
 // arch-tag: 47047210-5c25-4af2-b4e8-77614f1b2e66

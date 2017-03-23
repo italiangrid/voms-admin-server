@@ -46,6 +46,7 @@ import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -604,8 +605,11 @@ public class OrgDBUtil {
 
     Transaction tx = OrgDBSessionFactory.getSessionFactory()
       .getCurrentSession().getTransaction();
-    if (tx.isActive() && !tx.wasCommitted())
+    TransactionStatus status = tx.getStatus();
+    if (tx.isActive() && !status.equals(TransactionStatus.COMMITTED) 
+      && !status.equals(TransactionStatus.COMMITTING)){
       tx.commit();
+    }
   }
 
   public static void main(String[] args) throws ParseException,

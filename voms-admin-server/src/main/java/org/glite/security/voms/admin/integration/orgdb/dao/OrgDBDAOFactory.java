@@ -49,7 +49,7 @@ public abstract class OrgDBDAOFactory {
   public static OrgDBDAOFactory instance(Class factory) {
 
     try {
-      // log.debug("Creating concrete DAO factory: " + factory);
+      // LOG.debug("Creating concrete DAO factory: " + factory);
       return (OrgDBDAOFactory) factory.newInstance();
     } catch (Exception ex) {
       throw new RuntimeException("Couldn't create DAOFactory: " + factory);

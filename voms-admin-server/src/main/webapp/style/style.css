@@ -175,7 +175,10 @@ h3, .header3 {
 }
 
 .label {
-  font-weight: bold;
+  font-style: normal !important;
+  font-weight: bold !important;
+  float: none !important;
+  width: auto !important;
 }
 
 .labels {
@@ -1105,4 +1108,8 @@ a.register-url {
   display: block;
   clear: both;
   height: 0;
+}
+
+.ui-widget-content {
+  font-size: 12pt;
 }

@@ -21,6 +21,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
@@ -47,14 +52,14 @@ import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.AUPAcceptanceRecord;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 import org.glite.security.voms.admin.persistence.model.Certificate;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.CacheMode;
@@ -285,15 +290,25 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup.getActiveVersion());
 
       if (r.hasExpired()) {
-        log.debug(String.format(
-          "Adding user %s to results due to expired aup acceptance report (aup validity expiration)",
-          u.toString()));
+        log.debug("Adding user{} to results due to expired aup acceptance report (aup validity expiration)",
+          u);
         result.add(u);
 
       }
 
     }
 
+    // Filter out expired users
+    ListIterator<VOMSUser> iter = result.listIterator();
+    while (iter.hasNext()){
+      VOMSUser u = iter.next();
+      if (u.hasExpired() && u.isSuspended()){
+        log.debug("Removing supended user {} from results since "
+          + "membership expired", u);
+        iter.remove();
+      }
+    }
+    
     return result;
 
   }
@@ -690,8 +705,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     u.getCertificates()
       .clear();
-    u.getMappings()
-      .clear();
+    u.cleanMappings();
     u.getAttributes()
       .clear();
     u.getAupAcceptanceRecords()
@@ -838,6 +852,17 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       .get(VOMSUser.class, userId);
   }
 
+  public List<VOMSUser> findByOrgdbId(Long orgdbId) {
+    CriteriaBuilder builder = HibernateFactory
+      .getSession().getCriteriaBuilder();
+    
+    CriteriaQuery<VOMSUser> query = builder.createQuery(VOMSUser.class);
+    Root<VOMSUser> userRoot = query.from(VOMSUser.class);
+    query.where(builder.equal(userRoot.get("orgDbId"), orgdbId));
+    
+    return HibernateFactory.getSession().createQuery(query).getResultList();
+  }
+  
   public ScrollableResults findAllWithCursor() {
 
     Query q = HibernateFactory.getSession()
@@ -891,11 +916,12 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       .getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
         false);
 
-    if (endTimeDisabled)
+    if (endTimeDisabled){
       return "order by u.surname asc";
-    else
+    }
+    else {
       return "order by u.endTime asc, u.surname asc";
-
+    }
   }
 
   public SearchResults findAll(int firstResults, int maxResults) {
@@ -918,42 +944,32 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     VOMSGroup g = VOMSGroupDAO.instance()
       .findById(groupId);
 
-    List<VOMSRole> result = new ArrayList<VOMSRole>();
-
-    Iterator<VOMSRole> roles = VOMSRoleDAO.instance()
-      .getAll()
-      .iterator();
-
-    while (roles.hasNext()) {
-
-      VOMSRole r = (VOMSRole) roles.next();
-
-      if (!u.hasRole(g, r))
-        result.add(r);
-    }
+    String query = "from VOMSRole r where r not in "
+      + "(select m.role from VOMSMapping m where m.user = :user "
+      + "and m.group = :group and m.role is not null)";
+    
+    Query<VOMSRole> hq =
+      HibernateFactory.getSession().createQuery(query, VOMSRole.class);
+      hq.setParameter("user", u);
+      hq.setParameter("group", g);
+      
+    List<VOMSRole> result = hq.getResultList();
 
     return result;
   }
 
   public List<VOMSGroup> getUnsubscribedGroups(Long userId) {
-
-    // Easy, but not slow (leverage HQL!) implementation
-
+    
     VOMSUser u = findById(userId);
-    List<VOMSGroup> result = new ArrayList<VOMSGroup>();
-
-    Iterator<VOMSGroup> groups = VOMSGroupDAO.instance()
-      .getAll()
-      .iterator();
-
-    while (groups.hasNext()) {
-
-      VOMSGroup g = groups.next();
-
-      if (!u.isMember(g))
-        result.add(g);
-    }
-
+    
+    String query = "from VOMSGroup g where g not in "
+      + "(select m.group from VOMSMapping m where m.user = :user "
+      + "and m.role is null)";
+    
+    Query<VOMSGroup> hq =
+    HibernateFactory.getSession().createQuery(query, VOMSGroup.class);
+    hq.setParameter("user", u);
+    List<VOMSGroup> result = hq.getResultList();
     return result;
   }
 

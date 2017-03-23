@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -28,10 +27,7 @@ import javax.persistence.Table;
 public class TaskType {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO,
-    generator = "VOMS_TASK_TYPE_SEQ")
-  @SequenceGenerator(name = "VOMS_TASK_TYPE_SEQ",
-    sequenceName = "VOMS_TASK_TYPE_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(nullable = false, unique = true)

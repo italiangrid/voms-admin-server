@@ -15,7 +15,6 @@
  */
 package org.glite.security.voms.admin.integration.orgdb.dao;
 
-import org.glite.security.voms.admin.integration.orgdb.database.OrgDBError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,26 +35,10 @@ public class OrgDBHibernateDAOFactory extends OrgDBDAOFactory {
   private static Logger log = LoggerFactory
     .getLogger(OrgDBHibernateDAOFactory.class);
 
-  @SuppressWarnings("unchecked")
-  private OrgDBGenericHibernateDAO instantiateDAO(Class daoClass) {
-
-    try {
-      // log.debug("Instantiating DAO: " + daoClass);
-      return (OrgDBGenericHibernateDAO) daoClass.newInstance();
-
-    } catch (Exception e) {
-      log.error("Can not instantiate DAO: {}. Cause: {}", daoClass,
-        e.getMessage());
-      log.error(e.getMessage(), e);
-      throw new OrgDBError(e.getMessage(), e);
-
-    }
-  }
-
   @Override
   public OrgDBVOMSPersonDAO getVOMSPersonDAO() {
 
-    return (OrgDBVOMSPersonDAO) instantiateDAO(OrgDBVOMSPersonDAOHibernate.class);
+    return new OrgDBVOMSPersonDAOHibernate();
   }
 
 }

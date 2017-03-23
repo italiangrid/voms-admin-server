@@ -23,7 +23,7 @@ import org.glite.security.voms.admin.operations.VOMSOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
-import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetGroupAttributeOperation extends BaseAttributeRWOperation {

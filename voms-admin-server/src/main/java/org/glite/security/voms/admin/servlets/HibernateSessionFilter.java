@@ -24,27 +24,27 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.glite.security.voms.admin.persistence.HibernateFactory;
 
 public class HibernateSessionFilter implements Filter {
 
   private static final Logger log = LoggerFactory
     .getLogger(HibernateSessionFilter.class);
 
-  public void init(FilterConfig arg0) throws ServletException {
+  public void init(FilterConfig fc) throws ServletException {
 
     log.debug("Initializing HibernateSessionFilter {}", this);
+
   }
 
   public void doFilter(ServletRequest req, ServletResponse res,
     FilterChain chain) throws IOException, ServletException {
 
     chain.doFilter(req, res);
-
     try {
-      log.debug("Executing HibernateSessionFilter {}", this);
+    
       HibernateFactory.commitTransaction();
 
     } finally {
@@ -56,8 +56,6 @@ public class HibernateSessionFilter implements Filter {
   }
 
   public void destroy() {
-
-    log.debug("Destroying HibernateSessionFilter {}", this);
   }
 
 }

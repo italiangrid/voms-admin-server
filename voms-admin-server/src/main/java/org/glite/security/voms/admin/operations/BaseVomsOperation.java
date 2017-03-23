@@ -196,7 +196,7 @@ public abstract class BaseVomsOperation<V> implements VOMSOperation<V> {
 
     String message = ToStringBuilder.reflectionToString(this);
 
-    // FIXME: really a quick n' dirty trick to build these log messages...:(
+    // FIXME: really a quick n' dirty trick to build these LOG messages...:(
     message = message.replaceAll(",?__\\p{Alpha}*=[^,\\]]*,?", "");
     return message;
   }

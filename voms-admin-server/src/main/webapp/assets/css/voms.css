@@ -1,0 +1,28 @@
+.table > tbody > tr:first-child > td {
+    border: none;
+}
+.clickable:hover {
+  cursor: pointer;
+}
+
+.table .user-toolbar td {
+	background-color: rgb(249,249,249);
+}
+
+
+.voms-header {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	margin-bottom: 10;
+	border-bottom: 1px solid #eee;
+}
+
+.voms-header h3 {
+  margin: 0;
+  color: rgb(0,102,87);
+}
+
+#left-nav {
+	margin-top: 20px;
+	height: 100vh;
+}
