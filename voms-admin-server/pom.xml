@@ -300,6 +300,12 @@
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-core</artifactId>
       <version>${struts.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -345,12 +351,6 @@
       <artifactId>struts2-json-plugin
       </artifactId>
       <version>${struts.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javassist</groupId>
-      <artifactId>javassist</artifactId>
-      <version>3.8.0.GA</version>
     </dependency>
 
     <!-- OpenSAML dependencies -->

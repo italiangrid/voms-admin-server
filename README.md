@@ -14,7 +14,7 @@ administration tasks.
 
 Requirements:
 
-- Java 6
+- Java 8
 - Maven 3
 
 Build it with the following command:
@@ -35,15 +35,11 @@ point it to this project root directory.
 
 Reauirements:
 
-- Docker >= v.1.5.0
-- Fig >= 1.0.1
+- Docker >= v.1.12.0
+- Docker-compose >= v.1.9.0
 
 Running
 
-  fig up
+  docker-compose up
 
-Will setup a running voms-admin-server instance, running a single VO named test.
-
-## RPM package build
-
-See https://github.com/italiangrid/pkg.voms-admin-server
+Will setup a running voms-admin-server instance, running a single VO named test_0
