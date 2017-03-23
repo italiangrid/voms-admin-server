@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.glite.security.voms.admin.error.VOMSException;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ public class DBUtil {
         + e.getMessage(), e);
     }
 
-    return new AnnotationConfiguration().addProperties(dbProperties);
+    return new Configuration().addProperties(dbProperties);
 
   }
 

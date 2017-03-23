@@ -17,6 +17,9 @@ package org.glite.security.voms.admin.integration.orgdb.database;
 
 import java.util.Properties;
 
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
+
 import org.glite.security.voms.admin.integration.orgdb.model.Country;
 import org.glite.security.voms.admin.integration.orgdb.model.Experiment;
 import org.glite.security.voms.admin.integration.orgdb.model.Institute;
@@ -24,9 +27,11 @@ import org.glite.security.voms.admin.integration.orgdb.model.InstituteAddress;
 import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.context.ThreadLocalSessionContext;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.context.internal.ThreadLocalSessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +41,10 @@ public class OrgDBSessionFactory {
 
   private static volatile SessionFactory orgDbSessionFactory;
 
-  public static AnnotationConfiguration buildConfiguration(
+  public static Configuration buildConfiguration(
     Properties orgDbHibernateProperties) {
 
-    AnnotationConfiguration cfg = new AnnotationConfiguration()
+    Configuration cfg = new Configuration()
       .addAnnotatedClass(Country.class).addAnnotatedClass(Experiment.class)
       .addAnnotatedClass(Institute.class)
       .addAnnotatedClass(InstituteAddress.class)
@@ -67,7 +72,7 @@ public class OrgDBSessionFactory {
 
     try {
 
-      AnnotationConfiguration cfg = buildConfiguration(orgbHibernateProperties);
+      Configuration cfg = buildConfiguration(orgbHibernateProperties);
 
       orgDbSessionFactory = cfg.configure().buildSessionFactory();
 
@@ -88,7 +93,65 @@ public class OrgDBSessionFactory {
 
     return orgDbSessionFactory;
   }
+  
+  public static void rollbackTransaction() {
+    if (orgDbSessionFactory == null)
+      throw new OrgDBError("Session factory not initialized!");
+    
+    Session s = orgDbSessionFactory.getSessionFactory().getCurrentSession();
+    
+    if (!s.isConnected()){
+      throw new OrgDBError("Session to OrgDB is not connected");
+    }
+    
+    rollbackTransaction(s.getTransaction());
+  }
+  
+  private static void rollbackTransaction(Transaction tx) {
+    if (tx == null){
+      throw new OrgDBError("Cannot rollback a null transaction");
+    }
+    
+    try {
+      tx.rollback();
+    } catch(PersistenceException e){
+      log.error("Error rolling back transaction: "+e.getMessage(),e);
+    }
+  }
 
+  
+  public static void commitTransaction() {
+    if (orgDbSessionFactory == null)
+      throw new OrgDBError("Session factory not initialized!");
+    
+    Session s = orgDbSessionFactory.getSessionFactory().getCurrentSession();
+    
+    if (!s.isConnected()){
+      throw new OrgDBError("Session to OrgDB is not connected");
+    }
+    
+    Transaction tx = s.getTransaction();
+    
+    if (tx == null){
+      throw new OrgDBError("Cannot commit a null transaction");
+    }
+    
+    if (!tx.isActive()){
+      throw new OrgDBError("Cannot commit an inactive transaction");
+    }
+    
+    try{
+      tx.commit();
+    } catch(RollbackException e){
+     log.error("Error committing OrgDB transaction: "+e.getMessage(), e);
+     tx.markRollbackOnly();
+     rollbackTransaction();
+    }
+    
+  }
+  
+  
+  
   public static void shutdown() {
 
     if (getSessionFactory() != null)

@@ -17,6 +17,7 @@ package org.glite.security.voms.admin.view.actions.manager;
 
 import java.util.List;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -54,6 +55,11 @@ public class CreateAction extends BaseAction implements Preparable {
 
   VOMSGroup group;
 
+  @Override
+  @Action("create-input")
+  public String input() throws Exception {
+    return super.input();
+  }
   @Override
   public void validate() {
 
@@ -126,7 +132,7 @@ public class CreateAction extends BaseAction implements Preparable {
     message = "Please enter a valid email address.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The email field name contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getEmailAddress() {
 
     return emailAddress;
@@ -145,7 +151,7 @@ public class CreateAction extends BaseAction implements Preparable {
     message = "A name for the manager is required!")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The manager name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getName() {
 
     return name;
@@ -162,7 +168,7 @@ public class CreateAction extends BaseAction implements Preparable {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The description field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "255",
     message = "The description field size is limited to 255 characters.")
   public String getDescription() {

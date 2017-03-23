@@ -31,7 +31,6 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
   @Result(name = BaseAction.INPUT, location = "certificates.jsp"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE,
     location = "certificates.jsp")
-
 })
 @InterceptorRef(value = "authenticatedStack", params = {
   "token.includeMethods", "execute" })
@@ -56,7 +55,7 @@ public class SuspendCertificateAction extends CertificateActionSupport {
     return SUCCESS;
   }
 
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters in the suspension reason field!")
   public String getSuspensionReason() {
 

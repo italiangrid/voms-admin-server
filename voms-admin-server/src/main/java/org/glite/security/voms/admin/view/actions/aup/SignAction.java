@@ -130,7 +130,7 @@ public class SignAction extends BaseAction
 
   @RequiredFieldValidator(type = ValidatorType.FIELD,
     message = "You must sign the AUP.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^true$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^true$",
     message = "You must accept the terms of the AUP to proceed")
   public String getAupAccepted() {
 

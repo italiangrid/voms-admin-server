@@ -44,8 +44,7 @@
   </div>
 
   <s:url
-    action="request-membership-removal"
-    method="input"
+    action="request-membership-removal-input"
     var="requestMembershipRemovalURL">
     <s:param
       name="userId"
@@ -57,15 +56,12 @@
   <s:if test="hasPendingSignAUPTasks()">
       <div>
         <s:url
-          action="sign"
-          namespace="/aup"
-          method="input"
-          var="signAUPURL" />
+          value="/sign-aup" var="signAUPURL" />
         <input type="submit" value="Sign the AUP!" onclick="window.location.href= '${signAUPURL}'"/>
       </div>
   </s:if>
   
-  <s:if test="#request.registrationEnabled">
+  <s:if test="#attr.registrationEnabled">
     <s:if test="pendingMembershipRemovalRequests.empty">
       <div style="clear: both; float: right; margin-bottom: .5em">
         <a
@@ -95,7 +91,7 @@
       value="Your generic attributes" />
   </tiles2:insertTemplate>
 
-  <s:if test="#request.registrationEnabled">
+  <s:if test="#attr.registrationEnabled">
     <tiles2:insertTemplate template="requestHistoryPane.jsp">
       <tiles2:putAttribute
         name="panelName"

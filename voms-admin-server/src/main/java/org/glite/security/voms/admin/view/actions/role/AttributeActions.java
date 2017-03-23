@@ -17,7 +17,6 @@ package org.glite.security.voms.admin.view.actions.role;
 
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -63,7 +62,7 @@ public class AttributeActions extends RoleActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "This field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getAttributeValue() {
 
     return attributeValue;

@@ -28,12 +28,12 @@
     <s:actionerror/>
     
     <s:form 
-      action="create"
+      action="create-group"
       namespace="/group"
       validate="true"
     >
       
-      <s:select list="#request['voGroups']" name="parentGroupName" label="Parent group"/>
+      <s:select list="visibleGroups" name="parentGroupName" label="Parent group"/>
       <s:token/>
       <s:textfield name="groupName" size="20" value="" label="Group name"/>
       

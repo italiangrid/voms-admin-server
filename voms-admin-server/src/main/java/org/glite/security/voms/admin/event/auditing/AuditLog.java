@@ -17,7 +17,7 @@ package org.glite.security.voms.admin.event.auditing;
 
 import java.util.EnumSet;
 
-import org.apache.commons.lang.xwork.Validate;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.AuditableEvent;
 import org.glite.security.voms.admin.event.Event;
 import org.glite.security.voms.admin.event.EventCategory;

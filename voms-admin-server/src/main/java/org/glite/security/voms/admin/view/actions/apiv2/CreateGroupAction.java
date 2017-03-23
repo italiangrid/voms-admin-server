@@ -64,7 +64,7 @@ public class CreateGroupAction extends BaseAction {
     message = "Please provide a name for the group.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The group name field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getGroupName() {
 
     return groupName;
@@ -80,7 +80,7 @@ public class CreateGroupAction extends BaseAction {
     message = "Please provide a description for the group.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The group description field contains illegal characters!",
-    expression = "^[^<>&=;]*$")
+    regex = "^[^<>&=;]*$")
   public String getGroupDescription() {
 
     return groupDescription;

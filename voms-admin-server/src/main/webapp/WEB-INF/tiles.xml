@@ -22,7 +22,6 @@
        
 <tiles-definitions>
   
-  
     <definition name="layout" template="/WEB-INF/p/shared/layout.jsp">
       <put-attribute name="header" value="/WEB-INF/p/shared/header.jsp"/>
       <put-attribute name="menu" value="/WEB-INF/p/shared/menu.jsp"/>
@@ -309,5 +308,8 @@
           <put-attribute name="content" value="/WEB-INF/p/test/test.jsp"/>
     </definition>
     
+    <definition name="taskSubmissionResult" extends="admin-layout">
+      <put-attribute name="content" value="/WEB-INF/p/admin/taskSubmissionResult.jsp"/>
+    </definition>
     
 </tiles-definitions>

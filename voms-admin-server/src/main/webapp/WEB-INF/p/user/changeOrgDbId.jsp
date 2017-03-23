@@ -23,9 +23,8 @@
 
 
 <s:form action="save-orgdb-id" 
-  namespace="/user"
-  validate="true"
-  >
+  namespace="/user" validate="true" name="save_orgdb_id" 
+  onsubmit="return true;"> <!-- The onsubmit is needed or struts will mess things up -->
   <s:token/>
   <s:hidden name="userId" value="%{id}"/>
   <label class="label" for="_user_name">User:</label>

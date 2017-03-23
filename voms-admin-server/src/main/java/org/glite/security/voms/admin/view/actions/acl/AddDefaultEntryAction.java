@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.view.actions.acl;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -42,11 +43,13 @@ public class AddDefaultEntryAction extends AddEntryAction {
 
       if (aclGroupId != -1) {
         VOMSGroup g = groupById(aclGroupId);
-        if (g.getDefaultACL() == null)
+        if (g.getDefaultACL() == null){
           // FIXME: do it with an operation
           model = ACLDAO.instance().create(g, true);
-        else
+        }
+        else {
           model = g.getDefaultACL();
+        }
       } else
         super.prepare();
     }
@@ -63,4 +66,10 @@ public class AddDefaultEntryAction extends AddEntryAction {
     this.aclGroupId = aclGroupId;
   }
 
+  
+  @Override
+  @Action("add-default-entry-input")
+  public String input() throws Exception {
+    return super.input();
+  }
 }

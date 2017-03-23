@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -51,10 +52,7 @@ public class RequesterInfo implements Serializable {
   public static final String VO_USER_ID = "voUserId";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO,
-    generator = "VOMS_REQ_INFO_SEQ")
-  @SequenceGenerator(name = "VOMS_REQ_INFO_SEQ",
-    sequenceName = "VOMS_REQ_INFO_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(nullable = false)
@@ -76,10 +74,10 @@ public class RequesterInfo implements Serializable {
   @Column(nullable = false)
   String emailAddress;
 
-  @org.hibernate.annotations.CollectionOfElements
+  @ElementCollection
   @JoinTable(name = "requester_personal_info", joinColumns = @JoinColumn(
     name = "requester_id"))
-  @org.hibernate.annotations.MapKey(columns = @Column(name = "pi_key"))
+  @MapKeyColumn(name="pi_key")
   @Column(name = "pi_value")
   Map<String, String> personalInformation = new HashMap<String, String>();
 

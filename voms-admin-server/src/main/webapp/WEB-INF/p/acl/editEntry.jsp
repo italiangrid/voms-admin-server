@@ -19,7 +19,7 @@
 
 <h1>Edit <s:if test="defaultACL">default</s:if> ACL entry:</h1>
 
-<s:form>
+<s:form action="edit-entry">
   <s:token/>
   <s:hidden name="aclId" value="%{model.id}" />
   <s:hidden name="adminId" value="%{admin.id}" />

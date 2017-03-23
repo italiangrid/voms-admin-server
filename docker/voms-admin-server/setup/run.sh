@@ -1,6 +1,12 @@
 #!/bin/bash
 set -ex
 
+SCRIPTS_PREFIX=${SCRIPTS_PREFIX:-/scripts}
+VO_NAME_PREFIX=${VOMS_VO_NAME_PREFIX:-"test"}
+VO_COUNT=${VOMS_VO_COUNT:-1}
+
+VOMS_BASE_CORE_PORT=${VOMS_BASE_CORE_PORT:-15000}
+
 # Wait for database service to be up
 mysql_host=db
 mysql_port=3306 
@@ -14,6 +20,9 @@ do
 done
 
 echo 'Database server is up.'
+
+## Create database schemas
+/bin/bash ${SCRIPTS_PREFIX}/create-schemas.sh
 
 if [[ -n "${VOMS_ADMIN_SERVER_PACKAGE_URL}" ]]; then
   yum -y remove voms-admin-server
@@ -32,7 +41,7 @@ if [[ -n "${VOMS_ADMIN_CLIENT_VERSION}" ]]; then
   yum install -y voms-admin-client-${VOMS_ADMIN_CLIENT_VERSION}
 fi
 
-cp /tnsnames.ora /home/voms
+cp ${SCRIPTS_PREFIX}/tnsnames.ora /home/voms
 chown voms:voms /home/voms/tnsnames.ora
 
 ## Setup certificates
@@ -49,9 +58,13 @@ if [[ -z ${VOMS_DEPLOY_TARBALL} ]]; then
   VOMS_PRE_CONFIGURE=y
 fi
 
+if [[ -n ${VOMS_LOAD_DB_DUMP} ]]; then
+  /bin/bash ${SCRIPTS_PREFIX}/load-db-dump.sh
+fi
+
 if [[ -n ${VOMS_PRE_CONFIGURE} ]]; then
   echo "Running preconfiguration..."
-  CONFIGURE_VO_OPTIONS=${VOMS_PRE_CONFIGURE_OPTIONS} /bin/bash configure-vo.sh
+  CONFIGURE_VO_OPTIONS=${VOMS_PRE_CONFIGURE_OPTIONS} /bin/bash ${SCRIPTS_PREFIX}/configure-vos.sh
 fi
 
 if [[ -n "${VOMS_DEPLOY_TARBALL}" ]]; then
@@ -60,8 +73,13 @@ if [[ -n "${VOMS_DEPLOY_TARBALL}" ]]; then
   ## Install new code
   ls -l /code
 
+  old_jars=$(ls /var/lib/voms-admin/lib/*.jar)
+  for j in ${old_jars}; do
+    echo "Removing: $j" && rm -rf $j
+  done
+
   old_jars=$(ls /var/lib/voms-admin/lib/)
-  rm -f $old_jars
+  echo "Old jars after removal: ${old_jars}"
 
   tar -C / -xvzf /code/voms-admin-server/target/voms-admin-server.tar.gz
 
@@ -69,7 +87,7 @@ if [[ -n "${VOMS_DEPLOY_TARBALL}" ]]; then
 
   if [[ -n "$VOMS_UPGRADE_DB" ]]; then
     echo "Running database upgrade..."
-    /bin/bash upgrade-db.sh
+    /bin/bash ${SCRIPTS_PREFIX}/upgrade-db.sh
   fi
 
   skip_configuration=false
@@ -78,32 +96,44 @@ if [[ -n "${VOMS_DEPLOY_TARBALL}" ]]; then
   [ -n "$VOMS_SKIP_CONFIGURE" ] && skip_configuration=true
 
   ## But only if configuration for the VO exists
-  [ ! -e "/etc/voms-admin/test/service.properties" ] && skip_configuration=false
+  for i in $(seq 0 ${VO_CONT}); do
+    VO_NAME=${VO_NAME_PREFIX}_$i
+    [ ! -e "/etc/voms-admin/${VO_NAME}/service.properties" ] && skip_configuration=false
+  done
 
   if [[ "$skip_configuration" = "false" ]]; then
       echo "Running configuration..."
-      CONFIGURE_VO_OPTIONS=${VOMS_CONFIGURE_OPTIONS} /bin/bash configure-vo.sh
+      CONFIGURE_VO_OPTIONS=${VOMS_CONFIGURE_OPTIONS} /bin/bash ${SCRIPTS_PREFIX}/configure-vos.sh
   fi
-
 fi
 
 # Setup logging so that everything goes to stdout
-cp /logback.xml /etc/voms-admin/voms-admin-server.logback
-cp /logback.xml /etc/voms-admin/test/logback.xml
-chown voms:voms /etc/voms-admin/voms-admin-server.logback /etc/voms-admin/test/logback.xml
+cp ${SCRIPTS_PREFIX}/logback.xml /etc/voms-admin/voms-admin-server.logback
 
-# Setup orgdb.properties, if the orgdb volume is mounted
+for i in $(seq 0 ${VO_COUNT}); do
+    VO_NAME=${VO_NAME_PREFIX}_$i
+    cp ${SCRIPTS_PREFIX}/logback.xml /etc/voms-admin/${VO_NAME}/logback.xml
+    chown voms:voms /etc/voms-admin/${VO_NAME}/logback.xml
+done
+
+chown voms:voms /etc/voms-admin/voms-admin-server.logback
+
+# Setup orgdb.properties, if the orgdb volume is mounted, only for the 
+# first configured VO
 if [ -e "/orgdb/orgdb.properties" ]; then
-  cp /orgdb/orgdb.properties /etc/voms-admin/test/orgdb.properties
-  chown voms:voms /etc/voms-admin/test/orgdb.properties
+  cp /orgdb/orgdb.properties /etc/voms-admin/test_0/orgdb.properties
+  chown voms:voms /etc/voms-admin/test_0/orgdb.properties
 
   # Just a newline
-  echo >> /etc/voms-admin/test/service.properties
-  cat /orgdb.template >> /etc/voms-admin/test/service.properties
+  echo >> /etc/voms-admin/test_0/service.properties
+  cat ${SCRIPTS_PREFIX}/orgdb.template >> /etc/voms-admin/test_0/service.properties
 fi
 
-# Deploy test vo
-touch '/var/lib/voms-admin/vo.d/test'
+# Deploy test vos
+for i in $(seq 0 ${VO_COUNT}); do
+    VO_NAME=${VO_NAME_PREFIX}_$i
+    touch "/var/lib/voms-admin/vo.d/$VO_NAME"
+done
 
 # Set log levels
 VOMS_LOG_LEVEL=${VOMS_LOG_LEVEL:-INFO}
@@ -111,8 +141,18 @@ JAVA_LOG_LEVEL=${JAVA_LOG_LEVEL:-ERROR}
 
 VOMS_JAVA_OPTS="-Dvoms.dev=true -DVOMS_LOG_LEVEL=${VOMS_LOG_LEVEL} -DJAVA_LOG_LEVEL=${JAVA_LOG_LEVEL} ${VOMS_JAVA_OPTS}"
 
+if [ -n "$ENABLE_YOUR_KIT" ]; then
+  YOUR_KIT_OPTS=${VOMS_YOUR_KIT_OPTS:-"-javaagent:/yourkit/libyjpagent.so,delay=10000,port=20001"}
+  VOMS_JAVA_OPTS="${VOMS_YOUR_KIT_OPTS} ${VOMS_JAVA_OPTS}"
+fi
+
 if [ -n "$ENABLE_JREBEL" ]; then
-    VOMS_JAVA_OPTS="-javaagent:/jrebel/jrebel.jar -Drebel.stats=false -Drebel.usage_reporting=false -Drebel.struts2_plugin=true -Drebel.tiles2_plugin=true $VOMS_JAVA_OPTS"
+  if [ -n "$ENABLE_YOUR_KIT" ]; then
+    echo "YourKit is enabled... will ignore Jrebel"
+  else
+    JREBEL_OPTS=${VOMS_JREBEL_OPTS:-"-javaagent:/jrebel/jrebel.jar -Drebel.stats=false -Drebel.usage_reporting=false -Drebel.struts2_plugin=true -Drebel.tiles2_plugin=true"}
+    VOMS_JAVA_OPTS="${JREBEL_OPTS} ${VOMS_JAVA_OPTS}"
+  fi
 fi
 
 if [ -z "$VOMS_DEBUG_PORT" ]; then
@@ -141,14 +181,24 @@ TNS_ADMIN=${TNS_ADMIN:-/home/voms}
 ORACLE_ENV="LD_LIBRARY_PATH=$ORACLE_LIBRARY_PATH TNS_ADMIN=$TNS_ADMIN"
 
 if [ -z "$VOMS_SKIP_JAVA_SETUP" ]; then
-  sh setup-java.sh
+  /bin/bash ${SCRIPTS_PREFIX}/setup-java.sh
 fi
 
 java -version
+
 ## Add test0 admin
-voms-db-util add-admin --vo test \
-  --cert /usr/share/igi-test-ca/test0.cert.pem \
-  || echo "Error creating test0 admin. Does it already exist?"
+for i in $(seq 0 ${VO_COUNT}); do
+    VO_NAME=${VO_NAME_PREFIX}_$i
+    voms-db-util add-admin --vo ${VO_NAME} \
+      --cert /usr/share/igi-test-ca/test0.cert.pem \
+      || echo "Error creating test0 admin. Does it already exist?"
+done
 
 # Start service
-su voms -s /bin/bash -c "$ORACLE_ENV java $VOMS_JAVA_OPTS -cp $VOMS_JAR:$OJDBC_JAR $VOMS_MAIN_CLASS $VOMS_ARGS"
+if [ -n "$VOMS_DEV_MODE" ]; then
+  echo "su voms -s /bin/bash -c \"$ORACLE_ENV java $VOMS_JAVA_OPTS -cp $VOMS_JAR:$OJDBC_JAR $VOMS_MAIN_CLASS $VOMS_ARGS\"" > /root/start-voms-admin.sh
+  echo "VOMS Admin startup command saved in /root/start-voms-admin.sh . User docker exec to enter this container and start/stop the service as you like"
+  sleep infinity
+else
+  su voms -s /bin/bash -c "$ORACLE_ENV java $VOMS_JAVA_OPTS -cp $VOMS_JAR:$OJDBC_JAR $VOMS_MAIN_CLASS $VOMS_ARGS"
+fi

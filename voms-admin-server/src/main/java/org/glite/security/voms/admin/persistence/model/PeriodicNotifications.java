@@ -22,7 +22,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,10 +31,7 @@ import javax.persistence.TemporalType;
 public class PeriodicNotifications {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO,
-    generator = "VOMS_PER_NOT_SEQ")
-  @SequenceGenerator(name = "VOMS_PER_NOT_SEQ",
-    sequenceName = "VOMS_PER_NOT_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false, unique = true)

@@ -158,7 +158,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The subject field name contains illegal characters!",
-    expression = "^[^<>&;]*$")
+    regex = "^[^<>&;]*$")
   public String getSubject() {
 
     return subject;
@@ -171,7 +171,7 @@ public class RequestCertificateAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The subject field name contains illegal characters!",
-    expression = "^[^<>&;]*$")
+    regex = "^[^<>&;]*$")
   public String getCaSubject() {
 
     return caSubject;

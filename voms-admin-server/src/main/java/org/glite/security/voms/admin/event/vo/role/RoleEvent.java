@@ -15,7 +15,7 @@
  */
 package org.glite.security.voms.admin.event.vo.role;
 
-import org.apache.commons.lang.xwork.Validate;
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.MainEventDataPoints;
 import org.glite.security.voms.admin.event.vo.VOEvent;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;

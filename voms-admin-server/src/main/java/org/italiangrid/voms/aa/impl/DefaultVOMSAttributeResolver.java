@@ -19,14 +19,15 @@ import java.util.Iterator;
 
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSBaseAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
-import org.glite.security.voms.admin.persistence.model.VOMSGroupAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSMapping;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.GenericAttributeValue;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSBaseAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSGroupAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.italiangrid.voms.VOMSGenericAttribute;
 import org.italiangrid.voms.aa.RequestContext;
@@ -166,7 +167,7 @@ public class DefaultVOMSAttributeResolver implements AttributeResolver {
 
   }
 
-  protected VOMSGenericAttribute newGenericAttribute(VOMSBaseAttribute ua) {
+  protected VOMSGenericAttribute newGenericAttribute(GenericAttributeValue ua) {
 
     return new VOMSGAImpl(ua);
   }

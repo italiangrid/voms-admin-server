@@ -20,7 +20,10 @@ package org.glite.security.voms.admin.view.actions;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.operations.groups.FindGroupOperation;
@@ -34,12 +37,12 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.util.URLBuilder;
+import org.hibernate.Hibernate;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ValidationAware;
 
-public class BaseAction extends ActionSupport implements ValidationAware {
-
+public class BaseAction extends ActionSupport implements ValidationAware, RequestAware {
   /**
 	 * 
 	 */
@@ -57,12 +60,21 @@ public class BaseAction extends ActionSupport implements ValidationAware {
 
   public static final String AUTHZ_ERROR = "authorizationError";
 
+  private Map<String, Object> request;
+  
   protected VOMSUser userById(Long id) {
 
     if (id == null)
       throw new NullArgumentException("'id' cannot be null!");
+    
+    VOMSUser user = (VOMSUser) FindUserOperation.instance(id).execute();
+    
+    if (user != null){
+      Hibernate.initialize(user.getMappings());
+      Hibernate.initialize(user.getAttributes());
+    }
 
-    return (VOMSUser) FindUserOperation.instance(id).execute();
+    return user;
   }
 
   protected VOMSGroup groupByName(String name) {
@@ -137,4 +149,36 @@ public class BaseAction extends ActionSupport implements ValidationAware {
 
     return getFutureDate(new Date(), Calendar.DAY_OF_YEAR, 7);
   }
+
+  public String getNamespaceName() {
+
+    String namespaceName = ServletActionContext.getActionMapping()
+      .getNamespace();
+
+    int subNameIndex = namespaceName.lastIndexOf("/");
+
+    if (subNameIndex == -1) {
+      return "";
+    }
+
+    String result = namespaceName.substring(subNameIndex + 1);
+
+    return result;
+
+  }
+  
+  public String getActionName() {
+    return ServletActionContext.getActionMapping().getName();
+  }
+
+  @Override
+  public void setRequest(Map<String, Object> request) {
+    
+    this.request = request;
+  }
+  
+  public Map<String, Object> getRequest(){
+    return request;
+  }
+  
 }

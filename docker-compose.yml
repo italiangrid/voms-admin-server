@@ -11,7 +11,7 @@ services:
     image: mariadb:latest
     container_name: db
     ports:
-      - "3306"
+      - "3306:3306"
     volumes_from:
       - data
 
@@ -24,7 +24,7 @@ services:
   mail:
     image: jlynn/python-smtp
     ports:
-      - "25"
+      - "25:25"
 
   adminserver:
     image: italiangrid/voms-admin-server:latest
@@ -36,13 +36,17 @@ services:
         - .:/code:ro
         - ~/.jrebel:/home/voms/.jrebel:rw
         - ~/jrebel:/jrebel:ro
-          # - ~/orgdb:/orgdb:ro
-
+        - ~/yourkit:/yourkit:ro
+        - ~/git/voms-admin-server/docker/voms-admin-server/setup:/scripts:ro
+        - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
+        - ~/orgdb:/orgdb:ro
     ports:
+       # 20001 is the default yourkit port
+       # - "20001:20001"
        # 6002 is the default JMX port used when enabling JMX
        # - "6002:6002"
        # 1044 is the debug port
-       # - "1044:1044"
+       - "1044:1044"
        - "8443"
 
     links:
@@ -54,6 +58,8 @@ services:
       TCP_PORTS: 8443
 
       # This is the VOMS Admin configuration
+      #
+      VOMS_VO_COUNT: 0 # 0 creates 1 VO, 1 two VOs, ...
       VOMS_HOSTNAME: dev.local.io
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
@@ -65,16 +71,19 @@ services:
       VOMS_DEPLOY_TARBALL: y
 
       # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
-      # VOMS_ADMIN_SERVER_VERSION: 3.3.3
+      VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
-      # VOMS_PRE_CONFIGURE: y
+      VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
-      # VOMS_UPGRADE_DB: y
+      VOMS_UPGRADE_DB: y
+      
+      VOMS_LOAD_DB_DUMP: y
+      VOMS_DEV_MODE: y
 
-      #
-      # VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --disable-notification 
-      VOMS_CONFIGURE_OPTIONS: --core-port 15000 --skip-ca-check --admin-skip-ca-check --preserve-aup-failing-members
-      # VOMS_JAVA_OPTS: -Dhibernate.generate_statistics=true 
+      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
+      VOMS_ARGS: --war /code/voms-admin-server/target/voms-admin.war
+
+      # ENABLE_YOURKIT: y
       # ENABLE_JREBEL: y
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG

@@ -27,7 +27,7 @@
   <s:if test="aupAcceptanceRecords.empty">
     
     No acceptance records found for the currently active AUP version. 
-    <s:if test="#request.registrationEnabled"> 
+    <s:if test="#attr.registrationEnabled"> 
 
       <s:if test="#attr.canSuspend">
         <div style="text-align: right;">
@@ -91,7 +91,7 @@
         </s:else>
       
       </s:iterator>
-      <s:if test="#request.registrationEnabled">
+      <s:if test="#attr.registrationEnabled">
         
         <div style="text-align: right;">
         

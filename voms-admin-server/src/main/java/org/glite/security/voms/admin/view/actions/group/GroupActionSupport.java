@@ -17,10 +17,12 @@ package org.glite.security.voms.admin.view.actions.group;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.hibernate.Hibernate;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -38,6 +40,8 @@ public class GroupActionSupport extends BaseAction implements
 
   List<VOMSAttributeDescription> attributeClasses;
 
+  List<VOMSGroup> visibleGroups;
+  
   public VOMSGroup getModel() {
 
     return group;
@@ -45,12 +49,17 @@ public class GroupActionSupport extends BaseAction implements
 
   public void prepare() throws Exception {
 
-    if (getModel() == null)
-      if (getGroupId() != -1)
+    if (getModel() == null){
+      if (getGroupId() != -1){
         group = groupById(getGroupId());
+        Hibernate.initialize(group.getAttributes());
+      }
+    }
 
     attributeClasses = (List<VOMSAttributeDescription>) VOMSAttributeDAO
       .instance().getAllAttributeDescriptions();
+    
+    visibleGroups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
   }
 
   public Long getGroupId() {
@@ -74,4 +83,10 @@ public class GroupActionSupport extends BaseAction implements
     this.attributeClasses = attributeClasses;
   }
 
+  
+  public List<VOMSGroup> getVisibleGroups() {
+  
+    return visibleGroups;
+  }
+  
 }

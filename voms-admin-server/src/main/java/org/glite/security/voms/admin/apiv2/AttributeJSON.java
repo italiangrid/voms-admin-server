@@ -15,7 +15,7 @@
  */
 package org.glite.security.voms.admin.apiv2;
 
-import org.glite.security.voms.admin.persistence.model.VOMSUserAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribute;
 
 public class AttributeJSON {
 

@@ -28,8 +28,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,11 +41,32 @@ public class HibernateFactory {
     .getLogger(HibernateFactory.class);
 
   private static SessionFactory sessionFactory;
+  
+  private static Metadata metadata;
 
   private static final ThreadLocal<Session> threadSession = new ThreadLocal<Session>();
 
   private static final ThreadLocal<Transaction> threadTransaction = new ThreadLocal<Transaction>();
 
+  public static synchronized void initialize(MetadataSources metadataSources) {
+    Validate.notNull(metadataSources);
+    
+    if (sessionFactory != null) {
+      throw new VOMSDatabaseException(
+        "Hibernate session factory already initialized!");
+    }
+    
+    try {
+      
+      metadata = metadataSources.buildMetadata();
+      sessionFactory = metadata.getSessionFactoryBuilder().build();
+      
+    }catch (Throwable e) {
+      log.error("Hibernate session factory creation failed!", e);
+      throw new ExceptionInInitializerError(e);
+    }
+    
+  }
   
   public static synchronized void initialize(Configuration configuration) {
 
@@ -78,7 +101,7 @@ public class HibernateFactory {
 
     try {
 
-      Configuration hibernateConf = new AnnotationConfiguration();
+      Configuration hibernateConf = new Configuration();
       hibernateConf.addProperties(databaseProperties);
 
       sessionFactory = hibernateConf.configure().buildSessionFactory();
@@ -94,9 +117,10 @@ public class HibernateFactory {
 
   public static synchronized void shutdown() {
 
-    if (sessionFactory != null)
+    if (sessionFactory != null){
       sessionFactory.close();
-
+    }
+    
     unregisterSQLDrivers();
     cleanupThreadLocals();
 
@@ -127,12 +151,16 @@ public class HibernateFactory {
     }
 
     if (threadTransaction != null) {
-
       threadTransaction.remove();
     }
 
   }
 
+  public static Metadata getMetadata() {
+    return metadata;
+  }
+  
+  
   public static SessionFactory getFactory() {
 
     return sessionFactory;
@@ -208,13 +236,19 @@ public class HibernateFactory {
 
     }
   }
+  
 
   public static void commitTransaction() {
 
     Transaction tx = (Transaction) threadTransaction.get();
+    
+    
     try {
 
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+      if (tx != null 
+        && !tx.getStatus().equals(TransactionStatus.COMMITTED)
+        && !tx.getStatus().equals(TransactionStatus.ROLLING_BACK) 
+        && !tx.getStatus().equals(TransactionStatus.ROLLED_BACK)) {
         if (log.isDebugEnabled()){
           log.debug("Committing transaction {} for thread {}", tx,
             Thread.currentThread());
@@ -238,11 +272,18 @@ public class HibernateFactory {
 
   public static void rollbackTransaction() {
 
+    
     Transaction tx = (Transaction) threadTransaction.get();
+    TransactionStatus status = tx.getStatus();
+    log.warn("Rolling back transaction {}", tx);
     try {
 
       threadTransaction.set(null);
-      if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()){
+      if (tx != null 
+        && !tx.getStatus().equals(TransactionStatus.COMMITTED)
+        && !tx.getStatus().equals(TransactionStatus.ROLLING_BACK) 
+        && !tx.getStatus().equals(TransactionStatus.ROLLED_BACK)){
+        
         if (log.isDebugEnabled()){
           log.debug("Rolling back transaction {} for thread {}", tx, 
             Thread.currentThread());
@@ -250,11 +291,7 @@ public class HibernateFactory {
         tx.rollback();
       }
     } catch (HibernateException ex) {
-      log.error("Error rolling back hibernate transaction:" + ex.getMessage());
-
-      if (log.isDebugEnabled()){
-        log.error("Error rolling back hibernate transaction!", ex);
-      }
+      log.error("Error rolling back hibernate transaction:" + ex.getMessage(),ex);
 
       throw new VOMSDatabaseException(ex.getMessage(), ex);
 

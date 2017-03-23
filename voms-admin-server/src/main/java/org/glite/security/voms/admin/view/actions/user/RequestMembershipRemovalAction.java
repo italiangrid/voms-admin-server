@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.view.actions.user;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -82,7 +83,7 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
     return SUCCESS;
   }
 
-  @RegexFieldValidator(type = ValidatorType.FIELD, expression = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters in the reason field!")
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter a reason.")
@@ -96,4 +97,9 @@ public class RequestMembershipRemovalAction extends UserActionSupport {
     this.reason = reason;
   }
 
+  @Override
+  @Action("request-membership-removal-input")
+  public String input() throws Exception {
+    return super.input();
+  }
 }

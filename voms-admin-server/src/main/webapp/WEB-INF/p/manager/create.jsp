@@ -23,7 +23,7 @@
 </s:if>
 <s:else>
 <p>All the fields below are required.</p>
-<s:form validate="true">
+<s:form validate="true" action="create">
 
   <s:token/>
   <s:textfield 
@@ -57,6 +57,7 @@
     name="groupId"/>
   
   <s:submit 
+    align="left"
     value="%{'Create Group Manager'}"/>
 </s:form>
 </s:else>

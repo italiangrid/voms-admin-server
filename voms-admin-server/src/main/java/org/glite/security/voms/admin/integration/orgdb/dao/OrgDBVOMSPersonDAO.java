@@ -17,11 +17,15 @@ package org.glite.security.voms.admin.integration.orgdb.dao;
 
 import java.util.List;
 
+import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.persistence.dao.generic.GenericDAO;
 import org.hibernate.Session;
 
 public interface OrgDBVOMSPersonDAO extends GenericDAO<VOMSOrgDBPerson, Long> {
+
+  public Participation findValidParticipationInExperiment(VOMSOrgDBPerson person,
+      String experimentName);
 
   public VOMSOrgDBPerson findPersonByEmail(String emailAddress);
 
@@ -31,29 +35,28 @@ public interface OrgDBVOMSPersonDAO extends GenericDAO<VOMSOrgDBPerson, Long> {
 
   public List<VOMSOrgDBPerson> findPersonBySurname(String surname);
 
-  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationById(
-    Long personId, String experimentName);
+  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationById(Long personId,
+      String experimentName);
 
-  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationByEmail(
-    String emailAddress, String experimentName);
+  public VOMSOrgDBPerson findPersonWithValidExperimentParticipationByEmail(String emailAddress,
+      String experimentName);
 
-  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipationByName(
-    String name, String surname, String experimentName);
+  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipationByName(String name,
+      String surname, String experimentName);
 
   public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationById(
-    List<Long> personIds, String experimentName);
+      List<Long> personIds, String experimentName);
 
   public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipationByEmail(
-    List<String> emailAddresses, String experimentName);
+      List<String> emailAddresses, String experimentName);
 
-  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipation(
-    String experimentName);
+  public List<VOMSOrgDBPerson> findPersonsWithValidExperimentParticipation(String experimentName);
 
   public Long countPersonsWithValidExperimentParticipation(String experimentName);
 
-  public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipation(
-    String experimentName, List<String> validEmails);
-  
+  public List<VOMSOrgDBPerson> findPersonsWithExpiredExperimentParticipation(String experimentName,
+      List<String> validEmails);
+
   public void setSession(Session session);
 
 }

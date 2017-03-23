@@ -15,12 +15,13 @@
  */
 package org.glite.security.voms.admin.integration.orgdb.strategies;
 
+import org.glite.security.voms.admin.integration.orgdb.model.Participation;
 import org.glite.security.voms.admin.integration.orgdb.model.VOMSOrgDBPerson;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public interface OrgDBMembershipSynchronizationStrategy {
 
   public void synchronizeMemberInformation(VOMSUser u,
-    VOMSOrgDBPerson orgDBRecord, String experimentName);
+    VOMSOrgDBPerson orgDBRecord, String experimentName, Participation validParticipation);
 
 }

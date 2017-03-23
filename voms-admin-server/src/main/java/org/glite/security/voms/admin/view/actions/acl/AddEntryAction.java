@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -187,7 +188,7 @@ public class AddEntryAction extends ACLActionSupport {
       admin, perms, propagate == null ? false : propagate);
 
     op.execute();
-
+    
     return SUCCESS;
   }
 
@@ -324,4 +325,10 @@ public class AddEntryAction extends ACLActionSupport {
     return entryTypeMap;
   }
 
+  
+  @Override
+  @Action("add-entry-input")
+  public String input() throws Exception {
+    return INPUT;
+  }
 }

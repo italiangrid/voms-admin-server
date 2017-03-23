@@ -15,12 +15,14 @@
  */
 package org.glite.security.voms.admin.operations.aup;
 
+import org.apache.commons.lang.Validate;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.user.aup.UserSignedAUPEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
+import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.AUP;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
@@ -29,10 +31,12 @@ public class CreateAcceptanceRecordOperation extends BaseVomsOperation {
   AUP aup;
   VOMSUser user;
 
-  public CreateAcceptanceRecordOperation(AUP a, VOMSUser u) {
+  public CreateAcceptanceRecordOperation(AUP aup, VOMSUser user) {
+    Validate.notNull(aup, "aup must be non-null");
+    Validate.notNull(user, "user must be non-null");
 
-    this.aup = a;
-    this.user = u;
+    this.aup = aup;
+    this.user = user;
 
   }
 
@@ -62,4 +66,10 @@ public class CreateAcceptanceRecordOperation extends BaseVomsOperation {
 
   }
 
+  
+  public static CreateAcceptanceRecordOperation instance(Long userId){
+    VOMSUser user = VOMSUserDAO.instance().findById(userId);
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
+    return new CreateAcceptanceRecordOperation(aup, user);
+  }
 }

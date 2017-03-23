@@ -26,7 +26,7 @@ import org.glite.security.voms.admin.persistence.error.NoSuchGroupException;
 import org.glite.security.voms.admin.persistence.error.NoSuchRoleException;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
-import org.glite.security.voms.admin.persistence.model.VOMSRoleAttribute;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSRoleAttribute;
 import org.glite.security.voms.service.attributes.AttributeValue;
 
 public class SetRoleAttributeOperation extends BaseAttributeRWOperation {

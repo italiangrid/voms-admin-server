@@ -56,7 +56,7 @@ public class CreateRandomConfirmedMembershipRequests implements Runnable {
       ri.setPhoneNumber("+39 051 60927777");
       
       ri.setCertificateSubject("/C=IT/O=INFN/CN=test user " + i);
-      ri.setCertificateIssuer("/C=IT/O=INFN/CN=INFN CA");
+      ri.setCertificateIssuer("/C=IT/O=INFN/CN=INFN Certification Authority");
 
 //      ri.addInfo(RequesterInfo.MULTIVALUE_COUNT_PREFIX + "requestedGroup", "15");
 //

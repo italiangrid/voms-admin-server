@@ -21,7 +21,6 @@
 Configuration information:
 </h1>
 
-
 <h2>
 VOMS-Admin URL for this vo:
 </h2>

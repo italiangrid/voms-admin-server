@@ -44,6 +44,11 @@ public class CancelRequestAction extends RegisterActionSupport {
     if (!registrationEnabled())
       return REGISTRATION_DISABLED;
 
+    if (request == null){
+      addActionError("Request not found!");
+      return ERROR;
+    }
+    
     if (!request.getStatus().equals(STATUS.SUBMITTED)) {
 
       addActionError("Your request cannot be canceled at this stage!");

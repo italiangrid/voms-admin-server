@@ -16,7 +16,7 @@
 package org.glite.security.voms.admin.event.vo.attribute;
 
 import org.glite.security.voms.admin.event.vo.VOEvent;
-import org.glite.security.voms.admin.persistence.model.VOMSAttributeDescription;
+import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 import org.glite.security.voms.admin.persistence.model.audit.AuditEvent;
 
 public class AttributeDescriptionEvent extends

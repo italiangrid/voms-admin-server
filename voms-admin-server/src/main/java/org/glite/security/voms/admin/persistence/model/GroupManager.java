@@ -28,7 +28,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -36,8 +35,7 @@ import javax.persistence.Table;
 public class GroupManager {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "VOMS_GRPMAN_SEQ")
-  @SequenceGenerator(name = "VOMS_GRPMAN_SEQ", sequenceName = "VOMS_GRPMAN_SEQ")
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @Column(name = "name", nullable = false, unique = true)
@@ -49,7 +47,7 @@ public class GroupManager {
   @Column(name = "email_address", nullable = false)
   String emailAddress;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
+  @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
   @JoinTable(name = "managers_groups", joinColumns = { @JoinColumn(
     name = "manager_id", referencedColumnName = "id") },
     inverseJoinColumns = { @JoinColumn(name = "group_id",

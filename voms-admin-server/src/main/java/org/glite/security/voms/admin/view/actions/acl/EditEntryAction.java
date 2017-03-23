@@ -18,6 +18,7 @@ package org.glite.security.voms.admin.view.actions.acl;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -93,4 +94,9 @@ public class EditEntryAction extends ACLActionSupport {
     this.selectedPermissions = selectedPermissions;
   }
 
+  @Override
+  @Action("edit-entry-input")
+  public String input() throws Exception {
+    return super.input();
+  }
 }

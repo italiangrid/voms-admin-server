@@ -217,6 +217,10 @@ public class VOMSExecutorService {
     return executorService.submit(task);
   }
 
+  public Future<?> wrapAndSubmit(Runnable task) {
+    return executorService.submit(wrapTask(task, 0));
+  }
+  
   /**
    * @param command
    * @param initialDelay

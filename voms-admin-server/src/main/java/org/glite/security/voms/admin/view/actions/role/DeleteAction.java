@@ -16,7 +16,6 @@
 package org.glite.security.voms.admin.view.actions.role;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.apache.struts2.interceptor.TokenInterceptor;
@@ -29,9 +28,10 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
     type = "redirectAction"),
   @Result(name = BaseAction.INPUT, location = "roles"),
   @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "search",
-    type = "chain") })
-@InterceptorRef(value = "authenticatedStack", params = {
-  "token.includeMethods", "execute" })
+    type = "redirectAction") })
+
+  @InterceptorRef(value = "authenticatedStack", params = {
+    "token.includeMethods", "execute","store.operationMode", "STORE"})
 public class DeleteAction extends RoleActionSupport {
 
   /**

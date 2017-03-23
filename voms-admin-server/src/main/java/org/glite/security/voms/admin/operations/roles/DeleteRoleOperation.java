@@ -15,7 +15,6 @@
  */
 package org.glite.security.voms.admin.operations.roles;
 
-import org.apache.commons.lang.xwork.Validate;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.vo.role.RoleDeletedEvent;
 import org.glite.security.voms.admin.operations.BaseVomsOperation;

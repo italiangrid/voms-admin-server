@@ -51,7 +51,7 @@
     <a href="<s:url action="manage" namespace="/acl"/>" class="vomsLink">ACLs</a>
   </li>
   
-  <s:if test="#request.registrationEnabled">
+  <s:if test="#attr.registrationEnabled">
   
     <li>
       <a href="<s:url action="load" namespace="/aup"/>"class="vomsLink">AUPs</a>

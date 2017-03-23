@@ -39,7 +39,7 @@ public class NotificationDelivery {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   Long id;
 
   @ManyToOne(optional = false)
