@@ -1,17 +1,15 @@
 /**
  * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.glite.security.voms.admin.persistence.model.attribute;
 
@@ -71,8 +69,7 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
 
   }
 
-  private VOMSRoleAttribute(VOMSAttributeDescription desc, String value,
-    VOMSGroup g, VOMSRole r) {
+  private VOMSRoleAttribute(VOMSAttributeDescription desc, String value, VOMSGroup g, VOMSRole r) {
 
     this.attributeDescription = desc;
     this.value = value;
@@ -111,17 +108,16 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
     return result;
   }
 
-  public static VOMSRoleAttribute instance(VOMSAttributeDescription desc,
-    String value, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(VOMSAttributeDescription desc, String value, VOMSGroup g,
+      VOMSRole r) {
 
     return new VOMSRoleAttribute(desc, value, g, r);
   }
 
-  public static VOMSRoleAttribute instance(String attrName, String attrDesc,
-    String attrValue, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(String attrName, String attrDesc, String attrValue,
+      VOMSGroup g, VOMSRole r) {
 
-    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
-      attrDesc);
+    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName, attrDesc);
     VOMSRoleAttribute instance = new VOMSRoleAttribute(desc, attrValue, g, r);
 
     return instance;
@@ -138,8 +134,7 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
     return attributeDescription;
   }
 
-  public void setAttributeDescription(
-    VOMSAttributeDescription attributeDescription) {
+  public void setAttributeDescription(VOMSAttributeDescription attributeDescription) {
 
     this.attributeDescription = attributeDescription;
   }
@@ -172,8 +167,10 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
   @Override
   public AttributeValue asAttributeValue() {
 
-    // TODO Auto-generated method stub
-    return null;
+    AttributeValue val =
+        new AttributeValue(getAttributeDescription().asAttributeClass(), getContext(), getValue());
+    return val;
+
   }
 
   @Override

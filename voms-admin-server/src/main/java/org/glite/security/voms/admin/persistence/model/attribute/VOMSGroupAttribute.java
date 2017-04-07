@@ -155,8 +155,9 @@ public class VOMSGroupAttribute implements Serializable, GenericAttributeValue {
   @Override
   public AttributeValue asAttributeValue() {
 
-    // TODO: fixme
-    return null;
+    AttributeValue val = new AttributeValue(getAttributeDescription().asAttributeClass(),
+        getContext(), getValue());
+    return val;
   }
 
   @Override
