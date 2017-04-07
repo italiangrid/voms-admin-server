@@ -87,15 +87,29 @@ public class JSONValidationReportInterceptor extends MethodFilterInterceptor {
 
   protected String generateJSON(ValidationAware validationAware, Throwable t)
     throws IOException, JSONException {
+    return generateJSON(validationAware, t, -1);
+  }
+  
+  protected String generateJSON(ValidationAware validationAware, Throwable t, int statusCode)
+    throws IOException, JSONException {
 
     HttpServletResponse response = ServletActionContext.getResponse();
-
-    if (validationFailedStatus >= 0) {
-      response.setStatus(validationFailedStatus);
-    }
-
-    response.getWriter().print(buildResponse(validationAware, t));
+    
     response.setContentType("application/json");
+    
+    if (statusCode > 0){
+      
+      response.sendError(statusCode, t.getMessage());      
+    
+    } else {
+      if (validationFailedStatus >= 0) {
+        response.setStatus(validationFailedStatus);
+      }
+      String responseContent = buildResponse(validationAware, t);
+      
+      response.getWriter().print(responseContent);
+    }    
+    
     return Action.NONE;
   }
 
