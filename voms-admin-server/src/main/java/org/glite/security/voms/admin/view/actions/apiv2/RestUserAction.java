@@ -64,14 +64,14 @@ public class RestUserAction extends BaseAction implements Preparable,
   }
 
   @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please provide a certificate subject for the user.")
+      message = "Please provide a certificate subject for the user.")
   public String getCertificateSubject() {
 
     return certificateSubject;
   }
 
   @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please provide a certificate issuer subject for the user.")
+      message = "Please provide a certificate issuer subject for the user.")
   public String getCaSubject() {
 
     return caSubject;

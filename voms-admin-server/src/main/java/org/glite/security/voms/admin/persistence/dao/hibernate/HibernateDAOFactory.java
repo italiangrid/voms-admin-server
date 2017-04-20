@@ -71,6 +71,11 @@ public class HibernateDAOFactory extends DAOFactory {
 
   public static class AUPVersionDAOHibernate
     extends GenericHibernateDAO<AUPVersion, Long> implements AUPVersionDAO {
+
+    @Override
+    public AUPVersion findByVersion(String version) {
+      return findByCriteriaUniqueResult(Restrictions.eq("version", version));
+    }
   }
 
   public static class GroupDAOHibernate

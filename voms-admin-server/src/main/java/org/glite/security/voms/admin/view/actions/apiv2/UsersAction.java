@@ -15,96 +15,81 @@
  */
 package org.glite.security.voms.admin.view.actions.apiv2;
 
-import static java.util.Objects.nonNull;
+import java.util.List;
 
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.apiv2.JSONSerializer;
+import org.glite.security.voms.admin.apiv2.ListUserResultJSON;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
-import org.glite.security.voms.admin.operations.users.FindUserOperation;
+import org.glite.security.voms.admin.operations.users.SearchUsersOperation;
+import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("json")
-@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "userInfo"}),
-  @Result(name=UserInfoAction.NOT_FOUND, type="httpheader", params={"error", "404", "errorMessage", "User not found"})
-})
-public class UserInfoAction extends BaseAction implements Preparable {
-
+@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "result"})})
+public class UsersAction extends BaseAction implements Preparable{
+  
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
-
-  public static final String NOT_FOUND = "NOT_FOUND";
+  Integer startIndex;
+  Integer pageSize;
   
-  Long userId = -1L;
+  ListUserResultJSON result;
   
-  String dn = null;
-  String ca = null;
-
-  VOMSUserJSON userInfo;
-  VOMSUser user;
-
   @Override
   public void prepare() throws Exception {
-
-    if (user == null) {
-      
-      if (userId != -1L){
-        user = (VOMSUser) FindUserOperation.instance(userId).execute();
-      } else {
-        
-        if (nonNull(dn) && nonNull(ca)){
-          user = (VOMSUser) FindUserOperation.instance(dn, ca).execute();
-        } else {
-          addActionError("Please provide arguments: userId or the (dn, ca) couple!");
-        }
-      }
+    if (startIndex == null){
+      startIndex = 0;
     }
+    
+    if (pageSize == null){
+      pageSize = 100;
+    }
+    
+    result = null;
   }
-
+  
   @Override
   public String execute() throws Exception {
 
-    if (user == null){
-      return NOT_FOUND;
-    }
+    SearchResults results = SearchUsersOperation.instance("", startIndex, pageSize).execute();
     
-    userInfo = JSONSerializer.serialize(user);
+    List<VOMSUser> users = results.getResults();
+    result = new ListUserResultJSON();
+    result.setCount(results.getCount());
+    result.setPageSize(pageSize);
+    
+    List<VOMSUserJSON> serializedUsers = JSONSerializer.serialize(users);
+    result.setResult(serializedUsers);
+    
     return SUCCESS;
   }
+  
 
-  public VOMSUserJSON getUserInfo() {
-
-    return userInfo;
+  public Integer getStartIndex() {
+    return startIndex;
   }
 
-  public Long getUserId() {
-    return userId;
+  public void setStartIndex(Integer startIndex) {
+    this.startIndex = startIndex;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public Integer getPageSize() {
+    return pageSize;
   }
 
-  public String getDn() {
-    return dn;
+  public void setPageSize(Integer pageSize) {
+    this.pageSize = pageSize;
   }
-
-  public void setDn(String dn) {
-    this.dn = dn;
+  
+  public ListUserResultJSON getResult() {
+    return result;
   }
-
-  public String getCa() {
-    return ca;
-  }
-
-  public void setCa(String ca) {
-    this.ca = ca;
-  }
-
 }

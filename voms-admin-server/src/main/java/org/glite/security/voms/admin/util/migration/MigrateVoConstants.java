@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.glite.security.voms.admin.persistence.dao.generic;
+package org.glite.security.voms.admin.util.migration;
 
-import org.glite.security.voms.admin.persistence.model.AUPVersion;
-
-public interface AUPVersionDAO extends GenericDAO<AUPVersion, Long> {
+public interface MigrateVoConstants {
+  String DEFAULT_SSL_CERT_FILE = "/etc/grid-security/hostcert.pem";
+  String DEFAULT_SSL_KEY = "/etc/grid-security/hostkey.pem";
+  String AXIS_SOCKET_FACTORY_PROPERTY = "axis.socketSecureFactory";
   
-  public AUPVersion findByVersion(String version);
-
+  String ORIGIN_SERVER_ENV ="VA_MIGRATE_ORIGIN_SERVER";
+  String ORIGIN_VO_ENV ="VA_MIGRATE_ORIGIN_VO";
+  
+  String DESTINATION_SERVER_ENV ="VA_MIGRATE_DESTINATION_SERVER";
+  String DESTINATION_VO_ENV ="VA_MIGRATE_DESTINATION_VO";
+  String X509_USER_PROXY_ENV ="X509_USER_PROXY";
 }
