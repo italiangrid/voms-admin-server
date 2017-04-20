@@ -57,6 +57,14 @@ import org.glite.security.voms.service.attributes.VOMSAttributes;
 import org.glite.security.voms.service.attributes.VOMSAttributesServiceLocator;
 
 public class MigrateVo implements MigrateVoConstants, Runnable {
+
+  public static final String USAGE = "Usage: voms-migrate-vo-util\n" + "\n"
+      + "This command requires you to set the following environment variables:\n" + "\n"
+      + "  VA_MIGRATE_ORIGIN_SERVER: the fully qualified host name of the VOMS Admin origin server\n"
+      + "  VA_MIGRATE_ORIGIN_VO: the name of the VO that must be migrated\n"
+      + "  VA_MIGRATE_DESTINATION_SERVER: the fully qualified host name of the VOMS Admin destionation server\n"
+      + "  X509_USER_PROXY: a proxy certificate that has admin rights on the origin and destination vo";
+  
   String originServer;
   String destinationServer;
 
@@ -80,12 +88,43 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   JSONPopulator jsonPopulator = new JSONPopulator();
 
+  protected void usage() {
+
+    System.err.println(USAGE);
+    System.exit(1);
+
+  }
+
   protected void parseEnvironment() {
+
+    String[] mandatoryEnvVars =
+        {ORIGIN_SERVER_ENV, ORIGIN_VO_ENV, X509_USER_PROXY_ENV, DESTINATION_SERVER_ENV};
+
+    for (String v : mandatoryEnvVars) {
+      if (System.getenv(v) == null) {
+        System.err.format("Please set the %s environment variable\n", v);
+        usage();
+      }
+    }
+
     originServer = System.getenv(ORIGIN_SERVER_ENV);
     destinationServer = System.getenv(DESTINATION_SERVER_ENV);
     originVo = System.getenv(ORIGIN_VO_ENV);
     destinationVo = System.getenv(DESTINATION_VO_ENV);
+
+
+    if (destinationVo == null) {
+      destinationVo = originVo;
+    }
+
     proxy = System.getenv(X509_USER_PROXY_ENV);
+
+    if (originServer.equals(destinationServer) && originVo.equals(destinationVo)) {
+      System.err.format(
+          "I will not migrate a VO over itself. Please provide sensible values for %s, %s, %s, %s",
+          ORIGIN_SERVER_ENV, DESTINATION_SERVER_ENV, ORIGIN_VO_ENV, DESTINATION_VO_ENV);
+      System.exit(1);
+    }
 
   }
 
@@ -98,13 +137,13 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
   }
 
   protected VOMSAdmin getAdminService(String url) throws MalformedURLException, ServiceException {
-    VOMSAdminServiceLocator locator = new VOMSAdminServiceLocator();
+    VOMSAdminServiceLocator locator = new CSRFVOMSAdminServiceLocator();
     return locator.getVOMSAdmin(new URL(url));
   }
 
   protected VOMSAttributes getAttributesService(String url)
       throws MalformedURLException, ServiceException {
-    VOMSAttributesServiceLocator locator = new VOMSAttributesServiceLocator();
+    VOMSAttributesServiceLocator locator = new CSRFVOMSAttributesServiceLocator();
     return locator.getVOMSAttributes(new URL(url));
   }
 
@@ -165,9 +204,12 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     GetMethod getMethod =
         new GetMethod(String.format("/voms/%s/apiv2/aup-versions.action", originVo));
 
+    getMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
+
     PostMethod postMethod =
         new PostMethod(String.format("/voms/%s/apiv2/import-aup-versions.action", destinationVo));
 
+    postMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
 
     try {
       client.executeMethod(getMethod);
@@ -176,8 +218,6 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       }
 
       client.getHostConfiguration().setHost(destinationServer, 8443, vomsHttps);
-
-      postMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
 
       StringRequestEntity requestEntity =
           new StringRequestEntity(getMethod.getResponseBodyAsString(), "application/json", "UTF-8");
@@ -284,6 +324,8 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     PostMethod postMethod =
         new PostMethod(String.format("/voms/%s/apiv2/import-user.action", destinationVo));
 
+    postMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
+
     // Check if user exists
     CertificateJSON firstCert = user.getCertificates().stream().findFirst().orElseThrow(
         () -> new IllegalStateException("User without certificate cannot be migrated"));
@@ -297,13 +339,13 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       client.executeMethod(getMethod);
 
       int statusCode = getMethod.getStatusCode();
-      
+
       if (statusCode == 200) {
         System.err.format("User %s %s (%d) already migrated. Skipping it...\n", user.getName(),
             user.getSurname(), user.getId());
         return;
       }
-      
+
       if (statusCode != 404) {
         System.err.format("Error querying user %s %s (%d): %s \n", user.getName(),
             user.getSurname(), user.getId(), getMethod.getStatusText());
@@ -314,7 +356,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
         .stream()
         .map(s -> s.replaceFirst(originVo, destinationVo))
         .collect(Collectors.toList());
-      
+
       user.setFqans(fixedFqans);
 
       String jsonString = jsonWriter.write(user);
@@ -328,7 +370,8 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       if (postMethod.getStatusCode() != 200) {
         throw new RuntimeException("Error importing user: " + postMethod.getStatusText());
       } else {
-        System.out.format("User %s, %s (%d) migrated.\n", user.getName(), user.getSurname(), user.getId());
+        System.out.format("User %s, %s (%d) migrated.\n", user.getName(), user.getSurname(),
+            user.getId());
       }
 
     } finally {
@@ -336,13 +379,14 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     }
   }
 
-  private List<VOMSUserJSON> getUsersFromOriginVo() throws HttpException, IOException,
-      JSONException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-      IllegalArgumentException, InstantiationException, IntrospectionException {
+  private void migrateUsers() throws HttpException, IOException, IllegalAccessException,
+      InvocationTargetException, NoSuchMethodException, IllegalArgumentException,
+      InstantiationException, JSONException, IntrospectionException {
 
     client.getHostConfiguration().setHost(originServer, 8443, vomsHttps);
 
     GetMethod getMethod = new GetMethod(String.format("/voms/%s/apiv2/users.action", originVo));
+    getMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
 
     NameValuePair pageSizeParam = new NameValuePair("pageSize", "10000");
     getMethod.setQueryString(new NameValuePair[] {pageSizeParam});
@@ -366,15 +410,6 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     } finally {
       getMethod.releaseConnection();
     }
-
-    return null;
-  }
-
-  private void migrateUsers() throws HttpException, IOException, IllegalAccessException,
-      InvocationTargetException, NoSuchMethodException, IllegalArgumentException,
-      InstantiationException, JSONException, IntrospectionException {
-
-    getUsersFromOriginVo();
 
   }
 }

@@ -39,7 +39,9 @@ services:
         - ~/yourkit:/yourkit:ro
         - ~/git/voms-admin-server/docker/voms-admin-server/setup:/scripts:ro
         - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
-        - ~/orgdb:/orgdb:ro
+        - ~/git/voms-migrate:/migrate:ro
+          # - ~/orgdb:/orgdb:ro
+
     ports:
        # 20001 is the default yourkit port
        # - "20001:20001"
@@ -59,7 +61,7 @@ services:
 
       # This is the VOMS Admin configuration
       #
-      VOMS_VO_COUNT: 0 # 0 creates 1 VO, 1 two VOs, ...
+      VOMS_VO_COUNT: 1 # 0 creates 1 VO, 1 two VOs, ...
       VOMS_HOSTNAME: dev.local.io
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
@@ -80,7 +82,7 @@ services:
       VOMS_LOAD_DB_DUMP: y
       VOMS_DEV_MODE: y
 
-      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
+      # VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
       VOMS_ARGS: --war /code/voms-admin-server/target/voms-admin.war
 
       # ENABLE_YOURKIT: y

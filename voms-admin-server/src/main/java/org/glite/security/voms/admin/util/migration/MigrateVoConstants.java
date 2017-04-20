@@ -16,8 +16,6 @@
 package org.glite.security.voms.admin.util.migration;
 
 public interface MigrateVoConstants {
-  String DEFAULT_SSL_CERT_FILE = "/etc/grid-security/hostcert.pem";
-  String DEFAULT_SSL_KEY = "/etc/grid-security/hostkey.pem";
   String AXIS_SOCKET_FACTORY_PROPERTY = "axis.socketSecureFactory";
   
   String ORIGIN_SERVER_ENV ="VA_MIGRATE_ORIGIN_SERVER";

@@ -147,6 +147,13 @@
             <destName>voms-audit-log-util</destName>
             <fileMode>0755</fileMode>
         </file>
+        
+        <file>
+            <source>resources/scripts/configure/voms-migrate-vo-util</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-migrate-vo-util</destName>
+            <fileMode>0755</fileMode>
+        </file>
 
         <file>
             <source>resources/scripts/configure/voms_shared.py</source>
