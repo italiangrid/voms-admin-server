@@ -95,6 +95,10 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   }
 
+  protected void printInfo(){
+    
+  }
+  
   protected void parseEnvironment() {
 
     String[] mandatoryEnvVars =
@@ -199,6 +203,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   protected void migrateAUPs() throws Exception {
 
+    System.out.println("Migrating AUPs");
     client.getHostConfiguration().setHost(originServer, 8443, vomsHttps);
 
     GetMethod getMethod =
@@ -228,7 +233,8 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       if (postMethod.getStatusCode() != 200) {
         throw new RuntimeException("Error importing aup versions: " + postMethod.getStatusText());
       }
-
+    } catch (Exception e) {
+      throw new RuntimeException("Error migrating AUP versions: "+e.getMessage(), e);
     } finally {
       getMethod.releaseConnection();
     }
@@ -237,6 +243,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   protected void migrateGroups() throws VOMSException, RemoteException {
 
+    System.out.println("Migrating groups");
     Set<String> destinationGroups = destinationGroups();
     Set<String> originGroupsTranslated = originGroups().stream()
       .map(s -> s.replaceFirst(originVo, destinationVo))
@@ -254,6 +261,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
   }
 
   protected void migrateRoles() throws VOMSException, RemoteException {
+    System.out.println("Migrating roles");
     Set<String> destinationRoles =
         new TreeSet<>(Arrays.asList(destinationAdminService.listRoles()));
     Set<String> originRoles = new TreeSet<>(Arrays.asList(originAdminService.listRoles()));
@@ -271,6 +279,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   protected void migrateAttributeClasses() throws VOMSException, RemoteException {
 
+    System.out.println("Migrating Generic Attribute classes");
     AttributeClass[] originClasses = originAttributeService.listAttributeClasses();
 
     AttributeClass[] destinationClasses = destinationAttributeService.listAttributeClasses();
@@ -292,6 +301,10 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
   public void run() {
     try {
       parseEnvironment();
+      System.out.println("VOMS VO migration tool");
+      System.out.format("Migrating VO %s from %s to %s\n",
+          originVo, originServer, destinationServer);
+      
       initAxis();
       initHttpClient();
       originAdminService = getAdminService(buildVOMSAdminUrl(originServer, originVo));
@@ -320,6 +333,8 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
     GetMethod getMethod =
         new GetMethod(String.format("/voms/%s/apiv2/user-info.action", destinationVo));
+    
+    getMethod.addRequestHeader(CSRFGuardHandler.CSRF_GUARD_HEADER_NAME, "");
 
     PostMethod postMethod =
         new PostMethod(String.format("/voms/%s/apiv2/import-user.action", destinationVo));
@@ -383,6 +398,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       InvocationTargetException, NoSuchMethodException, IllegalArgumentException,
       InstantiationException, JSONException, IntrospectionException {
 
+    System.out.println("Migrating users");
     client.getHostConfiguration().setHost(originServer, 8443, vomsHttps);
 
     GetMethod getMethod = new GetMethod(String.format("/voms/%s/apiv2/users.action", originVo));
@@ -395,7 +411,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       client.executeMethod(getMethod);
 
       if (getMethod.getStatusCode() != 200) {
-        throw new RuntimeException("Error listing aup versions: " + getMethod.getStatusText());
+        throw new RuntimeException("Error users: " + getMethod.getStatusText());
       }
 
       ListUserResultJSON result = new ListUserResultJSON();
@@ -407,6 +423,8 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
         migrateUser(u);
       }
 
+    } catch(Exception e){
+      throw new RuntimeException("Error migrating users: "+e.getMessage(), e);
     } finally {
       getMethod.releaseConnection();
     }
