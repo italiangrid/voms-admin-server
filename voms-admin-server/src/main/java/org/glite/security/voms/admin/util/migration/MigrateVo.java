@@ -288,6 +288,11 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       dcn = Arrays.asList(destinationClasses).stream().map(a -> a.getName()).collect(toSet());
     }
 
+    if (originClasses == null){
+      System.out.println("No attribute classes defined in origin server.");
+      return;
+    }
+    
     for (AttributeClass ac : originClasses) {
       if (!dcn.contains(ac.getName())) {
         System.out.println("Creating GA class: " + ac.getName());
