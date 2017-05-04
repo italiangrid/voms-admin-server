@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.core;
 
+import static org.glite.security.voms.admin.core.VOMSServiceConstants.DISABLE_BACKGROUND_TASK_PROPERTY;
+
 import java.io.File;
 import java.util.EnumSet;
 import java.util.List;
@@ -171,6 +173,13 @@ public final class VOMSService {
 
     VOMSExecutorService es = VOMSExecutorService.instance();
 
+    if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
+      LOG.warn("Background tasks disabled, as requested by system property {}",
+          DISABLE_BACKGROUND_TASK_PROPERTY);
+      return;
+    }
+    
+    
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
 
@@ -205,6 +214,12 @@ public final class VOMSService {
   }
 
   protected static void startNotificationService() {
+    
+    if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
+      LOG.warn("Background tasks disabled, as requested by system property {}",
+          DISABLE_BACKGROUND_TASK_PROPERTY);
+      return;
+    }
 
     if (!VOMSConfiguration.instance()
       .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {
