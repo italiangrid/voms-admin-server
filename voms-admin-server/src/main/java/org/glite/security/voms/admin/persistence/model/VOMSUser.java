@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.persistence.model;
 
+import static org.apache.commons.lang.Validate.isTrue;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,10 +51,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
-import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
@@ -288,17 +290,25 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   }
   
-  
   public void cleanMappings(){
+    
     Iterator<VOMSMapping> mappingsIter = getMappings().iterator();
     
     while (mappingsIter.hasNext()){
       VOMSMapping m = mappingsIter.next();
       mappingsIter.remove();
+      
       m.getGroup().removeMapping(m);
+      
+      isTrue(!m.getGroup().getMappings().contains(m));
+      
       if (m.getRole()!= null){
         m.getRole().removeMapping(m);
+        
+        isTrue(!m.getRole().getMappings().contains(m));
       }
+      
+      HibernateFactory.getSession().delete(m);
     }
   }
 
@@ -364,14 +374,18 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     log.debug("Adding user \"" + this + "\" to group \"" + g + "\".");
 
     VOMSMapping m = new VOMSMapping(this, g, null);
+    
     if (!getMappings().add(m))
       throw new AlreadyExistsException(
         "User \"" + this + "\" is already a member of group \"" + g + "\".");
-
+    
+    m.getGroup().addMapping(m);
+    
     // Add this user to parent groups
     if (!g.isRootGroup()) {
-      if (!isMember(g.parent))
+      if (!isMember(g.parent)){
         addToGroup(g.parent);
+      }
     }
 
   }
@@ -716,25 +730,18 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
             return getEmailAddress().equals(that.getEmailAddress());
 
         return false;
-
-      } else
-        getDefaultCertificate().equals(that.getDefaultCertificate());
-
+      }
     }
 
-    if (getDefaultCertificate() == null) {
-
-      if (getId() == null)
-        throw new IllegalStateException(
-          "No information available to compare two users: this=" + this
-            + " , that=" + that);
-
-      return getId().equals(that.getId());
-
+    if (getDefaultCertificate() != null) {
+      return getDefaultCertificate().equals(that.getDefaultCertificate());  
     }
-
-    return getDefaultCertificate().equals(that.getDefaultCertificate());
-
+    
+    if (getId() != null){
+     return getId().equals(that.getId()); 
+    }
+    
+    return false;
   }
 
   public int hashCode() {
@@ -1366,15 +1373,19 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
         else
           return getSurname().compareTo(that.getSurname());
 
-      } else
-        // One user has name or surname undefined, compare certificates
-        return getDefaultCertificate().compareTo(that.getDefaultCertificate());
+      }
     }
 
-    if (getDefaultCertificate() != null)
+    if (getDefaultCertificate() != null){
       // Both users have name and surname undefined, compare certificates
       return getDefaultCertificate().compareTo(that.getDefaultCertificate());
-
+    }
+    
+    // Compare by id as last resort
+    if (getId() != null){
+      return getId().compareTo(that.getId());
+    }
+    
     return -1;
 
   }
