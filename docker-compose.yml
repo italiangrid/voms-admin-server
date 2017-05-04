@@ -79,7 +79,7 @@ services:
       # VOMS_SKIP_CONFIGURE: y
       VOMS_UPGRADE_DB: y
       
-      VOMS_LOAD_DB_DUMP: y
+      # VOMS_LOAD_DB_DUMP: y
       VOMS_DEV_MODE: y
 
       # VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
@@ -90,6 +90,9 @@ services:
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
+    
+    extra_hosts:
+      - "voms.local.io:192.168.99.101"
 
   voms:
     image: italiangrid/voms-dev:centos6
