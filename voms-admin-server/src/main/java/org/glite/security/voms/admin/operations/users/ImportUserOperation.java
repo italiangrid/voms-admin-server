@@ -42,15 +42,24 @@ import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribu
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.persistence.model.task.Task.TaskStatus;
 import org.glite.security.voms.admin.persistence.model.task.TaskType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportUserOperation implements Callable<VOMSUser> {
 
+  public static final Logger LOG = LoggerFactory.getLogger(ImportUserOperation.class);
+  
   private VOMSUserJSON userJson;
 
   private ImportUserOperation(VOMSUserJSON userJson) {
     this.userJson = userJson;
   }
 
+  private void deleteUser(VOMSUser user){
+    VOMSUserDAO dao = VOMSUserDAO.instance();
+    dao.delete(user);
+  }
+  
   @Override
   public VOMSUser call() throws Exception {
     VOMSUserDAO dao = VOMSUserDAO.instance();
@@ -84,8 +93,20 @@ public class ImportUserOperation implements Callable<VOMSUser> {
       }
     }
     
+    if (userJson.getCertificates().isEmpty()){
+      LOG.error("No certificates found linked to user: {}. Will not import user", user);
+      deleteUser(user);
+      return null;
+    }
     for (CertificateJSON c: userJson.getCertificates()){
       VOMSCA ca = caDao.getByName(c.getIssuerString());
+      
+      if (ca == null){
+        LOG.error("CA not found locally {}. Skipping certificate {}", c.getIssuerString(),
+            c.getSubjectString());
+        continue;
+      }
+      
       Certificate cert = new Certificate();
       cert.setSubjectString(c.getSubjectString());
       cert.setCa(ca);
@@ -97,6 +118,11 @@ public class ImportUserOperation implements Callable<VOMSUser> {
       user.getCertificates().add(cert);
     }
     
+    if (user.getCertificates().isEmpty()){
+      LOG.error("No certificates found for user, will abort the import");
+      deleteUser(user);
+      return null;
+    }
     for (AUPAcceptanceRecordJSON ar: userJson.getAupAcceptanceRecords()){
       AUPVersion version = aupVersionDao.findByVersion(ar.getAupVersion());
       AUPAcceptanceRecord record = new AUPAcceptanceRecord();

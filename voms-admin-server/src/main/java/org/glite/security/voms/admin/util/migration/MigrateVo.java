@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.xml.rpc.ServiceException;
@@ -40,6 +41,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.json.JSONException;
 import org.apache.struts2.json.JSONPopulator;
 import org.apache.struts2.json.JSONReader;
@@ -50,6 +52,9 @@ import org.glite.security.voms.admin.apiv2.ListUserResultJSON;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.service.CSRFGuardHandler;
+import org.glite.security.voms.admin.util.PathNamingScheme;
+import org.glite.security.voms.service.acl.VOMSACL;
+import org.glite.security.voms.service.acl.VOMSACLServiceLocator;
 import org.glite.security.voms.service.admin.VOMSAdmin;
 import org.glite.security.voms.service.admin.VOMSAdminServiceLocator;
 import org.glite.security.voms.service.attributes.AttributeClass;
@@ -75,6 +80,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
 
   VOMSAttributes originAttributeService, destinationAttributeService;
   VOMSAdmin originAdminService, destinationAdminService;
+  VOMSACL originAclService, destinationAclService;
 
   List<String> originGroups = new ArrayList<>();
   List<String> originRoles = new ArrayList<>();
@@ -140,6 +146,11 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     System.setProperty(AXIS_SOCKET_FACTORY_PROPERTY, CANLAxisSocketFactory.class.getName());
   }
 
+  protected VOMSACL getACLService(String url) throws MalformedURLException, ServiceException {
+    VOMSACLServiceLocator locator = new CSRFVOMSACLServiceLocator();
+    return locator.getVOMSACL(new URL(url));
+  }
+  
   protected VOMSAdmin getAdminService(String url) throws MalformedURLException, ServiceException {
     VOMSAdminServiceLocator locator = new CSRFVOMSAdminServiceLocator();
     return locator.getVOMSAdmin(new URL(url));
@@ -150,13 +161,20 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     VOMSAttributesServiceLocator locator = new CSRFVOMSAttributesServiceLocator();
     return locator.getVOMSAttributes(new URL(url));
   }
+  
+  protected String buildVOMSServiceUrl(String service, String host, String vo){
+    return String.format("https://%s:8443/voms/%s/services/%s", host, vo, service);
+  }
 
+  protected String buildVOMSAclUrl(String host, String vo) {
+    return buildVOMSServiceUrl("VOMSACL", host, vo);
+  }
   protected String buildVOMSAttributesUrl(String host, String vo) {
-    return String.format("https://%s:8443/voms/%s/services/VOMSAttributes", host, vo);
+    return buildVOMSServiceUrl("VOMSAttributes", host, vo);
   }
 
   protected String buildVOMSAdminUrl(String host, String vo) {
-    return String.format("https://%s:8443/voms/%s/services/VOMSAdmin", host, vo);
+    return buildVOMSServiceUrl("VOMSAdmin", host, vo);
   }
 
   protected String buildApiv2Url(String host, String vo, String action) {
@@ -237,17 +255,30 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       throw new RuntimeException("Error migrating AUP versions: "+e.getMessage(), e);
     } finally {
       getMethod.releaseConnection();
+      postMethod.releaseConnection();
     }
 
   }
 
+  private int groupNameComparator(String g1, String g2){
+    Integer g1Slashes = StringUtils.countMatches(g1, "/");
+    Integer g2Slashes = StringUtils.countMatches(g2, "/");
+    
+    if (g1Slashes == g2Slashes){
+      return g1.compareTo(g2);
+    } else {
+      return g1Slashes.compareTo(g2Slashes);
+    }
+  }
   protected void migrateGroups() throws VOMSException, RemoteException {
 
     System.out.println("Migrating groups");
     Set<String> destinationGroups = destinationGroups();
-    Set<String> originGroupsTranslated = originGroups().stream()
+    List<String> originGroupsTranslated = originGroups().stream()
       .map(s -> s.replaceFirst(originVo, destinationVo))
-      .collect(Collectors.toSet());
+      .sorted(this::groupNameComparator)
+      .distinct()
+      .collect(Collectors.toList());
 
     if (destinationGroups.containsAll(originGroupsTranslated)) {
       System.out.println("All groups already migrated");
@@ -255,9 +286,11 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       originGroupsTranslated.removeIf(g -> destinationGroups.contains(g));
       for (String g : originGroupsTranslated) {
         System.out.println("Creating group " + g);
-        destinationAdminService.createGroup(null, g);
+        String parentGroupName = PathNamingScheme.getParentGroupName(g);
+        destinationAdminService.createGroup(parentGroupName, g);
       }
     }
+    
   }
 
   protected void migrateRoles() throws VOMSException, RemoteException {
@@ -296,10 +329,15 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
     for (AttributeClass ac : originClasses) {
       if (!dcn.contains(ac.getName())) {
         System.out.println("Creating GA class: " + ac.getName());
-        destinationAttributeService.createAttributeClass(ac.getName(), ac.getDescription(),
+        String description = ac.getDescription() == null ? "" : ac.getDescription();
+        destinationAttributeService.createAttributeClass(ac.getName(), description,
             ac.isUniquenessChecked());
       }
     }
+  }
+  
+  protected void migrateACLs(){
+    
   }
 
   @Override
@@ -312,28 +350,37 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       
       initAxis();
       initHttpClient();
+      
       originAdminService = getAdminService(buildVOMSAdminUrl(originServer, originVo));
       destinationAdminService =
           getAdminService(buildVOMSAdminUrl(destinationServer, destinationVo));
-
+      
+      originAclService = getACLService(buildVOMSAclUrl(originServer, originVo));
+      destinationAclService = getACLService(buildVOMSAclUrl(destinationServer, destinationVo));
+      
       originAttributeService = getAttributesService(buildVOMSAttributesUrl(originServer, originVo));
       destinationAttributeService =
           getAttributesService(buildVOMSAttributesUrl(destinationServer, destinationVo));
 
+      long startTime = System.currentTimeMillis();
       migrateAUPs();
       migrateGroups();
       migrateRoles();
+      migrateACLs();
       migrateAttributeClasses();
       migrateUsers();
+      long endTime = System.currentTimeMillis();
+      System.out.format("Migration completed in %d seconds.\n", 
+          TimeUnit.MILLISECONDS.toSeconds(endTime-startTime));
 
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-
   }
 
-  private void migrateUser(VOMSUserJSON user) throws HttpException, IOException, JSONException {
+  private void migrateUser(VOMSUserJSON user, int current, int count) throws HttpException, IOException, JSONException {
 
+    System.out.format("%d / %d  - ", current, count);
     client.getHostConfiguration().setHost(destinationServer, 8443, vomsHttps);
 
     GetMethod getMethod =
@@ -423,9 +470,15 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
       Object json = jsonReader.read(getMethod.getResponseBodyAsString());
 
       jsonPopulator.populateObject(result, (Map) json);
+      
+      System.out.println("Migrating "+result.getResult().size()+" users...");
 
+      int count = 0;
+      
       for (VOMSUserJSON u : result.getResult()) {
-        migrateUser(u);
+        
+        migrateUser(u,++count,result.getResult().size());
+        
       }
 
     } catch(Exception e){
