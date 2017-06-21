@@ -47,7 +47,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
@@ -695,77 +694,36 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return builder.toString();
   }
 
-  public boolean equals(Object other) {
-
-    if (this == other)
-      return true;
-
-    if (other == null)
-      return false;
-
-    if (!(other instanceof VOMSUser))
-      return false;
-
-    VOMSUser that = (VOMSUser) other;
-
-    // If name and surname are defined for both parties,
-    // users are considered equal if they have the same:
-
-    // 1. name
-    // 2. surname
-    // 3. emailAddress
-
-    // If name or surname aren't defined for a user
-    // the equality check is done on the first certificate.
-
-    // If no certificate is available, the check is done on the
-    // id
-
-    if (getName() != null && getSurname() != null) {
-
-      if (that.getName() != null && that.getSurname() != null) {
-
-        if (getName().equals(that.getName()))
-          if (getSurname().equals(that.getSurname()))
-            return getEmailAddress().equals(that.getEmailAddress());
-
-        return false;
-      }
-    }
-
-    if (getDefaultCertificate() != null) {
-      return getDefaultCertificate().equals(that.getDefaultCertificate());  
-    }
-    
-    if (getId() != null){
-     return getId().equals(that.getId()); 
-    }
-    
-    return false;
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((getDefaultCertificate() == null) ? 0 : 
+      getDefaultCertificate().hashCode());
+    return result;
   }
 
-  public int hashCode() {
-
-    HashCodeBuilder builder = new HashCodeBuilder(11, 59);
-
-    if (getName() != null && getSurname() != null)
-      builder.append(name)
-        .append(surname)
-        .append(emailAddress);
-    else {
-
-      if (getDefaultCertificate() == null) {
-
-        if (dn == null)
-          builder.append(id);
-        else
-          builder.append(dn);
-
-      } else
-        builder.append(getDefaultCertificate().getSubjectString());
-    }
-
-    return builder.toHashCode();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    VOMSUser other = (VOMSUser) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    if (getDefaultCertificate() == null) {
+      if (other.getDefaultCertificate() != null)
+        return false;
+    } else if (!getDefaultCertificate().equals(other.getDefaultCertificate()))
+      return false;
+    return true;
   }
 
   public String getShortName() {
