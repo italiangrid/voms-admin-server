@@ -46,10 +46,12 @@ import org.glite.security.voms.admin.core.tasks.UserStatsTask;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
-import org.glite.security.voms.admin.event.CleanPermissionCacheListener;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.auditing.AuditLog;
+import org.glite.security.voms.admin.event.permission_cache.AclEventsCleanPermissionCacheListener;
+import org.glite.security.voms.admin.event.permission_cache.MembershipEventsCleanPermissionCacheListener;
+import org.glite.security.voms.admin.event.permission_cache.UserEventsCleanPermissionCacheListener;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.servlet.OrgDbHibernateSessionFilter;
@@ -165,7 +167,9 @@ public final class VOMSService {
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
     manager.register(SignAUPReminderDispatcher.instance());
-    manager.register(CleanPermissionCacheListener.instance());
+    manager.register(AclEventsCleanPermissionCacheListener.instance());
+    manager.register(UserEventsCleanPermissionCacheListener.instance());
+    manager.register(MembershipEventsCleanPermissionCacheListener.instance());
 
   }
 
