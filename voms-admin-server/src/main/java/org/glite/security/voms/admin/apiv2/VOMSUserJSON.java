@@ -116,7 +116,7 @@ public class VOMSUserJSON {
     message = "Please provide an institution for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution contains illegal characters!",
-    regex = "^[^<>&=;]*$")
+    regex = "^[^<>=;]*$")
   public String getInstitution() {
 
     return institution;
