@@ -62,9 +62,11 @@ public class UsersAction extends BaseAction implements Preparable{
     SearchResults results = SearchUsersOperation.instance("", startIndex, pageSize).execute();
     
     List<VOMSUser> users = results.getResults();
+    
     result = new ListUserResultJSON();
     result.setCount(results.getCount());
     result.setPageSize(pageSize);
+    result.setStartIndex(startIndex);
     
     List<VOMSUserJSON> serializedUsers = JSONSerializer.serialize(users);
     result.setResult(serializedUsers);
