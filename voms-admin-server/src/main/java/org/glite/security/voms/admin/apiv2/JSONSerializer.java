@@ -48,6 +48,7 @@ public class JSONSerializer {
       json.fqansFrom(user);
       json.attributesFrom(user);
       json.personalInformationFrom(user);
+      json.cernHrIdFrom(user);
 
     } else {
 
@@ -62,6 +63,7 @@ public class JSONSerializer {
 
       if (admin.hasPermissions(VOMSContext.getVoContext(), PI_READ_PERMISSIONS)) {
         json.personalInformationFrom(user);
+        json.cernHrIdFrom(user);
       }
 
     }

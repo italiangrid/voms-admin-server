@@ -51,6 +51,8 @@ public class VOMSUserJSON {
   String phoneNumber;
 
   String emailAddress;
+  
+  Long cernHrId;
 
   Date creationTime;
 
@@ -283,6 +285,10 @@ public class VOMSUserJSON {
 
   }
 
+  public void cernHrIdFrom(VOMSUser user) {
+    this.cernHrId = user.getOrgDbId();
+  }
+  
   public void fqansFrom(VOMSUser user) {
 
     List<String> fqans = new ArrayList<String>();
@@ -339,4 +345,10 @@ public class VOMSUserJSON {
     return u;
   }
 
+  public Long getCernHrId() {
+    return cernHrId;
+  }
+
+  
+  
 }
