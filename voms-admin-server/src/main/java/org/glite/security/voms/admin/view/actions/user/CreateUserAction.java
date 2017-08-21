@@ -113,7 +113,7 @@ public class CreateUserAction extends UserActionSupport {
     message = "Please enter an institution for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution field contains illegal characters!",
-    regex = "^[^<>&=;]*$")
+    regex = "^[^<>=;]*$")
   public String getTheInstitution() {
 
     return theInstitution;
