@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.persistence.model;
 
+import static org.apache.commons.lang.Validate.isTrue;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,14 +47,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
-import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
+import org.glite.security.voms.admin.persistence.HibernateFactory;
 import org.glite.security.voms.admin.persistence.error.AlreadyExistsException;
 import org.glite.security.voms.admin.persistence.error.NoSuchAttributeException;
 import org.glite.security.voms.admin.persistence.error.NoSuchMappingException;
@@ -288,17 +289,25 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   }
   
-  
   public void cleanMappings(){
+    
     Iterator<VOMSMapping> mappingsIter = getMappings().iterator();
     
     while (mappingsIter.hasNext()){
       VOMSMapping m = mappingsIter.next();
       mappingsIter.remove();
+      
       m.getGroup().removeMapping(m);
+      
+      isTrue(!m.getGroup().getMappings().contains(m));
+      
       if (m.getRole()!= null){
         m.getRole().removeMapping(m);
+        
+        isTrue(!m.getRole().getMappings().contains(m));
       }
+      
+      HibernateFactory.getSession().delete(m);
     }
   }
 
@@ -364,14 +373,18 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     log.debug("Adding user \"" + this + "\" to group \"" + g + "\".");
 
     VOMSMapping m = new VOMSMapping(this, g, null);
+    
     if (!getMappings().add(m))
       throw new AlreadyExistsException(
         "User \"" + this + "\" is already a member of group \"" + g + "\".");
-
+    
+    m.getGroup().addMapping(m);
+    
     // Add this user to parent groups
     if (!g.isRootGroup()) {
-      if (!isMember(g.parent))
+      if (!isMember(g.parent)){
         addToGroup(g.parent);
+      }
     }
 
   }
@@ -681,84 +694,36 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return builder.toString();
   }
 
-  public boolean equals(Object other) {
-
-    if (this == other)
-      return true;
-
-    if (other == null)
-      return false;
-
-    if (!(other instanceof VOMSUser))
-      return false;
-
-    VOMSUser that = (VOMSUser) other;
-
-    // If name and surname are defined for both parties,
-    // users are considered equal if they have the same:
-
-    // 1. name
-    // 2. surname
-    // 3. emailAddress
-
-    // If name or surname aren't defined for a user
-    // the equality check is done on the first certificate.
-
-    // If no certificate is available, the check is done on the
-    // id
-
-    if (getName() != null && getSurname() != null) {
-
-      if (that.getName() != null && that.getSurname() != null) {
-
-        if (getName().equals(that.getName()))
-          if (getSurname().equals(that.getSurname()))
-            return getEmailAddress().equals(that.getEmailAddress());
-
-        return false;
-
-      } else
-        getDefaultCertificate().equals(that.getDefaultCertificate());
-
-    }
-
-    if (getDefaultCertificate() == null) {
-
-      if (getId() == null)
-        throw new IllegalStateException(
-          "No information available to compare two users: this=" + this
-            + " , that=" + that);
-
-      return getId().equals(that.getId());
-
-    }
-
-    return getDefaultCertificate().equals(that.getDefaultCertificate());
-
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((getDefaultCertificate() == null) ? 0 : 
+      getDefaultCertificate().hashCode());
+    return result;
   }
 
-  public int hashCode() {
-
-    HashCodeBuilder builder = new HashCodeBuilder(11, 59);
-
-    if (getName() != null && getSurname() != null)
-      builder.append(name)
-        .append(surname)
-        .append(emailAddress);
-    else {
-
-      if (getDefaultCertificate() == null) {
-
-        if (dn == null)
-          builder.append(id);
-        else
-          builder.append(dn);
-
-      } else
-        builder.append(getDefaultCertificate().getSubjectString());
-    }
-
-    return builder.toHashCode();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    VOMSUser other = (VOMSUser) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    if (getDefaultCertificate() == null) {
+      if (other.getDefaultCertificate() != null)
+        return false;
+    } else if (!getDefaultCertificate().equals(other.getDefaultCertificate()))
+      return false;
+    return true;
   }
 
   public String getShortName() {
@@ -1366,15 +1331,19 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
         else
           return getSurname().compareTo(that.getSurname());
 
-      } else
-        // One user has name or surname undefined, compare certificates
-        return getDefaultCertificate().compareTo(that.getDefaultCertificate());
+      }
     }
 
-    if (getDefaultCertificate() != null)
+    if (getDefaultCertificate() != null){
       // Both users have name and surname undefined, compare certificates
       return getDefaultCertificate().compareTo(that.getDefaultCertificate());
-
+    }
+    
+    // Compare by id as last resort
+    if (getId() != null){
+      return getId().compareTo(that.getId());
+    }
+    
     return -1;
 
   }

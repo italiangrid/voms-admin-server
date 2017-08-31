@@ -966,6 +966,8 @@ public class SchemaDeployer {
     checkDatabaseWritable();
 
     SchemaExport export = new SchemaExport();
+    export.setHaltOnError(true);
+    
     
     EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);
 

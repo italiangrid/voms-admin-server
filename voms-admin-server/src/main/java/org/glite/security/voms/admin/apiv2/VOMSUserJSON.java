@@ -51,6 +51,8 @@ public class VOMSUserJSON {
   String phoneNumber;
 
   String emailAddress;
+  
+  Long cernHrId;
 
   Date creationTime;
 
@@ -116,7 +118,7 @@ public class VOMSUserJSON {
     message = "Please provide an institution for the user.")
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution contains illegal characters!",
-    regex = "^[^<>&=;]*$")
+    regex = "^[^<>=;]*$")
   public String getInstitution() {
 
     return institution;
@@ -283,6 +285,10 @@ public class VOMSUserJSON {
 
   }
 
+  public void cernHrIdFrom(VOMSUser user) {
+    this.cernHrId = user.getOrgDbId();
+  }
+  
   public void fqansFrom(VOMSUser user) {
 
     List<String> fqans = new ArrayList<String>();
@@ -331,12 +337,18 @@ public class VOMSUserJSON {
     u.setId(user.getId());
 
     List<CertificateJSON> certs = new ArrayList<CertificateJSON>();
-    for (Certificate c : user.getCertificates())
+    for (Certificate c : user.getCertificates()){
       certs.add(CertificateJSON.fromCertificate(c));
-
+    }
     u.setCertificates(certs);
 
     return u;
   }
 
+  public Long getCernHrId() {
+    return cernHrId;
+  }
+
+  
+  
 }

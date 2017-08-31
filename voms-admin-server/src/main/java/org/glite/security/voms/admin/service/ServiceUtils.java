@@ -38,9 +38,8 @@ import org.glite.security.voms.admin.persistence.model.Certificate;
 import org.glite.security.voms.admin.persistence.model.VOMSAdmin;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
+import org.glite.security.voms.admin.persistence.model.attribute.GenericAttributeValue;
 import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
-import org.glite.security.voms.admin.persistence.model.attribute.VOMSBaseAttribute;
-import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.service.acl.ACLEntry;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
@@ -48,18 +47,19 @@ import org.glite.security.voms.service.certificates.X509Certificate;
 
 public class ServiceUtils {
 
-  public static AttributeValue[] toAttributeValueArray(Collection attributes) {
+  public static AttributeValue[] toAttributeValueArray(Collection<GenericAttributeValue> attributes) {
 
     if (attributes == null || attributes.isEmpty())
       return null;
 
     AttributeValue[] values = new AttributeValue[attributes.size()];
 
-    Iterator i = attributes.iterator();
+    Iterator<GenericAttributeValue> i = attributes.iterator();
     int index = 0;
 
-    while (i.hasNext())
-      values[index++] = ((VOMSBaseAttribute) i.next()).asAttributeValue();
+    while (i.hasNext()){
+      values[index++] = i.next().asAttributeValue();
+    }
 
     return values;
 

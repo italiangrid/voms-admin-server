@@ -24,6 +24,7 @@ public class AUPAcceptanceRecordJSON {
   String aupVersion;
   Date lastAcceptanceDate;
   long daysBeforeExpiration;
+  boolean valid;
 
   public AUPAcceptanceRecordJSON() {
 
@@ -59,11 +60,22 @@ public class AUPAcceptanceRecordJSON {
     this.daysBeforeExpiration = daysBeforeExpiration;
   }
 
+  
+  public boolean isValid() {
+    return valid;
+  }
+
+  public void setValid(boolean valid) {
+    this.valid = valid;
+  }
+
   public static AUPAcceptanceRecordJSON from(AUPAcceptanceRecord rec) {
 
     AUPAcceptanceRecordJSON r = new AUPAcceptanceRecordJSON();
 
     r.setAupVersion(rec.getAupVersion().getVersion());
+    r.setValid(rec.getValid());
+    
     if (rec.getDaysBeforeExpiration() < 0){
       r.setDaysBeforeExpiration(0);
     }else{

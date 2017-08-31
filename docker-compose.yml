@@ -39,7 +39,9 @@ services:
         - ~/yourkit:/yourkit:ro
         - ~/git/voms-admin-server/docker/voms-admin-server/setup:/scripts:ro
         - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
-        - ~/orgdb:/orgdb:ro
+        - ~/git/voms-migrate:/migrate:ro
+          # - ~/orgdb:/orgdb:ro
+
     ports:
        # 20001 is the default yourkit port
        # - "20001:20001"
@@ -59,7 +61,7 @@ services:
 
       # This is the VOMS Admin configuration
       #
-      VOMS_VO_COUNT: 0 # 0 creates 1 VO, 1 two VOs, ...
+      VOMS_VO_COUNT: 1 # 0 creates 1 VO, 1 two VOs, ...
       VOMS_HOSTNAME: dev.local.io
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
@@ -71,13 +73,13 @@ services:
       VOMS_DEPLOY_TARBALL: y
 
       # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
-      VOMS_ADMIN_SERVER_VERSION: 3.3.3
+      # VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
       VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       VOMS_UPGRADE_DB: y
       
-      VOMS_LOAD_DB_DUMP: y
+      # VOMS_LOAD_DB_DUMP: y
       VOMS_DEV_MODE: y
 
       VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
@@ -88,6 +90,9 @@ services:
       # ENABLE_JMX: y
       # HIBERNATE_LOG_LEVEL: DEBUG
       # STRUTS_LOG_LEVEL: DEBUG
+    
+    extra_hosts:
+      - "voms.local.io:192.168.99.101"
 
   voms:
     image: italiangrid/voms-dev:centos6

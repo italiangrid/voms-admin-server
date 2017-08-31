@@ -262,7 +262,7 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
   public void restore(SuspensionReason reason) {
 
-    if (isSuspended() && getSuspensionReasonCode().equals(reason)) {
+    if (isSuspended() && reason.equals(getSuspensionReasonCode())) {
 
       setSuspended(false);
       setSuspensionReasonCode(null);
@@ -273,6 +273,10 @@ public class Certificate implements Serializable, Comparable<Certificate> {
 
   public int compareTo(Certificate o) {
 
+    if (o == null){
+      return -1;
+    }
+    
     CompareToBuilder builder = new CompareToBuilder();
 
     builder.append(subjectString, o.subjectString).append(

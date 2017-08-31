@@ -71,8 +71,7 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
 
   }
 
-  private VOMSRoleAttribute(VOMSAttributeDescription desc, String value,
-    VOMSGroup g, VOMSRole r) {
+  private VOMSRoleAttribute(VOMSAttributeDescription desc, String value, VOMSGroup g, VOMSRole r) {
 
     this.attributeDescription = desc;
     this.value = value;
@@ -111,17 +110,16 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
     return result;
   }
 
-  public static VOMSRoleAttribute instance(VOMSAttributeDescription desc,
-    String value, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(VOMSAttributeDescription desc, String value, VOMSGroup g,
+      VOMSRole r) {
 
     return new VOMSRoleAttribute(desc, value, g, r);
   }
 
-  public static VOMSRoleAttribute instance(String attrName, String attrDesc,
-    String attrValue, VOMSGroup g, VOMSRole r) {
+  public static VOMSRoleAttribute instance(String attrName, String attrDesc, String attrValue,
+      VOMSGroup g, VOMSRole r) {
 
-    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName,
-      attrDesc);
+    VOMSAttributeDescription desc = new VOMSAttributeDescription(attrName, attrDesc);
     VOMSRoleAttribute instance = new VOMSRoleAttribute(desc, attrValue, g, r);
 
     return instance;
@@ -138,8 +136,7 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
     return attributeDescription;
   }
 
-  public void setAttributeDescription(
-    VOMSAttributeDescription attributeDescription) {
+  public void setAttributeDescription(VOMSAttributeDescription attributeDescription) {
 
     this.attributeDescription = attributeDescription;
   }
@@ -172,8 +169,10 @@ public class VOMSRoleAttribute implements Serializable, GenericAttributeValue {
   @Override
   public AttributeValue asAttributeValue() {
 
-    // TODO Auto-generated method stub
-    return null;
+    AttributeValue val =
+        new AttributeValue(getAttributeDescription().asAttributeClass(), getContext(), getValue());
+    return val;
+
   }
 
   @Override

@@ -48,17 +48,18 @@ public class CertificateDAO implements FindByCertificateDAO<Certificate>{
 
     assert dn != null : "Null DN passed as argument!";
 
+    final String normalizedDn = DNUtil.normalizeDN(dn);
     String query = "From Certificate where subjectString = :subjectString";
 
     List<Certificate> dbCerts = (List<Certificate>) HibernateFactory
-      .getSession().createQuery(query).setString("subjectString", dn).list();
+      .getSession().createQuery(query).setString("subjectString", normalizedDn).list();
 
     if (dbCerts.size() > 1)
       throw new VOMSException(
         "Multiple certificates found for the following dn '" + dn
           + "'. Please specify the CA dn!");
 
-    if (dbCerts.size() == 0)
+    if (dbCerts.isEmpty())
       return null;
 
     return dbCerts.get(0);
@@ -69,11 +70,14 @@ public class CertificateDAO implements FindByCertificateDAO<Certificate>{
 
     Validate.notNull(dn, "Please provide a non-null dn");
     Validate.notNull(ca, "Please provide a non-null ca");
+    
+    final String normalizedDn = DNUtil.normalizeDN(dn);
+    final String normalizedCa = DNUtil.normalizeDN(ca);
 
     String query = "From Certificate where subjectString = :subjectString and ca.subjectString = :ca";
 
     Certificate dbCert = (Certificate) HibernateFactory.getSession()
-      .createQuery(query).setString("subjectString", dn).setString("ca", ca)
+      .createQuery(query).setString("subjectString", normalizedDn).setString("ca", normalizedCa)
       .uniqueResult();
 
     return dbCert;

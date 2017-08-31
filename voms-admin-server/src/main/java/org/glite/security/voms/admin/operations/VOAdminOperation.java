@@ -46,7 +46,9 @@ public class VOAdminOperation<V> extends BaseVomsOperation<V> {
       result = task.call();
 
     } catch (Exception e) {
-      throw new VOMSException("Error while executing task", e);
+      String errorMessage = String
+          .format("Error executing %s: %s", task.getClass().getSimpleName(), e.getMessage());
+      throw new VOMSException(errorMessage, e);
     }
 
     return result;

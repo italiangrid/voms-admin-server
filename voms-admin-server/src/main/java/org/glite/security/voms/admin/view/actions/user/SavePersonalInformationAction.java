@@ -160,7 +160,7 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   @RegexFieldValidator(type = ValidatorType.FIELD,
     message = "The institution field contains illegal characters!",
-    regex = "^[^<>&=;]*$")
+    regex = "^[^<>=;]*$")
   public String getTheInstitution() {
 
     return theInstitution;

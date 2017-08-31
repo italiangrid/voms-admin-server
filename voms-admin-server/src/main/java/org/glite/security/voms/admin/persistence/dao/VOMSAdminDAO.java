@@ -131,12 +131,12 @@ public class VOMSAdminDAO implements FindByCertificateDAO<VOMSAdmin>{
     if (subject == null)
       throw new NullArgumentException("subject must be non-null!");
 
-    subject = DNUtil.normalizeDN(subject);
+    final String normalizedSubject = DNUtil.normalizeDN(subject);
 
     Criteria crit = HibernateFactory.getSession()
       .createCriteria(VOMSAdmin.class);
 
-    return (VOMSAdmin) crit.add(Restrictions.eq("dn", subject)).uniqueResult();
+    return (VOMSAdmin) crit.add(Restrictions.eq("dn", normalizedSubject)).uniqueResult();
 
   }
 
@@ -148,15 +148,15 @@ public class VOMSAdminDAO implements FindByCertificateDAO<VOMSAdmin>{
     if (caDN == null)
       throw new NullArgumentException("caDN must be non-null!");
 
-    // Normalize dn & ca
-    dn = DNUtil.normalizeDN(dn);
-    caDN = DNUtil.normalizeDN(caDN);
+    final String normalizedDn = DNUtil.normalizeDN(dn);
+    final String normalizedCaDN = DNUtil.normalizeDN(caDN);
+    
 
     String query = "from VOMSAdmin as a where a.dn = :dn and a.ca.subjectString = :caDN";
     Query q = HibernateFactory.getSession().createQuery(query);
 
-    q.setString("dn", dn);
-    q.setString("caDN", caDN);
+    q.setString("dn", normalizedDn);
+    q.setString("caDN", normalizedCaDN);
 
     return (VOMSAdmin) q.uniqueResult();
 

@@ -172,4 +172,9 @@ public interface VOMSConfigurationConstants {
    * Whether to skip the checks on certificate issuers when authenticating clients
    */
   public static final String SKIP_CA_CHECK = "voms.skip_ca_check";
+  
+  /**
+   * Should permission cache be disabled?
+   */
+  public static final String PERMISSION_CACHE_DISABLE = "voms.permission_cache.disable";
 }

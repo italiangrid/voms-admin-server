@@ -15,15 +15,16 @@
  */
 package org.glite.security.voms.admin.view.interceptors;
 
+import org.glite.security.voms.admin.error.VOMSAuthorizationException;
+
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 
-public class JSONExceptionReportInterceptor extends
-  JSONValidationReportInterceptor {
+public class JSONExceptionReportInterceptor extends JSONValidationReportInterceptor {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   @Override
@@ -35,13 +36,17 @@ public class JSONExceptionReportInterceptor extends
 
       return result;
 
+    } catch (VOMSAuthorizationException e) {
+      log.debug("Authorization error {} while executing action {}", e.getMessage(),
+          invocation.getAction());
+      return generateJSON((ValidationAware) invocation.getAction(), e);
+
     } catch (Throwable t) {
 
-      log.debug("Caught {} while executing action {}", t,
-        invocation.getAction());
+      log.debug("Caught {} while executing action {}", t, invocation.getAction());
       log.debug(t.getMessage(), t);
 
-      return generateJSON((ValidationAware) invocation.getAction(), t);
+      return generateJSON((ValidationAware) invocation.getAction(), t, 500);
 
     }
   }

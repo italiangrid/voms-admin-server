@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.core.validation;
 
+import static org.glite.security.voms.admin.core.VOMSServiceConstants.DISABLE_BACKGROUND_TASK_PROPERTY;
+
 import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.strategies.RequestValidationStrategy;
@@ -60,6 +62,12 @@ public class ValidationManager implements SuspendUserStrategy,
 
   public void startMembershipChecker() {
 
+    if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
+      log.warn("Background tasks disabled, as requested by system property {}",
+          DISABLE_BACKGROUND_TASK_PROPERTY);
+      return;
+    }
+    
     log.debug("Starting membership checker task.");
 
     MembershipCheckerTask checker = new MembershipCheckerTask(

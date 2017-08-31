@@ -155,7 +155,7 @@ public class SubmitRequestAction extends RegisterActionSupport {
 
   @RequiredStringValidator(type = ValidatorType.FIELD,
     message = "Please enter your institution.")
-  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
+  @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>=;]*$",
     message = "You entered invalid characters.")
   public String getInstitution() {
 

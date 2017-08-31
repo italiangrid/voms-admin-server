@@ -791,13 +791,15 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     if (subject == null)
       throw new NullArgumentException("subject cannot be null!");
+    
+    String normalizedSubject = DNUtil.normalizeDN(subject);
 
     String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
 
     Query q = HibernateFactory.getSession()
       .createQuery(query);
 
-    q.setString("subjectString", subject);
+    q.setString("subjectString", normalizedSubject);
 
     VOMSUser u = (VOMSUser) q.uniqueResult();
 

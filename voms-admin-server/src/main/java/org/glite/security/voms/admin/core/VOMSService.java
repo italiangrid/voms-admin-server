@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.core;
 
+import static org.glite.security.voms.admin.core.VOMSServiceConstants.DISABLE_BACKGROUND_TASK_PROPERTY;
+
 import java.io.File;
 import java.util.EnumSet;
 import java.util.List;
@@ -44,10 +46,12 @@ import org.glite.security.voms.admin.core.tasks.UserStatsTask;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
-import org.glite.security.voms.admin.event.CleanPermissionCacheListener;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.auditing.AuditLog;
+import org.glite.security.voms.admin.event.permission_cache.AclEventsCleanPermissionCacheListener;
+import org.glite.security.voms.admin.event.permission_cache.MembershipEventsCleanPermissionCacheListener;
+import org.glite.security.voms.admin.event.permission_cache.UserEventsCleanPermissionCacheListener;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.servlet.OrgDbHibernateSessionFilter;
@@ -163,7 +167,9 @@ public final class VOMSService {
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
     manager.register(SignAUPReminderDispatcher.instance());
-    manager.register(CleanPermissionCacheListener.instance());
+    manager.register(AclEventsCleanPermissionCacheListener.instance());
+    manager.register(UserEventsCleanPermissionCacheListener.instance());
+    manager.register(MembershipEventsCleanPermissionCacheListener.instance());
 
   }
 
@@ -171,6 +177,13 @@ public final class VOMSService {
 
     VOMSExecutorService es = VOMSExecutorService.instance();
 
+    if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
+      LOG.warn("Background tasks disabled, as requested by system property {}",
+          DISABLE_BACKGROUND_TASK_PROPERTY);
+      return;
+    }
+    
+    
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
 
@@ -205,6 +218,12 @@ public final class VOMSService {
   }
 
   protected static void startNotificationService() {
+    
+    if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
+      LOG.warn("Background tasks disabled, as requested by system property {}",
+          DISABLE_BACKGROUND_TASK_PROPERTY);
+      return;
+    }
 
     if (!VOMSConfiguration.instance()
       .getBoolean(VOMSConfigurationConstants.NOTIFICATION_DISABLED, false)) {

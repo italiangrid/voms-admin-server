@@ -132,7 +132,12 @@ def setup_cl_options():
                                help="Skips the check on the certificate issuer when authenticating VOMS Admin clients",
                                default=False)
 
-
+    
+    admin_opt_group.add_option("--disable-permission-cache",
+                               dest="permission_cache_disable",
+                               action="store_true",
+                               help="Disables permission cache for the configured VO",
+                               default="False")
 
     parser.add_option_group(admin_opt_group)
 

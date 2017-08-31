@@ -18,5 +18,7 @@ package org.glite.security.voms.admin.persistence.dao.generic;
 import org.glite.security.voms.admin.persistence.model.AUPVersion;
 
 public interface AUPVersionDAO extends GenericDAO<AUPVersion, Long> {
+  
+  public AUPVersion findByVersion(String version);
 
 }
