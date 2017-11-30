@@ -1,4 +1,4 @@
-FROM italiangrid/base-dev
+FROM italiangrid/base-dev:latest
 
 RUN sed -i 's/socket_timeout=3/socket_timeout=1/' /etc/yum/pluginconf.d/fastestmirror.conf && \
       echo "include_only=.garr.it,.cern.ch" >> /etc/yum/pluginconf.d/fastestmirror.conf && \
