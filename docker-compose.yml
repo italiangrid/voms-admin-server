@@ -40,7 +40,7 @@ services:
         - ~/git/voms-admin-server/docker/voms-admin-server/setup:/scripts:ro
         - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
         - ~/git/voms-migrate:/migrate:ro
-          # - ~/orgdb:/orgdb:ro
+        # - ~/orgdb:/orgdb:ro
 
     ports:
        # 20001 is the default yourkit port
@@ -79,7 +79,7 @@ services:
       # VOMS_SKIP_CONFIGURE: y
       VOMS_UPGRADE_DB: y
       
-      # VOMS_LOAD_DB_DUMP: y
+      #VOMS_LOAD_DB_DUMP: y
       VOMS_DEV_MODE: y
 
       VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
