@@ -146,12 +146,13 @@ services:
 
     environment:
       - MODE=tcp
-      - DOCKER_TLS_VERIFY
-      - DOCKER_HOST
-      - DOCKER_CERT_PATH
+      # - DOCKER_TLS_VERIFY
+      # - DOCKER_HOST
+      # - DOCKER_CERT_PATH
 
     volumes:
-      - $DOCKER_CERT_PATH:$DOCKER_CERT_PATH
+      # - $DOCKER_CERT_PATH:$DOCKER_CERT_PATH
+      - /var/run/docker.sock:/var/run/docker.sock
 
     links:
       - adminserver
