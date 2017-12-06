@@ -15,6 +15,7 @@ mysql_port=${VOMS_MYSQL_PORT}
 
 echo -n "waiting for TCP connection to $mysql_host:$mysql_port..."
 
+
 while ! nc -w 1 $mysql_host $mysql_port 2>/dev/null
 do
   echo -n .
@@ -47,8 +48,11 @@ cp ${SCRIPTS_PREFIX}/tnsnames.ora /home/voms
 chown voms:voms /home/voms/tnsnames.ora
 
 ## Setup certificates
-cp /etc/grid-security/hostcert.pem  /etc/grid-security/vomscert.pem
-cp /etc/grid-security/hostkey.pem  /etc/grid-security/vomskey.pem
+VOMS_X509_CERT=${VOMS_X509_CERT:-/etc/grid-security/hostcert.pem}
+VOMS_X509_KEY=${VOMS_X509_KEY:-/etc/grid-security/hostkey.pem}
+
+cp ${VOMS_X509_CERT}  /etc/grid-security/vomscert.pem
+cp ${VOMS_X509_KEY}  /etc/grid-security/vomskey.pem
 chown voms:voms /etc/grid-security/voms*.pem
 
 # Do this or voms-admin webapp will fail silently and always return 503
