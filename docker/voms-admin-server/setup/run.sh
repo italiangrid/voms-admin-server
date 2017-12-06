@@ -6,10 +6,12 @@ VO_NAME_PREFIX=${VOMS_VO_NAME_PREFIX:-"test"}
 VO_COUNT=${VOMS_VO_COUNT:-1}
 
 VOMS_BASE_CORE_PORT=${VOMS_BASE_CORE_PORT:-15000}
+VOMS_MYSQL_HOST=${VOMS_MYSQL_HOST:-db}
+VOMS_MYSQL_PORT=${VOMS_MYSQL_PORT:-3306}
 
 # Wait for database service to be up
-mysql_host=db
-mysql_port=3306 
+mysql_host=${VOMS_MYSQL_HOST}
+mysql_port=${VOMS_MYSQL_PORT}
 
 echo -n "waiting for TCP connection to $mysql_host:$mysql_port..."
 

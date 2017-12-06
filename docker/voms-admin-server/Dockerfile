@@ -6,7 +6,7 @@ RUN sed -i 's/socket_timeout=3/socket_timeout=1/' /etc/yum/pluginconf.d/fastestm
 
 ADD setup /scripts
 
-RUN yum -y -d2 install sudo && sh /scripts/setup-voms-user.sh
+RUN yum -y install sudo && sh /scripts/setup-voms-user.sh
 
 RUN chmod 755 "/scripts/run.sh"
 RUN cp /scripts/emi-oracle-11.repo  /etc/yum.repos.d && \

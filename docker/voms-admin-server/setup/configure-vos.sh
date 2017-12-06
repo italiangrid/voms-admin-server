@@ -3,6 +3,8 @@ set -ex
 
 VO_NAME_PREFIX=${VOMS_VO_NAME_PREFIX:-"test"}
 VO_COUNT=${VOMS_VO_COUNT:-1}
+VOMS_MYSQL_HOST=${VOMS_MYSQL_HOST:-db}
+VOMS_SMTP_HOST=${VOMS_SMTP_HOST:-mail}
 BASE_CORE_PORT=${VOMS_BASE_CORE_PORT:-15000}
 
 configure_vo(){
@@ -15,9 +17,9 @@ configure_vo(){
     --dbname ${VO_NAME} \
     --dbusername $VOMS_DB_USERNAME \
     --dbpassword $VOMS_DB_PASSWORD \
-    --dbhost db \
+    --dbhost ${VOMS_MYSQL_HOST} \
     --mail-from $VOMS_MAIL_FROM \
-    --smtp-host mail \
+    --smtp-host ${VOMS_SMTP_HOST} \
     --membership-check-period 60 \
     --hostname ${VOMS_HOSTNAME} \
     --core-port $((${BASE_CORE_PORT}+$1)) \

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -x
 
+VOMS_MYSQL_HOST=${VOMS_MYSQL_HOST:-db}
+
 VO_NAME_PREFIX=${VOMS_VO_NAME_PREFIX:-"test"}
 VO_COUNT=${VOMS_VO_COUNT:-1}
 
@@ -14,7 +16,7 @@ create_vo_schema(){
 EOF
 
   cat ${tmp_file}
-  cat ${tmp_file} | mysql -hdb -uroot -p${MYSQL_ROOT_PASSWORD}
+  cat ${tmp_file} | mysql -h${VOMS_MYSQL_HOST} -uroot -p${MYSQL_ROOT_PASSWORD}
 }
 
 
