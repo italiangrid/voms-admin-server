@@ -19,9 +19,11 @@ this mail is to inform you that membership in VO $voName for the following users
 
 #foreach ( $member in $expiredMembers)
 
-$member.shortName membership has expired since $member.daysSinceExpiration days.#if ($member.suspended) The user membership is currently suspended.#else
-The user is still active can get VOMS attributes as usual.
-  
+$member.shortName membership has expired since $member.daysSinceExpiration days.
+#if ($member.suspended) 
+$member.shortName membership is currently suspended.
+#else
+$member.shortName is still active and can get VOMS attributes as usual.
 #end
 
 #end
