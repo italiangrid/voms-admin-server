@@ -1172,7 +1172,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     Query q = HibernateFactory.getSession()
       .createQuery(String.format("select distinct u %s", commonPart));
     Query count = HibernateFactory.getSession()
-      .createQuery(String.format("select count(*) %s", commonPart));
+      .createQuery(String.format("select count(distinct u) %s", commonPart));
 
     q.setString("searchString", sString);
     count.setString("searchString", sString);
