@@ -19,7 +19,9 @@ this mail is to inform you that membership in VO $voName for the following users
 TO EXPIRE:
 
 #foreach ( $user in $expiringUsers)
-#if ($user.daysBeforeEndTime > 0)
+#if ($user.daysBeforeEndTime == 0)
+$user.shortName membership will expire in the next 24 hours 
+#elseif ($user.daysBeforeEndTime > 0)
 $user.shortName membership will expire in $user.daysBeforeEndTime days.
 #end
 #end

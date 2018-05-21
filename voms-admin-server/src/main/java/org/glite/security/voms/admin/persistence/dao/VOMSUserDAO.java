@@ -63,14 +63,10 @@ import org.glite.security.voms.admin.persistence.model.attribute.VOMSUserAttribu
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
 import org.glite.security.voms.admin.util.DNUtil;
 import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,11 +95,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     AUPVersion aupVersion = aup.getActiveVersion();
 
     if (aupVersion == null)
-      throw new NotFoundException(
-        "No registered version found for AUP '" + aup.getName() + "'.");
+      throw new NotFoundException("No registered version found for AUP '" + aup.getName() + "'.");
 
-    log.debug("User '" + user + "' is request to reaccept aup version '"
-      + aupVersion + "'");
+    log.debug("User '" + user + "' is request to reaccept aup version '" + aupVersion + "'");
 
     AUPAcceptanceRecord r = user.getAUPAccceptanceRecord(aupVersion);
 
@@ -119,9 +113,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   public void signAUP(VOMSUser user) {
 
-    signAUP(user, DAOFactory.instance()
-      .getAUPDAO()
-      .getVOAUP());
+    signAUP(user, DAOFactory.instance().getAUPDAO().getVOAUP());
   }
 
   public void signAUP(VOMSUser user, AUP aup) {
@@ -135,8 +127,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     AUPVersion aupVersion = aup.getActiveVersion();
 
     if (aupVersion == null)
-      throw new NotFoundException(
-        "No registered version found for AUP '" + aup.getName() + "'.");
+      throw new NotFoundException("No registered version found for AUP '" + aup.getName() + "'.");
 
     log.debug("User '" + user + "' signing aup version '" + aupVersion + "'");
 
@@ -148,8 +139,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       AUPAcceptanceRecord aupRecord = new AUPAcceptanceRecord(user, aupVersion);
       aupRecord.setLastAcceptanceDate(new Date());
 
-      user.getAupAcceptanceRecords()
-        .add(aupRecord);
+      user.getAupAcceptanceRecords().add(aupRecord);
 
     } else {
 
@@ -174,25 +164,24 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     } while (pendingTask != null);
 
-    if (user.isSuspended() && user.getSuspensionReasonCode()
-      .equals(SuspensionReason.FAILED_TO_SIGN_AUP)) {
+    if (user.isSuspended()
+        && user.getSuspensionReasonCode().equals(SuspensionReason.FAILED_TO_SIGN_AUP)) {
 
       log.debug("Restoring user '" + user + "'");
       user.restore(SuspensionReason.FAILED_TO_SIGN_AUP);
     }
 
-    HibernateFactory.getSession()
-      .saveOrUpdate(user);
+    HibernateFactory.getSession().saveOrUpdate(user);
 
   }
 
   @SuppressWarnings("unchecked")
   public List<VOMSUser> findUsersWithPendingSignAUPTask(AUP aup) {
 
-    String queryString = "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
+    String queryString =
+        "from VOMSUser u join u.tasks t where t.class = SignAUPTask and t.status != 'COMPLETED' and t.aup = :aup";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
     q.setEntity("aup", aup);
 
     return q.list();
@@ -205,8 +194,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     String queryString = "select count(*) from VOMSUser u where u.endTime < :now";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     q.setDate("now", now);
 
@@ -220,8 +208,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     Date now = new Date();
 
     String queryString = "from VOMSUser u where u.endTime is not null and u.endTime < :now";
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     q.setDate("now", now);
 
@@ -237,24 +224,23 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     // Get users First that do not have any acceptance records for the
     // active aupVersion
-    String noAcceptanceRecordForActiveAUPVersionQuery = "select u from VOMSUser u where u not in (select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
+    String noAcceptanceRecordForActiveAUPVersionQuery =
+        "select u from VOMSUser u where u not in (select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true)";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(noAcceptanceRecordForActiveAUPVersionQuery);
+    Query q = HibernateFactory.getSession().createQuery(noAcceptanceRecordForActiveAUPVersionQuery);
 
     List<VOMSUser> noRecordUsers = q.list();
 
     result.addAll(noRecordUsers);
 
-    log.debug("Users without acceptance records for currently active aup: {}",
-      result);
+    log.debug("Users without acceptance records for currently active aup: {}", result);
 
     // Add users that have an expired aup acceptance record due to aup
     // update or acceptance retriggering.
-    String qString = "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
+    String qString =
+        "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true and r.lastAcceptanceDate < :lastUpdateTime";
 
-    Query q2 = HibernateFactory.getSession()
-      .createQuery(qString);
+    Query q2 = HibernateFactory.getSession().createQuery(qString);
 
     Date aupLastUpdateTime = activeVersion.getLastUpdateTime();
 
@@ -264,25 +250,21 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     List<VOMSUser> expiredDueToAUPUpdateUsers = q2.list();
     result.addAll(expiredDueToAUPUpdateUsers);
 
-    log.debug("Users that signed the AUP before it was last updated:"
-      + expiredDueToAUPUpdateUsers);
+    log.debug("Users that signed the AUP before it was last updated:" + expiredDueToAUPUpdateUsers);
 
     // Add users that have a valid aup acceptance record that needs to be
     // checked against
     // the reacceptance period
-    Query q3 = HibernateFactory.getSession()
-      .createQuery(
+    Query q3 = HibernateFactory.getSession().createQuery(
         "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
-          + " and r.lastAcceptanceDate > :lastUpdateTime ");
+            + " and r.lastAcceptanceDate > :lastUpdateTime ");
 
     q3.setTimestamp("lastUpdateTime", aupLastUpdateTime);
 
     List<VOMSUser> potentiallyExpiredUsers = q3.list();
-    HibernateFactory.getSession()
-      .flush();
+    HibernateFactory.getSession().flush();
 
-    log.debug(
-      "Users that needs checking since their aup acceptance record could be expired:"
+    log.debug("Users that needs checking since their aup acceptance record could be expired:"
         + potentiallyExpiredUsers);
 
     for (VOMSUser u : potentiallyExpiredUsers) {
@@ -290,8 +272,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       AUPAcceptanceRecord r = u.getAUPAccceptanceRecord(aup.getActiveVersion());
 
       if (r.hasExpired()) {
-        log.debug("Adding user{} to results due to expired aup acceptance report (aup validity expiration)",
-          u);
+        log.debug(
+            "Adding user{} to results due to expired aup acceptance report (aup validity expiration)",
+            u);
         result.add(u);
 
       }
@@ -300,15 +283,14 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     // Filter out expired users
     ListIterator<VOMSUser> iter = result.listIterator();
-    while (iter.hasNext()){
+    while (iter.hasNext()) {
       VOMSUser u = iter.next();
-      if (u.hasExpired() && u.isSuspended()){
-        log.debug("Removing supended user {} from results since "
-          + "membership expired", u);
+      if (u.hasExpired() && u.isSuspended()) {
+        log.debug("Removing supended user {} from results since " + "membership expired", u);
         iter.remove();
       }
     }
-    
+
     return result;
 
   }
@@ -319,13 +301,11 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     Validate.notEmpty(dn, "DN must be non-null & not empty!");
     Validate.notEmpty(caDn, "CA must be non-null & not empty!");
 
-    VOMSCA ca = VOMSCADAO.instance()
-      .getByName(caDn);
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDn);
     if (ca == null)
       throw new NoSuchCAException("CA '" + caDn + "' not found in database.");
 
-    Certificate cert = CertificateDAO.instance()
-      .lookup(dn, caDn);
+    Certificate cert = CertificateDAO.instance().lookup(dn, caDn);
 
     if (cert != null)
       throw new AlreadyExistsException("Certificate already bound!");
@@ -344,10 +324,8 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       cert.setSuspensionReason(u.getSuspensionReason());
     }
 
-    HibernateFactory.getSession()
-      .saveOrUpdate(cert);
-    HibernateFactory.getSession()
-      .saveOrUpdate(u);
+    HibernateFactory.getSession().saveOrUpdate(cert);
+    HibernateFactory.getSession().saveOrUpdate(u);
 
     return cert;
 
@@ -362,22 +340,19 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     // at this stage.
 
     String caDN = DNUtil.getOpenSSLSubject(x509Cert.getIssuerX500Principal());
-    VOMSCA ca = VOMSCADAO.instance()
-      .getByName(caDN);
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
     if (ca == null)
       throw new NoSuchCAException("CA '" + caDN + "' not recognized!");
 
-    Certificate cert = CertificateDAO.instance()
-      .find(x509Cert);
+    Certificate cert = CertificateDAO.instance().find(x509Cert);
 
     if (cert != null)
       throw new AlreadyExistsException("Certificate already bound!");
 
     cert = new Certificate();
 
-    String subjectString = DNUtil
-      .getOpenSSLSubject(x509Cert.getSubjectX500Principal());
+    String subjectString = DNUtil.getOpenSSLSubject(x509Cert.getSubjectX500Principal());
     cert.setSubjectString(subjectString);
     cert.setCreationTime(new Date());
     cert.setSuspended(false);
@@ -392,10 +367,8 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     u.addCertificate(cert);
 
-    HibernateFactory.getSession()
-      .saveOrUpdate(cert);
-    HibernateFactory.getSession()
-      .saveOrUpdate(u);
+    HibernateFactory.getSession().saveOrUpdate(cert);
+    HibernateFactory.getSession().saveOrUpdate(u);
 
     return cert;
 
@@ -405,72 +378,58 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     log.debug("Adding user \"" + u + "\" to group \"" + g + "\".");
 
-    if (!HibernateFactory.getSession()
-      .contains(u)) {
+    if (!HibernateFactory.getSession().contains(u)) {
 
       VOMSUser checkUser = findById(u.getId());
 
       if (checkUser == null)
-        throw new NoSuchUserException(
-          "User \"" + u + "\" not found in database.");
+        throw new NoSuchUserException("User \"" + u + "\" not found in database.");
     }
 
     // Check that the group exists
-    if (VOMSGroupDAO.instance()
-      .findByName(g.getName()) == null)
-      throw new NoSuchGroupException(
-        "Group \"" + g + "\" is not defined in database.");
+    if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
+      throw new NoSuchGroupException("Group \"" + g + "\" is not defined in database.");
 
     VOMSMapping m = new VOMSMapping(u, g, null);
-    if (u.getMappings()
-      .contains(m))
+    if (u.getMappings().contains(m))
       throw new AlreadyMemberException(
-        "User \"" + u + "\" is already a member of group \"" + g + "\".");
+          "User \"" + u + "\" is already a member of group \"" + g + "\".");
 
-    u.getMappings()
-      .add(m);
+    u.getMappings().add(m);
 
-    HibernateFactory.getSession()
-      .save(u);
+    HibernateFactory.getSession().save(u);
 
   }
 
   public void assignRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
     u.assignRole(g, r);
-    HibernateFactory.getSession()
-      .update(u);
+    HibernateFactory.getSession().update(u);
 
   }
 
   @SuppressWarnings("deprecation")
   private void checkNullFields(VOMSUser usr) {
 
-    if (!VOMSConfiguration.instance()
-      .getBoolean("voms.admin.compatibility-mode", true)) {
+    if (!VOMSConfiguration.instance().getBoolean("voms.admin.compatibility-mode", true)) {
 
       if (usr.getName() == null)
         throw new NullArgumentException("Please specify a name for the user!");
 
       if (usr.getSurname() == null)
-        throw new NullArgumentException(
-          "Please specify a surname for the user!");
+        throw new NullArgumentException("Please specify a surname for the user!");
 
       if (usr.getInstitution() == null)
-        throw new NullArgumentException(
-          "Please specify an instituion for the user!");
+        throw new NullArgumentException("Please specify an instituion for the user!");
 
       if (usr.getAddress() == null)
-        throw new NullArgumentException(
-          "Please specify an address for the user!");
+        throw new NullArgumentException("Please specify an address for the user!");
 
       if (usr.getPhoneNumber() == null)
-        throw new NullArgumentException(
-          "Please specify a phone number for the user!");
+        throw new NullArgumentException("Please specify a phone number for the user!");
 
       if (usr.getEmailAddress() == null)
-        throw new NullArgumentException(
-          "Please specify an email address for the user!");
+        throw new NullArgumentException("Please specify an email address for the user!");
 
     } else {
 
@@ -478,8 +437,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
         throw new NullArgumentException("Please specify a dn for the user!");
 
       if (usr.getEmailAddress() == null)
-        throw new NullArgumentException(
-          "Please specify an email address for the user!");
+        throw new NullArgumentException("Please specify an email address for the user!");
     }
 
   }
@@ -488,14 +446,14 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     String sString = "%" + searchString + "%";
 
-    String countString = "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-      + " or lower(u.institution) like lower(:searchString) "
-      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
-      + " order by u.surname asc";
+    String countString =
+        "select count(distinct u) from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+            + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+            + " or lower(u.institution) like lower(:searchString) "
+            + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+            + " order by u.surname asc";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(countString);
+    Query q = HibernateFactory.getSession().createQuery(countString);
     q.setString("searchString", sString);
 
     Long count = (Long) q.uniqueResult();
@@ -506,16 +464,14 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   public Long countUsers() {
 
-    Query q = HibernateFactory.getSession()
-      .createQuery("select count(*) from VOMSUser");
+    Query q = HibernateFactory.getSession().createQuery("select count(*) from VOMSUser");
 
     Long count = (Long) q.uniqueResult();
 
     return count;
   }
 
-  public VOMSUser create(String dn, String caDN, String cn, String certURI,
-    String emailAddress) {
+  public VOMSUser create(String dn, String caDN, String cn, String certURI, String emailAddress) {
 
     if (dn == null)
       throw new NullArgumentException("dn must be non-null!");
@@ -535,12 +491,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       throw new UserAlreadyExistsException("User " + u + " already exists!");
     }
 
-    VOMSCA ca = VOMSCADAO.instance()
-      .getByName(caDN);
+    VOMSCA ca = VOMSCADAO.instance().getByName(caDN);
 
     if (ca == null) {
-      throw new NoSuchCAException(
-        "Unknown ca " + caDN + ". Will not create user " + dn);
+      throw new NoSuchCAException("Unknown ca " + caDN + ". Will not create user " + dn);
     }
 
     u = new VOMSUser();
@@ -550,18 +504,15 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     // Add user to default VO group
 
-    VOMSGroup voGroup = VOMSGroupDAO.instance()
-      .getVOGroup();
-    HibernateFactory.getSession()
-      .save(u);
+    VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
+    HibernateFactory.getSession().save(u);
 
     addToGroup(u, voGroup);
 
     return u;
   }
 
-  public VOMSUser create(VOMSUserJSON usr, String certificateSubject,
-    String caSubject) {
+  public VOMSUser create(VOMSUserJSON usr, String certificateSubject, String caSubject) {
 
     VOMSUser u = VOMSUser.fromVOMSUserJSON(usr);
 
@@ -570,8 +521,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
-  protected Certificate createCertificate(String certificateSubject,
-    String caSubject) {
+  protected Certificate createCertificate(String certificateSubject, String caSubject) {
 
     CertificateDAO certDAO = CertificateDAO.instance();
 
@@ -579,8 +529,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
-  protected Certificate lookupCertificate(String certificateSubject,
-    String certificateIssuer) {
+  protected Certificate lookupCertificate(String certificateSubject, String certificateIssuer) {
 
     CertificateDAO certDAO = CertificateDAO.instance();
     Certificate cert = certDAO.lookup(certificateSubject, certificateIssuer);
@@ -588,15 +537,14 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     return cert;
   }
 
-  protected Certificate assertCertificateIsNotBound(String certificateSubject,
-    String caSubject) {
+  protected Certificate assertCertificateIsNotBound(String certificateSubject, String caSubject) {
 
     Certificate cert = lookupCertificate(certificateSubject, caSubject);
 
     if (cert != null)
       throw new UserAlreadyExistsException(
-        "A user holding a certificate with the following subject '"
-          + certificateSubject + "' already exists in this VO.");
+          "A user holding a certificate with the following subject '" + certificateSubject
+              + "' already exists in this VO.");
     return cert;
 
   }
@@ -634,12 +582,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     usr.addCertificate(cert);
 
-    HibernateFactory.getSession()
-      .save(usr);
+    HibernateFactory.getSession().save(usr);
 
     // Add user to VO root group
-    VOMSGroup voGroup = VOMSGroupDAO.instance()
-      .getVOGroup();
+    VOMSGroup voGroup = VOMSGroupDAO.instance().getVOGroup();
     usr.addToGroup(voGroup);
 
     return usr;
@@ -652,22 +598,20 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
-  public VOMSUserAttribute createAttribute(VOMSUser u, String attrName,
-    String attrDesc, String value) {
+  public VOMSUserAttribute createAttribute(VOMSUser u, String attrName, String attrDesc,
+      String value) {
 
     if (u.getAttributeByName(attrName) != null)
-      throw new AttributeAlreadyExistsException("Attribute \"" + attrName
-        + "\" already defined for user \"" + u + "\".");
+      throw new AttributeAlreadyExistsException(
+          "Attribute \"" + attrName + "\" already defined for user \"" + u + "\".");
 
-    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-      .getAttributeDescriptionByName(attrName);
+    VOMSAttributeDescription desc =
+        VOMSAttributeDAO.instance().getAttributeDescriptionByName(attrName);
 
     if (desc == null)
-      desc = VOMSAttributeDAO.instance()
-        .createAttributeDescription(attrName, attrDesc);
+      desc = VOMSAttributeDAO.instance().createAttributeDescription(attrName, attrDesc);
 
-    log.debug("Creating attribute \"(" + attrName + "," + value
-      + ")\" for user \"" + u + "\".");
+    log.debug("Creating attribute \"(" + attrName + "," + value + ")\" for user \"" + u + "\".");
     VOMSUserAttribute val = VOMSUserAttribute.instance(desc, value, u);
     u.addAttribute(val);
     return val;
@@ -679,8 +623,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     VOMSUser u = findById(userId);
 
     if (u == null)
-      throw new NoSuchUserException(
-        "User identified by \"" + userId + "\" not found in database!");
+      throw new NoSuchUserException("User identified by \"" + userId + "\" not found in database!");
 
     try {
 
@@ -690,8 +633,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     } catch (ObjectNotFoundException e) {
       // Still don't understand why sometimes findById fails in returnin
       // null...
-      throw new NoSuchUserException(
-        "User identified by \"" + userId + "\" not found in database!");
+      throw new NoSuchUserException("User identified by \"" + userId + "\" not found in database!");
     }
   }
 
@@ -699,24 +641,16 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     log.debug("Deleting user \"{}\"", u);
 
-    DAOFactory.instance()
-      .getRequestDAO()
-      .deleteRequestFromUser(u);
+    DAOFactory.instance().getRequestDAO().deleteRequestFromUser(u);
 
-    u.getCertificates()
-      .clear();
+    u.getCertificates().clear();
     u.cleanMappings();
-    u.getAttributes()
-      .clear();
-    u.getAupAcceptanceRecords()
-      .clear();
-    u.getPersonalInformations()
-      .clear();
-    u.getTasks()
-      .clear();
+    u.getAttributes().clear();
+    u.getAupAcceptanceRecords().clear();
+    u.getPersonalInformations().clear();
+    u.getTasks().clear();
 
-    HibernateFactory.getSession()
-      .delete(u);
+    HibernateFactory.getSession().delete(u);
 
     return u;
 
@@ -738,14 +672,13 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     if (attribute == null) {
       throw new NoSuchAttributeException(
-        "Attribute \"" + attrName + "\" not defined for user \"" + u + "\".");
+          "Attribute \"" + attrName + "\" not defined for user \"" + u + "\".");
     }
 
     log.debug("Deleting attribute \"{}\" for user \"{}\".", attrName, u);
 
     u.deleteAttribute(attribute);
-    HibernateFactory.getSession()
-      .update(u);
+    HibernateFactory.getSession().update(u);
     return attribute;
 
   }
@@ -763,18 +696,15 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     Validate.notNull(u, "Please provide a non-null user.");
     Validate.notNull(cert, "Cannot delete a null certificate.");
 
-    if (u.getCertificates()
-      .size() == 1 && u.hasCertificate(cert))
-      throw new VOMSException(
-        "User has only one certificate registered, so it cannot be removed!");
+    if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
+      throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
 
-    if (!u.getCertificates()
-      .remove(cert)) {
+    if (!u.getCertificates().remove(cert)) {
       // This should never happen
       throw new VOMSDatabaseException(
-        "Inconsistent database! It was not possible to remove certificate '"
-          + cert + "' from user '" + u
-          + "', even if it seemed user actually possessed such certificate.");
+          "Inconsistent database! It was not possible to remove certificate '" + cert
+              + "' from user '" + u
+              + "', even if it seemed user actually possessed such certificate.");
     }
 
   }
@@ -782,8 +712,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   public void dismissRole(VOMSUser u, VOMSGroup g, VOMSRole r) {
 
     u.dismissRole(g, r);
-    HibernateFactory.getSession()
-      .update(u);
+    HibernateFactory.getSession().update(u);
 
   }
 
@@ -791,13 +720,13 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     if (subject == null)
       throw new NullArgumentException("subject cannot be null!");
-    
+
     String normalizedSubject = DNUtil.normalizeDN(subject);
 
-    String query = "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
+    String query =
+        "select u from org.glite.security.voms.admin.persistence.model.VOMSUser u join u.certificates c where c.subjectString = :subjectString";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(query);
+    Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("subjectString", normalizedSubject);
 
@@ -820,10 +749,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     String normalizedSubject = DNUtil.normalizeDN(subject);
     String normalizedIssuer = DNUtil.normalizeDN(issuer);
 
-    String query = "select u from VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
+    String query =
+        "select u from VOMSUser u join u.certificates c where c.subjectString = :subjectString and c.ca.subjectString = :issuerSubjectString";
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(query);
+    Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("subjectString", normalizedSubject);
     q.setString("issuerSubjectString", normalizedIssuer);
@@ -838,9 +767,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     if (emailAddress == null)
       throw new NullArgumentException("emailAddress must be non-null!");
 
-    String query = "from org.glite.security.voms.admin.persistence.model.VOMSUser as u  where u.emailAddress = :emailAddress";
-    Query q = HibernateFactory.getSession()
-      .createQuery(query);
+    String query =
+        "from org.glite.security.voms.admin.persistence.model.VOMSUser as u  where u.emailAddress = :emailAddress";
+    Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setString("emailAddress", emailAddress);
 
@@ -850,28 +779,25 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   public VOMSUser findById(Long userId) {
 
-    return (VOMSUser) HibernateFactory.getSession()
-      .get(VOMSUser.class, userId);
+    return (VOMSUser) HibernateFactory.getSession().get(VOMSUser.class, userId);
   }
 
   public List<VOMSUser> findByOrgdbId(Long orgdbId) {
-    CriteriaBuilder builder = HibernateFactory
-      .getSession().getCriteriaBuilder();
-    
+    CriteriaBuilder builder = HibernateFactory.getSession().getCriteriaBuilder();
+
     CriteriaQuery<VOMSUser> query = builder.createQuery(VOMSUser.class);
     Root<VOMSUser> userRoot = query.from(VOMSUser.class);
     query.where(builder.equal(userRoot.get("orgDbId"), orgdbId));
-    
+
     return HibernateFactory.getSession().createQuery(query).getResultList();
   }
-  
+
   public ScrollableResults findAllWithCursor() {
 
     Query q = HibernateFactory.getSession()
       .createQuery("select u from VOMSUser u order by u.surname asc");
 
-    q.setCacheMode(CacheMode.IGNORE)
-      .scroll(ScrollMode.FORWARD_ONLY);
+    q.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
 
     return q.scroll();
 
@@ -888,8 +814,8 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     return result;
   }
 
-  private SearchResults paginatedFind(Query q, Query countQuery,
-    String searchString, int firstResults, int maxResults) {
+  private SearchResults paginatedFind(Query q, Query countQuery, String searchString,
+      int firstResults, int maxResults) {
 
     SearchResults res = SearchResults.instance();
 
@@ -915,13 +841,11 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     // If endTime is ignored by configuration, we should not consider
     // it for sorting the search results
     boolean endTimeDisabled = VOMSConfiguration.instance()
-      .getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME,
-        false);
+      .getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false);
 
-    if (endTimeDisabled){
+    if (endTimeDisabled) {
       return "order by u.surname asc";
-    }
-    else {
+    } else {
       return "order by u.endTime asc, u.surname asc";
     }
   }
@@ -930,11 +854,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     String query = "from VOMSUser as u " + getUserOrderClause();
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(query);
+    Query q = HibernateFactory.getSession().createQuery(query);
 
-    Query countQ = HibernateFactory.getSession()
-      .createQuery("select count(*) from VOMSUser");
+    Query countQ = HibernateFactory.getSession().createQuery("select count(*) from VOMSUser");
 
     return paginatedFind(q, countQ, null, firstResults, maxResults);
   }
@@ -943,33 +865,29 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     VOMSUser u = findById(userId);
 
-    VOMSGroup g = VOMSGroupDAO.instance()
-      .findById(groupId);
+    VOMSGroup g = VOMSGroupDAO.instance().findById(groupId);
 
     String query = "from VOMSRole r where r not in "
-      + "(select m.role from VOMSMapping m where m.user = :user "
-      + "and m.group = :group and m.role is not null)";
-    
-    Query<VOMSRole> hq =
-      HibernateFactory.getSession().createQuery(query, VOMSRole.class);
-      hq.setParameter("user", u);
-      hq.setParameter("group", g);
-      
+        + "(select m.role from VOMSMapping m where m.user = :user "
+        + "and m.group = :group and m.role is not null)";
+
+    Query<VOMSRole> hq = HibernateFactory.getSession().createQuery(query, VOMSRole.class);
+    hq.setParameter("user", u);
+    hq.setParameter("group", g);
+
     List<VOMSRole> result = hq.getResultList();
 
     return result;
   }
 
   public List<VOMSGroup> getUnsubscribedGroups(Long userId) {
-    
+
     VOMSUser u = findById(userId);
-    
+
     String query = "from VOMSGroup g where g not in "
-      + "(select m.group from VOMSMapping m where m.user = :user "
-      + "and m.role is null)";
-    
-    Query<VOMSGroup> hq =
-    HibernateFactory.getSession().createQuery(query, VOMSGroup.class);
+        + "(select m.group from VOMSMapping m where m.user = :user " + "and m.role is null)";
+
+    Query<VOMSGroup> hq = HibernateFactory.getSession().createQuery(query, VOMSGroup.class);
     hq.setParameter("user", u);
     List<VOMSGroup> result = hq.getResultList();
     return result;
@@ -979,10 +897,8 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     log.debug("Removing user \"" + u + "\" from group \"" + g + "\".");
 
-    if (VOMSGroupDAO.instance()
-      .findByName(g.getName()) == null)
-      throw new NoSuchGroupException(
-        "Group \"" + g + "\" is not defined in database.");
+    if (VOMSGroupDAO.instance().findByName(g.getName()) == null)
+      throw new NoSuchGroupException("Group \"" + g + "\" is not defined in database.");
 
     u.removeFromGroup(g);
 
@@ -992,8 +908,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   public List<VOMSUser> findSuspendedUsers() {
 
     String queryString = "from VOMSUser u where u.suspended = true";
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     return q.list();
   }
@@ -1002,8 +917,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   public List<VOMSUser> findSuspendedUsers(int firstResult, int maxResults) {
 
     String queryString = "from VOMSUser u where u.suspended = true";
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     return q.list();
   }
@@ -1011,35 +925,32 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   public Long countSuspendedUsers() {
 
     String queryString = "select count(*) from VOMSUser u where u.suspended = true";
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     return (Long) q.uniqueResult();
 
   }
 
-  public SearchResults searchExpired(String searchString, int firstResults,
-    int maxResults) {
+  public SearchResults searchExpired(String searchString, int firstResults, int maxResults) {
 
-    log.debug("searchString:" + searchString + ",firstResults: " + firstResults
-      + ",maxResults: " + maxResults);
+    log.debug("searchString:" + searchString + ",firstResults: " + firstResults + ",maxResults: "
+        + maxResults);
 
-    if (searchString == null || searchString.trim()
-      .equals("") || searchString.length() == 0)
+    if (searchString == null || searchString.trim().equals("") || searchString.length() == 0)
       return findAll(firstResults, maxResults);
 
     SearchResults res = SearchResults.instance();
 
     String sString = "%" + searchString + "%";
 
-    String queryString = "select distinct u from VOMSUser u join u.certificates as cert where u.expired = true and (lower(u.surname) like lower(:searchString) "
-      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-      + " or lower(u.institution) like lower(:searchString) "
-      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
-      + getUserOrderClause();
+    String queryString =
+        "select distinct u from VOMSUser u join u.certificates as cert where u.expired = true and (lower(u.surname) like lower(:searchString) "
+            + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+            + " or lower(u.institution) like lower(:searchString) "
+            + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+            + getUserOrderClause();
 
-    Query q = HibernateFactory.getSession()
-      .createQuery(queryString);
+    Query q = HibernateFactory.getSession().createQuery(queryString);
 
     q.setString("searchString", sString);
     q.setFirstResult(firstResults);
@@ -1054,49 +965,40 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     return res;
   }
 
-  public SearchResults searchWithPendingAUPRequest(String searchString,
-    int firstResults, int maxResults) {
+  public SearchResults searchWithPendingAUPRequest(String searchString, int firstResults,
+      int maxResults) {
 
-    AUP aup = DAOFactory.instance()
-      .getAUPDAO()
-      .getVOAUP();
+    AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 
     String queryString = "from VOMSUser u join u.tasks as t join u.certificates as cert "
-      + "where t.class = SignAUPTask and t.status != 'COMPLETED' "
-      + "and t.aup = :aup";
+        + "where t.class = SignAUPTask and t.status != 'COMPLETED' " + "and t.aup = :aup";
 
     String commonSearchString = "and (lower(u.surname) like lower(:searchString) "
-      + "or lower(u.name) like lower(:searchString) "
-      + "or u.emailAddress like :searchString "
-      + "or lower(u.institution) like lower(:searchString) "
-      + "or cert.subjectString like(:searchString) "
-      + "or cert.ca.subjectString like(:searchString))";
+        + "or lower(u.name) like lower(:searchString) " + "or u.emailAddress like :searchString "
+        + "or lower(u.institution) like lower(:searchString) "
+        + "or cert.subjectString like(:searchString) "
+        + "or cert.ca.subjectString like(:searchString))";
 
     if (searchStringEmpty(searchString)) {
 
-      Query q = HibernateFactory.getSession()
-        .createQuery("select distinct u " + queryString)
-        .setEntity("aup", aup);
+      Query q =
+          HibernateFactory.getSession().createQuery("select distinct u " + queryString).setEntity(
+              "aup", aup);
 
-      String countQuery = String.format("select count(distinct u) %s",
-        queryString);
-      Query countQ = HibernateFactory.getSession()
-        .createQuery(countQuery)
-        .setEntity("aup", aup);
+      String countQuery = String.format("select count(distinct u) %s", queryString);
+      Query countQ = HibernateFactory.getSession().createQuery(countQuery).setEntity("aup", aup);
 
       return paginatedFind(q, countQ, null, firstResults, maxResults);
     } else {
       String sString = "%" + searchString + "%";
-      String commonQueryPart = String.format("%s %s", queryString,
-        commonSearchString);
+      String commonQueryPart = String.format("%s %s", queryString, commonSearchString);
 
       Query q = HibernateFactory.getSession()
         .createQuery(String.format("select distinct u %s", commonQueryPart))
         .setEntity("aup", aup);
 
       Query count = HibernateFactory.getSession()
-        .createQuery(
-          String.format("select count(distinct u) %s", commonQueryPart))
+        .createQuery(String.format("select count(distinct u) %s", commonQueryPart))
         .setEntity("aup", aup);
 
       q.setString("searchString", sString);
@@ -1107,16 +1009,14 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
-  public SearchResults searchSuspended(String searchString, int firstResults,
-    int maxResults) {
+  public SearchResults searchSuspended(String searchString, int firstResults, int maxResults) {
 
     if (searchStringEmpty(searchString)) {
 
-      Query q = HibernateFactory.getSession()
-        .createQuery("from VOMSUser u where u.suspended = true");
+      Query q =
+          HibernateFactory.getSession().createQuery("from VOMSUser u where u.suspended = true");
       Query countQ = HibernateFactory.getSession()
-        .createQuery(
-          "select count(*) from VOMSUser u where u.suspended = true");
+        .createQuery("select count(*) from VOMSUser u where u.suspended = true");
 
       return paginatedFind(q, countQ, null, firstResults, maxResults);
 
@@ -1124,11 +1024,12 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
       String sString = "%" + searchString + "%";
 
-      String commonQueryPart = "from VOMSUser u join u.certificates as cert where u.suspended = true and (lower(u.surname) like lower(:searchString) "
-        + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-        + " or lower(u.institution) like lower(:searchString) "
-        + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
-        + getUserOrderClause();
+      String commonQueryPart =
+          "from VOMSUser u join u.certificates as cert where u.suspended = true and (lower(u.surname) like lower(:searchString) "
+              + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+              + " or lower(u.institution) like lower(:searchString) "
+              + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString))"
+              + getUserOrderClause();
 
       // FIXME: this is *UGLY*, use Criteria API instead
       Query q = HibernateFactory.getSession()
@@ -1147,30 +1048,30 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   private boolean searchStringEmpty(String searchString) {
 
-    return (searchString == null || searchString.trim()
-      .equals("") || searchString.length() == 0);
+    return (searchString == null || searchString.trim().equals("") || searchString.length() == 0);
 
   }
 
-  public SearchResults search(String searchString, int firstResults,
-    int maxResults) {
+  public SearchResults search(String searchString, int firstResults, int maxResults) {
 
-    log.debug("searchString:" + searchString + ",firstResults: " + firstResults
-      + ",maxResults: " + maxResults);
+    log.debug("searchString:" + searchString + ",firstResults: " + firstResults + ",maxResults: "
+        + maxResults);
 
     if (searchStringEmpty(searchString))
       return findAll(firstResults, maxResults);
 
     String sString = "%" + searchString + "%";
 
-    String commonPart = "from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
-      + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
-      + " or lower(u.institution) like lower(:searchString) "
-      + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
-      + getUserOrderClause();
+    String commonPart =
+        "from VOMSUser u join u.certificates as cert where lower(u.surname) like lower(:searchString) "
+            + "or lower(u.name) like lower(:searchString) or u.emailAddress like :searchString "
+            + " or lower(u.institution) like lower(:searchString) "
+            + " or cert.subjectString like(:searchString) or cert.ca.subjectString like(:searchString) "
+            + getUserOrderClause();
 
     Query q = HibernateFactory.getSession()
       .createQuery(String.format("select distinct u %s", commonPart));
+
     Query count = HibernateFactory.getSession()
       .createQuery(String.format("select count(distinct u) %s", commonPart));
 
@@ -1181,20 +1082,17 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
-  public VOMSUserAttribute setAttribute(VOMSUser u, String attrName,
-    String attrValue) {
+  public VOMSUserAttribute setAttribute(VOMSUser u, String attrName, String attrValue) {
 
-    VOMSAttributeDescription desc = VOMSAttributeDAO.instance()
-      .getAttributeDescriptionByName(attrName);
+    VOMSAttributeDescription desc =
+        VOMSAttributeDAO.instance().getAttributeDescriptionByName(attrName);
 
     log.debug("AttributeDescription:" + desc);
 
     if (desc == null)
-      throw new NoSuchAttributeException(
-        "Attribute '" + attrName + "' is not defined in this vo.");
+      throw new NoSuchAttributeException("Attribute '" + attrName + "' is not defined in this vo.");
 
-    if (!VOMSAttributeDAO.instance()
-      .isAttributeValueAlreadyAssigned(u, desc, attrValue)) {
+    if (!VOMSAttributeDAO.instance().isAttributeValueAlreadyAssigned(u, desc, attrValue)) {
 
       VOMSUserAttribute val = u.getAttributeByName(desc.getName());
       if (val == null) {
@@ -1206,24 +1104,24 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       return val;
     }
 
-    throw new AttributeValueAlreadyAssignedException("Value '" + attrValue
-      + "' for attribute '" + attrName
-      + "' has been already assigned to another user in this vo! Choose a different value.");
+    throw new AttributeValueAlreadyAssignedException(
+        "Value '" + attrValue + "' for attribute '" + attrName
+            + "' has been already assigned to another user in this vo! Choose a different value.");
 
   }
 
   public VOMSUser update(VOMSUser u) {
 
-    HibernateFactory.getSession()
-      .update(u);
+    HibernateFactory.getSession().update(u);
     return u;
 
   }
 
   public Long countExpiringUsers(Integer intervalInDays) {
 
-    Criteria crit = HibernateFactory.getSession()
-      .createCriteria(VOMSUser.class);
+    String query =
+        "select count(distinct u) from VOMSUser u where u.endTime between :startDate AND :endDate "
+        + "and suspended is false order by u.endTime asc";
 
     Calendar cal = Calendar.getInstance();
 
@@ -1231,23 +1129,18 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
 
     Date intervalDate = cal.getTime();
+    
+    Query q = HibernateFactory.getSession()
+        .createQuery(query);
 
-    crit.add(Restrictions.between("endTime", now, intervalDate));
-    crit.add(Restrictions.eq("suspended", false));
-
-    crit.setProjection(Projections.rowCount());
-
-    return (Long) crit.list()
-      .get(0);
-
+    q.setDate("startDate", now);
+    q.setDate("endDate", intervalDate);
+    return (Long) q.getSingleResult();
   }
 
   @SuppressWarnings("unchecked")
   public List<VOMSUser> findExpiringUsers(Integer intervalInDays) {
-
-    Criteria crit = HibernateFactory.getSession()
-      .createCriteria(VOMSUser.class);
-
+    
     Calendar cal = Calendar.getInstance();
 
     Date now = cal.getTime();
@@ -1255,19 +1148,23 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     Date intervalDate = cal.getTime();
 
-    crit.add(Restrictions.between("endTime", now, intervalDate));
-    crit.add(Restrictions.eq("suspended", false));
-    crit.addOrder(Order.asc("endTime"));
+    String query =
+        "select distinct u from VOMSUser u where u.endTime between :startDate AND :endDate "
+        + "and suspended is false order by u.endTime asc";
 
-    return crit.list();
+    Query q = HibernateFactory.getSession()
+        .createQuery(query);
+    
+    q.setDate("startDate", now);
+    q.setDate("endDate", intervalDate);
 
+    return q.list();
   }
 
   public VOMSUser lookup(String certificateSubject, String certificateIssuer) {
 
-    return LookupPolicyProvider.instance()
-      .lookupStrategy()
-      .lookup(this, certificateSubject, certificateIssuer);
+    return LookupPolicyProvider.instance().lookupStrategy().lookup(this, certificateSubject,
+        certificateIssuer);
 
   }
 
