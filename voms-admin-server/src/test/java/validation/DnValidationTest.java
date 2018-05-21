@@ -15,6 +15,11 @@
  */
 package validation;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import org.glite.security.voms.admin.util.validation.x509.CanlDNValidator;
 import org.glite.security.voms.admin.util.validation.x509.DnValidationResult;
 import org.glite.security.voms.admin.util.validation.x509.DnValidationResult.ValidationError;
@@ -68,8 +73,20 @@ public class DnValidationTest {
     DnValidationResult result = validator.validate(UNKNOWN_CA_SUBJECT,
       "/CN=Ciccio");
 
-    Assert.assertEquals(ValidationError.NAMESPACE_NOT_FOUND, result.getError());
+    assertEquals(ValidationError.NAMESPACE_NOT_FOUND, result.getError());
 
+  }
+  
+  @Test
+  public void testFrenchCaValidationError() {
+    
+    DnValidationResult result =
+        validator.validate( 
+        "/C=FR/O=MENESR/OU=GRID-FR/CN=AC GRID-FR Personnels",
+        "/O=GRID-FR/C=FR/O=CNRS/OU=LLR/CN=Whatever");
+    
+    assertThat(result.getError(), nullValue());
+    assertThat(result.isValid(), is(true));
   }
 
 }
