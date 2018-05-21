@@ -127,6 +127,7 @@
                 <s:submit
                 value="%{'Restore'}"
                 align="right"
+                action="bulk-restore"
                 theme="simple"
                 cssClass="userActionButton"
                 disabled="%{#attr.canSuspend == false}" /> 
@@ -138,7 +139,10 @@
                   action="bulk-extend-membership-expiration"
                   theme="simple"
                   cssClass="userActionButton"
-                  disabled="%{#attr.canSuspend == false}" />
+                  disabled="%{#attr.canSuspend == false}" 
+                  onclick="openConfirmDialog(this, 'extendMembershipMultiDialog', ''); return false"
+                  
+                  />
               </s:if> <s:submit
                 value="%{'Delete'}"
                 align="right"
