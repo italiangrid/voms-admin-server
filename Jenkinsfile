@@ -1,9 +1,13 @@
 pipeline {
   agent { label 'maven' }
+
   parameters {
     booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: false, 
       description: 'Triggers the building of docker images required for development')
   }
+  
+  triggers { cron('@daily') }
+  
   options {
     timeout(time: 1, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5')) 
