@@ -1,5 +1,12 @@
 pipeline {
-  agent { label 'maven' }
+  agent {
+      kubernetes {
+          label "voms-admin-server-${env.JOB_BASE_NAME}-${env.BUILD_NUMBER}"
+          cloud 'Kube mwdevel'
+          defaultContainer 'jnlp'
+          inheritFrom 'ci-template'
+      }
+  }
 
   parameters {
     booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: false, 
@@ -17,7 +24,7 @@ pipeline {
 
     stage('build') {
       steps {
-        container('maven-runner') {
+        container('runner') {
           git(url: 'https://github.com/italiangrid/voms-admin-server.git', branch: env.BRANCH_NAME)
           sh 'mvn -B -U -P prod,EMI clean package'
         }
@@ -30,7 +37,7 @@ pipeline {
         expression { return params.BUILD_DOCKER_IMAGES }
       }
       steps {
-        container('docker-runner') {
+        container('runner') {
           sh '''
           pushd docker/voms-admin-server
           sh build-image.sh && sh push-image.sh
