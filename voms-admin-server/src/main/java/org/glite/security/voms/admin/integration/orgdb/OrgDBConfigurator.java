@@ -38,6 +38,10 @@ import org.slf4j.LoggerFactory;
 
 public class OrgDBConfigurator extends AbstractPluginConfigurator {
 
+  public OrgDBConfigurator(VOMSConfiguration config) {
+    super(config);
+  }
+
   public static final Logger log = LoggerFactory
     .getLogger(OrgDBConfigurator.class);
 

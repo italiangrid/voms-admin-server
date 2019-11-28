@@ -21,6 +21,13 @@ public abstract class AbstractPluginConfigurator implements PluginConfigurator {
 
   private String pluginName = "<undefined>";
 
+
+  private final VOMSConfiguration vomsConfig;
+
+  public AbstractPluginConfigurator(VOMSConfiguration config) {
+    this.vomsConfig = config;
+  }
+
   /**
    * @return the pluginName
    */
@@ -30,8 +37,7 @@ public abstract class AbstractPluginConfigurator implements PluginConfigurator {
   }
 
   /**
-   * @param pluginName
-   *          the pluginName to set
+   * @param pluginName the pluginName to set
    */
   public void setPluginName(String pluginName) {
 
@@ -40,20 +46,21 @@ public abstract class AbstractPluginConfigurator implements PluginConfigurator {
 
   public String getPluginProperty(String propertyName, String defaultValue) {
 
-    return VOMSConfiguration.instance().getExternalValidatorProperty(
-      pluginName, propertyName, defaultValue);
+    return vomsConfig.getExternalValidatorProperty(pluginName, propertyName, defaultValue);
   }
 
   public String getPluginProperty(String propertyName) {
 
-    return VOMSConfiguration.instance().getExternalValidatorProperty(
-      pluginName, propertyName);
+    return vomsConfig.getExternalValidatorProperty(pluginName, propertyName);
 
   }
 
   public String getVomsConfigurationDirectoryPath() {
 
-    return VOMSConfiguration.instance().getConfigurationDirectoryPath();
+    return vomsConfig.getConfigurationDirectoryPath();
   }
 
+  public VOMSConfiguration getVomsConfig() {
+    return vomsConfig;
+  }
 }

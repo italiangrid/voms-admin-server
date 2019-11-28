@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.emi.security.authn.x509.impl.PEMCredential;
 
-public final class VOMSConfiguration {
+public class VOMSConfiguration {
 
   private static volatile VOMSConfiguration instance = null;
 

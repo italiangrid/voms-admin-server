@@ -80,12 +80,8 @@ public class PluginManager {
 
         Class<?> confClazz = Class.forName(pluginConfClassName);
 
-        // I could have used a constructor method to pass down the pluginName
-        // to the actual plugin configurator, but the reflection constructor
-        // code
-        // is not somethin I really love...
         PluginConfigurator pluginConfigurator = (PluginConfigurator) confClazz
-          .newInstance();
+          .getDeclaredConstructor(VOMSConfiguration.class).newInstance(conf);
 
         pluginConfigurator.setPluginName(pluginName);
 
