@@ -81,6 +81,15 @@
           <directoryMode>0755</directoryMode>
         </fileSet>
 
+        <!-- commons-io 1.3.2 jar -->
+        <fileSet>
+          <directory>resources/jars</directory>
+          <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
+          <includes>
+            <include>commons-io-1.3.2.jar</include>
+          </includes>
+          <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 
 
@@ -92,6 +101,7 @@
 
             <excludes>
               <exclude>org.italiangrid:voms-container</exclude>
+              <exclude>commons-io:commons-io</exclude>
             </excludes>
 
             <outputFileNameMapping>

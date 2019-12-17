@@ -31,6 +31,10 @@
 
   <name>VOMS Jetty Container</name>
 
+  <properties>
+    <commons-io.version>1.3.2</commons-io.version>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -112,6 +116,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
     </dependency>
 
     <dependency>
