@@ -16,7 +16,9 @@
 package org.glite.security.voms.admin.operations.groups;
 
 import org.glite.security.voms.admin.operations.BaseMemberhipReadOperation;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
+import org.glite.security.voms.admin.operations.VOMSPermission;
 import org.glite.security.voms.admin.persistence.dao.VOMSGroupDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
@@ -25,11 +27,14 @@ import org.glite.security.voms.admin.view.actions.SearchData;
 
 public class SearchMembersOperation extends BaseMemberhipReadOperation {
 
+  public static final VOMSPermission PERSONAL_INFO_READ =
+      VOMSPermission.getEmptyPermissions().setPersonalInfoReadPermission();
+
   int firstResult = 0, maxResults = 0;
   String searchString;
 
-  private SearchMembersOperation(VOMSContext c, String searchString,
-    int firstResult, int maxResults) {
+  private SearchMembersOperation(VOMSContext c, String searchString, int firstResult,
+      int maxResults) {
 
     super(c);
 
@@ -38,8 +43,8 @@ public class SearchMembersOperation extends BaseMemberhipReadOperation {
     this.searchString = searchString;
   }
 
-  private SearchMembersOperation(VOMSGroup g, VOMSRole r, String searchString,
-    int firstResult, int maxResults) {
+  private SearchMembersOperation(VOMSGroup g, VOMSRole r, String searchString, int firstResult,
+      int maxResults) {
 
     super(VOMSContext.instance(g, r));
 
@@ -52,34 +57,45 @@ public class SearchMembersOperation extends BaseMemberhipReadOperation {
 
   protected Object doExecute() {
 
-    if (!__context.isGroupContext())
-      return VOMSRoleDAO.instance().searchMembers(__context.getGroup(),
-        __context.getRole(), searchString, firstResult, maxResults);
+    if (CurrentAdmin.instance().hasPermissions(VOMSContext.getVoContext(), PERSONAL_INFO_READ)) {
+      if (!__context.isGroupContext()) {
+        return VOMSRoleDAO.instance()
+          .searchMembers(__context.getGroup(), __context.getRole(), searchString, firstResult,
+              maxResults);
+      } else {
+        return VOMSGroupDAO.instance()
+          .searchMembers(__context.getGroup(), searchString, firstResult, maxResults);
+      }
+    } else {
 
-    return VOMSGroupDAO.instance().searchMembers(__context.getGroup(),
-      searchString, firstResult, maxResults);
+      if (!__context.isGroupContext()) {
+        return VOMSRoleDAO.instance()
+          .searchMemberBySubject(__context.getGroup(), __context.getRole(), searchString,
+              firstResult, maxResults);
 
+      } else {
+        return VOMSGroupDAO.instance()
+          .searchMembersBySubject(__context.getGroup(), searchString, firstResult, maxResults);
+      }
+    }
   }
 
-  public static SearchMembersOperation instance(VOMSGroup g, VOMSRole r,
-    String searchString, int firstResult, int maxResults) {
+  public static SearchMembersOperation instance(VOMSGroup g, VOMSRole r, String searchString,
+      int firstResult, int maxResults) {
 
-    return new SearchMembersOperation(g, r, searchString, firstResult,
-      maxResults);
+    return new SearchMembersOperation(g, r, searchString, firstResult, maxResults);
   }
 
-  public static SearchMembersOperation instance(VOMSGroup g,
-    String searchString, int firstResult, int maxResults) {
+  public static SearchMembersOperation instance(VOMSGroup g, String searchString, int firstResult,
+      int maxResults) {
 
-    return new SearchMembersOperation(g, null, searchString, firstResult,
-      maxResults);
+    return new SearchMembersOperation(g, null, searchString, firstResult, maxResults);
   }
 
   public static SearchMembersOperation instance(SearchData sd) {
 
     VOMSContext ctxt = VOMSContext.instance(sd.getGroupId(), sd.getRoleId());
 
-    return new SearchMembersOperation(ctxt, sd.getText(), sd.getFirstResult(),
-      sd.getMaxResults());
+    return new SearchMembersOperation(ctxt, sd.getText(), sd.getFirstResult(), sd.getMaxResults());
   }
 }

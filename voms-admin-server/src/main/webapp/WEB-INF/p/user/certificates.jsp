@@ -17,6 +17,8 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
+<voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ" />
+
 <div class="reloadable">
 
 <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp"/>
@@ -53,12 +55,13 @@
 					var="thisCertCA" />${thisCertCA}
 				</div>
 
-				<div class="cert-date-info">Added on: <span>
-                  <s:text name="format.datetime">
-                    <s:param
-                      value="creationTime" />
-                  </s:text></span></div>
-
+                <s:if test="#attr.canReadPI">
+  				<div class="cert-date-info">Added on: <span>
+                    <s:text name="format.datetime">
+                      <s:param
+                        value="creationTime" />
+                    </s:text></span></div>
+                </s:if>
 				<div class="badge-container">
                   <tiles2:insertTemplate template="suspensionDetail.jsp"/>
                 </div>

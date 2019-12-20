@@ -17,7 +17,9 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<s:if test="not requests.empty">
+<voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ" />
+
+<s:if test="not requests.empty and #attr.canReadPI">
 
   <table>
     <tr>

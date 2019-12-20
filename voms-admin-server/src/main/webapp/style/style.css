@@ -69,14 +69,14 @@
   font-size: xx-small;
   display: block;
   float: right;
-  margin-bottom: .5ex;
+  margin-bottom: 1ex;
 }
 
 .resultsFooter {
   font-size: xx-small;
   display: block;
   float: right;
-  margin-top: .5ex;
+  margin-top: 1ex;
 }
 
 .resultsCount {

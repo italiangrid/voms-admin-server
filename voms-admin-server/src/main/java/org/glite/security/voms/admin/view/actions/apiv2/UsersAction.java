@@ -31,7 +31,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("json")
-@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "result"})})
+@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "result", "excludeNullProperties", "true"})})
 public class UsersAction extends BaseAction implements Preparable{
   
   /**
