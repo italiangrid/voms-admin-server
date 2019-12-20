@@ -15,15 +15,18 @@
  */
 package org.glite.security.voms.admin.persistence.dao;
 
+import static java.lang.Integer.max;
 import static org.glite.security.voms.admin.persistence.dao.SearchUtils.paginatedFind;
 
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -202,6 +205,22 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     return (Long) q.uniqueResult();
 
+  }
+
+  public ScrollableResults findUsersExpiredSinceDays(int numberOfDays) {
+
+    Instant now = Instant.now();
+
+    Instant then = now.minusSeconds(TimeUnit.DAYS.toSeconds(max(0, numberOfDays)));
+    String queryString =
+        "select distinct u from VOMSUser u where u.endTime is not null and u.endTime < :then and u.suspended = true";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    q.setDate("then", Date.from(then));
+    
+    q.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
+
+    return q.scroll();
   }
 
   @SuppressWarnings("unchecked")

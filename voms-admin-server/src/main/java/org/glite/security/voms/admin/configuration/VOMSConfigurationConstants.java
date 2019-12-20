@@ -184,4 +184,9 @@ public interface VOMSConfigurationConstants {
   public static final String PI_REQUIRED_FIELDS = "voms.personal_info.required_fields";
   
   public static final String PI_REQUIRED_FIELDS_DEFAULT = "institution,address,phoneNumber";
+  
+  public static final String EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD= "voms.expired_user_cleanup_task.run_period_sec";
+  
+  public static final String EXPIRED_USER_CLEANUP_TASK_CLEANUP_AFTER_DAYS= "voms.expired_user_cleanup_task.cleanup_after_days";
+  
 }

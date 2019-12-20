@@ -15,6 +15,7 @@
  */
 package org.glite.security.voms.admin.core;
 
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD;
 import static org.glite.security.voms.admin.core.VOMSServiceConstants.DISABLE_BACKGROUND_TASK_PROPERTY;
 
 import java.io.File;
@@ -44,6 +45,8 @@ import org.glite.security.voms.admin.core.tasks.ThreadUncaughtExceptionHandler;
 import org.glite.security.voms.admin.core.tasks.UpdateCATask;
 import org.glite.security.voms.admin.core.tasks.UserStatsTask;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
+import org.glite.security.voms.admin.core.tasks.user_cleanup.DefaultCleanupUserLookupStrategy;
+import org.glite.security.voms.admin.core.tasks.user_cleanup.ExpiredUserCleanupTask;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
 import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
@@ -214,6 +217,10 @@ public final class VOMSService {
       UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
     
     es.scheduleAtFixedRate(new PermissionCacheStatsLogger(true), 1, 60, TimeUnit.SECONDS);
+    
+    ExpiredUserCleanupTask userCleanupTask = new ExpiredUserCleanupTask(new DefaultCleanupUserLookupStrategy(conf));
+    
+    es.startBackgroundTask(userCleanupTask, EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD, TimeUnit.HOURS.toSeconds(4));
     
   }
 
