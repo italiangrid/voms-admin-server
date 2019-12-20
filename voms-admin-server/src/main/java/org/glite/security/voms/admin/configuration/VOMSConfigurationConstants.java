@@ -177,4 +177,11 @@ public interface VOMSConfigurationConstants {
    * Should permission cache be disabled?
    */
   public static final String PERMISSION_CACHE_DISABLE = "voms.permission_cache.disable";
+  
+  /**
+   * comma-separated list of the personal information fields required at registration 
+   */
+  public static final String PI_REQUIRED_FIELDS = "voms.personal_info.required_fields";
+  
+  public static final String PI_REQUIRED_FIELDS_DEFAULT = "institution,address,phoneNumber";
 }

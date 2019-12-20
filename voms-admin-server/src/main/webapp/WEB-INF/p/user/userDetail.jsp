@@ -20,7 +20,7 @@
 <voms:hasPermissions var="canDelete" context="vo" permission="rw" />
 <voms:hasPermissions var="canSuspend" context="vo" permission="SUSPEND" />
 <div class="usernameHeader">
-  <s:if test="#attr.canReadPI">
+  <s:if test="#attr.canReadPI or #attr.currentAdmin.is(model)">
     <s:if test="name != null and surname != null and name.trim() != '' and surname.trim() != ''">
       <div>
         <s:property value="name+ ' ' +surname" />

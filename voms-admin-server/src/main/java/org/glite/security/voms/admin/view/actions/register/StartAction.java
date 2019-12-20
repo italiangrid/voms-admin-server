@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.view.actions.register;
 
+import java.util.Set;
+
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
@@ -40,6 +42,17 @@ public class StartAction extends RegisterActionSupport {
 	 */
   private static final long serialVersionUID = 1L;
 
+  private Set<String> requiredFields;
+  
+  public Set<String> getRequiredFields() {
+    return requiredFields;
+  }
+  
+  @Override
+  public void prepare() throws Exception {
+   super.prepare();
+   requiredFields = VOMSConfiguration.instance().getRequiredPersonalInfoFields();
+  }
   @Override
   public String execute() throws Exception {
 

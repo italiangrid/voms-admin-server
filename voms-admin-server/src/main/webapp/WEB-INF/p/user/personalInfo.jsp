@@ -16,49 +16,38 @@
 
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
-
 <div class="reloadable">
-	<voms:hasPermissions var="canReadPI" context="vo"
-		permission="PERSONAL_INFO_READ" />
-
-	<s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
-		<tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
-
-		<s:form action="save-personal-information"
-			onsubmit="ajaxSubmit(this,'pers-info-content'); return false;">
-
-			<s:token />
-
-			<s:hidden name="userId" value="%{id}" />
-
-			<s:textfield name="theName" label="Given name" size="80"
-				cssClass="registrationField" value="%{name}" disabled="false"
-				readonly="%{#attr.readOnlyPI}" />
-
-			<s:textfield name="theSurname" disabled="false" label="Family name"
-				size="80" cssClass="registrationField" value="%{surname}"
-				readonly="%{#attr.readOnlyPI}" />
-
-			<s:textfield name="theInstitution" disabled="false"
-				label="Institution" size="80" cssClass="registrationField"
-				value="%{institution}" readonly="%{#attr.readOnlyPI}" />
-
-			<s:textarea name="theAddress" disabled="false" label="Address"
-				rows="4" cols="80" cssClass="registrationField" value="%{address}" />
-
-			<s:textfield name="thePhoneNumber" disabled="false" label="Phone"
-				size="80" cssClass="registrationField" value="%{phoneNumber}"
-        />
-
-			<s:textfield name="theEmailAddress" disabled="false" label="Email"
-				size="80" cssClass="registrationField" value="%{emailAddress}" 
-				readonly="%{#attr.readOnlyPI}" />
-
-			<s:submit value="%{'Change personal information'}" />
-			
-		</s:form>
-	</s:if>
-	<s:else>
+  <voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ" />
+  <s:if test="#attr.canReadPI or (#attr.currentAdmin.is(model))">
+    <tiles2:insertTemplate template="../shared/errorsAndMessages.jsp" />
+    <s:form action="save-personal-information" onsubmit="ajaxSubmit(this,'pers-info-content'); return false;">
+      <s:token />
+      <s:hidden name="userId" value="%{id}" />
+      <s:textfield name="theName" label="Given name" size="80" cssClass="registrationField" value="%{name}"
+        disabled="false" readonly="%{#attr.readOnlyPI}" />
+      <s:textfield name="theSurname" disabled="false" label="Family name" size="80" cssClass="registrationField"
+        value="%{surname}" readonly="%{#attr.readOnlyPI}" />
+      <s:if test="requiredFields.contains('institution')">
+        <s:textfield name="theInstitution" disabled="false" label="Institution" size="80" cssClass="registrationField"
+          value="%{institution}" readonly="%{#attr.readOnlyPI}" />
+      </s:if>
+      <s:if test="requiredFields.contains('address')">
+        <s:textarea name="theAddress" disabled="false" label="Address" rows="4" cols="80" cssClass="registrationField"
+          value="%{address}" />
+      </s:if>
+      <s:if test="requiredFields.contains('phoneNumber')">
+        <s:textfield name="thePhoneNumber" disabled="false" label="Phone" size="80" cssClass="registrationField"
+          value="%{phoneNumber}" />
+      </s:if>
+      <s:textfield name="theEmailAddress" disabled="false" label="Email" size="80" cssClass="registrationField"
+        value="%{emailAddress}" readonly="%{#attr.readOnlyPI}" />
+      
+      <s:if test="requiredFields.size() > 0">
+        <s:submit value="%{'Change personal information'}" />
+      </s:if>
+    </s:form>
+  </s:if>
+  <s:else>
 		You do not have the rights to see the personal information for this user.
 	</s:else>
 </div>

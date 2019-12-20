@@ -24,7 +24,7 @@ Welcome to the registration page for the <span class="voName">${voName}</span> V
 <p>
 To access the VO resources, you must agree to the VO's Acceptable Usage Policy (AUP) rules.
 <br/>
-Please fill out all fields in the form below and click on the submit
+Please fill out all the fields in the form below and click on the submit
 button at the bottom of the page.
 </p>
 <div>
@@ -62,15 +62,23 @@ button at the bottom of the page.
     <li>
       <s:textfield name="surname" label="%{'Family name'}" size="40" cssClass="registrationField"/>
     </li>
-    <li>
-      <s:textfield name="institution" label="%{'Institution'}" size="40" cssClass="registrationField"/>
-    </li>
-    <li>
-      <s:textfield name="phoneNumber" label="%{'Phone number'}" size="40" cssClass="registrationField"/>
-    </li>
-    <li>
-      <s:textarea name="address" label="%{'Address'}" rows="5" cols="40" cssClass="registrationField"/>
-    </li>
+    <s:if test="requiredFields.contains('institution')">
+      <li>
+        <s:textfield name="institution" label="%{'Institution'}" size="40" cssClass="registrationField"/>
+      </li>
+    </s:if>
+    <s:if test="requiredFields.contains('phoneNumber')">
+      <li>
+        <s:textfield name="phoneNumber" label="%{'Phone number'}" size="40" cssClass="registrationField"/>
+      </li>
+    </s:if>
+    
+    <s:if test="requiredFields.contains('address')">
+      <li>
+        <s:textarea name="address" label="%{'Address'}" rows="5" cols="40" cssClass="registrationField"/>
+      </li>
+    </s:if>
+    
     <li>
       <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Email address'}" cssClass="registrationField"/>
     </li>

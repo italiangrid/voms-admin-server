@@ -24,7 +24,7 @@ Welcome to the registration page for the <span class="voName">${voName}</span> V
 <p>
 To access the VO resources, you must agree to the VO's Acceptable Usage Policy (AUP) rules.
 <br/>
-Please fill out all fields in the form below and click on the submit
+Please fill out all the fields in the form below and click on the submit
 button at the bottom of the page.
 </p>
 <p>
@@ -63,12 +63,6 @@ used to contact you in relation to this activity.
     </li>
     <li>
       <s:textfield name="institution" label="%{'Your institution'}" size="40" cssClass="registrationField" readonly="true" value="%{requester.institution}"/>
-    </li>
-    <li>
-      <s:textfield name="phoneNumber" label="%{'Your phone number'}" size="40" cssClass="registrationField" value="%{requester.phoneNumber}" />
-    </li>
-    <li>
-      <s:textarea name="address" label="%{'Your address'}" rows="5" cols="40" cssClass="registrationField" value="%{requester.address}" />
     </li>
     <li>
       <s:textfield name="emailAddress" value="%{requester.emailAddress}" size="60" label="%{'Your email address'}" cssClass="registrationField" readonly="true"/>

@@ -17,12 +17,17 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 <voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ" />
-<s:if test="#attr.canReadPI">
+<s:if test="#attr.canReadPI or #attr.currentAdmin.is(#user)">
   <div class="personal-info">
     <s:if test="name != null and name != ''">
       <div class="username">
         <s:property value="%{#user.name + ' ' + #user.surname}" />
       </div>
+      <s:if test="#attr.currentAdmin.is(#user)">
+        <div class="badge-container">
+             <span class="blabel">you</span>
+        </div>
+      </s:if>
     </s:if>
     <s:else>
       <div class="username">

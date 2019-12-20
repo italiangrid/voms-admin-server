@@ -19,7 +19,7 @@
 
 <voms:hasPermissions var="canReadPI" context="vo" permission="PERSONAL_INFO_READ" />
 
-<s:if test="not requests.empty and #attr.canReadPI">
+<s:if test="not requests.empty and (#attr.canReadPI or #attr.currentAdmin.is(model))">
 
   <table>
     <tr>

@@ -17,8 +17,10 @@ package org.glite.security.voms.admin.view.actions.user;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.struts2.interceptor.SessionAware;
+import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.dao.generic.RequestDAO;
 import org.glite.security.voms.admin.persistence.model.AUP;
@@ -62,6 +64,8 @@ public class UserActionSupport extends BaseAction implements
   protected List<MembershipRemovalRequest> pendingMembershipRemovalRequests;
 
   protected Map<String, Object> theSession;
+  
+  protected Set<String> requiredFields;
 
   public VOMSUser getModel() {
 
@@ -88,7 +92,8 @@ public class UserActionSupport extends BaseAction implements
     if (getModel() != null){
       refreshPendingRequests();
     }
-
+    
+    requiredFields = VOMSConfiguration.instance().getRequiredPersonalInfoFields();
   }
 
   public Long getUserId() {
@@ -164,5 +169,9 @@ public class UserActionSupport extends BaseAction implements
     return (getModel().getAUPAccceptanceRecord(aup.getActiveVersion())
       .getValid() == true);
 
+  }
+  
+  public Set<String> getRequiredFields() {
+    return requiredFields;
   }
 }

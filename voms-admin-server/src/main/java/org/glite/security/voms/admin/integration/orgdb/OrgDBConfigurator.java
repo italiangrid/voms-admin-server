@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.integration.orgdb;
 
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PI_REQUIRED_FIELDS;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -152,6 +154,8 @@ public class OrgDBConfigurator extends AbstractPluginConfigurator {
       VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
       Boolean.TRUE);
 
+    VOMSConfiguration.instance().setProperty(PI_REQUIRED_FIELDS, "");
+    
     log.info("OrgDB request validator registered SUCCESSFULLY.");
 
     Long checkPeriod;

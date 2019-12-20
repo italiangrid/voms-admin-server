@@ -16,6 +16,9 @@
 package org.glite.security.voms.admin.integration.cern;
 
 import static java.util.Objects.isNull;
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PI_REQUIRED_FIELDS;
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE;
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +30,6 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.core.tasks.DatabaseTransactionTaskWrapper;
 import org.glite.security.voms.admin.core.tasks.VOMSExecutorService;
 import org.glite.security.voms.admin.core.validation.ValidationManager;
@@ -156,11 +158,13 @@ public class HrDbConfigurator extends AbstractPluginConfigurator {
 
     VOMSConfiguration config = getVomsConfig();
     config.setRegistrationType(HR_DB_REGISTRATION_TYPE);
-    config.setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
+    config.setProperty(VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
         Boolean.TRUE);
-    config.setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
+    config.setProperty(VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
         Boolean.TRUE);
 
+    config.setProperty(PI_REQUIRED_FIELDS, "");
+    
     HrDbApiService api = apiServiceFactory.newHrDbApiService(hrConfig);
 
     validationManager
