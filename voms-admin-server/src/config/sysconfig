@@ -14,8 +14,5 @@ ORACLE_LIBRARY_PATH=${package.oracle_library_path}
 # Default oracle tnsnames.ora location
 TNS_ADMIN=${package.tns_admin}
 
-# To debug the service, uncomment the following variable
-# VOMS_DEBUG=y
-
-# Sets the VOMS debug port
-# VOMS_DEBUG_PORT=8998
+# VOMS ADMIN JVM options
+VOMS_JAVA_OPTS="-Xmx512m -Xms512m"

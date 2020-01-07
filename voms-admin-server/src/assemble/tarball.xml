@@ -200,6 +200,13 @@
             <fileMode>0755</fileMode>
             <filtered>true</filtered>
         </file>
+
+        <file>
+          <source>resources/systemd/voms-admin.service</source>
+          <outputDirectory>/usr/lib/systemd/system</outputDirectory>
+          <fileMode>0644</fileMode>
+        </file>
+
         <file>
             <source>src/main/resources/c3p0.properties</source>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>

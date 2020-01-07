@@ -1,0 +1,15 @@
+[Unit]
+Description=VOMS Admin service
+
+[Service]
+WorkingDirectory=/var/lib/voms-admin
+EnvironmentFile=-/etc/sysconfig/voms-admin
+User=voms
+Type=simple
+ExecStart=/usr/bin/java $VOMS_JAVA_OPTS -cp /usr/share/java/voms-container.jar:$OJDBC_JAR org.italiangrid.voms.container.Container >/var/log/voms-admin/voms-admin.out 2>/var/log/voms-admin/voms-admin.err
+ExecStop=/bin/kill -TERM $MAINPID
+KillMode=process
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
