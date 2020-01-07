@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python2
 #
 # Copyright (c) Members of the EGEE Collaboration. 2006-2009.
 # See http://www.eu-egee.org/partners/ for details on the copyright holders.
