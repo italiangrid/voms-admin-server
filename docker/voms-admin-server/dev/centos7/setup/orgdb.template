@@ -1,0 +1,4 @@
+voms.external-validators = orgdb
+voms.ext.orgdb.configClass = org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator
+voms.ext.orgdb.experimentName = ATLAS
+voms.ext.orgdb.membership_check.period = 30

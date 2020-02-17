@@ -1,0 +1,83 @@
+version: '3.5'
+
+volumes:
+  trustanchors:
+  cabundle:
+  db_data:
+
+services:
+  trust:
+    image: indigoiam/trustanchors
+    environment:
+      - FORCE_TRUST_ANCHORS_UPDATE=1
+    volumes:
+      - trustanchors:/etc/grid-security/certificates
+      - cabundle:/etc/pki
+
+  db:
+    image: mariadb:latest
+    container_name: db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: pwd
+      MYSQL_USER: voms
+      MYSQL_PASSWORD: pwd
+      MYSQL_DATABASE: voms_test
+
+  adminserver:
+    image: italiangrid/voms-admin-server-dev-centos7:latest
+    domainname: local.io
+    depends_on:
+      - db
+
+    volumes:
+        - trustanchors:/etc/grid-security/certificates/
+        - ./assets/hostcert/star_local_io.cert.pem:/etc/grid-security/hostcert.pem
+        - ./assets/hostcert/star_local_io.key.pem:/etc/grid-security/hostkey.pem
+        - ..:/code:ro
+        - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
+        - ~/git/voms-migrate:/migrate:ro
+        - ~/orgdb:/orgdb:ro
+        - ~/oracle:/oracle-rpm:ro
+
+    ports:
+       - "1044:1044"
+       - "8443:8443"
+
+    environment:
+      # This is the VOMS Admin configuration
+      #
+      VOMS_VO_COUNT: 1 # 0 creates 1 VO, 1 two VOs, ...
+      VOMS_HOSTNAME: dev.local.io
+      MAILHOST: mail
+      MYSQL_ROOT_PASSWORD: pwd
+
+      # VOMS_LOG_LEVEL: debug
+      VOMS_DEBUG: y
+
+      # Comment the following line to skip tarball installation
+      #VOMS_DEPLOY_TARBALL: y
+
+      # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
+      # VOMS_ADMIN_SERVER_VERSION: 3.3.3
+      # VOMS_DEBUG_SUSPEND: y
+      VOMS_PRE_CONFIGURE: y
+      # VOMS_SKIP_CONFIGURE: y
+      VOMS_SKIP_JAVA_SETUP: y
+      # VOMS_UPGRADE_DB: y
+      
+      #VOMS_LOAD_DB_DUMP: y
+      VOMS_DEV_MODE: y
+
+      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
+      VOMS_ARGS: --war /code/voms-admin-server/target/voms-admin.war
+
+      # ENABLE_YOURKIT: y
+      # ENABLE_JREBEL: y
+      # ENABLE_JMX: y
+      # HIBERNATE_LOG_LEVEL: DEBUG
+      # STRUTS_LOG_LEVEL: DEBUG
