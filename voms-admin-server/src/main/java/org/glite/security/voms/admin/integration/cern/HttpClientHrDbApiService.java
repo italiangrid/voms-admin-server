@@ -30,6 +30,7 @@ import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange;
 import org.eclipse.jetty.util.ajax.JSON;
+import org.glite.security.voms.admin.integration.cern.dto.ErrorDTO;
 import org.glite.security.voms.admin.integration.cern.dto.VOPersonDTO;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.slf4j.Logger;
@@ -107,13 +108,12 @@ public class HttpClientHrDbApiService implements HrDbApiService {
 
       if (HttpExchange.STATUS_COMPLETED == exchangeStatus) {
         if (ce.getResponseStatus() != 200) {
-
-          final String errorMsg =
-              String.format("HR Db Api Http request %s yelded response status: %d ",
-                  ce.getRequestURI(), ce.getResponseStatus());
-          throw new HrDbError(errorMsg);
+          
+          @SuppressWarnings("unchecked")
+          ErrorDTO error = ErrorDTO.fromJsonMap((Map<String, Object>) JSON.parse(ce.getResponseContent()));
+          throw new HrDbExchangeError(ce.getResponseStatus(), error.getErrorMessage());
         }
-      } else if (HttpExchange.STATUS_EXPIRED == exchangeStatus){
+      } else if (HttpExchange.STATUS_EXPIRED == exchangeStatus) {
         throw new HrDbError("Error contacting the HR DB api: request timeout exceeded");
       } else {
         throw new HrDbError("Error contacting the HR DB api");
@@ -189,7 +189,7 @@ public class HttpClientHrDbApiService implements HrDbApiService {
     Instant now = clock.instant();
 
     return getVoPersonRecordByEmail(email)
-      .map(p -> p.findValidParticipationsForExperiment(now, experimentName))
+      .filter(p -> p.findValidParticipationForExperiment(now, experimentName).isPresent())
       .isPresent();
   }
 

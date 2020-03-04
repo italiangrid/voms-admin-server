@@ -56,6 +56,7 @@ import org.glite.security.voms.admin.event.permission_cache.AclEventsCleanPermis
 import org.glite.security.voms.admin.event.permission_cache.MembershipEventsCleanPermissionCacheListener;
 import org.glite.security.voms.admin.event.permission_cache.UserEventsCleanPermissionCacheListener;
 import org.glite.security.voms.admin.integration.PluginManager;
+import org.glite.security.voms.admin.integration.cern.HrDbConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.servlet.OrgDbHibernateSessionFilter;
 import org.glite.security.voms.admin.notification.NotificationServiceFactory;
@@ -96,9 +97,7 @@ public final class VOMSService {
 
   protected static void checkDatabaseVersion() {
 
-    final String detectedDbVersion = VOMSVersionDAO.instance()
-      .getVersion()
-      .getAdminVersion();
+    final String detectedDbVersion = VOMSVersionDAO.instance().getVersion().getAdminVersion();
 
     int detectedDbVersionInt = -1;
 
@@ -106,10 +105,10 @@ public final class VOMSService {
       detectedDbVersionInt = Math.abs(Integer.parseInt(detectedDbVersion));
     } catch (NumberFormatException ex) {
       String msg = String.format(
-        "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
-          + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
-          + " command.",
-        detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+          "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+              + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+              + " command.",
+          detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       LOG.error(msg);
       throw new VOMSFatalException(msg);
@@ -117,10 +116,10 @@ public final class VOMSService {
 
     if (detectedDbVersionInt < SchemaVersion.VOMS_ADMIN_DB_VERSION_INT) {
       String msg = String.format(
-        "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
-          + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
-          + " command.",
-        detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
+          "VOMS DATABASE SCHEMA ERROR: incompatible database. Found '%s' while expecting '%s'."
+              + " Please upgrade the database for this installation using 'voms-db-util upgrade'"
+              + " command.",
+          detectedDbVersion, SchemaVersion.VOMS_ADMIN_DB_VERSION);
 
       LOG.error(msg);
       throw new VOMSFatalException(msg);
@@ -136,10 +135,10 @@ public final class VOMSService {
 
       p.put("resource.loader", "cpath");
       p.put("cpath.resource.loader.class",
-        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+          "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
       p.put("runtime.log.logsystem.class",
-        "org.glite.security.voms.admin.util.velocity.VelocityLogger");
+          "org.glite.security.voms.admin.util.velocity.VelocityLogger");
 
       Velocity.init(p);
       LOG.debug("Velocity setup ok!");
@@ -185,47 +184,46 @@ public final class VOMSService {
           DISABLE_BACKGROUND_TASK_PROPERTY);
       return;
     }
-    
-    
+
+
     VOMSConfiguration conf = VOMSConfiguration.instance();
     List<Integer> aupReminders = conf.getAUPReminderIntervals();
 
     es.startBackgroundTask(
-      new SignAUPReminderCheckTask(DAOFactory.instance(),
-        EventManager.instance(), SystemTimeProvider.INSTANCE, aupReminders,
-        TimeUnit.DAYS),
-      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
-    
+        new SignAUPReminderCheckTask(DAOFactory.instance(), EventManager.instance(),
+            SystemTimeProvider.INSTANCE, aupReminders, TimeUnit.DAYS),
+        VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+
     es.startBackgroundTask(
-      new CancelSignAUPTasksForExpiredUsersTask(DAOFactory.instance(), 
-        EventManager.instance()),
-      VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
-    
+        new CancelSignAUPTasksForExpiredUsersTask(DAOFactory.instance(), EventManager.instance()),
+        VOMSConfigurationConstants.MEMBERSHIP_CHECK_PERIOD, 300L);
+
 
     es.startBackgroundTask(new UpdateCATask(),
-      VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
+        VOMSConfigurationConstants.TRUST_ANCHORS_REFRESH_PERIOD);
 
     es.startBackgroundTask(new TaskStatusUpdater(), 30L);
-    
+
     es.startBackgroundTask(
-      new ExpiredRequestsPurgerTask(DAOFactory.instance(),
-        EventManager.instance()),
-      VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
+        new ExpiredRequestsPurgerTask(DAOFactory.instance(), EventManager.instance()),
+        VOMSConfigurationConstants.VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD, 300L);
 
     es.startBackgroundTask(new UserStatsTask(),
-      VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
-      UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
-    
+        VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
+        UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
+
     es.scheduleAtFixedRate(new PermissionCacheStatsLogger(true), 1, 60, TimeUnit.SECONDS);
-    
-    ExpiredUserCleanupTask userCleanupTask = new ExpiredUserCleanupTask(new DefaultCleanupUserLookupStrategy(conf));
-    
-    es.startBackgroundTask(userCleanupTask, EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD, TimeUnit.HOURS.toSeconds(4));
-    
+
+    ExpiredUserCleanupTask userCleanupTask =
+        new ExpiredUserCleanupTask(new DefaultCleanupUserLookupStrategy(conf));
+
+    es.startBackgroundTask(userCleanupTask, EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD,
+        TimeUnit.HOURS.toSeconds(4));
+
   }
 
   protected static void startNotificationService() {
-    
+
     if (System.getProperty(DISABLE_BACKGROUND_TASK_PROPERTY) != null) {
       LOG.warn("Background tasks disabled, as requested by system property {}",
           DISABLE_BACKGROUND_TASK_PROPERTY);
@@ -237,11 +235,9 @@ public final class VOMSService {
 
       PersistentNotificationService ns = PersistentNotificationService.INSTANCE;
 
-      ns.setNotificationSettings(
-        VOMSNotificationSettings.fromVOMSConfiguration());
+      ns.setNotificationSettings(VOMSNotificationSettings.fromVOMSConfiguration());
 
-      ns.setDao(DAOFactory.instance()
-        .getNotificationDAO());
+      ns.setDao(DAOFactory.instance().getNotificationDAO());
 
       ns.start();
     } else {
@@ -265,23 +261,21 @@ public final class VOMSService {
         LOG.error("Error initializing OpenSAML:" + e.getMessage(), e);
 
       LOG.info("SAML endpoint will not be activated.");
-      conf.setProperty(
-        VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false);
+      conf.setProperty(VOMSConfigurationConstants.VOMS_AA_SAML_ACTIVATE_ENDPOINT, false);
     }
 
-    boolean x509AcEndpointEnabled = conf.getBoolean(
-      VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT, false);
+    boolean x509AcEndpointEnabled =
+        conf.getBoolean(VOMSConfigurationConstants.VOMS_AA_X509_ACTIVATE_ENDPOINT, false);
 
     if (x509AcEndpointEnabled) {
 
       LOG.info("Bootstrapping VOMS X.509 attribute authority.");
-      ACGeneratorFactory.newACGenerator()
-        .configure(conf.getServiceCredential());
+      ACGeneratorFactory.newACGenerator().configure(conf.getServiceCredential());
 
       VOMSExecutorService es = VOMSExecutorService.instance();
       es.scheduleAtFixedRate(new PrintX509AAStatsTask(),
-        PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS,
-        PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, TimeUnit.SECONDS);
+          PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS, PrintX509AAStatsTask.DEFAULT_PERIOD_IN_SECS,
+          TimeUnit.SECONDS);
 
     } else {
       LOG.info("X.509 attribute authority is disabled.");
@@ -299,24 +293,24 @@ public final class VOMSService {
     File f = new File(loggingConf);
 
     if (!f.exists())
-      throw new VOMSFatalException(String.format(
-        "Logging configuration " + "not found at path '%s'", loggingConf));
+      throw new VOMSFatalException(
+          String.format("Logging configuration " + "not found at path '%s'", loggingConf));
 
     if (!f.canRead())
-      throw new VOMSFatalException(String
-        .format("Logging configuration " + "is not readable: %s", loggingConf));
+      throw new VOMSFatalException(
+          String.format("Logging configuration " + "is not readable: %s", loggingConf));
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     lc.setName(vo);
-    
+
     JoranConfigurator configurator = new JoranConfigurator();
 
     configurator.setContext(lc);
-    
+
     lc.reset();
-    
+
     // We leave this here to avoid runtime errors for people that
-    // update the service, but not the logging configuration 
+    // update the service, but not the logging configuration
     // FIXME: to be removed at some point
     lc.putProperty(VOMSConfigurationConstants.VO_NAME, vo);
 
@@ -341,64 +335,58 @@ public final class VOMSService {
 
   private static void initializeDnValidator() {
 
-    VOMSAdminDnValidator.INSTANCE.initialize("/etc/grid-security/certificates",
-      true);
+    VOMSAdminDnValidator.INSTANCE.initialize("/etc/grid-security/certificates", true);
   }
 
-  private static void configureOrgDbHibernateSessionFitler(ServletContext ctxt){
-    if (!VOMSConfiguration.instance().getRegistrationType().equals(
-        OrgDBConfigurator.ORGDB_REGISTRATION_TYPE)){
+  private static void configureOrgDbHibernateSessionFitler(ServletContext ctxt) {
+    if (!VOMSConfiguration.instance()
+      .getRegistrationType()
+      .equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE)) {
       return;
     }
-    
-    FilterRegistration.Dynamic fr = ctxt.addFilter("orgdb-hibernate-session-filter", 
-      OrgDbHibernateSessionFilter.class);
-    
+
+    FilterRegistration.Dynamic fr =
+        ctxt.addFilter("orgdb-hibernate-session-filter", OrgDbHibernateSessionFilter.class);
+
     fr.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
-    
+
   }
-  
-  
-  private static void setupGlobalApplicationObjects(ServletContext ctxt){
-    
+
+
+  private static void setupGlobalApplicationObjects(ServletContext ctxt) {
+
     AUP aup = DAOFactory.instance().getAUPDAO().getVOAUP();
 
-    ctxt.setAttribute(
-      "registrationEnabled",
-      VOMSConfiguration.instance().getBoolean(
-        VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
-    
-    ctxt.setAttribute(
-      "readOnlyPI",
-      VOMSConfiguration.instance()
-        .getBoolean(
-          VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
-          false));
+    ctxt.setAttribute("registrationEnabled", VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.REGISTRATION_SERVICE_ENABLED, true));
 
-    ctxt.setAttribute(
-      "readOnlyMembershipExpiration",
-      VOMSConfiguration.instance().getBoolean(
-        VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
-        false));
+    ctxt.setAttribute("readOnlyPI", VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_PERSONAL_INFORMATION, false));
 
-    ctxt.setAttribute(
-      "disableMembershipEndTime",
-      VOMSConfiguration.instance().getBoolean(
-        VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
+    ctxt.setAttribute("readOnlyMembershipExpiration", VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE, false));
+
+    ctxt.setAttribute("disableMembershipEndTime", VOMSConfiguration.instance()
+      .getBoolean(VOMSConfigurationConstants.DISABLE_MEMBERSHIP_END_TIME, false));
 
     ctxt.setAttribute("defaultAUP", aup);
-    
+
     ctxt.setAttribute("orgdbEnabled",
-      VOMSConfiguration.instance().getRegistrationType().equals(
-        OrgDBConfigurator.ORGDB_REGISTRATION_TYPE));
-    
+        VOMSConfiguration.instance()
+          .getRegistrationType()
+          .equals(OrgDBConfigurator.ORGDB_REGISTRATION_TYPE));
+
+    ctxt.setAttribute("hrEnabled",
+        VOMSConfiguration.instance()
+          .getRegistrationType()
+          .equals(HrDbConfigurator.HR_DB_REGISTRATION_TYPE));
+
   }
-  
-  
+
+
   public static void start(ServletContext ctxt) {
 
-    Thread
-      .setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+    Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 
     configureLogging(ctxt);
 
@@ -433,34 +421,31 @@ public final class VOMSService {
 
     bootstrapAttributeAuthorityServices();
 
-    PluginManager.instance()
-      .configurePlugins();
+    PluginManager.instance().configurePlugins();
 
-    ValidationManager.instance()
-      .startMembershipChecker();
+    ValidationManager.instance().startMembershipChecker();
 
     initializeDnValidator();
 
     configureOrgDbHibernateSessionFitler(ctxt);
-    
+
     setupGlobalApplicationObjects(ctxt);
-    
+
     LOG.info("VOMS-Admin started succesfully.");
   }
 
   private static void configureCertificateLookupPolicy(VOMSConfiguration conf) {
 
-    boolean skipCaCheck = conf
-      .getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
+    boolean skipCaCheck = conf.getBoolean(VOMSConfigurationConstants.SKIP_CA_CHECK, false);
 
     if (skipCaCheck) {
       LOG.info(
-        "CertificateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject ({} == true)",
-        VOMSConfigurationConstants.SKIP_CA_CHECK);
+          "CertificateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject ({} == true)",
+          VOMSConfigurationConstants.SKIP_CA_CHECK);
     } else {
       LOG.info(
-        "CertficateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
-        VOMSConfigurationConstants.SKIP_CA_CHECK);
+          "CertficateLookupPolicy: VOMS Users, certificates and administrators will be looked up by certificate subject AND issuer ({} == false)",
+          VOMSConfigurationConstants.SKIP_CA_CHECK);
     }
 
     LookupPolicyProvider.initialize(skipCaCheck);
@@ -479,8 +464,7 @@ public final class VOMSService {
 
     VOMSExecutorService.shutdown();
 
-    NotificationServiceFactory.getNotificationService()
-      .shutdownNow();
+    NotificationServiceFactory.getNotificationService().shutdownNow();
 
     HibernateFactory.shutdown();
 

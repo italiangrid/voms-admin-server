@@ -92,7 +92,7 @@ public class HrDbRequestValidatorTest extends HrDbTestSupport {
     when(person.getPhysicalEmail()).thenReturn("test@cern.ch");
     when(person.getFirstName()).thenReturn("TEST");
     when(person.getName()).thenReturn("USER");
-    when(person.findValidParticipationsForExperiment(any(), anyString()))
+    when(person.findValidParticipationForExperiment(any(), anyString()))
       .thenReturn(empty());
 
 
@@ -113,7 +113,7 @@ public class HrDbRequestValidatorTest extends HrDbTestSupport {
     when(person.getPhysicalEmail()).thenReturn("test@cern.ch");
     when(person.getFirstName()).thenReturn("TEST");
     when(person.getName()).thenReturn("USER");
-    when(person.findValidParticipationsForExperiment(any(), anyString()))
+    when(person.findValidParticipationForExperiment(any(), anyString()))
       .thenReturn(Optional.of(participation));
     
     RequestValidationResult result = validator.validateRequest(request);
@@ -133,7 +133,7 @@ public class HrDbRequestValidatorTest extends HrDbTestSupport {
     when(person.getPhysicalEmail()).thenReturn("test@cern.ch");
     when(person.getFirstName()).thenReturn("ADRIENNE");
     when(person.getName()).thenReturn("LENKER");
-    when(person.findValidParticipationsForExperiment(any(), anyString()))
+    when(person.findValidParticipationForExperiment(any(), anyString()))
       .thenReturn(Optional.of(participation));
     
     RequestValidationResult result = validator.validateRequest(request);

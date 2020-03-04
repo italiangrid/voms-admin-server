@@ -129,6 +129,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-client</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.italiangrid</groupId>
         <artifactId>https-utils</artifactId>
         <version>${https-utils.version}</version>

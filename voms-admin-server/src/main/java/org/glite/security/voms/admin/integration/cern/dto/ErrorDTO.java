@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.integration.cern.dto;
 
+import java.util.Map;
+
 public class ErrorDTO {
 
   final String error;
@@ -45,5 +47,7 @@ public class ErrorDTO {
     return new ErrorDTO(error);
   }
 
-
+  public static ErrorDTO fromJsonMap(Map<String, Object> json) {
+    return newError((String) json.get("error"), (String) json.get("errorMessage"));
+  }
 }

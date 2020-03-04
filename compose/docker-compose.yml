@@ -28,6 +28,16 @@ services:
       MYSQL_PASSWORD: pwd
       MYSQL_DATABASE: voms_test
 
+  hr:
+    image: indigoiam/cern-hr-db-api:latest
+    volumes:
+      - ./assets/hr/application.yml:/hr/application.yml:ro
+      - ./assets/hr/fixture/:/hr/src/test/resources/db/csv:ro
+    ports:
+      - "9999:9999"
+    environment:
+      TZ: UTC
+
   adminserver:
     image: italiangrid/voms-admin-server-dev-centos7:latest
     domainname: local.io
@@ -41,8 +51,9 @@ services:
         - ..:/code:ro
         - ~/git/orgdb-fake-users/:/orgdb-fake-users:ro
         - ~/git/voms-migrate:/migrate:ro
-        - ~/orgdb:/orgdb:ro
         - ~/oracle:/oracle-rpm:ro
+        - ./assets/voms-admin/hr:/hr:ro
+        # - ~/orgdb:/orgdb:ro
 
     ports:
        - "1044:1044"

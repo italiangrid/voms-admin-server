@@ -25,7 +25,7 @@
       <div>
         <s:property value="name+ ' ' +surname" />
         <span style="font-weight: normal; font-size: smaller">( ${id} )</span>
-        <s:if test="#attr.orgdbEnabled">
+        <s:if test="#attr.orgdbEnabled or #attr.hrEnabled">
           <span style="font-weight: normal; font-size: smaller">
             <tiles2:insertTemplate template="orgdbId.jsp" />
           </span>

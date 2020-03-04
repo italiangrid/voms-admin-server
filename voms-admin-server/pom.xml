@@ -94,7 +94,8 @@
           <packagingExcludes>
             WEB-INF/classes/logback*.xml,
             WEB-INF/lib/javax*.jar,
-            WEB-INF/lib/jetty-*.jar,
+            WEB-INF/lib/jetty-all-server*.jar,
+            WEB-INF/lib/jetty-jsp-*.jar,
             WEB-INF/lib/bcmail-*.jar,
             WEB-INF/lib/bcprov-*.jar,
             WEB-INF/lib/canl-*.jar,
@@ -268,6 +269,11 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jsp</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-client</artifactId>
     </dependency>
 
     <dependency>

@@ -86,7 +86,7 @@ public class HrDefaultHandler implements ExpiredParticipationStrategy,
     user.setEmailAddress(orgDbEmailAddress.toLowerCase());
 
     Optional<ParticipationDTO> participation =
-        voPerson.findValidParticipationsForExperiment(now, config.getExperimentName());
+        voPerson.findValidParticipationForExperiment(now, config.getExperimentName());
 
     if (participation.isPresent()) {
       user.setEndTime(participation.get().getEndDate());
@@ -94,6 +94,8 @@ public class HrDefaultHandler implements ExpiredParticipationStrategy,
     } else {
       handleExpiredParticipation(user, voPerson);
     }
+    
+    LOG.info("Synced user {} against record {}", user.getShortName(), voPerson.getId());
   }
 
   @Override

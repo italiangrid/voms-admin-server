@@ -39,31 +39,34 @@ import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HrDbConfigurator extends AbstractPluginConfigurator {
+public class HrDbConfigurator extends AbstractPluginConfigurator
+    implements HrDbRequestValidatorFactory {
 
   public static final Logger LOG = LoggerFactory.getLogger(HrDbConfigurator.class);
 
-  public static final String DEFAULT_CONFIG_FILE_NAME = "orgdb.properties";
+  public static final String DEFAULT_CONFIG_FILE_NAME = "hr.properties";
 
   public static final String HR_DB_EXPERIMENT_NAME_PROPERTY = "experiment_name";
   public static final String HR_DB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
 
-  public static final String HR_DB_REGISTRATION_TYPE = "orgdb";
+  public static final String HR_DB_REGISTRATION_TYPE = "hr";
 
-  Clock clock;
-  VOMSExecutorService executorService;
-  VOMSUserDAO userDao;
-  ValidationManager validationManager;
-  HrDbApiServiceFactory apiServiceFactory;
-  HrDbSyncTaskFactory syncTaskFactory;
-  HrDbRequestValidatorFactory requestValidatorFactory;
-  HrDbProperties hrConfig;
+  private Clock clock;
+  private VOMSExecutorService executorService;
+  private VOMSUserDAO userDao;
+  private ValidationManager validationManager;
+  private HrDbApiServiceFactory apiServiceFactory;
+  private HrDbSyncTaskFactory syncTaskFactory;
+  private HrDbRequestValidatorFactory requestValidatorFactory;
+  private HrDbProperties hrConfig;
+
+  private HrDbApiService apiService;
 
   public HrDbConfigurator(VOMSConfiguration config) {
     super(config);
   }
 
-  private HrDbProperties loadHrDBDatabaseProperties() throws VOMSPluginConfigurationException {
+  private HrDbProperties loadHrDBProperties() throws VOMSPluginConfigurationException {
 
     String defaultConfigFilePath =
         getVomsConfigurationDirectoryPath() + "/" + DEFAULT_CONFIG_FILE_NAME;
@@ -81,7 +84,7 @@ public class HrDbConfigurator extends AbstractPluginConfigurator {
       throw new VOMSPluginConfigurationException(errorMessage, e);
 
     }
-    
+
     return HrDbProperties.fromProperties(hrDbProps);
   }
 
@@ -112,7 +115,15 @@ public class HrDbConfigurator extends AbstractPluginConfigurator {
     }
 
     if (isNull(hrConfig)) {
-      hrConfig = loadHrDBDatabaseProperties();
+      hrConfig = loadHrDBProperties();
+    }
+
+    if (isNull(requestValidatorFactory)) {
+      requestValidatorFactory = this;
+    }
+
+    if (isNull(syncTaskFactory)) {
+      syncTaskFactory = new DefaultHrDbSyncTaskFactory(clock, validationManager);
     }
   }
 
@@ -158,22 +169,21 @@ public class HrDbConfigurator extends AbstractPluginConfigurator {
 
     VOMSConfiguration config = getVomsConfig();
     config.setRegistrationType(HR_DB_REGISTRATION_TYPE);
-    config.setProperty(VOMS_INTERNAL_RO_PERSONAL_INFORMATION,
-        Boolean.TRUE);
-    config.setProperty(VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE,
-        Boolean.TRUE);
+    config.setProperty(VOMS_INTERNAL_RO_PERSONAL_INFORMATION, Boolean.TRUE);
+    config.setProperty(VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE, Boolean.TRUE);
 
     config.setProperty(PI_REQUIRED_FIELDS, "");
-    
-    HrDbApiService api = apiServiceFactory.newHrDbApiService(hrConfig);
 
-    validationManager
-      .setRequestValidationContext(requestValidatorFactory.newHrDbRequestValidator(hrConfig, api));
+    apiService = apiServiceFactory.newHrDbApiService(hrConfig);
+
+    validationManager.setRequestValidationContext(
+        requestValidatorFactory.newHrDbRequestValidator(hrConfig, apiService));
 
     LOG.info("HR DB request validator registered succesfully");
 
     if (hrConfig.getMembesrshipCheck().isEnabled()) {
-      scheduleSyncTask(hrConfig, syncTaskFactory.buildSyncTask(hrConfig, api, userDao, config));
+      scheduleSyncTask(hrConfig,
+          syncTaskFactory.buildSyncTask(hrConfig, apiService, userDao, config));
     } else {
       LOG.info("HR DB sync task DISABLED as requested by configuration");
     }
@@ -212,5 +222,20 @@ public class HrDbConfigurator extends AbstractPluginConfigurator {
 
   public void setHrConfig(HrDbProperties hrConfig) {
     this.hrConfig = hrConfig;
+  }
+
+  @Override
+  public HrDbRequestValidator newHrDbRequestValidator(HrDbProperties properties,
+      HrDbApiService api) {
+
+    return new HrDbRequestValidator(clock, properties, api);
+  }
+
+  public HrDbApiService getApiService() {
+    return apiService;
+  }
+
+  public HrDbProperties getHrConfig() {
+    return hrConfig;
   }
 }

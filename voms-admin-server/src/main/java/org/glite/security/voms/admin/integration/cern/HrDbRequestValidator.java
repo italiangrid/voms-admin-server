@@ -78,7 +78,7 @@ public class HrDbRequestValidator
 
   RequestValidationResult validateRequestData(NewVOMembershipRequest request, VOPersonDTO person) {
     Optional<ParticipationDTO> participation = person
-      .findValidParticipationsForExperiment(clock.instant(), properties.getExperimentName());
+      .findValidParticipationForExperiment(clock.instant(), properties.getExperimentName());
 
     if (participation.isPresent()) {
 

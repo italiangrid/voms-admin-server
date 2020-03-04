@@ -26,6 +26,7 @@ import org.apache.struts2.interceptor.TokenInterceptor;
 import org.glite.security.voms.admin.configuration.VOMSConfiguration;
 import org.glite.security.voms.admin.error.IllegalStateException;
 import org.glite.security.voms.admin.integration.PluginManager;
+import org.glite.security.voms.admin.integration.cern.HrDbConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.strategies.OrgDBEmailValidationResult;
 import org.glite.security.voms.admin.operations.users.SaveUserPersonalInfoOperation;
@@ -56,6 +57,12 @@ public class SavePersonalInformationAction extends UserActionSupport {
 
   private static final String[] ORGDB_VALIDATED_FIELDS = {"theAddress", "thePhoneNumber"};
 
+  private boolean isHrPluginEnabled() {
+    return VOMSConfiguration.instance()
+        .getRegistrationType()
+        .equals(HrDbConfigurator.HR_DB_REGISTRATION_TYPE);
+  }
+  
   private boolean isOrgDBPluginEnabled() {
 
     return VOMSConfiguration.instance()

@@ -135,6 +135,15 @@ if [ -e "/orgdb/orgdb.properties" ]; then
   cat ${SCRIPTS_PREFIX}/orgdb.template >> /etc/voms-admin/test_0/service.properties
 fi
 
+if [ -e "/hr/hr.properties" ]; then
+  cp /hr/hr.properties /etc/voms-admin/test_0/hr.properties
+  chown voms:voms /etc/voms-admin/test_0/hr.properties
+
+  # Just a newline
+  echo >> /etc/voms-admin/test_0/service.properties
+  cat ${SCRIPTS_PREFIX}/hr.template >> /etc/voms-admin/test_0/service.properties
+fi
+
 # Deploy test vos
 for i in $(seq 0 ${VO_COUNT}); do
     VO_NAME=${VO_NAME_PREFIX}_$i

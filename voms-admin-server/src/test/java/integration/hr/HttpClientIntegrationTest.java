@@ -15,6 +15,7 @@
  */
 package integration.hr;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,11 +28,13 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static utils.TestSocketUtils.findAvailableTcpPort;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.glite.security.voms.admin.integration.cern.HrDbError;
+import org.glite.security.voms.admin.integration.cern.HrDbExchangeError;
 import org.glite.security.voms.admin.integration.cern.HrDbProperties;
 import org.glite.security.voms.admin.integration.cern.HttpClientHrDbApiService;
 import org.glite.security.voms.admin.integration.cern.dto.ParticipationDTO;
@@ -46,7 +49,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpError;
 import org.mockserver.model.HttpResponse;
 
-public class HttpClientIntegrationTest extends HrDbTestSupport{
+public class HttpClientIntegrationTest extends HrDbTestSupport {
 
   private static int port;
   private static ClientAndServer mockServer;
@@ -68,13 +71,14 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
   @Before
   public void setup() {
     properties = new HrDbProperties();
-    properties.setExperimentName("cms");
+    properties.setExperimentName("atlas");
     properties.getApi().setEndpoint("http://localhost:" + port);
     properties.getApi().setUsername("user");
     properties.getApi().setPassword("password");
     properties.getApi().setTimeoutInSeconds(1L);
 
     apiService = new HttpClientHrDbApiService(CLOCK, properties);
+    mockServer.reset();
   }
 
   @After
@@ -86,13 +90,13 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
   @Test(expected = HrDbError.class)
   public void testVoPersonAuthNErrorHandling() {
     mockServer.when(request("/api/VOPersons/1").withMethod("GET"), once())
-      .respond(HttpResponse.response().withStatusCode(403));
+      .respond(HttpResponse.response().withStatusCode(403).withBody(ERROR_403_JSON));
 
     try {
       apiService.getVoPersonRecord(1);
 
-    } catch (HrDbError e) {
-
+    } catch (HrDbExchangeError e) {
+      
       assertThat(e.getMessage(), containsString("403"));
       mockServer.verify(request("/api/VOPersons/1").withMethod("GET")
         .withHeader("Authorization", "basic dXNlcjpwYXNzd29yZA=="));
@@ -167,9 +171,15 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
     assertThat(voPerson.get().getFirstName(), is("IRWIN"));
     assertThat(voPerson.get().getEmail(), is("IRWIN.MARPLE.1@mail.example"));
     assertThat(voPerson.get().getPhysicalEmail(), is("MARPLE.1@cern.ch"));
-    assertThat(voPerson.get().getParticipations(), hasSize(1));
+    assertThat(voPerson.get().getParticipations(), hasSize(2));
 
-    ParticipationDTO participation = voPerson.get().getParticipations().iterator().next();
+    List<ParticipationDTO> sortedParticipations = voPerson.get()
+        .getParticipations()
+        .stream()
+        .sorted((p1, p2) -> p1.getExperiment().compareTo(p2.getExperiment()))
+        .collect(toList());
+    
+    ParticipationDTO participation = sortedParticipations.get(0);
 
     assertThat(participation.getExperiment(), is("ATLAS"));
     assertThat(participation.getStartDate(), notNullValue());
@@ -202,10 +212,16 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
     assertThat(voPerson.get().getFirstName(), is("IRWIN"));
     assertThat(voPerson.get().getEmail(), is("IRWIN.MARPLE.1@mail.example"));
     assertThat(voPerson.get().getPhysicalEmail(), is("MARPLE.1@cern.ch"));
-    assertThat(voPerson.get().getParticipations(), hasSize(1));
+    assertThat(voPerson.get().getParticipations(), hasSize(2));
 
-    ParticipationDTO participation = voPerson.get().getParticipations().iterator().next();
+    List<ParticipationDTO> sortedParticipations = voPerson.get()
+      .getParticipations()
+      .stream()
+      .sorted((p1, p2) -> p1.getExperiment().compareTo(p2.getExperiment()))
+      .collect(toList());
 
+    ParticipationDTO participation = sortedParticipations.get(0);
+    
     assertThat(participation.getExperiment(), is("ATLAS"));
     assertThat(participation.getStartDate(), notNullValue());
     assertThat(participation.getEndDate(), notNullValue());
@@ -216,15 +232,28 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
     assertThat(participation.getInstitute().getId(), is("000035"));
     assertThat(participation.getInstitute().getTown(), is("Some place 35"));
     assertThat(participation.getInstitute().getCountry(), is("IT"));
+    
+    participation = sortedParticipations.get(1);
+    
+    assertThat(participation.getExperiment(), is("CMS"));
+    assertThat(participation.getStartDate(), notNullValue());
+    assertThat(participation.getEndDate(), notNullValue());
+    assertThat(participation.isValidAtInstant(NOW), is(false));
+
+    assertThat(participation.getInstitute(), notNullValue());
+    assertThat(participation.getInstitute().getName(), is("Institute 35"));
+    assertThat(participation.getInstitute().getId(), is("000035"));
+    assertThat(participation.getInstitute().getTown(), is("Some place 35"));
+    assertThat(participation.getInstitute().getCountry(), is("IT"));
   }
 
   @Test
   public void testHasValidExperimentParticipationSuccess() {
-    mockServer.when(request("/api/VOPersons/participation/cms/valid/1").withMethod("GET"), once())
+    mockServer.when(request("/api/VOPersons/participation/atlas/valid/1").withMethod("GET"), once())
       .respond(response("true"));
 
     assertThat(apiService.hasValidExperimentParticipation(1), is(true));
-    mockServer.verify(request("/api/VOPersons/participation/cms/valid/1").withMethod("GET")
+    mockServer.verify(request("/api/VOPersons/participation/atlas/valid/1").withMethod("GET")
       .withHeader("Authorization", "basic dXNlcjpwYXNzd29yZA=="));
 
 
@@ -250,7 +279,7 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
     mockServer.when(request("/api/VOPersons/1").withMethod("GET"), exactly(2))
       .respond(response(VO_PERSON_1_JSON));
 
-    mockServer.when(request("/api/VOPersons/participation/cms/valid/1").withMethod("GET"), once())
+    mockServer.when(request("/api/VOPersons/participation/atlas/valid/1").withMethod("GET"), once())
       .respond(response("true"));
 
     VOMSUser user = new VOMSUser();
@@ -265,27 +294,14 @@ public class HttpClientIntegrationTest extends HrDbTestSupport{
     assertThat(voPerson.get().getFirstName(), is("IRWIN"));
     assertThat(voPerson.get().getEmail(), is("IRWIN.MARPLE.1@mail.example"));
     assertThat(voPerson.get().getPhysicalEmail(), is("MARPLE.1@cern.ch"));
-    assertThat(voPerson.get().getParticipations(), hasSize(1));
-
-    ParticipationDTO participation = voPerson.get().getParticipations().iterator().next();
-
-    assertThat(participation.getExperiment(), is("ATLAS"));
-    assertThat(participation.getStartDate(), notNullValue());
-    assertThat(participation.getEndDate(), notNullValue());
-    assertThat(participation.isValidAtInstant(NOW), is(true));
-
-    assertThat(participation.getInstitute(), notNullValue());
-    assertThat(participation.getInstitute().getName(), is("Institute 35"));
-    assertThat(participation.getInstitute().getId(), is("000035"));
-    assertThat(participation.getInstitute().getTown(), is("Some place 35"));
-    assertThat(participation.getInstitute().getCountry(), is("IT"));
+    assertThat(voPerson.get().getParticipations(), hasSize(2));
 
     mockServer.verify(request("/api/VOPersons/1").withMethod("GET")
       .withHeader("Authorization", "basic dXNlcjpwYXNzd29yZA=="));
 
     assertThat(apiService.hasValidExperimentParticipation(user), is(true));
 
-    mockServer.verify(request("/api/VOPersons/participation/cms/valid/1").withMethod("GET")
+    mockServer.verify(request("/api/VOPersons/participation/atlas/valid/1").withMethod("GET")
       .withHeader("Authorization", "basic dXNlcjpwYXNzd29yZA=="));
 
   }

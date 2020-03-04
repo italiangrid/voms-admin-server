@@ -181,11 +181,11 @@ public class VOPersonDTO {
     this.participations = participations;
   }
 
-  public Optional<ParticipationDTO> findValidParticipationsForExperiment(Instant now,
+  public Optional<ParticipationDTO> findValidParticipationForExperiment(Instant now,
       String experimentName) {
     
     return getParticipations().stream()
-      .filter(p -> p.getExperiment().equals(experimentName) && p.isValidAtInstant(now))
+      .filter(p -> p.getExperiment().equalsIgnoreCase(experimentName) && p.isValidAtInstant(now))
       .findFirst();
   }
 

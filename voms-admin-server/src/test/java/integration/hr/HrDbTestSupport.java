@@ -40,5 +40,6 @@ public class HrDbTestSupport {
   public static final String VO_PERSON_1_JSON_PATH = "src/test/resources/cern/json/voPerson1.json";
   public static final String VO_PERSON_1_JSON = readFile(VO_PERSON_1_JSON_PATH);
 
-
+  public static final String ERROR_404_JSON = "{\"error\":\"NOT_FOUND\", \"errorMessage\":\"404 - Not found\"}";
+  public static final String ERROR_403_JSON = "{\"error\":\"FORBIDDEN\", \"errorMessage\":\"403 - Forbidden\"}";
 }
