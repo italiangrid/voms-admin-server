@@ -214,12 +214,15 @@ public final class VOMSService {
 
     es.scheduleAtFixedRate(new PermissionCacheStatsLogger(true), 1, 60, TimeUnit.SECONDS);
 
-    ExpiredUserCleanupTask userCleanupTask =
-        new ExpiredUserCleanupTask(new DefaultCleanupUserLookupStrategy(conf));
+    int expiredUserCleanupBatchSize =
+        conf.getInt(VOMSConfigurationConstants.EXPIRED_USER_CLEANUP_TASK_BATCH_SIZE, 10);
+
+    ExpiredUserCleanupTask userCleanupTask = new ExpiredUserCleanupTask(
+        new DefaultCleanupUserLookupStrategy(conf), expiredUserCleanupBatchSize);
 
     es.startBackgroundTask(userCleanupTask, EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD,
-        TimeUnit.HOURS.toSeconds(4));
-
+        TimeUnit.MINUTES.toSeconds(30));
+    
   }
 
   protected static void startNotificationService() {

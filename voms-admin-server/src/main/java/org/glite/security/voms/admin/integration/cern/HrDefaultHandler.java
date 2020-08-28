@@ -15,6 +15,8 @@
  */
 package org.glite.security.voms.admin.integration.cern;
 
+import static java.util.Objects.isNull;
+
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Date;
@@ -62,10 +64,12 @@ public class HrDefaultHandler implements ExpiredParticipationStrategy,
 
       if (u.getSuspensionReasonCode() == SuspensionReason.MEMBERSHIP_EXPIRATION
           || u.getSuspensionReason().startsWith("OrgDB: ")) {
+        LOG.info("Restoring user {} - {} which was previously suspended", u.getShortName(),
+            u.getOrgDbId());
+
         manager.restoreUser(u);
       }
     }
-
   }
 
 
@@ -82,24 +86,34 @@ public class HrDefaultHandler implements ExpiredParticipationStrategy,
 
     String orgDbEmailAddress =
         Optional.ofNullable(voPerson.getPhysicalEmail()).orElse(voPerson.getEmail());
-    
-    user.setEmailAddress(orgDbEmailAddress.toLowerCase());
+
+    if (!isNull(orgDbEmailAddress)) {
+      user.setEmailAddress(orgDbEmailAddress.toLowerCase());
+    } else {
+      LOG.warn("Email address not found from record {}", voPerson.getId());
+    }
 
     Optional<ParticipationDTO> participation =
         voPerson.findValidParticipationForExperiment(now, config.getExperimentName());
 
     if (participation.isPresent()) {
+      LOG.info("Setting user {} - {} end time from partecipation end time: {}", user.getShortName(),
+          voPerson.getId(), participation.get().getEndDate());
       user.setEndTime(participation.get().getEndDate());
       restoreUserIfNeeded(user);
     } else {
       handleExpiredParticipation(user, voPerson);
     }
-    
+
     LOG.info("Synced user {} against record {}", user.getShortName(), voPerson.getId());
   }
 
   @Override
   public void handleExpiredParticipation(VOMSUser u, VOPersonDTO voPerson) {
+
+    LOG.info("No valid experiment participation found for {} found in: {}", u.getShortName(),
+        voPerson.getParticipations());
+
     Instant now = clock.instant();
 
     u.setEndTime(Date.from(now));

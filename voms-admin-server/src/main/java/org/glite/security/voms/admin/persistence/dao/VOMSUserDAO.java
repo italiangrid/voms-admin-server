@@ -88,6 +88,31 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   private VOMSUserDAO() {
 
   }
+  
+  
+  public void deleteTasks(VOMSUser user) {
+    
+    String deleteTLRs = "delete from task_log_record where task_id in ( select t.task_id from "
+        + "task t, usr u where t.usr_id = u.userid and u.userid = :userId )";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteTLRs)
+      .setLong("userId", user.getId())
+      .executeUpdate();
+
+    String deleteSATs = "delete from sign_aup_task where task_id in (select t.task_id from "
+        + "task t, usr u where t.usr_id = u.userid and u.userid = :userId )";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteSATs)
+      .setLong("userId", user.getId())
+      .executeUpdate();
+
+    String deleteTasks = "delete from task where usr_id = :userId";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteTasks)
+      .setLong("userId", user.getId())
+      .executeUpdate();
+    
+  }
 
   public void requestAUPReacceptance(VOMSUser user, AUP aup) {
 
@@ -670,6 +695,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     u.getAttributes().clear();
     u.getAupAcceptanceRecords().clear();
     u.getPersonalInformations().clear();
+    
     u.getTasks().clear();
 
     HibernateFactory.getSession().delete(u);

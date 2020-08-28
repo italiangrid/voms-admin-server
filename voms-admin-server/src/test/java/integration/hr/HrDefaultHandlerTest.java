@@ -109,12 +109,21 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
   }
 
   @Test
-  public void testSynchStrategy() {
+  public void testSynchStrategyMultipleParticipations() {
     
     oneParticipation.setExperiment("experiment");
-    oneParticipation.setStartDate(Date.from(ONE_WEEK_AGO));
-    
-    voPerson.setParticipations(Sets.newHashSet(oneParticipation));
+    oneParticipation.setStartDate(Date.from(TWO_YEARS_AGO));
+    oneParticipation.setEndDate(Date.from(ONE_YEAR_AGO));
+
+    anotherParticipation.setExperiment("experiment");
+    anotherParticipation.setStartDate(Date.from(ONE_WEEK_AGO));
+
+    aThirdParticipation.setExperiment("another");
+    oneParticipation.setStartDate(Date.from(TWO_YEARS_AGO));
+
+
+    voPerson.setParticipations(
+        Sets.newHashSet(oneParticipation, anotherParticipation, aThirdParticipation));
 
     handler.synchronizeMembershipInformation(user, voPerson);
     
@@ -123,9 +132,28 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
     assertThat(user.getEmailAddress(), is("TEST.USER@CNAF.INFN.IT".toLowerCase()));
     assertThat(user.getEndTime(), nullValue());
     
-    
   }
   
+
+  @Test
+  public void testSynchStrategy() {
+
+    oneParticipation.setExperiment("experiment");
+    oneParticipation.setStartDate(Date.from(ONE_WEEK_AGO));
+
+
+    voPerson.setParticipations(Sets.newHashSet(oneParticipation));
+
+    handler.synchronizeMembershipInformation(user, voPerson);
+
+    assertThat(user.getName(), is("TEST"));
+    assertThat(user.getSurname(), is("USER"));
+    assertThat(user.getEmailAddress(), is("TEST.USER@CNAF.INFN.IT".toLowerCase()));
+    assertThat(user.getEndTime(), nullValue());
+
+
+  }
+
   @Test
   public void testSynchInvalidParticipation() {
     
@@ -164,7 +192,7 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
   }
   
   @Test
-  public void testRestoreSuspendedUserDoToValidationError() {
+  public void testRestoreSuspendedUserDueToValidationError() {
     
     oneParticipation.setExperiment("experiment");
     oneParticipation.setStartDate(Date.from(ONE_YEAR_AGO));
@@ -187,7 +215,7 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
   }
   
   @Test
-  public void testRestoreSuspendedUserDoToMembershipExpiration() {
+  public void testRestoreSuspendedUserDueToMembershipExpiration() {
     
     oneParticipation.setExperiment("experiment");
     oneParticipation.setStartDate(Date.from(ONE_YEAR_AGO));

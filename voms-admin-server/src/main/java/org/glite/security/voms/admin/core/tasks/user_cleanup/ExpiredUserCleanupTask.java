@@ -27,12 +27,16 @@ import org.slf4j.LoggerFactory;
 public class ExpiredUserCleanupTask implements Runnable, RegistrationServiceTask {
   public static final Logger LOG = LoggerFactory.getLogger(ExpiredUserCleanupTask.class);
 
-  final CleanupUserLookupStrategy lookupStrategy;
-  VOMSUserDAO dao;
-  EventManager eventManager;
+  public static final int DEFAULT_BATCH_SIZE = 50;
 
-  public ExpiredUserCleanupTask(CleanupUserLookupStrategy lookupStrategy) {
+  final CleanupUserLookupStrategy lookupStrategy;
+  int batchSize = DEFAULT_BATCH_SIZE;
+  VOMSUserDAO dao;
+  EventManager manager;
+
+  public ExpiredUserCleanupTask(CleanupUserLookupStrategy lookupStrategy, int batchSize) {
     this.lookupStrategy = lookupStrategy;
+    this.batchSize = batchSize;
   }
 
   @Override
@@ -42,27 +46,38 @@ public class ExpiredUserCleanupTask implements Runnable, RegistrationServiceTask
       dao = VOMSUserDAO.instance();
     }
 
-    if (eventManager == null) {
-      eventManager = EventManager.instance();
+    if (manager == null) {
+      manager = EventManager.instance();
     }
 
+    int processedUsers = 0;
     ScrollableResults userCursor = lookupStrategy.findUsersEligibleForCleanup();
 
-    while (userCursor.next()) {
+    while (userCursor.next() && processedUsers < batchSize) {
       VOMSUser user = (VOMSUser) userCursor.get(0);
 
-      LOG.debug("Cleaning up user '{}' who expired on '{}'", user.getShortName(),
-          user.getEndTime());
-      dao.delete(user);
-      eventManager.dispatch(new UserCleanedUpEvent(user));
+      if (user.getTasks().isEmpty()) {
+        LOG.info("Deleting user '{} ({})' who expired on '{}'", user.getShortName(), user.getId(),
+            user.getEndTime());
+
+        dao.delete(user);
+        manager.dispatch(new UserCleanedUpEvent(user));
+      } else {
+        LOG.info("Cleaning up tasks for user '{} ({})' who expired on '{}'", user.getShortName(), user.getId(),
+            user.getEndTime());
+        dao.deleteTasks(user);
+      }
+
+      processedUsers++;
     }
   }
+
 
   public void setDao(VOMSUserDAO dao) {
     this.dao = dao;
   }
 
-  public void setEventManager(EventManager eventManager) {
-    this.eventManager = eventManager;
+  public void setManager(EventManager manager) {
+    this.manager = manager;
   }
 }

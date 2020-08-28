@@ -67,11 +67,11 @@ public class HrDbSyncTask implements Runnable {
         } else {
           missingRecordHandler.handleMissingHrRecord(user);
         }
-
+        
       } catch (HrDbError apiError) {
         LOG.error("Error querying HR Db API for user {}: {}", user.getShortName(),
             apiError.getMessage());
-        
+
         if (LOG.isDebugEnabled()) {
           LOG.error(apiError.getMessage(), apiError);
         }

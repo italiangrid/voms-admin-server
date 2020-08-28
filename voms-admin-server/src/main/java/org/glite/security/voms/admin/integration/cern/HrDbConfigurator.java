@@ -46,9 +46,6 @@ public class HrDbConfigurator extends AbstractPluginConfigurator
 
   public static final String DEFAULT_CONFIG_FILE_NAME = "hr.properties";
 
-  public static final String HR_DB_EXPERIMENT_NAME_PROPERTY = "experiment_name";
-  public static final String HR_DB_MEMBERSHIP_CHECK_PERIOD_IN_SECONDS = "membership_check.period";
-
   public static final String HR_DB_REGISTRATION_TYPE = "hr";
 
   private Clock clock;
@@ -179,7 +176,8 @@ public class HrDbConfigurator extends AbstractPluginConfigurator
     validationManager.setRequestValidationContext(
         requestValidatorFactory.newHrDbRequestValidator(hrConfig, apiService));
 
-    LOG.info("HR DB request validator registered succesfully");
+    LOG.info("HR DB request validator registered succesfully. Syncing against HR db experiment {}",
+        hrConfig.getExperimentName());
 
     if (hrConfig.getMembesrshipCheck().isEnabled()) {
       scheduleSyncTask(hrConfig,

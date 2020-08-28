@@ -1,0 +1,6 @@
+#!/bin/bash
+
+VOMS_ADMIN_JAR=${VOMS_ADMIN_JAR:-/usr/share/java/voms-admin.jar}
+
+java -cp ${VOMS_ADMIN_JAR}':/var/lib/voms-admin/lib/*:/var/lib/voms-admin/tools' \
+  org.glite.security.voms.admin.persistence.tools.CleanupTaskLogRecords $@

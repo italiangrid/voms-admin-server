@@ -108,10 +108,16 @@ public class HttpClientHrDbApiService implements HrDbApiService {
 
       if (HttpExchange.STATUS_COMPLETED == exchangeStatus) {
         if (ce.getResponseStatus() != 200) {
-          
+
           @SuppressWarnings("unchecked")
-          ErrorDTO error = ErrorDTO.fromJsonMap((Map<String, Object>) JSON.parse(ce.getResponseContent()));
-          throw new HrDbExchangeError(ce.getResponseStatus(), error.getErrorMessage());
+          ErrorDTO error =
+              ErrorDTO.fromJsonMap((Map<String, Object>) JSON.parse(ce.getResponseContent()));
+
+          if (ce.getResponseStatus() == 404) {
+            throw new VoPersonNotFoundError(ce.getResponseStatus(), error.getErrorMessage());
+          } else {
+            throw new HrDbExchangeError(ce.getResponseStatus(), error.getErrorMessage());
+          }
         }
       } else if (HttpExchange.STATUS_EXPIRED == exchangeStatus) {
         throw new HrDbError("Error contacting the HR DB api: request timeout exceeded");
@@ -167,8 +173,13 @@ public class HttpClientHrDbApiService implements HrDbApiService {
 
     Long orgDbId = user.getOrgDbId();
 
-    if (!isNull(orgDbId)) {
-      return getVoPersonRecord(orgDbId);
+    try {
+      if (!isNull(orgDbId)) {
+        return getVoPersonRecord(orgDbId);
+      }
+    } catch (VoPersonNotFoundError e) {
+      LOG.warn("VO person not found for user {} ({}): {}", user.getShortName(), user.getId(),
+          e.getMessage());
     }
     return Optional.empty();
   }
