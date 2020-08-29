@@ -50,7 +50,7 @@
     -->
     <commons-cli.version>1.1</commons-cli.version>
     <license-plugin.version>2.11</license-plugin.version>
-    <guava.version>21.0</guava.version>
+    <guava.version>29.0-jre</guava.version>
     <log.dir>var/log/voms-admin</log.dir>
 
     <voms.source.prefix>/code</voms.source.prefix>
