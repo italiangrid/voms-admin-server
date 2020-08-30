@@ -189,7 +189,7 @@ class VOMSDefaults:
     oracle_driver_class = "oracle.jdbc.driver.OracleDriver"
     oracle_dialect = "org.hibernate.dialect.Oracle9Dialect"
 
-    mysql_driver_class = "org.gjt.mm.mysql.Driver"
+    mysql_driver_class = "com.mysql.cj.jdbc.Driver"
     mysql_dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
 
 
