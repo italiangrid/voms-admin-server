@@ -18,24 +18,23 @@ package org.glite.security.voms.admin.view.preparers.user;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
 import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ListUsersPreparer implements ViewPreparer {
 
   private static Logger log = LoggerFactory.getLogger(ListUsersPreparer.class);
 
-  public void execute(TilesRequestContext context,
-    AttributeContext attributeContext) throws PreparerException {
+  public void execute(Request request, AttributeContext attributeContext) throws PreparerException {
 
     List<VOMSGroup> groups;
     List<VOMSRole> roles;
@@ -55,8 +54,8 @@ public class ListUsersPreparer implements ViewPreparer {
       roles = Collections.EMPTY_LIST;
     }
 
-    context.getRequestScope().put("voGroups", groups);
-    context.getRequestScope().put("voRoles", roles);
+    request.getContext(Request.REQUEST_SCOPE).put("voGroups", groups);
+    request.getContext(Request.REQUEST_SCOPE).put("voRoles", roles);
 
   }
 

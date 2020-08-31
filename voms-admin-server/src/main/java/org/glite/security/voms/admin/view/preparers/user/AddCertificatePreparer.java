@@ -15,23 +15,23 @@
  */
 package org.glite.security.voms.admin.view.preparers.user;
 
+import static org.apache.tiles.request.Request.REQUEST_SCOPE;
+
 import java.util.List;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
-import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.persistence.dao.VOMSCADAO;
 import org.glite.security.voms.admin.persistence.model.VOMSCA;
 
-public class AddCertificatePreparer extends ViewPreparerSupport {
+public class AddCertificatePreparer implements ViewPreparer {
 
   @Override
-  public void execute(TilesRequestContext tilesContext,
-    AttributeContext attributeContext) throws PreparerException {
+  public void execute(Request request, AttributeContext attributeContext) {
 
     List<VOMSCA> trustedCas = VOMSCADAO.instance().getValid();
-    tilesContext.getRequestScope().put("trustedCas", trustedCas);
+    request.getContext(REQUEST_SCOPE).put("trustedCas", trustedCas);
 
   }
 

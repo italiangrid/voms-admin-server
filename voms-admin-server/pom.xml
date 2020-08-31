@@ -36,13 +36,13 @@
     <api.version>${project.version}</api.version>
     <interface-version>2.0.2</interface-version>
 
-    <struts.version>2.3.37</struts.version>
-    <struts.boostrap.plugin.version>2.0.1</struts.boostrap.plugin.version>
-    <struts.jquery.plugin.version>3.7.1</struts.jquery.plugin.version>
+    <struts.version>2.5.22</struts.version>
+    <struts.bootstrap.plugin.version>2.5.2</struts.bootstrap.plugin.version>
+    <struts.jquery.plugin.version>4.0.3</struts.jquery.plugin.version>
     <hibernate.version>5.2.17.Final</hibernate.version>
     <c3p0.version>0.9.5.4</c3p0.version>
     <opensaml.version>2.5.3</opensaml.version>
-    <tiles.version>2.2.2</tiles.version>
+    <tiles.version>3.0.8</tiles.version>
     <commons-math.version>3.2</commons-math.version>
     <mock-server.version>5.5.1</mock-server.version>
     <commons-io.version>2.2</commons-io.version>
@@ -358,7 +358,7 @@
     <dependency>
       <groupId>com.jgeppert.struts2.bootstrap</groupId>
       <artifactId>struts2-bootstrap-plugin</artifactId>
-      <version>${struts.boostrap.plugin.version}</version>
+      <version>${struts.bootstrap.plugin.version}</version>
     </dependency>
 
     <dependency>

@@ -44,6 +44,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.json.DefaultJSONWriter;
 import org.apache.struts2.json.JSONException;
 import org.apache.struts2.json.JSONPopulator;
 import org.apache.struts2.json.JSONReader;
@@ -92,7 +93,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
   Protocol vomsHttps;
 
   JSONReader jsonReader = new JSONReader();
-  JSONWriter jsonWriter = new JSONWriter();
+  JSONWriter jsonWriter = new DefaultJSONWriter();
 
   JSONPopulator jsonPopulator = new JSONPopulator();
 

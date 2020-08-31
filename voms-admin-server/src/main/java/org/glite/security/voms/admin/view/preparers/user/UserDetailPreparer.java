@@ -15,24 +15,27 @@
  */
 package org.glite.security.voms.admin.view.preparers.user;
 
+import static org.apache.tiles.request.Request.REQUEST_SCOPE;
+
 import java.util.List;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
 import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.persistence.dao.VOMSAttributeDAO;
 import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 
-public class UserDetailPreparer extends ViewPreparerSupport {
+public class UserDetailPreparer implements ViewPreparer {
 
-  public void execute(TilesRequestContext context,
+  public void execute(Request context,
     AttributeContext attributeContext) throws PreparerException {
 
+    @SuppressWarnings("unchecked")
     List<VOMSAttributeDescription> attributeClasses = VOMSAttributeDAO
       .instance().getAllAttributeDescriptions();
 
-    context.getRequestScope().put("attributeClasses", attributeClasses);
+    context.getContext(REQUEST_SCOPE).put("attributeClasses", attributeClasses);
 
   }
 

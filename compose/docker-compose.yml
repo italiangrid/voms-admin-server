@@ -7,7 +7,7 @@ volumes:
 
 services:
   trust:
-    image: indigoiam/trustanchors
+    image: indigoiam/trustanchors:latest
     environment:
       - FORCE_TRUST_ANCHORS_UPDATE=1
     volumes:
@@ -71,7 +71,7 @@ services:
       VOMS_DEBUG: y
 
       # Comment the following line to skip tarball installation
-      #VOMS_DEPLOY_TARBALL: y
+      VOMS_DEPLOY_TARBALL: y
 
       # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
       # VOMS_ADMIN_SERVER_VERSION: 3.3.3

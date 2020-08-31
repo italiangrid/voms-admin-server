@@ -16,7 +16,9 @@
 package org.glite.security.voms.admin.view.actions.apiv2;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.util.Strings;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -25,14 +27,28 @@ import org.glite.security.voms.admin.operations.users.SuspendUserOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
-import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-
 @ParentPackage("json")
 @Results({ @Result(name = BaseAction.SUCCESS, type = "json") })
 public class SuspendUserAction extends RestUserAction {
 
+  private static final Pattern REGEX = Pattern.compile("^[^<>&;]*$");
+
+  @Override
+  public void validate() {
+
+    // Workaround for annotation validation not working anymore
+    // due to OGNL not finding the right value in the OGNL stack
+
+    if (Strings.isBlank(suspensionReason)) {
+      addFieldError("suspensionReason", "Please provide a reason for the suspension.");
+    } else {
+
+      if (!REGEX.matcher(suspensionReason).matches()) {
+        addFieldError("suspensionReason", "The reason contains illegal characters.");
+      }
+
+    }
+  }
   /**
 	 * 
 	 */
@@ -53,13 +69,8 @@ public class SuspendUserAction extends RestUserAction {
     return SUCCESS;
   }
 
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please provide a reason for the suspension.")
-  @RegexFieldValidator(type = ValidatorType.FIELD,
-    message = "The reason contains illegal characters!",
-    regex = "^[^<>&;]*$")
-  public String getSuspensionReason() {
 
+  public String getSuspensionReason() {
     return suspensionReason;
   }
 

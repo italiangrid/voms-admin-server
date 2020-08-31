@@ -15,24 +15,25 @@
  */
 package org.glite.security.voms.admin.view.preparers.acl;
 
+import static org.apache.tiles.request.Request.REQUEST_SCOPE;
+
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
-import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 
-public class ManagePreparer extends ViewPreparerSupport {
+public class ManagePreparer implements ViewPreparer {
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void execute(TilesRequestContext tilesContext,
-    AttributeContext attributeContext) throws PreparerException {
+  public void execute(Request tilesContext, AttributeContext attributeContext) {
 
     List<VOMSGroup> groups = Collections.EMPTY_LIST;
     List<VOMSRole> roles = Collections.EMPTY_LIST;
@@ -47,8 +48,7 @@ public class ManagePreparer extends ViewPreparerSupport {
       // swallow authorization exception
     }
 
-    tilesContext.getRequestScope().put("voGroups", groups);
-    tilesContext.getRequestScope().put("voRoles", roles);
-
+    tilesContext.getContext(REQUEST_SCOPE).put("voGroups", groups);
+    tilesContext.getContext(REQUEST_SCOPE).put("voRoles", roles);
   }
 }
