@@ -37,7 +37,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +49,6 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
-import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
@@ -164,32 +162,29 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   /** Generic attributes mapping **/
   @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
-  Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
+  Set<VOMSUserAttribute> attributes = new HashSet<>();
 
   /** Membership mappings **/
   @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
   @SortNatural
-  Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+  Set<VOMSMapping> mappings = new TreeSet<>();
 
   /** User certificates **/
-  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", fetch = FetchType.EAGER)
-  @org.hibernate.annotations.Cascade(value = {org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-  Set<Certificate> certificates = new HashSet<Certificate>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<Certificate> certificates = new HashSet<>();
 
   /** AUP acceptance records **/
-  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user")
-  @org.hibernate.annotations.Cascade(value = {org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-  Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<>();
 
   /** Assigned tasks **/
-  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", fetch = FetchType.EAGER)
-  @org.hibernate.annotations.Cascade(value = {org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-  Set<Task> tasks = new HashSet<Task>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<Task> tasks = new HashSet<>();
 
   /** Personal information set **/
   // FIXME: currently ignored by configuration
   @Transient
-  Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
+  Set<PersonalInformationRecord> personalInformations = new HashSet<>();
 
   @Column(name = "orgdb_id", nullable = true)
   Long orgDbId;
@@ -764,14 +759,18 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     return result;
   }
 
-  public void removeCertificate(Certificate cert) {
+  public boolean removeCertificate(Certificate cert) {
 
-    if (!hasCertificate(cert))
-      throw new NotFoundException(
-          "Certificate '" + cert + "' is not bound to user '" + this + "'.");
+    if (!hasCertificate(cert)) {
+      return false;
+    }
 
-    getCertificates().remove(cert);
+    boolean removed = getCertificates().remove(cert);
+    if (removed) {
+      cert.setUser(null);
+    }
 
+    return removed;
   }
 
   public String getAddress() {

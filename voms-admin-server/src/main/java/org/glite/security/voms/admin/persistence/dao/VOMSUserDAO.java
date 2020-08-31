@@ -88,10 +88,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   private VOMSUserDAO() {
 
   }
-  
-  
+
+
   public void deleteTasks(VOMSUser user) {
-    
+
     String deleteTLRs = "delete from task_log_record where task_id in ( select t.task_id from "
         + "task t, usr u where t.usr_id = u.userid and u.userid = :userId )";
     HibernateFactory.getSession()
@@ -111,7 +111,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
       .createSQLQuery(deleteTasks)
       .setLong("userId", user.getId())
       .executeUpdate();
-    
+
   }
 
   public void requestAUPReacceptance(VOMSUser user, AUP aup) {
@@ -242,7 +242,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     Query q = HibernateFactory.getSession().createQuery(queryString);
 
     q.setDate("then", Date.from(then));
-    
+
     q.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
 
     return q.scroll();
@@ -695,7 +695,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     u.getAttributes().clear();
     u.getAupAcceptanceRecords().clear();
     u.getPersonalInformations().clear();
-    
+
     u.getTasks().clear();
 
     HibernateFactory.getSession().delete(u);
@@ -747,7 +747,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
       throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
 
-    if (!u.getCertificates().remove(cert)) {
+    boolean removed = u.removeCertificate(cert);
+
+    if (!removed) {
       // This should never happen
       throw new VOMSDatabaseException(
           "Inconsistent database! It was not possible to remove certificate '" + cert
