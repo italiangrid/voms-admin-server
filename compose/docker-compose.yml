@@ -62,7 +62,7 @@ services:
     environment:
       # This is the VOMS Admin configuration
       #
-      VOMS_VO_COUNT: 1 # 0 creates 1 VO, 1 two VOs, ...
+      VOMS_VO_COUNT: 0 # 0 creates 1 VO, 1 two VOs, ...
       VOMS_HOSTNAME: dev.local.io
       MAILHOST: mail
       MYSQL_ROOT_PASSWORD: pwd
@@ -76,15 +76,15 @@ services:
       # VOMS_ADMIN_SERVER_PACKAGE_URL: http://ci-01.cnaf.infn.it/download/voms/versions/jenkins-release_voms_packages-13/sl6/x86_64/voms-admin-server-3.5.1-1.el6.centos.noarch.rpm
       # VOMS_ADMIN_SERVER_VERSION: 3.3.3
       # VOMS_DEBUG_SUSPEND: y
-      VOMS_PRE_CONFIGURE: y
+      # VOMS_PRE_CONFIGURE: y
       # VOMS_SKIP_CONFIGURE: y
       VOMS_SKIP_JAVA_SETUP: y
       # VOMS_UPGRADE_DB: y
       
-      #VOMS_LOAD_DB_DUMP: y
-      VOMS_DEV_MODE: y
+      # VOMS_LOAD_DB_DUMP: y
+      # VOMS_DEV_MODE: y
 
-      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check 
+      VOMS_CONFIGURE_OPTIONS: --skip-ca-check --admin-skip-ca-check  --dburlparams useSSL=false&serverTimezone=Europe/Rome
       VOMS_ARGS: --war /code/voms-admin-server/target/voms-admin.war
 
       # ENABLE_YOURKIT: y
