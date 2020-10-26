@@ -6,6 +6,7 @@
   <groupId>org.italiangrid</groupId>
   <artifactId>voms-admin-parent</artifactId>
 
+
   <version>3.8.0</version>
 
   <packaging>pom</packaging>
