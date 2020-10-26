@@ -15,7 +15,7 @@ configure_vo(){
     --dbtype mysql \
     --deploy-database \
     --dbname ${VO_NAME} \
-    --dbusername $VOMS_DB_USERNAME \
+    --dbusername ${VOMS_DB_USERNAME} \
     --dbpassword $VOMS_DB_PASSWORD \
     --dbhost ${VOMS_MYSQL_HOST} \
     --mail-from $VOMS_MAIL_FROM \
