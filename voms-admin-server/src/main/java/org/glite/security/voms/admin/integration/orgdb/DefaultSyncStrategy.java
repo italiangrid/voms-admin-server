@@ -183,7 +183,7 @@ public class DefaultSyncStrategy
   public void synchronizeMemberInformation(VOMSUser u,
     VOMSOrgDBPerson orgDbPerson, String experimentName, Participation validParticipation) {
 
-    log.debug(
+    log.info(
       "Synchronizing pariticipation data for user {} against orgdb record {} for experiment {}",
       new Object[] { u, orgDbPerson, experimentName });
     
@@ -191,7 +191,7 @@ public class DefaultSyncStrategy
       log.warn("No valid participation found for user {}, orgdb record {} in experiment {}", 
           new Object[] { u, orgDbPerson, experimentName});
     } else {
-      log.debug("Participation found for user {}, orgdb record {} in experiment {}: {}",
+      log.info("Participation found for user {}, orgdb record {} in experiment {}: {}",
           new Object[] { u, orgDbPerson, experimentName, validParticipation});
     }
 

@@ -33,6 +33,8 @@ public class HomeAction extends UserActionSupport {
   @Override
   public void prepare() throws Exception {
 
+    super.prepare();
+    
     if (CurrentAdmin.instance()
       .getVoUser() == null) {
       addActionError(

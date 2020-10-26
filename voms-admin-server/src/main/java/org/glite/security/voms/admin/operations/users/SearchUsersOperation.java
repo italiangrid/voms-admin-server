@@ -16,8 +16,10 @@
 package org.glite.security.voms.admin.operations.users;
 
 import org.glite.security.voms.admin.operations.BaseVoReadOperation;
+import org.glite.security.voms.admin.operations.CurrentAdmin;
 import org.glite.security.voms.admin.operations.VOMSContext;
 import org.glite.security.voms.admin.operations.VOMSPermission;
+import org.glite.security.voms.admin.operations.groups.SearchMembersOperation;
 import org.glite.security.voms.admin.persistence.dao.SearchResults;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
 
@@ -29,8 +31,7 @@ public class SearchUsersOperation extends BaseVoReadOperation<SearchResults> {
 
   private int maxResults;
 
-  private SearchUsersOperation(String searchString, int firstResult,
-    int maxResults) {
+  private SearchUsersOperation(String searchString, int firstResult, int maxResults) {
 
     this.searchString = searchString;
     this.firstResult = firstResult;
@@ -40,19 +41,25 @@ public class SearchUsersOperation extends BaseVoReadOperation<SearchResults> {
 
   public SearchResults doExecute() {
 
-    return VOMSUserDAO.instance().search(searchString, firstResult, maxResults);
+    if (CurrentAdmin.instance()
+      .hasPermissions(VOMSContext.getVoContext(), SearchMembersOperation.PERSONAL_INFO_READ)) {
+      return VOMSUserDAO.instance().search(searchString, firstResult, maxResults);
+    } else {
+
+      return VOMSUserDAO.instance().searchBySubject(searchString, firstResult, maxResults);
+    }
   }
 
-  public static SearchUsersOperation instance(String searchString,
-    int firstResult, int maxResults) {
+  public static SearchUsersOperation instance(String searchString, int firstResult,
+      int maxResults) {
 
     return new SearchUsersOperation(searchString, firstResult, maxResults);
   }
 
   protected void setupPermissions() {
 
-    addRequiredPermission(VOMSContext.getVoContext(), VOMSPermission
-      .getContainerReadPermission().setMembershipReadPermission());
+    addRequiredPermission(VOMSContext.getVoContext(),
+        VOMSPermission.getContainerReadPermission().setMembershipReadPermission());
   }
-  
+
 }

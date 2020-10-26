@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
@@ -41,5 +42,7 @@ public interface TaskDAO extends GenericDAO<Task, Long> {
   void removeAllTasks();
 
   List<Task> getActiveTasks();
+  
+  void removeAllUserTasks(VOMSUser user);
 
 }

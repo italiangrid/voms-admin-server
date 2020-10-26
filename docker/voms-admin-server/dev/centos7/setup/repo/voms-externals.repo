@@ -1,0 +1,8 @@
+[voms-externals]
+name=voms-externals
+baseurl=https://repo.cloud.cnaf.infn.it/repository/voms-externals-rpm/centos7
+protect=1
+enabled=1
+priority=1
+gpgcheck=0
+sslverify=1

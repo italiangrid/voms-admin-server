@@ -33,8 +33,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.glite.security.voms.admin.persistence.model.VOMSUser.SuspensionReason;
 import org.hibernate.annotations.NaturalId;
 
@@ -147,33 +145,65 @@ public class Certificate implements Serializable, Comparable<Certificate> {
     this.suspended = suspended;
   }
 
-  public boolean equals(Object other) {
 
-    if (this == other)
-      return true;
+  // public boolean equals(Object other) {
+  //
+  // if (this == other)
+  // return true;
+  //
+  // if (other == null)
+  // return false;
+  //
+  // if (!(other instanceof Certificate))
+  // return false;
+  //
+  // Certificate that = (Certificate) other;
+  //
+  // EqualsBuilder builder = new EqualsBuilder();
+  // builder.append(getSubjectString(), that.getSubjectString()).append(getCa(),
+  // that.getCa());
+  //
+  // return builder.isEquals();
+  //
+  // }
+  //
+  // public int hashCode() {
+  //
+  // HashCodeBuilder builder = new HashCodeBuilder(7, 37);
+  // builder.append(getSubjectString()).append(getCa());
+  //
+  // return builder.toHashCode();
+  // }
 
-    if (other == null)
-      return false;
-
-    if (!(other instanceof Certificate))
-      return false;
-
-    Certificate that = (Certificate) other;
-
-    EqualsBuilder builder = new EqualsBuilder();
-    builder.append(getSubjectString(), that.getSubjectString()).append(getCa(),
-      that.getCa());
-
-    return builder.isEquals();
-
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((ca == null) ? 0 : ca.hashCode());
+    result = prime * result + ((subjectString == null) ? 0 : subjectString.hashCode());
+    return result;
   }
 
-  public int hashCode() {
-
-    HashCodeBuilder builder = new HashCodeBuilder(7, 37);
-    builder.append(getSubjectString()).append(getCa());
-
-    return builder.toHashCode();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Certificate other = (Certificate) obj;
+    if (ca == null) {
+      if (other.ca != null)
+        return false;
+    } else if (!ca.equals(other.ca))
+      return false;
+    if (subjectString == null) {
+      if (other.subjectString != null)
+        return false;
+    } else if (!subjectString.equals(other.subjectString))
+      return false;
+    return true;
   }
 
   public VOMSUser getUser() {

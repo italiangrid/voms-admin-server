@@ -27,6 +27,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.TaskDAO;
 import org.glite.security.voms.admin.persistence.dao.generic.TaskTypeDAO;
 import org.glite.security.voms.admin.persistence.error.VOMSDatabaseException;
 import org.glite.security.voms.admin.persistence.model.AUP;
+import org.glite.security.voms.admin.persistence.model.VOMSUser;
 import org.glite.security.voms.admin.persistence.model.request.Request;
 import org.glite.security.voms.admin.persistence.model.task.ApproveUserRequestTask;
 import org.glite.security.voms.admin.persistence.model.task.SignAUPTask;
@@ -134,6 +135,12 @@ public class TaskDAOHibernate extends GenericHibernateDAO<Task, Long> implements
     crit.add(Restrictions.eq("status", TaskStatus.CREATED));
     
     return crit.list();
+  }
+
+  @Override
+  public void removeAllUserTasks(VOMSUser user) {
+    
+    
   }
 
 

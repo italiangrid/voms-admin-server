@@ -25,15 +25,16 @@ import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
 public class JSONSerializer {
 
-  private static final VOMSPermission VO_ATTRIBUTE_READ_PERMISSIONS = VOMSPermission
-    .getEmptyPermissions().setAttributesReadPermission();
+  private static final VOMSPermission VO_ATTRIBUTE_READ_PERMISSIONS =
+      VOMSPermission.getEmptyPermissions().setAttributesReadPermission();
 
-  private static final VOMSPermission VO_MEMBERSHIP_READ_PERMISSIONS = VOMSPermission
-    .getEmptyPermissions().setMembershipReadPermission()
-    .setContainerReadPermission();
+  private static final VOMSPermission VO_MEMBERSHIP_READ_PERMISSIONS =
+      VOMSPermission.getEmptyPermissions()
+        .setMembershipReadPermission()
+        .setContainerReadPermission();
 
-  private static final VOMSPermission PI_READ_PERMISSIONS = VOMSPermission
-    .getEmptyPermissions().setPersonalInfoReadPermission();
+  private static final VOMSPermission PI_READ_PERMISSIONS =
+      VOMSPermission.getEmptyPermissions().setPersonalInfoReadPermission();
 
   public static VOMSUserJSON serialize(VOMSUser user) {
 
@@ -56,16 +57,22 @@ public class JSONSerializer {
         json.attributesFrom(user);
       }
 
-      if (admin.hasPermissions(VOMSContext.getVoContext(),
-        VO_MEMBERSHIP_READ_PERMISSIONS)) {
+      if (admin.hasPermissions(VOMSContext.getVoContext(), VO_MEMBERSHIP_READ_PERMISSIONS)) {
         json.fqansFrom(user);
       }
 
       if (admin.hasPermissions(VOMSContext.getVoContext(), PI_READ_PERMISSIONS)) {
         json.personalInformationFrom(user);
         json.cernHrIdFrom(user);
-      }
+      } else {
 
+        // filter out certificate details (suspension status & creation dates)
+        json.getCertificates().forEach(c -> {
+          c.setCreationTime(null);
+          c.setSuspended(null);
+          c.setSuspensionReason(null);
+        });
+      }
     }
 
     return json;

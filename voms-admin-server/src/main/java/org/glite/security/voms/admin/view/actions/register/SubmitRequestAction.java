@@ -17,6 +17,7 @@ package org.glite.security.voms.admin.view.actions.register;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Result;
@@ -31,6 +32,7 @@ import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.util.URLBuilder;
 import org.glite.security.voms.admin.view.actions.BaseAction;
 
+import com.google.common.base.Strings;
 import com.opensymphony.xwork2.validator.annotations.EmailValidator;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
@@ -71,6 +73,18 @@ public class SubmitRequestAction extends RegisterActionSupport {
   String userMessage;
 
   RequestValidationResult validationResult;
+  
+  Set<String> requiredFields;
+  
+  public Set<String> getRequiredFields() {
+    return requiredFields;
+  }
+  
+  @Override
+  public void prepare() throws Exception {
+    super.prepare();
+    requiredFields = VOMSConfiguration.instance().getRequiredPersonalInfoFields();
+  }
 
   protected void populateRequestModel() {
 
@@ -153,8 +167,6 @@ public class SubmitRequestAction extends RegisterActionSupport {
     this.surname = surname;
   }
 
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please enter your institution.")
   @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>=;]*$",
     message = "You entered invalid characters.")
   public String getInstitution() {
@@ -167,8 +179,6 @@ public class SubmitRequestAction extends RegisterActionSupport {
     this.institution = institution;
   }
 
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please enter your address.")
   @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters.")
   public String getAddress() {
@@ -181,8 +191,6 @@ public class SubmitRequestAction extends RegisterActionSupport {
     this.address = address;
   }
 
-  @RequiredStringValidator(type = ValidatorType.FIELD,
-    message = "Please enter your phone number.")
   @RegexFieldValidator(type = ValidatorType.FIELD, regex = "^[^<>&=;]*$",
     message = "You entered invalid characters.")
   public String getPhoneNumber() {
@@ -243,4 +251,19 @@ public class SubmitRequestAction extends RegisterActionSupport {
     return validationResult;
   }
 
+  @Override
+  public void validate() { 
+    
+    if (requiredFields.contains("institution") && Strings.isNullOrEmpty(institution)) {
+      addFieldError("institution", "Please provide a value for the institution");
+    }
+    
+    if (requiredFields.contains("address") && Strings.isNullOrEmpty(address)) {
+      addFieldError("address", "Please provide a value for the address");
+    }
+    
+    if (requiredFields.contains("phoneNumber") && Strings.isNullOrEmpty(phoneNumber)) {
+      addFieldError("phoneNumber", "Please provide a value for the phoneNumber");
+    }
+  }
 }

@@ -1,0 +1,15 @@
+server:
+  port: 9999
+
+spring:
+  profiles:
+    include:
+      - fixture
+
+service:
+  api-user:
+    username: api-user
+    password: pwd
+  metrics-user:
+    username: metrics
+    password: pwd

@@ -18,23 +18,17 @@ package org.glite.security.voms.admin.view.preparers.register;
 import java.util.List;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
-import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.persistence.dao.generic.DAOFactory;
 import org.glite.security.voms.admin.persistence.model.GroupManager;
 
-public class SelectManagerViewPreparer extends ViewPreparerSupport {
+public class SelectManagerViewPreparer implements ViewPreparer {
 
   @Override
-  public void execute(TilesRequestContext tilesContext,
-    AttributeContext attributeContext) throws PreparerException {
-
-    List<GroupManager> managers = DAOFactory.instance().getGroupManagerDAO()
-      .findAll();
-
-    tilesContext.getRequestScope().put("groupManagers", managers);
-
+  public void execute(Request tilesContext, AttributeContext attributeContext) {
+    List<GroupManager> managers = DAOFactory.instance().getGroupManagerDAO().findAll();
+    tilesContext.getContext(Request.REQUEST_SCOPE).put("groupManagers", managers);
   }
 
 }

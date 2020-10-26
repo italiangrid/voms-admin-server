@@ -1,0 +1,21 @@
+VOMS=
+(DESCRIPTION =
+ (ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = voms-db-02.cr.cnaf.infn.it)(PORT = 1521))
+ )
+ (CONNECT_DATA =
+  (SERVICE_NAME = vomsdb2.cr.cnaf.infn.it)
+ )
+ )
+
+COLLECTSRV =
+(DESCRIPTION =
+ (ADDRESS = (PROTOCOL = TCP)(HOST = atlas-cluster.cr.cnaf.infn.it)(PORT = 1521))
+ (CONNECT_DATA =
+  (SERVER = DEDICATED)
+  (SERVICE_NAME = collectsrv.cr.cnaf.infn.it)
+  (FAILOVER_MODE =
+   (TYPE = SELECT)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5)
+  )
+ )
+ )

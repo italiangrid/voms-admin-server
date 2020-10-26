@@ -103,8 +103,8 @@ public class RemoveUserCertificateOperation extends BaseVomsOperation {
     }
     
     VOMSUser u = cert.getUser();
-    VOMSUserDAO.instance()
-      .deleteCertificate(cert);
+
+    VOMSUserDAO.instance().deleteCertificate(u, cert);
 
     EventManager.instance()
       .dispatch(new UserCertificateRemoved(u, cert));

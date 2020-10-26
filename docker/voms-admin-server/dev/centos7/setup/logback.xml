@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Logging configuration that logs everything to stdout. -->
+<configuration scan="true" period="10sec">
+
+  <logger name="org.glite.security.voms" level="${VOMS_LOG_LEVEL:-INFO}"/>
+  <logger name="org.glite.security.voms.admin.persistence" level="${VOMS_PERSISTENCE_LOG_LEVEL:-INFO}"/>
+  <logger name="org.glite.security.voms.admin.integration" level="${VOMS_INTEGRATION_LOG_LEVEL:-INFO}"/>
+
+  <logger name="org.glite.security.voms.admin.core.tasks.PermissionCacheStatsLogger" level="DEBUG"/>
+  <logger name="org.glite.security.voms.admin.operations.util.CurrentAdminPermissionCache" level="DEBUG"/>
+
+  <logger name="org.italiangrid" level="${VOMS_LOG_LEVEL:-INFO}"/>
+  <logger name="it.infn" level="${VOMS_LOG_LEVEL:-INFO}"/>
+
+  <logger name="org.hibernate.SQL" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
+  <logger name="org.hibernate.type" level="${HIBERNATE_LOG_LEVEL:-WARN}"/>
+  <logger name="org.hibernate.stat" level="${HIBERNATE_STAT_LOG_LEVEL:-DEBUG}"/>
+
+  <logger name="org.apache.struts2" level="${STRUTS_LOG_LEVEL:-WARN}" />
+  <logger name="com.opensymphony.xwork2" level="${STRUTS_LOG_LEVEL:-WARN}" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS'Z',UTC} - [%contextName] %level [%thread] [%logger{0}] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="${JAVA_LOG_LEVEL:-WARN}">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+</configuration>

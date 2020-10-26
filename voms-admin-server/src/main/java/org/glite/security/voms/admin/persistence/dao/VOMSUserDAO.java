@@ -15,13 +15,18 @@
  */
 package org.glite.security.voms.admin.persistence.dao;
 
+import static java.lang.Integer.max;
+import static org.glite.security.voms.admin.persistence.dao.SearchUtils.paginatedFind;
+
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -81,6 +86,31 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
   }
 
   private VOMSUserDAO() {
+
+  }
+
+
+  public void deleteTasks(VOMSUser user) {
+
+    String deleteTLRs = "delete from task_log_record where task_id in ( select t.task_id from "
+        + "task t, usr u where t.usr_id = u.userid and u.userid = :userId )";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteTLRs)
+      .setLong("userId", user.getId())
+      .executeUpdate();
+
+    String deleteSATs = "delete from sign_aup_task where task_id in (select t.task_id from "
+        + "task t, usr u where t.usr_id = u.userid and u.userid = :userId )";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteSATs)
+      .setLong("userId", user.getId())
+      .executeUpdate();
+
+    String deleteTasks = "delete from task where usr_id = :userId";
+    HibernateFactory.getSession()
+      .createSQLQuery(deleteTasks)
+      .setLong("userId", user.getId())
+      .executeUpdate();
 
   }
 
@@ -202,6 +232,22 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
+  public ScrollableResults findUsersExpiredSinceDays(int numberOfDays) {
+
+    Instant now = Instant.now();
+
+    Instant then = now.minusSeconds(TimeUnit.DAYS.toSeconds(max(0, numberOfDays)));
+    String queryString =
+        "select distinct u from VOMSUser u where u.endTime is not null and u.endTime < :then and u.suspended = true";
+    Query q = HibernateFactory.getSession().createQuery(queryString);
+
+    q.setDate("then", Date.from(then));
+
+    q.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
+
+    return q.scroll();
+  }
+
   @SuppressWarnings("unchecked")
   public List<VOMSUser> findExpiredUsers() {
 
@@ -255,9 +301,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     // Add users that have a valid aup acceptance record that needs to be
     // checked against
     // the reacceptance period
-    Query q3 = HibernateFactory.getSession().createQuery(
-        "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
-            + " and r.lastAcceptanceDate > :lastUpdateTime ");
+    Query q3 = HibernateFactory.getSession()
+      .createQuery(
+          "select u from VOMSUser u join u.aupAcceptanceRecords r where r.aupVersion.active = true"
+              + " and r.lastAcceptanceDate > :lastUpdateTime ");
 
     q3.setTimestamp("lastUpdateTime", aupLastUpdateTime);
 
@@ -648,6 +695,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     u.getAttributes().clear();
     u.getAupAcceptanceRecords().clear();
     u.getPersonalInformations().clear();
+
     u.getTasks().clear();
 
     HibernateFactory.getSession().delete(u);
@@ -699,7 +747,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     if (u.getCertificates().size() == 1 && u.hasCertificate(cert))
       throw new VOMSException("User has only one certificate registered, so it cannot be removed!");
 
-    if (!u.getCertificates().remove(cert)) {
+    boolean removed = u.removeCertificate(cert);
+
+    if (!removed) {
       // This should never happen
       throw new VOMSDatabaseException(
           "Inconsistent database! It was not possible to remove certificate '" + cert
@@ -814,28 +864,6 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     return result;
   }
 
-  private SearchResults paginatedFind(Query q, Query countQuery, String searchString,
-      int firstResults, int maxResults) {
-
-    SearchResults res = SearchResults.instance();
-
-    res.setSearchString(searchString);
-
-    q.setFirstResult(firstResults);
-    q.setMaxResults(maxResults);
-
-    res.setResults(q.list());
-
-    Long count = (Long) countQuery.uniqueResult();
-
-    res.setCount(count.intValue());
-
-    res.setFirstResult(firstResults);
-    res.setResultsPerPage(maxResults);
-
-    return res;
-  }
-
   private String getUserOrderClause() {
 
     // If endTime is ignored by configuration, we should not consider
@@ -931,6 +959,32 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   }
 
+
+  @SuppressWarnings({"rawtypes", "deprecation"})
+  public SearchResults searchBySubject(String searchString, int firstResults, int maxResults) {
+
+    if (searchString == null || searchString.trim().equals("") || searchString.length() == 0) {
+      return findAll(firstResults, maxResults);
+    }
+
+    String sString = "%" + searchString + "%";
+
+    String queryString = "from VOMSUser u join u.certificates as cert where"
+        + " cert.subjectString like:searchString or cert.ca.subjectString like :searchString "
+        + getUserOrderClause();
+
+    Query q = HibernateFactory.getSession()
+      .createQuery(String.format("select distinct u %s", queryString));
+
+    Query count = HibernateFactory.getSession()
+      .createQuery(String.format("select count(distinct u) %s", queryString));
+
+    q.setString("searchString", sString);
+    count.setString("searchString", sString);
+
+    return paginatedFind(q, count, searchString, firstResults, maxResults);
+  }
+
   public SearchResults searchExpired(String searchString, int firstResults, int maxResults) {
 
     log.debug("searchString:" + searchString + ",firstResults: " + firstResults + ",maxResults: "
@@ -981,9 +1035,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     if (searchStringEmpty(searchString)) {
 
-      Query q =
-          HibernateFactory.getSession().createQuery("select distinct u " + queryString).setEntity(
-              "aup", aup);
+      Query q = HibernateFactory.getSession()
+        .createQuery("select distinct u " + queryString)
+        .setEntity("aup", aup);
 
       String countQuery = String.format("select count(distinct u) %s", queryString);
       Query countQ = HibernateFactory.getSession().createQuery(countQuery).setEntity("aup", aup);
@@ -1121,7 +1175,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     String query =
         "select count(distinct u) from VOMSUser u where u.endTime between :startDate AND :endDate "
-        + "and suspended is false order by u.endTime asc";
+            + "and suspended is false order by u.endTime asc";
 
     Calendar cal = Calendar.getInstance();
 
@@ -1129,9 +1183,8 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
     cal.add(Calendar.DAY_OF_YEAR, intervalInDays);
 
     Date intervalDate = cal.getTime();
-    
-    Query q = HibernateFactory.getSession()
-        .createQuery(query);
+
+    Query q = HibernateFactory.getSession().createQuery(query);
 
     q.setDate("startDate", now);
     q.setDate("endDate", intervalDate);
@@ -1140,7 +1193,7 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   @SuppressWarnings("unchecked")
   public List<VOMSUser> findExpiringUsers(Integer intervalInDays) {
-    
+
     Calendar cal = Calendar.getInstance();
 
     Date now = cal.getTime();
@@ -1150,11 +1203,10 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
     String query =
         "select distinct u from VOMSUser u where u.endTime between :startDate AND :endDate "
-        + "and suspended is false order by u.endTime asc";
+            + "and suspended is false order by u.endTime asc";
 
-    Query q = HibernateFactory.getSession()
-        .createQuery(query);
-    
+    Query q = HibernateFactory.getSession().createQuery(query);
+
     q.setDate("startDate", now);
     q.setDate("endDate", intervalDate);
 
@@ -1163,8 +1215,9 @@ public class VOMSUserDAO implements FindByCertificateDAO<VOMSUser> {
 
   public VOMSUser lookup(String certificateSubject, String certificateIssuer) {
 
-    return LookupPolicyProvider.instance().lookupStrategy().lookup(this, certificateSubject,
-        certificateIssuer);
+    return LookupPolicyProvider.instance()
+      .lookupStrategy()
+      .lookup(this, certificateSubject, certificateIssuer);
 
   }
 

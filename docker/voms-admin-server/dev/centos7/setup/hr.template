@@ -1,0 +1,2 @@
+voms.external-validators = orgdb
+voms.ext.orgdb.configClass = org.glite.security.voms.admin.integration.cern.HrDbConfigurator

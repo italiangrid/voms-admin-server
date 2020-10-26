@@ -37,7 +37,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +49,6 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.glite.security.voms.User;
 import org.glite.security.voms.admin.apiv2.VOMSUserJSON;
-import org.glite.security.voms.admin.error.NotFoundException;
 import org.glite.security.voms.admin.error.NullArgumentException;
 import org.glite.security.voms.admin.error.VOMSSyntaxException;
 import org.glite.security.voms.admin.persistence.HibernateFactory;
@@ -89,9 +87,9 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     FAILED_TO_SIGN_AUP("User failed to sign the AUP in time."),
     MEMBERSHIP_EXPIRATION("User membership has expired."),
-    SECURITY_INCIDENT(
-      "User membership has been suspended after a security incident."),
-    OTHER("User membership has been suspended for another unknown reason.");
+    SECURITY_INCIDENT("User membership has been suspended after a security incident."),
+    OTHER("User membership has been suspended for another unknown reason."),
+    HR_DB_VALIDATION("OrgDB: CERN HR db validation failed");
 
     String message;
 
@@ -118,7 +116,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
   @Id
   @Column(name = "userid")
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
   // Base membership information (JSPG requirements)
@@ -163,38 +161,30 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   String suspensionReason;
 
   /** Generic attributes mapping **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", orphanRemoval=true)
-  Set<VOMSUserAttribute> attributes = new HashSet<VOMSUserAttribute>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<VOMSUserAttribute> attributes = new HashSet<>();
 
   /** Membership mappings **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", orphanRemoval=true)
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
   @SortNatural
-  Set<VOMSMapping> mappings = new TreeSet<VOMSMapping>();
+  Set<VOMSMapping> mappings = new TreeSet<>();
 
   /** User certificates **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user", 
-    fetch=FetchType.EAGER)
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-  Set<Certificate> certificates = new HashSet<Certificate>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<Certificate> certificates = new HashSet<>();
 
   /** AUP acceptance records **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user")
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-  Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<AUPAcceptanceRecord>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<AUPAcceptanceRecord> aupAcceptanceRecords = new HashSet<>();
 
   /** Assigned tasks **/
-  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "user",
-    fetch = FetchType.EAGER)
-  @org.hibernate.annotations.Cascade(
-    value = { org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-  Set<Task> tasks = new HashSet<Task>();
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user", orphanRemoval = true)
+  Set<Task> tasks = new HashSet<>();
 
   /** Personal information set **/
   // FIXME: currently ignored by configuration
   @Transient
-  Set<PersonalInformationRecord> personalInformations = new HashSet<PersonalInformationRecord>();
+  Set<PersonalInformationRecord> personalInformations = new HashSet<>();
 
   @Column(name = "orgdb_id", nullable = true)
   Long orgDbId;
@@ -252,8 +242,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     while (i.hasNext()) {
       VOMSUserAttribute tmp = (VOMSUserAttribute) i.next();
 
-      if (tmp.getName()
-        .equals(name))
+      if (tmp.getName().equals(name))
         return tmp;
     }
 
@@ -271,7 +260,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!attributes.contains(val))
       throw new NoSuchAttributeException(
-        "Attribute \"" + val.getName() + "\" undefined for user " + this);
+          "Attribute \"" + val.getName() + "\" undefined for user " + this);
 
     attributes.remove(val);
 
@@ -283,30 +272,30 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (val == null)
       throw new NoSuchAttributeException(
-        "Attribute \"" + name + "\" undefined for user \"" + this + "\".");
+          "Attribute \"" + name + "\" undefined for user \"" + this + "\".");
 
     val.setValue(value);
 
   }
-  
-  public void cleanMappings(){
-    
+
+  public void cleanMappings() {
+
     Iterator<VOMSMapping> mappingsIter = getMappings().iterator();
-    
-    while (mappingsIter.hasNext()){
+
+    while (mappingsIter.hasNext()) {
       VOMSMapping m = mappingsIter.next();
       mappingsIter.remove();
-      
+
       m.getGroup().removeMapping(m);
-      
+
       isTrue(!m.getGroup().getMappings().contains(m));
-      
-      if (m.getRole()!= null){
+
+      if (m.getRole() != null) {
         m.getRole().removeMapping(m);
-        
+
         isTrue(!m.getRole().getMappings().contains(m));
       }
-      
+
       HibernateFactory.getSession().delete(m);
     }
   }
@@ -326,21 +315,19 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (groupName == null)
       throw new NullArgumentException(
-        "Cannot org.glite.security.voms.admin.test membership in a null group!");
+          "Cannot org.glite.security.voms.admin.test membership in a null group!");
 
     if (!PathNamingScheme.isGroup(groupName))
       throw new VOMSSyntaxException(
-        "Group name passed as argument does not respect the VOMS FQAN syntax. ["
-          + groupName + "]");
+          "Group name passed as argument does not respect the VOMS FQAN syntax. [" + groupName
+              + "]");
 
     Iterator i = getMappings().iterator();
 
     while (i.hasNext()) {
 
       VOMSMapping m = (VOMSMapping) i.next();
-      if (m.getGroup()
-        .getName()
-        .equals(groupName) && m.isGroupMapping())
+      if (m.getGroup().getName().equals(groupName) && m.isGroupMapping())
         return true;
     }
 
@@ -352,15 +339,14 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (g == null)
       throw new NullArgumentException(
-        "Cannot org.glite.security.voms.admin.test membership in a null group!");
+          "Cannot org.glite.security.voms.admin.test membership in a null group!");
 
     Iterator i = getMappings().iterator();
 
     while (i.hasNext()) {
 
       VOMSMapping m = (VOMSMapping) i.next();
-      if (m.getGroup()
-        .equals(g) && m.isGroupMapping())
+      if (m.getGroup().equals(g) && m.isGroupMapping())
         return true;
     }
 
@@ -373,16 +359,16 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     log.debug("Adding user \"" + this + "\" to group \"" + g + "\".");
 
     VOMSMapping m = new VOMSMapping(this, g, null);
-    
+
     if (!getMappings().add(m))
       throw new AlreadyExistsException(
-        "User \"" + this + "\" is already a member of group \"" + g + "\".");
-    
+          "User \"" + this + "\" is already a member of group \"" + g + "\".");
+
     m.getGroup().addMapping(m);
-    
+
     // Add this user to parent groups
     if (!g.isRootGroup()) {
-      if (!isMember(g.parent)){
+      if (!isMember(g.parent)) {
         addToGroup(g.parent);
       }
     }
@@ -403,7 +389,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     } else
       throw new NoSuchMappingException(
-        "User \"" + this + "\" is not a member of group \"" + g + "\".");
+          "User \"" + this + "\" is not a member of group \"" + g + "\".");
 
   }
 
@@ -411,19 +397,17 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!isMember(g))
       throw new NoSuchMappingException(
-        "User \"" + this + "\" is not a member of group \"" + g + "\".");
+          "User \"" + this + "\" is not a member of group \"" + g + "\".");
 
     VOMSMapping m = new VOMSMapping(this, g, r);
     if (getMappings().contains(m))
-      throw new AlreadyExistsException("User \"" + this
-        + "\" already has role \"" + r + "\" in group \"" + g + "\".");
+      throw new AlreadyExistsException(
+          "User \"" + this + "\" already has role \"" + r + "\" in group \"" + g + "\".");
 
-    log.debug("Assigning role \"" + r + "\" to user \"" + this
-      + "\" in group \"" + g + "\".");
+    log.debug("Assigning role \"" + r + "\" to user \"" + this + "\" in group \"" + g + "\".");
 
     getMappings().add(m);
-    r.getMappings()
-      .add(m);
+    r.getMappings().add(m);
 
     return m;
 
@@ -433,14 +417,13 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!isMember(g))
       throw new NoSuchMappingException(
-        "User \"" + this + "\" is not a member of group \"" + g + "\".");
+          "User \"" + this + "\" is not a member of group \"" + g + "\".");
 
     if (!hasRole(g, r))
-      throw new NoSuchMappingException("User \"" + this
-        + "\" does not have role \"" + r + "\" in group \"" + g + "\".");
+      throw new NoSuchMappingException(
+          "User \"" + this + "\" does not have role \"" + r + "\" in group \"" + g + "\".");
 
-    log.debug("Dismissing role \"" + r + "\" from user \"" + this
-      + "\" in group \"" + g + "\".");
+    log.debug("Dismissing role \"" + r + "\" from user \"" + this + "\" in group \"" + g + "\".");
 
     Iterator i = getMappings().iterator();
     boolean removed = false;
@@ -449,10 +432,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     while (i.hasNext()) {
       m = (VOMSMapping) i.next();
       if (m.isRoleMapping()) {
-        if (m.getGroup()
-          .equals(g)
-          && m.getRole()
-            .equals(r)) {
+        if (m.getGroup().equals(g) && m.getRole().equals(r)) {
           i.remove();
           boolean removedFromRole = r.removeMapping(m);
           boolean removedFromGroup = g.removeMapping(m);
@@ -462,8 +442,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     }
 
     if (!removed)
-      throw new VOMSInconsistentDatabaseException(
-        "Error removing existing role mapping!");
+      throw new VOMSInconsistentDatabaseException("Error removing existing role mapping!");
     return m;
 
   }
@@ -472,7 +451,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!isMember(g))
       throw new NoSuchMappingException(
-        "User \"" + this + "\" is not a member of group \"" + g + "\".");
+          "User \"" + this + "\" is not a member of group \"" + g + "\".");
 
     Iterator i = getMappings().iterator();
 
@@ -480,8 +459,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
       VOMSMapping m = (VOMSMapping) i.next();
 
-      if (m.getGroup()
-        .equals(g) && m.isRoleMapping()) {
+      if (m.getGroup().equals(g) && m.isRoleMapping()) {
         i.remove();
         m.getRole().removeMapping(m);
         m.getGroup().removeMapping(m);
@@ -495,7 +473,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!isMember(g))
       throw new NoSuchMappingException(
-        "User \"" + this + "\" is not a member of group \"" + g + "\".");
+          "User \"" + this + "\" is not a member of group \"" + g + "\".");
 
     Iterator i = getMappings().iterator();
 
@@ -503,10 +481,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
       VOMSMapping m = (VOMSMapping) i.next();
       if (m.isRoleMapping()) {
-        if (m.getGroup()
-          .equals(g)
-          && m.getRole()
-            .equals(r))
+        if (m.getGroup().equals(g) && m.getRole().equals(r))
           return true;
       }
     }
@@ -518,7 +493,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (!PathNamingScheme.isQualifiedRole(fqan))
       throw new IllegalArgumentException(
-        "Role name passed as argument is not a qualified role! [" + fqan + "]");
+          "Role name passed as argument is not a qualified role! [" + fqan + "]");
 
     String groupName = PathNamingScheme.getGroupName(fqan);
     String roleName = PathNamingScheme.getRoleName(fqan);
@@ -529,12 +504,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
       VOMSMapping m = (VOMSMapping) i.next();
       if (m.isRoleMapping()) {
-        if (m.getGroup()
-          .getName()
-          .equals(groupName)
-          && m.getRole()
-            .getName()
-            .equals(roleName))
+        if (m.getGroup().getName().equals(groupName) && m.getRole().getName().equals(roleName))
           return true;
       }
     }
@@ -566,8 +536,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     while (mIter.hasNext()) {
 
       VOMSMapping m = (VOMSMapping) mIter.next();
-      if (m.isRoleMapping() && m.getGroup()
-        .equals(g))
+      if (m.isRoleMapping() && m.getGroup().equals(g))
         res.add(m.getRole());
     }
 
@@ -648,8 +617,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     User u = new User();
 
     u.setDN(getDefaultCertificate().getSubjectString());
-    u.setCA(getDefaultCertificate().getCa()
-      .getSubjectString());
+    u.setCA(getDefaultCertificate().getCa().getSubjectString());
     u.setCN(null);
     u.setMail(getEmailAddress());
     u.setCertUri(null);
@@ -668,8 +636,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       for (Certificate cert : u.getCertificates()) {
         User uu = new User();
         uu.setDN(cert.getSubjectString());
-        uu.setCA(cert.getCa()
-          .getSubjectString());
+        uu.setCA(cert.getCa().getSubjectString());
         uu.setMail(u.getEmailAddress());
         userList.add(uu);
       }
@@ -699,8 +666,8 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((getDefaultCertificate() == null) ? 0 : 
-      getDefaultCertificate().hashCode());
+    result = prime * result
+        + ((getDefaultCertificate() == null) ? 0 : getDefaultCertificate().hashCode());
     return result;
   }
 
@@ -751,7 +718,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     if (hasCertificate(cert))
       throw new AlreadyExistsException(
-        "Certificate '" + cert + "' is already bound to user '" + this + "'.");
+          "Certificate '" + cert + "' is already bound to user '" + this + "'.");
 
     getCertificates().add(cert);
     cert.setUser(this);
@@ -772,11 +739,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   public Certificate getCertificate(String subject, String issuer) {
 
     for (Certificate c : certificates) {
-      if (c.getSubjectString()
-        .equals(subject)
-        && c.getCa()
-          .getSubjectString()
-          .equals(issuer))
+      if (c.getSubjectString().equals(subject) && c.getCa().getSubjectString().equals(issuer))
         return c;
     }
 
@@ -789,22 +752,25 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     for (Certificate c : certificates) {
 
-      if (c.getSubjectString()
-        .equals(subject))
+      if (c.getSubjectString().equals(subject))
         result.add(c);
     }
 
     return result;
   }
 
-  public void removeCertificate(Certificate cert) {
+  public boolean removeCertificate(Certificate cert) {
 
-    if (!hasCertificate(cert))
-      throw new NotFoundException(
-        "Certificate '" + cert + "' is not bound to user '" + this + "'.");
+    if (!hasCertificate(cert)) {
+      return false;
+    }
 
-    getCertificates().remove(cert);
+    boolean removed = getCertificates().remove(cert);
+    if (removed) {
+      cert.setUser(null);
+    }
 
+    return removed;
   }
 
   public String getAddress() {
@@ -917,8 +883,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     if (cert == null)
       return null;
 
-    return cert.getSubjectString()
-      .replaceAll("'", "\\\\'");
+    return cert.getSubjectString().replaceAll("'", "\\\\'");
 
   }
 
@@ -933,8 +898,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   /**
    * @param aupAcceptanceRecords the aupAcceptanceRecords to set
    */
-  public void setAupAcceptanceRecords(
-    Set<AUPAcceptanceRecord> aupAcceptanceRecords) {
+  public void setAupAcceptanceRecords(Set<AUPAcceptanceRecord> aupAcceptanceRecords) {
 
     this.aupAcceptanceRecords = aupAcceptanceRecords;
   }
@@ -943,8 +907,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
 
-      if (r.getAupVersion()
-        .equals(aupVersion))
+      if (r.getAupVersion().equals(aupVersion))
         return true;
 
     }
@@ -956,8 +919,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
 
     for (AUPAcceptanceRecord r : aupAcceptanceRecords) {
 
-      if (r.getAupVersion()
-        .equals(aupVersion))
+      if (r.getAupVersion().equals(aupVersion))
         return r;
     }
 
@@ -1014,8 +976,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   /**
    * @param personalInformations the personalInformations to set
    */
-  public void setPersonalInformations(
-    Set<PersonalInformationRecord> personalInformations) {
+  public void setPersonalInformations(Set<PersonalInformationRecord> personalInformations) {
 
     this.personalInformations = personalInformations;
   }
@@ -1059,8 +1020,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       return false;
 
     for (AUPAcceptanceRecord r : getAupAcceptanceRecords()) {
-      if (r.getAupVersion()
-        .equals(aup.getActiveVersion()) && !r.getValid())
+      if (r.getAupVersion().equals(aup.getActiveVersion()) && !r.getValid())
         return true;
 
     }
@@ -1088,8 +1048,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       if (t instanceof SignAUPTask) {
         SignAUPTask aupTask = (SignAUPTask) t;
 
-        if (!aupTask.getStatus()
-          .equals(TaskStatus.COMPLETED))
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED))
           return true;
       }
 
@@ -1101,8 +1060,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     for (Task t : getTasks()) {
       if (t instanceof SignAUPTask) {
         SignAUPTask aupTask = (SignAUPTask) t;
-        if (!aupTask.getStatus()
-          .equals(TaskStatus.COMPLETED)) {
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED)) {
           return aupTask;
         }
       }
@@ -1120,8 +1078,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
     for (Task t : getTasks()) {
       if (t instanceof SignAUPTask) {
         SignAUPTask aupTask = (SignAUPTask) t;
-        if (!aupTask.getStatus()
-          .equals(TaskStatus.COMPLETED)) {
+        if (!aupTask.getStatus().equals(TaskStatus.COMPLETED)) {
           return true;
         }
       }
@@ -1139,10 +1096,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       if (t instanceof SignAUPTask) {
         SignAUPTask aupTask = (SignAUPTask) t;
         log.debug("aupTask: " + aupTask);
-        if (aupTask.getAup()
-          .equals(aup)
-          && (!aupTask.getStatus()
-            .equals(TaskStatus.COMPLETED))) {
+        if (aupTask.getAup().equals(aup) && (!aupTask.getStatus().equals(TaskStatus.COMPLETED))) {
           log.debug("Found pending aup task: " + aupTask);
           return true;
         }
@@ -1161,10 +1115,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       if (t instanceof SignAUPTask) {
 
         SignAUPTask aupTask = (SignAUPTask) t;
-        if (aupTask.getAup()
-          .equals(aup)
-          && !aupTask.getStatus()
-            .equals(TaskStatus.COMPLETED))
+        if (aupTask.getAup().equals(aup) && !aupTask.getStatus().equals(TaskStatus.COMPLETED))
           return aupTask;
       }
     }
@@ -1190,8 +1141,7 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
   }
 
   /**
-   * Restores membership and certificates that where suspended for the reason
-   * passed as argument
+   * Restores membership and certificates that where suspended for the reason passed as argument
    * 
    * @param reason
    */
@@ -1334,16 +1284,16 @@ public class VOMSUser implements Serializable, Comparable<VOMSUser> {
       }
     }
 
-    if (getDefaultCertificate() != null){
+    if (getDefaultCertificate() != null) {
       // Both users have name and surname undefined, compare certificates
       return getDefaultCertificate().compareTo(that.getDefaultCertificate());
     }
-    
+
     // Compare by id as last resort
-    if (getId() != null){
+    if (getId() != null) {
       return getId().compareTo(that.getId());
     }
-    
+
     return -1;
 
   }

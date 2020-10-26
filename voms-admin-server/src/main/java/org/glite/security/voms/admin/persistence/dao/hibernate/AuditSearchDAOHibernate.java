@@ -53,11 +53,11 @@ public class AuditSearchDAOHibernate
   }
 
   @Override
-  public Integer countEvents() {
+  public Long countEvents() {
 
     Criteria crit = createCriteria();
     crit.setProjection(Projections.rowCount());
-    return (Integer) crit.uniqueResult();
+    return (Long) crit.uniqueResult();
   }
 
   protected Criteria buildCriteriaFromParams(AuditLogSearchParams sp) {
@@ -158,7 +158,7 @@ public class AuditSearchDAOHibernate
   }
 
   @Override
-  public Integer countEventsMatchingParams(AuditLogSearchParams sp) {
+  public Long countEventsMatchingParams(AuditLogSearchParams sp) {
 
     Criteria crit = buildCriteriaFromParams(sp);
     crit.setProjection(Projections.rowCount());
@@ -175,7 +175,7 @@ public class AuditSearchDAOHibernate
     crit.setFirstResult(0);
     crit.setMaxResults(100);
 
-    return (Integer) crit.uniqueResult();
+    return (Long) crit.uniqueResult();
   }
 
 }

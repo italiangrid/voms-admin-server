@@ -18,7 +18,8 @@ package org.glite.security.voms.admin.view.interceptors;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.interceptor.ValidationAware;
+
 
 public class JSONExceptionReportInterceptor extends JSONValidationReportInterceptor {
 

@@ -55,9 +55,6 @@ public class SignAUPTask extends Task implements Serializable {
     this.expiryDate = expiryDate;
     creationDate = new Date();
     status = TaskStatus.CREATED;
-
-    addLogRecord(getCreationDate());
-
   }
 
   /**
