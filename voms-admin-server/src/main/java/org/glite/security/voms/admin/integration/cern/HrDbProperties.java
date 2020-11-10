@@ -123,7 +123,7 @@ public class HrDbProperties {
   }
 
   HrDbApiProperties api = new HrDbApiProperties();
-  MembershipCheck membesrshipCheck = new MembershipCheck();
+  MembershipCheck membershipCheck = new MembershipCheck();
 
   String experimentName = "experiment";
 
@@ -143,12 +143,12 @@ public class HrDbProperties {
     this.experimentName = experimentName;
   }
 
-  public void setMembesrshipCheck(MembershipCheck membesrshipCheck) {
-    this.membesrshipCheck = membesrshipCheck;
+  public void setMembershipCheck(MembershipCheck membershipCheck) {
+    this.membershipCheck = membershipCheck;
   }
 
-  public MembershipCheck getMembesrshipCheck() {
-    return membesrshipCheck;
+  public MembershipCheck getMembershipCheck() {
+    return membershipCheck;
   }
 
   private static void requireProperty(String key, Properties properties) {
@@ -169,25 +169,25 @@ public class HrDbProperties {
       int startHour = Integer.parseInt(properties.getProperty(MEMBERSHIP_CHECK_START_HOUR_KEY));
 
       if (startHour >= 0 && startHour < 24) {
-        config.getMembesrshipCheck()
+        config.getMembershipCheck()
           .setStartHour(
               (Integer.parseInt(properties.getProperty(MEMBERSHIP_CHECK_START_HOUR_KEY))));
       }
     }
 
     if (properties.containsKey(MEMBERSHIP_CHECK_RUN_AT_STARTUP_KEY)) {
-      config.getMembesrshipCheck()
+      config.getMembershipCheck()
         .setRunAtStartup(
             Boolean.parseBoolean(properties.getProperty(MEMBERSHIP_CHECK_RUN_AT_STARTUP_KEY)));
     }
 
     if (properties.containsKey(MEMBERSHIP_CHECK_PERIOD_KEY)) {
-      config.getMembesrshipCheck()
+      config.getMembershipCheck()
         .setPeriodInSeconds(Long.parseLong(properties.getProperty(MEMBERSHIP_CHECK_PERIOD_KEY)));
     }
 
     if (properties.containsKey(MEMBERSHIP_CHECK_ENABLED_KEY)) {
-      config.getMembesrshipCheck().setEnabled(Boolean.parseBoolean(MEMBERSHIP_CHECK_ENABLED_KEY));
+      config.getMembershipCheck().setEnabled(Boolean.parseBoolean(MEMBERSHIP_CHECK_ENABLED_KEY));
     }
 
     config.getApi().setEndpoint(properties.getProperty(API_ENDPOINT_KEY));

@@ -15,9 +15,10 @@
  */
 package integration.hr;
 
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 
 import java.util.Date;
@@ -210,8 +211,6 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
     assertThat(user.getEmailAddress(), is("TEST.USER@CNAF.INFN.IT".toLowerCase()));
     
     verify(manager).restoreUser(Mockito.eq(user));
-    
-    
   }
   
   @Test
@@ -234,8 +233,34 @@ public class HrDefaultHandlerTest extends HrDbTestSupport {
     assertThat(user.getEmailAddress(), is("TEST.USER@CNAF.INFN.IT".toLowerCase()));
     
     verify(manager).restoreUser(Mockito.eq(user));
+  }
+
+  @Test
+  public void testInstituteChangeHandling() {
     
-    
+    InstituteDTO firstInstitute = new InstituteDTO();
+    institute.setName("First institute");
+
+    InstituteDTO secondInstitute = new InstituteDTO();
+    institute.setName("Second institute");
+
+    oneParticipation.setExperiment("experiment");
+    oneParticipation.setInstitute(firstInstitute);
+    oneParticipation.setStartDate(Date.from(ONE_YEAR_AGO));
+    oneParticipation.setEndDate(Date.from(ONE_WEEK_AGO));
+
+    anotherParticipation.setExperiment("experiment");
+    anotherParticipation.setInstitute(secondInstitute);
+    anotherParticipation.setStartDate(Date.from(A_DAY_AGO));
+
+    voPerson.setParticipations(Sets.newHashSet(oneParticipation, anotherParticipation));
+
+    user.setSuspended(true);
+    user.setSuspensionReasonCode(SuspensionReason.MEMBERSHIP_EXPIRATION);
+    user.setSuspensionReason(SuspensionReason.MEMBERSHIP_EXPIRATION.getMessage());
+
+    handler.synchronizeMembershipInformation(user, voPerson);
+    verify(manager).restoreUser(Mockito.eq(user));
   }
 
 

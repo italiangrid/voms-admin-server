@@ -137,7 +137,7 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
     configurator.configure();
 
     verify(executorService).scheduleAtFixedRate(isA(DatabaseTransactionTaskWrapper.class),
-        Mockito.anyLong(), Mockito.eq(props.getMembesrshipCheck().getPeriodInSeconds()),
+        Mockito.anyLong(), Mockito.eq(props.getMembershipCheck().getPeriodInSeconds()),
         Mockito.eq(TimeUnit.SECONDS));
 
     verify(executorService).schedule(Mockito.isA(DatabaseTransactionTaskWrapper.class),
@@ -148,13 +148,13 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
   public void testNoStartupTaskScheduling() throws VOMSPluginConfigurationException {
     HrDbProperties props = new HrDbProperties();
 
-    props.getMembesrshipCheck().setRunAtStartup(false);
+    props.getMembershipCheck().setRunAtStartup(false);
 
     configurator.setHrConfig(props);
     configurator.configure();
 
     verify(executorService).scheduleAtFixedRate(isA(DatabaseTransactionTaskWrapper.class), anyLong(),
-        Mockito.eq(props.getMembesrshipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
+        Mockito.eq(props.getMembershipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
 
     verify(executorService, never()).schedule(isA(DatabaseTransactionTaskWrapper.class), anyLong(), any());
   }
@@ -163,7 +163,7 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
   public void testStartupTaskSchedulingCanceled() throws VOMSPluginConfigurationException {
     HrDbProperties props = new HrDbProperties();
 
-    props.getMembesrshipCheck().setRunAtStartup(true);
+    props.getMembershipCheck().setRunAtStartup(true);
 
     configurator.setHrConfig(props);
     configurator.setClock(fixed(Instant.parse("2019-01-01T21:45:00.00Z"), ZoneId.systemDefault()));
@@ -171,7 +171,7 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
 
 
     verify(executorService).scheduleAtFixedRate(isA(DatabaseTransactionTaskWrapper.class), anyLong(),
-        eq(props.getMembesrshipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
+        eq(props.getMembershipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
 
     verify(executorService, never()).schedule(isA(DatabaseTransactionTaskWrapper.class), anyLong(), any());
   }
@@ -180,8 +180,8 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
   public void testStartupTaskScheduledTheNextDay() throws VOMSPluginConfigurationException {
     HrDbProperties props = new HrDbProperties();
 
-    props.getMembesrshipCheck().setRunAtStartup(false);
-    props.getMembesrshipCheck().setStartHour(22);
+    props.getMembershipCheck().setRunAtStartup(false);
+    props.getMembershipCheck().setStartHour(22);
 
     configurator.setHrConfig(props);
     configurator.setClock(fixed(Instant.parse("2019-01-01T21:01:00.00Z"), ZoneId.systemDefault()));
@@ -189,7 +189,7 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
 
 
     verify(executorService).scheduleAtFixedRate(isA(DatabaseTransactionTaskWrapper.class), anyLong(),
-        eq(props.getMembesrshipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
+        eq(props.getMembershipCheck().getPeriodInSeconds()), eq(TimeUnit.SECONDS));
 
     verify(executorService, never()).schedule(isA(DatabaseTransactionTaskWrapper.class), anyLong(), any());
   }

@@ -48,6 +48,6 @@ public class DefaultHrDbSyncTaskFactory implements HrDbSyncTaskFactory {
     syncTask.setSyncHandler(handler);
 
     return new DatabaseTransactionTaskWrapper(syncTask, true, true,
-        properties.getMembesrshipCheck().getPeriodInSeconds());
+        properties.getMembershipCheck().getPeriodInSeconds());
   }
 }

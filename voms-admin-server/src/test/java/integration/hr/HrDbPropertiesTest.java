@@ -67,8 +67,8 @@ public class HrDbPropertiesTest {
     assertThat(hrConfig.getApi().getEndpoint(), is("http://example"));
     assertThat(hrConfig.getApi().getUsername(), is("test"));
     assertThat(hrConfig.getApi().getPassword(), is("password"));
-    assertThat(hrConfig.getMembesrshipCheck().isEnabled(), is(false));
-    assertThat(hrConfig.getMembesrshipCheck().getPeriodInSeconds(), is(86400L));
+    assertThat(hrConfig.getMembershipCheck().isEnabled(), is(false));
+    assertThat(hrConfig.getMembershipCheck().getPeriodInSeconds(), is(86400L));
   }
   
   @Test

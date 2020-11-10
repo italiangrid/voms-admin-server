@@ -129,21 +129,21 @@ public class HrDbConfigurator extends AbstractPluginConfigurator
     final Runnable task = wrapTask(syncTask);
     ZonedDateTime now = ZonedDateTime.now(clock);
     ZonedDateTime nextRun =
-        now.withHour(config.getMembesrshipCheck().getStartHour()).withMinute(0).withSecond(0);
+        now.withHour(config.getMembershipCheck().getStartHour()).withMinute(0).withSecond(0);
 
     if (now.compareTo(nextRun) > 0) {
       nextRun = nextRun.plusDays(1);
     }
 
     LOG.info("Scheduling HR DB sync task to start on {} and run every {} seconds", nextRun,
-        config.getMembesrshipCheck().getPeriodInSeconds());
+        config.getMembershipCheck().getPeriodInSeconds());
 
     Duration duration = Duration.between(now, nextRun);
 
     executorService.scheduleAtFixedRate(task, duration.getSeconds(),
-        config.getMembesrshipCheck().getPeriodInSeconds(), TimeUnit.SECONDS);
+        config.getMembershipCheck().getPeriodInSeconds(), TimeUnit.SECONDS);
 
-    if (config.getMembesrshipCheck().isRunAtStartup()) {
+    if (config.getMembershipCheck().isRunAtStartup()) {
 
       ZonedDateTime startupRun = now.plusMinutes(5);
 
@@ -179,7 +179,7 @@ public class HrDbConfigurator extends AbstractPluginConfigurator
     LOG.info("HR DB request validator registered succesfully. Syncing against HR db experiment {}",
         hrConfig.getExperimentName());
 
-    if (hrConfig.getMembesrshipCheck().isEnabled()) {
+    if (hrConfig.getMembershipCheck().isEnabled()) {
       scheduleSyncTask(hrConfig,
           syncTaskFactory.buildSyncTask(hrConfig, apiService, userDao, config));
     } else {
