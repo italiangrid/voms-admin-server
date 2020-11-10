@@ -71,6 +71,12 @@ public class HrDbPropertiesTest {
     assertThat(hrConfig.getMembershipCheck().getPeriodInSeconds(), is(86400L));
   }
   
+
+  @Test
+  public void testFileParsing() {
+
+  }
+
   @Test
   public void testApiTimeoutChecks() {
     Properties props = new Properties();
