@@ -38,7 +38,7 @@
 		<api.version>${project.version}</api.version>
 		<interface-version>2.0.2</interface-version>
 
-		<struts.version>2.5.22</struts.version>
+		<struts.version>2.5.26</struts.version>
 		<struts.bootstrap.plugin.version>2.5.2</struts.bootstrap.plugin.version>
 		<struts.jquery.plugin.version>4.0.3</struts.jquery.plugin.version>
 		<hibernate.version>5.2.17.Final</hibernate.version>
