@@ -187,7 +187,8 @@ public class HrDbProperties {
     }
 
     if (properties.containsKey(MEMBERSHIP_CHECK_ENABLED_KEY)) {
-      config.getMembershipCheck().setEnabled(Boolean.parseBoolean(MEMBERSHIP_CHECK_ENABLED_KEY));
+      config.getMembershipCheck()
+        .setEnabled(Boolean.parseBoolean(properties.getProperty(MEMBERSHIP_CHECK_ENABLED_KEY)));
     }
 
     config.getApi().setEndpoint(properties.getProperty(API_ENDPOINT_KEY));

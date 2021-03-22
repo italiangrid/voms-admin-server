@@ -99,19 +99,37 @@ public class HrDbConfiguratorTests extends HrDbTestSupport {
     configurator.setUserDao(dao);
     configurator.setClock(CLOCK);
 
-    when(vomsConfig.getConfigurationDirectoryPath()).thenReturn("src/test/resources/cern/config");
-    when(vomsConfig.getExternalValidatorProperty(eq("orgdb"), anyString(), anyString()))
-      .thenReturn("src/test/resources/cern/config/orgdb.properties");
+    when(vomsConfig.getConfigurationDirectoryPath())
+      .thenReturn("src/test/resources/cern/disabled-task");
+    when(vomsConfig.getExternalValidatorProperty(eq("orgdb"), eq("configFile"), anyString()))
+      .thenReturn("src/test/resources/cern/disabled-task/hr.properties");
     when(apiFactory.newHrDbApiService(any())).thenReturn(api);
     when(validatorFactory.newHrDbRequestValidator(any(), any())).thenReturn(validator);
     when(syncTaskFactory.buildSyncTask(any(), any(), any(), any())).thenReturn(syncTask);
   }
 
   @Test
-  public void testConfigurationFileIsFoundAndParsed() throws VOMSPluginConfigurationException {
+  public void testDisabledConfigurationFileIsFoundAndParsed()
+      throws VOMSPluginConfigurationException {
     configurator.configure();
-    verifyZeroInteractions(executorService);
-    verifyZeroInteractions(syncTaskFactory);
+    verifyZeroInteractions(executorService);// no interactions as periodic sync is disabled
+    verifyZeroInteractions(syncTaskFactory);// no interactions as periodic sync is disabled
+    verify(manager).setRequestValidationContext(Mockito.eq(validator));
+  }
+
+  @Test
+  public void testEnabledConfigurationFileIsFoundAndParsed()
+      throws VOMSPluginConfigurationException {
+    when(vomsConfig.getConfigurationDirectoryPath())
+      .thenReturn("src/test/resources/cern/enabled-task");
+    when(vomsConfig.getExternalValidatorProperty(eq("orgdb"), eq("configFile"), anyString()))
+      .thenReturn("src/test/resources/cern/enabled-task/hr.properties");
+    configurator.configure();
+
+    verify(executorService).scheduleAtFixedRate(isA(DatabaseTransactionTaskWrapper.class),
+        Mockito.anyLong(), Mockito.eq(TimeUnit.HOURS.toSeconds(12)),
+        Mockito.eq(TimeUnit.SECONDS));
+
     verify(manager).setRequestValidationContext(Mockito.eq(validator));
   }
 

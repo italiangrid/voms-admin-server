@@ -17,9 +17,13 @@ package integration.hr;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.glite.security.voms.admin.integration.cern.HrDbError;
@@ -71,6 +75,29 @@ public class HrDbPropertiesTest {
     assertThat(hrConfig.getMembershipCheck().getPeriodInSeconds(), is(86400L));
   }
   
+
+  @Test
+  public void testFileParsing() throws FileNotFoundException, IOException {
+
+    Properties props = new Properties();
+    props
+      .load(new FileInputStream(new File("src/test/resources/cern/enabled-task/hr.properties")));
+
+    HrDbProperties hrDbProps = HrDbProperties.fromProperties(props);
+
+    assertThat(hrDbProps.getExperimentName(), is("cms"));
+    assertThat(hrDbProps.getMembershipCheck().isEnabled(), is(true));
+    assertThat(hrDbProps.getMembershipCheck().getStartHour(), is(4));
+    assertThat(hrDbProps.getMembershipCheck().isRunAtStartup(), is(false));
+    assertThat(hrDbProps.getApi().getEndpoint(), is("http://localhost:8080"));
+    assertThat(hrDbProps.getApi().getUsername(), is("user"));
+    assertThat(hrDbProps.getApi().getPassword(), is("password"));
+    assertThat(hrDbProps.getApi().getTimeoutInSeconds(), is(2L));
+
+
+
+  }
+
   @Test
   public void testApiTimeoutChecks() {
     Properties props = new Properties();
