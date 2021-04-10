@@ -58,7 +58,7 @@ public class VOMSUserJSON {
 
   Date endTime;
 
-  Boolean suspended = false;
+  Boolean suspended;
 
   SuspensionReason suspensionReasonCode;
 

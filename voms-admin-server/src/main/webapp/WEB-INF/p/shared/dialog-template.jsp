@@ -17,8 +17,12 @@
 --%>
 <%@include file="/WEB-INF/p/shared/taglibs.jsp"%>
 
-<tiles2:useAttribute name="dialogID" id="dialogID"/>
+<tiles2:importAttribute name="dialgID"/>
 
+<%--  
+<tiles2:useAttribute name="dialogID" id="dialogID"/>
+--%>
+ 
 <div id="${dialogID}" class="modal fade" tabindex="-1"
   role="dialog" aria-labelledby="${dialogID}Label"
   aria-hidden="true">

@@ -1,9 +1,24 @@
+@Library('sd')_
+def kubeLabel = getKubeLabel()
+
 pipeline {
-  agent { label 'maven' }
+
+  agent {
+    kubernetes {
+      label "${kubeLabel}"
+      cloud 'Kube mwdevel'
+      defaultContainer 'runner'
+      inheritFrom 'ci-template'
+    }
+  }
+
   parameters {
     booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: false, 
       description: 'Triggers the building of docker images required for development')
   }
+  
+  triggers { cron('@daily') }
+  
   options {
     timeout(time: 1, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '5')) 
@@ -19,7 +34,6 @@ pipeline {
     }
 
     stage('build-docker-images') {
-      agent { label 'docker' }
       when {
         expression { return params.BUILD_DOCKER_IMAGES }
       }

@@ -1,5 +1,7 @@
 # VOMS Admin server
 
+[![Build Status](https://travis-ci.org/italiangrid/voms-admin-server.svg?branch=develop)](https://travis-ci.org/italiangrid/voms-admin-server)
+
 The Virtual Organization Membership Service is a Grid attribute authority which
 serves as central repository for VO user authorization information, providing
 support for sorting users into group hierarchies, keeping track of their roles

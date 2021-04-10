@@ -16,11 +16,11 @@
 package org.glite.security.voms.admin.view.preparers.acl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
-import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.operations.groups.ListGroupsOperation;
 import org.glite.security.voms.admin.operations.roles.ListRolesOperation;
 import org.glite.security.voms.admin.operations.users.ListUsersOperation;
@@ -31,26 +31,23 @@ import org.glite.security.voms.admin.persistence.model.VOMSGroup;
 import org.glite.security.voms.admin.persistence.model.VOMSRole;
 import org.glite.security.voms.admin.persistence.model.VOMSUser;
 
-public class AddEntryPreparer extends ViewPreparerSupport {
+public class AddEntryPreparer implements ViewPreparer {
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void execute(TilesRequestContext tilesContext,
-    AttributeContext attributeContext) throws PreparerException {
+  public void execute(Request request, AttributeContext attributeContext) {
 
-    List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance()
-      .execute();
-    List<VOMSRole> roles = (List<VOMSRole>) ListRolesOperation.instance()
-      .execute();
-    List<VOMSUser> users = (List<VOMSUser>) ListUsersOperation.instance()
-      .execute();
+    List<VOMSGroup> groups = (List<VOMSGroup>) ListGroupsOperation.instance().execute();
+    List<VOMSRole> roles = (List<VOMSRole>) ListRolesOperation.instance().execute();
+    List<VOMSUser> users = (List<VOMSUser>) ListUsersOperation.instance().execute();
     List<VOMSCA> cas = (List<VOMSCA>) VOMSCADAO.instance().getValid();
 
-    tilesContext.getRequestScope().put("voCertificates",
-      CertificateDAO.instance().getAll());
-    tilesContext.getRequestScope().put("voUsers", users);
-    tilesContext.getRequestScope().put("voGroups", groups);
-    tilesContext.getRequestScope().put("voRoles", roles);
-    tilesContext.getRequestScope().put("voCAs", cas);
+    Map<String, Object> context = request.getContext(Request.REQUEST_SCOPE);
+    context.put("voCertificates", CertificateDAO.instance().getAll());
+    context.put("voUsers", users);
+    context.put("voGroups", groups);
+    context.put("voRoles", roles);
+    context.put("voCAs", cas);
   }
 
 }

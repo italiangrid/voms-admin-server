@@ -22,7 +22,8 @@ public interface VOMSConfigurationConstants {
    */
   public static final String VO_NAME = "voms.vo.name";
 
-  public static final String LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN = "voms.localhost.defaults.to.local.admin";
+  public static final String LOCALHOST_DEFAULTS_TO_LOCAL_ADMIN =
+      "voms.localhost.defaults.to.local.admin";
 
   public static final String READONLY = "voms.readonly";
 
@@ -49,25 +50,35 @@ public interface VOMSConfigurationConstants {
   public static final String NOTIFICATION_RETRY_PERIOD = "voms.notification.retry_period";
   public static final String NOTIFICATION_DISABLED = "voms.notification.disable";
 
-  public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD = "voms.request.vo_membership.expired_request_purger.period";
-  public static final String UNCONFIRMED_REQUESTS_EXPIRATION_TIME = "voms.request.vo_membership.lifetime";
-  public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY = "voms.request.vo_membership.warn_when_expired";
+  public static final String VO_MEMBERSHIP_EXPIRED_REQ_PURGER_PERIOD =
+      "voms.request.vo_membership.expired_request_purger.period";
+  public static final String UNCONFIRMED_REQUESTS_EXPIRATION_TIME =
+      "voms.request.vo_membership.lifetime";
+  public static final String VO_MEMBERSHIP_UNCONFIRMED_REQ_WARN_POLICY =
+      "voms.request.vo_membership.warn_when_expired";
 
   /**
-   * This configuration flag controls the user's ability to request attributes
-   * at VO registration time.
+   * This configuration flag controls the user's ability to request attributes at VO registration
+   * time.
    */
-  public static final String VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST = "voms.request.vo_membership.enable_attribute_requests";
-  public static final String VO_MEMBERSHIP_REQUIRE_GROUP_MANAGER_SELECTION = "voms.request.vo_membership.require_group_manager_selection";
-  
+  public static final String VO_MEMBERSHIP_ENABLE_ATTRIBUTES_REQUEST =
+      "voms.request.vo_membership.enable_attribute_requests";
+  public static final String VO_MEMBERSHIP_REQUIRE_GROUP_MANAGER_SELECTION =
+      "voms.request.vo_membership.require_group_manager_selection";
+
   public static final String GROUP_MANAGER_ROLE_NAME = "voms.request.group_manager_role";
-  
-  public static final String USER_MAX_RESULTS_PER_PAGE = "voms.pagination.user.max.results.per.page";
-  public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE = "voms.pagination.attributes.max.results.per.page";
-  public static final String GROUP_MAX_RESULTS_PER_PAGE = "voms.pagination.group.max.results.per.page";
-  public static final String ROLE_MAX_RESULTS_PER_PAGE = "voms.pagination.role.max.results.per.page";
+
+  public static final String USER_MAX_RESULTS_PER_PAGE =
+      "voms.pagination.user.max.results.per.page";
+  public static final String ATTRIBUTES_MAX_RESULTS_PER_PAGE =
+      "voms.pagination.attributes.max.results.per.page";
+  public static final String GROUP_MAX_RESULTS_PER_PAGE =
+      "voms.pagination.group.max.results.per.page";
+  public static final String ROLE_MAX_RESULTS_PER_PAGE =
+      "voms.pagination.role.max.results.per.page";
   public static final String REGISTRATION_SERVICE_ENABLED = "voms.registration.enabled";
-  public static final String READ_ACCESS_FOR_AUTHENTICATED_CLIENTS = "voms.read-access-for-authenticated-clients";
+  public static final String READ_ACCESS_FOR_AUTHENTICATED_CLIENTS =
+      "voms.read-access-for-authenticated-clients";
   /**
    * VERSION Properties
    */
@@ -80,14 +91,15 @@ public interface VOMSConfigurationConstants {
    */
   public static final String GRID_AUP_URL = "voms.aup.grid_aup.initial_url";
   public static final String VO_AUP_URL = "voms.aup.vo_aup.initial_url";
-  
+
   public static final String SIGN_AUP_TASK_LIFETIME = "voms.aup.sign_aup_task_lifetime";
   public static final int SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE = 15;
-  
-  public static final String[] SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE = {"7","3","1"};
+
+  public static final String[] SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE = {"7", "3", "1"};
   public static final String SIGN_AUP_TASK_REMINDERS = "voms.aup.sign_aup_task_reminders";
-  
-  public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS = "voms.aup.require_signature_for_created_users";
+
+  public static final String REQUIRE_AUP_SIGNATURE_FOR_CREATED_USERS =
+      "voms.aup.require_signature_for_created_users";
   public static final String SIGN_AUP_EXTENDS_MEMBERSHIP = "voms.aup.signature_extends_membership";
 
   /**
@@ -95,11 +107,15 @@ public interface VOMSConfigurationConstants {
    */
   public static final String DEFAULT_MEMBERSHIP_LIFETIME = "voms.membership.default_lifetime";
   public static final String MEMBERSHIP_CHECK_PERIOD = "voms.task.membership_check.period";
-  public static final String DISABLE_MEMBERSHIP_EXPIRATION_WARNING="voms.membership.disable_expiration_warning";
-  public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD = "voms.membership.expiration_warning_period";
+  public static final String DISABLE_MEMBERSHIP_EXPIRATION_WARNING =
+      "voms.membership.disable_expiration_warning";
+  public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD =
+      "voms.membership.expiration_warning_period";
   public static final String MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE = "15";
-  public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD = "voms.membership.expiration_grace_period";
-  public static final String NOTIFICATION_WARNING_RESEND_PERIOD = "voms.membership.notification_resend_period";
+  public static final String MEMBERSHIP_EXPIRATION_GRACE_PERIOD =
+      "voms.membership.expiration_grace_period";
+  public static final String NOTIFICATION_WARNING_RESEND_PERIOD =
+      "voms.membership.notification_resend_period";
   public static final String PRESERVE_EXPIRED_MEMBERS = "voms.preserve_expired_members";
   public static final String PRESERVE_AUP_FAILING_MEMBERS = "voms.preserve_aup_failing_members";
   public static final String DISABLE_MEMBERSHIP_END_TIME = "voms.disable_membership_end_time";
@@ -110,14 +126,17 @@ public interface VOMSConfigurationConstants {
   public static final String VOMS_SERVICE_CERT_FILE = "voms.service.cert";
   public static final String VOMS_SERVICE_KEY_FILE = "voms.service.key";
   public static final String VOMS_SAML_MAX_ASSERTION_LIFETIME = "voms.saml.max_assertion_lifetime";
-  public static final String VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP = "voms.aa.compulsory_group_membership";
+  public static final String VOMS_AA_COMPULSORY_GROUP_MEMBERSHIP =
+      "voms.aa.compulsory_group_membership";
   public static final String VOMS_AA_SAML_ACTIVATE_ENDPOINT = "voms.aa.activate_saml_endpoint";
   public static final String VOMS_AA_X509_ACTIVATE_ENDPOINT = "voms.aa.x509.activate_endpoint";
   public static final String VOMS_AA_X509_MAX_AC_VALIDITY = "voms.aa.x509.max_ac_validity";
   public static final String VOMS_AA_X509_PRINT_STATS_PERIOD = "voms.aa.x509.print_stats_period";
-  public static final String VOMS_AA_X509_LEGACY_FQAN_ENCODING = "voms.aa.x509.legacy_fqan_encoding";
+  public static final String VOMS_AA_X509_LEGACY_FQAN_ENCODING =
+      "voms.aa.x509.legacy_fqan_encoding";
 
-  public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK = "voms.unauthenticated_client_permission_mask";
+  public static final String VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK =
+      "voms.unauthenticated_client_permission_mask";
 
   /**
    * External validation plugin Properties
@@ -132,8 +151,10 @@ public interface VOMSConfigurationConstants {
    */
 
   public static final String VOMS_INTERNAL_REGISTRATION_TYPE = "___voms.regitration.type";
-  public static final String VOMS_INTERNAL_RO_PERSONAL_INFORMATION = "___voms.read-only-personal-information";
-  public static final String VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE = "___voms.read-only-membership-expiration";
+  public static final String VOMS_INTERNAL_RO_PERSONAL_INFORMATION =
+      "___voms.read-only-personal-information";
+  public static final String VOMS_INTERNAL_RO_MEMBERSHIP_EXPIRATION_DATE =
+      "___voms.read-only-membership-expiration";
 
   /**
    * Executor service properties
@@ -146,8 +167,8 @@ public interface VOMSConfigurationConstants {
   public static final String VOMS_CSRF_GUARD_LOG_ONLY = "voms.csrf.log_only";
 
   /**
-   * VOMS Admin service hostname. This property is needed to properly compute
-   * the service address when sending out email notifications.
+   * VOMS Admin service hostname. This property is needed to properly compute the service address
+   * when sending out email notifications.
    */
   public static final String VOMS_SERVICE_HOSTNAME = "voms.hostname";
   public static final String VOMS_SERVICE_PORT = "voms.port";
@@ -155,26 +176,45 @@ public interface VOMSConfigurationConstants {
   /**
    * The local path where monitored stats properties will be stored.
    */
-  public static final String MONITORING_USER_STATS_BASE_PATH = "voms.monitoring.user_stats_base_path";
+  public static final String MONITORING_USER_STATS_BASE_PATH =
+      "voms.monitoring.user_stats_base_path";
 
   /**
    * The file name of the monitored stats properties.
    */
-  public static final String MONITORING_USER_STATS_FILE_NAME = "voms.monitoring.user_stats_filename";
+  public static final String MONITORING_USER_STATS_FILE_NAME =
+      "voms.monitoring.user_stats_filename";
 
   /**
    * How often (in minutes) the stats will be updated
    * 
    */
-  public static final String MONITORING_USER_STATS_UPDATE_PERIOD = "voms.monitoring.user_stats_period";
+  public static final String MONITORING_USER_STATS_UPDATE_PERIOD =
+      "voms.monitoring.user_stats_period";
 
   /**
    * Whether to skip the checks on certificate issuers when authenticating clients
    */
   public static final String SKIP_CA_CHECK = "voms.skip_ca_check";
-  
+
   /**
    * Should permission cache be disabled?
    */
   public static final String PERMISSION_CACHE_DISABLE = "voms.permission_cache.disable";
+
+  /**
+   * comma-separated list of the personal information fields required at registration
+   */
+  public static final String PI_REQUIRED_FIELDS = "voms.personal_info.required_fields";
+
+  public static final String PI_REQUIRED_FIELDS_DEFAULT = "institution,address,phoneNumber";
+
+
+  public static final String EXPIRED_USER_CLEANUP_TASK_RUN_PERIOD =
+      "voms.expired_user_cleanup_task.run_period_sec";
+  public static final String EXPIRED_USER_CLEANUP_TASK_CLEANUP_AFTER_DAYS =
+      "voms.expired_user_cleanup_task.cleanup_after_days";
+  public static final String EXPIRED_USER_CLEANUP_TASK_BATCH_SIZE =
+      "voms.expired_user_cleanup_task.batch_size";
+
 }

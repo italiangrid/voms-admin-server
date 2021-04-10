@@ -97,14 +97,15 @@
   color: #B94A48;
   font-weight: normal;
   text-shadow: none;
+  padding: 0;
 }
 
 .blabel-invert {
-
   background-color: inherit;
   color: inherit;
   font-weight: normal;
   text-shadow: none;
+  padding: 0;
 }
 
 .blabel-invert:hover {

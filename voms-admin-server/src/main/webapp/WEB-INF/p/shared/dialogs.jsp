@@ -77,6 +77,15 @@
 </div>
 
 <div
+  id="extendMembershipMultiDialog"
+  title="Extend membership for selected users?"
+  style="display:none"
+  class="dialog">
+  
+  <p>Do you want to extend membership for selected users?</p>
+</div>
+
+<div
   id="deleteMultiUserDialog"
   title="Delete multiple users?"
   style="display: none"

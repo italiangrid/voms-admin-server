@@ -29,7 +29,7 @@ import org.glite.security.voms.admin.view.actions.BaseAction;
 import com.opensymphony.xwork2.Preparable;
 
 @ParentPackage("json")
-@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "userInfo"}),
+@Results({@Result(name = BaseAction.SUCCESS, type = "json", params={"root", "userInfo","excludeNullProperties", "true"}),
   @Result(name=UserInfoAction.NOT_FOUND, type="httpheader", params={"error", "404", "errorMessage", "User not found"})
 })
 public class UserInfoAction extends BaseAction implements Preparable {

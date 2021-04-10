@@ -183,9 +183,6 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="deleteAttributeClassResponse1">
-
-   </wsdl:message>
 
    <wsdl:message name="listRoleAttributesRequest">
 
@@ -230,12 +227,6 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="deleteAttributeClassRequest1">
-
-      <wsdl:part name="in0" type="impl:AttributeClass"/>
 
    </wsdl:message>
 
@@ -356,16 +347,6 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
          <wsdl:input message="impl:deleteAttributeClassRequest" name="deleteAttributeClassRequest"/>
 
          <wsdl:output message="impl:deleteAttributeClassResponse" name="deleteAttributeClassResponse"/>
-
-         <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="deleteAttributeClass" parameterOrder="in0">
-
-         <wsdl:input message="impl:deleteAttributeClassRequest1" name="deleteAttributeClassRequest1"/>
-
-         <wsdl:output message="impl:deleteAttributeClassResponse1" name="deleteAttributeClassResponse1"/>
 
          <wsdl:fault message="impl:VOMSException" name="VOMSException"/>
 
@@ -638,30 +619,6 @@ Built on Jun 14, 2005 (09:15:57 EDT)-->
          </wsdl:input>
 
          <wsdl:output name="deleteAttributeClassResponse">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
-
-         </wsdl:output>
-
-         <wsdl:fault name="VOMSException">
-
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="VOMSException" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
-
-         </wsdl:fault>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="deleteAttributeClass">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="deleteAttributeClassRequest1">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="deleteAttributeClassResponse1">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://glite.org/wsdl/services/org.glite.security.voms.service.attributes" use="encoded"/>
 

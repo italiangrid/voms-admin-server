@@ -27,13 +27,13 @@ public interface AuditSearchDAO extends GenericDAO<AuditEvent, Long> {
 
   List<AuditEvent> findLatestEvents(int numEvents);
 
-  Integer countEvents();
+  Long countEvents();
 
   AuditLogSearchResults findEventsMatchingParams(AuditLogSearchParams sp);
 
   ScrollableAuditLogSearchResults scrollEventsMatchingParams(
     AuditLogSearchParams sp, ScrollMode scrollMode);
 
-  Integer countEventsMatchingParams(AuditLogSearchParams sp);
+  Long countEventsMatchingParams(AuditLogSearchParams sp);
 
 }

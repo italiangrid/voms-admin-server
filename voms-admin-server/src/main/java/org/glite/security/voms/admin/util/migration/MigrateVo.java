@@ -1,15 +1,17 @@
 /**
  * Copyright (c) Istituto Nazionale di Fisica Nucleare (INFN). 2006-2016
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.glite.security.voms.admin.util.migration;
 
@@ -42,6 +44,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.json.DefaultJSONWriter;
 import org.apache.struts2.json.JSONException;
 import org.apache.struts2.json.JSONPopulator;
 import org.apache.struts2.json.JSONReader;
@@ -90,7 +93,7 @@ public class MigrateVo implements MigrateVoConstants, Runnable {
   Protocol vomsHttps;
 
   JSONReader jsonReader = new JSONReader();
-  JSONWriter jsonWriter = new JSONWriter();
+  JSONWriter jsonWriter = new DefaultJSONWriter();
 
   JSONPopulator jsonPopulator = new JSONPopulator();
 

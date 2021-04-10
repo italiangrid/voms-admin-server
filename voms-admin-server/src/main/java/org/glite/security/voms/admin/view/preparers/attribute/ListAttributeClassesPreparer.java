@@ -15,25 +15,26 @@
  */
 package org.glite.security.voms.admin.view.preparers.attribute;
 
+import static org.apache.tiles.request.Request.REQUEST_SCOPE;
+
 import java.util.List;
 
 import org.apache.tiles.AttributeContext;
-import org.apache.tiles.context.TilesRequestContext;
-import org.apache.tiles.preparer.PreparerException;
-import org.apache.tiles.preparer.ViewPreparerSupport;
+import org.apache.tiles.preparer.ViewPreparer;
+import org.apache.tiles.request.Request;
 import org.glite.security.voms.admin.operations.attributes.ListAttributeDescriptionsOperation;
 import org.glite.security.voms.admin.persistence.model.attribute.VOMSAttributeDescription;
 
-public class ListAttributeClassesPreparer extends ViewPreparerSupport {
+public class ListAttributeClassesPreparer implements ViewPreparer {
 
   @Override
-  public void execute(TilesRequestContext tilesContext,
-    AttributeContext attributeContext) throws PreparerException {
+  public void execute(Request request, AttributeContext attributeContext) {
 
-    List<VOMSAttributeDescription> attributeClasses = (List<VOMSAttributeDescription>) ListAttributeDescriptionsOperation
-      .instance().execute();
+    @SuppressWarnings("unchecked")
+    List<VOMSAttributeDescription> attributeClasses =
+        (List<VOMSAttributeDescription>) ListAttributeDescriptionsOperation.instance().execute();
 
-    tilesContext.getRequestScope().put("attributeClasses", attributeClasses);
+    request.getContext(REQUEST_SCOPE).put("attributeClasses", attributeClasses);
   }
 
 }

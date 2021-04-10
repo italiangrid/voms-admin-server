@@ -134,36 +134,29 @@ public class VOMSCA implements Serializable {
     return subjectString;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals(Object other) {
-
-    if (this == other)
-      return true;
-
-    if (!(other instanceof VOMSCA))
-      return false;
-
-    if (other == null)
-      return false;
-
-    final VOMSCA that = (VOMSCA) other;
-    return (getSubjectString().equals(that.getSubjectString()));
-
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((subjectString == null) ? 0 : subjectString.hashCode());
+    return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
-  public int hashCode() {
-
-    return subjectString.hashCode();
-
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    VOMSCA other = (VOMSCA) obj;
+    if (subjectString == null) {
+      if (other.subjectString != null)
+        return false;
+    } else if (!subjectString.equals(other.subjectString))
+      return false;
+    return true;
   }
 
   public String getShortName() {

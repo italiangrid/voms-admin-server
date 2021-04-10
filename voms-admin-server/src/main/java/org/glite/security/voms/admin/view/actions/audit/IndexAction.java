@@ -32,7 +32,9 @@ import org.glite.security.voms.admin.view.actions.audit.util.EventNameFormatter;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-@Results({ @Result(name = BaseAction.SUCCESS, location = "auditLog") })
+@Results({ @Result(name = BaseAction.SUCCESS, location = "auditLog"), 
+  @Result(name = BaseAction.INPUT, location = "auditLog")
+})
 public class IndexAction extends BaseAction implements
   ModelDriven<AuditLogSearchResults>, Preparable {
 

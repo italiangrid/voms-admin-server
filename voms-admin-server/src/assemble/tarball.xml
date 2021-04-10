@@ -81,6 +81,15 @@
           <directoryMode>0755</directoryMode>
         </fileSet>
 
+        <!-- commons-io 1.3.2 jar -->
+        <fileSet>
+          <directory>resources/jars</directory>
+          <outputDirectory>/var/lib/voms-admin/lib</outputDirectory>
+          <includes>
+            <include>commons-io-1.3.2.jar</include>
+          </includes>
+          <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 
 
@@ -92,6 +101,7 @@
 
             <excludes>
               <exclude>org.italiangrid:voms-container</exclude>
+              <exclude>commons-io:commons-io</exclude>
             </excludes>
 
             <outputFileNameMapping>
@@ -118,6 +128,14 @@
           <destName>voms-admin</destName>
           <filtered>true</filtered>
           <fileMode>0644</fileMode>
+        </file>
+
+
+        <file>
+            <source>resources/scripts/init/voms-vo-ctl.sh</source>
+            <outputDirectory>/usr/sbin</outputDirectory>
+            <destName>voms-vo-ctl</destName>
+            <fileMode>0755</fileMode>
         </file>
 
         <file>
@@ -190,6 +208,13 @@
             <fileMode>0755</fileMode>
             <filtered>true</filtered>
         </file>
+
+        <file>
+          <source>resources/systemd/voms-admin.service</source>
+          <outputDirectory>/usr/lib/systemd/system</outputDirectory>
+          <fileMode>0644</fileMode>
+        </file>
+
         <file>
             <source>src/main/resources/c3p0.properties</source>
             <outputDirectory>/var/lib/voms-admin/tools</outputDirectory>

@@ -16,6 +16,7 @@
 package org.glite.security.voms.admin.configuration;
 
 import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PERMISSION_CACHE_DISABLE;
+import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PI_REQUIRED_FIELDS;
 import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_CONF_DIR;
 import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_DEFAULT_FILE_PATH;
 
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -52,17 +54,19 @@ import org.glite.security.voms.admin.util.SysconfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
+
 import eu.emi.security.authn.x509.impl.PEMCredential;
 
-public final class VOMSConfiguration {
+public class VOMSConfiguration {
 
   private static volatile VOMSConfiguration instance = null;
 
   public synchronized static VOMSConfiguration load(ServletContext context) {
 
     if (instance != null)
-      throw new VOMSConfigurationException(
-        "VOMS configuration already loaded!");
+      throw new VOMSConfigurationException("VOMS configuration already loaded!");
 
     instance = new VOMSConfiguration(context);
 
@@ -82,7 +86,7 @@ public final class VOMSConfiguration {
 
     if (instance == null)
       throw new VOMSConfigurationException(
-        "VOMS configuration not loaded! Use the load method to load it.");
+          "VOMS configuration not loaded! Use the load method to load it.");
 
     return instance;
 
@@ -103,19 +107,16 @@ public final class VOMSConfiguration {
     if (config.getString(SYSCONFIG_CONF_DIR) == null) {
 
       log.warn("{} undefined in VOMS Admin sysconfig.", SYSCONFIG_CONF_DIR);
-      log.warn("Setting default value assuming EMI packaging: {}",
-        "/etc/voms-admin");
+      log.warn("Setting default value assuming EMI packaging: {}", "/etc/voms-admin");
 
       config.setProperty(SYSCONFIG_CONF_DIR, "/etc/voms-admin");
     }
 
-    if (context != null
-      && context.getInitParameter(SYSCONFIG_CONF_DIR) != null) {
+    if (context != null && context.getInitParameter(SYSCONFIG_CONF_DIR) != null) {
 
       log.info("Setting {} from context: {}", SYSCONFIG_CONF_DIR,
-        context.getInitParameter(SYSCONFIG_CONF_DIR));
-      config.setProperty(SYSCONFIG_CONF_DIR,
-        context.getInitParameter(SYSCONFIG_CONF_DIR));
+          context.getInitParameter(SYSCONFIG_CONF_DIR));
+      config.setProperty(SYSCONFIG_CONF_DIR, context.getInitParameter(SYSCONFIG_CONF_DIR));
     }
   }
 
@@ -152,18 +153,18 @@ public final class VOMSConfiguration {
     if (context != null) {
 
       config.setProperty(VOMSConfigurationConstants.VOMS_SERVICE_PORT,
-        context.getInitParameter("PORT"));
+          context.getInitParameter("PORT"));
 
       config.setProperty(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME,
-        context.getInitParameter("HOST"));
+          context.getInitParameter("HOST"));
     }
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#addProperty(java.lang.
-   * String, java.lang.Object)
+   * @see org.apache.commons.configuration.Configuration#addProperty(java.lang. String,
+   * java.lang.Object)
    */
   public void addProperty(String arg0, Object arg1) {
 
@@ -183,8 +184,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#clearProperty(java.lang
-   * .String)
+   * @see org.apache.commons.configuration.Configuration#clearProperty(java.lang .String)
    */
   public void clearProperty(String arg0) {
 
@@ -194,8 +194,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#containsKey(java.lang.
-   * String)
+   * @see org.apache.commons.configuration.Configuration#containsKey(java.lang. String)
    */
   public boolean containsKey(String arg0) {
 
@@ -205,8 +204,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
-   * .String)
+   * @see org.apache.commons.configuration.Configuration#getBigDecimal(java.lang .String)
    */
   public BigDecimal getBigDecimal(String arg0) {
 
@@ -216,8 +214,8 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getBigDecimal(java.lang
-   * .String, java.math.BigDecimal)
+   * @see org.apache.commons.configuration.Configuration#getBigDecimal(java.lang .String,
+   * java.math.BigDecimal)
    */
   public BigDecimal getBigDecimal(String arg0, BigDecimal arg1) {
 
@@ -227,8 +225,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getBigInteger(java.lang
-   * .String)
+   * @see org.apache.commons.configuration.Configuration#getBigInteger(java.lang .String)
    */
   public BigInteger getBigInteger(String arg0) {
 
@@ -238,8 +235,8 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getBigInteger(java.lang
-   * .String, java.math.BigInteger)
+   * @see org.apache.commons.configuration.Configuration#getBigInteger(java.lang .String,
+   * java.math.BigInteger)
    */
   public BigInteger getBigInteger(String arg0, BigInteger arg1) {
 
@@ -249,9 +246,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-   * )
+   * @see org.apache.commons.configuration.Configuration#getBoolean(java.lang.String )
    */
   public boolean getBoolean(String arg0) {
 
@@ -261,9 +256,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-   * , boolean)
+   * @see org.apache.commons.configuration.Configuration#getBoolean(java.lang.String , boolean)
    */
   public boolean getBoolean(String arg0, boolean arg1) {
 
@@ -273,9 +266,8 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getBoolean(java.lang.String
-   * , java.lang.Boolean)
+   * @see org.apache.commons.configuration.Configuration#getBoolean(java.lang.String ,
+   * java.lang.Boolean)
    */
   public Boolean getBoolean(String arg0, Boolean arg1) {
 
@@ -285,8 +277,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getByte(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getByte(java.lang.String)
    */
   public byte getByte(String arg0) {
 
@@ -296,9 +287,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
-   * byte)
+   * @see org.apache.commons.configuration.Configuration#getByte(java.lang.String, byte)
    */
   public byte getByte(String arg0, byte arg1) {
 
@@ -308,9 +297,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getByte(java.lang.String,
-   * java.lang.Byte)
+   * @see org.apache.commons.configuration.Configuration#getByte(java.lang.String, java.lang.Byte)
    */
   public Byte getByte(String arg0, Byte arg1) {
 
@@ -344,8 +331,7 @@ public final class VOMSConfiguration {
 
   public Properties getDatabaseProperties() {
 
-    String propFileName = getConfigurationDirectoryPath()
-      + "/database.properties";
+    String propFileName = getConfigurationDirectoryPath() + "/database.properties";
 
     Properties props = new Properties();
 
@@ -355,8 +341,7 @@ public final class VOMSConfiguration {
     } catch (IOException e) {
 
       log.error("Error loading database properties: " + e.getMessage(), e);
-      throw new VOMSException(
-        "Error loading database properties: " + e.getMessage(), e);
+      throw new VOMSException("Error loading database properties: " + e.getMessage(), e);
     }
 
     return props;
@@ -365,15 +350,13 @@ public final class VOMSConfiguration {
 
   public String getDefaultVOAUPURL() {
 
-    return String.format("file://%s/vo-aup.txt",
-      getConfigurationDirectoryPath());
+    return String.format("file://%s/vo-aup.txt", getConfigurationDirectoryPath());
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getDouble(java.lang.String )
+   * @see org.apache.commons.configuration.Configuration#getDouble(java.lang.String )
    */
   public double getDouble(String arg0) {
 
@@ -383,9 +366,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getDouble(java.lang.String ,
-   * double)
+   * @see org.apache.commons.configuration.Configuration#getDouble(java.lang.String , double)
    */
   public double getDouble(String arg0, double arg1) {
 
@@ -395,8 +376,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getDouble(java.lang.String ,
+   * @see org.apache.commons.configuration.Configuration#getDouble(java.lang.String ,
    * java.lang.Double)
    */
   public Double getDouble(String arg0, Double arg1) {
@@ -404,19 +384,16 @@ public final class VOMSConfiguration {
     return config.getDouble(arg0, arg1);
   }
 
-  private InputStream getExternalLogbackConfiguration()
-    throws FileNotFoundException {
+  private InputStream getExternalLogbackConfiguration() throws FileNotFoundException {
 
     String path = getConfigurationDirectoryPath() + "/logback.runtime.xml";
 
     File f = new File(path);
 
     if (!f.exists())
-      log.warn(
-        "External logging configuration not found at path '" + path + "'... ");
+      log.warn("External logging configuration not found at path '" + path + "'... ");
     if (!f.canRead())
-      log.warn(
-        "External logging configuration is not readable: '" + path + "'... ");
+      log.warn("External logging configuration is not readable: '" + path + "'... ");
 
     return new FileInputStream(f);
 
@@ -425,8 +402,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getFloat(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getFloat(java.lang.String)
    */
   public float getFloat(String arg0) {
 
@@ -436,9 +412,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
-   * float)
+   * @see org.apache.commons.configuration.Configuration#getFloat(java.lang.String, float)
    */
   public float getFloat(String arg0, float arg1) {
 
@@ -448,9 +422,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getFloat(java.lang.String,
-   * java.lang.Float)
+   * @see org.apache.commons.configuration.Configuration#getFloat(java.lang.String, java.lang.Float)
    */
   public Float getFloat(String arg0, Float arg1) {
 
@@ -460,8 +432,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getInt(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getInt(java.lang.String)
    */
   public int getInt(String arg0) {
 
@@ -471,9 +442,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getInt(java.lang.String,
-   * int)
+   * @see org.apache.commons.configuration.Configuration#getInt(java.lang.String, int)
    */
   public int getInt(String arg0, int arg1) {
 
@@ -483,9 +452,8 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getInteger(java.lang.String
-   * , java.lang.Integer)
+   * @see org.apache.commons.configuration.Configuration#getInteger(java.lang.String ,
+   * java.lang.Integer)
    */
   public Integer getInteger(String arg0, Integer arg1) {
 
@@ -505,8 +473,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getKeys(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getKeys(java.lang.String)
    */
   public Iterator getKeys(String arg0) {
 
@@ -516,8 +483,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getList(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getList(java.lang.String)
    */
   public List getList(String arg0) {
 
@@ -527,9 +493,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getList(java.lang.String,
-   * java.util.List)
+   * @see org.apache.commons.configuration.Configuration#getList(java.lang.String, java.util.List)
    */
   public List getList(String arg0, List arg1) {
 
@@ -541,16 +505,14 @@ public final class VOMSConfiguration {
     String configDirPath = getString(SYSCONFIG_CONF_DIR);
 
     if (configDirPath == null)
-      throw new VOMSConfigurationException(
-        "No value found for " + SYSCONFIG_CONF_DIR + "!");
+      throw new VOMSConfigurationException("No value found for " + SYSCONFIG_CONF_DIR + "!");
 
     List voList = new ArrayList();
 
     File configDir = new File(configDirPath);
 
     if (!configDir.exists())
-      throw new VOMSConfigurationException(
-        "Voms configuration directory does not exist");
+      throw new VOMSConfigurationException("Voms configuration directory does not exist");
 
     File[] filez = configDir.listFiles();
 
@@ -571,8 +533,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getLong(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getLong(java.lang.String)
    */
   public long getLong(String arg0) {
 
@@ -582,9 +543,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
-   * long)
+   * @see org.apache.commons.configuration.Configuration#getLong(java.lang.String, long)
    */
   public long getLong(String arg0, long arg1) {
 
@@ -594,9 +553,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getLong(java.lang.String,
-   * java.lang.Long)
+   * @see org.apache.commons.configuration.Configuration#getLong(java.lang.String, java.lang.Long)
    */
   public Long getLong(String arg0, Long arg1) {
 
@@ -606,8 +563,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getProperties(java.lang
-   * .String)
+   * @see org.apache.commons.configuration.Configuration#getProperties(java.lang .String)
    */
   public Properties getProperties(String arg0) {
 
@@ -617,8 +573,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.commons.configuration.Configuration#getProperty(java.lang.
-   * String)
+   * @see org.apache.commons.configuration.Configuration#getProperty(java.lang. String)
    */
   public Object getProperty(String arg0) {
 
@@ -648,8 +603,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getShort(java.lang.String)
+   * @see org.apache.commons.configuration.Configuration#getShort(java.lang.String)
    */
   public short getShort(String arg0) {
 
@@ -659,9 +613,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
-   * short)
+   * @see org.apache.commons.configuration.Configuration#getShort(java.lang.String, short)
    */
   public short getShort(String arg0, short arg1) {
 
@@ -671,9 +623,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getShort(java.lang.String,
-   * java.lang.Short)
+   * @see org.apache.commons.configuration.Configuration#getShort(java.lang.String, java.lang.Short)
    */
   public Short getShort(String arg0, Short arg1) {
 
@@ -683,8 +633,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getString(java.lang.String )
+   * @see org.apache.commons.configuration.Configuration#getString(java.lang.String )
    */
   public String getString(String arg0) {
 
@@ -694,8 +643,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getString(java.lang.String ,
+   * @see org.apache.commons.configuration.Configuration#getString(java.lang.String ,
    * java.lang.String)
    */
   public String getString(String arg0, String arg1) {
@@ -706,9 +654,7 @@ public final class VOMSConfiguration {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.apache.commons.configuration.Configuration#getStringArray(java.lang
-   * .String)
+   * @see org.apache.commons.configuration.Configuration#getStringArray(java.lang .String)
    */
   public String[] getStringArray(String arg0) {
 
@@ -751,30 +697,27 @@ public final class VOMSConfiguration {
 
   private void loadServiceCredentials() {
 
-    String certificateFileName = getString(
-      VOMSConfigurationConstants.VOMS_SERVICE_CERT_FILE,
-      "/etc/grid-security/hostcert.pem");
+    String certificateFileName = getString(VOMSConfigurationConstants.VOMS_SERVICE_CERT_FILE,
+        "/etc/grid-security/hostcert.pem");
 
-    String privateKeyFileName = getString(
-      VOMSConfigurationConstants.VOMS_SERVICE_KEY_FILE,
-      "/etc/grid-security/hostkey.pem");
+    String privateKeyFileName = getString(VOMSConfigurationConstants.VOMS_SERVICE_KEY_FILE,
+        "/etc/grid-security/hostkey.pem");
 
     /* load certificate */
-    log.info("Loading credentials for VOMS Attribute authority from:"
-      + certificateFileName + "," + privateKeyFileName);
+    log.info("Loading credentials for VOMS Attribute authority from:" + certificateFileName + ","
+        + privateKeyFileName);
 
     try {
-      serviceCredential = new PEMCredential(
-        new FileInputStream(privateKeyFileName),
-        new FileInputStream(certificateFileName), (char[]) null);
+      serviceCredential = new PEMCredential(new FileInputStream(privateKeyFileName),
+          new FileInputStream(certificateFileName), (char[]) null);
 
     } catch (Throwable t) {
       log.error("Error loading service credentials: {}", t.getMessage(), t);
       throw new VOMSException(t.getMessage(), t);
     }
 
-    log.info("VOMS AA service credential's DN: " + DNUtil.getOpenSSLSubject(
-      serviceCredential.getCertificate().getSubjectX500Principal()));
+    log.info("VOMS AA service credential's DN: "
+        + DNUtil.getOpenSSLSubject(serviceCredential.getCertificate().getSubjectX500Principal()));
 
   }
 
@@ -784,8 +727,8 @@ public final class VOMSConfiguration {
 
     try {
 
-      PropertiesConfiguration vomsServiceProperties = new PropertiesConfiguration(
-        getVomsServicePropertiesFileName());
+      PropertiesConfiguration vomsServiceProperties =
+          new PropertiesConfiguration(getVomsServicePropertiesFileName());
       config.addConfiguration(vomsServiceProperties);
 
     } catch (ConfigurationException e) {
@@ -794,8 +737,7 @@ public final class VOMSConfiguration {
       if (log.isDebugEnabled())
         log.error(e.getMessage(), e);
 
-      throw new VOMSConfigurationException(
-        "Error loading service properties from " + fileName, e);
+      throw new VOMSConfigurationException("Error loading service properties from " + fileName, e);
 
     }
 
@@ -811,28 +753,24 @@ public final class VOMSConfiguration {
 
       sysconfigFilePath = SysconfigUtil.getSysconfigFilePath();
 
-      PropertiesConfiguration sysconf = new PropertiesConfiguration(
-        sysconfigFilePath);
+      PropertiesConfiguration sysconf = new PropertiesConfiguration(sysconfigFilePath);
       config.addConfiguration(sysconf);
 
       log.debug("Loaded sysconfig from: {}", sysconfigFilePath);
 
     } catch (ConfigurationException e) {
-      log.error("Error parsing VOMS Admin system configuration file "
-        + sysconfigFilePath);
+      log.error("Error parsing VOMS Admin system configuration file " + sysconfigFilePath);
 
       throw new VOMSConfigurationException(
-        "Error parsing VOMS Admin system configuration file "
-          + SYSCONFIG_DEFAULT_FILE_PATH,
-        e);
+          "Error parsing VOMS Admin system configuration file " + SYSCONFIG_DEFAULT_FILE_PATH, e);
     }
 
   }
 
   private void loadVersionProperties() {
 
-    InputStream versionPropStream = this.getClass().getClassLoader()
-      .getResourceAsStream("version.properties");
+    InputStream versionPropStream =
+        this.getClass().getClassLoader().getResourceAsStream("version.properties");
     PropertiesConfiguration versionProperties = new PropertiesConfiguration();
 
     try {
@@ -843,8 +781,7 @@ public final class VOMSConfiguration {
     } catch (ConfigurationException e) {
 
       log.error("Error configuring version properties:" + e.getMessage(), e);
-      throw new VOMSConfigurationException(
-        "Error configuring version properties!", e);
+      throw new VOMSConfigurationException("Error configuring version properties!", e);
 
     }
   }
@@ -874,9 +811,8 @@ public final class VOMSConfiguration {
         int ii = Integer.parseInt(i.trim());
         timeList.add(ii);
       } catch (NumberFormatException nfe) {
-        throw new VOMSException(
-          "Error while parsing list '" + list + "': " + nfe.getMessage(),
-          nfe);
+        throw new VOMSException("Error while parsing list '" + list + "': " + nfe.getMessage(),
+            nfe);
       }
     }
 
@@ -886,14 +822,12 @@ public final class VOMSConfiguration {
 
   public List<Integer> getAUPReminderIntervals() {
 
-    int signAUPTaskLifetime = config.getInteger(
-      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME,
-      VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE);
+    int signAUPTaskLifetime = config.getInteger(VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME,
+        VOMSConfigurationConstants.SIGN_AUP_TASK_LIFETIME_DEFAULT_VALUE);
 
     @SuppressWarnings("unchecked")
-    List<String> reminderTimes = config.getList(
-      VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS, Arrays.asList(
-        VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE));
+    List<String> reminderTimes = config.getList(VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS,
+        Arrays.asList(VOMSConfigurationConstants.SIGN_AUP_TASK_REMINDERS_DEFAULT_VALUE));
 
     List<Integer> intervals = stringListToIntegerList(reminderTimes);
 
@@ -921,8 +855,7 @@ public final class VOMSConfiguration {
 
     try {
 
-      String vomsesConf = FileUtils
-        .readFileToString(new File(vomsesConfFileName));
+      String vomsesConf = FileUtils.readFileToString(new File(vomsesConfFileName));
       return vomsesConf;
 
     } catch (IOException e) {
@@ -940,11 +873,9 @@ public final class VOMSConfiguration {
     if (!config.containsKey("VO_NAME")) {
 
       if (context.getInitParameter("VO_NAME") != null) {
-        log.debug("Setting VO name from init parameter: {}",
-          context.getInitParameter("VO_NAME"));
+        log.debug("Setting VO name from init parameter: {}", context.getInitParameter("VO_NAME"));
 
-        config.setProperty(VOMSConfigurationConstants.VO_NAME,
-          context.getInitParameter("VO_NAME"));
+        config.setProperty(VOMSConfigurationConstants.VO_NAME, context.getInitParameter("VO_NAME"));
 
       }
 
@@ -954,8 +885,7 @@ public final class VOMSConfiguration {
 
     } else {
 
-      config.setProperty(VOMSConfigurationConstants.VO_NAME,
-        config.getProperty("VO_NAME"));
+      config.setProperty(VOMSConfigurationConstants.VO_NAME, config.getProperty("VO_NAME"));
 
     }
   }
@@ -982,36 +912,32 @@ public final class VOMSConfiguration {
   @SuppressWarnings("unchecked")
   public List<String> getExternalValidators() {
 
-    return config
-      .getList(VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_LIST);
+    return config.getList(VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_LIST);
   }
 
   public String getExternalValidatorConfigClass(String pluginName) {
 
-    String configClassPropertyName = String.format("%s.%s.%s",
-      VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX, pluginName,
-      VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX);
+    String configClassPropertyName =
+        String.format("%s.%s.%s", VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX,
+            pluginName, VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_CONFIG_SUFFIX);
 
     return config.getString(configClassPropertyName);
   }
 
-  public String getExternalValidatorProperty(String pluginName,
-    String pluginPropertyName, String defaultValue) {
+  public String getExternalValidatorProperty(String pluginName, String pluginPropertyName,
+      String defaultValue) {
 
     String propertyName = String.format("%s.%s.%s",
-      VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX, pluginName,
-      pluginPropertyName);
+        VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX, pluginName, pluginPropertyName);
 
     return config.getString(propertyName, defaultValue);
 
   }
 
-  public String getExternalValidatorProperty(String pluginName,
-    String pluginPropertyName) {
+  public String getExternalValidatorProperty(String pluginName, String pluginPropertyName) {
 
     String propertyName = String.format("%s.%s.%s",
-      VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX, pluginName,
-      pluginPropertyName);
+        VOMSConfigurationConstants.VOMS_EXTERNAL_VALIDATOR_PREFIX, pluginName, pluginPropertyName);
 
     return config.getString(propertyName);
 
@@ -1019,22 +945,20 @@ public final class VOMSConfiguration {
 
   public void setRegistrationType(String registrationType) {
 
-    config.setProperty(
-      VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE,
-      registrationType);
+    config.setProperty(VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE,
+        registrationType);
   }
 
   public String getRegistrationType() {
 
-    return config.getString(
-      VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE, "default");
+    return config.getString(VOMSConfigurationConstants.VOMS_INTERNAL_REGISTRATION_TYPE, "default");
   }
 
   public VOMSPermission getUnauthenticatedClientPermissionMask() {
 
-    String unauthenticatedClientPermMask = getString(
-      VOMSConfigurationConstants.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
-      "CONTAINER_READ|MEMBERSHIP_READ");
+    String unauthenticatedClientPermMask =
+        getString(VOMSConfigurationConstants.VOMS_UNAUTHENTICATED_CLIENT_PERMISSION_MASK,
+            "CONTAINER_READ|MEMBERSHIP_READ");
 
     VOMSPermission permMask = null;
 
@@ -1044,12 +968,10 @@ public final class VOMSConfiguration {
 
     } catch (IllegalArgumentException e) {
       // Parse error on user set permission mask
-      log.error(
-        "Error parsing user set permission mask for unauthenticated client: '"
+      log.error("Error parsing user set permission mask for unauthenticated client: '"
           + unauthenticatedClientPermMask + "'");
       log.error(e.getMessage());
-      permMask = VOMSPermission.getContainerReadPermission()
-        .setMembershipReadPermission();
+      permMask = VOMSPermission.getContainerReadPermission().setMembershipReadPermission();
 
     }
 
@@ -1059,21 +981,19 @@ public final class VOMSConfiguration {
 
   public String getServiceHostname() {
 
-    return config.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME,
-      "localhost");
+    return config.getString(VOMSConfigurationConstants.VOMS_SERVICE_HOSTNAME, "localhost");
   }
 
   public String getGroupManagerRoleName() {
 
-    return config.getString(VOMSConfigurationConstants.GROUP_MANAGER_ROLE_NAME,
-      "Group-Manager");
+    return config.getString(VOMSConfigurationConstants.GROUP_MANAGER_ROLE_NAME, "Group-Manager");
   }
 
   public int getExpiringUsersWarningInterval() {
 
-    String warningPeriodInDays = VOMSConfiguration.instance().getString(
-      VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD,
-      VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+    String warningPeriodInDays = VOMSConfiguration.instance()
+      .getString(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD,
+          VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
 
     Integer i;
 
@@ -1084,22 +1004,21 @@ public final class VOMSConfiguration {
     } catch (NumberFormatException e) {
 
       log.error(
-        "Error converting {} to an integer. The {} property should contain a positive integer! Using the default value instead.",
-        warningPeriodInDays);
+          "Error converting {} to an integer. The {} property should contain a positive integer! Using the default value instead.",
+          warningPeriodInDays);
 
-      return Integer.parseInt(
-        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+      return Integer
+        .parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
 
     }
 
     if (i <= 0) {
 
-      log.warn(
-        "Negative warning period set for the property {}. Using the default value instead.",
-        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD);
+      log.warn("Negative warning period set for the property {}. Using the default value instead.",
+          VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD);
 
-      return Integer.parseInt(
-        VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
+      return Integer
+        .parseInt(VOMSConfigurationConstants.MEMBERSHIP_EXPIRATION_WARNING_PERIOD_DEFAULT_VALUE);
     }
 
     return i;
@@ -1119,9 +1038,16 @@ public final class VOMSConfiguration {
 
     return serviceCredential;
   }
-  
+
   public boolean permissionCacheDisabled() {
     return config.getBoolean(PERMISSION_CACHE_DISABLE, false);
+  }
+
+  public Set<String> getRequiredPersonalInfoFields() {
+    String requiredFields =
+        config.getString(PI_REQUIRED_FIELDS, VOMSConfigurationConstants.PI_REQUIRED_FIELDS_DEFAULT);
+
+    return Sets.newHashSet(Splitter.on(",").trimResults().omitEmptyStrings().split(requiredFields));
   }
 
   public void dump(PrintStream stream) {

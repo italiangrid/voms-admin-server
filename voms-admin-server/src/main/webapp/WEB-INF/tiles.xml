@@ -180,6 +180,10 @@
       <put-attribute name="content" value="/WEB-INF/p/register/orgdb/registration2.jsp"/>
     </definition>
     
+    <definition name="hrRegister" extends="user-layout">
+      <put-attribute name="content" value="/WEB-INF/p/register/hr/registration2.jsp"/>
+    </definition>
+    
     <definition name="registerConfirmation" extends="user-layout">
       <put-attribute name="content" value="/WEB-INF/p/register/registrationConfirmation.jsp"/>
     </definition>

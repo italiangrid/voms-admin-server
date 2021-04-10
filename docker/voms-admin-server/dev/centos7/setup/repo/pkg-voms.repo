@@ -1,0 +1,8 @@
+[pkg-VOMS]
+name=pkg-VOMS
+baseurl=https://ci.cloud.cnaf.infn.it/job/pkg.voms/job/v0120.01/lastSuccessfulBuild/artifact/artifacts/stage-area/centos7
+protect=1
+enabled=1
+priority=1
+gpgcheck=0
+sslverify=1

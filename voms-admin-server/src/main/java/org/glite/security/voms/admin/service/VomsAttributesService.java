@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.User;
 import org.glite.security.voms.VOMSException;
 import org.glite.security.voms.admin.error.UnimplementedFeatureException;
@@ -52,6 +50,8 @@ import org.glite.security.voms.admin.util.PathNamingScheme;
 import org.glite.security.voms.service.attributes.AttributeClass;
 import org.glite.security.voms.service.attributes.AttributeValue;
 import org.glite.security.voms.service.attributes.VOMSAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VomsAttributesService implements VOMSAttributes {
 
@@ -143,24 +143,6 @@ public class VomsAttributesService implements VOMSAttributes {
       throw e;
     }
 
-  }
-
-  public void deleteAttributeClass(AttributeClass attributeClass)
-    throws RemoteException, VOMSException {
-
-    log.info("deleteAttributeClass("
-      + StringUtils.join(new Object[] { attributeClass }, ',') + ");");
-
-    try {
-
-      DeleteAttributeDescriptionOperation.instance(attributeClass.getName())
-        .execute();
-
-    } catch (RuntimeException e) {
-
-      ServiceExceptionHelper.handleServiceException(log, e);
-      throw e;
-    }
   }
 
   public void deleteGroupAttribute(String groupName, String attributeName)

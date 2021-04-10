@@ -40,9 +40,10 @@ import org.glite.security.voms.admin.util.URLBuilder;
 import org.hibernate.Hibernate;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.interceptor.ValidationAware;
 
-public class BaseAction extends ActionSupport implements ValidationAware, RequestAware {
+public class BaseAction extends ActionSupport
+    implements ValidationAware, RequestAware {
   /**
 	 * 
 	 */

@@ -15,15 +15,15 @@
  */
 package org.glite.security.voms.admin.view.interceptors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.glite.security.voms.admin.error.VOMSAuthorizationException;
 import org.glite.security.voms.admin.view.actions.AuthorizationErrorAware;
 import org.glite.security.voms.admin.view.actions.BaseAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
+import com.opensymphony.xwork2.interceptor.ValidationAware;
 
 public class AuthzExceptionInterceptor extends ExceptionMappingInterceptor {
 

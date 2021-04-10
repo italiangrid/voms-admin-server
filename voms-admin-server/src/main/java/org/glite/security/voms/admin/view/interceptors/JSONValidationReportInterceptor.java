@@ -22,27 +22,29 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.json.DefaultJSONWriter;
 import org.apache.struts2.json.JSONException;
-import org.apache.struts2.json.JSONUtil;
+import org.apache.struts2.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
+import com.opensymphony.xwork2.interceptor.ValidationAware;
 
 public class JSONValidationReportInterceptor extends MethodFilterInterceptor {
 
-  public static final Logger log = LoggerFactory
-    .getLogger(JSONValidationReportInterceptor.class);
+  public static final Logger log = LoggerFactory.getLogger(JSONValidationReportInterceptor.class);
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1L;
 
   private int validationFailedStatus = -1;
+
+  private final JSONWriter jsonWriter = new DefaultJSONWriter();
 
   /**
    * HTTP status that will be set in the response if validation fails
@@ -73,7 +75,7 @@ public class JSONValidationReportInterceptor extends MethodFilterInterceptor {
   }
 
   protected boolean hasValidationErrors(ActionInvocation invocation)
-    throws IOException, JSONException {
+      throws IOException, JSONException {
 
     Object action = invocation.getAction();
     if (action instanceof ValidationAware) {
@@ -86,35 +88,35 @@ public class JSONValidationReportInterceptor extends MethodFilterInterceptor {
   }
 
   protected String generateJSON(ValidationAware validationAware, Throwable t)
-    throws IOException, JSONException {
+      throws IOException, JSONException {
     return generateJSON(validationAware, t, -1);
   }
-  
+
   protected String generateJSON(ValidationAware validationAware, Throwable t, int statusCode)
-    throws IOException, JSONException {
+      throws IOException, JSONException {
 
     HttpServletResponse response = ServletActionContext.getResponse();
-    
+
     response.setContentType("application/json");
-    
-    if (statusCode > 0){
-      
-      response.sendError(statusCode, t.getMessage());      
-    
+
+    if (statusCode > 0) {
+
+      response.sendError(statusCode, t.getMessage());
+
     } else {
       if (validationFailedStatus >= 0) {
         response.setStatus(validationFailedStatus);
       }
       String responseContent = buildResponse(validationAware, t);
-      
+
       response.getWriter().print(responseContent);
-    }    
-    
+    }
+
     return Action.NONE;
   }
 
   protected String buildResponse(ValidationAware validationAware, Throwable t)
-    throws JSONException {
+      throws JSONException {
 
     Map<String, Object> errors = new HashMap<String, Object>();
 
@@ -132,7 +134,8 @@ public class JSONValidationReportInterceptor extends MethodFilterInterceptor {
     if (validationAware.hasActionMessages())
       errors.put("messages", validationAware.getActionMessages());
 
-    return JSONUtil.serialize(errors);
+
+    return jsonWriter.write(errors);
 
   }
 }
