@@ -41,7 +41,7 @@
 		<struts.version>2.5.26</struts.version>
 		<struts.bootstrap.plugin.version>2.5.2</struts.bootstrap.plugin.version>
 		<struts.jquery.plugin.version>4.0.3</struts.jquery.plugin.version>
-		<hibernate.version>5.2.17.Final</hibernate.version>
+		<hibernate.version>5.4.24.Final</hibernate.version>
 		<c3p0.version>0.9.5.4</c3p0.version>
 		<opensaml.version>2.5.3</opensaml.version>
 		<tiles.version>3.0.8</tiles.version>
