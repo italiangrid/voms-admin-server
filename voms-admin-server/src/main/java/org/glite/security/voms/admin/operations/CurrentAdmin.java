@@ -18,12 +18,9 @@ package org.glite.security.voms.admin.operations;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.glite.security.voms.admin.configuration.VOMSConfiguration;
-import org.glite.security.voms.admin.operations.util.CurrentAdminPermissionCache;
 import org.glite.security.voms.admin.persistence.dao.VOMSAdminDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSRoleDAO;
 import org.glite.security.voms.admin.persistence.dao.VOMSUserDAO;
@@ -48,16 +45,14 @@ public class CurrentAdmin {
   private static ThreadLocal<CurrentAdmin> currentAdmin = new ThreadLocal<>();
 
   private final VOMSAdmin admin;
-  private final boolean permissionCacheDisabled;
 
   public VOMSAdmin getAdmin() {
 
     return admin;
   }
 
-  protected CurrentAdmin(VOMSAdmin a, boolean permissionCacheDisabled) {
+  protected CurrentAdmin(VOMSAdmin a) {
     this.admin = a;
-    this.permissionCacheDisabled = permissionCacheDisabled;
   }
 
   private static VOMSAdmin lookupAdmin() {
@@ -79,9 +74,8 @@ public class CurrentAdmin {
     if (admin == null) {
       admin = VOMSAdminDAO.instance().getAnyAuthenticatedUserAdmin();
     }
-    
-    VOMSConfiguration configuration = VOMSConfiguration.instance();
-    currentAdmin.set(new CurrentAdmin(admin, configuration.permissionCacheDisabled()));
+
+    currentAdmin.set(new CurrentAdmin(admin));
     return currentAdmin.get();
 
   }
@@ -313,20 +307,7 @@ public class CurrentAdmin {
 
   public boolean hasPermissions(VOMSContext c, VOMSPermission p) {
 
-    boolean result = false;
-
-    if (permissionCacheDisabled){
-      return checkPermission(c, p);
-    }
-    
-    try {
-      result = CurrentAdminPermissionCache.INSTANCE.hasPermission(this, c, p);
-    } catch (ExecutionException e) {
-      log.error("Error loading permission check result from cache: " + e.getMessage(), e);
-      result = checkPermission(c, p);
-    }
-
-    return result;
+    return checkPermission(c, p);
   }
 
   public String getRealSubject() {
