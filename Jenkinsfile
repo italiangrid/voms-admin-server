@@ -3,14 +3,7 @@ def kubeLabel = getKubeLabel()
 
 pipeline {
 
-  agent {
-    kubernetes {
-      label "${kubeLabel}"
-      cloud 'Kube mwdevel'
-      defaultContainer 'runner'
-      inheritFrom 'ci-template'
-    }
-  }
+  agent none
 
   parameters {
     booleanParam(name: 'BUILD_DOCKER_IMAGES', defaultValue: false, 
@@ -27,6 +20,7 @@ pipeline {
   stages{
 
     stage('build') {
+      agent { label 'java11' }
       steps {
         git(url: 'https://github.com/italiangrid/voms-admin-server.git', branch: env.BRANCH_NAME)
         sh 'mvn -B -U -P prod,EMI clean package'
@@ -34,6 +28,7 @@ pipeline {
     }
 
     stage('build-docker-images') {
+      agent { label 'docker' }
       when {
         expression { return params.BUILD_DOCKER_IMAGES }
       }
