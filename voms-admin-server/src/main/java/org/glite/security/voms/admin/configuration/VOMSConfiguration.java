@@ -15,7 +15,6 @@
  */
 package org.glite.security.voms.admin.configuration;
 
-import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PERMISSION_CACHE_DISABLE;
 import static org.glite.security.voms.admin.configuration.VOMSConfigurationConstants.PI_REQUIRED_FIELDS;
 import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_CONF_DIR;
 import static org.glite.security.voms.admin.util.SysconfigUtil.SYSCONFIG_DEFAULT_FILE_PATH;
@@ -1037,10 +1036,6 @@ public class VOMSConfiguration {
   public PEMCredential getServiceCredential() {
 
     return serviceCredential;
-  }
-
-  public boolean permissionCacheDisabled() {
-    return config.getBoolean(PERMISSION_CACHE_DISABLE, false);
   }
 
   public Set<String> getRequiredPersonalInfoFields() {

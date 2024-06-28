@@ -36,7 +36,6 @@ import org.glite.security.voms.admin.configuration.VOMSConfigurationConstants;
 import org.glite.security.voms.admin.configuration.VOMSConfigurationException;
 import org.glite.security.voms.admin.core.tasks.CancelSignAUPTasksForExpiredUsersTask;
 import org.glite.security.voms.admin.core.tasks.ExpiredRequestsPurgerTask;
-import org.glite.security.voms.admin.core.tasks.PermissionCacheStatsLogger;
 import org.glite.security.voms.admin.core.tasks.PrintX509AAStatsTask;
 import org.glite.security.voms.admin.core.tasks.SignAUPReminderCheckTask;
 import org.glite.security.voms.admin.core.tasks.SystemTimeProvider;
@@ -52,9 +51,6 @@ import org.glite.security.voms.admin.error.VOMSFatalException;
 import org.glite.security.voms.admin.event.DebugEventLogListener;
 import org.glite.security.voms.admin.event.EventManager;
 import org.glite.security.voms.admin.event.auditing.AuditLog;
-import org.glite.security.voms.admin.event.permission_cache.AclEventsCleanPermissionCacheListener;
-import org.glite.security.voms.admin.event.permission_cache.MembershipEventsCleanPermissionCacheListener;
-import org.glite.security.voms.admin.event.permission_cache.UserEventsCleanPermissionCacheListener;
 import org.glite.security.voms.admin.integration.PluginManager;
 import org.glite.security.voms.admin.integration.cern.HrDbConfigurator;
 import org.glite.security.voms.admin.integration.orgdb.OrgDBConfigurator;
@@ -169,9 +165,6 @@ public final class VOMSService {
     manager.register(CertificateRequestsNotificationDispatcher.instance());
     manager.register(MembershipRemovalNotificationDispatcher.instance());
     manager.register(SignAUPReminderDispatcher.instance());
-    manager.register(AclEventsCleanPermissionCacheListener.instance());
-    manager.register(UserEventsCleanPermissionCacheListener.instance());
-    manager.register(MembershipEventsCleanPermissionCacheListener.instance());
 
   }
 
@@ -211,8 +204,6 @@ public final class VOMSService {
     es.startBackgroundTask(new UserStatsTask(),
         VOMSConfigurationConstants.MONITORING_USER_STATS_UPDATE_PERIOD,
         UserStatsTask.DEFAULT_PERIOD_IN_SECONDS);
-
-    es.scheduleAtFixedRate(new PermissionCacheStatsLogger(true), 1, 60, TimeUnit.SECONDS);
 
     int expiredUserCleanupBatchSize =
         conf.getInt(VOMSConfigurationConstants.EXPIRED_USER_CLEANUP_TASK_BATCH_SIZE, 10);
