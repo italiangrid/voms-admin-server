@@ -214,8 +214,7 @@ def grant_rw_access(options):
                 f"on database {options.dbname}: {mysql_proc.stdout.read()}")
 
 
-def grant_ro_access():
-    # FIXME: options is not defined!!
+def grant_ro_access(options):
     print(f"Granting user {options.username} read-only access on database "
           f"{options.dbname}")
     mysql_cmd = build_mysql_command_preamble(options)
