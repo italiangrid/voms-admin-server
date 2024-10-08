@@ -366,7 +366,7 @@ def setup_cl_options():
         type=int,
         help="Sets the PORT where the MySQL database is listening",
         metavar="PORT",
-        efault="3306"
+        default="3306"
     )
     mysql_opt_group.add_argument(
         "--mysql-command",
