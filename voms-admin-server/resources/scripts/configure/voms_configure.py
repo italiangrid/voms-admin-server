@@ -567,7 +567,7 @@ def setup_cl_options():
         "--preserve-aup-failing-members",
         action="store_true", dest="preserve_aup_failing_members",
         help="Do not suspend users that fail to sign the AUP in time.",
-        efault=False
+        default=False
     )
     membership_opt_group.add_argument(
         "--disable-membership-end-time",
