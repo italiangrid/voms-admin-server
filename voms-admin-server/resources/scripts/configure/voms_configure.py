@@ -532,7 +532,7 @@ def setup_cl_options():
     )
     registration_opt_group.add_argument(
         "--group-manager-role",
-        type="string",
+        type=str,
         dest="group_manager_role",
         help="Group manager role name. (default value: Group-Manager)",
         default="Group-Manager"
