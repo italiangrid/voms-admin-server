@@ -103,7 +103,7 @@ def build_classpath():
 def do_basic_command(options, command):
     cmd = f"{get_oracle_env()} "\
         f"java -cp {build_classpath()} {VOMSDefaults.schema_deployer_class} " \
-        f"--command {command} {options.vo}"
+        f"--command {command} --vo {options.vo}"
 
     status = os.system(cmd)
     sys.exit(os.WEXITSTATUS(status))
