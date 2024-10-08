@@ -156,9 +156,10 @@ def setup_cl_options():
     )
     parser.add_argument(
         "--trust-refresh-period",
-        type="int",
+        type=int,
         dest="trust_refresh_period",
-        help="How ofter CAs are refreshed from the filesystem (in seconds).", metavar="SECS",
+        help="How ofter CAs are refreshed from the filesystem (in seconds).", 
+        metavar="SECS",
         default=3600
     )
     parser.add_argument(
@@ -213,7 +214,7 @@ def setup_cl_options():
     admin_opt_group.add_argument(
         "--admin-port",
         dest="admin_port",
-        type="int",
+        type=int,
         help="the PORT on which the admin service will bind",
         metavar="PORT",
         default=8443
@@ -286,7 +287,7 @@ def setup_cl_options():
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-acquire-increment",
-        type='int',
+        type=int,
         dest="c3p0_acquire_increment",
         help="Sets the number of new connections that are acquired from the database connection pool is exausted.",
         metavar="NUM",
@@ -294,7 +295,7 @@ def setup_cl_options():
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-idle-test-period",
-        type='int',
+        type=int,
         dest="c3p0_idle_test_period",
         help="Check idle connections in the pool every SEC seconds.",
         metavar="SEC",
@@ -303,7 +304,7 @@ def setup_cl_options():
 
     conn_pool_opt_group.add_argument(
         "--c3p0-min-size",
-        type='int',
+        type=int,
         dest="c3p0_min_size",
         help="Pool minimum size.",
         metavar="NUM",
@@ -311,7 +312,7 @@ def setup_cl_options():
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-max-size",
-        type='int',
+        type=int,
         dest="c3p0_max_size",
         help="Pool maximum size.",
         metavar="NUM",
@@ -319,7 +320,7 @@ def setup_cl_options():
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-max-statements",
-        type='int',
+        type=int,
         dest="c3p0_max_statements",
         help="The size of the connection pool prepared statements cache.",
         metavar="NUM",
@@ -327,7 +328,7 @@ def setup_cl_options():
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-timeout",
-        type='int',
+        type=int,
         dest="c3p0_timeout",
         help="The time in seconds a connection in the pool can remain pooled but unused before being discarded.",
         metavar="SECS",
@@ -362,7 +363,7 @@ def setup_cl_options():
     mysql_opt_group.add_argument(
         "--dbport",
         dest="dbport",
-        type='int',
+        type=int,
         help="Sets the PORT where the MySQL database is listening",
         metavar="PORT",
         efault="3306"
@@ -420,7 +421,7 @@ def setup_cl_options():
     voms_core_opt_group.add_argument(
         "--core-port",
         dest="core_port",
-        type="int",
+        type=int,
         help="the PORT on which the VOMS core service will bind",
         metavar="PORT"
     )
@@ -450,14 +451,14 @@ def setup_cl_options():
     voms_core_opt_group.add_argument(
         "--timeout",
         dest="timeout",
-        type="int",
+        type=int,
         help="Defines the validity of the AC issued by the VOMS server in seconds. The default is 24 hours (86400)", metavar="SECS",
         default=86400
     )
     voms_core_opt_group.add_argument(
         "--socktimeout",
         dest="socktimeout",
-        type="int",
+        type=int,
         help="Sets the amount of time in seconds after which the server will drop an inactive connection. The default is 60 seconds",
         metavar="SECS",
         default=60
@@ -477,7 +478,7 @@ def setup_cl_options():
     )
     voms_core_opt_group.add_argument(
         "--max-reqs",
-        type="int",
+        type=int,
         dest="max_reqs",
         help="Sets the maximum number of concurrent request that the VOMS service can handle.",
         default=50
@@ -502,7 +503,7 @@ def setup_cl_options():
     )
     registration_opt_group.add_argument(
         "--aup-signature-grace-period",
-        type="int",
+        type=int,
         dest="aup_signature_grace_period",
         help="The time (in days) given to users to sign the AUP, after being notified, before being suspended.",
         metavar="DAYS",
@@ -537,7 +538,7 @@ def setup_cl_options():
         default="Group-Manager"
     )
     registration_opt_group.add_argument(
-        "--membership-request-lifetime", type="int",
+        "--membership-request-lifetime", type=int,
         dest="membership_request_lifetime",
         help="Time (in seconds) that unconfirmed membership request are maintained in the VOMS database.",
         metavar="SECS",
@@ -583,19 +584,19 @@ def setup_cl_options():
     )
     membership_opt_group.add_argument(
         "--membership-default-lifetime",
-        type="int", dest="membership_default_lifetime",
+        type=int, dest="membership_default_lifetime",
         help="Default VO membership lifetime duration (in months).", metavar="MONTHS", default=12
     )
 
     membership_opt_group.add_argument(
         "--membership-check-period",
-        type="int", dest="membership_check_period",
+        type=int, dest="membership_check_period",
         help="The membership check background thread period (in seconds)", metavar="SECS",
         default=600
     )
     membership_opt_group.add_argument(
         "--membership-expiration-warning-period",
-        type="int",
+        type=int,
         dest="membership_expiration_warning_period",
         help="Warning period duration (in days). VOMS Admin will notify of users about to expire in the next number of days expressed by this configuration option.",
         metavar="DAYS",
@@ -603,7 +604,7 @@ def setup_cl_options():
     )
     membership_opt_group.add_argument(
         "--membership-expiration-grace-period",
-        type="int",
+        type=int,
         dest="membership_expiration_grace_period",
         help="Membership expiration grace period (in days). In the grace period user will be maintained active even if membership has expired.",
         metavar="DAYS",
@@ -611,7 +612,7 @@ def setup_cl_options():
     )
     membership_opt_group.add_argument(
         "--membership-notification-resend-period",
-        type="int",
+        type=int,
         dest="membership_notification_resend_period",
         help="Time (in days) that should pass between consecutive warning expiration messages sent to VO administrators to inform about expired and expiring VO members.",
         metavar="DAYS",
@@ -631,7 +632,7 @@ def setup_cl_options():
     saml_opt_group.add_argument(
         "--saml-lifetime",
         dest="saml_lifetime",
-        type="int",
+        type=int,
         help="Defines the maximum validity of the SAML assertions issued by the VOMS SAML server in seconds. The default is 24 hours (86400)", metavar="SECS",
         default=86400
     )
@@ -656,14 +657,14 @@ def setup_cl_options():
     x509aa_opt_group.add_argument(
         "--x509-aa-port",
         dest="x509_aa_port",
-        type="int",
+        type=int,
         help="An additional port used to serve VOMS legacy request.",
         metavar="PORT",
         default=-1
     )
     x509aa_opt_group.add_argument(
         "--ac-validity",
-        dest="ac_validity", type="int",
+        dest="ac_validity", type=int,
         help="Defines the maximum validity (in hours) for the attribute certificates issued by this VOMS server. The default is 12 hours",
         metavar="HOURS",
         default=24
