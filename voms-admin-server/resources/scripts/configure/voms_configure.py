@@ -979,11 +979,9 @@ def create_vomses(options):
     if vomses_port is None:
         vomses_port = options.x509_aa_port
 
-    vomses = f'"{
-        options.vo}" "{
-        options.hostname}" "{vomses_port}" "{
-            cert.subject}" "{
-                options.vo}"\n'
+    vomses = f'"{options.vo}" "{options.hostname}" "{vomses_port}" ' \
+        f'"{cert.subject}" "{options.vo}"\n'
+
 
     logger.debug("VOMSES configuration: %s", vomses)
     if not options.dry_run:
