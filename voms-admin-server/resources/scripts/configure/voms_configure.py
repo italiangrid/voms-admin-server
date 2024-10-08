@@ -42,18 +42,19 @@ from voms_shared import voms_version, admin_conf_dir, VOMSDefaults, \
 MYSQL = "mysql"
 ORACLE = "oracle"
 
-usage = """%prog command [options]
+usage = """%(prog)s command [options]
 
 Commands:
   install: installs or reconfigures a VO
   upgrade: upgrades a VO
   remove:  removes a VO
 """
+
 logger = None
 
 parser = argparse.ArgumentParser(usage=usage)
 parser.add_argument("--version", "-v", action="version",
-                    version="%prog v. " + voms_version())
+                    version="%(prog)s v. " + voms_version())
 commands = ["install", "upgrade", "remove"]
 
 HOST_CERT = "/etc/grid-security/hostcert.pem"
