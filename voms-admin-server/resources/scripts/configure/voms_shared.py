@@ -73,7 +73,7 @@ def __voms_db_util_base_cmd(vo, command):
 
 
 def voms_version():
-    if __voms_version__ == "${pom.version":
+    if __voms_version__ == "${pom.version}":
         return "unset"
     return __voms_version__
 
