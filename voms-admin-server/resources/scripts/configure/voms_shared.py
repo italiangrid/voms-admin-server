@@ -249,7 +249,7 @@ class X509Helper:
 
     def parse(self):
         openssl = self.openssl_cmd if self.openssl_cmd else 'openssl'
-        base_cmd = f"{openssl} x509 -in '{self.filename}' -noout"
+        base_cmd = f"{openssl} x509 -in '{self.filename}' -noout "
 
         status, subject = subprocess.getstatusoutput(f"{base_cmd}-subject")
         if status:
