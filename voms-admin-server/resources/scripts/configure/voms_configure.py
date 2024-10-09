@@ -66,7 +66,6 @@ VOMS_KEY = "/etc/grid-security/vomskey.pem"
 
 
 def execute_cmd(cmd, error_msg=None):
-
     status = os.system(cmd)
 
     if status != 0:
@@ -204,7 +203,8 @@ def setup_cl_options():
     # Admin service options
     admin_opt_group = parser.add_argument_group(
         title="VOMS admin options",
-        description="These options drive the basic configuration of the VOMS admin service."
+        description="These options drive the basic configuration of the VOMS "
+        "admin service."
     )
     admin_opt_group.add_argument(
         "--admin-port",
@@ -238,7 +238,8 @@ def setup_cl_options():
         "--admin-skip-ca-check",
         dest="admin_skip_ca_check",
         action="store_true",
-        help="Skips the check on the certificate issuer when authenticating VOMS Admin clients",
+        help="Skips the check on the certificate issuer when authenticating "
+        "VOMS Admin clients",
         default=False
     )
     admin_opt_group.add_argument(
@@ -280,15 +281,18 @@ def setup_cl_options():
     # Connection pool options
     conn_pool_opt_group = parser.add_argument_group(
         title="Database connection pool options",
-        description="These options configure the voms admin service database connection pool"
+        description="These options configure the voms admin service database "
+        "connection pool"
     )
     conn_pool_opt_group.add_argument(
         "--c3p0-acquire-increment",
         type=int,
         dest="c3p0_acquire_increment",
-        help="Sets the number of new connections that are acquired from the database connection pool is exausted.",
+        help="Sets the number of new connections that are acquired from the "
+        "database connection pool is exausted.",
         metavar="NUM",
-        default=1)
+        default=1
+    )
     conn_pool_opt_group.add_argument(
         "--c3p0-idle-test-period",
         type=int,
@@ -325,14 +329,18 @@ def setup_cl_options():
         "--c3p0-timeout",
         type=int,
         dest="c3p0_timeout",
-        help="The time in seconds a connection in the pool can remain pooled but unused before being discarded.",
+        help="The time in seconds a connection in the pool can remain pooled "
+        "but unused before being discarded.",
         metavar="SECS",
-        default=60)
+        default=60
+    )
 
     # MySQL specifics
     mysql_opt_group = parser.add_argument_group(
         title="MySQL-specific options",
-        description="These options are specific for MySQL database backend configuration")
+        description="These options are specific for MySQL database backend "
+        "configuration"
+    )
     mysql_opt_group.add_argument(
         "--createdb",
         dest="createdb",
@@ -397,18 +405,23 @@ def setup_cl_options():
     # ORACLE specifics
     oracle_opt_group = parser.add_argument_group(
         title="Oracle-specific options",
-        description="These options are specific for Oracle database backend configuration")
+        description="These options are specific for Oracle database backend "
+        "configuration"
+    )
     oracle_opt_group.add_argument(
         "--use-thin-driver",
         dest="use_thin_driver",
         action="store_true",
         help="Configures the Oracle database using the pure-java native driver",
-        default=False)
+        default=False
+    )
 
     # VOMS core specifics
     voms_core_opt_group = parser.add_argument_group(
         title="VOMS core options",
-        description="These options drive the configuration of the VOMS core service.")
+        description="These options drive the configuration of the VOMS core "
+        "service."
+    )
     voms_core_opt_group.add_argument(
         "--core-port",
         dest="core_port",
@@ -420,7 +433,8 @@ def setup_cl_options():
         "--libdir",
         dest="libdir",
         help="the DIR where VOMS core will look for the database plugin modules.",
-        metavar="PORT")
+        metavar="PORT"
+    )
     voms_core_opt_group.add_argument(
         "--logdir",
         dest="logdir",
@@ -435,20 +449,25 @@ def setup_cl_options():
     voms_core_opt_group.add_argument(
         "--uri",
         dest="uri",
-        help="Defines a non-standard the URI of the VOMS server included in the issued attribute certificates",
-        metavar="URI")
+        help="Defines a non-standard the URI of the VOMS server included in "
+        "the issued attribute certificates",
+        metavar="URI"
+    )
     voms_core_opt_group.add_argument(
         "--timeout",
         dest="timeout",
         type=int,
-        help="Defines the validity of the AC issued by the VOMS server in seconds. The default is 24 hours (86400)",
+        help="Defines the validity of the AC issued by the VOMS server in "
+        "seconds. The default is 24 hours (86400)",
         metavar="SECS",
-        default=86400)
+        default=86400
+    )
     voms_core_opt_group.add_argument(
         "--socktimeout",
         dest="socktimeout",
         type=int,
-        help="Sets the amount of time in seconds after which the server will drop an inactive connection. The default is 60 seconds",
+        help="Sets the amount of time in seconds after which the server will "
+        "drop an inactive connection. The default is 60 seconds",
         metavar="SECS",
         default=60)
     voms_core_opt_group.add_argument(
@@ -461,19 +480,25 @@ def setup_cl_options():
         "--skip-ca-check",
         dest="skip_ca_check",
         action="store_true",
-        help="Configures VOMS to only consider a certificate subject when checking VO user membership",
-        default=False)
+        help="Configures VOMS to only consider a certificate subject when "
+        "checking VO user membership",
+        default=False
+    )
     voms_core_opt_group.add_argument(
         "--max-reqs",
         type=int,
         dest="max_reqs",
-        help="Sets the maximum number of concurrent request that the VOMS service can handle.",
-        default=50)
+        help="Sets the maximum number of concurrent request that the VOMS "
+        "service can handle.",
+        default=50
+    )
 
     # Registration service specifics
     registration_opt_group = parser.add_argument_group(
         title="Registration service options",
-        description="These options configure the VOMS Admin registration service")
+        description="These options configure the VOMS Admin registration "
+        "service"
+    )
     registration_opt_group.add_argument(
         "--disable-registration",
         dest="enable_registration",
@@ -490,17 +515,19 @@ def setup_cl_options():
         "--aup-signature-grace-period",
         type=int,
         dest="aup_signature_grace_period",
-        help="The time (in days) given to users to sign the AUP, after being notified, before being suspended.",
+        help="The time (in days) given to users to sign the AUP, after being "
+        "notified, before being suspended.",
         metavar="DAYS",
         default="15")
     registration_opt_group.add_argument(
         "--aup-reminders",
         dest="aup_reminders",
-        help="Comma-separated list of instants (in days) before the end of AUP grace period when reminders must be sent to users that need to sign the AUP.",
+        help="Comma-separated list of instants (in days) before the end of AUP "
+        "grace period when reminders must be sent to users that need to sign "
+        "the AUP.",
         metavar="DAYS",
         default="7,3,1"
     )
-
     registration_opt_group.add_argument(
         "--enable-attribute-requests", dest="enable_attribute_requests",
         action="store_true",
@@ -525,15 +552,19 @@ def setup_cl_options():
         "--membership-request-lifetime",
         type=int,
         dest="membership_request_lifetime",
-        help="Time (in seconds) that unconfirmed membership request are maintained in the VOMS database.",
+        help="Time (in seconds) that unconfirmed membership request are "
+        "maintained in the VOMS database.",
         metavar="SECS",
-        default=604800)
+        default=604800
+    )
     registration_opt_group.add_argument(
         "--disable-membership-expired-requests-warnings",
         action="store_false",
         dest="membership_request_warn_when_expired",
-        help="Disables email notifications when unconfirmed membership requests are removed from the voms database.",
-        default=True)
+        help="Disables email notifications when unconfirmed membership requests"
+        " are removed from the voms database.",
+        default=True
+    )
 
     # Membership checks configuration
     membership_opt_group = parser.add_argument_group(
@@ -571,37 +602,43 @@ def setup_cl_options():
         dest="membership_default_lifetime",
         help="Default VO membership lifetime duration (in months).",
         metavar="MONTHS",
-        default=12)
-
+        default=12
+    )
     membership_opt_group.add_argument(
         "--membership-check-period",
         type=int,
         dest="membership_check_period",
         help="The membership check background thread period (in seconds)",
         metavar="SECS",
-        default=600)
+        default=600
+    )
     membership_opt_group.add_argument(
         "--membership-expiration-warning-period",
         type=int,
         dest="membership_expiration_warning_period",
-        help="Warning period duration (in days). VOMS Admin will notify of users about to expire in the next number of days expressed by this configuration option.",
+        help="Warning period duration (in days). VOMS Admin will notify of "
+        "users about to expire in the next number of days expressed by this "
+        "configuration option.",
         metavar="DAYS",
         default=30)
     membership_opt_group.add_argument(
         "--membership-expiration-grace-period",
         type=int,
         dest="membership_expiration_grace_period",
-        help="Membership expiration grace period (in days). In the grace period user will be maintained active even if membership has expired.",
+        help="Membership expiration grace period (in days). In the grace period"
+        " user will be maintained active even if membership has expired.",
         metavar="DAYS",
         default=7)
     membership_opt_group.add_argument(
         "--membership-notification-resend-period",
         type=int,
         dest="membership_notification_resend_period",
-        help="Time (in days) that should pass between consecutive warning expiration messages sent to VO administrators to inform about expired and expiring VO members.",
+        help="Time (in days) that should pass between consecutive warning "
+        "expiration messages sent to VO administrators to inform about expired "
+        "and expiring VO members.",
         metavar="DAYS",
-        default=1)
-
+        default=1
+    )
     saml_opt_group = parser.add_argument_group(
         title="SAML Attribute Authority options",
         description="These options configure the VOMS SAML attribute authority service")
@@ -615,7 +652,8 @@ def setup_cl_options():
         "--saml-lifetime",
         dest="saml_lifetime",
         type=int,
-        help="Defines the maximum validity of the SAML assertions issued by the VOMS SAML server in seconds. The default is 24 hours (86400)",
+        help="Defines the maximum validity of the SAML assertions issued by "
+        "the VOMS SAML server in seconds. The default is 24 hours (86400)",
         metavar="SECS",
         default=86400)
     saml_opt_group.add_argument(
@@ -628,7 +666,9 @@ def setup_cl_options():
 
     x509aa_opt_group = parser.add_argument_group(
         title="X.509 AC Attribute Authority options",
-        description="These options configure the VOMS X.509 attribute authority service")
+        description="These options configure the VOMS X.509 attribute "
+        "authority service"
+    )
     x509aa_opt_group.add_argument(
         "--enable-x509-aa",
         dest="enable_x509_aa", action="store_true",
@@ -647,19 +687,23 @@ def setup_cl_options():
         "--ac-validity",
         dest="ac_validity",
         type=int,
-        help="Defines the maximum validity (in hours) for the attribute certificates issued by this VOMS server. The default is 12 hours",
+        help="Defines the maximum validity (in hours) for the attribute "
+        "certificates issued by this VOMS server. The default is 12 hours",
         metavar="HOURS",
         default=24)
     x509aa_opt_group.add_argument(
         "--disable-legacy-fqan-encoding",
         dest="legacy_fqan_encoding",
         action="store_false",
-        help="FQANs will be encoded in issued ACs following the old, deprecated format (i.e. the one including Role=NULL/Capability=NULL).",
+        help="FQANs will be encoded in issued ACs following the old, "
+        "deprecated format (i.e. the one including Role=NULL/Capability=NULL).",
         default=True)
 
     notification_opt_group = parser.add_argument_group(
         title="Notification service options",
-        description="These options configure the VOMS Admin notification service")
+        description="These options configure the VOMS Admin notification "
+        "service"
+    )
     notification_opt_group.add_argument(
         "--mail-from",
         dest="mail_from",
@@ -700,7 +744,9 @@ def setup_cl_options():
 
     other_opt_group = parser.add_argument_group(
         title="Other fancy options",
-        description="Configuration options that do not fall in the other categories")
+        description="Configuration options that do not fall in the other "
+        "categories"
+    )
     other_opt_group.add_argument(
         "--disable-conf-backup",
         dest="enable_conf_backup",
@@ -713,20 +759,24 @@ def setup_cl_options():
         "--mkgridmap-translate-email",
         dest="mkgridmap_translate_email",
         action="store_true",
-        help="Generate gridmapfiles containing the email part of user certificate subject as emailAddress besides the Email format used by default.",
+        help="Generate gridmapfiles containing the email part of user "
+        "certificate subject as emailAddress besides the Email format used "
+        "by default.",
         default=False)
 
     other_opt_group.add_argument(
         "--csrf-log-only",
         action="store_true",
         dest="csrf_log_only",
-        help="When this option is set, CSRF requests are not blocked but logged. Don't set this option for maximum security",
+        help="When this option is set, CSRF requests are not blocked but "
+        "logged. Don't set this option for maximum security",
         default=False)
 
 
 def configure_logging(options):
     """
-    Configures logging so that debug and info messages are routed to stdout and higher level messages are to stderr.
+    Configures logging so that debug and info messages are routed to stdout and
+    higher level messages are to stderr.
     Debug messages are shown only if verbose option is set
     """
     class InfoAndBelowLoggingFilter(logging.Filter):
@@ -776,7 +826,8 @@ def check_install_options(options):
 
     if options.skip_voms_core and options.skip_voms_admin:
         error_and_exit(
-            "There's not much to do if --skip-voms-core and --skip-voms-admin are both set!")
+            "There's not much to do if --skip-voms-core and --skip-voms-admin "
+            "are both set!")
 
     required_opts = ["vo", "dbusername", "dbpassword"]
 
@@ -823,8 +874,8 @@ def config_owner_ids(options):
         logger.warning("User %sis not configured on this system.",
                        options.config_owner)
         if os.geteuid() == 0:
-            error_and_exit(
-                f"User {options.config_owner} is not configured on this system.")
+            error_and_exit(f"User {options.config_owner} is not configured on "
+                           "this system.")
 
 
 def create_voms_service_certificate(options):
@@ -1118,8 +1169,8 @@ def setup_defaults(options):
 
     if options.createdb or options.dropdb:
         if not options.dbapwd:
-            error_and_exit(
-                "Please set at least the --dbapwd option when attempting MySQL schema creation/removal.")
+            error_and_exit("Please set at least the --dbapwd option when "
+                           "attempting MySQL schema creation / removal.")
 
 
 def setup_admin_defaults(options):
@@ -1131,8 +1182,8 @@ def setup_admin_defaults(options):
 def create_mysql_db(options):
     createdb_cmd = mysql_util_cmd("create_db", options)
     if not options.dbapwd or len(options.dbapwd) == 0:
-        logger.warning(
-            "WARNING: No password has been specified for the mysql root account.")
+        logger.warning("WARNING: No password has been specified for the mysql "
+                       "root account.")
 
     execute_cmd(createdb_cmd, "Error creating MySQL database schema.")
 
@@ -1239,17 +1290,16 @@ def do_remove(options):
                 if not options.skip_database:
                     undeploy_database(options)
                 else:
-                    logger.warning(
-                        "Database will not be dropped since --skip-database option is set.")
+                    logger.warning("Database will not be dropped since "
+                                   "--skip-database option is set.")
 
             logger.info("Removing VOMS Admin service configuration")
             remove_dir_and_contents(admin_conf_dir(options.vo))
 
     if not options.skip_voms_core:
         if not os.path.exists(core_conf_dir(options.vo)):
-            logger.error(
-                "The VOMS core service for VO %s is not configured on this host.",
-                options.vo)
+            logger.error("The VOMS core service for VO %s is not configured on "
+                         "this host.", options.vo)
         else:
             logger.info("Removing VOMS core service configuration")
             remove_dir_and_contents(core_conf_dir(options.vo))

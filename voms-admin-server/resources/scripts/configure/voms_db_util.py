@@ -75,7 +75,6 @@ def setup_cl_options():
         help="the x.509 CERTIFICATE of the administrator being created",
         metavar="CERTIFICATE"
     )
-
     parser.add_argument(
         "--ignore-cert-email",
         dest="admin_ignore_cert_email",
@@ -90,7 +89,6 @@ def error_and_exit(msg):
 
 
 def build_classpath():
-
     jars = VOMSDefaults.voms_admin_libs
 
     if len(jars) == 0:
