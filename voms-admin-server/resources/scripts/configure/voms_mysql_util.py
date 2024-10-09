@@ -24,7 +24,7 @@ import subprocess
 import re
 import socket
 
-usage = """%prog [options] command
+usage = """%(prog)s [options] command
 
 Commands:
   create_db:        creates a MySQL database and read/write grants for the VOMS service
@@ -272,14 +272,8 @@ def check_mysql_command(options):
                 " Check your MySQL client installation.")
 
 
-def check_args_and_options(options, args):
-    if len(args) != 1 or args[0] not in supported_commands.keys():
-        str_commands = '\n\t'.join(supported_commands.keys())
-        error_and_exit("Please specify a single command among the following:"
-                       f"\n\t{str_commands}")
-
+def check_args(options):
     missing_options = []
-
     if not options.username:
         missing_options.append("--dbusername")
     if not options.password:
@@ -295,11 +289,12 @@ def check_args_and_options(options, args):
 
 def main():
     setup_cl_options()
-    (options, args) = parser.parse_args()
-    check_args_and_options(options, args)
-    check_mysql_command(options)
-
-    supported_commands[args[0]](options)
+    parser.add_argument("command", choices=supported_commands.keys(), help=usage)
+    args = parser.parse_args()
+    check_args(args)
+    check_mysql_command(args)
+    command = args.command
+    supported_commands[command](args)
 
 
 if __name__ == '__main__':
