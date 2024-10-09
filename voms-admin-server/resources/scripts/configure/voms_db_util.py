@@ -24,7 +24,7 @@ import os
 import argparse
 from voms_shared import VOMSDefaults, X509Helper, get_oracle_env
 
-usage = """%prog [options] command
+usage = """%(prog)s [options] command
 
 Commands:
   check-connectivity:  checks database connection
@@ -42,6 +42,8 @@ Commands:
 parser = argparse.ArgumentParser(usage=usage)
 commands = ["deploy", "undeploy", "upgrade", "check-connectivity",
             "grant-read-only-access", "add-admin", "remove-admin"]
+
+parser.add_argument("command", choices=commands)
 
 
 def setup_cl_options():
@@ -155,17 +157,11 @@ def do_remove_admin(options):
     sys.exit(os.WEXITSTATUS(status))
 
 
-def check_args_and_options(options, args):
-    if len(args) != 1 or args[0] not in commands:
-        error_and_exit(
-            "Please specify a single command among the following:\n\t%s" %
-            "\n\t".join(commands))
-
+def check_args(options):
     if not options.vo:
         error_and_exit("Please specify a VO with the --vo option.")
 
-    if args[0] in ("add-admin", "remove-admin"):
-
+    if options.command in ("add-admin", "remove-admin"):
         if (not options.admin_dn or not options.admin_ca) and not options.admin_cert:
             error_and_exit(
                 "Please specify an administrator either providing a certificate"
@@ -183,17 +179,17 @@ def check_args_and_options(options, args):
 
 def main():
     setup_cl_options()
-    (options, args) = parser.parse_args()
-    check_args_and_options(options, args)
+    args = parser.parse_args()
+    check_args(args)
 
-    command = args[0]
+    command = args.command
 
     if command == "add-admin":
-        do_add_admin(options)
+        do_add_admin(args)
     elif command == "remove-admin":
-        do_remove_admin(options)
+        do_remove_admin(args)
     else:
-        do_basic_command(options, command)
+        do_basic_command(args, command)
 
 
 if __name__ == '__main__':
