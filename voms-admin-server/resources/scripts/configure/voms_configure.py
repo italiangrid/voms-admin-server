@@ -249,8 +249,6 @@ def setup_cl_options():
         default="False"
     )
 
-    parser.add_argument_group(admin_opt_group)
-
     # DB options
     db_opt_group = parser.add_argument_group(
         title="Database configuration options",
