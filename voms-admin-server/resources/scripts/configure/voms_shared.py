@@ -22,39 +22,34 @@ __voms_version__ = "${pom.version}"
 __voms_prefix__ = "${package.prefix}"
 
 import re
-import commands
-import exceptions
+import subprocess
 import os.path
 import glob
 import platform
 
 
 def mysql_util_cmd(command, options):
-    db_cmd = "%s %s --dbauser %s --dbusername %s --dbpassword '%s' --dbname %s --dbhost %s --dbport %s --mysql-command %s" % (VOMSDefaults.voms_mysql_util,
-                                                                                                                              command,
-                                                                                                                              options.dbauser,
-                                                                                                                              options.dbusername,
-                                                                                                                              options.dbpassword,
-                                                                                                                              options.dbname,
-                                                                                                                              options.dbhost,
-                                                                                                                              options.dbport,
-                                                                                                                              options.mysql_command)
+    db_cmd = f"{VOMSDefaults.voms_mysql_util} {command} " \
+        f"--dbauser {options.dbauser} --dbusername {options.dbusername} " \
+        f"--dbhost {options.dbhost} --dbport {options.dbport} " \
+        f"--mysql-command {options.mysql_command}"
 
     if options.dbapwdfile:
-        dbapwd = open(options.dbapwdfile).read()
+        with open(options.dbapwdfile, encoding="utf-8") as f:
+            dbapwd = f.read()
         options.dbapwd = dbapwd
 
     if options.dbapwd:
-        db_cmd += " --dbapwd=%s" % options.dbapwd
+        db_cmd = f"db_cmd --dbapwd={options.dbapwd}"
 
     return db_cmd
 
 
 def voms_add_admin_cmd(vo, cert, ignore_email=False):
+    cmd = f"{__voms_db_util_base_cmd(vo, 'add-admin')} --cert {cert}"
     if ignore_email:
-        return "%s %s" % (__voms_db_util_base_cmd(vo, "add-admin"), "--cert %s --ignore-cert-email" % cert)
-    else:
-        return "%s %s" % (__voms_db_util_base_cmd(vo, "add-admin"), "--cert %s" % cert)
+        cmd = f"{cmd} --ignore-cert-email"
+    return cmd
 
 
 def voms_ro_auth_clients_cmd(vo):
@@ -74,11 +69,11 @@ def voms_upgrade_database_cmd(vo):
 
 
 def __voms_db_util_base_cmd(vo, command):
-    return "%s %s --vo %s" % (VOMSDefaults.voms_db_util, command, vo)
+    return f"{VOMSDefaults.voms_db_util} {command} --vo {vo}"
 
 
 def voms_version():
-    if __voms_version__ == "${pom.version":
+    if __voms_version__ == "${pom.version}":
         return "unset"
     return __voms_version__
 
@@ -91,7 +86,9 @@ def voms_prefix():
 
 
 def template_prefix():
-    return os.path.join(voms_prefix(), "usr", "share", "voms-admin", "templates")
+    return os.path.join(
+        voms_prefix(), "usr", "share", "voms-admin", "templates"
+    )
 
 
 def admin_conf_dir(vo=None):
@@ -208,7 +205,7 @@ def get_oracle_env():
     return template.substitute(sysconfig)
 
 
-class VOMSError(exceptions.RuntimeError):
+class VOMSError(RuntimeError):
     pass
 
 
@@ -221,14 +218,13 @@ class PropertyHelper(dict):
         self._load_properties()
 
     def _load_properties(self):
-        f = open(self._filename, "r")
-        for l in f:
-            if re.match(PropertyHelper.empty_or_comment_lines, l) is None:
-                m = re.search(PropertyHelper.property_matcher, l)
-                if m:
-                    PropertyHelper.__setitem__(
-                        self, m.groups()[0], m.groups()[1])
-        f.close()
+        with open(self._filename, "r", encoding="utf-8") as f:
+            for l in f:
+                if re.match(PropertyHelper.empty_or_comment_lines, l) is None:
+                    m = re.search(PropertyHelper.property_matcher, l)
+                    if m:
+                        PropertyHelper.__setitem__(
+                            self, m.groups()[0], m.groups()[1])
 
     def save_properties(self):
         def helper(l):
@@ -238,12 +234,11 @@ class PropertyHelper(dict):
             else:
                 return l
 
-        f = open(self._filename, "rw+")
-        lines = map(helper, f.readlines())
-        f.seek(0)
-        f.writelines(lines)
-        f.truncate()
-        f.close()
+        with open(self._filename, "w", encoding="utf-8") as f:
+            lines = map(helper, f.readlines())
+            f.seek(0)
+            f.writelines(lines)
+            f.truncate()
 
 
 class X509Helper:
@@ -253,34 +248,31 @@ class X509Helper:
         self.parse()
 
     def parse(self):
+        openssl = self.openssl_cmd if self.openssl_cmd else 'openssl'
+        base_cmd = f"{openssl} x509 -in '{self.filename}' -noout "
 
-        if self.openssl_cmd:
-            openssl = self.openssl_cmd
-        else:
-            openssl = 'openssl'
-
-        base_cmd = openssl+' x509 -in \'%s\' -noout ' % self.filename
-
-        status, subject = commands.getstatusoutput(base_cmd+'-subject')
+        status, subject = subprocess.getstatusoutput(f"{base_cmd}-subject")
         if status:
-            raise VOMSError, "Error invoking openssl: " + subject
+            raise VOMSError(f"Error invoking openssl: {subject}")
 
-        status, issuer = commands.getstatusoutput(base_cmd+'-issuer')
+        status, issuer = subprocess.getstatusoutput(f"{base_cmd}-issuer")
         if status:
-            raise VOMSError, "Error invoking openssl: " + issuer
+            raise VOMSError(f"Error invoking openssl: {issuer}")
 
-        status, email = commands.getstatusoutput(base_cmd+'-email')
+        status, email = subprocess.getstatusoutput(f"{base_cmd}-email")
         if status:
-            raise VOMSError, "Error invoking openssl: " + email
+            raise VOMSError(f"Error invoking openssl: {email}")
 
         self.subject = re.sub(r'^subject= ', '', subject.strip())
         self.issuer = re.sub(r'^issuer= ', '', issuer.strip())
         self.subject = re.sub(
-            r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=', '/Email=', self.subject)
+            r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=',
+            '/Email=', self.subject)
 
         # Handle emailAddress also in the CA DN (Bug #36490)
         self.issuer = re.sub(
-            r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=', '/Email=', self.issuer)
+            r'/(E|e|((E|e|)(mail|mailAddress|mailaddress|MAIL|MAILADDRESS)))=',
+            '/Email=', self.issuer)
 
         # Handle also UID
         self.subject = re.sub(
@@ -288,11 +280,14 @@ class X509Helper:
 
         self.email = email.strip()
 
-        # Check that only first email address is taken from the certificate, the openssl -email command
+        # Check that only first email address is taken from the certificate,
+        # the openssl -email command
         # returns one address per line
         emails = email.splitlines(False)
         if len(emails) > 0:
             self.email = emails[0]
 
     def __repr__(self):
-        return 'Subject:%s\nIssuer:%s\nEmail:%s' % (self.subject, self.issuer, self.email)
+        return f"Subject:{self.subject}\n" \
+            f"Issuer:{self.issuer}\n" \
+            f"Email: {self.email}"
